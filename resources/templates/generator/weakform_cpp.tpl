@@ -36,10 +36,15 @@
 {{/QUANTITY_INFO}}
 
 {{#EXT_FUNCTION}}
+{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{
+    getLabelValuesPointers("{{QUANTITY_ID}}");
+}
+
 void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 {
-    SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-    Value* value = &label->marker(m_fieldInfo)->value("{{QUANTITY_ID}}");
+    int labelIndex = atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str());
+    Value* value = m_valuesPointers[labelIndex];
 
     for(int i = 0; i < n; i++)
     {

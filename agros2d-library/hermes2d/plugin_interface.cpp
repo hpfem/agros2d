@@ -2,6 +2,27 @@
 #include "field.h"
 #include "util/global.h"
 
+AgrosExtFunction::~AgrosExtFunction()
+{
+    if(m_valuesPointers)
+        delete[] m_valuesPointers;
+}
+
+void AgrosExtFunction::getLabelValuesPointers(QString id)
+{
+    if(m_valuesPointers)
+        delete[] m_valuesPointers;
+
+    int labelsNum = Agros2D::scene()->labels->length();
+    m_valuesPointers = new Value*[labelsNum];
+    for(int i = 0; i < labelsNum; i++)
+    {
+        SceneLabel *label = Agros2D::scene()->labels->at(i);
+        Value* value = &label->marker(m_fieldInfo)->value(id);
+        m_valuesPointers[i] = value;
+    }
+}
+
 AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
 {
 }
