@@ -1046,7 +1046,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
         boundaries.clear();
 
         // refine mesh
-        fieldInfo->refineMesh(mesh, true, true, true);
+        fieldInfo->refineMesh(mesh);
 
         // set initial mesh
         fieldInfo->setInitialMesh(mesh);

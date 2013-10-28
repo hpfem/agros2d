@@ -204,40 +204,29 @@ void FieldInfo::clear()
     m_matrixSolver = Hermes::SOLVER_MUMPS;
 }
 
-void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
+void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
 {
-    // refine mesh - global
-    /*
-    if (refineGlobal)
-        for (int i = 0; i < value(FieldInfo::SpaceNumberOfRefinements).toInt(); i++)
-            mesh->refine_all_elements(0);
-    */
-
     // refine mesh - boundary
-    if (refineTowardsEdge)
-        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    {
+        if (edgeRefinement(edge) > 0)
         {
-            if (edgeRefinement(edge) > 0)
-            {
-                mesh->refine_towards_boundary(QString::number(Agros2D::scene()->edges->items().indexOf(edge)).toStdString(),
-                                              edgeRefinement(edge));
-            }
+            mesh->refine_towards_boundary(QString::number(Agros2D::scene()->edges->items().indexOf(edge)).toStdString(),
+                                          edgeRefinement(edge));
         }
+    }
 
     // refine mesh - elements
-    if (refineArea)
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
-        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+        if (!label->marker(this)->isNone())
         {
-            if (!label->marker(this)->isNone())
-            {
-                if (labelRefinement(label) > 0)
-                    mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
-                                         labelRefinement(label));
-                else if (refineGlobal)
-                    mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
-                                         value(FieldInfo::SpaceNumberOfRefinements).toInt());
-            }
+            if (labelRefinement(label) > 0)
+                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
+                                     labelRefinement(label));
+            else if (value(FieldInfo::SpaceNumberOfRefinements).toInt() > 0)
+                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
+                                     value(FieldInfo::SpaceNumberOfRefinements).toInt());
         }
     }
 }

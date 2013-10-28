@@ -150,7 +150,7 @@ public:
     inline QVariant defaultValue(Type type) {  return m_settingDefault[type]; }
 
     // refine mesh
-    void refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
+    void refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh);
 
     // name
     QString name() const;
