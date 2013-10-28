@@ -98,10 +98,11 @@ class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
 {
 public:
     AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count = 0);
-
+    ~AgrosSpecialExtFunction() { if(m_conversion) delete[] m_conversion;}
     virtual void init();
     double getValue(int hermesMarker, double h) const;
     virtual double calculateValue(int hermesMarker, double h) const = 0;
+    Value** createValuePointers(QString id);
 
 protected:
     void createOneTable(int hermesMarker);
@@ -115,9 +116,14 @@ protected:
     QString m_variant;
     QMap<int , AgrosSpecialExtFunctionOneMaterial> m_data;
     bool m_useTable;
+
+    // todo: should be done elsewhere
+    void createConversion();
+    // todo: should be done elsewhere
+    int *m_conversion;
+
 private:
     double valueFromTable(int hermesMarker, double h) const;
-
 };
 
 struct PointValue

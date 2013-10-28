@@ -273,7 +273,7 @@
         <element name="function">
                 <complexType>
                         <sequence>
-                                <element maxOccurs="unbounded" ref="module:quantity" />
+                                <element minOccurs="0" maxOccurs="unbounded" ref="module:quantity" />
                                 <element maxOccurs="unbounded" ref="module:function_variant" />
                         </sequence>                       
                         <attribute name="id" use="required" type="string" />

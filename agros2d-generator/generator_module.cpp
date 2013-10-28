@@ -2285,11 +2285,13 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function functio
     functionTemplate->SetValue("TO", function.bound_hi().present() ? function.bound_hi().get() : "1");
     functionTemplate->SetValue("TYPE", function.type());
 
-    QString nonlinearity("0");
+    QString dependence("0");
     if(linearityType != LinearityType_Linear)
-        nonlinearity = specialFunctionNonlinearExpression(QString::fromStdString(function.id()), analysisType, coordinateType);
+        dependence = specialFunctionNonlinearExpression(QString::fromStdString(function.id()), analysisType, coordinateType);
 
-    functionTemplate->SetValue("DEPENDENCE", nonlinearity.toStdString());
+    dependence = parseWeakFormExpression(analysisType, coordinateType, linearityType, dependence, false, false);
+
+    functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
     functionTemplate->SetValue("INTERPOLATION_COUNT", function.interpolation_count().present() ? function.interpolation_count().get() : "0");
     if(function.extrapolate_low().present())
     {
@@ -2351,7 +2353,11 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function functio
     {
         ctemplate::TemplateDictionary *functionVariant = functionTemplate->AddSectionDictionary("VARIANT");
         functionVariant->SetValue("ID", variant.switch_value().present() ? variant.switch_value().get().c_str() : "no_variant");
-        functionVariant->SetValue("EXPR", variant.expr());
+        QString expression = QString::fromStdString(variant.expr());
+
+        // todo:
+        //expression = parseWeakFormExpression(analysisType, coordinateType, linearityType, expression, false, false);
+        functionVariant->SetValue("EXPR", expression.toStdString());
     }
 }
 
