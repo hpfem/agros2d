@@ -35,8 +35,6 @@ void AgrosSpecialExtFunction::init()
 {
     if(m_useTable)
     {
-        if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
-            assert(m_data.isEmpty());
         for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
         {
             SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
