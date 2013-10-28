@@ -36,28 +36,28 @@
     <module:quantity id="richards_theta_r" shortname="re_theta_r"/>
 
 <!--    bounds and extrapolate information should be transfered to function_variant-->
-    <module:function id="richards_func_k" shortname="re_k" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="re_ks" nonlinearity="value1"  >
+    <module:function id="richards_func_k" shortname="re_k" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="re_ks" interpolation_count="100" postprocessor_linearity="newton" postprocessor_analysis="transient">
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
       <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))),2)"/>
     </module:function>
-    <module:function id="richards_func_dkdh" shortname="re_dkdh" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="0" nonlinearity="value1" >
+    <module:function id="richards_func_dkdh" shortname="re_dkdh" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="0" interpolation_count="100" >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
       <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n)))) -re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*h*(1 +std::pow((-re_a*h),re_n)))"/>
     </module:function>
-    <module:function id="richards_func_ddkdhh" shortname="re_ddkdhh" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="0" nonlinearity="value1" >
+    <module:function id="richards_func_ddkdhh" shortname="re_ddkdhh" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="0" interpolation_count="100" >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
       <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/std::pow(h,2) +2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))/std::pow(h,2)- 2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) -2*re_m*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),re_n)),2)) -2*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),re_n)),2)) +2*re_m*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +4*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n)))) +re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(-re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/h +re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 +std::pow((-re_a*h),re_n))))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n)))) -re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n))))/(h*(1 +std::pow((-re_a*h),re_n))) + re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +re_ks*re_m*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),re_n)),2)) - re_ks*re_m*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +re_ks*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(4*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),re_n)),2))"/>
     </module:function>
-    <module:function id="richards_func_c" shortname="re_c" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="re_st" nonlinearity="value1" >
+    <module:function id="richards_func_c" shortname="re_c" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-9" extrapolate_hi="re_st" interpolation_count="100" postprocessor_linearity="newton" postprocessor_analysis="transient">
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
@@ -91,10 +91,10 @@
         <module:quantity id="richards_theta_s"/>
         <module:quantity id="richards_theta_r"/>
 
-        <module:function_use id="richards_func_k"/>
-        <module:function_use id="richards_func_dkdh"/>
-        <module:function_use id="richards_func_ddkdhh"/>
-        <module:function_use id="richards_func_c"/>
+        <module:function_use id="richards_func_k" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:function_use id="richards_func_dkdh" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:function_use id="richards_func_ddkdhh" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:function_use id="richards_func_c" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 
         <!--
         <module:linearity_option type="linear">
@@ -122,10 +122,10 @@
         <module:quantity id="richards_theta_s"/>
         <module:quantity id="richards_theta_r"/>
 
-        <module:function_use id="richards_func_k"/>
-        <module:function_use id="richards_func_dkdh"/>
-        <module:function_use id="richards_func_ddkdhh"/>
-        <module:function_use id="richards_func_c"/>
+        <module:function_use id="richards_func_k" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:function_use id="richards_func_dkdh" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:function_use id="richards_func_ddkdhh" nonlinearity_planar="value1" nonlinearity_axi="value1" />
+        <module:function_use id="richards_func_c" nonlinearity_planar="value1" nonlinearity_axi="value1" />
 
         <!--
         <module:linearity_option type="linear">

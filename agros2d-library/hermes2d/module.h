@@ -130,9 +130,9 @@ class BDF2Table;
 
 struct AGROS_LIBRARY_API FormInfo
 {
-    FormInfo() : id(""), i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
-    FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
-        : id(id), i(i), j(j), sym(sym), variant(WeakFormVariant_Normal), coefficient(1), condition("") {}
+    FormInfo() : id(""), i(0), j(0), sym_planar(Hermes::Hermes2D::HERMES_NONSYM), sym_axi(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
+    FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym_planar = Hermes::Hermes2D::HERMES_NONSYM, Hermes::Hermes2D::SymFlag sym_axi = Hermes::Hermes2D::HERMES_NONSYM)
+        : id(id), i(i), j(j), sym_planar(sym_planar), sym_axi(sym_axi), variant(WeakFormVariant_Normal), coefficient(1), condition("") {}
 
     QString id;
 
@@ -141,13 +141,16 @@ struct AGROS_LIBRARY_API FormInfo
     int j;
 
     // symmetric flag
-    Hermes::Hermes2D::SymFlag sym;
+    Hermes::Hermes2D::SymFlag sym_planar;
+    Hermes::Hermes2D::SymFlag sym_axi;
 
     QString expr_planar;
     QString expr_axi;
     WeakFormVariant variant;
     double coefficient;
     QString condition;
+
+    Hermes::Hermes2D::SymFlag sym(CoordinateType coordinateType) { return (coordinateType == CoordinateType_Axisymmetric) ? sym_axi : sym_planar; }
 };
 
 template <typename Scalar>
@@ -164,11 +167,6 @@ public:
     // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
     static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
     static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-
-    // puts forms with the same indices (i,j) from Separated to one single form as sum. It is, however, not significantly faster even
-    // compared to Separated case without optimalizations, so it will probably not be used
-    static QList<FormInfo> wfMatrixVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings

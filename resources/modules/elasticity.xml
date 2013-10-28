@@ -27,12 +27,12 @@
     <module:quantity id="elasticity_temperature_difference" shortname="st_dT"/>
     <module:quantity id="elasticity_temperature_reference" shortname="st_Tr"/>
 
-    <module:function id="elasticity_func_lambda" shortname="st_lambda" type="constant">
+    <module:function id="elasticity_func_lambda" shortname="st_lambda" type="constant" postprocessor_linearity="linear" postprocessor_analysis="steadystate">
       <module:quantity id="elasticity_young_modulus" />
       <module:quantity id="elasticity_poisson_ratio" />
       <module:function_variant expr="(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))"/>
     </module:function>
-    <module:function id="elasticity_func_mu" shortname="st_mu" type="constant">
+    <module:function id="elasticity_func_mu" shortname="st_mu" type="constant" postprocessor_linearity="linear" postprocessor_analysis="steadystate">
       <module:quantity id="elasticity_young_modulus" />
       <module:quantity id="elasticity_poisson_ratio" />
       <module:function_variant expr="st_E / (2.0*(1.0 + st_nu))"/>
