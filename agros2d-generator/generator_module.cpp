@@ -2160,12 +2160,24 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
                 assert(0);
             }
         }
+
+        QString shortname;
+        foreach(XMLModule::quantity quantityDefinition, m_module->volume().quantity())
+        {
+            if(quantityDefinition.id() == quantity.id())
+            {
+                shortname = QString::fromStdString(quantityDefinition.shortname().get());
+                break;
+            }
+        }
+
         field->SetValue("DEPENDENCE", dependence.toStdString());
         field->SetValue("VALUE_METHOD", valueMethod.toStdString());
         field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
         field->SetValue("QUANTITY_ID", quantity.id());
+        field->SetValue("QUANTITY_SHORTNAME", shortname.toStdString());
         if(derivative)
             field->SetValue("IS_DERIVATIVE", "true");
         else

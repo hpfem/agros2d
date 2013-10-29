@@ -38,13 +38,13 @@
 {{#EXT_FUNCTION}}
 {{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
 {
-    m_valuesPointers = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
+    {{QUANTITY_SHORTNAME}} = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
 }
 
 void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 {
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
-    Value* value = m_valuesPointers[labelIndex];
+    Value* value = {{QUANTITY_SHORTNAME}}[labelIndex];
 
     for(int i = 0; i < n; i++)
     {

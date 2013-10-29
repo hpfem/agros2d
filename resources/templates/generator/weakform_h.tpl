@@ -36,6 +36,8 @@ public:
     {
         return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_offsetI);
     }
+protected:
+    Value** {{QUANTITY_SHORTNAME}};
 };
 {{/EXT_FUNCTION}}
 
