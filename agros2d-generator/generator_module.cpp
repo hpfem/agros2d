@@ -650,7 +650,10 @@ void Agros2DGeneratorModule::generateSpecialFunctions(ctemplate::TemplateDiction
                     {
                         foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
                         {
-                            generateSpecialFunction(function, analysisType, linearityType, coordinateType, output);
+                            if(function.interpolation_count().present())
+                                generateSpecialFunction(function, analysisType, linearityType, coordinateType, output);
+                            else
+                                generateValueExtFunction(function, analysisType, linearityType, coordinateType, output);
                         }
                     }
                 }
@@ -1596,7 +1599,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
                     else
                         parameter = "value[0]";
                 }
-                dict[QString::fromStdString(function.shortname())] = QString("%1.calculateValue(elementMarker, %2)").
+                dict[QString::fromStdString(function.shortname())] = QString("%1.getValue(elementMarker, %2)").
                         arg(QString::fromStdString(function.shortname())).arg(parameter);
             }
         }
@@ -2274,6 +2277,82 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             field->SetValue("FUNCTION_NAME", functionName.toStdString());
         }
     }
+}
+
+void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output)
+{
+    ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("VALUE_FUNCTION_SOURCE");
+    functionTemplate->SetValue("VALUE_FUNCTION_NAME", function.shortname());
+    functionTemplate->SetValue("VALUE_FUNCTION_ID", function.id());
+    functionTemplate->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+    functionTemplate->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
+    functionTemplate->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+
+    QString fullName = QString("%1_ext_function_%2_%3_%4_%5").
+            arg(QString::fromStdString(m_module->general().id())).
+            arg(analysisTypeToStringKey(analysisType)).
+            arg(coordinateTypeToStringKey(coordinateType)).
+            arg(linearityTypeToStringKey(linearityType)).
+            arg(QString::fromStdString(function.shortname()));
+
+    functionTemplate->SetValue("VALUE_FUNCTION_FULL_NAME", fullName.toStdString());
+
+    QString dependence("0");
+    if(linearityType != LinearityType_Linear)
+        dependence = specialFunctionNonlinearExpression(QString::fromStdString(function.id()), analysisType, coordinateType);
+
+    dependence = parseWeakFormExpression(analysisType, coordinateType, linearityType, dependence, false, false);
+
+    functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
+
+    foreach(XMLModule::weakform_volume weakForm, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        if(QString::fromStdString(weakForm.analysistype()) == analysisTypeToStringKey(analysisType))
+        {
+            foreach(XMLModule::quantity quantity, function.quantity())
+            {
+                QString section;
+
+                foreach(XMLModule::quantity quantDepend, weakForm.quantity())
+                {
+                    if(quantDepend.id() == quantity.id())
+                    {
+                        if(quantDepend.nonlinearity_axi().present() || quantDepend.nonlinearity_planar().present())
+                            section = "PARAMETERS_NONLINEAR";
+                        else
+                            section = "PARAMETERS_LINEAR";
+                        break;
+                    }
+                }
+
+                ctemplate::TemplateDictionary *functionParameters = functionTemplate->AddSectionDictionary(section.toStdString());
+                for(int i = 0; i < m_module->volume().quantity().size(); i++)
+                {
+                    if(m_module->volume().quantity().at(i).id() == quantity.id())
+                    {
+                        functionParameters->SetValue("PARAMETER_NAME", m_module->volume().quantity().at(i).shortname().get().c_str());
+                        functionParameters->SetValue("PARAMETER_ID", m_module->volume().quantity().at(i).id().c_str());
+                        functionParameters->SetValue("PARAMETER_FULL_NAME", m_module->volume().quantity().at(i).id().c_str());
+                        break;
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+
+    // todo: get rid of variants
+    foreach(XMLModule::function_variant variant, function.function_variant())
+    {
+        QString expression = QString::fromStdString(variant.expr());
+
+        // todo:
+        //expression = parseWeakFormExpression(analysisType, coordinateType, linearityType, expression, false, false);
+        functionTemplate->SetValue("EXPR", expression.toStdString());
+    }
+
 }
 
 void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output)

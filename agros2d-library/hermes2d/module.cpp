@@ -518,7 +518,11 @@ void WeakFormAgros<Scalar>::updateExtField()
             }
             Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
             if(containedInAnalysis)
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, functionID, false, offsetI));
+            {
+                Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, offsetI);
+                assert(extFunctionPtr);
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
+            }
             else
                 extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 

@@ -48,7 +48,7 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
-    : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr)
+    : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr), m_labelAreas(nullptr)
 {
     assert(!fieldId.isEmpty());
     m_fieldId = fieldId;
@@ -79,20 +79,43 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 FieldInfo::~FieldInfo()
 {
     delete m_plugin;
+    deleteValuePointerTable();
+}
 
+void FieldInfo::deleteValuePointerTable()
+{
     if(m_hermesMarkerToAgrosLabelConversion)
         delete[] m_hermesMarkerToAgrosLabelConversion;
+
+    m_hermesMarkerToAgrosLabelConversion = nullptr;
+
+    if(m_labelAreas)
+        delete[] m_labelAreas;
+
+    m_labelAreas = nullptr;
+
+    foreach(Value** pointers, m_valuePointersTable)
+        if(pointers)
+            delete[] pointers;
+
+    m_valuePointersTable.clear();
 }
 
 void FieldInfo::createValuePointerTable()
 {
+    deleteValuePointerTable();
     // first create hermes marker to agros label conversion
     assert(!m_hermesMarkerToAgrosLabelConversion);
 
     int num = Agros2D::scene()->labels->count();
     m_hermesMarkerToAgrosLabelConversion = new int[num+1];
+    m_labelAreas = new double[num+1];
+
     for(int i = 0; i < num+1; i++)
+    {
         m_hermesMarkerToAgrosLabelConversion[i] = -10000;
+        m_labelAreas[i] = -10000;
+    }
 
     for(int labelIndex = 0; labelIndex < num; labelIndex++)
     {
@@ -102,7 +125,8 @@ void FieldInfo::createValuePointerTable()
             assert(intValid.valid);
             assert(intValid.marker <= num);
             assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == -10000);
-            m_hermesMarkerToAgrosLabelConversion[intValid.marker] = labelIndex;
+            m_hermesMarkerToAgrosLabelConversion[intValid.marker] = labelIndex;           
+            m_labelAreas[labelIndex] = initialMesh()->get_marker_area(intValid.marker);
         }
     }
 
@@ -115,18 +139,17 @@ void FieldInfo::createValuePointerTable()
         SceneMaterial* material = Agros2D::scene()->labels->at(labelNum)->marker(this);
         if(!material->isNone())
         {
-            QList<QString> keys = material->values().keys();
-            foreach(QString key, keys)
+            foreach(Module::MaterialTypeVariable variable, materialTypeVariables())
             {
-                if(! m_valuePointersTable.contains(key))
+                if(! m_valuePointersTable.contains(variable.id()))
                 {
-                    m_valuePointersTable[key] = new Value*[labelsSize];
+                    m_valuePointersTable[variable.id()] = new Value*[labelsSize];
                     for(int i = 0; i < labelsSize; i++)
-                        m_valuePointersTable[key][i] = nullptr;
+                        m_valuePointersTable[variable.id()][i] = nullptr;
                 }
 
-                assert(m_valuePointersTable[key][labelNum] == nullptr);
-                m_valuePointersTable[key][labelNum] = &material->value(key);
+                assert(m_valuePointersTable[variable.id()][labelNum] == nullptr);
+                m_valuePointersTable[variable.id()][labelNum] = &material->value(variable.id());
             }
         }
     }
@@ -134,6 +157,9 @@ void FieldInfo::createValuePointerTable()
 
 Value** FieldInfo::valuePointerTable(QString id)
 {
+    assert(!m_valuePointersTable.isEmpty());
+    if(!m_valuePointersTable.contains(id))
+        qDebug() << "chci " << id;
     assert(m_valuePointersTable.contains(id));
 
     return m_valuePointersTable[id];
@@ -143,6 +169,12 @@ int FieldInfo::hermesMarkerToAgrosLabel(int hermesMarker)
 {
     assert(m_hermesMarkerToAgrosLabelConversion);
     return m_hermesMarkerToAgrosLabelConversion[hermesMarker];
+}
+
+double FieldInfo::labelArea(int agrosLabel)
+{
+    assert(m_labelAreas);
+    return m_labelAreas[agrosLabel];
 }
 
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)

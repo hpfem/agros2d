@@ -222,11 +222,11 @@ public:
     QList<LinearityType> availableLinearityTypes() const {return m_availableLinearityTypes;}
 
     void createValuePointerTable();
-    // todo:
-    void deleteValuePointerTable() {}
+    void deleteValuePointerTable();
 
     Value** valuePointerTable(QString id);
     int hermesMarkerToAgrosLabel(int hermesMarker);
+    double labelArea(int agrosLabel);
 
 signals:
     void changed();
@@ -272,9 +272,9 @@ private:
     void setStringKeys();
 
     // for speed optimisations
-    // todo: delete somewhere!!!
     QMap<QString, Value**> m_valuePointersTable;
     int* m_hermesMarkerToAgrosLabelConversion;
+    double* m_labelAreas;
 
 
     // help functions extracting parts of xml

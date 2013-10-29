@@ -61,6 +61,14 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
     if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
         return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
     {{/EXT_FUNCTION}}
+    {{#VALUE_FUNCTION_SOURCE}}
+    if((id == "{{VALUE_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
+    {
+        assert(derivative == false);
+        AgrosExtFunction* extFunction = new {{VALUE_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
+        return extFunction;
+    }
+    {{/VALUE_FUNCTION_SOURCE}}
     {{#SPECIAL_FUNCTION_SOURCE}}
     if((id == "{{SPECIAL_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
     {
@@ -185,6 +193,49 @@ QString {{CLASS}}Interface::localeDescription()
 {
     return tr("{{DESCRIPTION}}");
 }
+
+// ***********************************************************************************************************************************
+
+{{#VALUE_FUNCTION_SOURCE}}
+{{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{
+{{#PARAMETERS_LINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");{{/PARAMETERS_NONLINEAR}}
+}
+
+double {{VALUE_FUNCTION_FULL_NAME}}::getValue(int hermesMarker, double h) const
+{
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker);
+
+{{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex]->numberFromTable(h);{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex]->numberFromTable(h);{{/PARAMETERS_NONLINEAR}}
+    double area = m_fieldInfo->labelArea(labelIndex);
+
+    return {{EXPR}};
+}
+
+void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
+{
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
+
+{{#PARAMETERS_LINEAR}}    Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex]; {{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex]; {{/PARAMETERS_NONLINEAR}}
+
+{{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->number(); {{/PARAMETERS_LINEAR}}
+    double area = m_fieldInfo->initialMesh()->get_marker_area(e->elem_marker);
+
+    for(int i = 0; i < n; i++)
+    {
+        double h = {{DEPENDENCE}};
+
+{{#PARAMETERS_NONLINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->numberFromTable(h); {{/PARAMETERS_NONLINEAR}}
+
+        result->val[i] = {{EXPR}};
+    }
+}
+{{/VALUE_FUNCTION_SOURCE}}
+
+
 
 // ***********************************************************************************************************************************
 
