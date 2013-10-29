@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Sinimax"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="20274.5"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0494706&#xA;0.0756893&#xA;0.0809894&#xA;0.183345&#xA;0.529465&#xA;0.609711&#xA;0.665561&#xA;0.730851&#xA;0.76383&#xA;0.811189&#xA;0.852636&#xA;0.91235&#xA;0.952344&#xA;1.00563&#xA;1.03574&#xA;1.04647&#xA;1.07625&#xA;1.08265&#xA;1.0942&#xA;1.11673&#xA;1.11786&#xA;1.1268&#xA;1.12985&#xA;1.21032&#xA;1.22682&#xA;1.23461&#xA;1.34402&#xA;1.38714&#xA;1.43808&#xA;1.51907" values="20274.5&#xA;19110.2&#xA;19100.9&#xA;19607.6&#xA;32202.4&#xA;35525.1&#xA;29364.3&#xA;22065.&#xA;13271.4&#xA;9847.43&#xA;6420.54&#xA;4502.2&#xA;2722.12&#xA;1895.55&#xA;1040.7&#xA;631.132&#xA;512.706&#xA;291.716&#xA;259.061&#xA;171.011&#xA;63.703&#xA;59.9124&#xA;45.6183&#xA;40.8012&#xA;11.558&#xA;10.1293&#xA;9.57754&#xA;5.64748&#xA;4.93579&#xA;4.33318&#xA;3.6802"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

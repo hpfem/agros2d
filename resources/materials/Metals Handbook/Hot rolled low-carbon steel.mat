@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Hot rolled low-carbon steel"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="595.803"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0554013&#xA;0.0608421&#xA;0.0826055&#xA;0.115245&#xA;0.137462&#xA;0.160126&#xA;0.170096&#xA;0.277011&#xA;0.406983&#xA;0.983365&#xA;1.24719&#xA;1.29171&#xA;1.3003&#xA;1.30304&#xA;1.31393&#xA;1.34392&#xA;1.36305&#xA;1.36807&#xA;1.54797&#xA;1.57141&#xA;1.62702&#xA;1.63123&#xA;1.63401&#xA;1.73422&#xA;1.86635&#xA;1.98761&#xA;2.02738&#xA;2.10143&#xA;2.12518&#xA;2.41397&#xA;2.46145&#xA;2.48983" values="595.803&#xA;810.701&#xA;872.057&#xA;1089.83&#xA;1356.74&#xA;1489.6&#xA;1613.88&#xA;1661.95&#xA;2111.82&#xA;2498.33&#xA;2936.72&#xA;2109.75&#xA;1909.94&#xA;1863.83&#xA;1848.5&#xA;1788.3&#xA;1632.12&#xA;1539.57&#xA;1513.54&#xA;724.424&#xA;642.639&#xA;458.007&#xA;445.126&#xA;436.724&#xA;226.545&#xA;114.349&#xA;63.3561&#xA;50.3774&#xA;30.753&#xA;26.34&#xA;7.36026&#xA;6.55659&#xA;6.16704"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

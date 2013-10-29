@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Malleable iron castings, as cast"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="1531.56"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.263534&#xA;0.283475&#xA;0.299335&#xA;0.42075&#xA;0.453817&#xA;0.673983&#xA;0.815848&#xA;0.883417&#xA;0.969303&#xA;1.05939&#xA;1.10827&#xA;1.19131&#xA;1.20929&#xA;1.28753&#xA;1.30583&#xA;1.35851&#xA;1.69126&#xA;1.78518&#xA;1.84438&#xA;1.85764&#xA;1.89125&#xA;2.07738&#xA;2.07984&#xA;2.11996&#xA;2.20194&#xA;2.21711&#xA;2.25362" values="1531.56&#xA;1754.87&#xA;1792.56&#xA;1816.13&#xA;1971.59&#xA;1998.8&#xA;1984.58&#xA;1780.28&#xA;1633.75&#xA;1286.78&#xA;968.494&#xA;790.003&#xA;516.178&#xA;467.463&#xA;284.225&#xA;254.524&#xA;184.165&#xA;34.7118&#xA;23.9479&#xA;19.2894&#xA;18.4462&#xA;16.4105&#xA;8.80696&#xA;8.72629&#xA;7.69038&#xA;6.16034&#xA;5.95022&#xA;5.50842"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

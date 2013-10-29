@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Vanadium Permendur"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="714.871"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.104111&#xA;0.123597&#xA;0.152143&#xA;0.176152&#xA;0.181134&#xA;0.198339&#xA;0.218569&#xA;0.225964&#xA;0.546427&#xA;0.857174&#xA;1.1988&#xA;1.48262&#xA;1.58098&#xA;1.75838&#xA;1.81527&#xA;1.81923&#xA;1.82742&#xA;2.0327&#xA;2.1362&#xA;2.25738&#xA;2.29868&#xA;2.31844&#xA;2.37676&#xA;2.41462&#xA;2.45202&#xA;2.58887&#xA;2.80731" values="714.871&#xA;935.314&#xA;1054.4&#xA;1207.27&#xA;1327.38&#xA;1350.91&#xA;1434.11&#xA;1532.24&#xA;1567.85&#xA;2815.71&#xA;3639.06&#xA;3702.86&#xA;3096.&#xA;2741.38&#xA;1995.45&#xA;1782.3&#xA;1767.8&#xA;1739.41&#xA;1083.82&#xA;800.97&#xA;493.765&#xA;396.096&#xA;349.096&#xA;184.15&#xA;84.0684&#xA;42.557&#xA;13.7434&#xA;6.9076"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

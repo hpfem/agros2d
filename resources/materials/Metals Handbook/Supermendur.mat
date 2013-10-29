@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Supermendur"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="4528.72"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0617566&#xA;0.0787847&#xA;0.0815547&#xA;0.0943943&#xA;0.119118&#xA;0.146751&#xA;0.570906&#xA;1.61546&#xA;1.93737&#xA;2.05621&#xA;2.0654&#xA;2.11176&#xA;2.14365&#xA;2.19574&#xA;2.23123&#xA;2.23674&#xA;2.27122&#xA;2.30602&#xA;2.3263&#xA;2.34291&#xA;2.34343&#xA;2.37419&#xA;2.3805&#xA;2.41164&#xA;2.44277&#xA;2.47089&#xA;2.47549&#xA;2.55664&#xA;2.80731" values="4528.72&#xA;5866.68&#xA;6960.62&#xA;7131.09&#xA;7918.94&#xA;9198.54&#xA;10540.7&#xA;27770.&#xA;63308.6&#xA;70135.9&#xA;46217.5&#xA;42725.6&#xA;27668.8&#xA;19530.2&#xA;9977.47&#xA;6032.72&#xA;5565.52&#xA;3293.39&#xA;1850.02&#xA;1284.16&#xA;937.299&#xA;927.821&#xA;488.59&#xA;419.209&#xA;158.284&#xA;56.7167&#xA;34.8377&#xA;32.7927&#xA;16.3632&#xA;6.9076"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="4750 alloy"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="14617.8"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0622676&#xA;0.0699801&#xA;0.0781449&#xA;0.108779&#xA;0.140252&#xA;0.589805&#xA;0.777016&#xA;0.796086&#xA;0.895488&#xA;1.01564&#xA;1.11306&#xA;1.15599&#xA;1.19261&#xA;1.27821&#xA;1.37143&#xA;1.47334&#xA;1.50096&#xA;1.51305&#xA;1.53748&#xA;1.53964&#xA;1.56167&#xA;1.57542&#xA;1.57922&#xA;1.60284&#xA;1.61321&#xA;1.62708&#xA;1.70197&#xA;1.73799&#xA;1.81436&#xA;1.91181&#xA;1.9277&#xA;1.94428" values="14617.8&#xA;18943.1&#xA;20424.2&#xA;21880.9&#xA;26343.9&#xA;30625.4&#xA;63874.2&#xA;59235.4&#xA;58231.&#xA;51103.9&#xA;38703.5&#xA;26056.4&#xA;20664.7&#xA;16448.8&#xA;7526.81&#xA;2687.02&#xA;688.82&#xA;435.214&#xA;334.89&#xA;180.578&#xA;166.409&#xA;61.6026&#xA;40.5858&#xA;37.0509&#xA;24.3051&#xA;21.1503&#xA;18.0643&#xA;10.3419&#xA;8.66857&#xA;6.55724&#xA;5.11165&#xA;4.94426&#xA;4.78435"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="3% Si strip, oriented"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="6518.57"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0524655&#xA;0.055392&#xA;0.0583185&#xA;0.0746602&#xA;0.0763245&#xA;0.0799044&#xA;0.108539&#xA;0.113929&#xA;0.241018&#xA;0.484593&#xA;0.992369&#xA;1.1024&#xA;1.1431&#xA;1.17354&#xA;1.19323&#xA;1.43401&#xA;1.54696&#xA;1.58223&#xA;1.66759&#xA;1.77401&#xA;1.78141&#xA;1.8129&#xA;1.85557&#xA;1.9143&#xA;1.92458&#xA;1.93628&#xA;1.95839&#xA;1.97251&#xA;2.00061&#xA;2.0817&#xA;2.09003&#xA;2.38061" values="6518.57&#xA;8466.54&#xA;8755.22&#xA;9028.47&#xA;10419.6&#xA;10541.9&#xA;10809.8&#xA;12568.7&#xA;12922.3&#xA;22708.1&#xA;37978.6&#xA;48515.1&#xA;45226.&#xA;43175.5&#xA;41661.&#xA;40224.9&#xA;22704.8&#xA;14587.4&#xA;12125.2&#xA;5990.91&#xA;1705.06&#xA;1559.43&#xA;984.298&#xA;540.33&#xA;235.441&#xA;202.562&#xA;167.298&#xA;114.027&#xA;84.0974&#xA;47.6685&#xA;18.8725&#xA;17.6186&#xA;5.82757"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

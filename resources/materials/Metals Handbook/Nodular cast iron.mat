@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Nodular cast iron"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="317.411"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.20812&#xA;0.233982&#xA;0.258027&#xA;0.335581&#xA;0.35735&#xA;0.373674&#xA;0.629522&#xA;0.872642&#xA;0.925464&#xA;1.05413&#xA;1.11179&#xA;1.36755&#xA;1.38203&#xA;1.42947&#xA;1.505&#xA;1.53591&#xA;1.58657&#xA;1.59214&#xA;1.64969&#xA;1.67453&#xA;1.70461&#xA;1.71017&#xA;1.77506&#xA;1.80245&#xA;1.85262&#xA;1.9451&#xA;2.00445&#xA;2.04526&#xA;2.07003" values="317.411&#xA;373.931&#xA;391.019&#xA;405.256&#xA;446.741&#xA;456.472&#xA;462.765&#xA;489.918&#xA;409.313&#xA;383.44&#xA;316.945&#xA;283.269&#xA;117.364&#xA;110.303&#xA;87.1233&#xA;58.7183&#xA;48.6928&#xA;34.616&#xA;33.3248&#xA;23.033&#xA;20.0082&#xA;16.7207&#xA;16.2608&#xA;11.9809&#xA;10.7407&#xA;8.96904&#xA;6.75373&#xA;5.7724&#xA;5.30878&#xA;5.0485"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

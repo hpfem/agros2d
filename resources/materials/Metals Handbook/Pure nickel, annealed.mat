@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Pure nickel, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="562.788"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0568555&#xA;0.0706788&#xA;0.0881783&#xA;0.0902456&#xA;0.0922626&#xA;0.224499&#xA;0.257443&#xA;0.26653&#xA;0.288314&#xA;0.333679&#xA;0.352664&#xA;0.404646&#xA;0.410247&#xA;0.433867&#xA;0.470015&#xA;0.490399&#xA;0.494892&#xA;0.508558&#xA;0.54638&#xA;0.586685&#xA;0.590509&#xA;0.603583&#xA;0.613213&#xA;0.625268&#xA;0.63207&#xA;0.643027&#xA;0.682933&#xA;0.694518&#xA;0.737378&#xA;0.767764&#xA;0.883664&#xA;0.981222&#xA;1.00946" values="562.788&#xA;711.857&#xA;814.473&#xA;925.594&#xA;937.523&#xA;948.592&#xA;1265.3&#xA;1229.19&#xA;1208.27&#xA;1118.68&#xA;881.891&#xA;765.24&#xA;378.629&#xA;346.004&#xA;204.541&#xA;117.599&#xA;93.6699&#xA;88.8186&#xA;78.9249&#xA;55.9791&#xA;35.0282&#xA;33.1264&#xA;27.5088&#xA;24.4181&#xA;18.8076&#xA;16.9591&#xA;14.1622&#xA;8.5822&#xA;7.62489&#xA;5.62735&#xA;4.75966&#xA;3.19116&#xA;2.62147&#xA;2.50797"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

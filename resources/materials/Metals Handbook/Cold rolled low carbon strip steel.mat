@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Cold rolled low carbon strip steel"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="960.789"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.258794&#xA;0.301805&#xA;0.336667&#xA;0.424952&#xA;0.747318&#xA;1.01138&#xA;1.20178&#xA;1.26803&#xA;1.38255&#xA;1.48443&#xA;1.55432&#xA;1.62759&#xA;1.73266&#xA;1.74218&#xA;1.77462&#xA;1.7804&#xA;1.90842&#xA;1.96005&#xA;2.0672&#xA;2.09364&#xA;2.1196&#xA;2.15169&#xA;2.17662&#xA;2.19136&#xA;2.20611&#xA;2.22942&#xA;2.2454&#xA;2.42436&#xA;2.48983" values="960.789&#xA;1248.66&#xA;1383.17&#xA;1480.77&#xA;1686.36&#xA;2069.33&#xA;1952.8&#xA;1616.56&#xA;1460.66&#xA;1131.77&#xA;754.311&#xA;538.153&#xA;368.343&#xA;219.388&#xA;209.447&#xA;178.864&#xA;173.95&#xA;92.1096&#xA;71.4938&#xA;38.812&#xA;32.6085&#xA;27.3851&#xA;22.3528&#xA;19.35&#xA;17.9282&#xA;16.4379&#xA;14.665&#xA;13.5919&#xA;7.16499&#xA;6.16704"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

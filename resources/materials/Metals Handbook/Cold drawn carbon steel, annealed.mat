@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Cold drawn carbon steel, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="720.154"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0909462&#xA;0.107282&#xA;0.10955&#xA;0.121354&#xA;0.123622&#xA;0.159001&#xA;0.182122&#xA;0.198888&#xA;0.321168&#xA;0.335205&#xA;0.366147&#xA;0.638577&#xA;0.806146&#xA;0.996869&#xA;1.05445&#xA;1.23893&#xA;1.28428&#xA;1.31064&#xA;1.44759&#xA;1.52723&#xA;1.56957&#xA;1.59127&#xA;1.61392&#xA;1.66373&#xA;1.66885&#xA;1.67074&#xA;1.76415&#xA;1.78135&#xA;1.93194&#xA;2.08938&#xA;2.1027&#xA;2.13362&#xA;2.19673&#xA;2.24345&#xA;2.47092" values="720.154&#xA;878.586&#xA;953.913&#xA;964.035&#xA;1003.5&#xA;1011.71&#xA;1125.57&#xA;1199.07&#xA;1256.41&#xA;1650.55&#xA;1687.57&#xA;1768.92&#xA;2173.87&#xA;2165.24&#xA;1985.37&#xA;1913.87&#xA;1616.11&#xA;1510.73&#xA;1449.&#xA;993.865&#xA;707.134&#xA;566.605&#xA;507.22&#xA;449.555&#xA;346.634&#xA;337.049&#xA;333.949&#xA;205.63&#xA;189.134&#xA;85.8271&#xA;32.8806&#xA;29.8266&#xA;23.8342&#xA;16.1966&#xA;12.4947&#xA;6.11886"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

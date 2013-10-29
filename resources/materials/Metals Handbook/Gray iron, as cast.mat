@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Gray iron, as cast"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="152.445"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.20728&#xA;0.220928&#xA;0.242781&#xA;0.261904&#xA;0.294699&#xA;0.349395&#xA;0.409642&#xA;0.467238&#xA;0.560739&#xA;0.69483&#xA;0.710111&#xA;0.793733&#xA;0.869639&#xA;0.957596&#xA;1.02948&#xA;1.0947&#xA;1.12244&#xA;1.3179&#xA;1.34932&#xA;1.35581&#xA;1.41015&#xA;1.48712&#xA;1.54342&#xA;1.60151&#xA;1.68446&#xA;1.88558&#xA;1.95607&#xA;2.00087&#xA;2.0565" values="152.445&#xA;181.817&#xA;185.929&#xA;188.065&#xA;190.665&#xA;191.44&#xA;188.374&#xA;179.535&#xA;168.204&#xA;146.427&#xA;115.04&#xA;111.638&#xA;94.3481&#xA;79.7902&#xA;65.7433&#xA;55.7&#xA;48.6505&#xA;45.9188&#xA;30.5073&#xA;28.4551&#xA;28.0057&#xA;24.938&#xA;20.9401&#xA;18.4135&#xA;15.8546&#xA;12.7359&#xA;7.49199&#xA;6.31453&#xA;5.64305&#xA;5.0146"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="416 stainless steel, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="404.061"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.20779&#xA;0.223649&#xA;0.250841&#xA;0.261717&#xA;0.283469&#xA;0.288908&#xA;0.412188&#xA;0.625661&#xA;0.680059&#xA;0.782523&#xA;0.800209&#xA;0.958165&#xA;1.0768&#xA;1.11005&#xA;1.20557&#xA;1.23858&#xA;1.37265&#xA;1.42756&#xA;1.54227&#xA;1.55809&#xA;1.56207&#xA;1.63342&#xA;1.6754&#xA;1.6932&#xA;1.71391&#xA;1.73831&#xA;1.76404&#xA;1.8508&#xA;1.877&#xA;2.02162&#xA;2.04033&#xA;2.07654" values="404.061&#xA;515.234&#xA;537.644&#xA;572.669&#xA;585.285&#xA;608.272&#xA;613.577&#xA;697.519&#xA;753.313&#xA;753.983&#xA;743.27&#xA;736.893&#xA;654.024&#xA;567.638&#xA;533.123&#xA;420.012&#xA;377.132&#xA;219.783&#xA;167.459&#xA;101.226&#xA;94.1257&#xA;92.4272&#xA;60.5938&#xA;44.1243&#xA;37.3764&#xA;30.4194&#xA;23.5498&#xA;18.2406&#xA;10.2595&#xA;9.08963&#xA;5.76256&#xA;5.52146&#xA;5.11788"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

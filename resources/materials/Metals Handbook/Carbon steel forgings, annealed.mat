@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Carbon steel forgings, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="593.478"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.227501&#xA;0.254705&#xA;0.283269&#xA;0.32905&#xA;0.652542&#xA;0.667492&#xA;0.981137&#xA;1.14223&#xA;1.27864&#xA;1.40936&#xA;1.62831&#xA;1.70788&#xA;1.72674&#xA;1.83153&#xA;1.88204&#xA;1.89012&#xA;1.89418&#xA;1.95475&#xA;2.01106&#xA;2.01994&#xA;2.02482&#xA;2.0648&#xA;2.08527&#xA;2.08621&#xA;2.09044&#xA;2.09891&#xA;2.14585&#xA;2.41304" values="593.478&#xA;694.596&#xA;723.335&#xA;748.267&#xA;783.832&#xA;957.491&#xA;959.455&#xA;905.472&#xA;781.383&#xA;648.15&#xA;523.876&#xA;275.467&#xA;203.116&#xA;189.017&#xA;121.894&#xA;97.6598&#xA;94.0932&#xA;92.3594&#xA;67.6851&#xA;44.5628&#xA;41.1915&#xA;39.6107&#xA;27.5047&#xA;23.2807&#xA;23.0503&#xA;22.3884&#xA;20.9024&#xA;14.8549&#xA;5.90934"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

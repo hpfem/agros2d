@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Mumetal"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="66525.6"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0799669&#xA;0.0810447&#xA;0.0930019&#xA;0.0940798&#xA;0.101793&#xA;0.115682&#xA;0.222653&#xA;0.238522&#xA;0.391931&#xA;0.479726&#xA;0.55605&#xA;0.561305&#xA;0.56268&#xA;0.590755&#xA;0.596264&#xA;0.607734&#xA;0.623298&#xA;0.630332&#xA;0.633131&#xA;0.644635&#xA;0.663965&#xA;0.681333&#xA;0.681565&#xA;0.746855&#xA;0.910524&#xA;1.07038" values="66525.6&#xA;73973.7&#xA;74196.7&#xA;75957.3&#xA;76044.3&#xA;76513.6&#xA;76771.7&#xA;75294.4&#xA;75016.4&#xA;59664.3&#xA;36062.9&#xA;13761.7&#xA;12521.4&#xA;12167.&#xA;7215.25&#xA;6429.15&#xA;5107.08&#xA;3316.34&#xA;2430.3&#xA;2154.94&#xA;1140.23&#xA;129.751&#xA;31.4053&#xA;31.0914&#xA;8.91639&#xA;3.68875&#xA;2.63367"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="M-19"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="1486.67"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0562402&#xA;0.0657631&#xA;0.092969&#xA;0.0984074&#xA;0.360654&#xA;0.44035&#xA;0.656814&#xA;0.924511&#xA;0.947167&#xA;1.14483&#xA;1.24066&#xA;1.24885&#xA;1.32261&#xA;1.3564&#xA;1.43144&#xA;1.44729&#xA;1.5568&#xA;1.59953&#xA;1.72072&#xA;1.84447&#xA;1.85998&#xA;1.88199&#xA;1.88625&#xA;1.97732&#xA;1.99219&#xA;2.01129&#xA;2.03816&#xA;2.08589&#xA;2.16458&#xA;2.33025&#xA;2.33439&#xA;2.34278" values="1486.67&#xA;1970.12&#xA;2210.18&#xA;2787.93&#xA;2890.53&#xA;5938.33&#xA;6274.86&#xA;6322.28&#xA;5200.66&#xA;5059.73&#xA;3497.48&#xA;2504.03&#xA;2418.17&#xA;1709.14&#xA;1409.71&#xA;749.971&#xA;642.232&#xA;247.236&#xA;196.&#xA;117.989&#xA;73.7739&#xA;69.1864&#xA;63.1098&#xA;61.9542&#xA;35.5738&#xA;30.67&#xA;24.8943&#xA;19.4558&#xA;13.697&#xA;9.37951&#xA;5.88218&#xA;5.83171&#xA;5.73251"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

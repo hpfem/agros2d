@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="M-50"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="729.678"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.170911&#xA;0.177249&#xA;0.20487&#xA;0.212115&#xA;0.253777&#xA;0.275513&#xA;0.282755&#xA;0.328941&#xA;0.405909&#xA;0.424924&#xA;0.771689&#xA;0.858155&#xA;1.2092&#xA;1.33438&#xA;1.3589&#xA;1.51368&#xA;1.60909&#xA;1.64417&#xA;1.66552&#xA;1.69157&#xA;1.73858&#xA;1.79572&#xA;1.82437&#xA;1.93984&#xA;1.9929&#xA;2.00005&#xA;2.01811&#xA;2.07161&#xA;2.08962&#xA;2.20335&#xA;2.30633&#xA;2.48983" values="729.678&#xA;982.941&#xA;1008.92&#xA;1119.05&#xA;1146.74&#xA;1289.7&#xA;1357.53&#xA;1378.93&#xA;1508.03&#xA;1696.32&#xA;1739.63&#xA;2274.94&#xA;2330.44&#xA;2002.5&#xA;1706.76&#xA;1633.54&#xA;997.751&#xA;638.141&#xA;524.418&#xA;464.22&#xA;399.375&#xA;297.585&#xA;211.579&#xA;176.496&#xA;87.0871&#xA;62.8709&#xA;59.9063&#xA;53.3691&#xA;37.7024&#xA;33.2283&#xA;16.7621&#xA;10.3287&#xA;6.16704"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

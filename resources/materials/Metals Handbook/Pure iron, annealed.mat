@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Pure iron, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="2256.47"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0587638&#xA;0.104955&#xA;0.110389&#xA;0.121257&#xA;0.186614&#xA;0.229022&#xA;0.472731&#xA;0.951703&#xA;1.19155&#xA;1.31114&#xA;1.3273&#xA;1.36277&#xA;1.44303&#xA;1.46755&#xA;1.51931&#xA;1.52612&#xA;1.59759&#xA;1.60673&#xA;1.6691&#xA;1.69186&#xA;1.74246&#xA;1.78154&#xA;1.81997&#xA;1.87018&#xA;1.93612&#xA;2.02556&#xA;2.10864&#xA;2.15167&#xA;2.17229&#xA;2.28469&#xA;2.29642&#xA;2.41177&#xA;2.42539&#xA;2.5009&#xA;2.56277" values="2256.47&#xA;2870.6&#xA;4671.86&#xA;4863.28&#xA;5232.9&#xA;7114.74&#xA;8123.17&#xA;11810.8&#xA;12170.6&#xA;10296.&#xA;8841.28&#xA;8587.4&#xA;7950.&#xA;6498.63&#xA;5958.25&#xA;4962.16&#xA;4831.77&#xA;3106.26&#xA;2875.16&#xA;1328.9&#xA;936.571&#xA;539.334&#xA;356.556&#xA;258.615&#xA;186.754&#xA;131.721&#xA;90.0845&#xA;60.6626&#xA;47.2632&#xA;41.262&#xA;17.0386&#xA;15.7596&#xA;9.44423&#xA;9.01657&#xA;7.32106&#xA;6.35343"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

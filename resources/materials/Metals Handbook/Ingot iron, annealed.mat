@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Ingot iron, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="851.814"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0729849&#xA;0.0838535&#xA;0.146352&#xA;0.162654&#xA;0.168088&#xA;0.220619&#xA;0.335614&#xA;0.374549&#xA;0.390844&#xA;0.521226&#xA;0.784697&#xA;1.01289&#xA;1.35808&#xA;1.45206&#xA;1.47978&#xA;1.63601&#xA;1.65811&#xA;1.70837&#xA;1.80395&#xA;1.8463&#xA;1.90508&#xA;1.96447&#xA;1.97384&#xA;2.0275&#xA;2.04971&#xA;2.19135&#xA;2.2013&#xA;2.29524&#xA;2.43828&#xA;2.48192&#xA;2.51411" values="851.814&#xA;1172.95&#xA;1320.08&#xA;2035.39&#xA;2193.1&#xA;2243.09&#xA;2682.9&#xA;3460.93&#xA;3668.57&#xA;3750.17&#xA;4241.73&#xA;4690.24&#xA;4491.27&#xA;3309.49&#xA;2593.65&#xA;2286.04&#xA;597.244&#xA;486.755&#xA;334.597&#xA;191.585&#xA;156.084&#xA;117.993&#xA;89.1399&#xA;85.041&#xA;65.3344&#xA;57.7159&#xA;23.0138&#xA;21.497&#xA;12.3976&#xA;7.43655&#xA;6.68218&#xA;6.2291"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

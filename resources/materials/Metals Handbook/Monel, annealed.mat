@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Monel, annealed"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="229.919"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0638555&#xA;0.0656727&#xA;0.0693074&#xA;0.100866&#xA;0.110425&#xA;0.11257&#xA;0.113651&#xA;0.120959&#xA;0.124297&#xA;0.135377&#xA;0.141552&#xA;0.145054&#xA;0.15089&#xA;0.156991&#xA;0.17435&#xA;0.186621&#xA;0.192838&#xA;0.209085&#xA;0.214454&#xA;0.215241&#xA;0.231448&#xA;0.240394&#xA;0.248304&#xA;0.266729&#xA;0.291368&#xA;0.297763&#xA;0.327254&#xA;0.393108&#xA;0.491903&#xA;0.516574&#xA;0.580179&#xA;0.616668" values="229.919&#xA;301.025&#xA;306.398&#xA;316.719&#xA;382.442&#xA;389.354&#xA;388.762&#xA;388.442&#xA;380.474&#xA;375.071&#xA;349.589&#xA;309.566&#xA;282.969&#xA;224.675&#xA;144.942&#xA;89.9682&#xA;62.2491&#xA;52.2553&#xA;32.6691&#xA;25.0494&#xA;23.1358&#xA;9.26972&#xA;7.12283&#xA;5.97656&#xA;4.46252&#xA;3.45954&#xA;3.28742&#xA;2.72908&#xA;2.11884&#xA;1.7315&#xA;1.67329&#xA;1.5587&#xA;1.50901"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

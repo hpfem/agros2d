@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="78 Permalloy"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="36847.9"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.105919&#xA;0.13779&#xA;0.139466&#xA;0.160259&#xA;0.176071&#xA;0.233848&#xA;0.270636&#xA;0.332309&#xA;0.44884&#xA;0.488669&#xA;0.566184&#xA;0.643289&#xA;0.677525&#xA;0.692643&#xA;0.76613&#xA;0.84664&#xA;0.926397&#xA;0.932536&#xA;0.953461&#xA;1.03084&#xA;1.03969&#xA;1.04494&#xA;1.05992&#xA;1.07109&#xA;1.09063&#xA;1.09865&#xA;1.12627&#xA;1.15353&#xA;1.16625&#xA;1.19929&#xA;1.22401&#xA;1.23138&#xA;1.49166" values="36847.9&#xA;40851.&#xA;43273.7&#xA;43348.1&#xA;44441.4&#xA;45409.2&#xA;50579.&#xA;53890.&#xA;58455.7&#xA;64227.7&#xA;64379.4&#xA;58180.2&#xA;41883.7&#xA;34749.&#xA;31365.2&#xA;19606.5&#xA;11269.1&#xA;6088.4&#xA;5758.68&#xA;4637.36&#xA;1616.69&#xA;1380.93&#xA;1212.6&#xA;900.702&#xA;632.745&#xA;134.172&#xA;69.5041&#xA;26.2741&#xA;16.512&#xA;14.1369&#xA;10.644&#xA;8.91692&#xA;8.51649&#xA;3.68894"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

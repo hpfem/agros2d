@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Soft magnetic ferrite (Fe-Ni-Zn-V)"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="1000.74"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.0688508&#xA;0.0792314&#xA;0.0966298&#xA;0.104285&#xA;0.11792&#xA;0.123374&#xA;0.150912&#xA;0.191749&#xA;0.202635&#xA;0.239024&#xA;0.243936&#xA;0.245556&#xA;0.267244&#xA;0.290565&#xA;0.29619&#xA;0.312896&#xA;0.313356&#xA;0.335942&#xA;0.364839&#xA;0.368482&#xA;0.376766&#xA;0.477117&#xA;0.494881&#xA;0.66699&#xA;0.828539&#xA;0.83272" values="1000.74&#xA;1227.5&#xA;1313.63&#xA;1414.55&#xA;1449.46&#xA;1477.43&#xA;1482.93&#xA;1443.69&#xA;1186.19&#xA;1072.71&#xA;678.603&#xA;630.742&#xA;615.453&#xA;437.55&#xA;298.12&#xA;271.083&#xA;183.209&#xA;181.582&#xA;109.948&#xA;50.9424&#xA;45.8948&#xA;35.4482&#xA;6.17034&#xA;5.36388&#xA;2.69423&#xA;2.05381&#xA;2.04303"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Perminvar (45% Ni - 25% Co)"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="p. 792, Metals Handbook, 8th edition, Volume 1, American Society for Metals, 1966." unit="-">
+      <material:constant value="478.286"/>
+      <material:nonlinearity>
+<material:table keys="0&#xA;0.059488&#xA;0.0636662&#xA;0.0691549&#xA;0.117075&#xA;0.287901&#xA;0.607725&#xA;0.930668&#xA;0.95212&#xA;1.04503&#xA;1.15387&#xA;1.38403&#xA;1.43377&#xA;1.47665&#xA;1.48992&#xA;1.51597&#xA;1.5174&#xA;1.52944&#xA;1.54051&#xA;1.55195&#xA;1.58428&#xA;1.58509&#xA;1.58842&#xA;1.67503&#xA;1.68386&#xA;1.68937&#xA;1.77631&#xA;1.81802&#xA;1.8447&#xA;1.91302" values="478.286&#xA;448.319&#xA;444.985&#xA;444.812&#xA;512.964&#xA;935.161&#xA;1678.08&#xA;1793.1&#xA;1760.19&#xA;1587.56&#xA;1298.5&#xA;673.061&#xA;516.131&#xA;322.956&#xA;262.008&#xA;99.3527&#xA;91.5126&#xA;59.6184&#xA;42.1759&#xA;34.1597&#xA;20.5259&#xA;20.3241&#xA;19.5375&#xA;10.1636&#xA;9.69989&#xA;9.43301&#xA;6.68251&#xA;5.91338&#xA;5.52152&#xA;4.75493"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>
