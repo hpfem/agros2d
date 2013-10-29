@@ -221,6 +221,12 @@ public:
 
     QList<LinearityType> availableLinearityTypes() const {return m_availableLinearityTypes;}
 
+    void createValuePointerTable();
+    // todo:
+    void deleteValuePointerTable() {}
+
+    Value** valuePointerTable(QString id);
+
 signals:
     void changed();
 
@@ -263,6 +269,9 @@ private:
 
     void setDefaultValues();
     void setStringKeys();
+
+    // for speed optimisations
+    QMap<QString, Value**> m_valuePointersTable;
 
     // help functions extracting parts of xml
 };

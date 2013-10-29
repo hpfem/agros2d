@@ -330,6 +330,7 @@ void WeakFormAgros<Scalar>::registerForms()
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
+        fieldInfo->createValuePointerTable();
 
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Agros2D::scene()->edges->count(); edgeNum++)

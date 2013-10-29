@@ -81,6 +81,36 @@ FieldInfo::~FieldInfo()
     delete m_plugin;
 }
 
+void FieldInfo::createValuePointerTable()
+{
+    if(m_valuePointersTable.empty());
+    int labelsSize = Agros2D::scene()->labels->length();
+    for(int labelNum = 0; labelNum < labelsSize; labelNum++)
+    {
+        SceneMaterial* material = Agros2D::scene()->labels->at(labelNum)->marker(this);
+        QList<QString> keys = material->values().keys();
+        foreach(QString key, keys)
+        {
+            if(! m_valuePointersTable.contains(key))
+            {
+                m_valuePointersTable[key] = new Value*[labelsSize];
+                for(int i = 0; i < labelsSize; i++)
+                    m_valuePointersTable[key][i] = nullptr;
+            }
+
+            assert(m_valuePointersTable[key][labelNum] == nullptr);
+            m_valuePointersTable[key][labelNum] = &material->value(key);
+        }
+    }
+}
+
+Value** FieldInfo::valuePointerTable(QString id)
+{
+    assert(m_valuePointersTable.contains(id));
+
+    return m_valuePointersTable[id];
+}
+
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
 {
     clearInitialMesh();

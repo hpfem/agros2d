@@ -52,7 +52,6 @@ public:
     }
 
     virtual void init() {}
-    void getLabelValuesPointers(QString id);
 
 protected:
     Value** m_valuesPointers;
