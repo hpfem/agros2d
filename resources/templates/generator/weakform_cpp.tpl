@@ -43,7 +43,7 @@
 
 void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 {
-    int labelIndex = atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str());
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
     Value* value = m_valuesPointers[labelIndex];
 
     for(int i = 0; i < n; i++)

@@ -195,11 +195,8 @@ QString {{CLASS}}Interface::localeDescription()
     m_boundHi = {{TO}};
     m_variant = "{{SELECTED_VARIANT}}";
 
-    createConversion();
-
-{{#PARAMETERS}}    {{PARAMETER_NAME}}_pointers = createValuePointers("{{PARAMETER_ID}}");
+{{#PARAMETERS}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
 {{/PARAMETERS}}
-
     init();
 }
 
@@ -212,7 +209,7 @@ QString {{CLASS}}Interface::localeDescription()
 
 double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, double h) const
 {
-{{#PARAMETERS}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[m_conversion[hermesMarker]]->numberFromTable(h);
+{{#PARAMETERS}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker)]->numberFromTable(h);
 {{/PARAMETERS}}
     double area = m_fieldInfo->initialMesh()->get_marker_area(hermesMarker);
     if(m_useTable)

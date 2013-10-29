@@ -226,6 +226,7 @@ public:
     void deleteValuePointerTable() {}
 
     Value** valuePointerTable(QString id);
+    int hermesMarkerToAgrosLabel(int hermesMarker);
 
 signals:
     void changed();
@@ -271,7 +272,10 @@ private:
     void setStringKeys();
 
     // for speed optimisations
+    // todo: delete somewhere!!!
     QMap<QString, Value**> m_valuePointersTable;
+    int* m_hermesMarkerToAgrosLabelConversion;
+
 
     // help functions extracting parts of xml
 };

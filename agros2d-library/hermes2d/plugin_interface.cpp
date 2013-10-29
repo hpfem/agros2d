@@ -6,7 +6,7 @@ AgrosExtFunction::~AgrosExtFunction()
 {
 }
 
-AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, offsetI), m_type(type), m_count(count), m_conversion(nullptr)
+AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, offsetI), m_type(type), m_count(count)
 {
     if((type == SpecialFunctionType_Constant) || (count > 0))
         m_useTable = true;
@@ -32,37 +32,6 @@ void AgrosSpecialExtFunction::init()
         }
     }
 
-}
-
-void AgrosSpecialExtFunction::createConversion()
-{
-    assert(!m_conversion);
-
-    int num = Agros2D::scene()->labels->count();
-    m_conversion = new int[num+1];
-    for(int i = 0; i < num+1; i++)
-        m_conversion[i] = -10000;
-
-    for(int labelIndex = 0; labelIndex < num; labelIndex++)
-    {
-        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid intValid = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
-        assert(intValid.valid);
-        assert(intValid.marker <= num);
-        assert(m_conversion[intValid.marker] == -10000);
-        m_conversion[intValid.marker] = labelIndex;
-    }
-}
-
-Value** AgrosSpecialExtFunction::createValuePointers(QString id)
-{
-    int num = Agros2D::scene()->labels->count();
-    Value** valuePointers = new Value*[num];
-    for(int i = 0; i < num; i++)
-    {
-        valuePointers[i] = &Agros2D::scene()->labels->at(i)->marker(m_fieldInfo)->value(id);
-    }
-
-    return valuePointers;
 }
 
 void AgrosSpecialExtFunction::createOneTable(int hermesMarker)

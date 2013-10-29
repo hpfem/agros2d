@@ -48,7 +48,7 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
-    : m_plugin(NULL), m_numberOfSolutions(0)
+    : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr)
 {
     assert(!fieldId.isEmpty());
     m_fieldId = fieldId;
@@ -79,27 +79,55 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 FieldInfo::~FieldInfo()
 {
     delete m_plugin;
+
+    if(m_hermesMarkerToAgrosLabelConversion)
+        delete[] m_hermesMarkerToAgrosLabelConversion;
 }
 
 void FieldInfo::createValuePointerTable()
 {
+    // first create hermes marker to agros label conversion
+    assert(!m_hermesMarkerToAgrosLabelConversion);
+
+    int num = Agros2D::scene()->labels->count();
+    m_hermesMarkerToAgrosLabelConversion = new int[num+1];
+    for(int i = 0; i < num+1; i++)
+        m_hermesMarkerToAgrosLabelConversion[i] = -10000;
+
+    for(int labelIndex = 0; labelIndex < num; labelIndex++)
+    {
+        if(!Agros2D::scene()->labels->at(labelIndex)->marker(this)->isNone())
+        {
+            Hermes::Hermes2D::Mesh::MarkersConversion::IntValid intValid = initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
+            assert(intValid.valid);
+            assert(intValid.marker <= num);
+            assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == -10000);
+            m_hermesMarkerToAgrosLabelConversion[intValid.marker] = labelIndex;
+        }
+    }
+
+
+    // values tables
     if(m_valuePointersTable.empty());
     int labelsSize = Agros2D::scene()->labels->length();
     for(int labelNum = 0; labelNum < labelsSize; labelNum++)
     {
         SceneMaterial* material = Agros2D::scene()->labels->at(labelNum)->marker(this);
-        QList<QString> keys = material->values().keys();
-        foreach(QString key, keys)
+        if(!material->isNone())
         {
-            if(! m_valuePointersTable.contains(key))
+            QList<QString> keys = material->values().keys();
+            foreach(QString key, keys)
             {
-                m_valuePointersTable[key] = new Value*[labelsSize];
-                for(int i = 0; i < labelsSize; i++)
-                    m_valuePointersTable[key][i] = nullptr;
-            }
+                if(! m_valuePointersTable.contains(key))
+                {
+                    m_valuePointersTable[key] = new Value*[labelsSize];
+                    for(int i = 0; i < labelsSize; i++)
+                        m_valuePointersTable[key][i] = nullptr;
+                }
 
-            assert(m_valuePointersTable[key][labelNum] == nullptr);
-            m_valuePointersTable[key][labelNum] = &material->value(key);
+                assert(m_valuePointersTable[key][labelNum] == nullptr);
+                m_valuePointersTable[key][labelNum] = &material->value(key);
+            }
         }
     }
 }
@@ -109,6 +137,12 @@ Value** FieldInfo::valuePointerTable(QString id)
     assert(m_valuePointersTable.contains(id));
 
     return m_valuePointersTable[id];
+}
+
+int FieldInfo::hermesMarkerToAgrosLabel(int hermesMarker)
+{
+    assert(m_hermesMarkerToAgrosLabelConversion);
+    return m_hermesMarkerToAgrosLabelConversion[hermesMarker];
 }
 
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
