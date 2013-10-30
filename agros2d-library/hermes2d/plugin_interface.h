@@ -114,7 +114,6 @@ protected:
     QMap<int , AgrosSpecialExtFunctionOneMaterial> m_data;
     bool m_useTable;
 
-private:
     double valueFromTable(int hermesMarker, double h) const;
 };
 
