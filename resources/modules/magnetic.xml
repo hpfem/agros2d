@@ -439,6 +439,8 @@
         <module:calculator id="energy" name="Energy">
             <module:expression analysistype="steadystate" axi="2.0 * PI * r * 0.5 / (ma_mur * MU0) * (udr * vdr + udz * vdz)"
                                                           planar="0.5 / (ma_mur * MU0) * (udx * vdx + udy * vdy)"/>
+            <module:expression analysistype="harmonic" axi="2.0 * PI * r * 0.25 / (ma_mur * MU0) * (udr * vdr + udz * vdz)"
+                                                          planar="0.25 / (ma_mur * MU0) * (udx * vdx + udy * vdy)"/>
         </module:calculator>
   </module:error_calculator>
 
