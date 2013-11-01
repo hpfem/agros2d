@@ -49,6 +49,7 @@ Value::Value(const QString &value)
     : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
 {
     parseFromString(value.isEmpty() ? "0" : value);
+    evaluateAndSave();
 }
 
 Value::Value(const QString &value, std::vector<double> x, std::vector<double> y, DataTableType type, bool splineFirstDerivatives, bool extrapolateConstant)
@@ -61,6 +62,7 @@ Value::Value(const QString &value, std::vector<double> x, std::vector<double> y,
     m_table.setType(type);
     m_table.setSplineFirstDerivatives(splineFirstDerivatives);
     m_table.setExtrapolateConstant(extrapolateConstant);
+    evaluateAndSave();
 }
 
 Value::Value(const QString &value, const DataTable &table)
@@ -69,19 +71,25 @@ Value::Value(const QString &value, const DataTable &table)
     parseFromString(value.isEmpty() ? "0" : value);
 }
 
-//Value::Value(const Value &origin)
-//{
-//    m_isEvaluated = false;
+Value::Value(const Value &origin)
+{
+    *this = origin;
+    evaluateAndSave();
+//    qDebug() << "Copy Value" << this->m_text << ", " << this->m_number;
+}
 
-//    m_number = origin.m_number;
-//    m_text = origin.m_text;
-//    m_time = origin.m_time;
-//    m_point = origin.m_point;
-//    m_isTimeDependent = origin.m_isTimeDependent;
-//    m_isCoordinateDependent = origin.m_isTimeDependent;
+Value& Value::operator =(const Value &origin)
+{
+    m_text = origin.m_text;
+    m_time = origin.m_time;
+    m_point = origin.m_point;
+    m_isTimeDependent = origin.m_isTimeDependent;
+    m_isCoordinateDependent = origin.m_isCoordinateDependent;
+    m_table = origin.m_table;
 
-//    m_table = DataTable(origin.m_table);
-//}
+    evaluateAndSave();
+//    qDebug() << "operator= Value" << this->m_text << ", " << this->m_number;
+}
 
 Value::~Value()
 {
@@ -112,47 +120,60 @@ bool Value::hasTable() const
 bool Value::evaluateAtPoint(const Point &point)
 {
     m_point = point;
-    return evaluate();
+    return evaluateAndSave();
 }
 
 bool Value::evaluateAtTime(double time)
 {
     m_time = time;
-    return evaluate();
+    return evaluateAndSave();
 }
 
 bool Value::evaluateAtTimeAndPoint(double time, const Point &point)
 {
     m_time = time;
     m_point = point;
-    return evaluate();
+    return evaluateAndSave();
 }
 
-double Value::numberAtPoint(const Point &point, bool evaluate)
+double Value::number() const
 {
-    // force evaluate
-    if (evaluate)
-        evaluateAtPoint(point);
-
-    return number();
+    if(!m_isEvaluated)
+    {
+        qDebug() << "not evaluated " << m_number << m_text;
+    }
+    assert(m_isEvaluated);
+    return m_number;
 }
 
-double Value::numberAtTime(double time, bool evaluate)
+double Value::numberAtPoint(const Point &point) const
 {
-    // force evaluate
-    if (evaluate)
-        evaluateAtTime(time);
+    double result;
 
-    return number();
+    // force evaluate
+    evaluate(0, point, result);
+
+    return result;
 }
 
-double Value::numberAtTimeAndPoint(double time, const Point &point, bool evaluate)
+double Value::numberAtTime(double time) const
 {
-    // force evaluate
-    if (evaluate)
-        evaluateAtTimeAndPoint(time, point);
+    double result;
 
-    return number();
+    // force evaluate
+    evaluate(time, Point(), result);
+
+    return result;
+}
+
+double Value::numberAtTimeAndPoint(double time, const Point &point) const
+{
+    double result;
+
+    // force evaluate
+    evaluate(time, point, result);
+
+    return result;
 }
 
 double Value::numberFromTable(double key) const
@@ -221,7 +242,7 @@ void Value::setText(const QString &str)
         }
     }
 
-    evaluate();
+    evaluateAndSave();
 }
 
 QString Value::toString() const
@@ -259,22 +280,26 @@ void Value::parseFromString(const QString &str)
     }
 }
 
-bool Value::evaluate()
+bool Value::evaluate(double time, const Point &point, double& result) const
 {
-    return evaluateExpression(m_text);
+    return evaluateExpression(m_text, time, point, result);
 }
 
-bool Value::evaluateExpression(const QString &expression)
+bool Value::evaluateAndSave()
 {
     m_isEvaluated = false;
+    m_isEvaluated = evaluateExpression(m_text, m_time, m_point, m_number);
+    return m_isEvaluated;
+}
 
+bool Value::evaluateExpression(const QString &expression, double time, const Point &point, double &evaluationResult) const
+{
     // speed up - int number
     bool isInt = false;
     double numInt = expression.toInt(&isInt);
     if (isInt)
     {
-        m_number = numInt;
-        m_isEvaluated = true;
+        evaluationResult = numInt;
         return true;
     }
 
@@ -283,8 +308,7 @@ bool Value::evaluateExpression(const QString &expression)
     double numDouble = expression.toDouble(&isDouble);
     if (isDouble)
     {
-        m_number = numDouble;
-        m_isEvaluated = true;
+        evaluationResult = numDouble;
         return true;
     }
 
@@ -296,26 +320,26 @@ bool Value::evaluateExpression(const QString &expression)
     if (m_isCoordinateDependent && !m_isTimeDependent)
     {
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-            command = QString("x = %1; y = %2").arg(m_point.x).arg(m_point.y);
+            command = QString("x = %1; y = %2").arg(point.x).arg(point.y);
         else
-            command = QString("r = %1; z = %2").arg(m_point.x).arg(m_point.y);
+            command = QString("r = %1; z = %2").arg(point.x).arg(point.y);
     }
 
     if (m_isTimeDependent && !m_isCoordinateDependent)
     {
-        command = QString("time = %1").arg(m_time);
+        command = QString("time = %1").arg(time);
     }
 
     if (m_isCoordinateDependent && m_isTimeDependent)
     {
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-            command = QString("time = %1; x = %2; y = %3").arg(m_time).arg(m_point.x).arg(m_point.y);
+            command = QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y);
         else
-            command = QString("time = %1; r = %2; z = %3").arg(m_time).arg(m_point.x).arg(m_point.y);
+            command = QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y);
     }
 
     // eval expression
-    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &m_number, command);
+    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &evaluationResult, command);
     if (!successfulRun)
     {
         ErrorResult result = currentPythonEngineAgros()->parseError();
@@ -324,6 +348,5 @@ bool Value::evaluateExpression(const QString &expression)
     if (!signalBlocked)
         currentPythonEngineAgros()->blockSignals(false);
 
-    m_isEvaluated = successfulRun;
-    return m_isEvaluated;
+    return successfulRun;
 }

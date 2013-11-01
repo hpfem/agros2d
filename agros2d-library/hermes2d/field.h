@@ -177,6 +177,10 @@ public:
 
     // material type
     QList<Module::MaterialTypeVariable> materialTypeVariables() const;
+
+    // list of all volume quantities
+    QList<QString>  allMaterialQuantities() const;
+
     // variable by name
     bool materialTypeVariableContains(const QString &id) const;
     Module::MaterialTypeVariable materialTypeVariable(const QString &id) const;
@@ -224,7 +228,7 @@ public:
     void createValuePointerTable();
     void deleteValuePointerTable();
 
-    Value** valuePointerTable(QString id);
+    const Value** valuePointerTable(QString id) const;
     int hermesMarkerToAgrosLabel(int hermesMarker);
     double labelArea(int agrosLabel);
 
@@ -272,7 +276,7 @@ private:
     void setStringKeys();
 
     // for speed optimisations
-    QMap<QString, Value**> m_valuePointersTable;
+    QMap<QString, const Value**> m_valuePointersTable;
     int* m_hermesMarkerToAgrosLabelConversion;
     double* m_labelAreas;
 

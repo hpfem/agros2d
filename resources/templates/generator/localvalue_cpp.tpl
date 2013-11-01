@@ -68,7 +68,7 @@ void {{CLASS}}LocalValue::calculate()
 
             int elementMarker = e->marker;
 
-            {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
+            {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
             {{/VARIABLE_MATERIAL}}
             {{#SPECIAL_FUNCTION_SOURCE}}
             {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}

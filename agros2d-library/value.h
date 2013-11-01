@@ -41,16 +41,16 @@ public:
           std::vector<double> x, std::vector<double> y, DataTableType type = DataTableType_PiecewiseLinear, bool splineFirstDerivatives = true, bool extrapolateConstant = true);
     Value(const QString &value, const DataTable &table);
 
-    // Copy constructor to be used e.g. for clonning, so that we have one instance of Value for each thread (-> thread safe? )
-    //Value(const Value& origin);
+    Value(const Value& origin);
+    Value& operator=(const Value& origin);
 
     ~Value();
 
     // expression
-    inline double number() const { assert(m_isEvaluated); return m_number; }
-    double numberAtPoint(const Point &point, bool evaluate = true);
-    double numberAtTime(double time, bool evaluate = true);
-    double numberAtTimeAndPoint(double time, const Point &point, bool evaluate = true);
+    double number() const;
+    double numberAtPoint(const Point &point) const;
+    double numberAtTime(double time) const;
+    double numberAtTimeAndPoint(double time, const Point &point) const;
 
     bool isNumber();
     inline bool isTimeDependent() const { return m_isTimeDependent; }
@@ -93,8 +93,9 @@ private:
     DataTable m_table;
 
     // evaluate
-    bool evaluate();
-    bool evaluateExpression(const QString &expression);
+    bool evaluate(double time, const Point &point, double& result) const;
+    bool evaluateAndSave();
+    bool evaluateExpression(const QString &expression, double time, const Point &point, double& evaluationResult) const ;
 
     friend class ValueLineEdit;
 };

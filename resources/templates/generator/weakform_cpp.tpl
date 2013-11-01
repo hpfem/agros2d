@@ -44,7 +44,7 @@
 void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 {
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
-    Value* value = {{QUANTITY_SHORTNAME}}[labelIndex];
+    const Value* value = {{QUANTITY_SHORTNAME}}[labelIndex];
 
     for(int i = 0; i < n; i++)
     {
@@ -185,7 +185,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -237,7 +237,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -269,7 +269,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/EXACT_SOURCE}}
 

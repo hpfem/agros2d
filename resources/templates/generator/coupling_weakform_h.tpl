@@ -44,7 +44,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -68,7 +68,7 @@ private:
     unsigned int j;
 
     {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/VOLUME_VECTOR_SOURCE}}  
 

@@ -52,7 +52,7 @@ public:
         double *x = e->x;
         double *y = e->y;
 
-        {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
         {{/VARIABLE_MATERIAL}}
 
         // functions

@@ -468,26 +468,26 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         str += "\n# boundaries\n";
         foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(fieldInfo).items())
         {
-            const QMap<QString, Value> values = boundary->values();
+            const QMap<QString, QSharedPointer<Value> > values = boundary->values();
 
             QString variables = "{";
 
             Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
             foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
             {
-                Value value = values[variable.id()];
+                QSharedPointer<Value> value = values[variable.id()];
 
-                if (!value.isNumber() && startupScript == StartupScript_Variable)
+                if (!value->isNumber() && startupScript == StartupScript_Variable)
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
-                            arg(value.text());
+                            arg(value->text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
                             arg(variable.id()).
-                            arg(value.toString());
+                            arg(value->toString());
                 }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
@@ -504,42 +504,42 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         str += "\n# materials\n";
         foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(fieldInfo).items())
         {
-            const QMap<QString, Value> values = material->values();
+            const QMap<QString, QSharedPointer<Value> > values = material->values();
 
             QString variables = "{";
             foreach (Module::MaterialTypeVariable variable, material->fieldInfo()->materialTypeVariables())
             {
-                Value value = values[variable.id()];
+                QSharedPointer<Value> value = values[variable.id()];
 
-                if (value.hasTable())
+                if (value->hasTable())
                 {
-                    if (!value.isNumber())
+                    if (!value->isNumber())
                         variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
                                 arg(variable.id()).
-                                arg(value.text()).
-                                arg(value.table().toStringX()).
-                                arg(value.table().toStringY());
+                                arg(value->text()).
+                                arg(value->table().toStringX()).
+                                arg(value->table().toStringY());
                     else
                         variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4], \"interpolation\" : \"%5\", \"extrapolation\" : \"%6\", \"derivative_at_endpoints\" : \"%7\" }, ").
                                 arg(variable.id()).
-                                arg(value.number()).
-                                arg(value.table().toStringX()).
-                                arg(value.table().toStringY()).
-                                arg(dataTableTypeToStringKey(value.table().type())).
-                                arg(value.table().extrapolateConstant() == true ? "constant" : "linear").
-                                arg(value.table().splineFirstDerivatives() == true ? "first" : "second");
+                                arg(value->number()).
+                                arg(value->table().toStringX()).
+                                arg(value->table().toStringY()).
+                                arg(dataTableTypeToStringKey(value->table().type())).
+                                arg(value->table().extrapolateConstant() == true ? "constant" : "linear").
+                                arg(value->table().splineFirstDerivatives() == true ? "first" : "second");
                 }
-                else if (!value.isNumber() && startupScript == StartupScript_Variable)
+                else if (!value->isNumber() && startupScript == StartupScript_Variable)
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
-                            arg(value.text());
+                            arg(value->text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
                             arg(variable.id()).
-                            arg(value.toString());
+                            arg(value->toString());
                 }
             }
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";

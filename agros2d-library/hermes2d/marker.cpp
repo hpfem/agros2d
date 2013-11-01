@@ -34,22 +34,40 @@ Marker::~Marker()
     m_values.clear();
 }
 
-Value &Marker::value(const QString &id)
+const QSharedPointer<Value> Marker::value(const QString &id) const
 {
-    if (!id.isEmpty())
-        return m_values[id];
+    assert(! id.isEmpty());
+    if(!m_values.contains(id))
+    {
+        qDebug() << " marker does not contain " << id;
+    }
+    assert(m_values.contains(id));
 
-    assert(0);
+    return m_values[id];
 }
 
-const QMap<QString, Value> Marker::values() const
+const Value* Marker::valueNakedPtr(const QString &id) const
+{
+    return value(id).data();
+}
+
+const QMap<QString, QSharedPointer<Value> > Marker::values() const
 {
     return m_values;
 }
 
+void Marker::setValue(const QString& name, Value value)
+{
+    QMutex mutex;
+    mutex.lock();
+    m_values[name] = QSharedPointer<Value>(new Value(value));
+    mutex.unlock();
+}
+
+
 bool Marker::evaluate(const QString &id, double time)
 {
-    return m_values[id].evaluateAtTime(time);
+    return m_values[id]->evaluateAtTime(time);
 }
 
 bool Marker::evaluateAllVariables()
@@ -73,17 +91,21 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
     setType(type);
 
     // set values
-    this->m_values = values;
+    foreach(QString id, values.keys())
+        setValue(id, values[id]);
+
     if (!isNone() && !m_type.isEmpty())
     {
-        if (this->m_values.isEmpty())
+        foreach(Module::BoundaryType boundaryType, fieldInfo->boundaryTypes())
         {
-            Module::BoundaryType boundaryType = fieldInfo->boundaryType(type);
             foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
             {
-                // default for GUI
-                Module::DialogRow row = fieldInfo->boundaryUI().dialogRow(variable.id());
-                this->m_values[variable.id()] = Value(QString::number(row.defaultValue()));
+                if(!this->values().contains(variable.id()))
+                {
+                    // default for GUI
+                    Module::DialogRow row = fieldInfo->boundaryUI().dialogRow(variable.id());
+                    setValue(variable.id(), Value(QString::number(row.defaultValue())));
+                }
             }
         }
     }
@@ -92,19 +114,29 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
 Material::Material(FieldInfo *fieldInfo, QString name,
                    QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
-    // name and type
-    this->m_values = values;
+    // set values
+    foreach(QString id, values.keys())
+        setValue(id, values[id]);
 
     // set values
     if (name != "none")
     {
-        if (this->m_values.isEmpty())
+        QList<Module::MaterialTypeVariable> materialTypeVariables = fieldInfo->materialTypeVariables();
+        foreach (Module::MaterialTypeVariable variable, materialTypeVariables)
         {
-            foreach (Module::MaterialTypeVariable variable, fieldInfo->materialTypeVariables())
+            if(!this->values().contains(variable.id()))
             {
                 // default for GUI
                 Module::DialogRow row = fieldInfo->materialUI().dialogRow(variable.id());
-                this->m_values[variable.id()] = Value(QString::number(row.defaultValue()));
+                setValue(variable.id(), Value(QString::number(row.defaultValue())));
+            }
+        }
+
+        foreach (QString id, m_fieldInfo->allMaterialQuantities())
+        {
+            if(!this->values().contains(id))
+            {
+                setValue(id, Value(QString::number(0)));
             }
         }
     }

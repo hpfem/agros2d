@@ -100,9 +100,10 @@ public:
         return new {{VALUE_FUNCTION_FULL_NAME}}(this->m_fieldInfo, this->m_offsetI);
     }
 private:
-{{#PARAMETERS_LINEAR}}    Value **{{PARAMETER_NAME}}_pointers; {{/PARAMETERS_LINEAR}}
-{{#PARAMETERS_NONLINEAR}}    Value **{{PARAMETER_NAME}}_pointers; {{/PARAMETERS_NONLINEAR}}
-
+{{#PARAMETERS_LINEAR}}    const Value **{{PARAMETER_NAME}}_pointers;
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    const Value **{{PARAMETER_NAME}}_pointers;
+{{/PARAMETERS_NONLINEAR}}
 };
 {{/VALUE_FUNCTION_SOURCE}}
 
@@ -118,7 +119,7 @@ public:
     virtual double calculateValue(int hermesMarker, double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
     private:
-{{#PARAMETERS}}    Value **{{PARAMETER_NAME}}_pointers;
+{{#PARAMETERS}}    const Value **{{PARAMETER_NAME}}_pointers;
 {{/PARAMETERS}}
 };
 {{/SPECIAL_FUNCTION_SOURCE}}

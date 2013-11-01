@@ -32,12 +32,15 @@ public:
     virtual ~Marker();
 
     /// value of one individual variable
-    Value &value(const QString &id);
+    const Value* valueNakedPtr(const QString &id) const;
+
+    /// value of one individual variable
+    const QSharedPointer<Value> value(const QString &id) const;
 
     /// get all values
-    const QMap<QString, Value> values() const;
+    const QMap<QString, QSharedPointer<Value> > values() const;
 
-    void setValue(QString name, Value value) { m_values[name] = value; }
+    void setValue(const QString &name, Value value);
 
     /// return name
     QString name() {return m_name; }
@@ -66,10 +69,10 @@ private:
 protected:
     FieldInfo *m_fieldInfo;
 
-    /// variables - the way to customize boundary "template", given by the type parameter
-    QMap<QString, Value> m_values;
-
 private:
+    /// variables - the way to customize boundary "template", given by the type parameter
+    QMap<QString, QSharedPointer<Value> > m_values;
+
     /// we don't want those objects to be copied since we compare pointers
     Marker(const Marker& );
     Marker& operator =(const Marker& );

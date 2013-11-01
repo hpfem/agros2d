@@ -218,7 +218,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             btnEditTimeDep->setVisible(m_hasTimeDep && Agros2D::problem()->isTransient());
             btnMaterialDialog->setVisible(!m_isSource && !m_hasNonlin);
 
-            if (val.evaluate())
+            if (val.evaluateAndSave())
             {
                 if (val.number() <= m_minimumSharp)
                 {

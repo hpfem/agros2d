@@ -37,7 +37,7 @@ public:
         return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_offsetI);
     }
 protected:
-    Value** {{QUANTITY_SHORTNAME}};
+    const Value** {{QUANTITY_SHORTNAME}};
 };
 {{/EXT_FUNCTION}}
 
@@ -95,7 +95,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -118,7 +118,7 @@ private:
     unsigned int j;
 
     {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -141,7 +141,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/EXACT_SOURCE}}
 

@@ -237,7 +237,7 @@ void SceneFieldWidgetMaterial::load()
 {
     // variables
     for (int j = 0; j < ids.count(); j++)
-        values.at(j)->setValue(m_material->value(ids.at(j)));
+        values.at(j)->setValue(*m_material->valueNakedPtr(ids.at(j)));
 
     // conditions
     for (int i = 0; i < conditions.count(); i++)
@@ -349,7 +349,7 @@ void SceneFieldWidgetBoundary::load()
 
     // variables
     for (int i = 0; i < ids.count(); i++)
-        values.at(i)->setValue(m_boundary->value(ids.at(i)));
+        values.at(i)->setValue(*m_boundary->valueNakedPtr(ids.at(i)));
 
     // conditions
     for (int i = 0; i < conditions.count(); i++)

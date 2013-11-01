@@ -80,7 +80,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -131,7 +131,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 {{/VOLUME_VECTOR_SOURCE}}
 

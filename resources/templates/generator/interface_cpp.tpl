@@ -199,16 +199,20 @@ QString {{CLASS}}Interface::localeDescription()
 {{#VALUE_FUNCTION_SOURCE}}
 {{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
 {
-{{#PARAMETERS_LINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");{{/PARAMETERS_LINEAR}}
-{{#PARAMETERS_NONLINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");{{/PARAMETERS_NONLINEAR}}
+{{#PARAMETERS_LINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
+{{/PARAMETERS_NONLINEAR}}
 }
 
 double {{VALUE_FUNCTION_FULL_NAME}}::getValue(int hermesMarker, double h) const
 {
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker);
 
-{{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex]->numberFromTable(h);{{/PARAMETERS_LINEAR}}
-{{#PARAMETERS_NONLINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex]->numberFromTable(h);{{/PARAMETERS_NONLINEAR}}
+{{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex]->numberFromTable(h);
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex]->numberFromTable(h);
+{{/PARAMETERS_NONLINEAR}}
     double area = m_fieldInfo->labelArea(labelIndex);
 
     return {{EXPR}};
@@ -218,9 +222,10 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
 {
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
 
-{{#PARAMETERS_LINEAR}}    Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex]; {{/PARAMETERS_LINEAR}}
-{{#PARAMETERS_NONLINEAR}}    Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex]; {{/PARAMETERS_NONLINEAR}}
-
+{{#PARAMETERS_LINEAR}}    const Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex];
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    const Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex];
+{{/PARAMETERS_NONLINEAR}}
 {{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->number(); {{/PARAMETERS_LINEAR}}
     double area = m_fieldInfo->initialMesh()->get_marker_area(e->elem_marker);
 

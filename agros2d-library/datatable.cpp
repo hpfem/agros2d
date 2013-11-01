@@ -32,7 +32,7 @@ DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> value
     validate();
 }
 
-DataTable::DataTable(const DataTable &origin)
+DataTable &DataTable::operator =(const DataTable &origin)
 {
     m_points = origin.m_points;
     m_values = origin.m_values;
@@ -51,6 +51,11 @@ DataTable::DataTable(const DataTable &origin)
     m_isEmpty = origin.m_isEmpty;
 
     validate();
+}
+
+DataTable::DataTable(const DataTable &origin)
+{
+    operator=(origin);
 }
 
 void DataTable::clear()

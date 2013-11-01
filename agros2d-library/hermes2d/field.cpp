@@ -94,7 +94,7 @@ void FieldInfo::deleteValuePointerTable()
 
     m_labelAreas = nullptr;
 
-    foreach(Value** pointers, m_valuePointersTable)
+    foreach(const Value** pointers, m_valuePointersTable)
         if(pointers)
             delete[] pointers;
 
@@ -143,19 +143,19 @@ void FieldInfo::createValuePointerTable()
             {
                 if(! m_valuePointersTable.contains(variable.id()))
                 {
-                    m_valuePointersTable[variable.id()] = new Value*[labelsSize];
+                    m_valuePointersTable[variable.id()] = new const Value*[labelsSize];
                     for(int i = 0; i < labelsSize; i++)
                         m_valuePointersTable[variable.id()][i] = nullptr;
                 }
 
                 assert(m_valuePointersTable[variable.id()][labelNum] == nullptr);
-                m_valuePointersTable[variable.id()][labelNum] = &material->value(variable.id());
+                m_valuePointersTable[variable.id()][labelNum] = material->valueNakedPtr(variable.id());
             }
         }
     }
 }
 
-Value** FieldInfo::valuePointerTable(QString id)
+const Value **FieldInfo::valuePointerTable(QString id) const
 {
     assert(!m_valuePointersTable.isEmpty());
     if(!m_valuePointersTable.contains(id))
@@ -412,6 +412,18 @@ QMap<int, Module::Space> FieldInfo::spaces() const
                                                    spaceTypeFromStringKey(QString::fromStdString(config.type())),
                                                    config.orderadjust());
     return spaces;
+}
+
+QList<QString> FieldInfo::allMaterialQuantities() const
+{
+    QList<QString> result;
+
+    foreach(XMLModule::quantity quantity, m_plugin->module()->volume().quantity())
+    {
+        result.push_back(QString::fromStdString(quantity.id()));
+    }
+
+    return result;
 }
 
 // material type

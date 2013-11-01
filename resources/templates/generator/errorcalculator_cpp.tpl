@@ -43,7 +43,7 @@ public:
         SceneMaterial *material = label->marker(m_fieldInfo);
 
         {{#VARIABLE_SOURCE}}
-        Value *{{VARIABLE_SHORT}} = &material->value(QLatin1String("{{VARIABLE}}"));{{/VARIABLE_SOURCE}}
+        const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr(QLatin1String("{{VARIABLE}}"));{{/VARIABLE_SOURCE}}
 
         Scalar result = Scalar(0);
         for (int i = 0; i < n; i++)

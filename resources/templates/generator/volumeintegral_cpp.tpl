@@ -52,7 +52,7 @@ virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, H
     double *x = e->x;
     double *y = e->y;
 
-    {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
+    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
     {{#SPECIAL_FUNCTION_SOURCE}}
     {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}
@@ -118,7 +118,7 @@ virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, H
     double *y = e->y;
     int elementMarker = e->elem_marker;
 
-    {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
+    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
     {{#SPECIAL_FUNCTION_SOURCE}}
     {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}

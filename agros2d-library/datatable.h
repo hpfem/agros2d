@@ -59,6 +59,7 @@ public:
     DataTable();
     DataTable(Hermes::vector<double> points, Hermes::vector<double> values);
     DataTable(const DataTable& origin);
+    DataTable& operator=(const DataTable& origin);
 
     void setValues(Hermes::vector<double> points, Hermes::vector<double> values);
     void setValues(vector<double> points, vector<double> values);
