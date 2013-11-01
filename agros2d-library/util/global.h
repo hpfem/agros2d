@@ -29,7 +29,7 @@ class SolutionStore;
 class Log;
 class Scene;
 class PluginInterface;
-class ScriptEngineRemoteLocal;
+class ScriptEngineRemote;
 class MemoryMonitor;
 
 class AGROS_LIBRARY_API AgrosApplication : public QApplication
@@ -69,7 +69,7 @@ private:
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     Log *m_log;
-    ScriptEngineRemoteLocal *m_scriptEngineRemoteLocal;
+    ScriptEngineRemote *m_scriptEngineRemote;
     MemoryMonitor *m_memoryMonitor;
 };
 

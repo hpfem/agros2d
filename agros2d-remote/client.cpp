@@ -1,96 +1,92 @@
+// This file is part of Agros2D.
+//
+// Agros2D is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// Agros2D is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+//
+// hp-FEM group (http://hpfem.org/)
+// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
+// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
 #include "client.h"
 
-Client::Client(int pid) : m_serverName(QString("agros2d-server-%1").arg(pid))
+const QString OK_STRING = "\nOK\n";
+
+Client::Client(const QString &IP, int port) : m_IP(IP), m_port(port)
 {
-    // server
-    m_server = new QLocalServer();
-    QLocalServer::removeServer(clientName());
-    if (!m_server->listen(clientName()))
-    {
-        cout << tr("Error: Unable to start the server (agros2d-client): %1.").arg(m_server->errorString()).toStdString() << endl;
-        return;
-    }
-    connect(m_server, SIGNAL(newConnection()), this, SLOT(connected()));
+    m_tcpSocket = new QTcpSocket(this);
+
+    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readResult()));
+    connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+    connect(m_tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 }
 
 Client::~Client()
 {
-    delete m_server;
-    delete m_client_socket;
+    delete m_tcpSocket;
+    delete m_networkSession;
 }
 
-void Client::run(const QString &command)
+bool Client::run(const QString &command)
 {
-    QByteArray block;
-    if (!command.isEmpty())
+    m_tcpSocket->abort();
+    m_tcpSocket->connectToHost(m_IP, m_port);
+    if (m_tcpSocket->waitForConnected(1000))
     {
-        m_client_socket = new QLocalSocket();
-        connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
-
-        m_client_socket->connectToServer(serverName());
-        if (m_client_socket->waitForConnected(1000))
-        {
-            QTextStream out(m_client_socket);
-            out << command;
-            out.flush();
-            m_client_socket->waitForBytesWritten();
-        }
-        else
-        {
-            displayError(QLocalSocket::ConnectionRefusedError);
-        }
-
-        delete m_client_socket;
+        m_tcpSocket->write(QString(command).toLatin1());
+        return true;
     }
     else
     {
-        exit(0);
+        return false;
     }
-}
-
-void Client::connected()
-{
-    result = "";
-
-    m_server_socket = m_server->nextPendingConnection();
-    connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readResult()));
-    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 }
 
 void Client::readResult()
 {
-    QTextStream in(m_server_socket);
-    result = in.readAll();
+    if (m_tcpSocket->bytesAvailable() > 0)
+    {
+        QString out = QString(m_tcpSocket->readAll());
+        m_result = out.left(out.indexOf(OK_STRING));
+    }
+    m_tcpSocket->close();
+}
+
+void Client::connected()
+{
+    m_result = "";
 }
 
 void Client::disconnected()
 {
-    m_server_socket->deleteLater();
-    cout << result.toStdString() << endl;
+    if (!m_result.isEmpty())
+        qDebug() << m_result;
+
     exit(0);
 }
 
-void Client::displayError(QLocalSocket::LocalSocketError socketError)
+void Client::displayError(QAbstractSocket::SocketError socketError)
 {
-    switch (socketError) {
-    case QLocalSocket::ServerNotFoundError:
+    switch (socketError)
+    {
+    case QAbstractSocket::HostNotFoundError:
         cout << tr("Client error: The host was not found.").toStdString() << endl;
         break;
-    case QLocalSocket::ConnectionRefusedError:
+    case QAbstractSocket::ConnectionRefusedError:
         cout << tr("Client error: The connection was refused by the peer. Make sure the agros2d-server server is running.").toStdString() << endl;
         break;
     default:
-        cout << tr("Client error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
+        cout << tr("Client error: %1").arg(m_tcpSocket->errorString()).toStdString() << endl;
     }
     exit(0);
 }
 
-QString Client::clientName()
-{
-    return QString("agros2d-client-%1").arg(QString::number(QCoreApplication::applicationPid()));
-}
-
-QString Client::serverName()
-{
-    return m_serverName;
-}

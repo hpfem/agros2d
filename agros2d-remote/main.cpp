@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     Client *client;
     QStringList args = QCoreApplication::arguments();
 
-    if (args.count() == 3)
+    if (args.count() == 4)
     {
         if (args[1] == "--help" || args[1] == "/help" || args[1] == "-help")
         {
@@ -17,15 +17,13 @@ int main(int argc, char *argv[])
         else
         {
             // run command
-            client = new Client(QString(args[1]).toInt());
-            // set client name
-            client->sendClientName();
-            client->run(args[2]);
+            client = new Client(QString(args[1]), QString(args[2]).toInt());
+            client->run(args[3]);
             return a.exec();
         }
     }
 
-    if (args.count() == 4)
+    if (args.count() == 5)
     {
         if (args[2] == "--script" || args[2] == "/script" || args[2] == "-script")
         {
@@ -33,9 +31,8 @@ int main(int argc, char *argv[])
             if (file.open(QFile::ReadOnly | QFile::Text))
             {
                 // run script
-                client = new Client(QString(args[1]).toInt());
+                client = new Client(QString(args[1]), QString(args[2]).toInt());
                 // set client name
-                client->sendClientName();
                 client->run(file.readAll());
             }
             file.close();
@@ -44,7 +41,7 @@ int main(int argc, char *argv[])
     }
 
     // show help
-    cout << "agros2d-remote PID [command | --script fileName]" << endl;
+    cout << "agros2d-remote IP port [command | --script fileName]" << endl;
     a.exit(0);
     return 0;
 }

@@ -188,7 +188,7 @@ void clearAgros2DCache()
 
 static QSharedPointer<Agros2D> m_singleton;
 
-Agros2D::Agros2D() : m_scriptEngineRemoteLocal(NULL)
+Agros2D::Agros2D() : m_scriptEngineRemote(NULL)
 {
     clearAgros2DCache();
 
@@ -196,7 +196,7 @@ Agros2D::Agros2D() : m_scriptEngineRemoteLocal(NULL)
     m_scene = new Scene();
 
     // script remote
-    // m_scriptEngineRemoteLocal = new ScriptEngineRemoteLocal();
+    m_scriptEngineRemote = new ScriptEngineRemote();
 
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
     QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
@@ -222,8 +222,8 @@ void Agros2D::clear()
     delete m_singleton.data()->m_configComputer;
     delete m_singleton.data()->m_solutionStore;
     delete m_singleton.data()->m_log;
-    if (m_singleton.data()->m_scriptEngineRemoteLocal)
-        delete m_singleton.data()->m_scriptEngineRemoteLocal;
+    if (m_singleton.data()->m_scriptEngineRemote)
+        delete m_singleton.data()->m_scriptEngineRemote;
     delete m_singleton.data()->m_memoryMonitor;
 
     // remove temp and cache plugins

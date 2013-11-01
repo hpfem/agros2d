@@ -21,80 +21,103 @@
 
 #include "pythonengine_agros.h"
 
+const QString OK_STRING = "\nOK\n";
 
-ScriptEngineRemoteLocal::ScriptEngineRemoteLocal()
+ScriptEngineRemote::ScriptEngineRemote() : m_tcpSocket(NULL)
 {  
-    qDebug() << serverName();
-    // server
-    removeServer(serverName());
-    if (!listen(serverName()))
+    if (!listen())
     {
         qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString());
         return;
     }
 
+    QString ipAddress;
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    // use the first non-localhost IPv4 address
+    for (int i = 0; i < ipAddressesList.size(); ++i) {
+        if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+                ipAddressesList.at(i).toIPv4Address()) {
+            ipAddress = ipAddressesList.at(i).toString();
+            break;
+        }
+    }
+    // if we did not find one, use IPv4 localhost
+    if (ipAddress.isEmpty())
+        ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+    qDebug() << QString("The server '%1' is running on IP: %2, port: %3").arg(serverName()).arg(ipAddress).arg(serverPort());
+
     connect(this, SIGNAL(newConnection()), this, SLOT(connected()));
 }
 
-ScriptEngineRemoteLocal::~ScriptEngineRemoteLocal()
+ScriptEngineRemote::~ScriptEngineRemote()
 {
 }
 
-void ScriptEngineRemoteLocal::connected()
+void ScriptEngineRemote::connected()
 {
-    m_command = "";
-
-    m_server_socket = nextPendingConnection();
-    connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
-    connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-}
-
-void ScriptEngineRemoteLocal::readCommand()
-{
-    QTextStream in(m_server_socket);
-
-    QString comm = in.readAll();
-    qDebug() << "com: " << comm;
-    if (comm.startsWith("client:"))
+    if (m_tcpSocket)
     {
-        m_clientName = comm.right(comm.length() - 7);
-        qDebug() << m_clientName;
+        qDebug() << tr("Server is busy.");
+        return;
+    }
+
+    qDebug() << tr("Client connected");
+
+    m_tcpSocket = nextPendingConnection();
+    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readCommand()));
+    connect(m_tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+
+    connect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
+    connect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
+}
+
+void ScriptEngineRemote::readCommand()
+{
+    if (m_tcpSocket->bytesAvailable() > 0)
+    {
+        m_command = QString(m_tcpSocket->readAll());
+        qDebug() << tr("Command: %1").arg(m_command);
+
+        bool successful = currentPythonEngineAgros()->runScript(m_command);
+
+        if (successful)
+        {
+            if (!m_stdout.trimmed().isEmpty())
+            {
+                qDebug() << tr("Stdout: %1").arg(m_stdout.trimmed());
+                m_tcpSocket->write((m_stdout.trimmed() + OK_STRING).toLatin1());
+            }
+            else
+            {
+                m_tcpSocket->write(OK_STRING.toLatin1());
+            }
+        }
+        else
+        {
+            ErrorResult result = currentPythonEngineAgros()->parseError();
+            qDebug() << tr("Error: %1").arg(result.error().trimmed());
+            m_tcpSocket->write((result.error().trimmed() + OK_STRING).toLatin1());
+        }
     }
     else
-        m_command = comm;
+    {
+        m_tcpSocket->write(OK_STRING.toLatin1());
+    }
+    m_tcpSocket->close();
 }
 
-void ScriptEngineRemoteLocal::disconnected()
+void ScriptEngineRemote::disconnected()
 {
-    m_server_socket->deleteLater();
+    m_tcpSocket = NULL;
+    m_stdout = "";
 
-    if (!m_command.isEmpty())
-    {
-        bool successfulRun = currentPythonEngineAgros()->runScript(m_command);
-    }
+    disconnect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
+    disconnect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
 
-    m_client_socket = new QLocalSocket();
-    connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
-
-    m_client_socket->connectToServer(clientName());
-    if (m_client_socket->waitForConnected(1000))
-    {
-        ErrorResult result = currentPythonEngineAgros()->parseError();
-
-        QTextStream out(m_client_socket);
-        out << result.error();
-        out.flush();
-        m_client_socket->waitForBytesWritten();
-    }
-    else
-    {
-        displayError(QLocalSocket::ConnectionRefusedError);
-    }
-
-    delete m_client_socket;
+    qDebug() << tr("Client disconnected");
 }
 
-void ScriptEngineRemoteLocal::displayError(QLocalSocket::LocalSocketError socketError)
+void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
@@ -104,16 +127,21 @@ void ScriptEngineRemoteLocal::displayError(QLocalSocket::LocalSocketError socket
         qWarning() << tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.");
         break;
     default:
-        qWarning() << tr("Server error: The following error occurred: %1.").arg(m_client_socket->errorString());
+        qWarning() << tr("Server error: The following error occurred: %1.").arg(m_tcpSocket->errorString());
     }
 }
 
-QString ScriptEngineRemoteLocal::clientName()
-{
-    return m_clientName;
-}
-
-QString ScriptEngineRemoteLocal::serverName()
+QString ScriptEngineRemote::serverName()
 {
     return QString("agros2d-server-%1").arg(QString::number(QCoreApplication::applicationPid()));
+}
+
+void ScriptEngineRemote::stdOut(const QString &str)
+{
+    m_stdout += str;
+}
+
+void ScriptEngineRemote::stdHtml(const QString &str)
+{
+    m_stdout += str;
 }
