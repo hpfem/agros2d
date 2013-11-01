@@ -80,6 +80,7 @@ Problem::Problem()
     m_isSolving = false;
     m_isMeshing = false;
     m_abort = false;
+    m_isPostprocessingRunning = false;
 
     m_config = new ProblemConfig();
     m_setting = new ProblemSetting();
@@ -583,17 +584,23 @@ void Problem::doAbortSolve()
 
 void Problem::solve()
 {    
+    if (!isPreparedForAction())
+        return;
+
     m_calculationThread->startCalculation(CalculationThread::CalculationType_Solve);
 }
 
 void Problem::solveAdaptiveStep()
 {
+    if (!isPreparedForAction())
+        return;
+
     m_calculationThread->startCalculation(CalculationThread::CalculationType_SolveAdaptiveStep);
 }
 
 void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 {
-    if (isMeshing() || isSolving())
+    if (!isPreparedForAction())
         return;
 
     // clear solution
@@ -1133,6 +1140,9 @@ Block* Problem::blockOfField(FieldInfo *fieldInfo) const
 
 void Problem::doMeshWithGUI()
 {
+    if (!isPreparedForAction())
+        return;
+
     LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Mesh"));
     logDialog->show();
 
@@ -1147,6 +1157,9 @@ void Problem::doMeshWithGUI()
 
 void Problem::doSolveWithGUI()
 {
+    if (!isPreparedForAction())
+        return;
+
     LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Solver"));
     logDialog->show();
 
@@ -1156,6 +1169,9 @@ void Problem::doSolveWithGUI()
 
 void Problem::doSolveAdaptiveStepWithGUI()
 {
+    if (!isPreparedForAction())
+        return;
+
     LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Adaptive step"));
     logDialog->show();
 

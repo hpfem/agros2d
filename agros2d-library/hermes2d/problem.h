@@ -95,6 +95,7 @@ public:
     bool isMeshed() const;
     bool isMeshing() const { return m_isMeshing; }
     bool isAborted() const { return m_abort; }
+    bool isPreparedForAction() const { return !isMeshing() && !isSolving() && !m_isPostprocessingRunning; }
 
     inline QAction *actionMesh() { return actMesh; }
     inline QAction *actionSolve() { return actSolve; }
@@ -153,6 +154,8 @@ public:
 
     QString timeUnit();
 
+    void setIsPostprocessingRunning(bool pr = true) { m_isPostprocessingRunning = pr; }
+
 private:
     ProblemConfig *m_config;
     ProblemSetting *m_setting;
@@ -167,6 +170,8 @@ private:
     bool m_isSolving;
     bool m_isMeshing;
     bool m_abort;
+
+    bool m_isPostprocessingRunning;
 
     CalculationThread *m_calculationThread;
 
