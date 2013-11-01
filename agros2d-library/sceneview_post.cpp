@@ -323,6 +323,7 @@ void PostHermes::clearView()
 
 void PostHermes::refresh()
 {
+    Agros2D::problem()->setIsPostprocessingRunning();
     clearView();
 
     if (Agros2D::problem()->isMeshed())
@@ -333,6 +334,7 @@ void PostHermes::refresh()
 
     m_isProcessed = true;
     emit processed();
+    Agros2D::problem()->setIsPostprocessingRunning(false);
 }
 
 void PostHermes::clear()
