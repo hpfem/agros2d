@@ -26,7 +26,7 @@ sudo apt-get install libgoogle-perftools-dev zlib1g-dev
 sudo apt-get install libsqlite3-dev libgstreamer0.10-dev libxslt1-dev libgstreamermm-0.10-dev
 
 Compilation with QT5:
-sudo apt-get install qt5-default qmlscene libqt5opengl5-dev qttools5-dev-tools qt5-qmake libqt5webkit5-dev qtxmlpatterns5-dev-tools libqt5svg5-dev qtlocation5-dev qtsensors5-dev qttools5-dev qtquick1-5-dev libqt5xmlpatterns5-dev qtdeclarative5-dev g++
+sudo apt-get install qt5-default qmlscene libqt5opengl5-dev qttools5-dev-tools qt5-qmake libqt5webkit5-dev qtxmlpatterns5-dev-tools libqt5svg5-dev qtlocation5-dev qtsensors5-dev qttools5-dev qtquick1-5-dev libqt5xmlpatterns5-dev qtdeclarative5-dev g++ libsm-dev
 sudo apt-get install cython python-dev xsdcxx libxerces-c-dev
 sudo apt-get install triangle-bin gmsh libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev libsuitesparse-dev ffmpeg
 sudo apt-get install libgoogle-perftools-dev zlib1g-dev
