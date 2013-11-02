@@ -277,9 +277,9 @@
           <module:matrix_form id="harmonic_current_3_3"/>
           <module:matrix_form id="harmonic_current_4_4"/>
 
-          <module:vector_form id="harmonic_rhs_1_1_remanence"/>
-          <module:vector_form id="harmonic_rhs_1_1_current"/>
-          <module:vector_form id="harmonic_rhs_2_2_current"/>
+          <module:vector_form id="harmonic_rhs_1_1_remanence" coefficient ="-1"/>
+          <module:vector_form id="harmonic_rhs_1_1_current" coefficient ="-1"/>
+          <module:vector_form id="harmonic_rhs_2_2_current" coefficient ="-1"/>
           <module:vector_form id="harmonic_vec_current_3_3" coefficient ="-1"/>
           <module:vector_form id="harmonic_vec_current_4_4" coefficient ="-1"/>
 
