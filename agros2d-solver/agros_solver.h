@@ -38,10 +38,12 @@ public:
 
     inline void setFileName(const QString &fileName) { m_fileName = fileName; }
     inline void setEnableLog(bool enableLog = true) { m_enableLog = enableLog; }
+    inline void setScriptSuite(const QString &name) { m_suiteName = name; }
 
 public slots:
     void solveProblem();
     void runScript();
+    void runSuite();
 
 private slots:
     void stdOut(const QString &str);
@@ -49,6 +51,7 @@ private slots:
 
 private:
     QString m_fileName;
+    QString m_suiteName;
     bool m_enableLog;
     LogStdOut *m_log;
 };

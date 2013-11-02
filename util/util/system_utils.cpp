@@ -19,6 +19,22 @@
 
 #include "system_utils.h"
 
+#ifdef Q_WS_X11
+#include <csignal>
+#endif
+
+CleanExit::CleanExit()
+{
+#ifdef Q_WS_X11
+    signal(SIGINT, &CleanExit::exitQt);
+    signal(SIGTERM, &CleanExit::exitQt);
+#endif
+}
+
+void CleanExit::exitQt(int sig)
+{
+    QCoreApplication::exit(0);
+}
 
 /*
  * Author:  David Robert Nadeau

@@ -163,7 +163,7 @@ void PythonEditorWidget::pyLintAnalyse()
         return;
     }
 
-    while (!processPyLint.waitForFinished()) {}
+    while (!processPyLint.waitForFinished(-1)) {}
 }
 
 void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)

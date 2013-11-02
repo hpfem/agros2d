@@ -40,11 +40,13 @@ int main(int argc, char *argv[])
         TCLAP::SwitchArg remoteArg("r", "remote-server", "Run remote server", false);
         TCLAP::ValueArg<std::string> problemArg("p", "problem", "Solve problem", false, "", "string");
         TCLAP::ValueArg<std::string> scriptArg("s", "script", "Solve script", false, "", "string");
+        TCLAP::ValueArg<std::string> testArg("t", "test", "Run tests", false, "", "string");
 
         cmd.add(logArg);
         cmd.add(remoteArg);
         cmd.add(problemArg);
         cmd.add(scriptArg);
+        cmd.add(testArg);
 
         // parse the argv array.
         cmd.parse(argc, argv);
@@ -97,6 +99,12 @@ int main(int argc, char *argv[])
                     return 1;
                 }
             }
+        }
+        else if (!testArg.getValue().empty())
+        {
+            a.setScriptSuite(QString::fromStdString(testArg.getValue()));
+            QTimer::singleShot(0, &a, SLOT(runSuite()));
+            return a.exec();
         }
         else
         {

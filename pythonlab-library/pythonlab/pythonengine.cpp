@@ -5,6 +5,10 @@
 
 #include "../resources_source/python/pythonlab.cpp"
 
+#ifdef Q_WS_X11
+#include <csignal>
+#endif
+
 static PythonEngine *pythonEngine = NULL;
 
 // silent mode

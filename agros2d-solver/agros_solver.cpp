@@ -147,6 +147,40 @@ void AgrosSolver::runScript()
     }
 }
 
+void AgrosSolver::runSuite()
+{
+    // log stdout
+    if (m_enableLog)
+         m_log = new LogStdOut();
+
+    // silent mode
+    setSilentMode(true);
+
+    connect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
+    connect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
+
+    QString testSuite = QString("import test_suite; test_suite.scenario.run(test_suite.test_%1)").arg(m_suiteName);
+
+    bool successfulRun= currentPythonEngineAgros()->runScript(testSuite);
+
+    if (successfulRun)
+    {
+        Agros2D::scene()->clear();
+        Agros2D::clear();
+        QApplication::exit(0);
+    }
+    else
+    {
+        ErrorResult result = currentPythonEngineAgros()->parseError();
+        Agros2D::log()->printMessage(tr("Scripting Engine"), tr("%1\nLine: %2\nStacktrace:\n%3\n").
+                                  arg(result.error()).
+                                  arg(result.line()).
+                                  arg(result.traceback()));
+
+        QApplication::exit(-1);
+    }
+}
+
 void AgrosSolver::stdOut(const QString &str)
 {
     std::cout << str.toStdString();
