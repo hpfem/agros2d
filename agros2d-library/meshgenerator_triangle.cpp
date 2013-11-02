@@ -136,7 +136,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
         QString errorMessage = readFileContent(tempProblemFileName() + ".triangle.err");
         errorMessage.insert(0, "\n");
         errorMessage.append("\n");
-        Agros2D::log()->printError(tr("Mesh generator"), errorMessage.replace("\n", "<br/>"), false);
+        Agros2D::log()->printError(tr("Mesh generator"), errorMessage);
     }
 }
 

@@ -23,6 +23,10 @@
 #include "util.h"
 
 class QCustomPlot;
+namespace ctemplate
+{
+    class TemplateDictionary;
+}
 
 class AGROS_LIBRARY_API Log: public QObject
 {
@@ -30,19 +34,19 @@ class AGROS_LIBRARY_API Log: public QObject
 public:
     Log();
 
-    inline void printMessage(const QString &module, const QString &message, bool escaped = true) { emit messageMsg(module, message, escaped); }
-    inline void printError(const QString &module, const QString &message, bool escaped = true) { emit errorMsg(module, message, escaped); }
-    inline void printWarning(const QString &module, const QString &message, bool escaped = true) { emit warningMsg(module, message, escaped); }
-    inline void printDebug(const QString &module, const QString &message, bool escaped = true) { emit debugMsg(module, message, escaped); }
+    inline void printMessage(const QString &module, const QString &message) { emit messageMsg(module, message); }
+    inline void printError(const QString &module, const QString &message) { emit errorMsg(module, message); }
+    inline void printWarning(const QString &module, const QString &message) { emit warningMsg(module, message); }
+    inline void printDebug(const QString &module, const QString &message) { emit debugMsg(module, message); }
 
     inline void setNonlinearTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
     inline void setAdaptivityTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
 
 signals:
-    void messageMsg(const QString &module, const QString &message, bool escaped);
-    void errorMsg(const QString &module, const QString &message, bool escaped);
-    void warningMsg(const QString &module, const QString &message, bool escaped);
-    void debugMsg(const QString &module, const QString &message, bool escaped);
+    void messageMsg(const QString &module, const QString &message);
+    void errorMsg(const QString &module, const QString &message);
+    void warningMsg(const QString &module, const QString &message);
+    void debugMsg(const QString &module, const QString &message);
 
     void nonlinearTable(QVector<double> step, QVector<double> error);
     void adaptivityTable(QVector<double> step, QVector<double> error);
@@ -53,6 +57,7 @@ class AGROS_LIBRARY_API LogWidget : public QWidget
     Q_OBJECT
 public:
     LogWidget(QWidget *parent = 0);
+    ~LogWidget();
 
     void welcomeMessage();
 
@@ -62,35 +67,38 @@ public:
 private slots:
     void contextMenu(const QPoint &pos);
 
-    void printMessage(const QString &module, const QString &message, bool escaped = true);
-    void printError(const QString &module, const QString &message, bool escaped = true);
-    void printWarning(const QString &module, const QString &message, bool escaped = true);
-    void printDebug(const QString &module, const QString &message, bool escaped = true);
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
+    void printWarning(const QString &module, const QString &message);
+    void printDebug(const QString &module, const QString &message);
 
     void showTimestamp();
     void showDebug();
 
 protected:
+    ctemplate::TemplateDictionary *logInfo;
+
     void print(const QString &module, const QString &message,
-               const QString &color = "", bool escaped = true);
+               const QString &color = "");
 
 private:
     QMenu *mnuInfo;
 
-    QPlainTextEdit *textLog;
-    QLabel *memoryLabel;
+    QWebView *webView;
+    QString m_cascadeStyleSheet;
 
     QAction *actShowTimestamp;
     QAction *actShowDebug;
     QAction *actClear;
-    QAction *actCopy;
 
+    QLabel *memoryLabel;
     int m_printCounter;
 
     void createActions();
 
 private slots:
     void refreshMemory(int usage);
+    void initWebView();
 };
 
 class LogView : public QDockWidget
@@ -126,8 +134,8 @@ private:
     void createControls();
 
 private slots:
-    void printMessage(const QString &module, const QString &message, bool escaped = true);
-    void printError(const QString &module, const QString &message, bool escaped = true);
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
 
     void nonlinearTable(QVector<double> step, QVector<double> error);
     void adaptivityTable(QVector<double> step, QVector<double> error);
@@ -142,10 +150,10 @@ public:
     LogStdOut(QWidget *parent = 0);
 
 private slots:
-    void printMessage(const QString &module, const QString &message, bool escaped = true);
-    void printError(const QString &module, const QString &message, bool escaped = true);
-    void printWarning(const QString &module, const QString &message, bool escaped = true);
-    void printDebug(const QString &module, const QString &message, bool escaped = true);
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
+    void printWarning(const QString &module, const QString &message);
+    void printDebug(const QString &module, const QString &message);
 };
 
 #endif // TOOLTIPVIEW_H

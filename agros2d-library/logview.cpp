@@ -20,12 +20,15 @@
 #include "logview.h"
 
 #include "util/global.h"
+#include "util/constants.h"
 #include "util/memory_monitor.h"
+#include "gui/common.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
 
 #include "qcustomplot/qcustomplot.h"
+#include "ctemplate/template.h"
 
 Log::Log()
 {
@@ -35,18 +38,30 @@ Log::Log()
 // *******************************************************************************************************
 
 LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
-    m_printCounter(0)
-{
-    textLog = new QPlainTextEdit();
-    textLog->setReadOnly(true);
-    textLog->setMinimumSize(160, 160);
+    m_printCounter(0), logInfo(NULL)
+{    
+    webView = new QWebView();
+    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    webView->setMinimumSize(160, 160);
+
+    // stylesheet
+    std::string style;
+    ctemplate::TemplateDictionary stylesheet("style");
+    stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() - 1).toStdString()));
+
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_results.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    m_cascadeStyleSheet = QString::fromStdString(style);
+
+    initWebView();
 
     memoryLabel = new QLabel("                                                         ");
     memoryLabel->setVisible(false);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 0, 0, 0);
-    layoutMain->addWidget(textLog);
+    layoutMain->addWidget(webView);
     layoutMain->addWidget(memoryLabel, 0, Qt::AlignLeft);
 
     setLayout(layoutMain);
@@ -60,16 +75,34 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
     mnuInfo->addAction(actShowDebug);
 #endif
     mnuInfo->addSeparator();
-    mnuInfo->addAction(actCopy);
     mnuInfo->addAction(actClear);
 
-    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
 
-    textLog->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(textLog, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    webView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(webView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+}
+
+LogWidget::~LogWidget()
+{
+    delete logInfo;
+}
+
+void LogWidget::initWebView()
+{
+    if (logInfo)
+        delete logInfo;
+
+    logInfo = new ctemplate::TemplateDictionary("info");
+
+    logInfo->SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+    logInfo->SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+    logInfo->SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+
+    webView->setHtml("");
 }
 
 void LogWidget::contextMenu(const QPoint &pos)
@@ -92,10 +125,7 @@ void LogWidget::createActions()
     connect(actShowDebug, SIGNAL(triggered()), this, SLOT(showDebug()));
 
     actClear = new QAction(icon(""), tr("Clear"), this);
-    connect(actClear, SIGNAL(triggered()), textLog, SLOT(clear()));
-
-    actCopy = new QAction(icon(""), tr("Copy"), this);
-    connect(actCopy, SIGNAL(triggered()), textLog, SLOT(copy()));
+    connect(actClear, SIGNAL(triggered()), this, SLOT(initWebView()));
 }
 
 void LogWidget::showTimestamp()
@@ -110,75 +140,54 @@ void LogWidget::showDebug()
     settings.setValue("LogWidget/ShowDebug", actShowDebug->isChecked());
 }
 
-void LogWidget::printMessage(const QString &module, const QString &message, bool escaped)
+void LogWidget::printMessage(const QString &module, const QString &message)
 {
-    print(module, message, "black", escaped);
+    print(module, message, "black");
 }
 
-void LogWidget::printError(const QString &module, const QString &message, bool escaped)
+void LogWidget::printError(const QString &module, const QString &message)
 {
-    print(module, message, "red", escaped);
+    print(module, message, "red");
 }
 
-void LogWidget::printWarning(const QString &module, const QString &message, bool escaped)
+void LogWidget::printWarning(const QString &module, const QString &message)
 {
-    print(module, message, "blue", escaped);
+    print(module, message, "blue");
 }
 
-void LogWidget::printDebug(const QString &module, const QString &message, bool escaped)
+void LogWidget::printDebug(const QString &module, const QString &message)
 {
 #ifndef QT_NO_DEBUG_OUTPUT
     if (actShowDebug->isChecked())
-        print(module, message, "gray", escaped);
+        print(module, message, "gray");
 #endif
 }
 
-void LogWidget::print(const QString &module, const QString &message, const QString &color, bool escaped)
+void LogWidget::print(const QString &module, const QString &message, const QString &color)
 {
-    textLog->setUpdatesEnabled(false);
-
-    QTextCursor cursor = textLog->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    textLog->setTextCursor(cursor);
-
-    QString str;
-
-    // debug - timestamp
+    // template
+    ctemplate::TemplateDictionary *item = logInfo->AddSectionDictionary("ITEM");
     if (actShowTimestamp->isChecked())
     {
-        str += "<span style=\"color: gray;\">";
-        // str += Qt::escape(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") + ": ");
 #if QT_VERSION < 0x050000
-        str += Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ");
+        item->SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
 #else
-        str += QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped();
+        item->SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
 #endif
-        str += "</span>";
     }
-
-    // message
-    if (!color.isEmpty())
-        str += "<span style=\"color: " + color + ";\">";
+    item->SetValue("ITEM_COLOR", color.toStdString());
+    item->SetValue("ITEM_MODULE", module.toStdString());
 #if QT_VERSION < 0x050000
-    str += "<strong>" + Qt::escape(module) + "</strong>: ";
+        item->SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
 #else
-    str += "<strong>" + QString(module).toHtmlEscaped() + "</strong>: ";
+        item->SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
 #endif
-    if (escaped)
-#if QT_VERSION < 0x050000
-        str += Qt::escape(message);
-#else
-        str += QString(message).toHtmlEscaped();
-#endif
-    else
-        str += message;
-    if (!color.isEmpty())
-        str += "</span>";
 
-    textLog->setUpdatesEnabled(true);
-    textLog->appendHtml(str);
+    std::string info;
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, logInfo, &info);
+    webView->setHtml(QString::fromStdString(info));
+    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
 
-    textLog->ensureCursorVisible();
     repaint();
 
     // force run process events
@@ -271,8 +280,8 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
-    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
     connect(Agros2D::log(), SIGNAL(nonlinearTable(QVector<double>, QVector<double>)), this, SLOT(nonlinearTable(QVector<double>,QVector<double>)));
     connect(Agros2D::log(), SIGNAL(adaptivityTable(QVector<double>, QVector<double>)), this, SLOT(adaptivityTable(QVector<double>, QVector<double>)));
 
@@ -331,11 +340,11 @@ void LogDialog::createControls()
     setLayout(layout);
 }
 
-void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
+void LogDialog::printMessage(const QString &module, const QString &message)
 {
 }
 
-void LogDialog::printError(const QString &module, const QString &message, bool escaped)
+void LogDialog::printError(const QString &module, const QString &message)
 {
     btnAbort->setEnabled(false);
     btnClose->setEnabled(true);
@@ -367,28 +376,28 @@ void LogDialog::tryClose()
 
 LogStdOut::LogStdOut(QWidget *parent) : QObject(parent)
 {
-    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
-    connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
+    connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
 }
 
-void LogStdOut::printMessage(const QString &module, const QString &message, bool escaped)
+void LogStdOut::printMessage(const QString &module, const QString &message)
 {
     Hermes::Mixins::Loggable::Static::warn(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 
-void LogStdOut::printError(const QString &module, const QString &message, bool escaped)
+void LogStdOut::printError(const QString &module, const QString &message)
 {
     Hermes::Mixins::Loggable::Static::error(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 
-void LogStdOut::printWarning(const QString &module, const QString &message, bool escaped)
+void LogStdOut::printWarning(const QString &module, const QString &message)
 {
     Hermes::Mixins::Loggable::Static::info(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 
-void LogStdOut::printDebug(const QString &module, const QString &message, bool escaped)
+void LogStdOut::printDebug(const QString &module, const QString &message)
 {
     Hermes::Mixins::Loggable::Static::info(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
