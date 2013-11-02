@@ -72,7 +72,7 @@ void Agros2DGeneratorCoupling::generatePluginProjectFile()
 {
     QString id = (QString::fromStdString(m_coupling->general().id().c_str()));
 
-    qDebug() << tr("%1: generating plugin project file.").arg(id);
+    Hermes::Mixins::Loggable::Static::info(QString("generating project file").toLatin1());
 
     ctemplate::TemplateDictionary output("output");
     output.SetValue("ID", id.toStdString());
@@ -95,7 +95,7 @@ void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
     QString id = QString::fromStdString(m_coupling->general().id());
     QStringList modules = QString::fromStdString(m_coupling->general().id()).split("-");
 
-    qDebug() << tr("%1: generating plugin interface file.").arg(id);
+    Hermes::Mixins::Loggable::Static::info(QString("generating interface file").toLatin1());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -144,6 +144,8 @@ void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormFiles()
 {
+    Hermes::Mixins::Loggable::Static::warn(QString("Coupling: %1.").arg(QString::fromStdString(m_coupling->general().id())).toLatin1());
+
     generatePluginWeakFormSourceFiles();
     generatePluginWeakFormHeaderFiles();
 }
@@ -153,7 +155,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
     QString id = QString::fromStdString(m_coupling->general().id());
     QStringList modules = QString::fromStdString(m_coupling->general().id()).split("-");
 
-    qDebug() << tr("%1: generating plugin weakform header file.").arg(id);
+    Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -193,7 +195,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
     QString id = QString::fromStdString(m_coupling->general().id());
     QStringList modules = QString::fromStdString(m_coupling->general().id()).split("-");
 
-    qDebug() << tr("%1: generating plugin weakform source file.").arg(id);
+    Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -504,7 +506,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
     }
     catch (ParserException e)
     {
-        qDebug() << e.toString() << "in coupling: " << QString::fromStdString(m_coupling->general().id());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in coupling %2").arg(e.toString()).arg(QString::fromStdString(m_coupling->general().id())).toLatin1());
 
         return "";
     }

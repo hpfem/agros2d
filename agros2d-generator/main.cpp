@@ -17,24 +17,37 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include <QApplication>
-
-#include <QTranslator>
-#include <QTextCodec>
-#include <QDir>
-#include <QString>
-
 #include "util.h"
 #include "generator.h"
 
+#include "../3rdparty/tclap/CmdLine.h"
+
 int main(int argc, char *argv[])
 {
-    Agros2DGenerator a(argc, argv);
+    try
+    {
+        // command line info
+        TCLAP::CmdLine cmd("Agros2D solver", ' ', versionString().toStdString());
 
-    // init lists
-    initLists();
+        TCLAP::ValueArg<std::string> moduleArg("m", "module", "Generate module", false, "", "string");
 
-    QTimer::singleShot(0, &a, SLOT(run()));
+        cmd.add(moduleArg);
 
-    return a.exec();
+        // parse the argv array.
+        cmd.parse(argc, argv);
+
+        Agros2DGenerator a(argc, argv);
+
+        // init lists
+        initLists();
+
+        QTimer::singleShot(0, &a, SLOT(run()));
+        a.setModuleName(QString::fromStdString(moduleArg.getValue()));
+        return a.exec();
+    }
+    catch (TCLAP::ArgException &e)
+    {
+        std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+        return 1;
+    }
 }

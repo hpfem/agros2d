@@ -27,7 +27,7 @@ ScriptEngineRemote::ScriptEngineRemote() : m_tcpSocket(NULL)
 {  
     if (!listen())
     {
-        qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString());
+        Hermes::Mixins::Loggable::Static::error(tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString()).toLatin1());
         return;
     }
 
@@ -44,7 +44,7 @@ ScriptEngineRemote::ScriptEngineRemote() : m_tcpSocket(NULL)
     // if we did not find one, use IPv4 localhost
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    qDebug() << QString("The server '%1' is running on IP: %2, port: %3").arg(serverName()).arg(ipAddress).arg(serverPort());
+    Hermes::Mixins::Loggable::Static::warn(tr("The server '%1' is running on IP: %2, port: %3").arg(serverName()).arg(ipAddress).arg(serverPort()).toLatin1());
 
     connect(this, SIGNAL(newConnection()), this, SLOT(connected()));
 }
@@ -57,11 +57,11 @@ void ScriptEngineRemote::connected()
 {
     if (m_tcpSocket)
     {
-        qDebug() << tr("Server is busy.");
+        Hermes::Mixins::Loggable::Static::error(tr("Server is busy.").toLatin1());
         return;
     }
 
-    qDebug() << tr("Client connected");
+    // qDebug() << tr("Client connected");
 
     m_tcpSocket = nextPendingConnection();
     connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readCommand()));
@@ -76,7 +76,7 @@ void ScriptEngineRemote::readCommand()
     if (m_tcpSocket->bytesAvailable() > 0)
     {
         m_command = QString(m_tcpSocket->readAll());
-        qDebug() << tr("Command: %1").arg(m_command);
+        Hermes::Mixins::Loggable::Static::info(tr("Command: %1").arg(m_command).toLatin1());
 
         bool successful = currentPythonEngineAgros()->runScript(m_command);
 
@@ -84,7 +84,7 @@ void ScriptEngineRemote::readCommand()
         {
             if (!m_stdout.trimmed().isEmpty())
             {
-                qDebug() << tr("Stdout: %1").arg(m_stdout.trimmed());
+                Hermes::Mixins::Loggable::Static::warn(tr("Stdout: %1").arg(m_stdout.trimmed()).toLatin1());
                 m_tcpSocket->write((m_stdout.trimmed() + OK_STRING).toLatin1());
             }
             else
@@ -95,7 +95,7 @@ void ScriptEngineRemote::readCommand()
         else
         {
             ErrorResult result = currentPythonEngineAgros()->parseError();
-            qDebug() << tr("Error: %1").arg(result.error().trimmed());
+            Hermes::Mixins::Loggable::Static::error(tr("Error: %1").arg(result.error().trimmed()).toLatin1());
             m_tcpSocket->write((result.error().trimmed() + OK_STRING).toLatin1());
         }
     }
@@ -114,20 +114,20 @@ void ScriptEngineRemote::disconnected()
     disconnect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     disconnect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
 
-    qDebug() << tr("Client disconnected");
+    // qDebug() << tr("Client disconnected");
 }
 
 void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
-        qWarning() << tr("Server error: The host was not found.");
+        Hermes::Mixins::Loggable::Static::error(tr("Server error: The host was not found.").toLatin1());
         break;
     case QLocalSocket::ConnectionRefusedError:
-        qWarning() << tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.");
+        Hermes::Mixins::Loggable::Static::error(tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toLatin1());
         break;
     default:
-        qWarning() << tr("Server error: The following error occurred: %1.").arg(m_tcpSocket->errorString());
+        Hermes::Mixins::Loggable::Static::error(tr("Server error: The following error occurred: %1.").arg(m_tcpSocket->errorString()).toLatin1());
     }
 }
 

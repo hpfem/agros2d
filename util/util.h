@@ -187,6 +187,8 @@ AGROS_UTIL_API inline QString versionString(int major, int minor, int sub, int g
             .arg(QString("0%1").arg(day).right(2));
 }
 
+AGROS_UTIL_API QString versionString();
+
 // dirty html unit replace
 QString unitToHTML(const QString &str);
 

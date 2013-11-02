@@ -375,21 +375,21 @@ LogStdOut::LogStdOut(QWidget *parent) : QObject(parent)
 
 void LogStdOut::printMessage(const QString &module, const QString &message, bool escaped)
 {
-    qWarning() << QString("%1: %2").arg(module).arg(message);
+    Hermes::Mixins::Loggable::Static::warn(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 
 void LogStdOut::printError(const QString &module, const QString &message, bool escaped)
 {
-    qCritical() << QString("%1: %2").arg(module).arg(message);
+    Hermes::Mixins::Loggable::Static::error(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 
 void LogStdOut::printWarning(const QString &module, const QString &message, bool escaped)
 {
-    qWarning() << QString("%1: %2").arg(module).arg(message);
+    Hermes::Mixins::Loggable::Static::info(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 
 void LogStdOut::printDebug(const QString &module, const QString &message, bool escaped)
 {
-    qDebug() << QString("%1: %2").arg(module).arg(message);
+    Hermes::Mixins::Loggable::Static::info(QString("%1: %2").arg(module).arg(message).toLatin1());
 }
 

@@ -21,28 +21,80 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/system_utils.h"
 #include "mainwindow.h"
+
+#include "../3rdparty/tclap/CmdLine.h"
 
 int main(int argc, char *argv[])
 {
-    AgrosApplication a(argc, argv);
-    a.setStyle();
-    a.setLocale();
-
-    // parameters
-    QStringList args = QCoreApplication::arguments();
-    if (args.count() == 2)
+    try
     {
-        if (args.contains( "--help") || args.contains("/help"))
+        // command line info
+        TCLAP::CmdLine cmd("Agros2D", ' ', versionString().toStdString());
+
+        TCLAP::SwitchArg remoteArg("r", "remote-server", "Run remote server", false);
+        TCLAP::ValueArg<std::string> problemArg("p", "problem", "Solve problem", false, "", "string");
+        TCLAP::ValueArg<std::string> scriptArg("s", "script", "Solve script", false, "", "string");
+
+        cmd.add(remoteArg);
+        cmd.add(problemArg);
+        cmd.add(scriptArg);
+
+        // parse the argv array.
+        cmd.parse(argc, argv);
+
+        CleanExit cleanExit;
+        AgrosApplication a(argc, argv);
+        a.setStyle();
+        a.setLocale();
+
+        MainWindow w;
+
+        // run remote server
+        if (remoteArg.getValue())
         {
-            cout << "agros2d [fileName (*.a2d; *.py) | -run fileName (*.py) | --help | --verbose]" << endl;
-            exit(0);
-            return 0;
+            a.runRemoteServer();
         }
+
+        if (!problemArg.getValue().empty())
+        {
+            if (QFile::exists(QString::fromStdString(problemArg.getValue())))
+            {
+                QFileInfo info(QString::fromStdString(problemArg.getValue()));
+                if (info.suffix() == "a2d")
+                {
+                    w.setStartupProblemFilename(QString::fromStdString(problemArg.getValue()));
+                }
+                else
+                {
+                    std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
+                }
+            }
+        }
+        else if (!scriptArg.getValue().empty())
+        {
+            if (QFile::exists(QString::fromStdString(scriptArg.getValue())))
+            {
+                QFileInfo info(QString::fromStdString(scriptArg.getValue()));
+                if (info.suffix() == "py")
+                {
+                    w.setStartupScriptFilename(QString::fromStdString(scriptArg.getValue()));
+                }
+                else
+                {
+                    std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
+                }
+            }
+        }
+
+        w.show();
+
+        return a.exec();
     }
-
-    MainWindow w;
-    w.show();
-
-    return a.exec();
+    catch (TCLAP::ArgException &e)
+    {
+        std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+        return 1;
+    }    
 }

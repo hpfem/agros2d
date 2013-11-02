@@ -22,6 +22,22 @@
 
 #include "../util.h"
 
+#include <csignal>
+
+struct AGROS_LIBRARY_API CleanExit
+{
+    CleanExit()
+    {
+        signal(SIGINT, &CleanExit::exitQt);
+        signal(SIGTERM, &CleanExit::exitQt);
+    }
+
+    static void exitQt(int sig)
+    {
+        QCoreApplication::exit(0);
+    }
+};
+
 // Returns the peak (maximum so far) resident set size (physical
 // memory use) measured in bytes, or zero if the value cannot be
 // determined on this OS.

@@ -25,12 +25,14 @@
 #include "qtsingleapplication.h"
 
 #include "util.h"
+#include "util/system_utils.h"
 #include "pythonlab/pythonengine.h"
 #include "pythonlab/pythoneditor.h"
 #include "pythonlab.h"
 
 int main(int argc, char *argv[])
 {    
+    CleanExit cleanExit;
     PythonLabApplication a(argc, argv);
     if (a.isRunning())
     {

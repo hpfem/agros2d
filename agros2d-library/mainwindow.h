@@ -58,6 +58,9 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    inline void setStartupProblemFilename(const QString& fn) { m_startupProblemFilename = fn; }
+    inline void setStartupScriptFilename(const QString& fn) { m_startupScriptFilename = fn; }
+
 private slots:
     inline void doSetWindowTitle(const QString &name) { setWindowTitle("Agros2D - " + name); }
 
@@ -228,6 +231,9 @@ private:
     QSplitter *splitter;
 
     LogStdOut *logStdOut;
+
+    QString m_startupProblemFilename;
+    QString m_startupScriptFilename;
 
     void setRecentFiles();
 

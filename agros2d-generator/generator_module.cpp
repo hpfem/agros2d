@@ -73,7 +73,7 @@ Agros2DGeneratorModule::~Agros2DGeneratorModule()
 
 void Agros2DGeneratorModule::generatePluginProjectFile()
 {
-    qDebug() << tr("%1: generating plugin project file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating project file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -95,7 +95,7 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
 
 void Agros2DGeneratorModule::prepareWeakFormsOutput()
 {
-    qDebug() << tr("%1: generating parsing weak forms.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("parsing weak forms").toLatin1());
     assert(! m_output);
     m_output = new ctemplate::TemplateDictionary("output");
 
@@ -151,7 +151,7 @@ void Agros2DGeneratorModule::deleteWeakFormOutput()
 
 void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 {
-    qDebug() << tr("%1: generating plugin interface file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating interface file").toLatin1());
     QString id = QString::fromStdString(m_module->general().id());
 
     std::string text;
@@ -189,7 +189,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormFiles()
 
 void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 {
-    qDebug() << tr("%1: generating plugin weakform source file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
     std::string text;
@@ -207,7 +207,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 
 void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
 {
-    qDebug() << tr("%1: generating plugin weakform header file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -482,7 +482,7 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
 
 void Agros2DGeneratorModule::generatePluginEquations()
 {
-    qDebug() << tr("%1: generating plugin equations.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating equations").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
     QString outputDir = QDir().absoluteFilePath(QString("%1/%2").arg(QApplication::applicationDirPath()).arg("resources/images/equations/"));
@@ -532,7 +532,7 @@ void Agros2DGeneratorModule::generatePluginEquations()
 
 void Agros2DGeneratorModule::generatePluginErrorCalculator()
 {
-    qDebug() << tr("%1: generating plugin error calculator file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating error calculator file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -741,7 +741,7 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
 
 void Agros2DGeneratorModule::generatePluginFilterFiles()
 {
-    qDebug() << tr("%1: generating plugin filter file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating filter file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -861,7 +861,7 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
 
 void Agros2DGeneratorModule::generatePluginForceFiles()
 {
-    qDebug() << tr("%1: generating plugin force file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating force file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -947,7 +947,7 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
 
 void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 {
-    qDebug() << tr("%1: generating plugin local point file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating local point file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -1025,7 +1025,7 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 
 void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
 {
-    qDebug() << tr("%1: generating plugin surface integral file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating surface integral file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -1106,7 +1106,7 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
 
 void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
 {
-    qDebug() << tr("%1: generating plugin volume integral file.").arg(QString::fromStdString(m_module->general().id()));
+    Hermes::Mixins::Loggable::Static::info(QString("generating volume integral file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general().id());
 
@@ -1617,7 +1617,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
     }
     catch (ParserException e)
     {
-        qDebug() << e.toString() << "in module: " << QString::fromStdString(m_module->general().id());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general().id())).toLatin1());
 
         return "";
     }
@@ -1989,7 +1989,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     }
     catch (ParserException e)
     {
-        qDebug() << e.toString() << "in module: " << QString::fromStdString(m_module->general().id());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general().id())).toLatin1());
 
         return "";
     }
@@ -2104,7 +2104,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
     }
     catch (ParserException e)
     {
-        qDebug() << e.toString() << "in module: " << QString::fromStdString(m_module->general().id());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general().id())).toLatin1());
 
         return "";
     }

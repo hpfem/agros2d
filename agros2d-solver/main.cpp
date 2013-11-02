@@ -25,55 +25,87 @@
 #include <QString>
 
 #include "agros_solver.h"
+#include "util/system_utils.h"
 
-const QString CONSOLE_DISABLE_LOG = "disable-log";
-const QString CONSOLE_HELP = "help";
+#include "../3rdparty/tclap/CmdLine.h"
 
 int main(int argc, char *argv[])
 {
-    AgrosSolver a(argc, argv);
-
-    // parameters
-    QStringList args = QCoreApplication::arguments();
-    if ((args.count() == 2) && (args.contains( "--" + CONSOLE_HELP) || args.contains("/" + CONSOLE_HELP)))
+    try
     {
-        cout << "agros2d_solver fileName (*.a2d; *.py) | --help [--disable-log]" << endl;
-        exit(0);
-        return 0;
-    }
-    if (args.count() > 1)
-    {
-        // disable log
-        a.setEnableLog(!(args.contains("--" + CONSOLE_DISABLE_LOG) || args.contains("/" + CONSOLE_DISABLE_LOG)));
+        // command line info
+        TCLAP::CmdLine cmd("Agros2D solver", ' ', versionString().toStdString());
 
-        QFileInfo info(args[1]);
+        TCLAP::SwitchArg logArg("l", "enable-log", "Enable log", false);
+        TCLAP::SwitchArg remoteArg("r", "remote-server", "Run remote server", false);
+        TCLAP::ValueArg<std::string> problemArg("p", "problem", "Solve problem", false, "", "string");
+        TCLAP::ValueArg<std::string> scriptArg("s", "script", "Solve script", false, "", "string");
 
-        if (info.exists())
+        cmd.add(logArg);
+        cmd.add(remoteArg);
+        cmd.add(problemArg);
+        cmd.add(scriptArg);
+
+        // parse the argv array.
+        cmd.parse(argc, argv);
+
+        CleanExit cleanExit;
+        AgrosSolver a(argc, argv);
+
+        // enable log
+        a.setEnableLog(logArg.getValue());
+
+        // run remote server
+        if (remoteArg.getValue())
         {
-            a.setFileName(args[1]);
-
-            if (info.suffix() == "a2d")
-            {
-                QTimer::singleShot(0, &a, SLOT(solveProblem()));
-            }
-            else if (info.suffix() == "py")
-            {
-                QTimer::singleShot(0, &a, SLOT(runScript()));
-            }
-            else
-            {
-                std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
-
-                return false;
-            }
-
+            a.runRemoteServer();
             return a.exec();
+        }
+
+        if (!problemArg.getValue().empty())
+        {
+            if (QFile::exists(QString::fromStdString(problemArg.getValue())))
+            {
+                QFileInfo info(QString::fromStdString(problemArg.getValue()));
+                if (info.suffix() == "a2d")
+                {
+                    a.setFileName(QString::fromStdString(problemArg.getValue()));
+                    QTimer::singleShot(0, &a, SLOT(solveProblem()));
+                    return a.exec();
+                }
+                else
+                {
+                    std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
+                    return 1;
+                }
+            }
+        }
+        else if (!scriptArg.getValue().empty())
+        {
+            if (QFile::exists(QString::fromStdString(scriptArg.getValue())))
+            {
+                QFileInfo info(QString::fromStdString(scriptArg.getValue()));
+                if (info.suffix() == "py")
+                {
+                    a.setFileName(QString::fromStdString(scriptArg.getValue()));
+                    QTimer::singleShot(0, &a, SLOT(runScript()));
+                    return a.exec();
+                }
+                else
+                {
+                    std::cout << QObject::tr("Unknown suffix.").toStdString() << std::endl;
+                    return 1;
+                }
+            }
         }
         else
         {
-            std::cout << QObject::tr("File '%1' not found.").arg(args[1]).toStdString() << std::endl;
+            return 1;
         }
     }
-
-    return false;
+    catch (TCLAP::ArgException &e)
+    {
+        std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+        return 1;
+    }
 }

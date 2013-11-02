@@ -37,18 +37,11 @@
 #include "hermes2d/plugin_interface.h"
 
 #include "util/system_utils.h"
-#include "../../util/config.h"
 
-AgrosApplication::AgrosApplication(int& argc, char ** argv) : QApplication(argc, argv)
+AgrosApplication::AgrosApplication(int& argc, char ** argv) : QApplication(argc, argv), m_scriptEngineRemote(NULL)
 {
-#ifdef VERSION_BETA
-    bool beta = true;
-#else
-    bool beta = false;
-#endif
-
     setWindowIcon(icon("agros2d"));
-    setApplicationVersion(versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta));
+    setApplicationVersion(versionString());
     setOrganizationName("hpfem.org");
     setOrganizationDomain("hpfem.org");
     setApplicationName("Agros2D-3");
@@ -70,6 +63,12 @@ AgrosApplication::AgrosApplication(int& argc, char ** argv) : QApplication(argc,
 
     // init singleton
     Agros2D::createSingleton();
+}
+
+AgrosApplication::~AgrosApplication()
+{
+    if (m_scriptEngineRemote)
+        delete m_scriptEngineRemote;
 }
 
 // reimplemented from QApplication so we can throw exceptions in slots
@@ -188,15 +187,12 @@ void clearAgros2DCache()
 
 static QSharedPointer<Agros2D> m_singleton;
 
-Agros2D::Agros2D() : m_scriptEngineRemote(NULL)
+Agros2D::Agros2D()
 {
     clearAgros2DCache();
 
     m_problem = new Problem();
     m_scene = new Scene();
-
-    // script remote
-    m_scriptEngineRemote = new ScriptEngineRemote();
 
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
     QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
@@ -222,8 +218,6 @@ void Agros2D::clear()
     delete m_singleton.data()->m_configComputer;
     delete m_singleton.data()->m_solutionStore;
     delete m_singleton.data()->m_log;
-    if (m_singleton.data()->m_scriptEngineRemote)
-        delete m_singleton.data()->m_scriptEngineRemote;
     delete m_singleton.data()->m_memoryMonitor;
 
     // remove temp and cache plugins
@@ -282,4 +276,9 @@ PluginInterface *Agros2D::loadPlugin(const QString &pluginName)
     delete loader;
 
     return plugin;
+}
+
+void AgrosApplication::runRemoteServer()
+{
+    m_scriptEngineRemote = new ScriptEngineRemote();
 }

@@ -47,6 +47,7 @@ bool Client::run(const QString &command)
     }
     else
     {
+        qDebug() << "Cannot connect to the Agros2D server.";
         return false;
     }
 }

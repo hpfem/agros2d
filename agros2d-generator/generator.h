@@ -40,8 +40,7 @@ class Agros2DGenerator : public QCoreApplication
 public:
     Agros2DGenerator(int &argc, char **argv);
 
-    QList<XMLModule::module> m_modules;
-
+    inline void setModuleName(const QString &module = "") { m_module = module; }
 
     // static methods
     static QList<WeakFormKind> weakFormTypeList();
@@ -72,6 +71,9 @@ public slots:
     void generateModule(const QString &moduleId);
     void generateCoupling(const QString &couplingId);
     void generateDocumentation(const QString &couplingId);
+
+private:
+    QString m_module;
 };
 
 class Agros2DGeneratorBase : public QObject

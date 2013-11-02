@@ -18,18 +18,11 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "pythonlab.h"
-#include "../../util/config.h"
 
 PythonLabApplication::PythonLabApplication(int& argc, char ** argv) : QtSingleApplication(argc, argv)
 {
-#ifdef VERSION_BETA
-    bool beta = true;
-#else
-    bool beta = false;
-#endif
-
     setWindowIcon(icon("pythonlab"));
-    setApplicationVersion(versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta));
+    setApplicationVersion(versionString());
     setOrganizationName("hpfem.org");
     setOrganizationDomain("hpfem.org");
     setApplicationName("PythonLab");

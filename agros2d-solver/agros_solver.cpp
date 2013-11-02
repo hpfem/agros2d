@@ -30,6 +30,7 @@
 AgrosSolver::AgrosSolver(int &argc, char **argv)
     : AgrosApplication(argc, argv), m_log(NULL), m_enableLog(false)
 {    
+    createPythonEngine(new PythonEngineAgros());
 }
 
 AgrosSolver::~AgrosSolver()
@@ -75,8 +76,6 @@ void AgrosSolver::solveProblem()
     if (m_enableLog)
         m_log = new LogStdOut();
 
-    createPythonEngine(new PythonEngineAgros());
-
     QTime time;
     time.start();
 
@@ -116,8 +115,6 @@ void AgrosSolver::runScript()
         Agros2D::log()->printMessage(tr("Scripting Engine"), tr("Python script '%1' not found").arg(m_fileName));
         QApplication::exit(-1);
     }
-
-    createPythonEngine(new PythonEngineAgros());
 
     QTime time;
     time.start();

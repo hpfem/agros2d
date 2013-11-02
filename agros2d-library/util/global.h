@@ -36,11 +36,16 @@ class AGROS_LIBRARY_API AgrosApplication : public QApplication
 {
 public:
     AgrosApplication(int& argc, char ** argv);
+    ~AgrosApplication();
 
     virtual bool notify(QObject *receiver, QEvent *event);
 
+    void runRemoteServer();
     void setLocale();
     void setStyle();
+
+private:
+    ScriptEngineRemote *m_scriptEngineRemote;
 };
 
 class AGROS_LIBRARY_API Agros2D
@@ -69,7 +74,6 @@ private:
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     Log *m_log;
-    ScriptEngineRemote *m_scriptEngineRemote;
     MemoryMonitor *m_memoryMonitor;
 };
 

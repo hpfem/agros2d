@@ -205,27 +205,39 @@ void Agros2DGenerator::run()
     // generate structure
     createStructure();
 
-    QStringList args = QCoreApplication::arguments();
-    if (args.count() == 2)
+    if (!m_module.isEmpty())
     {
         // generate one module or coupling
         QMap<QString, QString> modules = Module::availableModules();
         QList<QString> couplings = couplingList()->availableCouplings();
 
-        if (modules.keys().contains(args[1]))
-            generateModule(args[1]);
-        else if (couplings.contains(args[1]))
-            generateCoupling(args[1]);
-    }
-    else
-    {
-        // generate all sources
-        try{
-            generateSources();
+        try
+        {
+            if (modules.keys().contains(m_module))
+                generateModule(m_module);
+            else if (couplings.contains(m_module))
+                generateCoupling(m_module);
+
+            exit(0);
         }
         catch(AgrosGeneratorException& err)
         {
             qDebug() << "Generator exception " << err.what();
+            exit(1);
+        }
+    }
+    else
+    {
+        // generate all sources
+        try
+        {
+            generateSources();
+            exit(0);
+        }
+        catch(AgrosGeneratorException& err)
+        {
+            qDebug() << "Generator exception " << err.what();
+            exit(1);
         }
     }
 }
@@ -290,6 +302,8 @@ void Agros2DGenerator::generateSources()
 void Agros2DGenerator::generateModule(const QString &moduleId)
 {
     Agros2DGeneratorModule generator(moduleId);
+
+    Hermes::Mixins::Loggable::Static::warn(QString("Module: %1.").arg(moduleId).toLatin1());
 
     generator.generatePluginProjectFile();
     generator.prepareWeakFormsOutput();

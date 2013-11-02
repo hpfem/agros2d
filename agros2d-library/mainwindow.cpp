@@ -62,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     setWindowIcon(icon("agros2d"));
 
+    m_startupScriptFilename = "";
+    m_startupProblemFilename = "";
+
     // log stdout
     logStdOut = NULL;
     if (Agros2D::configComputer()->showLogStdOut)
@@ -1595,35 +1598,18 @@ void MainWindow::doLoadBackground()
 
 void MainWindow::showEvent(QShowEvent *event)
 {
-    // qDebug() << event->spontaneous();
-
-    // parameters
-    QStringList args = QCoreApplication::arguments();
-    for (int i = 1; i < args.count(); i++)
+    // startup
+    if (!m_startupProblemFilename.isEmpty())
     {
-        if (args[i] == "--verbose" || args[i] == "/verbose")
-            continue;
-
-        if (args[i] == "--run" || args[i] == "-r" || args[i] == "/r")
-        {
-            QString scriptName = args[++i];
-
-            if (QFile::exists(scriptName))
-            {
-                consoleView->console()->connectStdOut();
-                currentPythonEngineAgros()->runScript(readFileContent(scriptName));
-                consoleView->console()->disconnectStdOut();
-            }
-            else
-            {
-                qWarning() << "Script " << scriptName << "not found.";
-            }
-
-            continue;
-        }
-
-        QString fileName = args[i];
-        doDocumentOpen(fileName);
+        doDocumentOpen(m_startupProblemFilename);
+        m_startupProblemFilename = "";
+    }
+    else if (!m_startupScriptFilename.isEmpty())
+    {
+        consoleView->console()->connectStdOut();
+        currentPythonEngineAgros()->runScript(readFileContent(m_startupScriptFilename));
+        consoleView->console()->disconnectStdOut();
+        m_startupScriptFilename = "";
     }
 }
 

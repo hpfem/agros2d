@@ -22,6 +22,7 @@
 #endif
 
 #include "util.h"
+#include "config.h"
 
 #ifdef Q_WS_WIN
 #include "Windows.h"
@@ -424,6 +425,17 @@ void appendToFile(const QString &fileName, const QString &str)
 
         file.close();
     }
+}
+
+QString versionString()
+{
+#ifdef VERSION_BETA
+    bool beta = true;
+#else
+    bool beta = false;
+#endif
+
+    return versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta);
 }
 
 QString stringListToString(const QStringList &list)
