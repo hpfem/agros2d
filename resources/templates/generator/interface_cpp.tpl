@@ -52,7 +52,6 @@ static XMLModule::module *module_module = NULL;
 
 {{CLASS}}Interface::~{{CLASS}}Interface()
 {
-    // delete m_module;
 }
 
 AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI)
@@ -233,8 +232,8 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
     {
         double h = {{DEPENDENCE}};
 
-{{#PARAMETERS_NONLINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->numberFromTable(h); {{/PARAMETERS_NONLINEAR}}
-
+{{#PARAMETERS_NONLINEAR}}        double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->numberFromTable(h);
+{{/PARAMETERS_NONLINEAR}}
         result->val[i] = {{EXPR}};
     }
 }
@@ -258,9 +257,6 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
 
 {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}()
 {
-{{#PARAMETERS}}    delete[] {{PARAMETER_NAME}}_pointers;
-{{/PARAMETERS}}
-
 }
 
 double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, double h) const
