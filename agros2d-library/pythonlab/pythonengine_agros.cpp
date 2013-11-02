@@ -194,10 +194,10 @@ void PythonEditorAgrosDialog::scriptPrepare()
 {
     if (actConsoleOutput->isChecked())
     {
-        connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-        connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
-        connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
-        connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+        connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+        connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
+        connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
+        connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
     }
 }
 
@@ -205,29 +205,29 @@ void PythonEditorAgrosDialog::scriptFinish()
 {
     if (actConsoleOutput->isChecked())
     {
-        disconnect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
-        disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
-        disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
-        disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+        disconnect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
+        disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
+        disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
+        disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
     }
 }
 
-void PythonEditorAgrosDialog::printMessage(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printMessage(const QString &module, const QString &message)
 {
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::gray);
 }
 
-void PythonEditorAgrosDialog::printError(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printError(const QString &module, const QString &message)
 {
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::red);
 }
 
-void PythonEditorAgrosDialog::printWarning(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printWarning(const QString &module, const QString &message)
 {
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::green);
 }
 
-void PythonEditorAgrosDialog::printDebug(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printDebug(const QString &module, const QString &message)
 {
 #ifndef QT_NO_DEBUG_OUTPUT
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::lightGray);

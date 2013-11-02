@@ -106,10 +106,10 @@ private:
 private slots:
     void doCreatePythonFromModel();
 
-    void printMessage(const QString &module, const QString &message, bool escaped = true);
-    void printError(const QString &module, const QString &message, bool escaped = true);
-    void printWarning(const QString &module, const QString &message, bool escaped = true);
-    void printDebug(const QString &module, const QString &message, bool escaped = true);
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
+    void printWarning(const QString &module, const QString &message);
+    void printDebug(const QString &module, const QString &message);
 };
 
 // current python engine agros
