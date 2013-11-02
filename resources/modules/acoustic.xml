@@ -28,17 +28,28 @@
     <module:quantity id="acoustic_density" shortname="ac_rho"/>
     <module:quantity id="acoustic_speed" shortname="ac_vel"/>
 
-    <module:matrix_form id="harmonic_laplace_1_1" i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
-    <module:matrix_form id="harmonic_frequency_1_1" i="1" j="1" planar="- pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi="- r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
-    <module:matrix_form  id="harmonic_laplace_2_2" i="2" j="2" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
-    <module:matrix_form  id="harmonic_frequency_2_2" i="2" j="2" planar="- pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi="- r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
+    <module:function id="acoustic_func_one_over_rho" shortname="ac_one_over_rho" type="function_1d" >
+      <module:quantity id="acoustic_density"/>
+      <module:function_variant expr="1 / ac_rho"/>
+    </module:function>
 
-    <module:matrix_form id="transient_1_1" i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
-    <module:matrix_form id="transient_1_2" i="1" j="2" planar="1 / (ac_rho * ac_vel * ac_vel) * timedermat * uval * vval" axi="1 / (ac_rho * ac_vel * ac_vel) * timedermat * r * uval * vval"/>
+    <module:function id="acoustic_func_one_over_rho_vel_vel" shortname="ac_one_over_rho_vel_vel" type="function_1d" >
+      <module:quantity id="acoustic_density"/>
+      <module:quantity id="acoustic_speed"/>
+      <module:function_variant expr="1 / (ac_rho * ac_vel * ac_vel)"/>
+    </module:function>
+
+    <module:matrix_form id="harmonic_laplace_1_1" i="1" j="1" planar="ac_one_over_rho * (udx * vdx + udy * vdy)" axi="ac_one_over_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form id="harmonic_frequency_1_1" i="1" j="1" planar="- 4 * PI * PI * f * f * ac_one_over_rho_vel_vel * uval * vval" axi="- r * 4 * PI * PI * f * f * ac_one_over_rho_vel_vel * uval * vval" symmetric="1"/>
+    <module:matrix_form  id="harmonic_laplace_2_2" i="2" j="2" planar="ac_one_over_rho * (udx * vdx + udy * vdy)" axi="ac_one_over_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form  id="harmonic_frequency_2_2" i="2" j="2" planar="- 4 * PI * PI * f * f * ac_one_over_rho_vel_vel * uval * vval" axi="- r * 4 * PI * PI * f * f * ac_one_over_rho_vel_vel * uval * vval" symmetric="1"/>
+
+    <module:matrix_form id="transient_1_1" i="1" j="1" planar="ac_one_over_rho * (udx * vdx + udy * vdy)" axi="ac_one_over_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form id="transient_1_2" i="1" j="2" planar="ac_one_over_rho_vel_vel * timedermat * uval * vval" axi="ac_one_over_rho_vel_vel * timedermat * r * uval * vval"/>
     <module:matrix_form id="transient_2_2" i="2" j="2" planar="- uval * vval" axi="- r * uval * vval" symmetric="1"/>
     <module:matrix_form id="transient_2_1" i="2" j="1" planar="timedermat * uval * vval" axi="timedermat * r * uval * vval"/>
     
-    <module:vector_form id="transient_rhs_1_2" i="1" j="2" planar="1 / (ac_rho * ac_vel * ac_vel) * timedervec * vval" axi="1 / (ac_rho * ac_vel * ac_vel) * r * timedervec * vval" />
+    <module:vector_form id="transient_rhs_1_2" i="1" j="2" planar="ac_one_over_rho_vel_vel * timedervec * vval" axi="ac_one_over_rho_vel_vel * r * timedervec * vval" />
     <module:vector_form id="transient_rhs_2_1" i="2" j="1" planar="timedervec * vval" axi="timedervec * r * vval" />
     
     <module:weakforms_volume>
@@ -46,6 +57,9 @@
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
         
+        <module:function_use id="acoustic_func_one_over_rho" />
+        <module:function_use id="acoustic_func_one_over_rho_vel_vel" />
+
         <module:linearity_option type="linear">
           <module:matrix_form id="harmonic_laplace_1_1" />
           <module:matrix_form id="harmonic_laplace_2_2" />
@@ -56,6 +70,9 @@
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
+
+        <module:function_use id="acoustic_func_one_over_rho" />
+        <module:function_use id="acoustic_func_one_over_rho_vel_vel" />
 
         <module:linearity_option type="linear">
           <module:matrix_form id="transient_1_1" />
