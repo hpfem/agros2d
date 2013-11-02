@@ -53,28 +53,28 @@ public:
     virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI) {  return NULL; }
 
     // error calculators
-    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) { assert(0); return NULL; }
+    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) { assert(0); return NULL; }
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo,
+    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(const FieldInfo *fieldInfo,
                                                  int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                  Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                  const QString &variable,
                                                  PhysicFieldVariableComp physicFieldVariableComp) { assert(0); return NULL; }
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) { assert(0); return NULL; }
+    virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) { assert(0); return NULL; }
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) { assert(0); return NULL; }
+    virtual IntegralValue *surfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) { assert(0); return NULL; }
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) { assert(0); return NULL; }
+    virtual IntegralValue *volumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) { assert(0); return NULL; }
 
     // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+    virtual Point3 force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                          Hermes::Hermes2D::Element *element, SceneMaterial *material,
                          const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }
-    virtual bool hasForce(FieldInfo *fieldInfo) { return false; }
+    virtual bool hasForce(const FieldInfo *fieldInfo) { return false; }
 
     // localization
     virtual QString localeName(const QString &name) { assert(0); return NULL; }

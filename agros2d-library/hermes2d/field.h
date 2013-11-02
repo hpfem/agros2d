@@ -122,8 +122,8 @@ public:
     void setEdgeRefinement(SceneEdge *edge, int refinement) { m_edgesRefinement[edge] = refinement; }
     void removeEdgeRefinement(SceneEdge *edge) { m_edgesRefinement.remove(edge); }
 
-    const QMap<SceneLabel *, int> labelsRefinement() { return m_labelsRefinement; }
-    int labelRefinement(SceneLabel *label);
+    const QMap<SceneLabel *, int> labelsRefinement() const { return m_labelsRefinement; }
+    int labelRefinement(SceneLabel *label) const;
     void setLabelRefinement(SceneLabel *label, int refinement) { m_labelsRefinement[label] = refinement; }
     void removeLabelRefinement(SceneLabel *label) { m_labelsRefinement.remove(label); }
 

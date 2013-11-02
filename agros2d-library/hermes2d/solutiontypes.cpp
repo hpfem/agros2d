@@ -29,7 +29,7 @@
 
 using namespace Hermes::Hermes2D;
 
-FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
+FieldSolutionID BlockSolutionID::fieldSolutionID(const FieldInfo *fieldInfo)
 {
     bool contains = false;
     foreach(Field* field, group->fields())
@@ -42,7 +42,7 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
     return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
 }
 
-BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
+BlockSolutionID FieldSolutionID::blockSolutionID(const Block *block)
 {
     assert(block->contains(this->group));
     return BlockSolutionID(block, timeStep, adaptivityStep, solutionMode);
@@ -95,7 +95,7 @@ void MultiArray<Scalar>::append(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<
 }
 
 template <typename Scalar>
-MultiArray<Scalar> MultiArray<Scalar>::fieldPart(Block *block, FieldInfo *fieldInfo)
+MultiArray<Scalar> MultiArray<Scalar>::fieldPart(const Block *block, const FieldInfo *fieldInfo)
 {
     assert(block->contains(fieldInfo));
     MultiArray<Scalar> msa;

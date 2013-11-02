@@ -6,7 +6,7 @@ AgrosExtFunction::~AgrosExtFunction()
 {
 }
 
-AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, offsetI), m_type(type), m_count(count)
+AgrosSpecialExtFunction::AgrosSpecialExtFunction(const FieldInfo *fieldInfo, int offsetI, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, offsetI), m_type(type), m_count(count)
 {
     if((type == SpecialFunctionType_Constant) || (count > 0))
         m_useTable = true;

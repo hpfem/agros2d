@@ -105,21 +105,21 @@ public:
 
     /// gets marker that corresponds to the given field
     MarkerType* marker(QString field);
-    MarkerType* marker(FieldInfo* fieldInfo);
+    MarkerType* marker(const FieldInfo *fieldInfo);
 
     /// adds marker. If there exists marker with the same field, is overwritten
     void addMarker(MarkerType* marker);
 
     /// true if has given marker
-    bool hasMarker(MarkerType* marker) { return m_markers[marker->fieldInfo()] == marker; }
-    bool hasMarker(FieldInfo* fieldInfo) { return m_markers.contains(fieldInfo); }
+    bool hasMarker(const MarkerType* marker) { return m_markers[marker->fieldInfo()] == marker; }
+    bool hasMarker(const FieldInfo* fieldInfo) { return m_markers.contains(fieldInfo); }
 
     /// returns markers length
     int markersCount();
     QMap<QString, QString> markersKeys() const;
 
     /// removes marker corresponding to this field from node
-    void removeMarker(FieldInfo* fieldInfo);
+    void removeMarker(const FieldInfo* fieldInfo);
     void removeMarker(QString field);
     void removeMarker(MarkerType* marker);
 
@@ -142,10 +142,10 @@ public:
     void addMarkerToAll(MarkerType* marker);
 
     /// removes markers corresponding to field from all members
-    void removeFieldMarkers(FieldInfo* field);
+    void removeFieldMarkers(const FieldInfo* field);
 
     /// add missing field markers
-    void addMissingFieldMarkers(FieldInfo* field);
+    void addMissingFieldMarkers(const FieldInfo* field);
 
     /// adds none markers for new fields and removes markers from fields that have been deleted
     void doFieldsChanged();

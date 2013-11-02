@@ -31,7 +31,7 @@
 
 #include "hermes2d/plugin_interface.h"
 
-{{CLASS}}LocalValue::{{CLASS}}LocalValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+{{CLASS}}LocalValue::{{CLASS}}LocalValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                          const Point &point)
     : LocalValue(fieldInfo, timeStep, adaptivityStep, solutionType, point)
 {

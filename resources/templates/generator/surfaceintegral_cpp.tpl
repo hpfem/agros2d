@@ -34,12 +34,12 @@
 class {{CLASS}}SurfaceIntegralCalculator : public Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>
 {
 public:
-    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }
 
-    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }
@@ -91,10 +91,10 @@ public:
 
 private:
     // field info
-    FieldInfo *m_fieldInfo;
+    const FieldInfo *m_fieldInfo;
 };
 
-{{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+{{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
     : IntegralValue(fieldInfo, timeStep, adaptivityStep, solutionType)
 {
     calculate();

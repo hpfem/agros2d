@@ -261,7 +261,7 @@ int FieldInfo::edgeRefinement(SceneEdge *edge)
     return 0;
 }
 
-int FieldInfo::labelRefinement(SceneLabel *label)
+int FieldInfo::labelRefinement(SceneLabel *label) const
 {
     QMapIterator<SceneLabel *, int> i(m_labelsRefinement);
     while (i.hasNext()) {

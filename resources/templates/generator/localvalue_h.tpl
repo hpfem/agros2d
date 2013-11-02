@@ -32,7 +32,7 @@ class FieldInfo;
 class {{CLASS}}LocalValue : public LocalValue
 {
 public:
-    {{CLASS}}LocalValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+    {{CLASS}}LocalValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                         const Point &point);
 
     void calculate();

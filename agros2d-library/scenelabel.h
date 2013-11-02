@@ -33,7 +33,7 @@ class AGROS_LIBRARY_API SceneLabel : public MarkedSceneBasic<SceneMaterial>
 public:
     SceneLabel(const Point &point, double area);
 
-    inline virtual SceneMaterial* marker(FieldInfo *fieldInfo) { return MarkedSceneBasic<SceneMaterial>::marker(fieldInfo); }
+    inline virtual SceneMaterial* marker(const FieldInfo *fieldInfo) { return MarkedSceneBasic<SceneMaterial>::marker(fieldInfo); }
     inline Point point() const { return m_point; }
     inline void setPoint(const Point &point) { m_point = point; }
     inline double area() const { return m_area; }
@@ -147,7 +147,7 @@ protected:
 
 private:
     MarkedSceneBasicContainer<SceneMaterial, SceneLabel> m_labels;
-    QMap<FieldInfo*, QComboBox *> cmbMaterials;
+    QMap<const FieldInfo*, QComboBox *> cmbMaterials;
 
     void fillComboBox();
 

@@ -32,7 +32,7 @@ class FieldInfo;
 class {{CLASS}}SurfaceIntegral : public IntegralValue
 {
 public:
-    {{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
+    {{CLASS}}SurfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
     void calculate();
 };

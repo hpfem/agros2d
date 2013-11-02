@@ -48,7 +48,7 @@ QVariant SceneBasic::variant()
 // *************************************************************************************************************************************
 
 template <typename MarkerType>
-MarkerType* MarkedSceneBasic<MarkerType>::marker(FieldInfo* field)
+MarkerType* MarkedSceneBasic<MarkerType>::marker(const FieldInfo* field)
 {
     assert(m_markers.contains(field));
     MarkerType* marker = m_markers[field];
@@ -117,7 +117,7 @@ void MarkedSceneBasic<MarkerType>::removeMarker(MarkerType* marker)
 }
 
 template <typename MarkerType>
-void MarkedSceneBasic<MarkerType>::removeMarker(FieldInfo* fieldInfo)
+void MarkedSceneBasic<MarkerType>::removeMarker(const FieldInfo *fieldInfo)
 {
     // replace marker with none marker
     m_markers.remove(fieldInfo);
@@ -247,14 +247,14 @@ MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType> MarkedSceneBasicCont
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
-void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeFieldMarkers(FieldInfo *fieldInfo)
+void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::removeFieldMarkers(const FieldInfo *fieldInfo)
 {
     foreach(MarkedSceneBasicType* item, this->m_data)
         item->removeMarker(fieldInfo);
 }
 
 template <typename MarkerType, typename MarkedSceneBasicType>
-void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::addMissingFieldMarkers(FieldInfo *fieldInfo)
+void MarkedSceneBasicContainer<MarkerType, MarkedSceneBasicType>::addMissingFieldMarkers(const FieldInfo *fieldInfo)
 {
     foreach(MarkedSceneBasicType* item, this->m_data)
     {

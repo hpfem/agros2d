@@ -31,7 +31,7 @@ class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
 public:
     virtual void value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const;
-    {{EXT_FUNCTION_NAME}}(FieldInfo* fieldInfo, int offsetI);
+    {{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, int offsetI);
     Hermes::Hermes2D::Function<double>* clone() const
     {
         return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_offsetI);
@@ -91,7 +91,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerSource(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}
@@ -112,7 +112,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerSource(const Marker *marker);
 
 private:
     unsigned int j;
@@ -137,7 +137,7 @@ public:
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
 
-    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerSource(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}

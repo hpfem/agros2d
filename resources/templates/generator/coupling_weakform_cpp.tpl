@@ -75,7 +75,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface::setMarkerSource(marker);
 
@@ -126,7 +126,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface::setMarkerSource(marker);
 

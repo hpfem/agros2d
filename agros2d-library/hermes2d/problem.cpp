@@ -1128,7 +1128,7 @@ void Problem::synchronizeCouplings()
         emit couplingsChanged();
 }
 
-Block* Problem::blockOfField(FieldInfo *fieldInfo) const
+Block* Problem::blockOfField(const FieldInfo *fieldInfo) const
 {
     foreach(Block* block, m_blocks)
     {

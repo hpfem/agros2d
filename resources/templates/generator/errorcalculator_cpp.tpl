@@ -34,7 +34,7 @@ template<typename Scalar>
 class {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}} : public Hermes::Hermes2D::NormFormVol<Scalar>
 {
 public:
-    {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}}<Scalar>(FieldInfo *fieldInfo, int i, int j)
+    {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}}<Scalar>(const FieldInfo *fieldInfo, int i, int j)
         : Hermes::Hermes2D::NormFormVol<Scalar>(i, j), m_fieldInfo(fieldInfo) {}
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u, Hermes::Hermes2D::Func<Scalar> *v, Hermes::Hermes2D::Geom<double> *e) const
@@ -52,14 +52,14 @@ public:
         return result;
     }
 
-    FieldInfo *m_fieldInfo;
+    const FieldInfo *m_fieldInfo;
 };
 
 template class {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}}<double>;
 {{/CALCULATOR_SOURCE}}
 
 template<typename Scalar>
-{{CLASS}}ErrorCalculator<Scalar>::{{CLASS}}ErrorCalculator(FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
+{{CLASS}}ErrorCalculator<Scalar>::{{CLASS}}ErrorCalculator(const FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
     : Hermes::Hermes2D::ErrorCalculator<Scalar>(errorType), m_fieldInfo(fieldInfo), m_calculator(calculator)
 {
     for(int i = 0; i < m_fieldInfo->numberOfSolutions(); i++)

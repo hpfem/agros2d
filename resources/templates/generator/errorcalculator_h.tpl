@@ -30,11 +30,11 @@ template<typename Scalar>
 class {{CLASS}}ErrorCalculator : public Hermes::Hermes2D::ErrorCalculator<Scalar>
 {
 public:
-    {{CLASS}}ErrorCalculator(FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
+    {{CLASS}}ErrorCalculator(const FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
 
 protected:
     QString m_calculator;
-    FieldInfo *m_fieldInfo;
+    const FieldInfo *m_fieldInfo;
 };
 
 #endif // {{ID}}_ERROR_CALCULATOR_H
