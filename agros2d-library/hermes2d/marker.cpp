@@ -24,7 +24,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 
-Marker::Marker(FieldInfo *fieldInfo, QString name)
+Marker::Marker(const FieldInfo *fieldInfo, QString name)
     : m_fieldInfo(fieldInfo), m_name(name), m_isNone(false)
 {
 }
@@ -84,7 +84,7 @@ QString Marker::fieldId()
     return m_fieldInfo->fieldId();
 }
 
-Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
+Boundary::Boundary(const FieldInfo *fieldInfo, QString name, QString type,
                    QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
     // type
@@ -111,7 +111,7 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
     }
 }
 
-Material::Material(FieldInfo *fieldInfo, QString name,
+Material::Material(const FieldInfo *fieldInfo, QString name,
                    QMap<QString, Value> values) : Marker(fieldInfo, name)
 {
     // set values

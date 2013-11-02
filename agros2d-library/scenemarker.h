@@ -45,22 +45,22 @@ public:
     void remove(MarkerType *marker);
 
     /// remove all markers of this field
-    void removeFieldMarkers(FieldInfo* fieldInfo);
+    void removeFieldMarkers(const FieldInfo *fieldInfo);
 
     /// get marker at position i
-    MarkerType *at(int i);
+    MarkerType *at(int i) const;
 
     /// get marker by name
-    MarkerType *get(const QString &name);
+    MarkerType *get(const QString &name) const;
 
-    static MarkerType *getNone(FieldInfo* field);
+    static MarkerType *getNone(const FieldInfo *field);
 
     /// filter field
     MarkerContainer<MarkerType> filter(const QString &fieldName);
-    MarkerContainer<MarkerType> filter(FieldInfo* fieldInfo);
+    MarkerContainer<MarkerType> filter(const FieldInfo *fieldInfo);
 
     /// length of the array
-    inline int length() { return data.length(); }
+    inline int length() const { return data.length(); }
 
     /// if contains exactly one element, return it. Otherwise return NULL
     MarkerType* getSingleOrNull();
@@ -69,7 +69,7 @@ public:
     inline int isEmpty() { return data.isEmpty(); }
 
     /// bool if contains given marker (pointer)
-    bool contains(MarkerType* marker) {return data.contains(marker);}
+    bool contains(MarkerType* marker) const {return data.contains(marker);}
 
     /// clear and delete data
     void clear();
@@ -82,7 +82,7 @@ public:
 protected:
     QList<MarkerType* > data;
 
-    static QMap<FieldInfo*, MarkerType*> noneMarkers;
+    static QMap<const FieldInfo*, MarkerType*> noneMarkers;
 };
 
 //template <typename MarkerType>

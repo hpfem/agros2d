@@ -1537,7 +1537,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
+        dict["f"] = "m_fieldInfo->frequency()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -1771,7 +1771,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
+        dict["f"] = "this->m_markerSource->fieldInfo()->frequency()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 

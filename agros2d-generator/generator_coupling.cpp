@@ -390,7 +390,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
 
             // constants
             if (repl == "PI") { exprCpp += "M_PI"; isReplaced = true; }
-            if (repl == "f") { exprCpp += "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()"; isReplaced = true; }
+            if (repl == "f") { exprCpp += "this->m_markerSource->fieldInfo()->frequency()"; isReplaced = true; }
             foreach (XMLCoupling::constant cnst, m_coupling->constants().constant())
                 if (repl == QString::fromStdString(cnst.id())) { exprCpp += QString::number(cnst.value()); isReplaced = true; }
 

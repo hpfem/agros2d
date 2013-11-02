@@ -129,7 +129,7 @@ public:
     void doFieldsChanged();
 
 private:
-    QMap<FieldInfo*, MarkerType*> m_markers;
+    QMap<const FieldInfo*, MarkerType*> m_markers;
 };
 
 

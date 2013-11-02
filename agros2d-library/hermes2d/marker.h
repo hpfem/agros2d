@@ -28,7 +28,7 @@ class FieldInfo;
 class AGROS_LIBRARY_API Marker
 {
 public:
-    Marker(FieldInfo *m_fieldInfo, QString m_name);
+    Marker(const FieldInfo *m_fieldInfo, QString m_name);
     virtual ~Marker();
 
     /// value of one individual variable
@@ -48,7 +48,7 @@ public:
     /// set name
     void setName(QString paramName) { m_name = paramName; }
 
-    FieldInfo *fieldInfo() { return m_fieldInfo; }
+    const FieldInfo *fieldInfo() const { return m_fieldInfo; }
 
     /// returns QString identification of field
     QString fieldId();
@@ -67,7 +67,7 @@ private:
     bool m_isNone;
 
 protected:
-    FieldInfo *m_fieldInfo;
+    const FieldInfo *m_fieldInfo;
 
 private:
     /// variables - the way to customize boundary "template", given by the type parameter
@@ -83,7 +83,7 @@ private:
 class Boundary : public Marker
 {
 public:
-    Boundary(FieldInfo *m_fieldInfo, QString m_name = "", QString m_type = "",
+    Boundary(const FieldInfo *m_fieldInfo, QString m_name = "", QString m_type = "",
              QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     /// get type
@@ -103,7 +103,7 @@ private:
 class Material : public Marker
 {
 public:
-    Material(FieldInfo *m_fieldInfo, QString m_name,
+    Material(const FieldInfo *m_fieldInfo, QString m_name,
              QMap<QString, Value> m_values = (QMap<QString, Value>()));
 };
 

@@ -48,7 +48,7 @@ void MarkerContainer<MarkerType>::remove(MarkerType *marker)
 }
 
 template <typename MarkerType>
-void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
+void MarkerContainer<MarkerType>::removeFieldMarkers(const FieldInfo* fieldInfo)
 {
     foreach(MarkerType* item, data)
     {
@@ -59,7 +59,7 @@ void MarkerContainer<MarkerType>::removeFieldMarkers(FieldInfo* fieldInfo)
 
 
 template <typename MarkerType>
-MarkerType* MarkerContainer<MarkerType>::getNone(FieldInfo* field)
+MarkerType* MarkerContainer<MarkerType>::getNone(const FieldInfo* field)
 {
     if (!noneMarkers.contains(field))
     {
@@ -71,13 +71,13 @@ MarkerType* MarkerContainer<MarkerType>::getNone(FieldInfo* field)
 }
 
 template <typename MarkerType>
-MarkerType *MarkerContainer<MarkerType>::at(int i)
+MarkerType *MarkerContainer<MarkerType>::at(int i) const
 {
     return data.at(i);
 }
 
 template <typename MarkerType>
-MarkerType* MarkerContainer<MarkerType>::get(const QString &name)
+MarkerType* MarkerContainer<MarkerType>::get(const QString &name) const
 {
     foreach (MarkerType *item, data)
         if (item->name() == name)
@@ -98,7 +98,7 @@ MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const QString &f
 }
 
 template <typename MarkerType>
-MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(FieldInfo *fieldInfo)
+MarkerContainer<MarkerType> MarkerContainer<MarkerType>::filter(const FieldInfo *fieldInfo)
 {
     return filter(fieldInfo->fieldId());
 }
@@ -124,9 +124,9 @@ MarkerType* MarkerContainer<MarkerType>::getSingleOrNull()
 template <typename MarkerType>
 void MarkerContainer<MarkerType>::doFieldsChanged()
 {
-    foreach(FieldInfo* fieldInfo, noneMarkers.keys())
+    foreach(const FieldInfo* fieldInfo, noneMarkers.keys())
     {
-        if (!Agros2D::problem()->fieldInfos().values().contains(fieldInfo)){
+        if (!Agros2D::problem()->fieldInfos().values().contains(const_cast<FieldInfo*>(fieldInfo))){
             delete noneMarkers[fieldInfo];
             noneMarkers.remove(fieldInfo);
             removeFieldMarkers(fieldInfo);
@@ -158,7 +158,7 @@ bool MarkerContainer<MarkerType>::evaluateAllVariables()
 
 
 template <typename MarkerType>
-QMap<FieldInfo*, MarkerType*> MarkerContainer<MarkerType>::noneMarkers;
+QMap<const FieldInfo*, MarkerType*> MarkerContainer<MarkerType>::noneMarkers;
 
 
 template class MarkerContainer<SceneBoundary>;

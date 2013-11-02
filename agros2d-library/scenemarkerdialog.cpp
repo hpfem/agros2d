@@ -35,7 +35,7 @@
 #include "scenelabel.h"
 
 
-SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
+SceneBoundary::SceneBoundary(const FieldInfo *fieldInfo, QString name, QString type,
                              QMap<QString, Value> values)
     : Boundary(fieldInfo, name, type, values)
 {
@@ -65,7 +65,7 @@ SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary(NULL, "none")
 
 // *************************************************************************************************************************************
 
-SceneMaterial::SceneMaterial(FieldInfo *fieldInfo, QString name,
+SceneMaterial::SceneMaterial(const FieldInfo *fieldInfo, QString name,
                              QMap<QString, Value> values) : Material(fieldInfo, name, values)
 {
 

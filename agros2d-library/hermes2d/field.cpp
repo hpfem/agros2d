@@ -153,6 +153,9 @@ void FieldInfo::createValuePointerTable()
             }
         }
     }
+
+    // frequency
+    m_frequency = Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble();
 }
 
 const Value **FieldInfo::valuePointerTable(QString id) const
@@ -165,16 +168,21 @@ const Value **FieldInfo::valuePointerTable(QString id) const
     return m_valuePointersTable[id];
 }
 
-int FieldInfo::hermesMarkerToAgrosLabel(int hermesMarker)
+int FieldInfo::hermesMarkerToAgrosLabel(int hermesMarker) const
 {
     assert(m_hermesMarkerToAgrosLabelConversion);
     return m_hermesMarkerToAgrosLabelConversion[hermesMarker];
 }
 
-double FieldInfo::labelArea(int agrosLabel)
+double FieldInfo::labelArea(int agrosLabel) const
 {
     assert(m_labelAreas);
     return m_labelAreas[agrosLabel];
+}
+
+double FieldInfo::frequency() const
+{
+    return m_frequency;
 }
 
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)

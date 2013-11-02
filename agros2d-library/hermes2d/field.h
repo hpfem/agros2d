@@ -229,8 +229,10 @@ public:
     void deleteValuePointerTable();
 
     const Value** valuePointerTable(QString id) const;
-    int hermesMarkerToAgrosLabel(int hermesMarker);
-    double labelArea(int agrosLabel);
+    int hermesMarkerToAgrosLabel(int hermesMarker) const;
+    double labelArea(int agrosLabel) const;
+    double frequency() const;
+
 
 signals:
     void changed();
@@ -279,7 +281,7 @@ private:
     QMap<QString, const Value**> m_valuePointersTable;
     int* m_hermesMarkerToAgrosLabelConversion;
     double* m_labelAreas;
-
+    double m_frequency;
 
     // help functions extracting parts of xml
 };
