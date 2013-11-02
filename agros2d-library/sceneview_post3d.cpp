@@ -269,6 +269,8 @@ void SceneViewPost3D::paintScalarField3D()
         // remove normal
         delete [] normal;
 
+        m_postHermes->linScalarView().unlock_data();
+
         glDisable(GL_TEXTURE_1D);
         glDisable(GL_LIGHTING);
 
