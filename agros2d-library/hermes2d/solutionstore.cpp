@@ -84,8 +84,8 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
     {
         //qDebug() << "Read from disk: " << solutionID.toString();
 
-        FieldInfo *fieldInfo = solutionID.group;
-        Block *block = Agros2D::problem()->blockOfField(fieldInfo);
+        const FieldInfo *fieldInfo = solutionID.group;
+        const Block *block = Agros2D::problem()->blockOfField(fieldInfo);
 
         MultiArray<double> msa;
         SolutionRunTimeDetails runTime = m_multiSolutionRunTimeDetails[solutionID];
@@ -380,7 +380,7 @@ int SolutionStore::lastTimeStep(const FieldInfo *fieldInfo, SolutionMode solutio
     return timeStep;
 }
 
-int SolutionStore::lastTimeStep(Block *block, SolutionMode solutionType) const
+int SolutionStore::lastTimeStep(const Block *block, SolutionMode solutionType) const
 {
     int timeStep = lastTimeStep(block->fields().at(0)->fieldInfo(), solutionType);
 
@@ -407,7 +407,7 @@ MultiArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutio
     return ma;
 }
 
-int SolutionStore::nthCalculatedTimeStep(FieldInfo* fieldInfo, int n) const
+int SolutionStore::nthCalculatedTimeStep(const FieldInfo *fieldInfo, int n) const
 {
     int count = 0;
     for(int step = 0; step <= lastTimeStep(fieldInfo, SolutionMode_Normal); step++)
@@ -424,7 +424,7 @@ int SolutionStore::nthCalculatedTimeStep(FieldInfo* fieldInfo, int n) const
 }
 
 
-int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
+int SolutionStore::nearestTimeStep(const FieldInfo *fieldInfo, int timeStep) const
 {
     int ts = timeStep;
     while (!this->contains(FieldSolutionID(fieldInfo, ts, 0, SolutionMode_Normal)))
@@ -436,7 +436,7 @@ int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
     return ts;
 }
 
-double SolutionStore::lastTime(FieldInfo *fieldInfo)
+double SolutionStore::lastTime(const FieldInfo *fieldInfo)
 {
     int timeStep = lastTimeStep(fieldInfo, SolutionMode_Normal);
     double time = NOT_FOUND_SO_FAR;
@@ -455,7 +455,7 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
     return time;
 }
 
-double SolutionStore::lastTime(Block *block)
+double SolutionStore::lastTime(const Block *block)
 {
     double time = lastTime(block->fields().at(0)->fieldInfo());
 
@@ -468,7 +468,7 @@ double SolutionStore::lastTime(Block *block)
 
 }
 
-int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep)
+int SolutionStore::lastAdaptiveStep(const FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep)
 {
     if (timeStep == -1)
         timeStep = lastTimeStep(fieldInfo, solutionType);
@@ -483,7 +483,7 @@ int SolutionStore::lastAdaptiveStep(FieldInfo *fieldInfo, SolutionMode solutionT
     return adaptiveStep;
 }
 
-int SolutionStore::lastAdaptiveStep(Block *block, SolutionMode solutionType, int timeStep)
+int SolutionStore::lastAdaptiveStep(const Block *block, SolutionMode solutionType, int timeStep)
 {
     int adaptiveStep = lastAdaptiveStep(block->fields().at(0)->fieldInfo(), solutionType, timeStep);
 
@@ -495,7 +495,7 @@ int SolutionStore::lastAdaptiveStep(Block *block, SolutionMode solutionType, int
     return adaptiveStep;
 }
 
-FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionMode solutionType)
+FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(const FieldInfo *fieldInfo, SolutionMode solutionType)
 {
     FieldSolutionID solutionID;
     if (solutionType == SolutionMode_Finer) {
@@ -522,7 +522,7 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo,
     return solutionID;
 }
 
-BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, SolutionMode solutionType)
+BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(const Block *block, SolutionMode solutionType)
 {
     FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->fields().at(0)->fieldInfo(), solutionType);
     BlockSolutionID bsid = fsid.blockSolutionID(block);
@@ -553,7 +553,7 @@ QList<double> SolutionStore::timeLevels(const FieldInfo *fieldInfo)
     return list;
 }
 
-int SolutionStore::timeLevelIndex(FieldInfo *fieldInfo, double time)
+int SolutionStore::timeLevelIndex(const FieldInfo *fieldInfo, double time)
 {
     int level = -1;
     QList<double> levels = timeLevels(fieldInfo);
@@ -569,7 +569,7 @@ int SolutionStore::timeLevelIndex(FieldInfo *fieldInfo, double time)
     return level;
 }
 
-double SolutionStore::timeLevel(FieldInfo *fieldInfo, int timeLevelIndex)
+double SolutionStore::timeLevel(const FieldInfo *fieldInfo, int timeLevelIndex)
 {
     QList<double> levels = timeLevels(fieldInfo);
     if (timeLevelIndex >= 0 && timeLevelIndex < levels.count())

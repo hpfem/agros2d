@@ -29,7 +29,7 @@
 
 #include "hermes2d/plugin_interface.h"
 
-bool hasForce{{CLASS}}(FieldInfo *fieldInfo)
+bool hasForce{{CLASS}}(const FieldInfo *fieldInfo)
 {
     {{#VARIABLE_SOURCE}}
     if ((fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
@@ -42,7 +42,7 @@ bool hasForce{{CLASS}}(FieldInfo *fieldInfo)
     return false;
 }
 
-Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                       Hermes::Hermes2D::Element *element, SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
     int numberOfSolutions = fieldInfo->numberOfSolutions();

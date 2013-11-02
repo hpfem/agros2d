@@ -36,7 +36,7 @@
 {{/QUANTITY_INFO}}
 
 {{#EXT_FUNCTION}}
-{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
 {
     {{QUANTITY_SHORTNAME}} = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
 }
@@ -180,7 +180,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface::setMarkerSource(marker);
 
@@ -232,7 +232,7 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface::setMarkerSource(marker);
 
@@ -264,7 +264,7 @@ void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Sca
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface::setMarkerSource(marker);
 

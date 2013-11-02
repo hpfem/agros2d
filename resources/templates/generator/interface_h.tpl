@@ -55,27 +55,27 @@ public:
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                  Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                  const QString &variable,
                                                  PhysicFieldVariableComp physicFieldVariableComp);
 
     // error calculators
-    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,
+    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
                                                                        const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
+    virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
+    virtual IntegralValue *surfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
+    virtual IntegralValue *volumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
     // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+    virtual Point3 force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                          Hermes::Hermes2D::Element *element, SceneMaterial *material,
                          const Point3 &point, const Point3 &velocity);
-    virtual bool hasForce(FieldInfo *fieldInfo);
+    virtual bool hasForce(const FieldInfo *fieldInfo);
 
 
     // localization
@@ -92,7 +92,7 @@ public:
 class {{VALUE_FUNCTION_FULL_NAME}} : public AgrosExtFunction
 {
 public:
-    {{VALUE_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI);
+    {{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI);
     virtual double getValue(int hermesMarker, double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
     Hermes::Hermes2D::Function<double>* clone() const
@@ -114,7 +114,7 @@ private:
 class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
 {
 public:
-    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI);
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI);
     ~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}();
     virtual double calculateValue(int hermesMarker, double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;

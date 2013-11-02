@@ -34,12 +34,12 @@
 class {{CLASS}}VolumetricIntegralEggShellCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-{{CLASS}}VolumetricIntegralEggShellCalculator(FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+{{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
     : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
 {
 }
 
-{{CLASS}}VolumetricIntegralEggShellCalculator(FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+{{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
     : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
 {
 }
@@ -93,18 +93,18 @@ virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* resul
 
 private:
 // field info
-FieldInfo *m_fieldInfo;
+const FieldInfo *m_fieldInfo;
 };
 
 class {{CLASS}}VolumetricIntegralCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-{{CLASS}}VolumetricIntegralCalculator(FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+{{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
     : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
 {
 }
 
-{{CLASS}}VolumetricIntegralCalculator(FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+{{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
     : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
 {
 }
@@ -159,10 +159,10 @@ virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* resul
 
 private:
 // field info
-FieldInfo *m_fieldInfo;
+const FieldInfo *m_fieldInfo;
 };
 
-{{CLASS}}VolumeIntegral::{{CLASS}}VolumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+{{CLASS}}VolumeIntegral::{{CLASS}}VolumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
     : IntegralValue(fieldInfo, timeStep, adaptivityStep, solutionType)
 {
     calculate();

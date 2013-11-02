@@ -26,9 +26,9 @@
 #include "hermes2d/field.h"
 #include "hermes2d.h"
 
-bool hasForce{{CLASS}}(FieldInfo *fieldInfo);
+bool hasForce{{CLASS}}(const FieldInfo *fieldInfo);
 
-Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                       Hermes::Hermes2D::Element *element, SceneMaterial *material, const Point3 &point, const Point3 &velocity = Point3());
 
 

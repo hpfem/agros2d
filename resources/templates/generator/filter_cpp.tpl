@@ -30,7 +30,7 @@
 #include "hermes2d/plugin_interface.h"
 
 
-{{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+{{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                            const QString &variable,
                                            PhysicFieldVariableComp physicFieldVariableComp)

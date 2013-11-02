@@ -40,7 +40,7 @@ public:
 
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerSource(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}
@@ -62,7 +62,7 @@ public:
 
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(Marker *marker);
+    virtual void setMarkerSource(const Marker *marker);
 
 private:
     unsigned int j;

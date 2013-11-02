@@ -40,7 +40,7 @@
 class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
 {
 public:
-    AgrosExtFunction(FieldInfo* fieldInfo, int offsetI) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(offsetI) {}
+    AgrosExtFunction(const FieldInfo* fieldInfo, int offsetI) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(offsetI) {}
     ~AgrosExtFunction();
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
@@ -54,7 +54,7 @@ public:
     virtual void init() {}
 
 protected:
-    FieldInfo* m_fieldInfo;
+    const FieldInfo* m_fieldInfo;
     int m_offsetI;
 };
 
@@ -95,7 +95,7 @@ protected:
 class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
 {
 public:
-    AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count = 0);
+    AgrosSpecialExtFunction(const FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count = 0);
     ~AgrosSpecialExtFunction() {}
     virtual void init();
     double getValue(int hermesMarker, double h) const;
@@ -141,7 +141,7 @@ struct PointValue
 class LocalValue
 {
 public:
-    LocalValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
+    LocalValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
         : m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType), m_point(point) {}
 
     // point
@@ -156,7 +156,7 @@ protected:
     // point
     Point m_point;
     // field info
-    FieldInfo *m_fieldInfo;
+    const FieldInfo *m_fieldInfo;
     int m_timeStep;
     int m_adaptivityStep;
     SolutionMode m_solutionType;
@@ -168,7 +168,7 @@ protected:
 class IntegralValue
 {
 public:
-    IntegralValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+    IntegralValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
         : m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType) {}
 
     // variables
@@ -176,7 +176,7 @@ public:
 
 protected:
     // field info
-    FieldInfo *m_fieldInfo;
+    const FieldInfo *m_fieldInfo;
     int m_timeStep;
     int m_adaptivityStep;
     SolutionMode m_solutionType;
@@ -193,12 +193,12 @@ public:
     FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ), m_markerVolume(0.0) {}
 
     // source or single marker
-    virtual void setMarkerSource(Marker *marker) { m_markerSource = marker; }
-    inline Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
+    virtual void setMarkerSource(const Marker *marker) { m_markerSource = marker; }
+    inline const Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
 
     // target marker
-    virtual void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
-    inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
+    virtual void setMarkerTarget(const Marker *marker) { m_markerTarget = marker; }
+    inline const Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
     // time discretisation table
     inline void setTimeDiscretisationTable(BDF2Table** table) { m_table = table; }
@@ -209,9 +209,9 @@ public:
 
 protected:
     // source or single marker
-    Marker *m_markerSource;
+    const Marker *m_markerSource;
     // target marker
-    Marker *m_markerTarget;
+    const Marker *m_markerTarget;
     // time discretisation table
     BDF2Table **m_table;
 
@@ -294,26 +294,26 @@ public:
     virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI) = 0;
 
     // error calculators
-    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,
+    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
                                                                        const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) = 0;
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                                    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                                    const QString &variable,
                                                                    PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) = 0;
+    virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) = 0;
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
+    virtual IntegralValue *surfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
+    virtual IntegralValue *volumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
     // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+    virtual Point3 force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                          Hermes::Hermes2D::Element *element, SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
-    virtual bool hasForce(FieldInfo *fieldInfo) = 0;
+    virtual bool hasForce(const FieldInfo *fieldInfo) = 0;
 
     // localization
     virtual QString localeName(const QString &name) = 0;

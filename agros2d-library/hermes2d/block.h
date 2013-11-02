@@ -116,8 +116,8 @@ public:
     double iterLinearSolverToleranceAbsolute() const;
     int iterLinearSolverIters() const;
 
-    bool contains(FieldInfo* fieldInfo) const;
-    Field* field(FieldInfo* fieldInfo) const;
+    bool contains(const FieldInfo *fieldInfo) const;
+    Field* field(const FieldInfo* fieldInfo) const;
 
     inline QList<Field*> fields() const { return m_fields; }
     inline QList<CouplingInfo*> couplings() const { return m_couplings; }

@@ -138,13 +138,13 @@ ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const Proble
     return NULL;
 }
 
-Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(FieldInfo *fieldInfo,
+Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(const FieldInfo *fieldInfo,
                                                                                const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
 {
     return new {{CLASS}}ErrorCalculator<double>(fieldInfo, calculator, errorType);
 }
 
-Hermes::Hermes2D::MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+Hermes::Hermes2D::MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp)
@@ -152,29 +152,29 @@ Hermes::Hermes2D::MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(Field
     return Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp));
 }
 
-LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
+LocalValue *{{CLASS}}Interface::localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
 {
     return new {{CLASS}}LocalValue(fieldInfo, timeStep, adaptivityStep, solutionType, point);
 }
 
-IntegralValue *{{CLASS}}Interface::surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+IntegralValue *{{CLASS}}Interface::surfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
 {
     return new {{CLASS}}SurfaceIntegral(fieldInfo, timeStep, adaptivityStep, solutionType);
 }
 
-IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+IntegralValue *{{CLASS}}Interface::volumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
 {
     return new {{CLASS}}VolumeIntegral(fieldInfo, timeStep, adaptivityStep, solutionType);
 }
 
-Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+Point3 {{CLASS}}Interface::force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                  Hermes::Hermes2D::Element *element, SceneMaterial *material,
                                  const Point3 &point, const Point3 &velocity)
 {
     return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, element, material, point, velocity);
 }
 
-bool {{CLASS}}Interface::hasForce(FieldInfo *fieldInfo)
+bool {{CLASS}}Interface::hasForce(const FieldInfo *fieldInfo)
 {
     return hasForce{{CLASS}}(fieldInfo);
 }
@@ -196,7 +196,7 @@ QString {{CLASS}}Interface::localeDescription()
 // ***********************************************************************************************************************************
 
 {{#VALUE_FUNCTION_SOURCE}}
-{{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
 {
 {{#PARAMETERS_LINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
 {{/PARAMETERS_LINEAR}}
@@ -244,7 +244,7 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
 // ***********************************************************************************************************************************
 
 {{#SPECIAL_FUNCTION_SOURCE}}
-{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
 {
     m_boundLow = {{FROM}};
     m_boundHi = {{TO}};

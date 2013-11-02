@@ -592,7 +592,7 @@ int Block::iterLinearSolverIters() const
     return iters;
 }
 
-bool Block::contains(FieldInfo *fieldInfo) const
+bool Block::contains(const FieldInfo *fieldInfo) const
 {
     foreach(Field* field, m_fields)
     {
@@ -602,7 +602,7 @@ bool Block::contains(FieldInfo *fieldInfo) const
     return false;
 }
 
-Field* Block::field(FieldInfo *fieldInfo) const
+Field* Block::field(const FieldInfo *fieldInfo) const
 {
     foreach (Field* field, m_fields)
     {

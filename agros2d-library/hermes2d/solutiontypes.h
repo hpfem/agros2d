@@ -86,7 +86,7 @@ public:
     //Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
-    MultiArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
+    MultiArray<Scalar> fieldPart(const Block *block, const FieldInfo *fieldInfo);
 
     int size() { assert(m_solutions.size() == m_spaces.size()); return m_spaces.size(); }
 
@@ -104,13 +104,13 @@ private:
 template <typename Group>
 struct SolutionID
 {
-    Group* group;
+    const Group* group;
     int timeStep;
     int adaptivityStep;
     SolutionMode solutionMode;
 
     SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal) {}
-    SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionMode solutionMode) :
+    SolutionID(const Group* group, int timeStep, int adaptivityStep, SolutionMode solutionMode) :
         group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionMode(solutionMode) {}
 };
 
@@ -155,12 +155,12 @@ ostream& operator<<(ostream& output, const SolutionID<Group>& id)
 class FieldSolutionID : public SolutionID<FieldInfo>
 {
 public:
-    FieldSolutionID(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) :
+    FieldSolutionID(const FieldInfo* fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) :
         SolutionID<FieldInfo>(fieldInfo, timeStep, adaptivityStep, solutionType) {}
 
     FieldSolutionID() : SolutionID<FieldInfo>() {}
 
-    BlockSolutionID blockSolutionID(Block* block);
+    BlockSolutionID blockSolutionID(const Block* block);
 
     QString toString();
 };
@@ -168,12 +168,12 @@ public:
 class BlockSolutionID : public SolutionID<Block>
 {
 public:
-    BlockSolutionID(Block* block, int timeStep, int adaptivityStep, SolutionMode solutionType) :
+    BlockSolutionID(const Block* block, int timeStep, int adaptivityStep, SolutionMode solutionType) :
         SolutionID<Block>(block, timeStep, adaptivityStep, solutionType) {}
 
     BlockSolutionID() : SolutionID<Block>() {}
 
-    FieldSolutionID fieldSolutionID(FieldInfo* fieldInfo);
+    FieldSolutionID fieldSolutionID(const FieldInfo* fieldInfo);
 };
 
 enum SolverAction

@@ -117,7 +117,7 @@ public:
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);
 
-    Block* blockOfField(FieldInfo* fieldInfo) const;
+    Block* blockOfField(const FieldInfo* fieldInfo) const;
 
     void synchronizeCouplings();
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
