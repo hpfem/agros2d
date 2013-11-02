@@ -51,6 +51,8 @@ DataTable &DataTable::operator =(const DataTable &origin)
     m_isEmpty = origin.m_isEmpty;
 
     validate();
+
+    return *this;
 }
 
 DataTable::DataTable(const DataTable &origin)

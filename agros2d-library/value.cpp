@@ -88,6 +88,8 @@ Value& Value::operator =(const Value &origin)
     m_table = origin.m_table;
 
     evaluateAndSave();
+
+    return *this;
 //    qDebug() << "operator= Value" << this->m_text << ", " << this->m_number;
 }
 
