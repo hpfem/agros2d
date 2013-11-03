@@ -12,26 +12,38 @@ body {
 h1 {
 	padding: 2pt;
 	margin: 0;
-	color: rgb(41, 41, 140);
+	color: rgb(91, 91, 91);
 }
 
 h2 {
 	padding: 1pt;
 	margin: 0;
-	color: rgb(41, 41, 140);
+	color: rgb(91, 91, 91);
 }
 
 h3 {
-	padding: 1pt 0pt 0pt 1pt;
+	padding: 1pt 2pt 0pt 1pt;
 	margin: 0;
 	font-size: 90%;
-	color: rgb(41, 41, 140);
+	color: rgb(91, 91, 91);
+}
+
+hr {
+	border: 1px;
+	margin-top: 3px;
+	margin-bottom: 5px;
+	color: rgb(207, 174, 133);
+	background-color: rgb(207, 174, 133);
+	height: 2px;
 }
 
 table, td, tr {
 	font-size: 93%;
 	padding: 1pt 0pt 0pt 1pt;
-	/*border: 1pt solid black;*/
+}
+
+table {
+ 	padding-left: 4pt;
 }
 
 td {
@@ -48,6 +60,17 @@ td.quantity {
 
 td.unit {
 	width: 60px;
+}
+
+table.progress {
+	font-size: 100%;
+	width: 100%;
+	border: 0px;	
+}
+
+table.progress td {
+	width: auto;
+	padding: 2px;
 }
 
 .maintable {

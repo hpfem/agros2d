@@ -8,11 +8,17 @@
 	</style>
 </head>
 <body>
-<!--<h1>{{APPLICATION_LOG}}</h1>-->
 <div class="">
+<!--<h3>{{APPLICATION_LOG}}</h3>-->
+<table class="progress">
+<tr>
+<td>
 {{#ITEM}}
 <span style="color: gray;">{{ITEM_TIME}}</span><span style="color: {{ITEM_COLOR}};"><strong>{{ITEM_MODULE}}</strong>: {{ITEM_MESSAGE}}</span><br/>
 {{/ITEM}}
+</td>
+</tr>
+</table>
 </div>
 </body>
 </html>

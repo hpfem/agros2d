@@ -481,7 +481,7 @@ void SettingsWidget::doApply()
     save();
 
     // time step
-    QApplication::processEvents();
+    // QApplication::processEvents();
 
     emit apply();
 

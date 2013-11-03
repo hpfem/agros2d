@@ -196,7 +196,6 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     {
         // reset counter and process events
         m_printCounter = 0;
-        QApplication::processEvents();
     }
 }
 

@@ -916,7 +916,7 @@ void PostprocessorWidget::doApply()
     saveAdvanced();
 
     // time step
-    QApplication::processEvents();
+    // QApplication::processEvents();
 
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())

@@ -9,6 +9,7 @@
 </head>
 <body>
 <h1>{{LABEL}}</h1>
+<hr/>
 <div class="section">
 <table class="maintable">
 

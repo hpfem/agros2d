@@ -9,6 +9,7 @@
 </head>
 <body>
 <h1>{{LABEL}}</h1>
+<hr/>
 <div class="section">
 {{#FIELD}}
 <h3>{{FIELDNAME}}</h3>
