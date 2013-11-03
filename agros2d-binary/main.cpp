@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
         AgrosApplication a(argc, argv);
         a.setStyle();
         a.setLocale();
+        a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 
         MainWindow w;
 

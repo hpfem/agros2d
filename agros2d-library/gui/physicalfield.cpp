@@ -203,9 +203,13 @@ void PhysicalFieldWidget::doFieldInfo(int index)
         FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(fieldName);
         if (Agros2D::problem()->isSolved())
         {
-            fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
-            doTimeStep(-1);
+            fillComboBoxTimeStep(fieldInfo, cmbTimeStep);            
         }
+        else
+        {
+            cmbTimeStep->clear();
+        }
+        doTimeStep(-1);
 
         if (m_currentFieldName != fieldName)
             emit fieldChanged();
@@ -229,13 +233,13 @@ void PhysicalFieldWidget::doTimeStep(int index)
         {
             cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);
         }
-        doAdaptivityStep(-1);
     }
     else
     {
-        cmbAdaptivityStep->clear();
-        doAdaptivityStep(-1);
+        cmbAdaptivityStep->clear();        
     }
+
+    doAdaptivityStep(-1);
 }
 
 void PhysicalFieldWidget::doAdaptivityStep(int index)
