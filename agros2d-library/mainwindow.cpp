@@ -129,8 +129,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createMain();
 
     // python engine
-    connect(currentPythonEngineAgros(), SIGNAL(startedScript()), this, SLOT(disableControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(setControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(startedScript()), this, SLOT(doStartedScript()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 
     // post hermes
     connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));
@@ -1358,9 +1358,37 @@ void MainWindow::clear()
     setControls();
 }
 
-void MainWindow::disableControls()
+void MainWindow::doStartedScript()
 {
-    setEnabled(false);
+    // disable controls
+    setEnabledControls(false);
+}
+
+void MainWindow::doExecutedScript()
+{
+    // enable controls
+    setEnabledControls(true);
+    setControls();
+}
+
+void MainWindow::setEnabledControls(bool state)
+{
+    tlbFile->setEnabled(state);
+    tlbGeometry->setEnabled(state);
+    tlbPost2D->setEnabled(state);
+    tlbView->setEnabled(state);
+    tlbZoom->setEnabled(state);
+
+    tabViewLayout->setEnabled(state);
+    tabControlsLayout->setEnabled(state);
+
+    resultsView->setEnabled(state);
+    consoleView->setEnabled(state);
+    logView->setEnabled(state);
+
+    menuBar()->setEnabled(state);
+
+    centralWidget()->setEnabled(state);
 }
 
 void MainWindow::setControls()

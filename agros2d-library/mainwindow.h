@@ -107,7 +107,9 @@ private slots:
     void doOnlineHelp();
     void doCheckVersion();
     void doAbout();
-    void disableControls();
+    void doStartedScript();
+    void doExecutedScript();
+    void setEnabledControls(bool state);
     void setControls();
     void clear();
 
@@ -129,7 +131,6 @@ private:
     QMenu *mnuCustomForms;
 
     QToolBar *tlbFile;
-    QToolBar *tlbEdit;
     QToolBar *tlbView;
     QToolBar *tlbZoom;
     QToolBar *tlbGeometry;

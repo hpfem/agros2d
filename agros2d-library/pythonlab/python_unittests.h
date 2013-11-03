@@ -40,13 +40,19 @@ protected:
 
 private:
     QTreeWidget *trvTests;
-    QWebView *webView;
     QSplitter *splitter;
     QPushButton *btnScenarios;
+    QPushButton *btnRunTests;
+    QPushButton *btnStopTest;
+    QPushButton *btnUncheckTests;
+    QDialogButtonBox *buttonBox;
 
     XMLTest::test m_test;
 
+    QWebView *webView;
     QString m_cascadeStyleSheet;
+
+    bool m_isAborted;
 
     void readTestFromDisk(const QString& fileName);
 
@@ -67,6 +73,8 @@ private slots:
 
     void uncheckTests();
     void runTestsFromSuite();   
+    void stopTest();
+    void setEnabledControls(bool state);
     void readTestsSettingsFromScenario(QAction *action);
 };
 

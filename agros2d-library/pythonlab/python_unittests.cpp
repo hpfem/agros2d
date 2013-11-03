@@ -27,7 +27,7 @@
 const static QString DATE_FORMAT = "yyyy-MM-dd hh.mm.ss";
 
 UnitTestsWidget::UnitTestsWidget(QWidget *parent)
-    : QDialog(parent), m_test(XMLTest::tests())
+    : QDialog(parent), m_test(XMLTest::tests()), m_isAborted(false)
 {
     setWindowTitle(tr("Unit tests"));
     setModal(true);
@@ -52,21 +52,25 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     // connect(trvTests, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     // connect(trvTests, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
-    QPushButton *btnRunTests = new QPushButton(tr("Run tests"));
+    btnRunTests = new QPushButton(tr("Run tests"));
     connect(btnRunTests, SIGNAL(clicked()), this, SLOT(runTestsFromSuite()));
 
     // dialog buttons
     btnScenarios = new QPushButton(tr("Scenarios..."));
-    QPushButton *btnUncheckTests = new QPushButton(tr("Uncheck tests"));
+    btnUncheckTests = new QPushButton(tr("Uncheck tests"));
     connect(btnUncheckTests, SIGNAL(clicked()), this, SLOT(uncheckTests()));
+    btnStopTest = new QPushButton(tr("Stop"));
+    btnStopTest->setEnabled(false);
+    connect(btnStopTest, SIGNAL(clicked()), this, SLOT(stopTest()));
 
     QGridLayout *leftLayout = new QGridLayout();
     leftLayout->setContentsMargins(0, 0, 0, 0);
-    leftLayout->addWidget(trvTests, 0, 0, 1, 4);
+    leftLayout->addWidget(trvTests, 0, 0, 1, 5);
     leftLayout->addWidget(btnScenarios, 1, 0);
     leftLayout->addWidget(btnUncheckTests, 1, 1);
     leftLayout->setColumnStretch(2, 1);
-    leftLayout->addWidget(btnRunTests, 1, 3);
+    leftLayout->addWidget(btnStopTest, 1, 3);
+    leftLayout->addWidget(btnRunTests, 1, 4);
 
     QWidget *leftWidget = new QWidget();
     leftWidget->setLayout(leftLayout);
@@ -76,7 +80,7 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     splitter->addWidget(leftWidget);
     splitter->addWidget(webView);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -215,6 +219,10 @@ void UnitTestsWidget::uncheckTests()
 
 void UnitTestsWidget::runTestsFromSuite()
 {
+    m_isAborted = false;
+
+    setEnabledControls(false);
+
     // save settings
     saveTestsSettings();
 
@@ -236,10 +244,19 @@ void UnitTestsWidget::runTestsFromSuite()
             QTreeWidgetItem *item = trvTests->topLevelItem(i);
 
             if (item->checkState(0) == Qt::Checked)
+            {
                 runTestFromSuite(item->data(0, Qt::UserRole).toString(),
                                  item->data(1, Qt::UserRole).toString());
 
-            showInfoTests();
+                showInfoTests();
+                QApplication::processEvents();
+            }
+
+            if (m_isAborted)
+            {
+                m_isAborted = false;
+                break;
+            }
         }
 
         std::string mesh_schema_location("");
@@ -257,6 +274,8 @@ void UnitTestsWidget::runTestsFromSuite()
     {
         std::cerr << e << std::endl;
     }
+
+    setEnabledControls(true);
 }
 
 void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls)
@@ -553,6 +572,21 @@ void UnitTestsWidget::saveTestsSettings()
         else
             settings.remove(key);
     }
+}
+
+void UnitTestsWidget::stopTest()
+{
+    m_isAborted = true;
+}
+
+void UnitTestsWidget::setEnabledControls(bool state)
+{
+    trvTests->setEnabled(state);
+    btnRunTests->setEnabled(state);
+    btnStopTest->setEnabled(!state);
+    btnScenarios->setEnabled(state);
+    btnUncheckTests->setEnabled(state);
+    buttonBox->setEnabled(state);
 }
 
 void UnitTestsWidget::doAccept()

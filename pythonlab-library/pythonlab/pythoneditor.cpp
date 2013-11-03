@@ -863,6 +863,8 @@ void PythonEditorDialog::setEnabledControls(bool state)
     consoleHistoryView->setEnabled(state);
     variablesView->setEnabled(state);
     fileBrowserView->setEnabled(state);
+
+    menuBar()->setEnabled(state);
 }
 
 void PythonEditorDialog::doReplaceTabsWithSpaces()
