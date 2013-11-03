@@ -61,7 +61,7 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 0, 0, 0);
-    layoutMain->addWidget(webView);
+    layoutMain->addWidget(webView, 1);
     layoutMain->addWidget(memoryLabel, 0, Qt::AlignLeft);
 
     setLayout(layoutMain);
