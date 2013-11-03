@@ -414,7 +414,8 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
 
             QString dataTimeSteps = "[";
             for (int i = 0; i < times.size(); i++)
-                dataTimeSteps += QString("[%1*1000, %2], ").arg(dates.at(i)).arg(times.at(i));
+                if (times.at(i) > 0.0)
+                    dataTimeSteps += QString("[%1*1000, %2], ").arg(dates.at(i)).arg(times.at(i));
             dataTimeSteps += "]";
 
             // chart time step vs. steps
