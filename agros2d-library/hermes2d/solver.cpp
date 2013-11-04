@@ -494,25 +494,11 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
                                                       0.0,
                                                       Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
 
-        if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
-        {
-            NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
-
-            runTime.setNewtonResidual(solver->residualNorms());
-            runTime.setNonlinearDamping(solver->damping());
-            runTime.setJacobianCalculations(solver->jacobianCalculations());
-            runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
-        }
-
-        if (dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
-        {
-            PicardSolverAgros<Scalar> *solver = dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
-
-            runTime.setNewtonResidual(solver->residualNorms());
-            runTime.setNonlinearDamping(solver->damping());
-            runTime.setJacobianCalculations(solver->jacobianCalculations());
-            runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
-        }
+        SolverAgros *solver = m_hermesSolverContainer.data()->solver();
+        runTime.setNewtonResidual(solver->residualNorms());
+        runTime.setNonlinearDamping(solver->damping());
+        runTime.setJacobianCalculations(solver->jacobianCalculations());
+        runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
 
         Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
     }
@@ -807,26 +793,12 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
-    if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
-    {
-        NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
 
-        runTime.setNewtonResidual(solver->residualNorms());
-        runTime.setNonlinearDamping(solver->damping());
-        runTime.setJacobianCalculations(solver->jacobianCalculations());
-        runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
-    }
-
-    if (dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
-    {
-        PicardSolverAgros<Scalar> *solver = dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
-
-        runTime.setNewtonResidual(solver->residualNorms());
-        runTime.setNonlinearDamping(solver->damping());
-        runTime.setJacobianCalculations(solver->jacobianCalculations());
-        runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
-    }
-
+    SolverAgros *solver = m_hermesSolverContainer.data()->solver();
+    runTime.setNewtonResidual(solver->residualNorms());
+    runTime.setNonlinearDamping(solver->damping());
+    runTime.setJacobianCalculations(solver->jacobianCalculations());
+    runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);

@@ -62,7 +62,7 @@ public:
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
     virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_newtonSolver->get_linear_matrix_solver(); }
 
-    NewtonSolverAgros<Scalar> *solver() const { return m_newtonSolver; }
+    virtual SolverAgros *solver() const { return m_newtonSolver; }
 
 private:
     NewtonSolverAgros<Scalar> *m_newtonSolver;

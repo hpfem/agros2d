@@ -42,9 +42,15 @@
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
+LinearSolverAgros<Scalar>::LinearSolverAgros(Block *block)
+    : LinearSolver<Scalar>(), SolverAgros(block)
+{
+}
+
+template <typename Scalar>
 LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_linearSolver = new LinearSolver<Scalar>();
+    m_linearSolver = new LinearSolverAgros<Scalar>(block);
     m_linearSolver->set_verbose_output(false);
 
     // solver cache

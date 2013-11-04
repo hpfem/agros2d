@@ -33,6 +33,16 @@ class ExactSolutionScalarAgros;
 class SceneBoundary;
 
 template <typename Scalar>
+class LinearSolverAgros : public SolverAgros, public Hermes::Hermes2D::LinearSolver<Scalar>
+{
+public:
+    LinearSolverAgros(Block *block);
+
+protected:
+    virtual void setError(Phase phase) {}
+};
+
+template <typename Scalar>
 class LinearSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
@@ -46,8 +56,10 @@ public:
     virtual void matrixUnchangedDueToBDF(bool unchanged);
     virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_matrix_solver(); }
 
+    virtual SolverAgros *solver() const { return m_linearSolver; }
+
 private:
-    Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;
+    LinearSolverAgros<Scalar> *m_linearSolver;
 };
 
 #endif // SOLVER_LINEAR_H

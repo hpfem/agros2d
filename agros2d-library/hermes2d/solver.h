@@ -110,6 +110,7 @@ public:
     virtual Hermes::Algebra::LinearMatrixSolver<Scalar> *linearSolver() = 0;
 
     inline Scalar *slnVector() { return m_slnVector; }
+    virtual SolverAgros *solver() const = 0;
 
     // solver factory
     static QSharedPointer<HermesSolverContainer<Scalar> > factory(Block* block);
