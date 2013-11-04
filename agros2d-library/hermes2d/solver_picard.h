@@ -46,8 +46,6 @@ public:
 
 protected:
     virtual void setError(Phase phase);
-
-    QVector<double> m_relativeChangeOfSolutions;
 };
 
 template <typename Scalar>
@@ -62,6 +60,8 @@ public:
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_picardSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
     virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_picardSolver->get_linear_matrix_solver(); }
+
+    PicardSolverAgros<Scalar> *solver() const { return m_picardSolver; }
 
 private:
     PicardSolverAgros<Scalar> *m_picardSolver;

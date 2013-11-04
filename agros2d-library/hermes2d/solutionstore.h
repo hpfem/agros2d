@@ -62,6 +62,8 @@ public:
         inline void setJacobianCalculations(int value) { m_jacobianCalculations = value; }
         inline QList<FileName> fileNames() const { return m_fileNames; }
         inline void setFileNames(QList<FileName> value) { m_fileNames = value; }
+        inline QVector<double> relativeChangeOfSolutions() const { return m_relativeChangeOfSolutions; }
+        inline void setRelativeChangeOfSolutions(QVector<double> value) { m_relativeChangeOfSolutions = value; }
         inline QVector<double> newtonResidual() const { return m_newtonResidual; }
         inline void setNewtonResidual(QVector<double> value) { m_newtonResidual = value; }
         inline QVector<double> nonlinearDamping() const { return m_nonlinearDamping; }
@@ -74,6 +76,7 @@ public:
         int m_jacobianCalculations;
 
         QList<FileName> m_fileNames;
+        QVector<double> m_relativeChangeOfSolutions;
         QVector<double> m_newtonResidual;
         QVector<double> m_nonlinearDamping;
     };

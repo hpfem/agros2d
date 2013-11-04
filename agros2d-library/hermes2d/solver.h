@@ -52,6 +52,8 @@ public:
     inline QVector<double> damping() const { return m_damping; }
     inline QVector<double> residualNorms() const { return m_residualNorms; }
     inline QVector<double> solutionNorms() const { return m_solutionNorms; }
+    inline QVector<double> relativeChangeOfSolutions() const { return m_relativeChangeOfSolutions; }
+    inline int jacobianCalculations() const { return m_jacobianCalculations; }
 
     void clearSteps();
 
@@ -64,6 +66,8 @@ protected:
     QVector<double> m_damping;
     QVector<double> m_residualNorms;
     QVector<double> m_solutionNorms;
+    QVector<double> m_relativeChangeOfSolutions;
+    int m_jacobianCalculations;
 };
 
 class AgrosExternalSolverOctave : public ExternalSolver<double>

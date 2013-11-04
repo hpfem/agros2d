@@ -76,6 +76,7 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
 {
     if (phase == Phase_Init)
     {
+        m_jacobianCalculations = 0;
         Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Initial step"));
         return;
     }
@@ -118,6 +119,7 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
     else
         assert(0);
 
+    m_damping.append(current_damping_factor);
     Agros2D::log()->setNonlinearTable(m_steps, m_relativeChangeOfSolutions);
 }
 

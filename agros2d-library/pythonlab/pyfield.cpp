@@ -697,7 +697,9 @@ void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::stri
     info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
 }
 
-void PyField::solverInfo(int timeStep, int adaptivityStep, const std::string &solutionType, vector<double> &residual, vector<double> &dampingCoeff, int &jacobianCalculations) const
+void PyField::solverInfo(int timeStep, int adaptivityStep, const std::string &solutionType,
+                         vector<double> &solutionsChange, vector<double> &residual,
+                         vector<double> &dampingCoeff, int &jacobianCalculations) const
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -709,6 +711,9 @@ void PyField::solverInfo(int timeStep, int adaptivityStep, const std::string &so
     adaptivityStep = getAdaptivityStep(adaptivityStep, timeStep, solutionMode);
 
     SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, solutionMode));
+
+    for (int i = 0; i < runTime.relativeChangeOfSolutions().size(); i++)
+        solutionsChange.push_back(runTime.relativeChangeOfSolutions().at(i));
 
     for (int i = 0; i < runTime.newtonResidual().size(); i++)
         residual.push_back(runTime.newtonResidual().at(i));

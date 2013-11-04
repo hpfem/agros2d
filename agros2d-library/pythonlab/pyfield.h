@@ -146,7 +146,9 @@ class PyField
         void solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info) const;
 
         // solver info
-        void solverInfo(int timeStep, int adaptivityStep, const std::string &solutionType, vector<double> &residual, vector<double> &dampingCoeff, int &jacobianCalculations) const;
+        void solverInfo(int timeStep, int adaptivityStep, const std::string &solutionType,
+                        vector<double> &solutionsChange, vector<double> &residual,
+                        vector<double> &dampingCoeff, int &jacobianCalculations) const;
 
         // adaptivity info
         void adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs) const;
