@@ -46,12 +46,7 @@ public:
     virtual void on_damping_factor_updated();
     virtual void on_reused_jacobian_step_end();
 
-    inline int jacobianCalculations() const { return m_jacobianCalculations; }
-
 protected:
-    QVector<double> m_relativeChangeOfSolutions;
-    int m_jacobianCalculations;
-
     virtual void setError(Phase phase);
 };
 template <typename Scalar>

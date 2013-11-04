@@ -501,9 +501,20 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
             runTime.setNewtonResidual(solver->residualNorms());
             runTime.setNonlinearDamping(solver->damping());
             runTime.setJacobianCalculations(solver->jacobianCalculations());
+            runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
         }
 
-        Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);       
+        if (dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
+        {
+            PicardSolverAgros<Scalar> *solver = dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
+
+            runTime.setNewtonResidual(solver->residualNorms());
+            runTime.setNonlinearDamping(solver->damping());
+            runTime.setJacobianCalculations(solver->jacobianCalculations());
+            runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
+        }
+
+        Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
     }
     catch (AgrosSolverException e)
     {
@@ -803,10 +814,22 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
         runTime.setNewtonResidual(solver->residualNorms());
         runTime.setNonlinearDamping(solver->damping());
         runTime.setJacobianCalculations(solver->jacobianCalculations());
+        runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
     }
 
+    if (dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
+    {
+        PicardSolverAgros<Scalar> *solver = dynamic_cast<PicardSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
+
+        runTime.setNewtonResidual(solver->residualNorms());
+        runTime.setNonlinearDamping(solver->damping());
+        runTime.setJacobianCalculations(solver->jacobianCalculations());
+        runTime.setRelativeChangeOfSolutions(solver->relativeChangeOfSolutions());
+    }
+
+
     MultiArray<Scalar> msa(actualSpaces(), solutions);
-    Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);  
+    Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 }
 
 template <typename Scalar>
