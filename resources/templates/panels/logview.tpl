@@ -8,12 +8,8 @@
 	</style>
 </head>
 <body>
-<div class="">
-<!--<h3>{{APPLICATION_LOG}}</h3>-->
-{{#ITEM}}
-{{#ITEM_HEADING}}<br/><h2>{{ITEM_HEADING_MESSAGE}}</h2><hr/>{{/ITEM_HEADING}}
-{{#ITEM_TEXT}}<span style="color: gray;">{{ITEM_TIME}}</span><span style="color: {{ITEM_COLOR}};"><strong>{{ITEM_MODULE}}</strong>: {{ITEM_MESSAGE}}</span><br/>{{/ITEM_TEXT}}
-{{/ITEM}}
+<div>
+{{#ITEM}}{{#ITEM_HEADING}}<br/><h2>{{ITEM_HEADING_MESSAGE}}</h2><hr/>{{/ITEM_HEADING}}{{#ITEM_TEXT}}<div><span style="color: gray;">{{ITEM_TIME}}</span><span style="color: {{ITEM_COLOR}};"><strong>{{ITEM_MODULE}}</strong>: {{ITEM_MESSAGE}}</span></div>{{/ITEM_TEXT}}{{/ITEM}}
 </div>
 </body>
 </html>

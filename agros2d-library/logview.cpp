@@ -38,7 +38,7 @@ Log::Log()
 // *******************************************************************************************************
 
 LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
-    m_printCounter(0), logInfo(NULL)
+    m_printCounter(0), m_logInfo(NULL)
 {    
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
@@ -89,19 +89,19 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
 
 LogWidget::~LogWidget()
 {
-    delete logInfo;
+    delete m_logInfo;
 }
 
 void LogWidget::initWebView()
 {
-    if (logInfo)
-        delete logInfo;
+    if (m_logInfo)
+        delete m_logInfo;
 
-    logInfo = new ctemplate::TemplateDictionary("info");
+    m_logInfo = new ctemplate::TemplateDictionary("info");
 
-    logInfo->SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
-    logInfo->SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-    logInfo->SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+    m_logInfo->SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+    m_logInfo->SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+    m_logInfo->SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
 
     webView->setHtml("");
 }
@@ -143,21 +143,19 @@ void LogWidget::showDebug()
 
 void LogWidget::printHeading(const QString &message)
 {
-    ctemplate::TemplateDictionary *item = logInfo->AddSectionDictionary("ITEM");
-    ctemplate::TemplateDictionary *itemHeading = item->AddSectionDictionary("ITEM_HEADING");
+    ctemplate::TemplateDictionary *item = m_logInfo->AddSectionDictionary("ITEM");
+    item->ShowSection("ITEM_HEADING");
 
 #if QT_VERSION < 0x050000
-    itemHeading->SetValue("ITEM_HEADING_MESSAGE", Qt::escape(message).toStdString());
+    item->SetValue("ITEM_HEADING_MESSAGE", Qt::escape(message).toStdString());
 #else
-    itemHeading->SetValue("ITEM_HEADING_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+    item->SetValue("ITEM_HEADING_MESSAGE", QString(message).toHtmlEscaped().toStdString());
 #endif
 
     std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, logInfo, &info);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, m_logInfo, &info);
     webView->setHtml(QString::fromStdString(info));
     webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
-
-    repaint();
 }
 
 void LogWidget::printMessage(const QString &module, const QString &message)
@@ -186,27 +184,27 @@ void LogWidget::printDebug(const QString &module, const QString &message)
 void LogWidget::print(const QString &module, const QString &message, const QString &color)
 {
     // template
-    ctemplate::TemplateDictionary *item = logInfo->AddSectionDictionary("ITEM");
-    ctemplate::TemplateDictionary *itemText = item->AddSectionDictionary("ITEM_TEXT");
+    ctemplate::TemplateDictionary *item = m_logInfo->AddSectionDictionary("ITEM");
+    item->ShowSection("ITEM_TEXT");
 
     if (actShowTimestamp->isChecked())
     {
 #if QT_VERSION < 0x050000
-        itemText->SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
+        item->SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
 #else
-        itemText->SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
+        item->SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
 #endif
     }
-    itemText->SetValue("ITEM_COLOR", color.toStdString());
-    itemText->SetValue("ITEM_MODULE", module.toStdString());
+    item->SetValue("ITEM_COLOR", color.toStdString());
+    item->SetValue("ITEM_MODULE", module.toStdString());
 #if QT_VERSION < 0x050000
-    itemText->SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
+    item->SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
 #else
-    itemText->SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+    item->SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
 #endif
 
     std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, logInfo, &info);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, m_logInfo, &info);
     webView->setHtml(QString::fromStdString(info));
     webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
 

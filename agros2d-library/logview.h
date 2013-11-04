@@ -79,8 +79,6 @@ private slots:
     void showDebug();
 
 protected:
-    ctemplate::TemplateDictionary *logInfo;
-
     void print(const QString &module, const QString &message,
                const QString &color = "");
 
@@ -96,6 +94,8 @@ private:
 
     QLabel *memoryLabel;
     int m_printCounter;
+
+    ctemplate::TemplateDictionary *m_logInfo;
 
     void createActions();
 
