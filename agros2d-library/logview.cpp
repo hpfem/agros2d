@@ -106,6 +106,30 @@ void LogWidget::initWebView()
     webView->setHtml("");
 }
 
+void LogWidget::showHtml()
+{
+    ctemplate::TemplateDictionary *local = m_logInfo->MakeCopy("local");
+
+    // remove first items in cache
+    while (m_logItems.count() > 150)
+        m_logItems.removeFirst();
+
+    foreach (QString str, m_logItems)
+    {
+        ctemplate::TemplateDictionary *item = local->AddSectionDictionary("ITEM");
+        item->SetValue("STR", str.toStdString());
+    }
+
+    std::string info;
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, local, &info);
+    delete local;
+
+    webView->setHtml(QString::fromStdString(info));
+    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
+
+    repaint();
+}
+
 void LogWidget::contextMenu(const QPoint &pos)
 {
     mnuInfo->exec(QCursor::pos());
@@ -143,19 +167,20 @@ void LogWidget::showDebug()
 
 void LogWidget::printHeading(const QString &message)
 {
-    ctemplate::TemplateDictionary *item = m_logInfo->AddSectionDictionary("ITEM");
-    item->ShowSection("ITEM_HEADING");
+    // template
+    ctemplate::TemplateDictionary item("heading");
 
 #if QT_VERSION < 0x050000
-    item->SetValue("ITEM_HEADING_MESSAGE", Qt::escape(message).toStdString());
+    item.SetValue("ITEM_HEADING_MESSAGE", Qt::escape(message).toStdString());
 #else
-    item->SetValue("ITEM_HEADING_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+    item.SetValue("ITEM_HEADING_MESSAGE", QString(message).toHtmlEscaped().toStdString());
 #endif
 
     std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, m_logInfo, &info);
-    webView->setHtml(QString::fromStdString(info));
-    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview_heading.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &item, &info);
+    m_logItems.append(QString::fromStdString(info));
+
+    showHtml();
 }
 
 void LogWidget::printMessage(const QString &module, const QString &message)
@@ -184,31 +209,29 @@ void LogWidget::printDebug(const QString &module, const QString &message)
 void LogWidget::print(const QString &module, const QString &message, const QString &color)
 {
     // template
-    ctemplate::TemplateDictionary *item = m_logInfo->AddSectionDictionary("ITEM");
-    item->ShowSection("ITEM_TEXT");
+    ctemplate::TemplateDictionary item("text");
 
     if (actShowTimestamp->isChecked())
     {
 #if QT_VERSION < 0x050000
-        item->SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
+        item.SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
 #else
-        item->SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
+        item.SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
 #endif
     }
-    item->SetValue("ITEM_COLOR", color.toStdString());
-    item->SetValue("ITEM_MODULE", module.toStdString());
+    item.SetValue("ITEM_COLOR", color.toStdString());
+    item.SetValue("ITEM_MODULE", module.toStdString());
 #if QT_VERSION < 0x050000
-    item->SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
+    item.SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
 #else
-    item->SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+    item.SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
 #endif
 
     std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, m_logInfo, &info);
-    webView->setHtml(QString::fromStdString(info));
-    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview_text.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &item, &info);
+    m_logItems.append(QString::fromStdString(info));
 
-    repaint();
+    showHtml();
 
     // force run process events
     m_printCounter++;

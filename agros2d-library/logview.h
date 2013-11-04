@@ -96,12 +96,14 @@ private:
     int m_printCounter;
 
     ctemplate::TemplateDictionary *m_logInfo;
+    QStringList m_logItems;
 
     void createActions();
 
 private slots:
     void refreshMemory(int usage);
     void initWebView();
+    void showHtml();
 };
 
 class LogView : public QDockWidget
