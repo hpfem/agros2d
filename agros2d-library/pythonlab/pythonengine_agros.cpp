@@ -340,8 +340,8 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         }
 
         str += QString("%1.number_of_refinements = %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
+                arg(fieldInfo->fieldId()).
+                arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
 
         str += QString("%1.polynomial_order = %2\n").
                 arg(fieldInfo->fieldId()).

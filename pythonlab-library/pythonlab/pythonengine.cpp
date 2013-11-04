@@ -317,8 +317,11 @@ void PythonEngine::deleteUserModules()
 
             QString exp = QString("del %1; import sys; del sys.modules[\"%1\"]").arg(variable.name);
             // qDebug() << exp;
-            PyObject *del = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-            Py_XDECREF(del);
+#pragma omp critical(del)
+            {
+                PyObject *del = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+                Py_XDECREF(del);
+            }
         }
     }
 
@@ -335,55 +338,58 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
 
     bool successfulRun = false;
 
-#pragma omp critical
+    QSettings settings;
+    // enable user module deleter
+    if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())
+        deleteUserModules();
+
+    runPythonHeader();
+
+    PyObject *output = NULL;
+    if (QFile::exists(fileName))
     {
-        QSettings settings;
-        // enable user module deleter
-        if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())
-            deleteUserModules();
-
-        runPythonHeader();
-
-        PyObject *output = NULL;
-        if (QFile::exists(fileName))
+        QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
+#pragma omp critical(import)
         {
-            QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
             PyObject *import = PyRun_String(str.toLatin1().data(), Py_single_input, m_dict, m_dict);
             Py_XDECREF(import);
         }
-
-        // compile
-        PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
-        // run
-        if (useProfiler)
-        {
-            setProfilerFileName(fileName);
-            startProfiler();
-        }
-        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-        if (useProfiler)
-            finishProfiler();
-
-        if (output)
-        {
-            successfulRun = true;
-            Py_XDECREF(output);
-        }
-        else
-        {
-            // error traceback
-            Py_XDECREF(errorType);
-            Py_XDECREF(errorValue);
-            Py_XDECREF(errorTraceback);
-            PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
-            if (errorTraceback)
-                successfulRun = false;
-        }
-
-        Py_XDECREF(code);
-
-        m_isScriptRunning = false;
     }
+
+    // compile
+    PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
+    // run
+    if (useProfiler)
+    {
+        setProfilerFileName(fileName);
+        startProfiler();
+    }
+#pragma omp critical(output)
+    {
+        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+    }
+    if (useProfiler)
+        finishProfiler();
+
+    if (output)
+    {
+        successfulRun = true;
+        Py_XDECREF(output);
+    }
+    else
+    {
+        // error traceback
+        Py_XDECREF(errorType);
+        Py_XDECREF(errorValue);
+        Py_XDECREF(errorTraceback);
+        PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+        if (errorTraceback)
+            successfulRun = false;
+    }
+
+    Py_XDECREF(code);
+
+    m_isScriptRunning = false;
 
     // release the thread, no Python API allowed beyond this point
     PyGILState_Release(gstate);
@@ -395,84 +401,87 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
 
 bool PythonEngine::runExpression(const QString &expression, double *value, const QString &command)
 {
+    bool successfulRun = false;
+
+    /*
     while (m_isExpressionRunning)
     {
         qDebug() << "Expression is running" << expression;
         msleep(10);
     }
-
-    bool successfulRun = false;
-
-    m_isExpressionRunning = true;
-
-    PyObject *output = NULL;
-
-    runPythonHeader();
-
-    if (value)
+    */
+#pragma omp critical(m_isExpressionRunning)
     {
-        // return value
-        QString exp;
-        if (command.isEmpty())
-            exp = QString("result_pythonlab = %1").arg(expression);
-        else
-            exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
+        m_isExpressionRunning = true;
 
-        output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        PyObject *output = NULL;
+        runPythonHeader();
 
-        if (output)
+        if (value)
         {
-            // parse result
-            PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
+            // return value
+            QString exp;
+            if (command.isEmpty())
+                exp = QString("result_pythonlab = %1").arg(expression);
+            else
+                exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
 
-            if (result)
+            output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+
+            if (output)
             {
-                if ((QString(result->ob_type->tp_name) == "bool") ||
-                        (QString(result->ob_type->tp_name) == "int") ||
-                        (QString(result->ob_type->tp_name) == "float"))
-                {
-                    Py_INCREF(result);
-                    PyArg_Parse(result, "d", value);
-                    if (fabs(*value) < EPS_ZERO)
-                        *value = 0.0;
-                    Py_XDECREF(result);
+                // parse result
+                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
 
-                    successfulRun = true;
-                }
-                else
+                if (result)
                 {
-                    qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
+                    if ((QString(result->ob_type->tp_name) == "bool") ||
+                            (QString(result->ob_type->tp_name) == "int") ||
+                            (QString(result->ob_type->tp_name) == "float"))
+                    {
+                        Py_INCREF(result);
+                        PyArg_Parse(result, "d", value);
+                        if (fabs(*value) < EPS_ZERO)
+                            *value = 0.0;
+                        Py_XDECREF(result);
 
-                    successfulRun = false;
+                        successfulRun = true;
+                    }
+                    else
+                    {
+                        qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
+
+                        successfulRun = false;
+                    }
                 }
+
+                // speed up?
+                // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
             }
 
-            // speed up?
-            // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+        }
+        else
+        {
+            output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            if (output)
+                successfulRun = true;
         }
 
-    }
-    else
-    {
-        output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
-        if (output)
-            successfulRun = true;
-    }
+        if (!output)
+        {
+            // error traceback
+            Py_XDECREF(errorType);
+            Py_XDECREF(errorValue);
+            Py_XDECREF(errorTraceback);
+            PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+            if (errorTraceback)
+                successfulRun = false;
+        }
 
-    if (!output)
-    {
-        // error traceback
-        Py_XDECREF(errorType);
-        Py_XDECREF(errorValue);
-        Py_XDECREF(errorTraceback);
-        PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
-        if (errorTraceback)
-            successfulRun = false;
+        Py_XDECREF(output);
+
+        m_isExpressionRunning = false;
     }
-
-    Py_XDECREF(output);
-
-    m_isExpressionRunning = false;
 
     return successfulRun;
 }
@@ -514,52 +523,55 @@ QStringList PythonEngine::codeCompletionInterpreter(const QString& code)
 
 QStringList PythonEngine::codeCompletion(const QString& command)
 {
-    runPythonHeader();
-
     QStringList out;
 
-    // QTime time;
-    // time.start();
-    PyObject *output = PyRun_String(command.toLatin1().data(), Py_single_input, m_dict, m_dict);
-    // qDebug() << time.elapsed();
-
-    // parse result
-    if (output)
+#pragma omp critical
     {
-        PyObject *result = PyDict_GetItemString(m_dict, "result_jedi_pythonlab");
-        if (result)
+        runPythonHeader();
+
+        // QTime time;
+        // time.start();
+        PyObject *output = PyRun_String(command.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        // qDebug() << time.elapsed();
+
+        // parse result
+        if (output)
         {
-            Py_INCREF(result);
-            PyObject *list;
-            if (PyArg_Parse(result, "O", &list))
+            PyObject *result = PyDict_GetItemString(m_dict, "result_jedi_pythonlab");
+            if (result)
             {
-                int count = PyList_Size(list);
-                for (int i = 0; i < count; i++)
+                Py_INCREF(result);
+                PyObject *list;
+                if (PyArg_Parse(result, "O", &list))
                 {
-                    PyObject *item = PyList_GetItem(list, i);
-
-                    QString str = PyString_AsString(item);
-
-                    // remove builtin methods
-                    if (!str.startsWith("__"))
+                    int count = PyList_Size(list);
+                    for (int i = 0; i < count; i++)
                     {
-                        //qDebug() << str;
-                        out.append(str);
+                        PyObject *item = PyList_GetItem(list, i);
+
+                        QString str = PyString_AsString(item);
+
+                        // remove builtin methods
+                        if (!str.startsWith("__"))
+                        {
+                            //qDebug() << str;
+                            out.append(str);
+                        }
                     }
                 }
+                Py_DECREF(result);
             }
-            Py_DECREF(result);
+
+            PyObject *del = PyRun_String("del result_jedi_pythonlab", Py_single_input, m_dict, m_dict);
+            Py_XDECREF(del);
+        }
+        else
+        {
+            PyErr_Clear();
         }
 
-        PyObject *del = PyRun_String("del result_jedi_pythonlab", Py_single_input, m_dict, m_dict);
-        Py_XDECREF(del);
+        Py_XDECREF(output);
     }
-    else
-    {
-        PyErr_Clear();
-    }
-
-    Py_XDECREF(output);
 
     return out;
 }
@@ -570,33 +582,36 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 
     if (!m_isScriptRunning && !m_isExpressionRunning)
     {
-        QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
-
-        PyObject *run = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-
-        // parse result
-        PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
-        if (result)
+#pragma omp critical
         {
-            Py_INCREF(result);
-            PyObject *list;
-            if (PyArg_Parse(result, "O", &list))
+            QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
+
+            PyObject *run = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+
+            // parse result
+            PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
+            if (result)
             {
-                int count = PyList_Size(list);
-                for (int i = 0; i < count; i++)
+                Py_INCREF(result);
+                PyObject *list;
+                if (PyArg_Parse(result, "O", &list))
                 {
-                    PyObject *item = PyList_GetItem(list, i);
+                    int count = PyList_Size(list);
+                    for (int i = 0; i < count; i++)
+                    {
+                        PyObject *item = PyList_GetItem(list, i);
 
-                    QString str = PyString_AsString(item);
-                    out.append(str);
+                        QString str = PyString_AsString(item);
+                        out.append(str);
+                    }
                 }
+                Py_DECREF(result);
             }
-            Py_DECREF(result);
-        }
-        Py_XDECREF(run);
+            Py_XDECREF(run);
 
-        PyObject *del = PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
-        Py_XDECREF(del);
+            PyObject *del = PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
+            Py_XDECREF(del);
+        }
     }
 
     return out;
