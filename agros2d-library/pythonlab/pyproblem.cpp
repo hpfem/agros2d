@@ -164,7 +164,7 @@ void PyProblem::checkExistingFields(const QString &sourceField, const QString &t
 void PyProblem::mesh()
 {
     Agros2D::scene()->invalidate();
-    Agros2D::problem()->mesh();
+    Agros2D::problem()->mesh(true);
 
     if (!Agros2D::problem()->isMeshed())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());

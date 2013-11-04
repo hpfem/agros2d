@@ -77,6 +77,7 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
     mnuInfo->addSeparator();
     mnuInfo->addAction(actClear);
 
+    connect(Agros2D::log(), SIGNAL(headingMsg(QString)), this, SLOT(printHeading(QString)));
     connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
     connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
     connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
@@ -140,6 +141,25 @@ void LogWidget::showDebug()
     settings.setValue("LogWidget/ShowDebug", actShowDebug->isChecked());
 }
 
+void LogWidget::printHeading(const QString &message)
+{
+    ctemplate::TemplateDictionary *item = logInfo->AddSectionDictionary("ITEM");
+    ctemplate::TemplateDictionary *itemHeading = item->AddSectionDictionary("ITEM_HEADING");
+
+#if QT_VERSION < 0x050000
+    itemHeading->SetValue("ITEM_HEADING_MESSAGE", Qt::escape(message).toStdString());
+#else
+    itemHeading->SetValue("ITEM_HEADING_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+#endif
+
+    std::string info;
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, logInfo, &info);
+    webView->setHtml(QString::fromStdString(info));
+    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
+
+    repaint();
+}
+
 void LogWidget::printMessage(const QString &module, const QString &message)
 {
     print(module, message, "black");
@@ -167,20 +187,22 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
 {
     // template
     ctemplate::TemplateDictionary *item = logInfo->AddSectionDictionary("ITEM");
+    ctemplate::TemplateDictionary *itemText = item->AddSectionDictionary("ITEM_TEXT");
+
     if (actShowTimestamp->isChecked())
     {
 #if QT_VERSION < 0x050000
-        item->SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
+        itemText->SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
 #else
-        item->SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
+        itemText->SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
 #endif
     }
-    item->SetValue("ITEM_COLOR", color.toStdString());
-    item->SetValue("ITEM_MODULE", module.toStdString());
+    itemText->SetValue("ITEM_COLOR", color.toStdString());
+    itemText->SetValue("ITEM_MODULE", module.toStdString());
 #if QT_VERSION < 0x050000
-        item->SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
+    itemText->SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
 #else
-        item->SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+    itemText->SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
 #endif
 
     std::string info;
@@ -279,7 +301,6 @@ LogDialog::~LogDialog()
 
 void LogDialog::createControls()
 {
-    connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
     connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
     connect(Agros2D::log(), SIGNAL(nonlinearTable(QVector<double>, QVector<double>)), this, SLOT(nonlinearTable(QVector<double>,QVector<double>)));
     connect(Agros2D::log(), SIGNAL(adaptivityTable(QVector<double>, QVector<double>)), this, SLOT(adaptivityTable(QVector<double>, QVector<double>)));
@@ -321,6 +342,7 @@ void LogDialog::createControls()
 
     btnAbort = new QPushButton(tr("Abort"));
     connect(btnAbort, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(close()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(close()));
 
     QHBoxLayout *layoutStatus = new QHBoxLayout();
@@ -337,10 +359,6 @@ void LogDialog::createControls()
     layout->addLayout(layoutStatus);
 
     setLayout(layout);
-}
-
-void LogDialog::printMessage(const QString &module, const QString &message)
-{
 }
 
 void LogDialog::printError(const QString &module, const QString &message)
@@ -375,10 +393,16 @@ void LogDialog::tryClose()
 
 LogStdOut::LogStdOut(QWidget *parent) : QObject(parent)
 {
+    connect(Agros2D::log(), SIGNAL(headingMsg(QString)), this, SLOT(printHeading(QString)));
     connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString)), this, SLOT(printMessage(QString, QString)));
     connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
     connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
     connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
+}
+
+void LogStdOut::printHeading(const QString &message)
+{
+    Hermes::Mixins::Loggable::Static::warn(QString("%1").arg(message).toLatin1());
 }
 
 void LogStdOut::printMessage(const QString &module, const QString &message)

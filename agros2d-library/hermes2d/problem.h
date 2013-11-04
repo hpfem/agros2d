@@ -82,7 +82,7 @@ public:
     void createStructure();
 
     // mesh
-    bool mesh(bool emitMeshed = true);
+    void mesh();
     // solve
     void solve();
     void solveAdaptiveStep();
@@ -187,7 +187,8 @@ private:
 
     bool skipThisTimeStep(Block* block);
 
-    bool meshAction(bool emitMeshed = true);
+    bool mesh(bool emitMeshed);
+    bool meshAction(bool emitMeshed);
     void solveInit(bool reCreateStructure = true);
     void solve(bool adaptiveStepOnly, bool commandLine);
     void solveAction(); // called by solve, can throw SolverException

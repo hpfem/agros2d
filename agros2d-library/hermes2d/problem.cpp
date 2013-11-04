@@ -54,10 +54,12 @@ void CalculationThread::startCalculation(CalculationType type)
 
 void CalculationThread::run()
 {
+    Agros2D::log()->printHeading(QDateTime::currentDateTime().toString("hh:mm:ss.zzz"));
+
     switch (m_calculationType)
     {
     case CalculationType_Mesh:
-        Agros2D::problem()->mesh();
+        Agros2D::problem()->mesh(true);
         break;
     case CalculationType_Solve:
         Agros2D::problem()->solve(false, false);
@@ -363,33 +365,33 @@ bool Problem::mesh(bool emitMeshed)
     {
         // this assumes that all the code in Hermes and Agros is exception-safe
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
-        Agros2D::log()->printError(tr("Geometry"), QString("%1").arg(e.what()));
         m_isMeshing = false;
+        Agros2D::log()->printError(tr("Geometry"), QString("%1").arg(e.what()));
         return false;
     }
     catch (AgrosMeshException& e)
     {
         // this assumes that all the code in Hermes and Agros is exception-safe
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
-        Agros2D::log()->printError(tr("Mesh"), QString("%1").arg(e.what()));
         m_isMeshing = false;
+        Agros2D::log()->printError(tr("Mesh"), QString("%1").arg(e.what()));
         return false;
     }
     catch (Hermes::Exceptions::Exception& e)
     {
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
-        Agros2D::log()->printWarning(tr("Mesh"), e.what());
         m_isMeshing = false;
+        Agros2D::log()->printWarning(tr("Mesh"), e.what());
         return false;
     }
     catch (...)
     {
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
+        m_isMeshing = false;
         Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured and has been ignored"));
         qDebug() << "Mesh: An unknown exception occured and has been ignored";
-        m_isMeshing = false;
         return false;
     }
 
@@ -580,6 +582,14 @@ void Problem::doAbortSolve()
 {
     m_abort = true;
     Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Aborting calculation..."));
+}
+
+void Problem::mesh()
+{
+    if (!isPreparedForAction())
+        return;
+
+    m_calculationThread->startCalculation(CalculationThread::CalculationType_Mesh);
 }
 
 void Problem::solve()
@@ -1147,12 +1157,7 @@ void Problem::doMeshWithGUI()
     logDialog->show();
 
     // create mesh
-    mesh();
-    if (isMeshed())
-    {
-        // successful run
-        logDialog->close();
-    }
+    mesh();    
 }
 
 void Problem::doSolveWithGUI()

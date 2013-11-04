@@ -34,6 +34,7 @@ class AGROS_LIBRARY_API Log: public QObject
 public:
     Log();
 
+    inline void printHeading(const QString &message) { emit headingMsg(message); }
     inline void printMessage(const QString &module, const QString &message) { emit messageMsg(module, message); }
     inline void printError(const QString &module, const QString &message) { emit errorMsg(module, message); }
     inline void printWarning(const QString &module, const QString &message) { emit warningMsg(module, message); }
@@ -43,6 +44,7 @@ public:
     inline void setAdaptivityTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
 
 signals:
+    void headingMsg(const QString &message);
     void messageMsg(const QString &module, const QString &message);
     void errorMsg(const QString &module, const QString &message);
     void warningMsg(const QString &module, const QString &message);
@@ -71,6 +73,7 @@ private slots:
     void printError(const QString &module, const QString &message);
     void printWarning(const QString &module, const QString &message);
     void printDebug(const QString &module, const QString &message);
+    void printHeading(const QString &message);
 
     void showTimestamp();
     void showDebug();
@@ -133,8 +136,7 @@ private:
 
     void createControls();
 
-private slots:
-    void printMessage(const QString &module, const QString &message);
+private slots:    
     void printError(const QString &module, const QString &message);
 
     void nonlinearTable(QVector<double> step, QVector<double> error);
@@ -150,6 +152,7 @@ public:
     LogStdOut(QWidget *parent = 0);
 
 private slots:
+    void printHeading(const QString &message);
     void printMessage(const QString &module, const QString &message);
     void printError(const QString &module, const QString &message);
     void printWarning(const QString &module, const QString &message);
