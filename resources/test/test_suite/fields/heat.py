@@ -267,10 +267,10 @@ class HeatTransientAxisymmetric(Agros2DTestCase):
         problem.mesh_type = "triangle"
         
         problem.time_step_method = "fixed"
-        problem.time_method_order = 2
+        problem.time_method_order = 3
         problem.time_method_tolerance = 1
         problem.time_total = 10000
-        problem.time_steps = 20
+        problem.time_steps = 40
         
         # disable view
         agros2d.view.mesh.disable()
@@ -279,7 +279,7 @@ class HeatTransientAxisymmetric(Agros2DTestCase):
         # fields
         self.heat = agros2d.field("heat")
         self.heat.analysis_type = "transient"
-        self.heat.number_of_refinements = 1
+        self.heat.number_of_refinements = 0
         self.heat.polynomial_order = 5
         self.heat.solver = "linear"
         self.heat.solver_parameters['residual'] = 0.001
@@ -289,7 +289,7 @@ class HeatTransientAxisymmetric(Agros2DTestCase):
         self.heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 10, "heat_convection_external_temperature" : 20})
         
         self.heat.add_material("Air", {"heat_conductivity" : 0.02, "heat_volume_heat" : 0, "heat_density" : 1.2, "heat_specific_heat" : 1000}) 
-        self.heat.add_material("Cu", {"heat_conductivity" : 200, "heat_volume_heat" : 26000, "heat_density" : 8700, "heat_specific_heat" : 385}) 
+        self.heat.add_material("Cu", {"heat_conductivity" : 200, "heat_volume_heat" : { "expression" : "2e5*(time<4900)" }, "heat_density" : 8700, "heat_specific_heat" : 385}) 
         self.heat.add_material("Fe", {"heat_conductivity" : 60, "heat_volume_heat" : 0, "heat_density" : 7800, "heat_specific_heat" : 460}) 
         self.heat.add_material("Brass", {"heat_conductivity" : 100, "heat_volume_heat" : 0, "heat_density" : 8400, "heat_specific_heat" : 378}) 
         
@@ -340,18 +340,18 @@ class HeatTransientAxisymmetric(Agros2DTestCase):
     def test_values(self):
         # point value
         point = self.heat.local_values(0.00503, 0.134283)
-        self.value_test("Temperature", point["T"], 44.012004)
-        self.value_test("Heat flux", point["F"], 16.739787)
-        self.value_test("Heat flux - r", point["Fr"], -7.697043)
-        self.value_test("Heat flux - z", point["Fz"], -14.865261)
+        self.value_test("Temperature", point["T"], 72.88058)
+        self.value_test("Heat flux", point["F"], 6.9739, 0.09)   #todo: large error
+        self.value_test("Heat flux - r", point["Fr"], -3.39076, 0.09) #todo: large error
+        self.value_test("Heat flux - z", point["Fz"], -6.09395, 0.09) #todo: large error
         
         # volume integral
         volume = self.heat.volume_integrals([3])
-        self.value_test("Temperature", volume["T"], 0.002839)
+        self.value_test("Temperature", volume["T"], 0.00458)
         
         # surface integral
         surface = self.heat.surface_integrals([26])
-        self.value_test("Heat flux", surface["f"], 0.032866, error = 0.05)
+        #self.value_test("Heat flux", surface["f"], 0.032866, error = 0.05)  #todo: jaky heat flux v comsolu pouzit?
         
 if __name__ == '__main__':        
     import unittest as ut
