@@ -9,7 +9,7 @@
 </head>
 <body>
 <div>
-{{#ITEM}}{{STR}}{{/ITEM}}
+{{ITEMS}}
 </div>
 </body>
 </html>

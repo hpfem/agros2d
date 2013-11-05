@@ -114,11 +114,7 @@ void LogWidget::showHtml()
     while (m_logItems.count() > 150)
         m_logItems.removeFirst();
 
-    foreach (QString str, m_logItems)
-    {
-        ctemplate::TemplateDictionary *item = local->AddSectionDictionary("ITEM");
-        item->SetValue("STR", str.toStdString());
-    }
+    local->SetValue("ITEMS", m_logItems.join("").toStdString());
 
     std::string info;
     ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, local, &info);
