@@ -59,7 +59,7 @@ particle_tracing.particle_tracing.ParticleTracingPlanar,
 particle_tracing.particle_tracing.ParticleTracingAxisymmetric,
 # coupled fields
 coupled_problems.basic_coupled_problems.CoupledProblemsBasic1,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
+#coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
 coupled_problems.basic_coupled_problems.CoupledProblemsBasic3,
 coupled_problems.basic_coupled_problems.CoupledProblemsBasic4,
 # script

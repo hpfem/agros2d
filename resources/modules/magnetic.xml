@@ -171,6 +171,11 @@
         <module:quantity id="magnetic_velocity_angular"/>
         <module:quantity dependence="time" id="magnetic_current_density_external_real"/>
 
+        <module:function_use id="magnetic_func_one_over_mu" nonlinearity_axi="sqrt(dz1*dz1 + (dr1 + value1 / r)*(dr1 + value1 / r))" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1)"/>
+        <module:function_use id="magnetic_func_one_over_norm_a" nonlinearity_axi="sqrt(dz1*dz1 + (dr1 + value1 / r)*(dr1 + value1 / r))" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1)"/>
+        <module:function_use id="magnetic_func_sin_Bra" />
+        <module:function_use id="magnetic_func_cos_Bra" />
+
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>
           <module:matrix_form id="steady_velocity"/>
