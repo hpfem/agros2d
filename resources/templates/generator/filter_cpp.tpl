@@ -77,9 +77,11 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-    {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}
-
+    {{#SPECIAL_FUNCTION_SOURCE}}    
+    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
+    if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
+        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
+    {{/SPECIAL_FUNCTION_SOURCE}}
     {{#VARIABLE_SOURCE}}
     if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}})
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})

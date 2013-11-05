@@ -1599,7 +1599,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
                     else
                         parameter = "value[0]";
                 }
-                dict[QString::fromStdString(function.shortname())] = QString("%1.getValue(elementMarker, %2)").
+                dict[QString::fromStdString(function.shortname())] = QString("%1->getValue(elementMarker, %2)").
                         arg(QString::fromStdString(function.shortname())).arg(parameter);
             }
         }
