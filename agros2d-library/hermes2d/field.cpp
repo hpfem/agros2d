@@ -530,6 +530,23 @@ bool FieldInfo::materialTypeVariableContains(const QString &id) const
     return false;
 }
 
+bool FieldInfo::functionUsedInAnalysis(const QString &id) const
+{
+    foreach(XMLModule::weakform_volume weakform, this->plugin()->module()->volume().weakforms_volume().weakform_volume())
+    {
+        if(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())) == this->analysisType())
+        {
+            foreach (XMLModule::function_use functionUse, weakform.function_use())
+            {
+                if(QString::fromStdString(functionUse.id()) == id)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 Module::MaterialTypeVariable FieldInfo::materialTypeVariable(const QString &id) const
 {
     foreach (Module::MaterialTypeVariable var, materialTypeVariables())

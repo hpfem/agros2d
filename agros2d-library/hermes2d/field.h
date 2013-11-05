@@ -185,6 +185,9 @@ public:
     bool materialTypeVariableContains(const QString &id) const;
     Module::MaterialTypeVariable materialTypeVariable(const QString &id) const;
 
+    // is function contained in this  analysis
+    bool functionUsedInAnalysis(const QString &id) const;
+
     // boundary conditions
     QList<Module::BoundaryType> boundaryTypes() const;
     // default boundary condition
