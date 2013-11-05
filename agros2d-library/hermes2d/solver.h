@@ -67,7 +67,7 @@ protected:
     QVector<double> m_residualNorms;
     QVector<double> m_solutionNorms;
     QVector<double> m_relativeChangeOfSolutions;
-    int m_jacobianCalculations;
+    int m_jacobianCalculations = 0;
 };
 
 class AgrosExternalSolverOctave : public ExternalSolver<double>
