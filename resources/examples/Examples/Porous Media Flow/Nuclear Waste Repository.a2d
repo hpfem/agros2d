@@ -49,7 +49,7 @@
 
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="transient" field_id="richards" linearity_type="newton" matrix_solver="mumps">
+      <field adaptivity_type="disabled" analysis_type="transient" field_id="richards" linearity_type="picard" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -207,7 +207,7 @@
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
-    <item key="View_ScalarView3DMode" value="0"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
     <item key="View_ScalarView3DBackground" value="1"/>
@@ -273,7 +273,7 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-15.2922751964387"/>
+    <item key="View_ScalarRangeMin" value="-15.0000000000002"/>
     <item key="View_ScalarRangeMax" value="10"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="richards_pressure_darcy_velocity"/>
