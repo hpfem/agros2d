@@ -222,7 +222,6 @@ PythonEngine::~PythonEngine()
 void PythonEngine::init()
 {
     m_isScriptRunning = false;
-    m_isExpressionRunning = false;
 
     // init python
     PyEval_InitThreads();
@@ -364,10 +363,7 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
         setProfilerFileName(fileName);
         startProfiler();
     }
-#pragma omp critical(output)
-    {
-        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-    }
+    if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
     if (useProfiler)
         finishProfiler();
 
@@ -403,85 +399,76 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
 {
     bool successfulRun = false;
 
-    /*
-    while (m_isExpressionRunning)
-    {
-        qDebug() << "Expression is running" << expression;
-        msleep(10);
-    }
-    */
-#pragma omp critical(m_isExpressionRunning)
-    {
-        m_isExpressionRunning = true;
+    PyObject *output = NULL;
+    runPythonHeader();
 
-        PyObject *output = NULL;
-        runPythonHeader();
+    if (value)
+    {
+        // return value
+        QString exp;
+        if (command.isEmpty())
+            exp = QString("result_pythonlab = %1").arg(expression);
+        else
+            exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
 
-        if (value)
+#pragma omp critical(expression)
         {
-            // return value
-            QString exp;
-            if (command.isEmpty())
-                exp = QString("result_pythonlab = %1").arg(expression);
-            else
-                exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
-
             output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        }
 
-            if (output)
+        if (output)
+        {
+            // parse result
+            PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
+
+            if (result)
             {
-                // parse result
-                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
-
-                if (result)
+                if ((QString(result->ob_type->tp_name) == "bool") ||
+                        (QString(result->ob_type->tp_name) == "int") ||
+                        (QString(result->ob_type->tp_name) == "float"))
                 {
-                    if ((QString(result->ob_type->tp_name) == "bool") ||
-                            (QString(result->ob_type->tp_name) == "int") ||
-                            (QString(result->ob_type->tp_name) == "float"))
-                    {
-                        Py_INCREF(result);
-                        PyArg_Parse(result, "d", value);
-                        if (fabs(*value) < EPS_ZERO)
-                            *value = 0.0;
-                        Py_XDECREF(result);
+                    Py_INCREF(result);
+                    PyArg_Parse(result, "d", value);
+                    if (fabs(*value) < EPS_ZERO)
+                        *value = 0.0;
+                    Py_XDECREF(result);
 
-                        successfulRun = true;
-                    }
-                    else
-                    {
-                        qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
-
-                        successfulRun = false;
-                    }
+                    successfulRun = true;
                 }
+                else
+                {
+                    qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
 
-                // speed up?
-                // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                    successfulRun = false;
+                }
             }
 
+            // speed up?
+            // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
         }
-        else
+    }
+    else
+    {
+#pragma omp critical(expression)
         {
             output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
-            if (output)
-                successfulRun = true;
         }
-
-        if (!output)
-        {
-            // error traceback
-            Py_XDECREF(errorType);
-            Py_XDECREF(errorValue);
-            Py_XDECREF(errorTraceback);
-            PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
-            if (errorTraceback)
-                successfulRun = false;
-        }
-
-        Py_XDECREF(output);
-
-        m_isExpressionRunning = false;
+        if (output)
+            successfulRun = true;
     }
+
+    if (!output)
+    {
+        // error traceback
+        Py_XDECREF(errorType);
+        Py_XDECREF(errorValue);
+        Py_XDECREF(errorTraceback);
+        PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+        if (errorTraceback)
+            successfulRun = false;
+    }
+
+    Py_XDECREF(output);
 
     return successfulRun;
 }
@@ -525,14 +512,11 @@ QStringList PythonEngine::codeCompletion(const QString& command)
 {
     QStringList out;
 
-#pragma omp critical
-    {
-        runPythonHeader();
+    runPythonHeader();
 
-        // QTime time;
-        // time.start();
+#pragma omp critical(completion)
+    {
         PyObject *output = PyRun_String(command.toLatin1().data(), Py_single_input, m_dict, m_dict);
-        // qDebug() << time.elapsed();
 
         // parse result
         if (output)
@@ -580,14 +564,13 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 {
     QStringList out;
 
-    if (!m_isScriptRunning && !m_isExpressionRunning)
+    if (!m_isScriptRunning)
     {
-#pragma omp critical
+        QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
+
+#pragma omp critical(flakes)
         {
-            QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
-
             PyObject *run = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-
             // parse result
             PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
             if (result)

@@ -129,7 +129,6 @@ public slots:
 protected:
     PyObject *m_dict;
     bool m_isScriptRunning;
-    bool m_isExpressionRunning;
 
     inline void addFunctions(const QString& code) { m_functions += "\n\n" + code; }
     virtual void addCustomExtensions();
