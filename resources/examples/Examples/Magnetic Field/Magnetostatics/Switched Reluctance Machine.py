@@ -2,7 +2,7 @@ import agros2d
 import pythonlab
 from math import pi
 
-agros2d.open_file('Switched Reluctance Machine.a2d')
+agros2d.open_file(pythonlab.datadir('resources/examples/Examples/Magnetic Field/Magnetostatics/Switched Reluctance Machine.a2d'))
 
 def get_energy(dphi, Jext):
     problem = agros2d.problem()

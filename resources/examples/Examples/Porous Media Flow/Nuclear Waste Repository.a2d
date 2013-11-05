@@ -49,7 +49,7 @@
 
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="transient" field_id="richards" linearity_type="picard" matrix_solver="mumps">
+      <field adaptivity_type="disabled" analysis_type="transient" field_id="richards" linearity_type="newton" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -106,6 +106,7 @@
           <material id="2" name="Claystone (bottom)">
             <material_labels>
               <material_label id="1"/>
+              <material_label id="2"/>
             </material_labels>
             <material_types>
               <material_type key="richards_a" value="0.01 &#xA;"/>
@@ -118,9 +119,7 @@
             </material_types>
           </material>
           <material id="3" name="Gravel">
-            <material_labels>
-              <material_label id="2"/>
-            </material_labels>
+            <material_labels/>
             <material_types>
               <material_type key="richards_a" value="1.0 &#xA;"/>
               <material_type key="richards_ks" value="712.8 &#xA;"/>
@@ -149,13 +148,13 @@
         <field_config>
           <field_item field_key="NonlinearResidualNorm" field_value="0"/>
           <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0.1"/>
-          <field_item field_key="NewtonDampingType" field_value="0"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingType" field_value="0"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonReuseJacobian" field_value="1"/>
-          <field_item field_key="NewtonSufImprovForJacobianReuse" field_value="0.8"/>
-          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonJacobianReuseRatio" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingFactorDecreaseRatio" field_value="1.2"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
-          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
+          <field_item field_key="NonlinearStepsToIncreaseDampingFactor" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="0"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="4"/>
@@ -274,7 +273,7 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-15.0182863422748"/>
+    <item key="View_ScalarRangeMin" value="-15.2922751964387"/>
     <item key="View_ScalarRangeMax" value="10"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="richards_pressure_darcy_velocity"/>
