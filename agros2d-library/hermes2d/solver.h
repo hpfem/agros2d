@@ -38,7 +38,7 @@ namespace Module {
 class SolverAgros
 {
 public:
-    SolverAgros(Block *block) : m_block(block) {}
+    SolverAgros(Block *block) : m_block(block), m_jacobianCalculations(0) {}
 
     enum Phase
     {
@@ -67,7 +67,7 @@ protected:
     QVector<double> m_residualNorms;
     QVector<double> m_solutionNorms;
     QVector<double> m_relativeChangeOfSolutions;
-    int m_jacobianCalculations = 0;
+    int m_jacobianCalculations;
 };
 
 class AgrosExternalSolverOctave : public ExternalSolver<double>
