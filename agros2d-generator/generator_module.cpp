@@ -1883,7 +1883,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                             {
                                 // linear boundary condition
                                 // ERROR: Python expression evaluation doesn't work from weakform ("false" should be removed)
-                                dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime())").
+                                dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
                                         arg(QString::fromStdString(quantity.shortname().get()));
                             }
                             else if (dep == "space")
@@ -1957,7 +1957,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     else if (dep == "time")
                     {
                         // linear boundary condition
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime())").
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
                                 arg(QString::fromStdString(quantity.shortname().get()));
                     }
                     else if (dep == "space")
@@ -2150,8 +2150,8 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
         {
             if(quantity.dependence().get() == "time")
             {
-                valueMethod = "numberAtTime";
-                dependence = "Agros2D::problem()->actualTime()";
+//                valueMethod = "numberAtTime";
+//                dependence = "Agros2D::problem()->actualTime()";
             }
             else if(quantity.dependence().get() == "")
             {
