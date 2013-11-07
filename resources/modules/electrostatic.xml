@@ -10,6 +10,7 @@
 
   <module:constants>
     <module:constant id="EPS0" value="8.854e-12"/>
+    <module:constant id="SMALL" value="1e-5"/>
   </module:constants>
 
   <module:spaces>
@@ -162,6 +163,16 @@
       <module:surfaceintegral id="electrostatic_charge" name="Charge" shortname="Q" shortname_html="&lt;i>Q&lt;/i>" shortname_latex="Q" unit="C" unit_html="C" unit_latex="C">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * el_epsr * EPS0 * (tanz * dr1 - tanr * dz1)" planar="el_epsr * EPS0 * (tany * dx1 - tanx * dy1)"/>
       </module:surfaceintegral>
+      <module:surfaceintegral id="electrostatic_tensor_torque" name="Maxwell torque" shortname="Tm" shortname_html="&lt;i>T&lt;/i>&lt;sub>m&lt;/sub>" shortname_latex="T_\mathrm{m}" unit="Nm" unit_html="Nm" unit_latex="Nm">
+        <module:expression analysistype="steadystate" axi="0.0" planar="y * (tern(SMALL > fabs(el_epsr - 1.0), - 2.0 * (EPS0 * el_epsr) * ((-dy1) * (tany * (-dy1) + (-tanx) * dx1) - 0.5 * tany * (dy1*dy1 + dx1*dx1)), 0.0)) - x * (tern(SMALL > fabs(el_epsr - 1.0), - 2.0 * (EPS0 * el_epsr) * ((-dy1) * (tany * (-dy1) + (-tanx) * dx1) - 0.5 * tany * (dy1*dy1 + dx1*dx1)), 0.0))"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="electrostatic_tensor_x" name="Maxwell force - x" shortname="Ftx" shortname_html="&lt;i>F&lt;/i>&lt;sub>tx&lt;/sub>" shortname_latex="F_\mathrm{tx}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="0.0" planar="tern(SMALL > fabs(el_epsr - 1.0), - 2.0 * (EPS0 * el_epsr) * ((-dy1) * (tany * (-dy1) + (-tanx) * dx1) - 0.5 * tany * (dy1*dy1 + dx1*dx1)), 0.0)"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="electrostatic_tensor_y" name="Maxwell force - y" shortname="Fty" shortname_html="&lt;i>F&lt;/i>&lt;sub>ty&lt;/sub>" shortname_latex="F_\mathrm{ty}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="tern(SMALL > fabs(el_epsr - 1.0), - 4.0 * PI * r * (EPS0 * el_epsr) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * ((tanz) * (- dz1) + (- tanr) * (dr1 + tern(r > SMALL, value1/r, dr1))) - 0.5 * (- tanr) * ((- dz1)*(- dz1) + (dr1 + tern(r > SMALL, value1/r, dr1))*(dr1 + tern(r > SMALL, value1/r, dr1)))), 0.0)" planar="tern(SMALL > fabs(el_epsr - 1.0), - 2.0 * (EPS0 * el_epsr) * (dx1 * (tany * (-dy1) + (-tanx) * dx1) - 0.5 * (-tanx) * (dy1*dy1 + dx1*dx1)), 0.0)"/>
+      </module:surfaceintegral>
+
     </module:surfaceintegrals>
     <module:force>
       <module:expression analysistype="steadystate" axi_phi="0" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1" planar_z="0"/>
