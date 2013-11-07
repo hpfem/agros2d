@@ -393,6 +393,10 @@ void PostHermes::processMeshed()
 
 void PostHermes::processSolved()
 {
+    // update time functions
+    if (Agros2D::problem()->isTransient())
+        Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
+
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
     if (Agros2D::solutionStore()->contains(fsid))
     {
@@ -422,7 +426,7 @@ Hermes::Hermes2D::MeshFunctionSharedPtr<double> PostHermes::viewScalarFilter(Mod
     for (int k = 0; k < activeViewField()->numberOfSolutions(); k++)
         slns.push_back(activeMultiSolutionArray().solutions().at(k));
 
-    // qDebug() << "viewScalarFilter: " << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
+    //qDebug() << "viewScalarFilter: " << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
 
     return activeViewField()->plugin()->filter(activeViewField(),
                                                activeTimeStep(),
@@ -466,6 +470,7 @@ void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
 void PostHermes::setActiveTimeStep(int ts)
 {
     m_activeTimeStep = ts;
+    Agros2D::problem()->setActualTimePostprocessing(Agros2D::problem()->timeStepToTime(ts));
 }
 
 void PostHermes::setActiveAdaptivityStep(int as)

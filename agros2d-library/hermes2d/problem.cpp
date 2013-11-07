@@ -176,6 +176,7 @@ void Problem::clearSolution()
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
+    updateActualTimeDuringCalculation();
     m_timeHistory.clear();
 
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
@@ -498,6 +499,7 @@ bool Problem::defineActualTimeStepLength(double ts)
     {
         double alteredTS = min(ts, config()->value(ProblemConfig::TimeTotal).toDouble() - actualTime());
         m_timeStepLengths.push_back(alteredTS);
+        updateActualTimeDuringCalculation();
         return true;
     }
 }
@@ -515,11 +517,12 @@ bool Problem::skipThisTimeStep(Block *block)
 void Problem::refuseLastTimeStepLength()
 {
     m_timeStepLengths.removeLast();
+    updateActualTimeDuringCalculation();
 }
 
-double Problem::actualTime() const
+void Problem::updateActualTimeDuringCalculation()
 {
-    return timeStepToTotalTime(m_timeStepLengths.size());
+    m_actualTime = timeStepToTotalTime(m_timeStepLengths.size());
 }
 
 double Problem::actualTimeStepLength() const
@@ -533,6 +536,7 @@ double Problem::actualTimeStepLength() const
 void Problem::solveInit(bool reCreateStructure)
 {
     m_timeStepLengths.clear();
+    updateActualTimeDuringCalculation();
     m_timeHistory.clear();
 
     if (fieldInfos().isEmpty())

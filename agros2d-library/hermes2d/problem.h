@@ -129,7 +129,6 @@ public:
 
     inline QTime timeElapsed() const { return m_lastTimeElapsed; }
 
-    double actualTime() const;
     double actualTimeStepLength() const;
     QList<double> timeStepLengths() const { return m_timeStepLengths; }
     double timeStepToTime(int timeStepIndex) const;
@@ -137,6 +136,12 @@ public:
     int timeToTimeStep(double time) const;
 
     int actualTimeStep() {return m_timeStepLengths.size(); }
+
+
+    // has two meainings. During the calculation it is calculated automaticaly from timeStepLengths
+    // during postprocessing it has to be set manualy by the function setActualTimePostprocessing()
+    double actualTime() const {return m_actualTime;}
+    void setActualTimePostprocessing(double time) { m_actualTime = time; }
 
     // terminology: time levels are actual times, whre calculations are performed
     int numTimeLevels() {return m_timeStepLengths.size() + 1; }
@@ -183,6 +188,11 @@ private:
     bool m_isNonlinear;
 
     QList<double> m_timeStepLengths;
+    double m_actualTime;
+
+    // has to be called allways when m_timeStepLengths are modified during the calculation
+    void updateActualTimeDuringCalculation();
+
     QList<QPair<double, bool> > m_timeHistory;
 
     bool skipThisTimeStep(Block* block);
