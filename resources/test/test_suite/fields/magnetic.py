@@ -121,34 +121,38 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
         problem.coordinate_type = "axisymmetric"
         problem.mesh_type = "triangle"
         
-        # disable view
-        agros2d.view.mesh.disable()
-        agros2d.view.post2d.disable()
-        
-        # fields
+        # magnetic
         self.magnetic = agros2d.field("magnetic")
         self.magnetic.analysis_type = "steadystate"
+        self.magnetic.matrix_solver = "mumps"
         self.magnetic.number_of_refinements = 0
         self.magnetic.polynomial_order = 7
-        self.magnetic.solver = "linear"
+        self.magnetic.adaptivity_type = "disabled"
+        self.magnetic.solver = "newton"
+        self.magnetic.solver_parameters['residual'] = 1e-06
+        self.magnetic.solver_parameters['relative_change_of_solutions'] = 0.01
+        self.magnetic.solver_parameters['damping'] = "automatic"
+        self.magnetic.solver_parameters['damping_factor'] = 0.8
+        self.magnetic.solver_parameters['damping_factor_increase_steps'] = 1
+        self.magnetic.solver_parameters['damping_factor_decrease_ratio'] = 1.2
+        self.magnetic.solver_parameters['jacobian_reuse'] = True
+        self.magnetic.solver_parameters['jacobian_reuse_ratio'] = 0.8
+        self.magnetic.solver_parameters['jacobian_reuse_steps'] = 20
         
+        # boundaries
         self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
         
-        if totalCurrent:
-            self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_total_current_prescribed" : 1, "magnetic_total_current_real" : 2e6*1.216e-3 }) 
-        else:
-            self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 2e6}) 
-        self.magnetic.add_material("Fe", {"magnetic_permeability" : 300}) 
-        self.magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
-        self.magnetic.add_material("Magnet", {"magnetic_permeability" : 1.1, "magnetic_remanence" : 0.6, "magnetic_remanence_angle" : 90}) 
+        # materials
+        self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 2e+06, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
+        self.magnetic.add_material("Fe", {"magnetic_permeability" : { "value" : 300, "x" : [0,0.170911,0.177249,0.20487,0.212115,0.253777,0.275513,0.282755,0.328941,0.405909,0.424924,0.771689,0.858155,1.2092,1.33438,1.3589,1.51368,1.60909,1.64417,1.66552,1.69157,1.73858,1.79572,1.82437,1.93984,1.9929,2.00005,2.01811,2.07161,2.08962,2.20335,2.30633,2.48983], "y" : [729.678,982.941,1008.92,1119.05,1146.74,1289.7,1357.53,1378.93,1508.03,1696.32,1739.63,2274.94,2330.44,2002.5,1706.76,1633.54,997.751,638.141,524.418,464.22,399.375,297.585,211.579,176.496,87.0871,62.8709,59.9063,53.3691,37.7024,33.2283,16.7621,10.3287,6.16704], "interpolation" : "piecewise_linear", "extrapolation" : "constant", "derivative_at_endpoints" : "first" }, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
+        self.magnetic.add_material("Air", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
+        self.magnetic.add_material("Magnet", {"magnetic_permeability" : 1.1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0.6, "magnetic_remanence_angle" : 90, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
         
         # geometry
         geometry = agros2d.geometry
-        
-        # edges
         geometry.add_edge(0.01, 0.01, 0.01, 0)
-        geometry.add_edge(0.01, 0, 0.04, 0,)
-        geometry.add_edge(0.04, 0.1, 0, 0.1,)
+        geometry.add_edge(0.01, 0, 0.04, 0)
+        geometry.add_edge(0.04, 0.1, 0, 0.1)
         geometry.add_edge(0, 0.1, 0, 0.08, boundaries = {"magnetic" : "A = 0"})
         geometry.add_edge(0, 0.08, 0.01, 0.08)
         geometry.add_edge(0.01, 0.09, 0.03, 0.09)
@@ -165,8 +169,8 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
         geometry.add_edge(0, 0.15, 0, 0.1, boundaries = {"magnetic" : "A = 0"})
         geometry.add_edge(0, 0.08, 0, 0.05, boundaries = {"magnetic" : "A = 0"})
         geometry.add_edge(0, -0.02, 0, -0.05, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0, -0.05, 0.1, 0.05, boundaries = {"magnetic" : "A = 0"}, angle=90)
-        geometry.add_edge(0.1, 0.05, 0, 0.15, boundaries = {"magnetic" : "A = 0"}, angle=90)
+        geometry.add_edge(0, -0.05, 0.1, 0.05, angle = 90, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.1, 0.05, 0, 0.15, angle = 90, boundaries = {"magnetic" : "A = 0"})
         geometry.add_edge(0.03, 0.09, 0.03, 0.078)
         geometry.add_edge(0.03, 0.078, 0.04, 0.078)
         geometry.add_edge(0.04, 0.078, 0.04, 0.1)
@@ -176,9 +180,8 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
         geometry.add_edge(0.04, 0.052, 0.04, 0)
         geometry.add_edge(0.03, 0.01, 0.03, 0.052)
         
-        # labels
         geometry.add_label(0.0348743, 0.0347237, materials = {"magnetic" : "Fe"})
-        geometry.add_label(0.00512569, -0.0070852, area = 0.8e-06, materials = {"magnetic" : "Fe"})
+        geometry.add_label(0.00512569, -0.0070852, area = 8e-07, materials = {"magnetic" : "Fe"})
         geometry.add_label(0.021206, 0.0692964, materials = {"magnetic" : "Cu"})
         geometry.add_label(0.0141705, 0.12445, materials = {"magnetic" : "Air"})
         geometry.add_label(0.0346923, 0.0892198, materials = {"magnetic" : "Fe"})
@@ -191,33 +194,34 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
 
     def test_values(self):                  
         # point value
-        point = self.magnetic.local_values(0.005985, 0.043924)
-        self.value_test("Scalar potential", point["Ar"], 5.438198e-4)
-        self.value_test("Flux density", point["Br"], 0.195525)
-        self.value_test("Flux density - r", point["Brr"], 0.059085)
-        self.value_test("Flux density - z", point["Brz"], 0.186384)
-        self.value_test("Magnetic intensity", point["Hr"], 518.646027)
-        self.value_test("Magnetic intensity - r", point["Hrr"], 156.728443)
-        self.value_test("Magnetic intensity - z", point["Hrz"], 494.39852)
-        self.value_test("Energy density", point["wm"], 50.704118)
+        point = self.magnetic.local_values(0.0043, 0.032)
+        self.value_test("Scalar potential", point["Ar"], 8.060968068023004E-4)
+        self.value_test("Flux density", point["Br"], 0.3823335718298335)
+        self.value_test("Flux density - r", point["Brr"], 0.029885255691612152)
+        self.value_test("Flux density - z", point["Brz"], 0.3811637855667586)
+        self.value_test("Magnetic intensity", point["Hr"], 185.67238098160567)
+        self.value_test("Magnetic intensity - r", point["Hrr"], 14.513155488294023)
+        self.value_test("Magnetic intensity - z", point["Hrz"], 185.1042985102139)
+        self.value_test("Energy density", point["wm"], 35.4943923762853)
         
         point = self.magnetic.local_values(0.0199415, 0.0609942)
-        self.value_test("Lorentz force - r - real", point["Flr"], -1.237274e5)
-        self.value_test("Lorentz force - z - real", point["Flz"], -41951.726164)
+        self.value_test("Lorentz force - r - real", point["Flr"], -123060.01919)
+        self.value_test("Lorentz force - z - real", point["Flz"], -42838.956)
         
         # volume integral
         volume = self.magnetic.volume_integrals([1])
-        self.value_test("Energy", volume["Wm"], 0.002273)
+        self.value_test("Energy", volume["Wm"], 4.625935002717195E-4)
         
         volume = self.magnetic.volume_integrals([2])
-        self.value_test("Integral Lorentz force - r", volume["Flx"], -8.069509) 
-        self.value_test("Integral Lorentz force - z", volume["Fly"], -5.288991) 
+        self.value_test("Integral Lorentz force - r", volume["Flx"], -8.101651950576503) 
+        self.value_test("Integral Lorentz force - z", volume["Fly"], -5.501189057498289) 
+
         volume = self.magnetic.volume_integrals([1])        
-        self.value_test("Volume Maxwell force - z", volume["Fty"], 0.429770, 0.1)
+        self.value_test("Volume Maxwell force - z", volume["Fty"], 0.4922392956664127, 0.1)
         
         # surface integral
         surface = self.magnetic.surface_integrals([12, 13, 14, 15])
-        self.value_test("Surface Maxwell force - z", surface["Fty"], 0.429770, 0.1)
+        self.value_test("Surface Maxwell force - z", surface["Fty"], 0.4922392956664127, 0.1)
 
 class MagneticAxisymmetric(MagneticAxisymmetricGeneral):
     def setUp(self):  
@@ -1171,7 +1175,7 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticAxisymmetricTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinPlanar))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinAxisymmetric)) 
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinPlanar))
