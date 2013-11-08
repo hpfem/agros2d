@@ -45,6 +45,11 @@ fields.magnetic.MagneticHarmonicPlanar,
 fields.magnetic.MagneticHarmonicAxisymmetric,
 fields.magnetic.MagneticHarmonicPlanarTotalCurrent,
 fields.magnetic.MagneticHarmonicAxisymmetricTotalCurrent,
+fields.magnetic.MagneticNonlinPlanar,
+fields.magnetic.MagneticNonlinAxisymmetric,
+fields.magnetic.MagneticHarmonicNonlinPlanar,
+fields.magnetic.MagneticHarmonicNonlinAxisymmetric,
+
 # rf te
 fields.rf_te.RFTEHarmonicPlanar,
 fields.rf_te.RFTEHarmonicAxisymmetric,
