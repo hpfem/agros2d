@@ -140,7 +140,7 @@ public:
 
     // has two meainings. During the calculation it is calculated automaticaly from timeStepLengths
     // during postprocessing it has to be set manualy by the function setActualTimePostprocessing()
-    double actualTime() const {return m_actualTime;}
+    inline double actualTime() const {return m_actualTime;}
     void setActualTimePostprocessing(double time) { m_actualTime = time; }
 
     // terminology: time levels are actual times, whre calculations are performed

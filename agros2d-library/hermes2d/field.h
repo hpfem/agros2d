@@ -234,7 +234,7 @@ public:
     const Value** valuePointerTable(QString id) const;
     int hermesMarkerToAgrosLabel(int hermesMarker) const;
     double labelArea(int agrosLabel) const;
-    double frequency() const;
+    inline double frequency() const { return m_frequency; }
 
 
 signals:

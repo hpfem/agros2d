@@ -180,11 +180,6 @@ double FieldInfo::labelArea(int agrosLabel) const
     return m_labelAreas[agrosLabel];
 }
 
-double FieldInfo::frequency() const
-{
-    return m_frequency;
-}
-
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
 {
     clearInitialMesh();
