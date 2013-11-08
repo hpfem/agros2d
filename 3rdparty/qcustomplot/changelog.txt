@@ -1,3 +1,31 @@
+#### Version 1.1.0 released on 04.11.13 ####
+
+  Added features:
+    - Added QCPRange::expand and QCPRange::expanded
+    - Added QCPAxis::rescale to rescale axis to all associated plottables
+    - Added QCPAxis::setDateTimeSpec/dateTimeSpec to allow axis labels either in UTC or local time
+    - QCPAxis now additionally emits a rangeChanged signal overload that provides the old range as second parameter
+    
+  Bugfixes:
+    - Fixed QCustomPlot::rescaleAxes not rescaling properly if first plottable has an empty range
+    - QCPGraph::rescaleAxes/rescaleKeyAxis/rescaleValueAxis are no longer virtual (never were in base class, was a mistake)
+    - Fixed bugs in QCPAxis::items and QCPAxisRect::items not properly returning associated items and potentially stalling
+    
+  Other:
+    - Internal change from QWeakPointer to QPointer, thus got rid of deprecated Qt functionality
+    - Qt5.1 and Qt5.2 (beta1) compatibility
+    - Release packages now extract to single subdirectory and don't place multiple files in current working directory
+
+#### Version 1.0.1 released on 05.09.13 ####
+
+  Bugfixes:
+    - using define flag QCUSTOMPLOT_CHECK_DATA caused debug output when data was correct, instead of invalid (fixed QCP::isInvalidData)
+    - documentation images are now properly shown when viewed with Qt Assistant
+    - fixed various documentation mistakes
+    
+  Other:
+    - Adapted documentation style sheet to better match Qt5 documentation
+
 #### Version 1.0.0 released on 01.08.13 ####
 
   Added features:

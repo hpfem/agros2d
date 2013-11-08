@@ -19,8 +19,8 @@
 ****************************************************************************
 **           Author: Emanuel Eichhammer                                   **
 **  Website/Contact: http://www.qcustomplot.com/                          **
-**             Date: 05.09.13                                             **
-**          Version: 1.0.1                                                **
+**             Date: 04.11.13                                             **
+**          Version: 1.1.0                                                **
 ****************************************************************************/
 
 #include "qcustomplot.h"
@@ -1319,6 +1319,36 @@ void QCPRange::normalize()
 {
   if (lower > upper)
     qSwap(lower, upper);
+}
+
+/*! 
+  Expands this range such that \a otherRange is contained in the new range. It is assumed that both
+  this range and \a otherRange are normalized (see \ref normalize).
+  
+  If \a otherRange is already inside the current range, this function does nothing.
+  
+  \see expanded
+*/
+void QCPRange::expand(const QCPRange &otherRange)
+{
+  if (lower > otherRange.lower)
+    lower = otherRange.lower;
+  if (upper < otherRange.upper)
+    upper = otherRange.upper;
+}
+
+
+/*! 
+  Returns an expanded range that contains this and \a otherRange. It is assumed that both this
+  range and \a otherRange are normalized (see \ref normalize).
+  
+  \see expand
+*/
+QCPRange QCPRange::expanded(const QCPRange &otherRange) const
+{
+  QCPRange result = *this;
+  result.expand(otherRange);
+  return result;
 }
 
 /*! 
@@ -3999,6 +4029,13 @@ void QCPGrid::drawSubGridLines(QCPPainter *painter) const
   be synchronized.
 */
 
+/*! \fn void QCPAxis::rangeChanged(const QCPRange &newRange, const QCPRange &oldRange)
+  \overload
+  
+  Additionally to the new range, this signal also provides the previous range held by the axis as
+  \a oldRange.
+*/
+
 /*! \fn void QCPAxis::selectionChanged(QCPAxis::SelectableParts selection)
   
   This signal is emitted when the selection state of this axis has changed, either by user interaction
@@ -4043,6 +4080,7 @@ QCPAxis::QCPAxis(QCPAxisRect *parent, AxisType type) :
   mTickLabelColor(Qt::black),
   mSelectedTickLabelColor(Qt::blue),
   mDateTimeFormat("hh:mm:ss\ndd.MM.yy"),
+  mDateTimeSpec(Qt::LocalTime),
   mNumberPrecision(6),
   mNumberFormatChar('g'),
   mNumberBeautifulPowers(true),
@@ -4172,6 +4210,7 @@ void QCPAxis::setRange(const QCPRange &range)
     return;
   
   if (!QCPRange::validRange(range)) return;
+  QCPRange oldRange = mRange;
   if (mScaleType == stLogarithmic)
   {
     mRange = range.sanitizedForLogScale();
@@ -4181,6 +4220,7 @@ void QCPAxis::setRange(const QCPRange &range)
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
+  emit rangeChanged(mRange, oldRange);
 }
 
 /*!
@@ -4239,6 +4279,7 @@ void QCPAxis::setRange(double lower, double upper)
     return;
   
   if (!QCPRange::validRange(lower, upper)) return;
+  QCPRange oldRange = mRange;
   mRange.lower = lower;
   mRange.upper = upper;
   if (mScaleType == stLogarithmic)
@@ -4250,6 +4291,7 @@ void QCPAxis::setRange(double lower, double upper)
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
+  emit rangeChanged(mRange, oldRange);
 }
 
 /*!
@@ -4282,6 +4324,7 @@ void QCPAxis::setRangeLower(double lower)
   if (mRange.lower == lower)
     return;
   
+  QCPRange oldRange = mRange;
   mRange.lower = lower;
   if (mScaleType == stLogarithmic)
   {
@@ -4292,6 +4335,7 @@ void QCPAxis::setRangeLower(double lower)
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
+  emit rangeChanged(mRange, oldRange);
 }
 
 /*!
@@ -4303,6 +4347,7 @@ void QCPAxis::setRangeUpper(double upper)
   if (mRange.upper == upper)
     return;
   
+  QCPRange oldRange = mRange;
   mRange.upper = upper;
   if (mScaleType == stLogarithmic)
   {
@@ -4313,6 +4358,7 @@ void QCPAxis::setRangeUpper(double upper)
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
+  emit rangeChanged(mRange, oldRange);
 }
 
 /*!
@@ -4558,6 +4604,8 @@ void QCPAxis::setTickLabelRotation(double degrees)
   for details about the \a format string, see the documentation of QDateTime::toString().
   
   Newlines can be inserted with "\n".
+  
+  \see setDateTimeSpec
 */
 void QCPAxis::setDateTimeFormat(const QString &format)
 {
@@ -4567,6 +4615,21 @@ void QCPAxis::setDateTimeFormat(const QString &format)
     mCachedMarginValid = false;
     mLabelCache.clear();
   }
+}
+
+/*!
+  Sets the time spec that is used for the date time values when \ref setTickLabelType is \ref
+  ltDateTime.
+
+  The default value of QDateTime objects (and also QCustomPlot) is <tt>Qt::LocalTime</tt>. However,
+  if the date time values passed to QCustomPlot are given in the UTC spec, set \a
+  timeSpec to <tt>Qt::UTC</tt> to get the correct axis labels.
+  
+  \see setDateTimeFormat
+*/
+void QCPAxis::setDateTimeSpec(const Qt::TimeSpec &timeSpec)
+{
+  mDateTimeSpec = timeSpec;
 }
 
 /*!
@@ -5079,6 +5142,7 @@ void QCPAxis::setUpperEnding(const QCPLineEnding &ending)
 */
 void QCPAxis::moveRange(double diff)
 {
+  QCPRange oldRange = mRange;
   if (mScaleType == stLinear)
   {
     mRange.lower += diff;
@@ -5090,6 +5154,7 @@ void QCPAxis::moveRange(double diff)
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
+  emit rangeChanged(mRange, oldRange);
 }
 
 /*!
@@ -5100,6 +5165,7 @@ void QCPAxis::moveRange(double diff)
 */
 void QCPAxis::scaleRange(double factor, double center)
 {
+  QCPRange oldRange = mRange;
   if (mScaleType == stLinear)
   {
     QCPRange newRange;
@@ -5121,6 +5187,7 @@ void QCPAxis::scaleRange(double factor, double center)
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
+  emit rangeChanged(mRange, oldRange);
 }
 
 /*!
@@ -5152,6 +5219,43 @@ void QCPAxis::setScaleRatio(const QCPAxis *otherAxis, double ratio)
   
   double newRangeSize = ratio*otherAxis->range().size()*ownPixelSize/(double)otherPixelSize;
   setRange(range().center(), newRangeSize, Qt::AlignCenter);
+}
+
+/*!
+  Changes the axis range such that all plottables associated with this axis are fully visible in
+  that dimension.
+  
+  \see QCPAbstractPlottable::rescaleAxes, QCustomPlot::rescaleAxes
+*/
+void QCPAxis::rescale(bool onlyVisiblePlottables)
+{
+  QList<QCPAbstractPlottable*> p = plottables();
+  QCPRange newRange;
+  bool haveRange = false;
+  for (int i=0; i<p.size(); ++i)
+  {
+    if (!p.at(i)->realVisibility() && onlyVisiblePlottables)
+      continue;
+    QCPRange plottableRange;
+    bool validRange;
+    QCPAbstractPlottable::SignDomain signDomain = QCPAbstractPlottable::sdBoth;
+    if (mScaleType == stLogarithmic)
+      signDomain = (mRange.upper < 0 ? QCPAbstractPlottable::sdNegative : QCPAbstractPlottable::sdPositive);
+    if (p.at(i)->keyAxis() == this)
+      plottableRange = p.at(i)->getKeyRange(validRange, signDomain);
+    else
+      plottableRange = p.at(i)->getValueRange(validRange, signDomain);
+    if (validRange)
+    {
+      if (!haveRange)
+        newRange = plottableRange;
+      else
+        newRange.expand(plottableRange);
+      haveRange = true;
+    }
+  }
+  if (haveRange)
+    setRange(newRange);
 }
 
 /*!
@@ -5333,7 +5437,7 @@ QList<QCPAbstractItem*> QCPAxis::items() const
   for (int itemId=0; itemId<mParentPlot->mItems.size(); ++itemId)
   {
     QList<QCPItemPosition*> positions = mParentPlot->mItems.at(itemId)->positions();
-    for (int posId=0; posId<positions.size(); ++itemId)
+    for (int posId=0; posId<positions.size(); ++posId)
     {
       if (positions.at(posId)->keyAxis() == this || positions.at(posId)->valueAxis() == this)
       {
@@ -5438,9 +5542,9 @@ void QCPAxis::setupTickVectors()
       for (int i=mLowestVisibleTick; i<=mHighestVisibleTick; ++i)
       {
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0) // use fromMSecsSinceEpoch function if available, to gain sub-second accuracy on tick labels (e.g. for format "hh:mm:ss:zzz")
-        mTickVectorLabels[i] = mParentPlot->locale().toString(QDateTime::fromTime_t(mTickVector.at(i)), mDateTimeFormat);
+        mTickVectorLabels[i] = mParentPlot->locale().toString(QDateTime::fromTime_t(mTickVector.at(i)).toTimeSpec(mDateTimeSpec), mDateTimeFormat);
 #else
-        mTickVectorLabels[i] = mParentPlot->locale().toString(QDateTime::fromMSecsSinceEpoch(mTickVector.at(i)*1000), mDateTimeFormat);
+        mTickVectorLabels[i] = mParentPlot->locale().toString(QDateTime::fromMSecsSinceEpoch(mTickVector.at(i)*1000).toTimeSpec(mDateTimeSpec), mDateTimeFormat);
 #endif
       }
     }
@@ -6411,7 +6515,7 @@ QCP::Interaction QCPAxis::selectionCategory() const
     <td>QBrush \b mSelectedBrush</td>
     <td>The generic brush that should be used when the plottable is selected (hint: \ref mainBrush gives you the right brush, depending on selection state).</td>
   </tr><tr>
-    <td>QWeakPointer<QCPAxis>\b mKeyAxis, \b mValueAxis</td>
+    <td>QPointer<QCPAxis>\b mKeyAxis, \b mValueAxis</td>
     <td>The key and value axes this plottable is attached to. Call their QCPAxis::coordToPixel functions to translate coordinates to pixels in either the key or value dimension.
         Make sure to check whether the weak pointer is null before using it. If one of the axes is null, don't draw the plottable.</td>
   </tr><tr>
@@ -6678,7 +6782,7 @@ void QCPAbstractPlottable::setSelected(bool selected)
   multiple plottables in their entirety by multiple calls to rescaleAxes where the first call has
   \a onlyEnlarge set to false (the default), and all subsequent set to true.
   
-  \see rescaleKeyAxis, rescaleValueAxis, QCustomPlot::rescaleAxes
+  \see rescaleKeyAxis, rescaleValueAxis, QCustomPlot::rescaleAxes, QCPAxis::rescale
 */
 void QCPAbstractPlottable::rescaleAxes(bool onlyEnlarge) const
 {
@@ -6700,23 +6804,21 @@ void QCPAbstractPlottable::rescaleKeyAxis(bool onlyEnlarge) const
   if (keyAxis->scaleType() == QCPAxis::stLogarithmic)
     signDomain = (keyAxis->range().upper < 0 ? sdNegative : sdPositive);
   
-  bool validRange;
-  QCPRange newRange = getKeyRange(validRange, signDomain);
-  if (validRange)
+  bool rangeValid;
+  QCPRange newRange = getKeyRange(rangeValid, signDomain);
+  if (rangeValid)
   {
     if (onlyEnlarge)
-    {
-      if (keyAxis->range().lower < newRange.lower)
-        newRange.lower = keyAxis->range().lower;
-      if (keyAxis->range().upper > newRange.upper)
-        newRange.upper = keyAxis->range().upper;
-    }
+      newRange.expand(keyAxis->range());
     keyAxis->setRange(newRange);
   }
 }
 
 /*!
   Rescales the value axis of the plottable so the whole plottable is visible.
+  
+  Returns true if the axis was actually scaled. This might not be the case if this plottable has an
+  invalid range, e.g. because it has no data points.
   
   See \ref rescaleAxes for detailed behaviour.
 */
@@ -6729,18 +6831,12 @@ void QCPAbstractPlottable::rescaleValueAxis(bool onlyEnlarge) const
   if (valueAxis->scaleType() == QCPAxis::stLogarithmic)
     signDomain = (valueAxis->range().upper < 0 ? sdNegative : sdPositive);
   
-  bool validRange;
-  QCPRange newRange = getValueRange(validRange, signDomain);
-  
-  if (validRange)
+  bool rangeValid;
+  QCPRange newRange = getValueRange(rangeValid, signDomain);
+  if (rangeValid)
   {
     if (onlyEnlarge)
-    {
-      if (valueAxis->range().lower < newRange.lower)
-        newRange.lower = valueAxis->range().lower;
-      if (valueAxis->range().upper > newRange.upper)
-        newRange.upper = valueAxis->range().upper;
-    }
+      newRange.expand(valueAxis->range());
     valueAxis->setRange(newRange);
   }
 }
@@ -7056,6 +7152,20 @@ void QCPAbstractPlottable::deselectEvent(bool *selectionStateChanged)
   QCPAbstractItem documentation.
 */
 
+/* start documentation of inline functions */
+
+/*! \fn virtual QCPItemPosition *QCPItemAnchor::toQCPItemPosition()
+  
+  Returns 0 if this instance is merely a QCPItemAnchor, and a valid pointer of type QCPItemPosition* if
+  it actually is a QCPItemPosition (which is a subclass of QCPItemAnchor).
+  
+  This safe downcast functionality could also be achieved with a dynamic_cast. However, QCustomPlot avoids
+  dynamic_cast to work with projects that don't have RTTI support enabled (e.g. -fno-rtti flag with
+  gcc compiler).
+*/
+
+/* end documentation of inline functions */
+
 /*!
   Creates a new QCPItemAnchor. You shouldn't create QCPItemAnchor instances directly, even if
   you want to make a new item subclass. Use \ref QCPAbstractItem::createAnchor instead, as
@@ -7185,6 +7295,12 @@ QCPItemPosition::~QCPItemPosition()
   // unregister as child in parent:
   if (mParentAnchor)
     mParentAnchor->removeChild(this);
+}
+
+/* can't make this a header inline function, because QPointer breaks with forward declared types, see QTBUG-29588 */
+QCPAxisRect *QCPItemPosition::axisRect() const
+{
+  return mAxisRect.data();
 }
 
 /*!
@@ -7766,6 +7882,12 @@ QCPAbstractItem::~QCPAbstractItem()
   qDeleteAll(mAnchors);
 }
 
+/* can't make this a header inline function, because QPointer breaks with forward declared types, see QTBUG-29588 */
+QCPAxisRect *QCPAbstractItem::clipAxisRect() const
+{
+  return mClipAxisRect.data();
+}
+
 /*!
   Sets whether the item shall be clipped to an axis rect or whether it shall be visible on the
   entire QCustomPlot. The axis rect can be set with \ref setClipAxisRect.
@@ -8110,7 +8232,7 @@ QCP::Interaction QCPAbstractItem::selectionCategory() const
 
 
 
-/*! \mainpage %QCustomPlot 1.0.1 Documentation
+/*! \mainpage %QCustomPlot 1.1.0 Documentation
 
   \image html qcp-doc-logo.png
   
@@ -9910,27 +10032,24 @@ void QCustomPlot::replot()
 }
 
 /*!
-  Rescales the axes such that all plottables (like graphs) in the plot are fully visible. It does
-  this by calling \ref QCPAbstractPlottable::rescaleAxes on all plottables.
+  Rescales the axes such that all plottables (like graphs) in the plot are fully visible.
   
-  if \a onlyVisible is set to true, only the plottables that have their visibility set to true
+  if \a onlyVisiblePlottables is set to true, only the plottables that have their visibility set to true
   (QCPLayerable::setVisible), will be used to rescale the axes.
   
-  \see QCPAbstractPlottable::rescaleAxes
+  \see QCPAbstractPlottable::rescaleAxes, QCPAxis::rescale
 */
-void QCustomPlot::rescaleAxes(bool onlyVisible)
+void QCustomPlot::rescaleAxes(bool onlyVisiblePlottables)
 {
-  if (mPlottables.isEmpty()) return;
-  bool firstPlottable = true;
+  // get a list of all axes in the plot:
+  QList<QCPAxis*> axes;
+  QList<QCPAxisRect*> rects = axisRects();
+  for (int i=0; i<rects.size(); ++i)
+    axes << rects.at(i)->axes();
   
-  for (int i=0; i<mPlottables.size(); ++i)
-  {
-    if (mPlottables.at(i)->realVisibility() || !onlyVisible)
-    {
-      mPlottables.at(i)->rescaleAxes(!firstPlottable); // onlyEnlarge disabled on first plottable
-      firstPlottable = false;
-    }
-  }
+  // call rescale on all axes:
+  for (int i=0; i<axes.size(); ++i)
+    axes.at(i)->rescale(onlyVisiblePlottables);
 }
 
 /*!
@@ -9962,11 +10081,20 @@ void QCustomPlot::rescaleAxes(bool onlyVisible)
   aren't defined yet inside the constructor, so you would get an image that has strange
   widths/heights.
   
+  \note On Android systems, this method does nothing and issues an according qDebug warning message.
+  
   \see savePng, saveBmp, saveJpg, saveRastered
 */
 bool QCustomPlot::savePdf(const QString &fileName, bool noCosmeticPen, int width, int height)
 {
   bool success = false;
+#ifdef QT_NO_PRINTER
+  Q_UNUSED(fileName)
+  Q_UNUSED(noCosmeticPen)
+  Q_UNUSED(width)
+  Q_UNUSED(height)
+  qDebug() << Q_FUNC_INFO << "Qt was built without printer support (QT_NO_PRINTER). PDF not created.";
+#else
   int newWidth, newHeight;
   if (width == 0 || height == 0)
   {
@@ -10002,6 +10130,7 @@ bool QCustomPlot::savePdf(const QString &fileName, bool noCosmeticPen, int width
     success = true;
   }
   setViewport(oldViewport);
+#endif // QT_NO_PRINTER
   return success;
 }
 
@@ -11042,14 +11171,14 @@ void QCPGraph::setChannelFillGraph(QCPGraph *targetGraph)
   if (targetGraph == this)
   {
     qDebug() << Q_FUNC_INFO << "targetGraph is this graph itself";
-    mChannelFillGraph.clear();
+    mChannelFillGraph = 0;
     return;
   }
   // prevent setting channel target to a graph not in the plot:
   if (targetGraph && targetGraph->mParentPlot != mParentPlot)
   {
     qDebug() << Q_FUNC_INFO << "targetGraph not in same plot";
-    mChannelFillGraph.clear();
+    mChannelFillGraph = 0;
     return;
   }
   
@@ -13987,22 +14116,22 @@ void QCPBars::connectBars(QCPBars *lower, QCPBars *upper)
   {
     // disconnect old bar below upper:
     if (upper->mBarBelow && upper->mBarBelow.data()->mBarAbove.data() == upper)
-      upper->mBarBelow.data()->mBarAbove.clear();
-    upper->mBarBelow.clear();
+      upper->mBarBelow.data()->mBarAbove = 0;
+    upper->mBarBelow = 0;
   } else if (!upper) // disconnect lower at top
   {
     // disconnect old bar above lower:
     if (lower->mBarAbove && lower->mBarAbove.data()->mBarBelow.data() == lower)
-      lower->mBarAbove.data()->mBarBelow.clear();
-    lower->mBarAbove.clear();
+      lower->mBarAbove.data()->mBarBelow = 0;
+    lower->mBarAbove = 0;
   } else // connect lower and upper
   {
     // disconnect old bar above lower:
     if (lower->mBarAbove && lower->mBarAbove.data()->mBarBelow.data() == lower)
-      lower->mBarAbove.data()->mBarBelow.clear();
+      lower->mBarAbove.data()->mBarBelow = 0;
     // disconnect old bar below upper:
     if (upper->mBarBelow && upper->mBarBelow.data()->mBarAbove.data() == upper)
-      upper->mBarBelow.data()->mBarAbove.clear();
+      upper->mBarBelow.data()->mBarAbove = 0;
     lower->mBarAbove = upper;
     upper->mBarBelow = lower;
   }
@@ -16355,8 +16484,7 @@ void QCPItemTracer::updatePosition()
           position->setCoords(last.key(), last.value().value);
         else
         {
-          QCPDataMap::const_iterator it = first;
-          it = mGraph->data()->lowerBound(mGraphKey);
+          QCPDataMap::const_iterator it = mGraph->data()->lowerBound(mGraphKey);
           if (it != first) // mGraphKey is somewhere between iterators
           {
             QCPDataMap::const_iterator prevIt = it-1;
@@ -17090,7 +17218,7 @@ QList<QCPAbstractItem *> QCPAxisRect::items() const
       continue;
     }
     QList<QCPItemPosition*> positions = mParentPlot->mItems.at(itemId)->positions();
-    for (int posId=0; posId<positions.size(); ++itemId)
+    for (int posId=0; posId<positions.size(); ++posId)
     {
       if (positions.at(posId)->axisRect() == this ||
           positions.at(posId)->keyAxis()->axisRect() == this ||
