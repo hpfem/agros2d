@@ -179,7 +179,7 @@
 
       <module:weakform_surface analysistype="transient" default="heat_temperature">
         <module:boundary equation="T = T_0" id="heat_temperature" name="Temperature">
-          <module:quantity id="heat_temperature"/>
+          <module:quantity dependence="time" id="heat_temperature"/>
 
           <module:linearity_option type="linear">
             <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
