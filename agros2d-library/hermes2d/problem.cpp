@@ -125,7 +125,8 @@ bool Problem::isMeshed() const
 
 bool Problem::isSolved() const
 {
-    return (!Agros2D::solutionStore()->isEmpty() && !m_isSolving && !m_isMeshing);
+    // return (!Agros2D::solutionStore()->isEmpty() && !m_isSolving && !m_isMeshing);
+    return (!Agros2D::solutionStore()->isEmpty());
 }
 
 int Problem::numAdaptiveFields() const
@@ -802,7 +803,7 @@ void Problem::solveAction()
             }
             else if(!skipThisTimeStep(block))
             {
-                stepMessage(block);
+                transientStepMessage(block);
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
                     // no adaptivity
@@ -944,7 +945,7 @@ void Problem::solveAdaptiveStepAction()
     solver.data()->solveReferenceAndProject(0, adaptStep + 1);
 }
 
-void Problem::stepMessage(Block* block)
+void Problem::transientStepMessage(Block* block)
 {
     // log analysis
     QString fields;
@@ -968,6 +969,8 @@ void Problem::stepMessage(Block* block)
                                          arg(actualTimeStep()).
                                          arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()));
         }
+
+        Agros2D::log()->updateTransientChartInfo();
     }
     else
     {

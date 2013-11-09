@@ -25,7 +25,10 @@
 #include "gui/common.h"
 
 #include "scene.h"
+#include "hermes2d/problem_config.h"
+#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/solutionstore.h"
 
 #include "qcustomplot/qcustomplot.h"
 #include "ctemplate/template.h"
@@ -38,7 +41,7 @@ Log::Log()
 // *******************************************************************************************************
 
 LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
-    m_printCounter(0), m_logInfo(NULL)
+    m_printCounter(0), m_maximumVisibleRows(150), m_logInfo(NULL)
 {    
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
@@ -111,7 +114,7 @@ void LogWidget::showHtml()
     ctemplate::TemplateDictionary *local = m_logInfo->MakeCopy("local");
 
     // remove first items in cache
-    while (m_logItems.count() > 150)
+    while (m_logItems.count() > m_maximumVisibleRows)
         m_logItems.removeFirst();
 
     local->SetValue("ITEMS", m_logItems.join("").toStdString());
@@ -319,39 +322,118 @@ LogDialog::~LogDialog()
 void LogDialog::createControls()
 {
     connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
-    connect(Agros2D::log(), SIGNAL(nonlinearTable(QVector<double>, QVector<double>)), this, SLOT(nonlinearTable(QVector<double>,QVector<double>)));
-    connect(Agros2D::log(), SIGNAL(adaptivityTable(QVector<double>, QVector<double>)), this, SLOT(adaptivityTable(QVector<double>, QVector<double>)));
+    connect(Agros2D::log(), SIGNAL(updateNonlinearChart(QVector<double>, QVector<double>)), this, SLOT(updateNonlinearChartInfo(QVector<double>, QVector<double>)));
+    connect(Agros2D::log(), SIGNAL(updateAdaptivityChart(const FieldInfo *)), this, SLOT(updateAdaptivityChartInfo(const FieldInfo *)));
+    connect(Agros2D::log(), SIGNAL(updateTransientChart()), this, SLOT(updateTransientChartInfo()));
 
     logWidget = new LogWidget(this);
     logWidget->setMemoryLabelVisible(false);
+    logWidget->setMaximumVisibleRows(50);
+
+    QPen pen;
+    pen.setColor(Qt::darkGray);
+    pen.setWidth(1.5);
+
+    QPen penError;
+    penError.setColor(Qt::darkRed);
+    penError.setWidth(2.0);
+
+    QFont fontTitle(font());
+    fontTitle.setBold(true);
+
+    QFont fontChart(font());
+    fontChart.setPointSize(fontChart.pointSize() - 1);
 
     m_nonlinearChart = new QCustomPlot(this);
-    m_nonlinearChart->setVisible(false);
-    m_nonlinearChart->setMinimumWidth(300);
+    m_nonlinearChart->setVisible(Agros2D::problem()->determineIsNonlinear());
+    QCPPlotTitle *nonlinearTitle = new QCPPlotTitle(m_nonlinearChart, tr("Nonlinear solver"));
+    nonlinearTitle->setFont(fontTitle);
+    m_nonlinearChart->plotLayout()->insertRow(0);
+    m_nonlinearChart->plotLayout()->addElement(0, 0, nonlinearTitle);
+    m_nonlinearChart->setFont(fontChart);
+    m_nonlinearChart->setMinimumWidth(250);
+    m_nonlinearChart->setMinimumHeight(250);
+
+    m_nonlinearChart->xAxis->setTickLabelFont(fontChart);
+    m_nonlinearChart->xAxis->setLabelFont(fontChart);
     m_nonlinearChart->xAxis->setTickStep(1.0);
     m_nonlinearChart->xAxis->setAutoTickStep(false);
-    m_nonlinearChart->xAxis->setLabel(tr("iteration"));
-    m_nonlinearChart->yAxis->setLabel(tr("rel. error (%)"));
+    m_nonlinearChart->xAxis->setLabel(tr("number of iterations"));
+
     m_nonlinearChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
-    m_nonlinearChart->addGraph();
+    m_nonlinearChart->yAxis->setTickLabelFont(fontChart);
+    m_nonlinearChart->yAxis->setLabelFont(fontChart);
+    m_nonlinearChart->yAxis->setLabel(tr("rel. change of sln. (%)"));
 
-    m_nonlinearChart->graph(0)->setLineStyle(QCPGraph::lsLine);
-
-    if (Agros2D::problem()->determineIsNonlinear())
-    {
-        m_nonlinearChart->setVisible(true);
-    }
+    m_nonlinearErrorGraph = m_nonlinearChart->addGraph(m_nonlinearChart->xAxis, m_nonlinearChart->yAxis);
+    m_nonlinearErrorGraph->setLineStyle(QCPGraph::lsLine);
+    m_nonlinearErrorGraph->setPen(pen);
+    m_nonlinearErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
 
     m_adaptivityChart = new QCustomPlot(this);
-    m_adaptivityChart->setVisible(false);
-    m_adaptivityChart->setMinimumWidth(300);
-    m_adaptivityChart->xAxis->setTickStep(1.0);
-    m_adaptivityChart->xAxis->setAutoTickStep(false);
-    m_adaptivityChart->xAxis->setLabel(tr("iteration"));
-    m_adaptivityChart->yAxis->setLabel(tr("error"));
-    m_adaptivityChart->addGraph();
+    m_adaptivityChart->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
+    QCPPlotTitle *adaptivityTitle = new QCPPlotTitle(m_adaptivityChart, tr("Adaptivity"));
+    adaptivityTitle->setFont(fontTitle);
+    m_adaptivityChart->plotLayout()->insertRow(0);
+    m_adaptivityChart->plotLayout()->addElement(0, 0, adaptivityTitle);
+    m_adaptivityChart->setMinimumWidth(250);
+    m_adaptivityChart->setMinimumHeight(250);
+    m_adaptivityChart->legend->setVisible(true);
+    m_adaptivityChart->legend->setFont(fontChart);
 
-    m_adaptivityChart->graph(0)->setLineStyle(QCPGraph::lsLine);
+    m_adaptivityChart->xAxis->setTickLabelFont(fontChart);
+    m_adaptivityChart->xAxis->setLabelFont(fontChart);
+    m_adaptivityChart->xAxis->setTickStep(1.0);
+    m_adaptivityChart->xAxis->setAutoTickStep(true);
+    m_adaptivityChart->xAxis->setLabel(tr("number of iterations"));
+
+    m_adaptivityChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
+    m_adaptivityChart->yAxis->setTickLabelFont(fontChart);
+    m_adaptivityChart->yAxis->setLabelFont(fontChart);
+    m_adaptivityChart->yAxis->setLabel(tr("error"));
+    m_adaptivityChart->yAxis2->setVisible(true);
+    m_adaptivityChart->yAxis2->setTickLabelFont(fontChart);
+    m_adaptivityChart->yAxis2->setLabelFont(fontChart);
+    m_adaptivityChart->yAxis2->setLabel(tr("number of DOFs"));
+
+    m_adaptivityErrorGraph = m_adaptivityChart->addGraph(m_adaptivityChart->xAxis, m_adaptivityChart->yAxis);
+    m_adaptivityErrorGraph->setLineStyle(QCPGraph::lsLine);
+    m_adaptivityErrorGraph->setPen(pen);
+    m_adaptivityErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
+    m_adaptivityErrorGraph->setName(tr("error"));
+    m_adaptivityDOFsGraph = m_adaptivityChart->addGraph(m_adaptivityChart->xAxis, m_adaptivityChart->yAxis2);
+    m_adaptivityDOFsGraph->setLineStyle(QCPGraph::lsLine);
+    m_adaptivityDOFsGraph->setPen(pen);
+    m_adaptivityDOFsGraph->setBrush(QBrush(QColor(255, 0, 0, 20)));
+    m_adaptivityDOFsGraph->setName(tr("DOFs"));
+
+    m_timeChart = new QCustomPlot(this);
+    m_timeChart->setVisible(Agros2D::problem()->isTransient());
+    QCPPlotTitle *timeTitle = new QCPPlotTitle(m_timeChart, tr("Transient problem"));
+    timeTitle->setFont(fontTitle);
+    m_timeChart->plotLayout()->insertRow(0);
+    m_timeChart->plotLayout()->addElement(0, 0, timeTitle);
+    m_timeChart->setMinimumWidth(250);
+    m_timeChart->setMinimumHeight(250);
+
+    m_timeChart->xAxis->setTickLabelFont(fontChart);
+    m_timeChart->xAxis->setLabelFont(fontChart);
+    // m_timeChart->xAxis->setTickStep(1.0);
+    m_timeChart->xAxis->setAutoTickStep(true);
+    m_timeChart->xAxis->setLabel(tr("number of steps"));
+
+    m_timeChart->yAxis->setTickLabelFont(fontChart);
+    m_timeChart->yAxis->setLabelFont(fontChart);
+    m_timeChart->yAxis->setLabel(tr("step length"));
+
+    m_timeTimeStepGraph = m_timeChart->addGraph(m_timeChart->xAxis, m_timeChart->yAxis);
+    m_timeTimeStepGraph->setLineStyle(QCPGraph::lsLine);
+    m_timeTimeStepGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
+    m_timeTimeStepGraph->setPen(pen);
+    m_timeTimeStepGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
+
+    m_timeProgress = new QProgressBar(this);
+    m_timeProgress->setVisible(Agros2D::problem()->isTransient());
 
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(tryClose()));
@@ -368,11 +450,20 @@ void LogDialog::createControls()
     layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
-    layoutHorizontal->addWidget(logWidget, 1);
-    layoutHorizontal->addWidget(m_nonlinearChart, 0);
+    layoutHorizontal->addWidget(m_timeChart, 1);
+    layoutHorizontal->addWidget(m_nonlinearChart, 1);
+    layoutHorizontal->addWidget(m_adaptivityChart, 1);
+
+    QVBoxLayout *layoutVertical = new QVBoxLayout();
+    layoutVertical->addWidget(logWidget, 2);
+    if (Agros2D::problem()->numAdaptiveFields() > 0 || Agros2D::problem()->determineIsNonlinear() || Agros2D::problem()->isTransient())
+    {
+        layoutVertical->addLayout(layoutHorizontal, 4);
+        layoutVertical->addWidget(m_timeProgress, 2);
+    }
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutHorizontal);
+    layout->addLayout(layoutVertical, 1);
     layout->addLayout(layoutStatus);
 
     setLayout(layout);
@@ -384,18 +475,66 @@ void LogDialog::printError(const QString &module, const QString &message)
     btnClose->setEnabled(true);
 }
 
-void LogDialog::nonlinearTable(QVector<double> step, QVector<double> error)
+void LogDialog::updateNonlinearChartInfo(QVector<double> step, QVector<double> error)
 {
-    m_nonlinearChart->graph(0)->setData(step, error);
+    m_nonlinearErrorGraph->setData(step, error);
     m_nonlinearChart->rescaleAxes();
     m_nonlinearChart->replot();
 }
 
-void LogDialog::adaptivityTable(QVector<double> step, QVector<double> error)
-{
-    m_adaptivityChart->graph(0)->setData(step, error);
+void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
+{   
+    int numberOfTimeSteps = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
+    int numberOfAdaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
+
+    QVector<double> adaptiveSteps;
+    QVector<double> adaptiveDOFs;
+    QVector<double> adaptiveError;
+
+    for (int i = 0; i <= numberOfAdaptiveSteps; i++)
+    {
+        SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, numberOfTimeSteps, i, SolutionMode_Normal));
+
+        adaptiveSteps.append(i + 1);
+        adaptiveDOFs.append(runTime.DOFs());
+        adaptiveError.append(runTime.adaptivityError());
+    }
+
+    m_adaptivityErrorGraph->setData(adaptiveSteps, adaptiveError);
+    m_adaptivityDOFsGraph->setData(adaptiveSteps, adaptiveDOFs);
     m_adaptivityChart->rescaleAxes();
     m_adaptivityChart->replot();
+}
+
+void LogDialog::updateTransientChartInfo()
+{
+    QVector<double> timeSteps;
+    QVector<double> timeLengths = Agros2D::problem()->timeStepLengths().toVector();
+    double maximum = 0.0;
+    for (int i = 0; i < timeLengths.size(); i++)
+    {
+        timeSteps.append(i + 1);
+        if (timeLengths[i] > maximum)
+            maximum = timeLengths[i];
+    }
+
+    m_timeTimeStepGraph->setData(timeSteps, timeLengths);
+    m_timeChart->yAxis->setRangeLower(0.0);
+    m_timeChart->yAxis->setRangeUpper(maximum);
+    m_timeTimeStepGraph->rescaleKeyAxis();
+    m_timeChart->replot();
+
+    // progress bar
+    if (Agros2D::problem()->config()->isTransientAdaptive())
+    {
+        m_timeProgress->setMaximum(100);
+        m_timeProgress->setValue(int (100 * Agros2D::problem()->actualTime() / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));
+    }
+    else
+    {
+        m_timeProgress->setMaximum(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
+        m_timeProgress->setValue(timeSteps.last());
+    }
 }
 
 void LogDialog::tryClose()

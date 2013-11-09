@@ -109,10 +109,10 @@ public:
     double lastTime(const Block* block);
 
     // last adaptive step for given time step. If time step not given, last time step used implicitly
-    int lastAdaptiveStep(const FieldInfo* fieldInfo, SolutionMode solutionType, int timeStep = -1);
-    int lastAdaptiveStep(const Block* block, SolutionMode solutionType, int timeStep = -1);
+    int lastAdaptiveStep(const FieldInfo* fieldInfo, SolutionMode solutionType, int timeStep = -1) const;
+    int lastAdaptiveStep(const Block* block, SolutionMode solutionType, int timeStep = -1) const;
 
-    QList<double> timeLevels(const FieldInfo* fieldInfo);
+    QList<double> timeLevels(const FieldInfo* fieldInfo) const;
 
     // number of time steps, where this fieldInfo was calculated up to this time
     int timeLevelIndex(const FieldInfo* fieldInfo, double time);

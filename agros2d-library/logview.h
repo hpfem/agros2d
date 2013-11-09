@@ -23,10 +23,12 @@
 #include "util.h"
 
 class QCustomPlot;
+class QCPGraph;
 namespace ctemplate
 {
     class TemplateDictionary;
 }
+class FieldInfo;
 
 class AGROS_LIBRARY_API Log: public QObject
 {
@@ -40,8 +42,9 @@ public:
     inline void printWarning(const QString &module, const QString &message) { emit warningMsg(module, message); }
     inline void printDebug(const QString &module, const QString &message) { emit debugMsg(module, message); }
 
-    inline void setNonlinearTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
-    inline void setAdaptivityTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
+    inline void updateNonlinearChartInfo(QVector<double> step, QVector<double> error) { emit updateNonlinearChart(step, error); }
+    inline void updateAdaptivityChartInfo(const FieldInfo *fieldInfo) { emit updateAdaptivityChart(fieldInfo); }
+    inline void updateTransientChartInfo() { emit updateTransientChart(); }
 
 signals:
     void headingMsg(const QString &message);
@@ -50,8 +53,9 @@ signals:
     void warningMsg(const QString &module, const QString &message);
     void debugMsg(const QString &module, const QString &message);
 
-    void nonlinearTable(QVector<double> step, QVector<double> error);
-    void adaptivityTable(QVector<double> step, QVector<double> error);
+    void updateNonlinearChart(QVector<double> step, QVector<double> error);
+    void updateAdaptivityChart(const FieldInfo *fieldInfo);
+    void updateTransientChart();
 };
 
 class AGROS_LIBRARY_API LogWidget : public QWidget
@@ -64,7 +68,8 @@ public:
     void welcomeMessage();
 
     bool isMemoryLabelVisible() const;
-    void setMemoryLabelVisible(bool visible = true);
+    inline void setMemoryLabelVisible(bool visible = true);
+    inline void setMaximumVisibleRows(int maximum) { m_maximumVisibleRows = maximum; }
 
 private slots:
     void contextMenu(const QPoint &pos);
@@ -87,6 +92,7 @@ private:
 
     QWebView *webView;
     QString m_cascadeStyleSheet;
+    int m_maximumVisibleRows;
 
     QAction *actShowTimestamp;
     QAction *actShowDebug;
@@ -134,15 +140,23 @@ private:
     QPushButton *btnAbort;
 
     QCustomPlot *m_nonlinearChart;
+    QCPGraph *m_nonlinearErrorGraph;
     QCustomPlot *m_adaptivityChart;
+    QCPGraph *m_adaptivityErrorGraph;
+    QCPGraph *m_adaptivityDOFsGraph;
+    QCustomPlot *m_timeChart;
+    QCPGraph *m_timeTimeStepGraph;
+
+    QProgressBar *m_timeProgress;
 
     void createControls();
 
 private slots:    
     void printError(const QString &module, const QString &message);
 
-    void nonlinearTable(QVector<double> step, QVector<double> error);
-    void adaptivityTable(QVector<double> step, QVector<double> error);
+    void updateNonlinearChartInfo(QVector<double> step, QVector<double> error);
+    void updateAdaptivityChartInfo(const FieldInfo *fieldInfo);
+    void updateTransientChartInfo();
 
     void tryClose();
 };

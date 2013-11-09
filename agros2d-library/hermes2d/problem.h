@@ -105,7 +105,7 @@ public:
     int numTransientFields() const;
     bool isHarmonic() const;
     inline bool isNonlinear() const { return m_isNonlinear; }
-    bool determineIsNonlinear() const;
+    bool determineIsNonlinear() const; // slow version
     int numAdaptiveFields() const;
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
@@ -204,7 +204,7 @@ private:
     void solveAction(); // called by solve, can throw SolverException
 
     void solveAdaptiveStepAction();
-    void stepMessage(Block* block);
+    void transientStepMessage(Block* block);    
 
     friend class CalculationThread;
     friend class PyProblem;

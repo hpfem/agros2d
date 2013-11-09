@@ -166,7 +166,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
         assert(0);
 
     m_damping.append(current_damping_factor);
-    Agros2D::log()->setNonlinearTable(m_steps, m_relativeChangeOfSolutions);
+    Agros2D::log()->updateNonlinearChartInfo(m_steps, m_relativeChangeOfSolutions);
 }
 
 template <typename Scalar>

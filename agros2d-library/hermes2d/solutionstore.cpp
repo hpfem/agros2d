@@ -468,7 +468,7 @@ double SolutionStore::lastTime(const Block *block)
 
 }
 
-int SolutionStore::lastAdaptiveStep(const FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep)
+int SolutionStore::lastAdaptiveStep(const FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep) const
 {
     if (timeStep == -1)
         timeStep = lastTimeStep(fieldInfo, solutionType);
@@ -483,7 +483,7 @@ int SolutionStore::lastAdaptiveStep(const FieldInfo *fieldInfo, SolutionMode sol
     return adaptiveStep;
 }
 
-int SolutionStore::lastAdaptiveStep(const Block *block, SolutionMode solutionType, int timeStep)
+int SolutionStore::lastAdaptiveStep(const Block *block, SolutionMode solutionType, int timeStep) const
 {
     int adaptiveStep = lastAdaptiveStep(block->fields().at(0)->fieldInfo(), solutionType, timeStep);
 
@@ -536,7 +536,7 @@ BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(const Block *block, S
     return bsid;
 }
 
-QList<double> SolutionStore::timeLevels(const FieldInfo *fieldInfo)
+QList<double> SolutionStore::timeLevels(const FieldInfo *fieldInfo) const
 {
     QList<double> list;
 
