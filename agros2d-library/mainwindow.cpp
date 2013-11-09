@@ -80,13 +80,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
     postHermes = new PostHermes();
 
-    // scene - info widget
-    sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
-    sceneInfoWidget->setRecentProblemFiles(&recentFiles);
-    connect(sceneInfoWidget, SIGNAL(open(QString)), this, SLOT(doDocumentOpen(QString)));
-    connect(sceneInfoWidget, SIGNAL(openForm(QString, QString)), this, SLOT(doDocumentOpenForm(QString, QString)));
-    connect(sceneInfoWidget, SIGNAL(examples(QString)), this, SLOT(doExamples(QString)));
-
     // scene
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(postHermes, this);
@@ -95,6 +88,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewChart = new ChartView(this);
     sceneViewParticleTracing = new SceneViewParticleTracing(postHermes, this);
     sceneViewBlank = new QLabel("", this);
+
+    // scene - info widget
+    sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
+    sceneInfoWidget->setRecentProblemFiles(&recentFiles);
+    connect(sceneInfoWidget, SIGNAL(open(QString)), this, SLOT(doDocumentOpen(QString)));
+    connect(sceneInfoWidget, SIGNAL(openForm(QString, QString)), this, SLOT(doDocumentOpenForm(QString, QString)));
+    connect(sceneInfoWidget, SIGNAL(examples(QString)), this, SLOT(doExamples(QString)));
 
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
