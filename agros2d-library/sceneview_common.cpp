@@ -105,10 +105,12 @@ void SceneViewCommon::initializeGL()
     createFontTexture();
 }
 
+#if QT_VERSION > 0x050100
 void SceneViewCommon::messageLogged(QOpenGLDebugMessage message)
 {
     qDebug() << message;
 }
+#endif
 
 void SceneViewCommon::createFontTexture()
 {

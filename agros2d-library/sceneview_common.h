@@ -128,7 +128,9 @@ private slots:
     void doMaterialGroup(QAction *action);
     void doBoundaryGroup(QAction *action);
 
+#if QT_VERSION > 0x050100
     void messageLogged(QOpenGLDebugMessage message);
+#endif
 };
 
 #endif // SCENEVIEWCOMMON_H
