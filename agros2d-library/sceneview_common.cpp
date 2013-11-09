@@ -84,11 +84,30 @@ void SceneViewCommon::createActions()
 
 void SceneViewCommon::initializeGL()
 {
+#if QT_VERSION > 0x050100
+    /*
+    QOpenGLDebugLogger *logger = new QOpenGLDebugLogger(this);
+
+    connect(logger, SIGNAL(messageLogged(QOpenGLDebugMessage)), this, SLOT(messageLogged(QOpenGLDebugMessage)), Qt::DirectConnection);
+
+    if (logger->initialize())
+    {
+        logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+        logger->enableMessages();
+    }
+    */
+#endif
+
     glShadeModel(GL_SMOOTH);
     glDisable(GL_MULTISAMPLE);
     glEnable(GL_NORMALIZE);
 
     createFontTexture();
+}
+
+void SceneViewCommon::messageLogged(QOpenGLDebugMessage message)
+{
+    qDebug() << message;
 }
 
 void SceneViewCommon::createFontTexture()
@@ -226,7 +245,7 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, stbtt_bak
     glDisable(GL_TEXTURE_2D);
 }
 
-void SceneViewCommon::initFont(GLuint textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize)
+void SceneViewCommon::initFont(GLuint &textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize)
 {
     // load font
     QString fntx = QFileInfo(QString("%1/resources/fonts/%2.ttf").arg(datadir()).arg(fontName)).absoluteFilePath();
@@ -238,21 +257,13 @@ void SceneViewCommon::initFont(GLuint textureID, stbtt_bakedchar *fnt, const QSt
     int fsize = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    unsigned char* ttfBuffer = (unsigned char*)malloc(fsize);
-    if (!ttfBuffer)
-    {
-        fclose(fp);
-    }
+    unsigned char *ttfBuffer = (unsigned char*) malloc(fsize);
 
     size_t s = fread(ttfBuffer, 1, fsize, fp);
     fclose(fp);
     fp = NULL;
 
-    unsigned char* bmap = (unsigned char*) malloc(TEXTURE_SIZE*TEXTURE_SIZE);
-    if (!bmap)
-    {
-        free(ttfBuffer);
-    }
+    unsigned char *bmap = (unsigned char*) malloc(TEXTURE_SIZE*TEXTURE_SIZE);
 
     stbtt_BakeFontBitmap(ttfBuffer, 0, pointSize, bmap, TEXTURE_SIZE, TEXTURE_SIZE, 32, 96, fnt);
 

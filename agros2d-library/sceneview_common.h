@@ -97,7 +97,7 @@ protected:
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
     void printAt(int penX, int penY, const QString &text, stbtt_bakedchar *fnt);
-    void initFont(GLuint textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize);
+    void initFont(GLuint &textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize);
     void createFontTexture();
 
     GLuint m_textureLabelRulers;
@@ -116,7 +116,7 @@ protected:
 
     virtual void initializeGL();
     virtual void resizeGL(int w, int h);
-    virtual void paintGL() = 0;
+    virtual void paintGL() = 0;    
     void setupViewport(int w, int h);
     void loadProjectionViewPort();
 
@@ -126,7 +126,9 @@ protected:
 
 private slots:
     void doMaterialGroup(QAction *action);
-    void doBoundaryGroup(QAction *action);    
+    void doBoundaryGroup(QAction *action);
+
+    void messageLogged(QOpenGLDebugMessage message);
 };
 
 #endif // SCENEVIEWCOMMON_H

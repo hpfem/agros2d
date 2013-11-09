@@ -113,7 +113,7 @@ void SceneViewCommon3D::paintBackground()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, -10.0);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
