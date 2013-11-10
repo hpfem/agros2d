@@ -54,9 +54,6 @@ void PythonLabApplication::setStyle()
         QStringList styles = QStyleFactory::keys();
 
 #ifdef Q_WS_X11
-        // kde 3
-        if (getenv("KDE_FULL_SESSION") != NULL)
-            styleName = "Plastique";
         // kde 4
         if (getenv("KDE_SESSION_VERSION") != NULL)
         {

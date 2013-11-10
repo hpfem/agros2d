@@ -271,10 +271,10 @@ void VideoDialog::setTransientStep(int transientStep)
     m_postHermes->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(m_postHermes->activeViewField(), SolutionMode_Normal, transientStep));
     m_postHermes->refresh();
 
-    sliderTransientAnimate->setValue(transientStep);
-
     if (chkSaveImages->isChecked())
         m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(transientStep)).right(8)));
+
+    sliderTransientAnimate->setValue(transientStep);
 
     QString time = QString::number(m_timeLevels[transientStep], 'g');
     lblTransientStep->setText(QString("%1 / %2").arg(transientStep).arg(m_timeSteps));

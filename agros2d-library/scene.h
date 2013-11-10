@@ -199,11 +199,6 @@ public:
 private:
     QUndoStack *m_undoStack;
 
-    FieldInfo* m_activeViewField;
-    int m_activeTimeStep;
-    int m_activeAdaptivityStep;
-    SolutionMode m_activeSolutionMode;
-
     LoopsInfo *m_loopsInfo;
     QMultiMap<SceneEdge *, SceneNode *> m_lyingEdgeNodes;
     QMap<SceneNode *, int> m_numberOfConnectedNodeEdges;

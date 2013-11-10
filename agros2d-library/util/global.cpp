@@ -124,10 +124,7 @@ void AgrosApplication::setStyle()
         QString styleName = "";
         QStringList styles = QStyleFactory::keys();
 
-#ifdef Q_WS_X11
-        // kde 3
-        if (getenv("KDE_FULL_SESSION") != NULL)
-            styleName = "Plastique";
+#ifdef Q_WS_X11        
         // kde 4
         if (getenv("KDE_SESSION_VERSION") != NULL)
         {

@@ -145,9 +145,6 @@ Scene::Scene() : m_loopsInfo(NULL)
     createActions();
 
     m_undoStack = new QUndoStack(this);
-    //m_sceneSolution = new SceneSolution<double>();
-    m_activeViewField = NULL;
-    m_activeTimeStep = 0;
 
     connect(this, SIGNAL(invalidated()), this, SLOT(doInvalidated()));
 
@@ -438,11 +435,6 @@ void Scene::clear()
     {
         Agros2D::problem()->clearFieldsAndConfig();
     }
-
-    m_activeViewField = NULL;
-    m_activeTimeStep = 0;
-    m_activeAdaptivityStep = 0;
-    m_activeSolutionMode = SolutionMode_Normal;
 
     // geometry
     nodes->clear();

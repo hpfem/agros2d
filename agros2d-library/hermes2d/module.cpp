@@ -163,7 +163,8 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
     PluginInterface *plugin = NULL;
-    try{
+    try
+    {
         if (markerTarget)
             plugin = Agros2D::problem()->couplingInfo(markerSource->fieldId(), markerTarget->fieldId())->plugin();
         else

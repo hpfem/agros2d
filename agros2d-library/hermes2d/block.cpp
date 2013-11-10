@@ -138,7 +138,9 @@ void Block::updateExactSolutionFunctions()
 
 void Block::setWeakForm(WeakFormAgros<double> *wf)
 {
-    if (m_wf) delete m_wf; m_wf = wf;
+    if (m_wf)
+        delete m_wf;
+    m_wf = wf;
 }
 
 QSharedPointer<ProblemSolver<double> > Block::prepareSolver()
