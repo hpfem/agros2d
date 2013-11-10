@@ -285,7 +285,11 @@ LogView::LogView(QWidget *parent) : QDockWidget(tr("Application log"), parent)
 
 // *******************************************************************************************************
 
-LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent)
+LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent),
+    m_nonlinearChart(NULL), m_nonlinearErrorGraph(NULL), m_nonlinearProgress(NULL),
+    m_adaptivityChart(NULL), m_adaptivityErrorGraph(NULL), m_adaptivityDOFsGraph(NULL), m_adaptivityProgress(NULL),
+    m_timeChart(NULL), m_timeTimeStepGraph(NULL), m_timeProgress(NULL),
+    m_progress(NULL)
 {
     setModal(true);
 
@@ -335,7 +339,7 @@ void LogDialog::createControls()
     m_logWidget->setMaximumVisibleRows(50);
 
     QFont fontProgress = font();
-    fontProgress.setPointSize(fontProgress.pointSize() - 3);
+    fontProgress.setPointSize(fontProgress.pointSize() - 2);
 
     m_progress = new QListWidget(this);
     m_progress->setCurrentRow(0);
@@ -348,131 +352,6 @@ void LogDialog::createControls()
     m_progress->setMinimumHeight(90);
     m_progress->setMaximumHeight(90);
     m_progress->setFont(fontProgress);
-
-    QPen pen;
-    pen.setColor(Qt::darkGray);
-    pen.setWidth(1.5);
-
-    QPen penError;
-    penError.setColor(Qt::darkRed);
-    penError.setWidth(2.0);
-
-    QFont fontTitle(font());
-    fontTitle.setBold(true);
-
-    QFont fontChart(font());
-    fontChart.setPointSize(fontChart.pointSize() - 1);
-
-    m_nonlinearChart = new QCustomPlot(this);
-    m_nonlinearChart->setVisible(Agros2D::problem()->determineIsNonlinear());
-    QCPPlotTitle *nonlinearTitle = new QCPPlotTitle(m_nonlinearChart, tr("Nonlinear solver"));
-    nonlinearTitle->setFont(fontTitle);
-    m_nonlinearChart->plotLayout()->insertRow(0);
-    m_nonlinearChart->plotLayout()->addElement(0, 0, nonlinearTitle);
-    m_nonlinearChart->setFont(fontChart);
-    m_nonlinearChart->setMinimumWidth(250);
-    m_nonlinearChart->setMinimumHeight(250);
-
-    m_nonlinearChart->xAxis->setTickLabelFont(fontChart);
-    m_nonlinearChart->xAxis->setLabelFont(fontChart);
-    // m_nonlinearChart->xAxis->setTickStep(1.0);
-    m_nonlinearChart->xAxis->setAutoTickStep(true);
-    m_nonlinearChart->xAxis->setLabel(tr("number of iterations"));
-
-    m_nonlinearChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
-    m_nonlinearChart->yAxis->setTickLabelFont(fontChart);
-    m_nonlinearChart->yAxis->setLabelFont(fontChart);
-    m_nonlinearChart->yAxis->setLabel(tr("rel. change of sln. (%)"));
-
-    m_nonlinearErrorGraph = m_nonlinearChart->addGraph(m_nonlinearChart->xAxis, m_nonlinearChart->yAxis);
-    m_nonlinearErrorGraph->setLineStyle(QCPGraph::lsLine);
-    m_nonlinearErrorGraph->setPen(pen);
-    m_nonlinearErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
-
-    m_nonlinearProgress = new QProgressBar(this);
-    m_nonlinearProgress->setMaximum(100);
-    m_nonlinearProgress->setVisible(Agros2D::problem()->determineIsNonlinear());
-
-    QVBoxLayout *layoutNonlinear = new QVBoxLayout();
-    layoutNonlinear->addWidget(m_nonlinearChart, 1);
-    layoutNonlinear->addWidget(m_nonlinearProgress);
-
-    m_adaptivityChart = new QCustomPlot(this);
-    m_adaptivityChart->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
-    QCPPlotTitle *adaptivityTitle = new QCPPlotTitle(m_adaptivityChart, tr("Adaptivity"));
-    adaptivityTitle->setFont(fontTitle);
-    m_adaptivityChart->plotLayout()->insertRow(0);
-    m_adaptivityChart->plotLayout()->addElement(0, 0, adaptivityTitle);
-    m_adaptivityChart->setMinimumWidth(250);
-    m_adaptivityChart->setMinimumHeight(250);
-    m_adaptivityChart->legend->setVisible(true);
-    m_adaptivityChart->legend->setFont(fontChart);
-
-    m_adaptivityChart->xAxis->setTickLabelFont(fontChart);
-    m_adaptivityChart->xAxis->setLabelFont(fontChart);
-    // m_adaptivityChart->xAxis->setTickStep(1.0);
-    m_adaptivityChart->xAxis->setAutoTickStep(true);
-    m_adaptivityChart->xAxis->setLabel(tr("number of iterations"));
-
-    m_adaptivityChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
-    m_adaptivityChart->yAxis->setTickLabelFont(fontChart);
-    m_adaptivityChart->yAxis->setLabelFont(fontChart);
-    m_adaptivityChart->yAxis->setLabel(tr("error"));
-    m_adaptivityChart->yAxis2->setVisible(true);
-    m_adaptivityChart->yAxis2->setTickLabelFont(fontChart);
-    m_adaptivityChart->yAxis2->setLabelFont(fontChart);
-    m_adaptivityChart->yAxis2->setLabel(tr("number of DOFs"));
-
-    m_adaptivityErrorGraph = m_adaptivityChart->addGraph(m_adaptivityChart->xAxis, m_adaptivityChart->yAxis);
-    m_adaptivityErrorGraph->setLineStyle(QCPGraph::lsLine);
-    m_adaptivityErrorGraph->setPen(pen);
-    m_adaptivityErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
-    m_adaptivityErrorGraph->setName(tr("error"));
-    m_adaptivityDOFsGraph = m_adaptivityChart->addGraph(m_adaptivityChart->xAxis, m_adaptivityChart->yAxis2);
-    m_adaptivityDOFsGraph->setLineStyle(QCPGraph::lsLine);
-    m_adaptivityDOFsGraph->setPen(pen);
-    m_adaptivityDOFsGraph->setBrush(QBrush(QColor(255, 0, 0, 20)));
-    m_adaptivityDOFsGraph->setName(tr("DOFs"));
-
-    m_adaptivityProgress = new QProgressBar(this);
-    m_adaptivityProgress->setMaximum(100);
-    m_adaptivityProgress->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
-
-    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
-    layoutAdaptivity->addWidget(m_adaptivityChart, 1);
-    layoutAdaptivity->addWidget(m_adaptivityProgress);
-
-    m_timeChart = new QCustomPlot(this);
-    m_timeChart->setVisible(Agros2D::problem()->isTransient());
-    QCPPlotTitle *timeTitle = new QCPPlotTitle(m_timeChart, tr("Transient problem"));
-    timeTitle->setFont(fontTitle);
-    m_timeChart->plotLayout()->insertRow(0);
-    m_timeChart->plotLayout()->addElement(0, 0, timeTitle);
-    m_timeChart->setMinimumWidth(250);
-    m_timeChart->setMinimumHeight(250);
-
-    m_timeChart->xAxis->setTickLabelFont(fontChart);
-    m_timeChart->xAxis->setLabelFont(fontChart);
-    // m_timeChart->xAxis->setTickStep(1.0);
-    m_timeChart->xAxis->setAutoTickStep(true);
-    m_timeChart->xAxis->setLabel(tr("number of steps"));
-
-    m_timeChart->yAxis->setTickLabelFont(fontChart);
-    m_timeChart->yAxis->setLabelFont(fontChart);
-    m_timeChart->yAxis->setLabel(tr("step length"));
-
-    m_timeTimeStepGraph = m_timeChart->addGraph(m_timeChart->xAxis, m_timeChart->yAxis);
-    m_timeTimeStepGraph->setLineStyle(QCPGraph::lsLine);
-    m_timeTimeStepGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
-    m_timeTimeStepGraph->setPen(pen);
-    m_timeTimeStepGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
-
-    m_timeProgress = new QProgressBar(this);
-    m_timeProgress->setVisible(Agros2D::problem()->isTransient());
-
-    QVBoxLayout *layoutTime = new QVBoxLayout();
-    layoutTime->addWidget(m_timeChart, 1);
-    layoutTime->addWidget(m_timeProgress);
 
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(tryClose()));
@@ -488,13 +367,142 @@ void LogDialog::createControls()
     layoutStatus->addWidget(btnAbort, 0, Qt::AlignRight);
     layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
-    QHBoxLayout *layoutHorizontal = new QHBoxLayout();
-    if (Agros2D::problem()->isTransient())
-        layoutHorizontal->addLayout(layoutTime, 1);
-    if (Agros2D::problem()->determineIsNonlinear())
-        layoutHorizontal->addLayout(layoutNonlinear, 1);
-    if (Agros2D::problem()->numAdaptiveFields() > 0)
-        layoutHorizontal->addLayout(layoutAdaptivity, 1);
+    QHBoxLayout *layoutHorizontal = NULL;
+    if (Agros2D::problem()->numAdaptiveFields() > 0 || Agros2D::problem()->determineIsNonlinear() || Agros2D::problem()->isTransient())
+    {
+        QPen pen;
+        pen.setColor(Qt::darkGray);
+        pen.setWidth(1.5);
+
+        QPen penError;
+        penError.setColor(Qt::darkRed);
+        penError.setWidth(2.0);
+
+        QFont fontTitle(font());
+        fontTitle.setBold(true);
+
+        QFont fontChart(font());
+        fontChart.setPointSize(fontChart.pointSize() - 1);
+
+        layoutHorizontal = new QHBoxLayout();
+        if (Agros2D::problem()->isTransient())
+        {
+            m_timeChart = new QCustomPlot(this);
+            m_timeChart->setVisible(Agros2D::problem()->isTransient());
+            QCPPlotTitle *timeTitle = new QCPPlotTitle(m_timeChart, tr("Transient problem"));
+            timeTitle->setFont(fontTitle);
+            m_timeChart->plotLayout()->insertRow(0);
+            m_timeChart->plotLayout()->addElement(0, 0, timeTitle);
+
+            m_timeChart->xAxis->setTickLabelFont(fontChart);
+            m_timeChart->xAxis->setLabelFont(fontChart);
+            // m_timeChart->xAxis->setTickStep(1.0);
+            m_timeChart->xAxis->setAutoTickStep(true);
+            m_timeChart->xAxis->setLabel(tr("number of steps"));
+
+            m_timeChart->yAxis->setTickLabelFont(fontChart);
+            m_timeChart->yAxis->setLabelFont(fontChart);
+            m_timeChart->yAxis->setLabel(tr("step length"));
+
+            m_timeTimeStepGraph = m_timeChart->addGraph(m_timeChart->xAxis, m_timeChart->yAxis);
+            m_timeTimeStepGraph->setLineStyle(QCPGraph::lsLine);
+            m_timeTimeStepGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
+            m_timeTimeStepGraph->setPen(pen);
+            m_timeTimeStepGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
+
+            m_timeProgress = new QProgressBar(this);
+            m_timeProgress->setVisible(Agros2D::problem()->isTransient());
+
+            QVBoxLayout *layoutTime = new QVBoxLayout();
+            layoutTime->addWidget(m_timeChart, 1);
+            layoutTime->addWidget(m_timeProgress);
+
+            layoutHorizontal->addLayout(layoutTime, 1);
+        }
+        if (Agros2D::problem()->determineIsNonlinear())
+        {
+            m_nonlinearChart = new QCustomPlot(this);
+            m_nonlinearChart->setVisible(Agros2D::problem()->determineIsNonlinear());
+            QCPPlotTitle *nonlinearTitle = new QCPPlotTitle(m_nonlinearChart, tr("Nonlinear solver"));
+            nonlinearTitle->setFont(fontTitle);
+            m_nonlinearChart->plotLayout()->insertRow(0);
+            m_nonlinearChart->plotLayout()->addElement(0, 0, nonlinearTitle);
+            m_nonlinearChart->setFont(fontChart);
+
+            m_nonlinearChart->xAxis->setTickLabelFont(fontChart);
+            m_nonlinearChart->xAxis->setLabelFont(fontChart);
+            // m_nonlinearChart->xAxis->setTickStep(1.0);
+            m_nonlinearChart->xAxis->setAutoTickStep(true);
+            m_nonlinearChart->xAxis->setLabel(tr("number of iterations"));
+
+            m_nonlinearChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
+            m_nonlinearChart->yAxis->setTickLabelFont(fontChart);
+            m_nonlinearChart->yAxis->setLabelFont(fontChart);
+            m_nonlinearChart->yAxis->setLabel(tr("rel. change of sln. (%)"));
+
+            m_nonlinearErrorGraph = m_nonlinearChart->addGraph(m_nonlinearChart->xAxis, m_nonlinearChart->yAxis);
+            m_nonlinearErrorGraph->setLineStyle(QCPGraph::lsLine);
+            m_nonlinearErrorGraph->setPen(pen);
+            m_nonlinearErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
+
+            m_nonlinearProgress = new QProgressBar(this);
+            m_nonlinearProgress->setMaximum(100);
+            m_nonlinearProgress->setVisible(Agros2D::problem()->determineIsNonlinear());
+
+            QVBoxLayout *layoutNonlinear = new QVBoxLayout();
+            layoutNonlinear->addWidget(m_nonlinearChart, 1);
+            layoutNonlinear->addWidget(m_nonlinearProgress);
+
+            layoutHorizontal->addLayout(layoutNonlinear, 1);
+        }
+        if (Agros2D::problem()->numAdaptiveFields() > 0)
+        {
+            m_adaptivityChart = new QCustomPlot(this);
+            m_adaptivityChart->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
+            QCPPlotTitle *adaptivityTitle = new QCPPlotTitle(m_adaptivityChart, tr("Adaptivity"));
+            adaptivityTitle->setFont(fontTitle);
+            m_adaptivityChart->plotLayout()->insertRow(0);
+            m_adaptivityChart->plotLayout()->addElement(0, 0, adaptivityTitle);
+            m_adaptivityChart->legend->setVisible(true);
+            m_adaptivityChart->legend->setFont(fontChart);
+
+            m_adaptivityChart->xAxis->setTickLabelFont(fontChart);
+            m_adaptivityChart->xAxis->setLabelFont(fontChart);
+            // m_adaptivityChart->xAxis->setTickStep(1.0);
+            m_adaptivityChart->xAxis->setAutoTickStep(true);
+            m_adaptivityChart->xAxis->setLabel(tr("number of iterations"));
+
+            m_adaptivityChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
+            m_adaptivityChart->yAxis->setTickLabelFont(fontChart);
+            m_adaptivityChart->yAxis->setLabelFont(fontChart);
+            m_adaptivityChart->yAxis->setLabel(tr("error"));
+            m_adaptivityChart->yAxis2->setVisible(true);
+            m_adaptivityChart->yAxis2->setTickLabelFont(fontChart);
+            m_adaptivityChart->yAxis2->setLabelFont(fontChart);
+            m_adaptivityChart->yAxis2->setLabel(tr("number of DOFs"));
+
+            m_adaptivityErrorGraph = m_adaptivityChart->addGraph(m_adaptivityChart->xAxis, m_adaptivityChart->yAxis);
+            m_adaptivityErrorGraph->setLineStyle(QCPGraph::lsLine);
+            m_adaptivityErrorGraph->setPen(pen);
+            m_adaptivityErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
+            m_adaptivityErrorGraph->setName(tr("error"));
+            m_adaptivityDOFsGraph = m_adaptivityChart->addGraph(m_adaptivityChart->xAxis, m_adaptivityChart->yAxis2);
+            m_adaptivityDOFsGraph->setLineStyle(QCPGraph::lsLine);
+            m_adaptivityDOFsGraph->setPen(pen);
+            m_adaptivityDOFsGraph->setBrush(QBrush(QColor(255, 0, 0, 20)));
+            m_adaptivityDOFsGraph->setName(tr("DOFs"));
+
+            m_adaptivityProgress = new QProgressBar(this);
+            m_adaptivityProgress->setMaximum(100);
+            m_adaptivityProgress->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
+
+            QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
+            layoutAdaptivity->addWidget(m_adaptivityChart, 1);
+            layoutAdaptivity->addWidget(m_adaptivityProgress);
+
+            layoutHorizontal->addLayout(layoutAdaptivity, 1);
+        }
+    }
 
     QVBoxLayout *layoutVertical = new QVBoxLayout();
     layoutVertical->addWidget(m_progress, 0);
@@ -517,6 +525,9 @@ void LogDialog::printError(const QString &module, const QString &message)
 
 void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions)
 {
+    if (!m_nonlinearErrorGraph)
+        return;
+
     m_nonlinearErrorGraph->setData(steps, relativeChangeOfSolutions);
     m_nonlinearChart->rescaleAxes();
     m_nonlinearChart->replot();
@@ -535,6 +546,9 @@ void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector
 
 void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
 {   
+    if (!m_adaptivityErrorGraph)
+        return;
+
     int numberOfTimeSteps = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
     int numberOfAdaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
 
@@ -564,6 +578,9 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
 
 void LogDialog::updateTransientChartInfo()
 {
+    if (!m_timeTimeStepGraph)
+        return;
+
     QVector<double> timeSteps;
     QVector<double> timeLengths = Agros2D::problem()->timeStepLengths().toVector();
     double maximum = 0.0;
