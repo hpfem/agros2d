@@ -192,8 +192,6 @@ QIcon icon(const QString &name)
     return QIcon::fromTheme(name, QIcon(":/" + name + ".png"));
 #endif
 
-    QDir dir;
-
     QString style = "";
     QStringList styles = QStyleFactory::keys();
 

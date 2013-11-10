@@ -53,7 +53,6 @@ void SolverAgros::clearSteps()
     m_solutionNorms.clear();
 }
 
-
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
     return new AgrosExternalSolverOctave(m, rhs);

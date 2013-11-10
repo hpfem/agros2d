@@ -431,6 +431,10 @@ bool Problem::meshAction(bool emitMeshed)
         break;
     }
 
+    // add icon to progress
+    Agros2D::log()->addIcon(icon("scene-meshgen"),
+                            tr("Mesh generator\n%1").arg(meshTypeString(config()->meshType())));
+
     if (meshGenerator && meshGenerator->mesh())
     {
         // load mesh
@@ -803,7 +807,7 @@ void Problem::solveAction()
             }
             else if(!skipThisTimeStep(block))
             {
-                transientStepMessage(block);
+                stepMessage(block);
                 if (block->adaptivityType() == AdaptivityType_None)
                 {
                     // no adaptivity
@@ -945,12 +949,20 @@ void Problem::solveAdaptiveStepAction()
     solver.data()->solveReferenceAndProject(0, adaptStep + 1);
 }
 
-void Problem::transientStepMessage(Block* block)
+void Problem::stepMessage(Block* block)
 {
     // log analysis
     QString fields;
     foreach(Field *field, block->fields())
+    {
+        Agros2D::log()->addIcon(icon(QString("fields/%1").arg(field->fieldInfo()->fieldId())),
+                                QString("%1\n%2\n%3").
+                                arg(field->fieldInfo()->name()).
+                                arg(analysisTypeString(field->fieldInfo()->analysisType())).
+                                arg(linearityTypeString(field->fieldInfo()->linearityType())));
+
         fields += field->fieldInfo()->fieldId() + ", ";
+    }
     fields = fields.left(fields.length() - 2);
 
     if (block->isTransient())

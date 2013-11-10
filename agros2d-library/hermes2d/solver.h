@@ -38,10 +38,11 @@ namespace Module {
 class SolverAgros
 {
 public:
-    SolverAgros(Block *block) : m_block(block), m_jacobianCalculations(0) {}
+    SolverAgros(Block *block) : m_block(block), m_jacobianCalculations(0), m_phase(Phase_Undefined) {}
 
     enum Phase
     {
+        Phase_Undefined,
         Phase_Init,
         Phase_DFDetermined,
         Phase_JacobianReused,
@@ -55,12 +56,15 @@ public:
     inline QVector<double> relativeChangeOfSolutions() const { return m_relativeChangeOfSolutions; }
     inline int jacobianCalculations() const { return m_jacobianCalculations; }
 
+    inline Phase phase() const { return m_phase; }
+
     void clearSteps();
 
 protected:
     Block* m_block;
+    Phase m_phase;
 
-    virtual void setError(Phase phase) = 0;
+    virtual void setError() = 0;
 
     QVector<double> m_steps;
     QVector<double> m_damping;

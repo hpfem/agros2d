@@ -45,7 +45,7 @@ public:
     virtual bool on_finish();
 
 protected:
-    virtual void setError(Phase phase);
+    virtual void setError();
 };
 
 template <typename Scalar>

@@ -47,7 +47,8 @@ bool PicardSolverAgros<Scalar>::on_initialization()
 template <typename Scalar>
 bool PicardSolverAgros<Scalar>::on_initial_step_end()
 {
-    setError(Phase_Init);
+    m_phase = Phase_Init;
+    setError();
     return !Agros2D::problem()->isAborted();
 }
 
@@ -60,21 +61,23 @@ bool PicardSolverAgros<Scalar>::on_step_begin()
 template <typename Scalar>
 bool PicardSolverAgros<Scalar>::on_step_end()
 {
-    setError(Phase_DFDetermined);
+    m_phase = Phase_DFDetermined;
+    setError();
     return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
 bool PicardSolverAgros<Scalar>::on_finish()
 {
-    setError(Phase_Finished);
+    m_phase = Phase_Finished;
+    setError();
     return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
-void PicardSolverAgros<Scalar>::setError(Phase phase)
+void PicardSolverAgros<Scalar>::setError()
 {
-    if (phase == Phase_Init)
+    if (m_phase == Phase_Init)
     {
         m_jacobianCalculations = 0;
         Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Initial step"));
@@ -104,14 +107,14 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
     assert(m_steps.size() == m_solutionNorms.size());
     assert(m_steps.size() == m_relativeChangeOfSolutions.size());
 
-    if (phase == Phase_DFDetermined)
+    if (m_phase == Phase_DFDetermined)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1, damping coeff.: %2, rel. change of sol.: %3 %")
                                      .arg(iteration)
                                      .arg(previous_damping_factor)
                                      .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
-    else if (phase == Phase_Finished)
+    else if (m_phase == Phase_Finished)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Calculation finished, rel. change of sol.: %1 %")
                                      .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
@@ -120,7 +123,7 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
         assert(0);
 
     m_damping.append(current_damping_factor);
-    Agros2D::log()->updateNonlinearChartInfo(m_steps, m_relativeChangeOfSolutions);
+    Agros2D::log()->updateNonlinearChartInfo(m_phase, m_steps, m_relativeChangeOfSolutions);
 }
 
 template <typename Scalar>

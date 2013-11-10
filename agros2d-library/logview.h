@@ -21,6 +21,7 @@
 #define TOOLTIPVIEW_H
 
 #include "util.h"
+#include "hermes2d/solver.h"
 
 class QCustomPlot;
 class QCPGraph;
@@ -29,6 +30,7 @@ namespace ctemplate
     class TemplateDictionary;
 }
 class FieldInfo;
+class SolverAgros;
 
 class AGROS_LIBRARY_API Log: public QObject
 {
@@ -42,9 +44,11 @@ public:
     inline void printWarning(const QString &module, const QString &message) { emit warningMsg(module, message); }
     inline void printDebug(const QString &module, const QString &message) { emit debugMsg(module, message); }
 
-    inline void updateNonlinearChartInfo(QVector<double> step, QVector<double> error) { emit updateNonlinearChart(step, error); }
+    inline void updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions) { emit updateNonlinearChart(phase, steps, relativeChangeOfSolutions); }
     inline void updateAdaptivityChartInfo(const FieldInfo *fieldInfo) { emit updateAdaptivityChart(fieldInfo); }
     inline void updateTransientChartInfo() { emit updateTransientChart(); }
+
+    inline void addIcon(const QIcon &icn, const QString &label) { emit addIconImg(icn, label); }
 
 signals:
     void headingMsg(const QString &message);
@@ -53,9 +57,11 @@ signals:
     void warningMsg(const QString &module, const QString &message);
     void debugMsg(const QString &module, const QString &message);
 
-    void updateNonlinearChart(QVector<double> step, QVector<double> error);
+    void updateNonlinearChart(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions);
     void updateAdaptivityChart(const FieldInfo *fieldInfo);
     void updateTransientChart();
+
+    void addIconImg(const QIcon &icn, const QString &label);
 };
 
 class AGROS_LIBRARY_API LogWidget : public QWidget
@@ -134,29 +140,36 @@ protected:
     virtual void reject();
 
 private:
-    LogWidget *logWidget;
+    LogWidget *m_logWidget;
 
     QPushButton *btnClose;
     QPushButton *btnAbort;
 
     QCustomPlot *m_nonlinearChart;
     QCPGraph *m_nonlinearErrorGraph;
+    QProgressBar *m_nonlinearProgress;
+
     QCustomPlot *m_adaptivityChart;
     QCPGraph *m_adaptivityErrorGraph;
     QCPGraph *m_adaptivityDOFsGraph;
+    QProgressBar *m_adaptivityProgress;
+
     QCustomPlot *m_timeChart;
     QCPGraph *m_timeTimeStepGraph;
-
     QProgressBar *m_timeProgress;
+
+    QListWidget *m_progress;
 
     void createControls();
 
 private slots:    
     void printError(const QString &module, const QString &message);
 
-    void updateNonlinearChartInfo(QVector<double> step, QVector<double> error);
+    void updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions);
     void updateAdaptivityChartInfo(const FieldInfo *fieldInfo);
     void updateTransientChartInfo();
+
+    void addIcon(const QIcon &icn, const QString &label);
 
     void tryClose();
 };

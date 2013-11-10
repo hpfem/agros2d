@@ -28,6 +28,7 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
+#include "hermes2d/solver.h"
 #include "hermes2d/solutionstore.h"
 
 #include "qcustomplot/qcustomplot.h"
@@ -35,7 +36,8 @@
 
 Log::Log()
 {
-    qRegisterMetaType<QVector<double>   >("QVector<double>");
+    qRegisterMetaType<QVector<double> >("QVector<double>");
+    qRegisterMetaType<SolverAgros::Phase>("SolverAgros::Phase");
 }
 
 // *******************************************************************************************************
@@ -322,13 +324,30 @@ LogDialog::~LogDialog()
 void LogDialog::createControls()
 {
     connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
-    connect(Agros2D::log(), SIGNAL(updateNonlinearChart(QVector<double>, QVector<double>)), this, SLOT(updateNonlinearChartInfo(QVector<double>, QVector<double>)));
+    connect(Agros2D::log(), SIGNAL(updateNonlinearChart(SolverAgros::Phase, const QVector<double>, const QVector<double>)),
+            this, SLOT(updateNonlinearChartInfo(SolverAgros::Phase, const QVector<double>, const QVector<double>)));
     connect(Agros2D::log(), SIGNAL(updateAdaptivityChart(const FieldInfo *)), this, SLOT(updateAdaptivityChartInfo(const FieldInfo *)));
     connect(Agros2D::log(), SIGNAL(updateTransientChart()), this, SLOT(updateTransientChartInfo()));
+    connect(Agros2D::log(), SIGNAL(addIconImg(QIcon, QString)), this, SLOT(addIcon(QIcon, QString)));
 
-    logWidget = new LogWidget(this);
-    logWidget->setMemoryLabelVisible(false);
-    logWidget->setMaximumVisibleRows(50);
+    m_logWidget = new LogWidget(this);
+    m_logWidget->setMemoryLabelVisible(false);
+    m_logWidget->setMaximumVisibleRows(50);
+
+    QFont fontProgress = font();
+    fontProgress.setPointSize(fontProgress.pointSize() - 3);
+
+    m_progress = new QListWidget(this);
+    m_progress->setCurrentRow(0);
+    m_progress->setViewMode(QListView::IconMode);
+    m_progress->setResizeMode(QListView::Adjust);
+    m_progress->setMovement(QListView::Static);
+    m_progress->setResizeMode(QListView::Adjust);
+    m_progress->setFlow(QListView::LeftToRight);
+    m_progress->setIconSize(QSize(32, 32));
+    m_progress->setMinimumHeight(90);
+    m_progress->setMaximumHeight(90);
+    m_progress->setFont(fontProgress);
 
     QPen pen;
     pen.setColor(Qt::darkGray);
@@ -370,6 +389,14 @@ void LogDialog::createControls()
     m_nonlinearErrorGraph->setPen(pen);
     m_nonlinearErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
 
+    m_nonlinearProgress = new QProgressBar(this);
+    m_nonlinearProgress->setMaximum(100);
+    m_nonlinearProgress->setVisible(Agros2D::problem()->determineIsNonlinear());
+
+    QVBoxLayout *layoutNonlinear = new QVBoxLayout();
+    layoutNonlinear->addWidget(m_nonlinearChart, 1);
+    layoutNonlinear->addWidget(m_nonlinearProgress);
+
     m_adaptivityChart = new QCustomPlot(this);
     m_adaptivityChart->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
     QCPPlotTitle *adaptivityTitle = new QCPPlotTitle(m_adaptivityChart, tr("Adaptivity"));
@@ -407,6 +434,14 @@ void LogDialog::createControls()
     m_adaptivityDOFsGraph->setBrush(QBrush(QColor(255, 0, 0, 20)));
     m_adaptivityDOFsGraph->setName(tr("DOFs"));
 
+    m_adaptivityProgress = new QProgressBar(this);
+    m_adaptivityProgress->setMaximum(100);
+    m_adaptivityProgress->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
+
+    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
+    layoutAdaptivity->addWidget(m_adaptivityChart, 1);
+    layoutAdaptivity->addWidget(m_adaptivityProgress);
+
     m_timeChart = new QCustomPlot(this);
     m_timeChart->setVisible(Agros2D::problem()->isTransient());
     QCPPlotTitle *timeTitle = new QCPPlotTitle(m_timeChart, tr("Transient problem"));
@@ -435,6 +470,10 @@ void LogDialog::createControls()
     m_timeProgress = new QProgressBar(this);
     m_timeProgress->setVisible(Agros2D::problem()->isTransient());
 
+    QVBoxLayout *layoutTime = new QVBoxLayout();
+    layoutTime->addWidget(m_timeChart, 1);
+    layoutTime->addWidget(m_timeProgress);
+
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(tryClose()));
     btnClose->setEnabled(false);
@@ -450,17 +489,18 @@ void LogDialog::createControls()
     layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
-    layoutHorizontal->addWidget(m_timeChart, 1);
-    layoutHorizontal->addWidget(m_nonlinearChart, 1);
-    layoutHorizontal->addWidget(m_adaptivityChart, 1);
+    if (Agros2D::problem()->isTransient())
+        layoutHorizontal->addLayout(layoutTime, 1);
+    if (Agros2D::problem()->determineIsNonlinear())
+        layoutHorizontal->addLayout(layoutNonlinear, 1);
+    if (Agros2D::problem()->numAdaptiveFields() > 0)
+        layoutHorizontal->addLayout(layoutAdaptivity, 1);
 
     QVBoxLayout *layoutVertical = new QVBoxLayout();
-    layoutVertical->addWidget(logWidget, 2);
+    layoutVertical->addWidget(m_progress, 0);
     if (Agros2D::problem()->numAdaptiveFields() > 0 || Agros2D::problem()->determineIsNonlinear() || Agros2D::problem()->isTransient())
-    {
         layoutVertical->addLayout(layoutHorizontal, 4);
-        layoutVertical->addWidget(m_timeProgress, 2);
-    }
+    layoutVertical->addWidget(m_logWidget, 2);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutVertical, 1);
@@ -475,11 +515,22 @@ void LogDialog::printError(const QString &module, const QString &message)
     btnClose->setEnabled(true);
 }
 
-void LogDialog::updateNonlinearChartInfo(QVector<double> step, QVector<double> error)
+void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions)
 {
-    m_nonlinearErrorGraph->setData(step, error);
+    m_nonlinearErrorGraph->setData(steps, relativeChangeOfSolutions);
     m_nonlinearChart->rescaleAxes();
     m_nonlinearChart->replot();
+
+    // progress bar
+    if (phase == SolverAgros::Phase_Finished)
+    {
+        m_nonlinearProgress->setValue(100);
+    }
+    else
+    {
+        double valueRelativeChange = pow(100, ((relativeChangeOfSolutions.first() - relativeChangeOfSolutions.last()) / relativeChangeOfSolutions.first()));
+        m_nonlinearProgress->setValue(valueRelativeChange);
+    }
 }
 
 void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
@@ -504,6 +555,11 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
     m_adaptivityDOFsGraph->setData(adaptiveSteps, adaptiveDOFs);
     m_adaptivityChart->rescaleAxes();
     m_adaptivityChart->replot();
+
+    // progress bar
+    double valueSteps = 100 * ((numberOfAdaptiveSteps + 1.0) / fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
+    double valueTol = pow(100, (adaptiveError.first() - adaptiveError.last()) / adaptiveError.first());
+    m_adaptivityProgress->setValue(qMax(valueSteps, valueTol));
 }
 
 void LogDialog::updateTransientChartInfo()
@@ -535,6 +591,23 @@ void LogDialog::updateTransientChartInfo()
         m_timeProgress->setMaximum(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
         m_timeProgress->setValue(timeSteps.last());
     }
+}
+
+void LogDialog::addIcon(const QIcon &icn, const QString &label)
+{
+    static QString previousLabel;
+
+    if (previousLabel != label)
+    {
+        QListWidgetItem *item = new QListWidgetItem(icn, label, m_progress);
+        item->setTextAlignment(Qt::AlignHCenter);
+
+        m_progress->addItem(item);
+        m_progress->setCurrentItem(item);
+        m_progress->repaint();
+    }
+
+    previousLabel = label;
 }
 
 void LogDialog::tryClose()

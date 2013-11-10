@@ -142,7 +142,7 @@ void PostHermes::processRangeContour()
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
         {
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
+                                                                                                                                                                   activeMultiSolutionArray().solutions().at(1)));
 
             if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
             {
@@ -284,7 +284,7 @@ void PostHermes::processRangeVector()
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
         {
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
+                                                                                                                                                                   activeMultiSolutionArray().solutions().at(1)));
             if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
             {
                 RectPoint rect = Agros2D::scene()->boundingBox();
@@ -405,6 +405,10 @@ void PostHermes::processSolved()
             return;
         if (ma.solutions().empty())
             return;
+
+        // add icon to progress
+        Agros2D::log()->addIcon(icon("scene-post2d"),
+                                tr("Postprocessor"));
 
         processSolutionMesh();
         processOrder();

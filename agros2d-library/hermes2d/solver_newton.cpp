@@ -49,7 +49,8 @@ bool NewtonSolverAgros<Scalar>::on_initialization()
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_initial_step_end()
 {
-    setError(Phase_Init);
+    m_phase = Phase_Init;
+    setError();
     return !Agros2D::problem()->isAborted();
 }
 
@@ -68,27 +69,30 @@ bool NewtonSolverAgros<Scalar>::on_step_end()
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_finish()
 {
-    setError(Phase_Finished);
+    m_phase = Phase_Finished;
+    setError();
     return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_damping_factor_updated()
 {
-    setError(Phase_DFDetermined);
+    m_phase = Phase_DFDetermined;
+    setError();
 }
 
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_reused_jacobian_step_end()
 {
-    setError(Phase_JacobianReused);
+    m_phase = Phase_JacobianReused;
+    setError();
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::setError(Phase phase)
+void NewtonSolverAgros<Scalar>::setError()
 {
     int iteration;
-    if (phase == Phase_Init)
+    if (m_phase == Phase_Init)
         iteration = 0;
     else
         iteration = this->get_current_iteration_number();
@@ -118,13 +122,13 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     assert(m_steps.size() == m_solutionNorms.size());
     assert(m_steps.size() == m_relativeChangeOfSolutions.size());
 
-    if (phase == Phase_Init)
+    if (m_phase == Phase_Init)
     {
         assert(iteration == 0);
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
                                      .arg(m_residualNorms.last()));
     }
-    else if (phase == Phase_DFDetermined)
+    else if (m_phase == Phase_DFDetermined)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian recalculated, damping coeff.: %2, res. norm: %3, rel. change of sol.: %4 %")
                                      .arg(iteration)
@@ -132,7 +136,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
                                      .arg(m_residualNorms.last())
                                      .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
-    else if (phase == Phase_JacobianReused)
+    else if (m_phase == Phase_JacobianReused)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian reused, damping coeff.: %2, res. norm: %3, rel. change of sol.: %4 %")
                                      .arg(iteration)
@@ -140,7 +144,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
                                      .arg(m_residualNorms.last())
                                      .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
-    else if (phase == Phase_Finished)
+    else if (m_phase == Phase_Finished)
     {
         QString reuses;
         m_jacobianCalculations = 0;
@@ -166,7 +170,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
         assert(0);
 
     m_damping.append(current_damping_factor);
-    Agros2D::log()->updateNonlinearChartInfo(m_steps, m_relativeChangeOfSolutions);
+    Agros2D::log()->updateNonlinearChartInfo(m_phase, m_steps, m_relativeChangeOfSolutions);
 }
 
 template <typename Scalar>

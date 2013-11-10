@@ -39,7 +39,7 @@ public:
     LinearSolverAgros(Block *block);
 
 protected:
-    virtual void setError(Phase phase) {}
+    virtual void setError() {}
 };
 
 template <typename Scalar>

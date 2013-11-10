@@ -204,7 +204,7 @@ private:
     void solveAction(); // called by solve, can throw SolverException
 
     void solveAdaptiveStepAction();
-    void transientStepMessage(Block* block);    
+    void stepMessage(Block* block);    
 
     friend class CalculationThread;
     friend class PyProblem;

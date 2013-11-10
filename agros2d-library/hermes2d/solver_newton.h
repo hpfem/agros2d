@@ -47,7 +47,7 @@ public:
     virtual void on_reused_jacobian_step_end();
 
 protected:
-    virtual void setError(Phase phase);
+    virtual void setError();
 };
 template <typename Scalar>
 class NewtonSolverContainer : public HermesSolverContainer<Scalar>
