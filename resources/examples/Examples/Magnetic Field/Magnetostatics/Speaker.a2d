@@ -85,6 +85,7 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_real" value="0"/>
+              <boundary_type key="magnetic_surface_current_real" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -280,8 +281,8 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value="magnetic_potential_lines_real"/>
-    <item key="View_ShowContourView" value="1"/>
+    <item key="View_ContourVariable" value="magnetic_flux_density_real"/>
+    <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
@@ -296,7 +297,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1.63400245477531"/>
+    <item key="View_ScalarRangeMax" value="1.63400245477543"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
     <item key="View_VectorProportional" value="1"/>
