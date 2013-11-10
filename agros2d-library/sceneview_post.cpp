@@ -712,10 +712,18 @@ void SceneViewPostInterface::paletteCreate()
         glDeleteTextures(1, &m_textureScalar);
     glGenTextures(1, &m_textureScalar);
 
-    int palFilter = Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool() ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, m_textureScalar);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, palFilter);
+    glTexParameteri(GL_TEXTURE_1D, GL_GENERATE_MIPMAP, GL_TRUE);
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool())
+    {
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    else
+    {
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
     glTexImage1D(GL_TEXTURE_1D, 0, 3, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, palette);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 
