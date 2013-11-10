@@ -245,8 +245,6 @@ void SceneViewMesh::paintInitialMesh()
 
     if (m_arrayInitialMesh.isEmpty())
     {
-        m_postHermes->linInitialMeshView().lock_data();
-
         double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
         int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
 
@@ -257,8 +255,6 @@ void SceneViewMesh::paintInitialMesh()
             m_arrayInitialMesh.append(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
             m_arrayInitialMesh.append(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
         }
-
-        m_postHermes->linInitialMeshView().unlock_data();
     }
     else
     {
@@ -287,8 +283,6 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
-        m_postHermes->linSolutionMeshView().lock_data();
-
         double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
         int2* linEdges = m_postHermes->linSolutionMeshView().get_edges();
 
@@ -299,8 +293,6 @@ void SceneViewMesh::paintSolutionMesh()
             m_arraySolutionMesh.append(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
             m_arraySolutionMesh.append(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
         }
-
-        m_postHermes->linSolutionMeshView().unlock_data();
     }
     else
     {
@@ -329,8 +321,6 @@ void SceneViewMesh::paintOrder()
     if (m_arrayOrderMesh.isEmpty())
     {
         // order scalar view
-        m_postHermes->ordView().lock_data();
-
         double3* vert = m_postHermes->ordView().get_vertices();
         int3* tris = m_postHermes->ordView().get_triangles();
 
@@ -362,8 +352,6 @@ void SceneViewMesh::paintOrder()
             m_arrayOrderMesh.append(QVector2D(vert[tris[i][2]][0], vert[tris[i][2]][1]));
             m_arrayOrderMeshColor.append(colorVector);
         }
-
-        m_postHermes->ordView().unlock_data();
     }
     else
     {
@@ -393,8 +381,6 @@ void SceneViewMesh::paintOrder()
         glScaled(2.0 / width(), 2.0 / height(), 1.0);
         glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
-        m_postHermes->ordView().lock_data();
-
         double3* vert = m_postHermes->ordView().get_vertices();
         int* lvert;
         char** ltext;
@@ -412,8 +398,6 @@ void SceneViewMesh::paintOrder()
                             ltext[i]);
             }
         }
-
-        m_postHermes->ordView().unlock_data();
     }
 }
 
@@ -423,8 +407,6 @@ void SceneViewMesh::paintOrderColorBar()
     if (!m_postHermes->orderIsPrepared()) return;
 
     // order scalar view
-    m_postHermes->ordView().lock_data();
-
     double3* vert = m_postHermes->ordView().get_vertices();
     int3* tris = m_postHermes->ordView().get_triangles();
 
@@ -435,8 +417,6 @@ void SceneViewMesh::paintOrderColorBar()
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
     }
-
-    m_postHermes->ordView().unlock_data();
 
     // order color map
     loadProjectionViewPort();

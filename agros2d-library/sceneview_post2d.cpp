@@ -321,8 +321,6 @@ void SceneViewPost2D::paintScalarField()
         if (fabs(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) < EPS_ZERO)
             irange = 1.0;
 
-        m_postHermes->linScalarView().lock_data();
-
         double3* linVert = m_postHermes->linScalarView().get_vertices();
         int3* linTris = m_postHermes->linScalarView().get_triangles();
         Point point[3];
@@ -376,8 +374,6 @@ void SceneViewPost2D::paintScalarField()
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
 
-        m_postHermes->linScalarView().unlock_data();
-
         glEndList();
 
         glCallList(m_listScalarField);
@@ -388,8 +384,6 @@ void SceneViewPost2D::paintScalarField()
         // special case: constant solution
         if (fabs(Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) < EPS_ZERO)
             irange = PALETTEENTRIES / 2;
-
-        m_postHermes->linScalarView().lock_data();
 
         double3* linVert = m_postHermes->linScalarView().get_vertices();
         int3* linTris = m_postHermes->linScalarView().get_triangles();
@@ -423,8 +417,6 @@ void SceneViewPost2D::paintScalarField()
 
             }
         }
-
-        m_postHermes->linScalarView().unlock_data();
         */
     }
     else
@@ -483,8 +475,6 @@ void SceneViewPost2D::paintContours()
         m_listContours = glGenLists(1);
         glNewList(m_listContours, GL_COMPILE);
 
-        m_postHermes->linContourView().lock_data();
-
         double3* vecVert = m_postHermes->linContourView().get_vertices();
         int3* tris = m_postHermes->linContourView().get_contour_triangles();
 
@@ -526,8 +516,6 @@ void SceneViewPost2D::paintContours()
         }
 
         delete vert;
-
-        m_postHermes->linContourView().unlock_data();
 
         glEndList();
 
@@ -627,8 +615,6 @@ void SceneViewPost2D::paintVectors()
         double gs = (rect.width() + rect.height()) / Agros2D::problem()->configView()->vectorCount;
 
         // paint
-        m_postHermes->vecVectorView().lock_data();
-
         double4* vecVert = m_postHermes->vecVectorView().get_vertices();
         int3* vecTris = m_postHermes->vecVectorView().get_triangles();
 
@@ -813,8 +799,6 @@ void SceneViewPost2D::paintVectors()
 
         glDisable(GL_POLYGON_OFFSET_FILL);
 
-        m_postHermes->vecVectorView().unlock_data();
-
         glEndList();
 
         glCallList(m_listVectors);
@@ -855,8 +839,6 @@ void SceneViewPost2D::paintVectors()
         double gs = (rect.width() + rect.height()) / Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt();
 
         // paint
-        m_postHermes->vecVectorView().lock_data();
-
         double4* vecVert = m_postHermes->vecVectorView().get_vertices();
         int3* vecTris = m_postHermes->vecVectorView().get_triangles();
 
@@ -1048,8 +1030,6 @@ void SceneViewPost2D::paintVectors()
         glEnd();
 
         glDisable(GL_POLYGON_OFFSET_FILL);
-
-        m_postHermes->vecVectorView().unlock_data();
 
         glEndList();
 

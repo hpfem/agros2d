@@ -194,8 +194,6 @@ void SceneViewPost3D::paintScalarField3D()
             irange = 1.0;
         }
 
-        m_postHermes->linScalarView().lock_data();
-
         double3* linVert = m_postHermes->linScalarView().get_vertices();
         int3* linTris = m_postHermes->linScalarView().get_triangles();
         Point point[3];
@@ -269,8 +267,6 @@ void SceneViewPost3D::paintScalarField3D()
         // remove normal
         delete [] normal;
 
-        m_postHermes->linScalarView().unlock_data();
-
         glDisable(GL_TEXTURE_1D);
         glDisable(GL_LIGHTING);
 
@@ -280,8 +276,6 @@ void SceneViewPost3D::paintScalarField3D()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
-
-        m_postHermes->linInitialMeshView().lock_data();
 
         double3* linVertMesh = m_postHermes->linInitialMeshView().get_vertices();
         int3* linTrisMesh = m_postHermes->linInitialMeshView().get_triangles();
@@ -295,8 +289,6 @@ void SceneViewPost3D::paintScalarField3D()
             glVertex2d(linVertMesh[linTrisMesh[i][2]][0], linVertMesh[linTrisMesh[i][2]][1]);
         }
         glEnd();
-
-        m_postHermes->linInitialMeshView().unlock_data();
 
         glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
@@ -374,8 +366,6 @@ void SceneViewPost3D::paintScalarField3D()
 
         glPopMatrix();
 
-        m_postHermes->linScalarView().unlock_data();
-
         glEndList();
 
         glCallList(m_listScalarField3D);
@@ -427,8 +417,6 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
 
         double phi = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DAngle).toDouble();
-
-        m_postHermes->linScalarView().lock_data();
 
         double3* linVert = m_postHermes->linScalarView().get_vertices();
         int3* linTris = m_postHermes->linScalarView().get_triangles();
@@ -841,8 +829,6 @@ void SceneViewPost3D::paintScalarField3DSolid()
         glDisable(GL_DEPTH_TEST);
 
         glPopMatrix();
-
-        m_postHermes->linScalarView().unlock_data();
 
         glEndList();
 
