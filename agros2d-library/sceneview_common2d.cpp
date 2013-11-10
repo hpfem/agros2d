@@ -83,7 +83,7 @@ void SceneViewCommon2D::loadProjection2d(bool setScene)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(-0.5, 0.5, -0.5, 0.5, -10.0, -10.0);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -94,8 +94,7 @@ void SceneViewCommon2D::loadProjection2d(bool setScene)
         if (m_scale2d < 1e-9) m_scale2d = 1e-9;
         if (m_scale2d > 1e6) m_scale2d = 1e6;
 
-        glScaled(m_scale2d/aspect(), m_scale2d, m_scale2d);
-
+        glScaled(m_scale2d/aspect(), m_scale2d, 1.0);
         glTranslated(-m_offset2d.x, -m_offset2d.y, 0.0);
     }
 }

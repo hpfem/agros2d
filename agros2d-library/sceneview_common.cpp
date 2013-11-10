@@ -85,7 +85,6 @@ void SceneViewCommon::createActions()
 void SceneViewCommon::initializeGL()
 {
 #if QT_VERSION > 0x050100
-    /*
     QOpenGLDebugLogger *logger = new QOpenGLDebugLogger(this);
 
     connect(logger, SIGNAL(messageLogged(QOpenGLDebugMessage)), this, SLOT(messageLogged(QOpenGLDebugMessage)), Qt::DirectConnection);
@@ -95,7 +94,6 @@ void SceneViewCommon::initializeGL()
         logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
         logger->enableMessages();
     }
-    */
 #endif
 
     glShadeModel(GL_SMOOTH);
@@ -179,7 +177,7 @@ void SceneViewCommon::loadProjectionViewPort()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(-0.5, 0.5, -0.5, 0.5, -10.0, -10.0);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
