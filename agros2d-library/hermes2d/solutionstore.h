@@ -51,6 +51,13 @@ public:
 
         SolutionRunTimeDetails(double time_step_length = 0, double error = 0, int DOFs = 0)
             : m_timeStepLength(time_step_length), m_adaptivityError(error), m_DOFs(DOFs) {}
+        ~SolutionRunTimeDetails()
+        {
+            m_fileNames.clear();
+            m_relativeChangeOfSolutions.clear();
+            m_newtonResidual.clear();
+            m_nonlinearDamping.clear();
+        }
 
         inline double timeStepLength() const { return m_timeStepLength; }
         inline void setTimeStepLength(double value) { m_timeStepLength = value; }

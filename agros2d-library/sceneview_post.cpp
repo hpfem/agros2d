@@ -188,6 +188,7 @@ void PostHermes::processRangeScalar()
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
                                                                                          (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
+
         /*
         FieldSolutionID fsid(m_activeViewField, m_activeTimeStep, m_activeAdaptivityStep, m_activeSolutionMode);
         MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);

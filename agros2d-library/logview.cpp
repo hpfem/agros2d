@@ -375,8 +375,8 @@ void LogDialog::createControls()
 
     m_nonlinearChart->xAxis->setTickLabelFont(fontChart);
     m_nonlinearChart->xAxis->setLabelFont(fontChart);
-    m_nonlinearChart->xAxis->setTickStep(1.0);
-    m_nonlinearChart->xAxis->setAutoTickStep(false);
+    // m_nonlinearChart->xAxis->setTickStep(1.0);
+    m_nonlinearChart->xAxis->setAutoTickStep(true);
     m_nonlinearChart->xAxis->setLabel(tr("number of iterations"));
 
     m_nonlinearChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
@@ -410,7 +410,7 @@ void LogDialog::createControls()
 
     m_adaptivityChart->xAxis->setTickLabelFont(fontChart);
     m_adaptivityChart->xAxis->setLabelFont(fontChart);
-    m_adaptivityChart->xAxis->setTickStep(1.0);
+    // m_adaptivityChart->xAxis->setTickStep(1.0);
     m_adaptivityChart->xAxis->setAutoTickStep(true);
     m_adaptivityChart->xAxis->setLabel(tr("number of iterations"));
 
@@ -528,7 +528,7 @@ void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector
     }
     else
     {
-        double valueRelativeChange = pow(100, ((relativeChangeOfSolutions.first() - relativeChangeOfSolutions.last()) / relativeChangeOfSolutions.first()));
+        double valueRelativeChange = pow(100.0, ((relativeChangeOfSolutions.first() - relativeChangeOfSolutions.last()) / relativeChangeOfSolutions.first()));
         m_nonlinearProgress->setValue(valueRelativeChange);
     }
 }
@@ -557,8 +557,8 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
     m_adaptivityChart->replot();
 
     // progress bar
-    double valueSteps = 100 * ((numberOfAdaptiveSteps + 1.0) / fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
-    double valueTol = pow(100, (adaptiveError.first() - adaptiveError.last()) / adaptiveError.first());
+    double valueSteps = 100.0 * ((numberOfAdaptiveSteps + 1.0) / fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
+    double valueTol = pow(100.0, (adaptiveError.first() - adaptiveError.last()) / adaptiveError.first());
     m_adaptivityProgress->setValue(qMax(valueSteps, valueTol));
 }
 
@@ -584,7 +584,7 @@ void LogDialog::updateTransientChartInfo()
     if (Agros2D::problem()->config()->isTransientAdaptive())
     {
         m_timeProgress->setMaximum(100);
-        m_timeProgress->setValue(int (100 * Agros2D::problem()->actualTime() / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));
+        m_timeProgress->setValue((100.0 * Agros2D::problem()->actualTime() / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));
     }
     else
     {

@@ -59,7 +59,7 @@ FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *cons
     QAction *actDesigner = new QAction(tr("Designer"), this);
     connect(actDesigner, SIGNAL(triggered()), this, SLOT(designer()));
 
-    menu = new QMenu();
+    menu = new QMenu(btnMore);
     menu->addAction(actLoad);
     menu->addAction(actSave);
     menu->addSeparator();
