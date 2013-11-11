@@ -982,7 +982,7 @@ void Problem::stepMessage(Block* block)
                                          arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()));
         }
 
-        Agros2D::log()->updateTransientChartInfo();
+        Agros2D::log()->updateTransientChartInfo(actualTime());
     }
     else
     {

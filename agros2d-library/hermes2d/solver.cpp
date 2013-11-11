@@ -878,7 +878,7 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
                                      arg(Space<Scalar>::get_num_dofs(msa.spaces())).
                                      arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
 
-        Agros2D::log()->updateAdaptivityChartInfo(field->fieldInfo());
+        Agros2D::log()->updateAdaptivityChartInfo(field->fieldInfo(), timeStep, adaptivityStep);
 
         if (adapt)
         {

@@ -45,8 +45,8 @@ public:
     inline void printDebug(const QString &module, const QString &message) { emit debugMsg(module, message); }
 
     inline void updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions) { emit updateNonlinearChart(phase, steps, relativeChangeOfSolutions); }
-    inline void updateAdaptivityChartInfo(const FieldInfo *fieldInfo) { emit updateAdaptivityChart(fieldInfo); }
-    inline void updateTransientChartInfo() { emit updateTransientChart(); }
+    inline void updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep) { emit updateAdaptivityChart(fieldInfo, timeStep, adaptivityStep); }
+    inline void updateTransientChartInfo(double actualTime) { emit updateTransientChart(actualTime); }
 
     inline void addIcon(const QIcon &icn, const QString &label) { emit addIconImg(icn, label); }
 
@@ -58,8 +58,8 @@ signals:
     void debugMsg(const QString &module, const QString &message);
 
     void updateNonlinearChart(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions);
-    void updateAdaptivityChart(const FieldInfo *fieldInfo);
-    void updateTransientChart();
+    void updateAdaptivityChart(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep);
+    void updateTransientChart(double actualTime);
 
     void addIconImg(const QIcon &icn, const QString &label);
 };
@@ -166,8 +166,8 @@ private slots:
     void printError(const QString &module, const QString &message);
 
     void updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions);
-    void updateAdaptivityChartInfo(const FieldInfo *fieldInfo);
-    void updateTransientChartInfo();
+    void updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep);
+    void updateTransientChartInfo(double actualTime);
 
     void addIcon(const QIcon &icn, const QString &label);
 

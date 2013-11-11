@@ -330,8 +330,8 @@ void LogDialog::createControls()
     connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString)), this, SLOT(printError(QString, QString)));
     connect(Agros2D::log(), SIGNAL(updateNonlinearChart(SolverAgros::Phase, const QVector<double>, const QVector<double>)),
             this, SLOT(updateNonlinearChartInfo(SolverAgros::Phase, const QVector<double>, const QVector<double>)));
-    connect(Agros2D::log(), SIGNAL(updateAdaptivityChart(const FieldInfo *)), this, SLOT(updateAdaptivityChartInfo(const FieldInfo *)));
-    connect(Agros2D::log(), SIGNAL(updateTransientChart()), this, SLOT(updateTransientChartInfo()));
+    connect(Agros2D::log(), SIGNAL(updateAdaptivityChart(const FieldInfo *, int, int)), this, SLOT(updateAdaptivityChartInfo(const FieldInfo *, int, int)));
+    connect(Agros2D::log(), SIGNAL(updateTransientChart(double)), this, SLOT(updateTransientChartInfo(double)));
     connect(Agros2D::log(), SIGNAL(addIconImg(QIcon, QString)), this, SLOT(addIcon(QIcon, QString)));
 
     m_logWidget = new LogWidget(this);
@@ -418,6 +418,7 @@ void LogDialog::createControls()
             m_timeTimeStepGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
 
             m_timeProgress = new QProgressBar(this);
+            m_timeProgress->setMaximum(10000);
             m_timeProgress->setVisible(Agros2D::problem()->isTransient());
 
             QVBoxLayout *layoutTime = new QVBoxLayout();
@@ -453,7 +454,7 @@ void LogDialog::createControls()
             m_nonlinearErrorGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
 
             m_nonlinearProgress = new QProgressBar(this);
-            m_nonlinearProgress->setMaximum(100);
+            m_nonlinearProgress->setMaximum(10000);
             m_nonlinearProgress->setVisible(Agros2D::problem()->determineIsNonlinear());
 
             QVBoxLayout *layoutNonlinear = new QVBoxLayout();
@@ -500,7 +501,7 @@ void LogDialog::createControls()
             m_adaptivityDOFsGraph->setName(tr("DOFs"));
 
             m_adaptivityProgress = new QProgressBar(this);
-            m_adaptivityProgress->setMaximum(100);
+            m_adaptivityProgress->setMaximum(10000);
             m_adaptivityProgress->setVisible(Agros2D::problem()->numAdaptiveFields() > 0);
 
             QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
@@ -542,30 +543,27 @@ void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector
     // progress bar
     if (phase == SolverAgros::Phase_Finished)
     {
-        m_nonlinearProgress->setValue(100);
+        m_nonlinearProgress->setValue(10000);
     }
     else
     {
-        double valueRelativeChange = pow(100.0, ((relativeChangeOfSolutions.first() - relativeChangeOfSolutions.last()) / relativeChangeOfSolutions.first()));
+        double valueRelativeChange = pow(10000.0, ((relativeChangeOfSolutions.first() - relativeChangeOfSolutions.last()) / relativeChangeOfSolutions.first()));
         m_nonlinearProgress->setValue(valueRelativeChange);
     }
 }
 
-void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
+void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep)
 {   
     if (!m_adaptivityErrorGraph)
         return;
-
-    int numberOfTimeSteps = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
-    int numberOfAdaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
 
     QVector<double> adaptiveSteps;
     QVector<double> adaptiveDOFs;
     QVector<double> adaptiveError;
 
-    for (int i = 0; i <= numberOfAdaptiveSteps; i++)
+    for (int i = 0; i < adaptivityStep; i++)
     {
-        SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, numberOfTimeSteps, i, SolutionMode_Normal));
+        SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
         adaptiveSteps.append(i + 1);
         adaptiveDOFs.append(runTime.DOFs());
@@ -578,12 +576,12 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo)
     m_adaptivityChart->replot();
 
     // progress bar
-    double valueSteps = 100.0 * ((numberOfAdaptiveSteps + 1.0) / fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
-    double valueTol = pow(100.0, (adaptiveError.first() - adaptiveError.last()) / adaptiveError.first());
+    double valueSteps = 10000.0 * (adaptivityStep / fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
+    double valueTol = pow(10000.0, (adaptiveError.first() - adaptiveError.last()) / adaptiveError.first());
     m_adaptivityProgress->setValue(qMax(valueSteps, valueTol));
 }
 
-void LogDialog::updateTransientChartInfo()
+void LogDialog::updateTransientChartInfo(double actualTime)
 {
     if (!m_timeTimeStepGraph)
         return;
@@ -604,17 +602,8 @@ void LogDialog::updateTransientChartInfo()
     m_timeTimeStepGraph->rescaleKeyAxis();
     m_timeChart->replot();
 
-    // progress bar
-    if (Agros2D::problem()->config()->isTransientAdaptive())
-    {
-        m_timeProgress->setMaximum(100);
-        m_timeProgress->setValue((100.0 * Agros2D::problem()->actualTime() / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));
-    }
-    else
-    {
-        m_timeProgress->setMaximum(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
-        m_timeProgress->setValue(timeSteps.last());
-    }
+    // progress bar    
+    m_timeProgress->setValue((10000.0 * actualTime / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));
 }
 
 void LogDialog::addIcon(const QIcon &icn, const QString &label)
@@ -627,7 +616,7 @@ void LogDialog::addIcon(const QIcon &icn, const QString &label)
         item->setTextAlignment(Qt::AlignHCenter);
 
         m_progress->addItem(item);
-        m_progress->setCurrentItem(item);
+        // m_progress->setCurrentItem(item);
         m_progress->repaint();
     }
 
