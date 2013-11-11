@@ -32,7 +32,6 @@
 #include "hermes2d/solutionstore.h"
 
 #include "qcustomplot/qcustomplot.h"
-#include "ctemplate/template.h"
 
 Log::Log()
 {
@@ -43,30 +42,19 @@ Log::Log()
 // *******************************************************************************************************
 
 LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
-    m_printCounter(0), m_maximumVisibleRows(150), m_logInfo(NULL)
+    m_printCounter(0)
 {    
-    webView = new QWebView();
-    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
-    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    webView->setMinimumSize(160, 80);
-
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() + 1).toStdString()));
-
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_results.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-    m_cascadeStyleSheet = QString::fromStdString(style);
-
-    initWebView();
+    plainLog = new QPlainTextEdit(this);
+    plainLog->setReadOnly(true);
+    plainLog->setMaximumBlockCount(500);
+    plainLog->setMinimumSize(160, 80);
 
     memoryLabel = new QLabel("                                                         ");
     memoryLabel->setVisible(false);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 0, 0, 0);
-    layoutMain->addWidget(webView, 1);
+    layoutMain->addWidget(plainLog, 1);
     layoutMain->addWidget(memoryLabel, 0, Qt::AlignLeft);
 
     setLayout(layoutMain);
@@ -88,47 +76,12 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
     connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
     connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
 
-    webView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(webView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    plainLog->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(plainLog, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
 }
 
 LogWidget::~LogWidget()
 {
-    delete m_logInfo;
-}
-
-void LogWidget::initWebView()
-{
-    if (m_logInfo)
-        delete m_logInfo;
-
-    m_logInfo = new ctemplate::TemplateDictionary("info");
-
-    m_logInfo->SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
-    m_logInfo->SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-    m_logInfo->SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-
-    webView->setHtml("");
-}
-
-void LogWidget::showHtml()
-{
-    ctemplate::TemplateDictionary *local = m_logInfo->MakeCopy("local");
-
-    // remove first items in cache
-    while (m_logItems.count() > m_maximumVisibleRows)
-        m_logItems.removeFirst();
-
-    local->SetValue("ITEMS", m_logItems.join("").toStdString());
-
-    std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview.tpl").toStdString(), ctemplate::DO_NOT_STRIP, local, &info);
-    delete local;
-
-    webView->setHtml(QString::fromStdString(info));
-    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
-
-    repaint();
 }
 
 void LogWidget::contextMenu(const QPoint &pos)
@@ -151,7 +104,7 @@ void LogWidget::createActions()
     connect(actShowDebug, SIGNAL(triggered()), this, SLOT(showDebug()));
 
     actClear = new QAction(icon(""), tr("Clear"), this);
-    connect(actClear, SIGNAL(triggered()), this, SLOT(initWebView()));
+    connect(actClear, SIGNAL(triggered()), plainLog, SLOT(clear()));
 }
 
 void LogWidget::showTimestamp()
@@ -168,20 +121,8 @@ void LogWidget::showDebug()
 
 void LogWidget::printHeading(const QString &message)
 {
-    // template
-    ctemplate::TemplateDictionary item("heading");
-
-#if QT_VERSION < 0x050000
-    item.SetValue("ITEM_HEADING_MESSAGE", Qt::escape(message).toStdString());
-#else
-    item.SetValue("ITEM_HEADING_MESSAGE", QString(message).toHtmlEscaped().toStdString());
-#endif
-
-    std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview_heading.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &item, &info);
-    m_logItems.append(QString::fromStdString(info));
-
-    showHtml();
+    plainLog->appendHtml(QString("<h3><strong>%1</strong></h3>").arg(message));
+    plainLog->ensureCursorVisible();
 }
 
 void LogWidget::printMessage(const QString &module, const QString &message)
@@ -209,30 +150,28 @@ void LogWidget::printDebug(const QString &module, const QString &message)
 
 void LogWidget::print(const QString &module, const QString &message, const QString &color)
 {
-    // template
-    ctemplate::TemplateDictionary item("text");
-
+    QString strTime = "";
     if (actShowTimestamp->isChecked())
     {
 #if QT_VERSION < 0x050000
-        item.SetValue("ITEM_TIME", Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toStdString());
+        strTime = Qt::escape(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ");
 #else
-        item.SetValue("ITEM_TIME", QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped().toStdString());
+        strTime = QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped();
 #endif
-    }
-    item.SetValue("ITEM_COLOR", color.toStdString());
-    item.SetValue("ITEM_MODULE", module.toStdString());
+    }    
 #if QT_VERSION < 0x050000
-    item.SetValue("ITEM_MESSAGE", Qt::escape(message).toStdString());
+    QString strMessage = Qt::escape(message);
 #else
-    item.SetValue("ITEM_MESSAGE", QString(message).toHtmlEscaped().toStdString());
+    QString strMessage = QString(message).toHtmlEscaped();
 #endif
 
-    std::string info;
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/logview_text.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &item, &info);
-    m_logItems.append(QString::fromStdString(info));
+    QString html = QString("<div><span style=\"color: gray;\">%1</span><span style=\"color: %2;\"><strong>%3</strong>: %4</span></div>").
+            arg(strTime).
+            arg(color).
+            arg(module).
+            arg(strMessage);
 
-    showHtml();
+    plainLog->appendHtml(html);
 
     // force run process events
     m_printCounter++;
@@ -240,6 +179,10 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     {
         // reset counter and process events
         m_printCounter = 0;
+    }
+    if (m_printCounter % 2 == 0)
+    {
+        plainLog->ensureCursorVisible();
     }
 }
 
@@ -336,7 +279,6 @@ void LogDialog::createControls()
 
     m_logWidget = new LogWidget(this);
     m_logWidget->setMemoryLabelVisible(false);
-    m_logWidget->setMaximumVisibleRows(50);
 
 #ifdef Q_WS_WIN
     int fontSize = 7;
@@ -583,6 +525,7 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeSt
 
 void LogDialog::updateTransientChartInfo(double actualTime)
 {
+    qDebug() << actualTime;
     if (!m_timeTimeStepGraph)
         return;
 

@@ -25,10 +25,6 @@
 
 class QCustomPlot;
 class QCPGraph;
-namespace ctemplate
-{
-    class TemplateDictionary;
-}
 class FieldInfo;
 class SolverAgros;
 
@@ -75,7 +71,6 @@ public:
 
     bool isMemoryLabelVisible() const;
     inline void setMemoryLabelVisible(bool visible = true);
-    inline void setMaximumVisibleRows(int maximum) { m_maximumVisibleRows = maximum; }
 
 private slots:
     void contextMenu(const QPoint &pos);
@@ -96,9 +91,8 @@ protected:
 private:
     QMenu *mnuInfo;
 
-    QWebView *webView;
+    QPlainTextEdit *plainLog;
     QString m_cascadeStyleSheet;
-    int m_maximumVisibleRows;
 
     QAction *actShowTimestamp;
     QAction *actShowDebug;
@@ -107,15 +101,10 @@ private:
     QLabel *memoryLabel;
     int m_printCounter;
 
-    ctemplate::TemplateDictionary *m_logInfo;
-    QStringList m_logItems;
-
     void createActions();
 
 private slots:
     void refreshMemory(int usage);
-    void initWebView();
-    void showHtml();
 };
 
 class LogView : public QDockWidget
