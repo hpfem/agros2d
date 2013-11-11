@@ -249,13 +249,17 @@
 
         <!-- config -->
         <xsl:element name="config">
+            <xsl:variable name="linebreak">
+                <xsl:text>
+</xsl:text>
+            </xsl:variable>
             <xsl:for-each select="/document/config/@*">
                 <xsl:element name="item">
                     <xsl:attribute name="key">
                         <xsl:value-of select ="name(.)"/>
                     </xsl:attribute>
                     <xsl:attribute name="value">
-                        <xsl:value-of select="." />
+                        <xsl:value-of select="translate(., '&amp;#xA;', ';')" />
                     </xsl:attribute>
                 </xsl:element>
             </xsl:for-each>

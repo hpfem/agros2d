@@ -24,6 +24,25 @@
     </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="replace_breaks">
+    <xsl:param name="text"/>
+    <xsl:variable name="linebreak">
+      <xsl:text>
+</xsl:text>
+    </xsl:variable>
+    <xsl:choose>
+        <xsl:when test="contains(string($text),$linebreak)">
+            <xsl:value-of select="concat(substring-before(string($text),$linebreak), ';')"/>
+            <xsl:call-template name="replace_breaks">
+                <xsl:with-param name="text" select="substring-after(string($text),$linebreak)"/>
+            </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
 <xsl:template match="/">
     <xsl:element name="document">
         <xsl:attribute name="version">2.1</xsl:attribute>
@@ -648,9 +667,12 @@
         </xsl:element>
 
         <!-- config -->
+        <xsl:variable name="startup_script" select="/document/problems/problem/scriptstartup" />
         <xsl:element name="config">
           <xsl:attribute name="Problem_StartupScript">
-            <xsl:value-of select="/document/problems/problem/scriptstartup" />
+            <xsl:call-template name="replace_breaks">
+                <xsl:with-param name="text" select="$startup_script"/>
+            </xsl:call-template>
           </xsl:attribute>
         </xsl:element>
     </xsl:element>

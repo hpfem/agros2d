@@ -4,7 +4,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <xsl:output method="xml" version="1.0" encoding="utf-8"
-            omit-xml-declaration="yes"/>
+            omit-xml-declaration="yes" />
 
 <xsl:template match="/">
     <xsl:element name="problem:document">
@@ -271,7 +271,18 @@
         </xsl:element>
 
         <!-- config -->
-        <xsl:copy-of select="problem:document/config"/>
+        <xsl:element name="config">
+            <xsl:for-each select="problem:document/config/item">
+                <xsl:element name="item">
+                    <xsl:attribute name="key">
+                        <xsl:value-of select ="@key"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="value">
+                        <xsl:value-of select="translate(@value, '&amp;#xA;', ';')" />
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:for-each>
+        </xsl:element>
     </xsl:element>
 </xsl:template>
 </xsl:stylesheet>
