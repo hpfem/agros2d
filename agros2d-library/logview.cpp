@@ -525,7 +525,6 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeSt
 
 void LogDialog::updateTransientChartInfo(double actualTime)
 {
-    qDebug() << actualTime;
     if (!m_timeTimeStepGraph)
         return;
 
