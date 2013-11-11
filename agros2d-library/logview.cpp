@@ -180,9 +180,12 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
         // reset counter and process events
         m_printCounter = 0;
     }
+
+    // ensure cursor visible
     if (m_printCounter % 2 == 0)
     {
-        plainLog->ensureCursorVisible();
+        if (plainLog->isVisible())
+            plainLog->ensureCursorVisible();
     }
 }
 
@@ -280,6 +283,10 @@ void LogDialog::createControls()
     m_logWidget = new LogWidget(this);
     m_logWidget->setMemoryLabelVisible(false);
 
+    // set log visibility
+    QSettings settings;
+    m_logWidget->setVisible(settings.value("LogDialog/ShowLog", false).toBool());
+
 #ifdef Q_WS_WIN
     int fontSize = 7;
 #endif
@@ -301,10 +308,15 @@ void LogDialog::createControls()
     m_progress->setMinimumHeight(85);
     m_progress->setMaximumHeight(85);
     m_progress->setFont(fontProgress);
+    m_progress->setStyleSheet(QString("QListView { background-color: %1; border: 0px; padding: 0px; margin: 0px; }").
+                              arg(this->palette().color(QPalette::Background).name()));
 
     btnClose = new QPushButton(tr("Close"));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(tryClose()));
     btnClose->setEnabled(false);
+
+    btnShowHide = new QPushButton(tr("Show/hide log"));
+    connect(btnShowHide, SIGNAL(clicked()), this, SLOT(showHide()));
 
     btnAbort = new QPushButton(tr("Abort"));
     connect(btnAbort, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
@@ -313,6 +325,7 @@ void LogDialog::createControls()
 
     QHBoxLayout *layoutStatus = new QHBoxLayout();
     layoutStatus->addStretch();
+    layoutStatus->addWidget(btnShowHide, 0, Qt::AlignRight);
     layoutStatus->addWidget(btnAbort, 0, Qt::AlignRight);
     layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
@@ -453,15 +466,17 @@ void LogDialog::createControls()
             layoutHorizontal->addLayout(layoutAdaptivity, 1);
         }
     }
-
-    QVBoxLayout *layoutVertical = new QVBoxLayout();
-    layoutVertical->addWidget(m_progress, 0);
-    if (Agros2D::problem()->numAdaptiveFields() > 0 || Agros2D::problem()->determineIsNonlinear() || Agros2D::problem()->isTransient())
-        layoutVertical->addLayout(layoutHorizontal, 4);
-    layoutVertical->addWidget(m_logWidget, 1);
+    else
+    {
+        m_logWidget->setVisible(true);
+    }
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutVertical, 1);
+    layout->addWidget(m_progress, 0);
+    if (Agros2D::problem()->numAdaptiveFields() > 0 || Agros2D::problem()->determineIsNonlinear() || Agros2D::problem()->isTransient())
+        layout->addLayout(layoutHorizontal, 4);
+    layout->addWidget(m_logWidget, 1);
+    layout->addStretch();
     layout->addLayout(layoutStatus);
 
     setLayout(layout);
@@ -471,6 +486,8 @@ void LogDialog::printError(const QString &module, const QString &message)
 {
     btnAbort->setEnabled(false);
     btnClose->setEnabled(true);
+
+    m_logWidget->setVisible(true);
 }
 
 void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector<double> steps, const QVector<double> relativeChangeOfSolutions)
@@ -571,6 +588,15 @@ void LogDialog::tryClose()
         Agros2D::log()->printError(tr("Solver"), tr("Problem is being aborted."));
     else
         close();
+}
+
+void LogDialog::showHide()
+{
+    m_logWidget->setVisible(!m_logWidget->isVisible());
+    repaint();
+
+    QSettings settings;
+    settings.setValue("LogDialog/ShowLog", m_logWidget->isVisible());
 }
 
 // *******************************************************************************************
