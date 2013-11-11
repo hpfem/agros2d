@@ -1,5 +1,5 @@
 body, h1, h2, h3, h4, h5, table {
-	font-family: {{FONTFAMILY}}, sans-serif;
+	font-family: "{{FONTFAMILY}}", sans-serif;
 	font-size: {{FONTSIZE}}px;
 	color: rgb(50, 50, 50);
 }
