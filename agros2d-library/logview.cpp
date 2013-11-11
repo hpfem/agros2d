@@ -48,7 +48,7 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    webView->setMinimumSize(160, 160);
+    webView->setMinimumSize(160, 80);
 
     // stylesheet
     std::string style;
@@ -338,8 +338,15 @@ void LogDialog::createControls()
     m_logWidget->setMemoryLabelVisible(false);
     m_logWidget->setMaximumVisibleRows(50);
 
+#ifdef Q_WS_WIN
+    int fontSize = 7;
+#endif
+#ifdef Q_WS_X11
+    int fontSize = 8;
+#endif
+
     QFont fontProgress = font();
-    fontProgress.setPointSize(fontProgress.pointSize() - 2);
+    fontProgress.setPointSize(fontSize);
 
     m_progress = new QListWidget(this);
     m_progress->setCurrentRow(0);
@@ -349,8 +356,8 @@ void LogDialog::createControls()
     m_progress->setResizeMode(QListView::Adjust);
     m_progress->setFlow(QListView::LeftToRight);
     m_progress->setIconSize(QSize(32, 32));
-    m_progress->setMinimumHeight(90);
-    m_progress->setMaximumHeight(90);
+    m_progress->setMinimumHeight(85);
+    m_progress->setMaximumHeight(85);
     m_progress->setFont(fontProgress);
 
     btnClose = new QPushButton(tr("Close"));
@@ -382,7 +389,7 @@ void LogDialog::createControls()
         fontTitle.setBold(true);
 
         QFont fontChart(font());
-        fontChart.setPointSize(fontChart.pointSize() - 1);
+        fontChart.setPointSize(fontSize);
 
         layoutHorizontal = new QHBoxLayout();
         if (Agros2D::problem()->isTransient())
@@ -508,7 +515,7 @@ void LogDialog::createControls()
     layoutVertical->addWidget(m_progress, 0);
     if (Agros2D::problem()->numAdaptiveFields() > 0 || Agros2D::problem()->determineIsNonlinear() || Agros2D::problem()->isTransient())
         layoutVertical->addLayout(layoutHorizontal, 4);
-    layoutVertical->addWidget(m_logWidget, 2);
+    layoutVertical->addWidget(m_logWidget, 1);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutVertical, 1);
