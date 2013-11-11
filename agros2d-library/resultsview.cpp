@@ -81,7 +81,7 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
     stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() - 1).toStdString()));
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() + 1).toStdString()));
 
     ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_results.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);

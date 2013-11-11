@@ -1,6 +1,6 @@
 body, h1, h2, h3, h4, h5, table {
 	font-family: "{{FONTFAMILY}}", sans-serif;
-	font-size: {{FONTSIZE}}pt;
+	font-size: {{FONTSIZE}}px;
 	color: rgb(50, 50, 50);
 }
 
@@ -37,8 +37,7 @@ hr {
 	height: 2px;
 }
 
-table, td, tr {
-	font-size: 93%;
+table, td, tr {	
 	padding: 1pt 0pt 0pt 1pt;
 }
 
