@@ -86,9 +86,9 @@
     <module:vector_form  id="steady_rhs_current" i="1" j="1" planar="ma_Jer_compl * vval " axi="ma_Jer_compl * vval" />
     <module:vector_form  id="transient_rhs_current" i="1" j="1" planar="ma_Jer * vval " axi="ma_Jer * vval"/>
 
-    <module:matrix_form id="transient_mat_1_2" i="1" j="2" planar="ma_gamma * uval * vval" axi="ma_gamma * uval * vval" symmetric="1" condition="fabs(ma_gamma) > 0" />
+    <module:matrix_form id="transient_mat_1_2" i="1" j="2" planar="ma_gamma * uval * vval" axi="ma_gamma * uval * vval" condition="fabs(ma_gamma) > 0" />
     <module:matrix_form id="transient_mat_2_2" i="2" j="2" planar="- uval * vval" axi="- uval * vval" symmetric="1"/>
-    <module:matrix_form id="transient_mat_2_1" i="2" j="1" planar="timedermat * uval * vval" axi="timedermat * uval * vval" symmetric="1"/>
+    <module:matrix_form id="transient_mat_2_1" i="2" j="1" planar="timedermat * uval * vval" axi="timedermat * uval * vval"/>
     <module:vector_form id="transient_vec_2_1" i="2" j="1" planar="timedervec * vval" axi="timedervec * vval"/>
 
     <!-- TODO: replace value1 with value1+value3 in nonlinear form?????-->
