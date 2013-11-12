@@ -49,7 +49,6 @@ fields.magnetic.MagneticNonlinPlanar,
 fields.magnetic.MagneticNonlinAxisymmetric,
 fields.magnetic.MagneticHarmonicNonlinPlanar,
 fields.magnetic.MagneticHarmonicNonlinAxisymmetric,
-
 # rf te
 fields.rf_te.RFTEHarmonicPlanar,
 fields.rf_te.RFTEHarmonicAxisymmetric,
@@ -88,7 +87,6 @@ fields.flow.FlowAxisymmetric
 ]
 
 test_coupled = [
-# coupled fields
 coupled_problems.basic_coupled_problems.CoupledProblemsBasic1,
 coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
 coupled_problems.basic_coupled_problems.CoupledProblemsBasic3,
@@ -111,7 +109,5 @@ examples.examples.Tutorials
 ]
 
 test_internal = [
-# internal
 internal.matrix_solvers.InternalMatrixSolvers,
-internal.xslt.XSLT
-]
+] + internal.xslt.tests

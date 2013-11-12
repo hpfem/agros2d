@@ -58,7 +58,7 @@
     </geometry>
     <problem time_order="2" frequency="1000" time_method="fixed" time_method_tolerance="0.1" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="10" time_total="60">
         <fields>
-            <field field_id="elasticity" initial_condition="0" polynomial_order="1" number_of_refinements="0" time_skip="60" analysis_type="steadystate">
+            <field field_id="elasticity" initial_condition="0" polynomial_order="1" number_of_refinements="1" time_skip="60" analysis_type="steadystate">
                 <refinement>
                     <edges/>
                     <labels/>

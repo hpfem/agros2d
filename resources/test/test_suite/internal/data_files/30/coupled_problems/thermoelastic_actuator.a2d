@@ -60,7 +60,7 @@
 
   <problem coordinate_type="axisymmetric" frequency="1000" matrix_solver="umfpack" mesh_type="triangle" time_method="fixed" time_method_tolerance="0.1" time_order="2" time_steps="10" time_total="60">
     <fields>
-      <field analysis_type="steadystate" field_id="elasticity" initial_condition="0" number_of_refinements="0" polynomial_order="1" time_skip="60">
+      <field analysis_type="steadystate" field_id="elasticity" initial_condition="0" number_of_refinements="1" polynomial_order="1" time_skip="60">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>

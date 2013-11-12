@@ -6,16 +6,15 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 def create_tests(case, dir):
-    for (path, dirs, files) in os.walk(dir):
-        for file in files:
-            name, extension = os.path.splitext(file)
+    for file in os.listdir(dir):
+        name, extension = os.path.splitext(file)
 
-            method = 'test_{0}_{1}'.format(os.path.split(path)[-1].replace(" ", "_"),
+        method = 'test_{0}_{1}'.format(os.path.split(path)[-1].replace(" ", "_"),
                                            name.replace(" ", "_")).lower()
-            file = '{0}/{1}'.format(path, file)
+        file = '{0}/{1}'.format(path, file)
 
-            if (extension == '.a2d'):
-                setattr(case, method, get_test(file))
+        if (extension == '.a2d'):
+            setattr(case, method, get_test(file))
 
 def get_test(file):
     def test(self):
@@ -23,13 +22,29 @@ def get_test(file):
         agros2d.problem().solve()
     return test
 
-class XSLT(Agros2DTestCase): pass
-create_tests(XSLT, pythonlab.datadir('/resources/test/test_suite/internal/data_files'))
+tests = list()
+data_dirs = [pythonlab.datadir('/resources/test/test_suite/internal/data_files/0/'),
+             pythonlab.datadir('/resources/test/test_suite/internal/data_files/21/'),
+             pythonlab.datadir('/resources/test/test_suite/internal/data_files/30/')]
+for dir in data_dirs:
+    for (path, dirs, files) in os.walk(dir):
+        if (dirs):
+            continue
 
-if __name__ == '__main__':        
+        version = path.split('/')[-2]
+        field = path.split('/')[-1]
+        name = "XSLT{0}{1}".format(version, field.title())
+
+        code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
+        exec code
+        create_tests(globals()[name], path)
+        tests.append(globals()[name])
+
+if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(XSLT))
+    for test in tests:
+        suite.addTest(ut.TestLoader().loadTestsFromTestCase(test))
     suite.run(result)
