@@ -456,22 +456,22 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-remote/client.cpp" line="10"/>
         <source>Error: Unable to start the server (agros2d-client): %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : Impossible de démarrer le serveur (agros2d-client) : %1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-remote/client.cpp" line="77"/>
         <source>Client error: The host was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur du client : L&apos;hôte n&apos;a pas été trouvé.</translation>
     </message>
     <message>
         <location filename="../../agros2d-remote/client.cpp" line="80"/>
         <source>Client error: The connection was refused by the peer. Make sure the agros2d-server server is running.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur du client : La connexion a été refusée par le peer. Assurez-vous que le agros2d-serveur fonctionne.</translation>
     </message>
     <message>
         <location filename="../../agros2d-remote/client.cpp" line="83"/>
         <source>Client error: The following error occurred: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur du client : L&apos;erreur suivante s&apos;est produite : %1.</translation>
     </message>
 </context>
 <context>
@@ -1005,67 +1005,67 @@ Stacktrace:
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="30"/>
         <source>&amp;Create directory</source>
-        <translation type="unfinished">&amp;Créer un répertoire</translation>
+        <translation>&amp;Créer un répertoire</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="33"/>
         <source>Create &amp;file</source>
-        <translation type="unfinished">Créer un &amp;fichier</translation>
+        <translation>Créer un &amp;fichier</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="36"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">&amp;Renommer</translation>
+        <translation>&amp;Renommer</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="39"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">Su&amp;pprimer</translation>
+        <translation>Su&amp;pprimer</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="145"/>
         <source>Create directory</source>
-        <translation type="unfinished">Créer un répertoire</translation>
+        <translation>Créer un répertoire</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="145"/>
         <location filename="../../util/gui/filebrowser.cpp" line="218"/>
         <source>Enter directory name</source>
-        <translation type="unfinished">Entrez le nom du répertoire</translation>
+        <translation>Entrer le nom du répertoire</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="159"/>
         <location filename="../../util/gui/filebrowser.cpp" line="171"/>
         <source>Create file</source>
-        <translation type="unfinished">Créer un fichier</translation>
+        <translation>Créer un fichier</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="159"/>
         <location filename="../../util/gui/filebrowser.cpp" line="231"/>
         <source>Enter file name</source>
-        <translation type="unfinished">Entrez le nom du fichier</translation>
+        <translation>Entrer le nom du fichier</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="218"/>
         <location filename="../../util/gui/filebrowser.cpp" line="224"/>
         <source>Rename directory</source>
-        <translation type="unfinished">Renommer le répertoire</translation>
+        <translation>Renommer le répertoire</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="224"/>
         <source>Directory could not be renamed.</source>
-        <translation type="unfinished">Le répertoire ne peut pas être renommé.</translation>
+        <translation>Le répertoire ne peut pas être renommé.</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="231"/>
         <location filename="../../util/gui/filebrowser.cpp" line="241"/>
         <source>Rename file</source>
-        <translation type="unfinished">Renommer le fichier</translation>
+        <translation>Renommer le fichier</translation>
     </message>
     <message>
         <location filename="../../util/gui/filebrowser.cpp" line="241"/>
         <source>File could not be renamed.</source>
-        <translation type="unfinished">Le fichier ne peut être renommé.</translation>
+        <translation>Le fichier ne peut pas être renommé.</translation>
     </message>
 </context>
 <context>
@@ -1073,27 +1073,27 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="44"/>
         <source>More...</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus...</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="46"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="48"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="51"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="53"/>
         <source>Designer</source>
-        <translation type="unfinished"></translation>
+        <translation>Designer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="115"/>
@@ -1103,18 +1103,18 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="209"/>
         <source>Open file</source>
-        <translation type="unfinished">Ouvrir le fichier</translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="209"/>
         <location filename="../../agros2d-library/util/form_script.cpp" line="250"/>
         <source>Agros2D form files (*.frm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers forme Agros2D (*.frm)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_script.cpp" line="250"/>
         <source>Save file</source>
-        <translation type="unfinished">Enregistrer le fichier</translation>
+        <translation>Enregistrer le fichier</translation>
     </message>
 </context>
 <context>
@@ -1202,7 +1202,7 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="107"/>
         <source>Basic informations</source>
-        <translation type="unfinished"></translation>
+        <translation>Informations fondamentales</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="109"/>
@@ -1212,192 +1212,192 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="112"/>
         <source>Coordinate type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type des coordonnées :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="115"/>
         <source>Mesh type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de maillage :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="121"/>
         <source>Harmonic analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse harmonique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="122"/>
         <source>Frequency:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="152"/>
         <source>Transient analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse transitoire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="153"/>
         <source>Method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode : </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="155"/>
         <source>Order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="157"/>
         <location filename="../../agros2d-library/infowidget.cpp" line="212"/>
         <location filename="../../agros2d-library/infowidget.cpp" line="227"/>
         <source>Tolerance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolérance :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="159"/>
         <source>Constant time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de temps constant :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="161"/>
         <source>Number of const. time steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de pas de temps const. :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="163"/>
         <source>Total time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée totale :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="166"/>
         <source>Geometry</source>
-        <translation type="unfinished">Géométrie</translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="167"/>
         <source>Nodes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœuds :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="169"/>
         <source>Edges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arêtes :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="171"/>
         <source>Labels:</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="173"/>
         <source>Materials:</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériaux :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="175"/>
         <source>Boundaries:</source>
-        <translation type="unfinished"></translation>
+        <translation>Limites :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="181"/>
         <source>Physical fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Champs physiques</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="190"/>
         <source>Analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="195"/>
         <source>Initial condition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition initiale :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="200"/>
         <source>Number of refinements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de raffinements :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="202"/>
         <source>Polynomial order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="205"/>
         <source>Adaptivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivité :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="210"/>
         <location filename="../../agros2d-library/infowidget.cpp" line="223"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Les pas :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="218"/>
         <source>Solver:</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="225"/>
         <source>Convergence:</source>
-        <translation type="unfinished"></translation>
+        <translation>Convergence :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="230"/>
         <source>Sufficient improvement factor Jacobian:</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur amélioration suffisante pour Jacobian :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="232"/>
         <source>Maximum steps with reused Jacobian:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre max. de pas avec le même Jacobian :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="262"/>
         <source> (%1, %2) - iterative</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2) : itératif</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="266"/>
         <source> - direct</source>
-        <translation type="unfinished"></translation>
+        <translation> : direct</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="268"/>
         <source>Linear solver:</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur linéaire :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="289"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Paramètres de maillage</translation>
+        <translation>Paramètres de maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="290"/>
         <source>Initial mesh:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage initial :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="291"/>
         <location filename="../../agros2d-library/infowidget.cpp" line="318"/>
         <source>%1 nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nœuds</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="292"/>
         <location filename="../../agros2d-library/infowidget.cpp" line="319"/>
         <source>%1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 éléments</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="317"/>
         <source>Solution mesh:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage de solution :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="363"/>
         <source>Number of DOFs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de DDL :</translation>
     </message>
     <message>
         <source>%1</source>
@@ -1430,7 +1430,7 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="391"/>
         <source>Coupling type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de couplage :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="399"/>
@@ -1440,7 +1440,7 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="400"/>
         <source>Total elapsed time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée totale écoulée :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="401"/>
@@ -1478,7 +1478,7 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/logview.cpp" line="271"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrompre</translation>
     </message>
     <message>
         <source>Solver</source>
@@ -1487,12 +1487,12 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/logview.cpp" line="320"/>
         <source>Process Memory: %1 MB</source>
-        <translation type="unfinished"></translation>
+        <translation>Mémoire du processus : %1 Mo</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/logview.h" line="99"/>
         <source>Progress...</source>
-        <translation type="unfinished"></translation>
+        <translation>Progress...</translation>
     </message>
 </context>
 <context>
@@ -1508,12 +1508,12 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/logview.cpp" line="72"/>
         <source>Show timestamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher timestamp</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/logview.cpp" line="77"/>
         <source>Show debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le débuggage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/logview.cpp" line="82"/>
@@ -1685,12 +1685,12 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="315"/>
         <source>Load background...</source>
-        <translation type="unfinished">…</translation>
+        <translation>Charger le fond…</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="318"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quitter</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="319"/>
@@ -1704,23 +1704,23 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="326"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Ann&amp;uler</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="331"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rétablir</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="334"/>
         <source>Copy image to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier l&apos;image dans le clipboard</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="338"/>
         <location filename="../../agros2d-library/mainwindow.cpp" line="563"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aide</translation>
     </message>
     <message>
         <source>Show help</source>
@@ -1738,7 +1738,7 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="350"/>
         <source>&amp;Online help</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;aide en &amp;ligne</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="354"/>
@@ -1748,12 +1748,12 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="357"/>
         <source>About &amp;Agros2D</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos d&apos;A&amp;gros2D</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="361"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de Q&amp;t</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="365"/>
@@ -1796,7 +1796,8 @@ Stacktrace:
         <location filename="../../agros2d-library/mainwindow.cpp" line="377"/>
         <source>Adaptive
 step</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas 
+d&apos;adaptivité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="380"/>
@@ -1829,7 +1830,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="397"/>
         <source>Material browser...</source>
-        <translation type="unfinished">…</translation>
+        <translation>Matériaux…</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="398"/>
@@ -1839,17 +1840,17 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="403"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="406"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Dézoomer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="409"/>
         <source>Zoom best fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom best fit</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="410"/>
@@ -1859,12 +1860,12 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="412"/>
         <source>Zoom region</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom région</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="425"/>
         <source>Show/hide control panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher / masquer le panneau de contrôle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="426"/>
@@ -1874,7 +1875,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="443"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers &amp;récents</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="444"/>
@@ -1889,17 +1890,17 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="480"/>
         <source>E&amp;dit</source>
-        <translation type="unfinished"></translation>
+        <translation>É&amp;diter</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="495"/>
         <source>Panels</source>
-        <translation type="unfinished"></translation>
+        <translation>Panneaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="500"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Affichage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="523"/>
@@ -1918,7 +1919,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="553"/>
         <source>Custom forms</source>
-        <translation type="unfinished"></translation>
+        <translation>Fiches personnalisées</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="588"/>
@@ -1928,7 +1929,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="603"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="613"/>
@@ -1958,37 +1959,37 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1353"/>
         <source>File open</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier ouvert</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1566"/>
         <source>Mesh files (*.msh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de maillage (*.msh)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="986"/>
         <source>Unknown suffix.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suffixe inconnu.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="309"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="524"/>
         <source>&amp;Add geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajouter géométrie</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="529"/>
         <source>&amp;Add boundaries and materials</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajouter des limites et des matériaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="990"/>
         <source>File &apos;%1&apos; is not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; est introuvable.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1041"/>
@@ -2033,7 +2034,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1585"/>
         <source>The problem is not meshed</source>
-        <translation type="unfinished"></translation>
+        <translation>Le problème n&apos;est pas maillée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="909"/>
@@ -2046,7 +2047,7 @@ step</source>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1054"/>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1585"/>
         <source>Problem</source>
-        <translation type="unfinished">Problème</translation>
+        <translation>Problème</translation>
     </message>
     <message>
         <source>Export mesh</source>
@@ -2060,7 +2061,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="308"/>
         <source>Open example...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir exemple...</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1236"/>
@@ -2070,7 +2071,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1245"/>
         <source>Adaptive step</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas d&apos;adaptivité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1324"/>
@@ -2104,7 +2105,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="360"/>
         <source>Material Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="402"/>
@@ -3016,7 +3017,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="111"/>
         <source>Show blended faces</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher faces mélangés</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="138"/>
@@ -3078,7 +3079,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="202"/>
         <source>Drag force</source>
-        <translation type="unfinished"></translation>
+        <translation>Force de traînée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="214"/>
@@ -3202,44 +3203,44 @@ step</source>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="86"/>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="102"/>
         <source>Mesh View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="66"/>
         <source>Initial mesh with %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage initial avec %1 éléments</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="86"/>
         <source>Solution mesh with %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage de solution avec %1 éléments</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="102"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Ordre polynomial</translation>
+        <translation>Ordre polynomial</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="130"/>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="198"/>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="289"/>
         <source>Post View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue post</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="130"/>
         <source>Contour view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue contour (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="198"/>
         <source>Scalar view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue scalaire (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="289"/>
         <source>Vector view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue vectorielle (%1)</translation>
     </message>
     <message>
         <source>Particle Tracing</source>
@@ -3363,12 +3364,12 @@ step</source>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="350"/>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="461"/>
         <source>Scalar view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue scalaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="706"/>
         <source>Number of vec.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de vecteurs :</translation>
     </message>
     <message>
         <source>Particle tracing</source>
@@ -3382,7 +3383,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="375"/>
         <source>Auto range</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalle automatique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="383"/>
@@ -3404,7 +3405,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="411"/>
         <source>Contour field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ contour</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="433"/>
@@ -3418,17 +3419,17 @@ step</source>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="449"/>
         <source>Solid view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue solide</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="460"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="462"/>
         <source>Scalar view solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue solide scalaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="482"/>
@@ -3451,12 +3452,12 @@ step</source>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="566"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtre</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="575"/>
         <source>Log. scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Échelle log.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="594"/>
@@ -3471,28 +3472,28 @@ step</source>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="604"/>
         <source>Range</source>
-        <translation type="unfinished">Gamme</translation>
+        <translation>Gamme</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="332"/>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="611"/>
         <source>Palette:</source>
-        <translation type="unfinished">Palette :</translation>
+        <translation>Palette :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="613"/>
         <source>Quality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualité :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="615"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Les pas :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="618"/>
         <source>Base:</source>
-        <translation type="unfinished"></translation>
+        <translation>Base :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="622"/>
@@ -3503,52 +3504,52 @@ step</source>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="326"/>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="631"/>
         <source>Show colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher colorbar</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="327"/>
         <source>Show labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher étiquettes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="637"/>
         <source>Decimal places:</source>
-        <translation type="unfinished"></translation>
+        <translation>Décimales :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="641"/>
         <source>Colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Colorbar</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="671"/>
         <source>Number of contours:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de contours:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="673"/>
         <source>Contour width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Largeur de contour :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="685"/>
         <source>Proportional</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportionnelle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="686"/>
         <source>Color (b/w)</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur (n/b)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="709"/>
         <source>Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Échelle :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="714"/>
         <source>Center:</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre :</translation>
     </message>
     <message>
         <source>Equation:</source>
@@ -3594,7 +3595,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="779"/>
         <source>Magnitude</source>
-        <translation type="unfinished">Ampleur</translation>
+        <translation>Ampleur</translation>
     </message>
 </context>
 <context>
@@ -3602,7 +3603,7 @@ step</source>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="80"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propriétés</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -3611,37 +3612,37 @@ step</source>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="83"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">Su&amp;pprimer</translation>
+        <translation>Su&amp;pprimer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="188"/>
         <source>Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="211"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished">Condition aux limites</translation>
+        <translation>Condition aux limites</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="237"/>
         <source>Geometry</source>
-        <translation type="unfinished">Géométrie</translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="243"/>
         <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœuds</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="269"/>
         <source>Edges</source>
-        <translation type="unfinished">Arêtes</translation>
+        <translation>Arêtes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="296"/>
         <source>Labels</source>
-        <translation type="unfinished">Étiquettes</translation>
+        <translation>Étiquettes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="107"/>
@@ -5943,7 +5944,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="251"/>
         <source>New &amp;label...</source>
-        <translation type="unfinished">Nouvelle &amp;arête …</translation>
+        <translation>Nouvelle éti&amp;quette …</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="252"/>
@@ -5953,12 +5954,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="255"/>
         <source>Delete selected objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les objets sélectionnés</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="258"/>
         <source>New &amp;boundary condition...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle &amp;condition à la limite...</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="259"/>
@@ -5968,7 +5969,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="447"/>
         <source>At least one label has to be created</source>
-        <translation type="unfinished"></translation>
+        <translation>Au moins une étiquette doit être créée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="642"/>
@@ -5990,7 +5991,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="277"/>
         <source>New &amp;material...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau &amp;matériel...</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="278"/>
@@ -6000,12 +6001,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="977"/>
         <source>New material</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau matériel</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="296"/>
         <source>&amp;Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Transform</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="642"/>
@@ -6016,27 +6017,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="513"/>
         <source>unnamed</source>
-        <translation type="unfinished"></translation>
+        <translation>sans nom</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="566"/>
         <source>Delete selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la sélection</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="568"/>
         <source>Remove node</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le nœud</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="569"/>
         <source>Remove edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;arête</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="570"/>
         <source>Remove label</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;étiquette</translation>
     </message>
     <message>
         <source>Geometry</source>
@@ -6207,14 +6208,14 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2385"/>
         <source>Solver</source>
-        <translation type="unfinished">Solveur</translation>
+        <translation>Solveur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2352"/>
         <location filename="../../agros2d-library/scene.cpp" line="2357"/>
         <location filename="../../agros2d-library/scene.cpp" line="2370"/>
         <source>Mesh</source>
-        <translation type="unfinished">Maillage</translation>
+        <translation>Maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2468"/>
@@ -6950,12 +6951,12 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/collaboration.cpp" line="288"/>
         <source>Upload to the server</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger vers le serveur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/collaboration.cpp" line="411"/>
         <source>Colaboration server could not be connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Serveur de collaboration ne pourrait être relié</translation>
     </message>
 </context>
 <context>
@@ -7073,12 +7074,13 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="402"/>
         <source>Ligthing</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err</translatorcomment>
+        <translation>Éclairage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="414"/>
         <source>Bounding box</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadre de sélection</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="419"/>
@@ -7139,12 +7141,12 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="338"/>
         <source>Zoom to mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom sur la souris</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="408"/>
         <source>Gradient back.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient rev.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="415"/>
@@ -7159,7 +7161,7 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="475"/>
         <source>Angle seg. count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Segments d&apos;angle :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="488"/>
@@ -7179,7 +7181,7 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="555"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fond :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="556"/>
@@ -7189,7 +7191,7 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="557"/>
         <source>Cross:</source>
-        <translation type="unfinished"></translation>
+        <translation>Croix :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="558"/>
@@ -7229,12 +7231,12 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="565"/>
         <source>Highlighted elements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Éléments souligné :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="566"/>
         <source>Selected elements:</source>
-        <translation type="unfinished">Les éléments sélectionnés :</translation>
+        <translation>Éléments sélectionnés :</translation>
     </message>
 </context>
 <context>
