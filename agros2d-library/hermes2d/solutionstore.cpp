@@ -60,9 +60,12 @@ QString SolutionStore::baseStoreFileName(FieldSolutionID solutionID) const
 
 void SolutionStore::clearAll()
 {
-    // m_multiSolutions.clear();
+    // fast remove of all files
     foreach (FieldSolutionID sid, m_multiSolutions)
-        removeSolution(sid);
+        removeSolution(sid, false);
+
+    // speedup
+    saveRunTimeDetails();
 
     assert(m_multiSolutions.isEmpty());
     assert(m_multiSolutionRunTimeDetails.isEmpty());
@@ -294,7 +297,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
     // m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
 }
 
-void SolutionStore::removeSolution(FieldSolutionID solutionID)
+void SolutionStore::removeSolution(FieldSolutionID solutionID, bool saveRunTime)
 {
     assert(m_multiSolutions.contains(solutionID));
 
@@ -334,7 +337,8 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     }
 
     // save structure to the file
-    saveRunTimeDetails();
+    if (saveRunTime)
+        saveRunTimeDetails();
 }
 
 void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)

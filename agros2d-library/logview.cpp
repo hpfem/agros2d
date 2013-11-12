@@ -184,8 +184,7 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     // ensure cursor visible
     if (m_printCounter % 2 == 0)
     {
-        if (plainLog->isVisible())
-            plainLog->ensureCursorVisible();
+        plainLog->ensureCursorVisible();
     }
 }
 

@@ -145,7 +145,7 @@ private:
     QList<FieldSolutionID> m_multiSolutionCacheIDOrder;
 
     void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
-    void removeSolution(FieldSolutionID solutionID);
+    void removeSolution(FieldSolutionID solutionID, bool saveRunTime = true);
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiArray);
 

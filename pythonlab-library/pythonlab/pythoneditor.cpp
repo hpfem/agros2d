@@ -394,8 +394,6 @@ void PythonEditorDialog::dropEvent(QDropEvent *event)
 void PythonEditorDialog::showDialog()
 {
     show();
-    activateWindow();
-    raise();
     txtEditor->setFocus();
 }
 
@@ -847,7 +845,6 @@ void PythonEditorDialog::doExecutedScript()
     if (txtEditor->isVisible())
     {
         txtEditor->setFocus();
-        activateWindow();
     }
 }
 
@@ -881,7 +878,6 @@ void PythonEditorDialog::doPyLintPython()
     scriptEditorWidget()->pyLintAnalyse();
 
     txtEditor->setFocus();
-    activateWindow();
 }
 
 void PythonEditorDialog::doOptionsPrintStacktrace()
