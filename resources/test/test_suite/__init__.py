@@ -101,12 +101,7 @@ script.benchmark.BenchmarkGeometryTransformation,
 script.generator.Generator
 ]
 
-test_examples = [
-examples.examples.Examples,
-examples.examples.Other,
-examples.examples.PythonLab,
-examples.examples.Tutorials
-]
+test_examples = examples.examples.tests
 
 test_internal = [
 internal.matrix_solvers.InternalMatrixSolvers,
