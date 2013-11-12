@@ -30,25 +30,30 @@ def get_py_test(example):
             exec f.read() in globals()
     return test
 
-class Examples(Agros2DTestCase): pass
-create_tests(Examples, pythonlab.datadir('/resources/examples/Examples'))
+tests = list()
+data_dirs = [pythonlab.datadir('/resources/examples/Examples'),
+             pythonlab.datadir('/resources/examples/Other'),
+             pythonlab.datadir('/resources/examples/PythonLab'),
+             pythonlab.datadir('/resources/examples/Tutorials')]
 
-class Other(Agros2DTestCase): pass
-create_tests(Other, pythonlab.datadir('/resources/examples/Other'))
+for dir in data_dirs:
+    for (path, dirs, files) in os.walk(dir):
 
-class PythonLab(Agros2DTestCase): pass
-create_tests(PythonLab, pythonlab.datadir('/resources/examples/PythonLab'))
+        if not any("a2d" in file for file in files):
+            continue
 
-class Tutorials(Agros2DTestCase): pass
-create_tests(Tutorials, pythonlab.datadir('/resources/examples/Tutorials'))
+        name = "Examples{0}{1}".format(path.split('/')[-2].replace(" ", ""),
+                path.split('/')[-1].replace(" ", ""))
+        code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
+        exec code
+        create_tests(globals()[name], path)
+        tests.append(globals()[name])
 
-if __name__ == '__main__':        
+if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(Examples))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(Other))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(PythonLab))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(Tutorials))
+    for test in tests:
+        suite.addTest(ut.TestLoader().loadTestsFromTestCase(test))
     suite.run(result)
