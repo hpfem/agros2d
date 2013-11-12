@@ -97,8 +97,8 @@
     <module:matrix_form id="harmonic_laplace_2_2" i="2" j="2" planar="ma_one_over_mu * (udx * vdx + udy * vdy)" symmetric_planar="1" axi="ma_one_over_mu * (udr * vdr + udz * vdz + uval * vdr / r)" />
     <module:matrix_form id="harmonic_jac_laplace_2_2" i="2" j="2" planar="- dma_mur * MU0 * ma_one_over_mu * ma_one_over_mu * (updx * udx + updy * udy) * ma_one_over_norm_a * (updx * vdx + updy * vdy)" symmetric_planar="1" axi="- dma_mur * MU0 * ma_one_over_mu * ma_one_over_mu * ((updr + upval / r) * (udr + uval / r) + updz * udz) * ma_one_over_norm_a * (updr * vdr + updz * vdz + upval * vdr / r)"/>
 
-    <module:matrix_form id="harmonic_velocity_1_1" i="1" j="1" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz" condition="(fabs(ma_gamma) > 0) &amp;&amp; (fabs(ma_vx) > 0) &amp;&amp; (fabs(ma_vy) > 0) &amp;&amp; (fabs(ma_va) > 0)"/>
-    <module:matrix_form id="harmonic_velocity_2_2" i="2" j="2" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz" condition="(fabs(ma_gamma) > 0) &amp;&amp; (fabs(ma_vx) > 0) &amp;&amp; (fabs(ma_vy) > 0) &amp;&amp; (fabs(ma_va) > 0)"/>
+    <module:matrix_form id="harmonic_velocity_1_1" i="1" j="1" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz" condition="(fabs(ma_gamma) > 0) || (fabs(ma_vx) > 0) || (fabs(ma_vy) > 0) || (fabs(ma_va) > 0)"/>
+    <module:matrix_form id="harmonic_velocity_2_2" i="2" j="2" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz" condition="(fabs(ma_gamma) > 0) || (fabs(ma_vx) > 0) || (fabs(ma_vy) > 0) || (fabs(ma_va) > 0)"/>
     <module:matrix_form id="harmonic_gamma_1_2" i="1" j="2" planar="- 2 * PI * f * ma_gamma * uval * vval" axi="- 2 * PI * f * ma_gamma * uval * vval" condition="fabs(ma_gamma) > 0"/>
     <module:matrix_form id="harmonic_gamma_2_1" i="2" j="1" planar="2 * PI * f * ma_gamma * uval * vval" axi="2 * PI * f * ma_gamma * uval * vval" condition="fabs(ma_gamma) > 0"/>
 
