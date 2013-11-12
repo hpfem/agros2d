@@ -121,7 +121,7 @@ void LogWidget::showDebug()
 
 void LogWidget::printHeading(const QString &message)
 {
-    plainLog->appendHtml(QString("<h3><strong>%1</strong></h3>").arg(message));
+    print(tr("Start"), tr("%1").arg(message), "green");
     plainLog->ensureCursorVisible();
 }
 
@@ -158,7 +158,7 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
 #else
         strTime = QString(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + ": ").toHtmlEscaped();
 #endif
-    }    
+    }
 #if QT_VERSION < 0x050000
     QString strMessage = Qt::escape(message);
 #else
@@ -184,6 +184,9 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     // ensure cursor visible
     if (m_printCounter % 2 == 0)
     {
+        QTextCursor cursor = plainLog->textCursor();
+        cursor.movePosition(QTextCursor::End);
+        plainLog->setTextCursor(cursor);
         plainLog->ensureCursorVisible();
     }
 }
@@ -560,7 +563,7 @@ void LogDialog::updateTransientChartInfo(double actualTime)
     m_timeTimeStepGraph->rescaleKeyAxis();
     m_timeChart->replot();
 
-    // progress bar    
+    // progress bar
     m_timeProgress->setValue((10000.0 * actualTime / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));
 }
 
