@@ -56,7 +56,7 @@ bool almostEqualRelAndAbs(double A, double B, double maxDiff, double maxRelDiff)
     return false;
 }
 
-#define FAST_TRIGONOMETRIC_SIZE 2048
+#define FAST_TRIGONOMETRIC_SIZE 32000
 
 // approximation of atan2(y, x).
 // maximum error of 0.0061 radians at 0.35 degrees
