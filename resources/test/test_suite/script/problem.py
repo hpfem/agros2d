@@ -150,8 +150,10 @@ class TestProblemSolution(Agros2DTestCase):
 
     """ clear_solution """
     def test_clear_solution(self):
+        self.problem.solve()
+        self.problem.clear_solution()
         with self.assertRaises(RuntimeError):
-            a2d.view.post2d.activate()
+            self.problem.elapsed_time()
 
     """ clear """
     def test_clear(self):
