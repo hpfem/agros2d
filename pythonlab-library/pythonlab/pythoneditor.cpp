@@ -394,6 +394,7 @@ void PythonEditorDialog::dropEvent(QDropEvent *event)
 void PythonEditorDialog::showDialog()
 {
     show();
+    activateWindow();
     txtEditor->setFocus();
 }
 
