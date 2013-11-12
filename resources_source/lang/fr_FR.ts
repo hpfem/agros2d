@@ -530,17 +530,17 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="251"/>
         <source>Show value result in line edit input</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le résultat</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="252"/>
         <source>Check new version during startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier la nouvelle version au démarrage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="254"/>
         <source>Print application log to standard output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimer le log vers la sortie standard.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="261"/>
@@ -550,48 +550,48 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="279"/>
         <source>Delete files with initial mesh (Triangle)</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les fichiers avec maillage initial (Triangle)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="280"/>
         <source>Delete files with solution mesh (Hermes2D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les fichiers avec maillage de solution (Hermes2D)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="281"/>
         <source>Save problem with solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer problème avec une solution</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="282"/>
         <source>Use solver cache (large memory requirements)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le cache du solveur (beaucoup de mémoire requise)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="294"/>
         <source>Number of threads:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de threads :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="296"/>
         <source>Number of cache slots:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de slots de mémoire cache :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="304"/>
         <source>Save matrix and RHS</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer matrice et RHS</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="309"/>
         <source>Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Développement</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="327"/>
         <location filename="../../agros2d-library/confdialog.cpp" line="356"/>
         <source>Build plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Construire plug-in</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="341"/>
@@ -603,12 +603,12 @@ Stacktrace:
         <location filename="../../agros2d-library/confdialog.cpp" line="341"/>
         <location filename="../../agros2d-library/confdialog.cpp" line="370"/>
         <source>Availability</source>
-        <translation type="unfinished"></translation>
+        <translation>Disponibilité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="353"/>
         <source>Modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Modules</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/confdialog.cpp" line="382"/>
@@ -681,12 +681,12 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/examplesdialog.cpp" line="344"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;est pas valide fichier Agros2D.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/examplesdialog.cpp" line="230"/>
         <source>Basic informations</source>
-        <translation type="unfinished"></translation>
+        <translation>Informations fondamentales</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/examplesdialog.cpp" line="232"/>
@@ -696,7 +696,7 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/examplesdialog.cpp" line="235"/>
         <source>Coordinate type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type des coordonnées:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/examplesdialog.cpp" line="274"/>
@@ -775,17 +775,17 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="273"/>
         <source>Use Anderson acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser l&apos;accélération d&apos;Anderson</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="275"/>
         <source>Anderson beta:</source>
-        <translation type="unfinished"></translation>
+        <translation>Beta d&apos;Anderson :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="279"/>
         <source>Num. of last used iter.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;iteration dernière :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="176"/>
@@ -795,152 +795,152 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="218"/>
         <source>Linear solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur linéaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="247"/>
         <source>at most:</source>
-        <translation type="unfinished"></translation>
+        <translation>au plus :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="260"/>
         <source>New/old residual ratio max. for Jacobian reuse:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taux résiduel nouveau / ancien pour Jacobian réutilisation max. :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="262"/>
         <source>New/old residual ratio max. for damping search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taux résiduel nouveau / ancien pour la recherche d&apos;amortissement :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="264"/>
         <source>Max. number of steps with the same Jacobian:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre max. de pas avec le même Jacobian :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="268"/>
         <source>Num. steps before damping factor increased:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom. de pas avant que facteur d&apos;amortissement augmente :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="298"/>
         <source>Maximum steps</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum de pas</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="327"/>
         <source>Convergence</source>
-        <translation type="unfinished"></translation>
+        <translation>Convergence</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="330"/>
         <source>Damping</source>
-        <translation type="unfinished"></translation>
+        <translation>Amortissement</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="333"/>
         <source>Jacobian reuse</source>
-        <translation type="unfinished"></translation>
+        <translation>Jacobian réutilisation</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="413"/>
         <source>Initial condition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition initiale :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="415"/>
         <source>Time skip (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Saut de temps (s) :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="445"/>
         <source>Iterative solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur itératif</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="382"/>
         <source>Stopping criterion:</source>
-        <translation type="unfinished"></translation>
+        <translation>Critère d&apos;arrêt :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="384"/>
         <source>Threshold (%):</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuil (%):</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="386"/>
         <source>Norm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Norme :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="217"/>
         <source>Transient analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse transitoire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="183"/>
         <source>Number of refinements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de raffinements :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="364"/>
         <source>Use anisotropic refinements</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser raffinements anisotropes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="365"/>
         <source>Use hp reference solution for h and p adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser la solution de référence hp pour l&apos;adaptabilité h et p </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="239"/>
         <source>Convergence:</source>
-        <translation type="unfinished"></translation>
+        <translation>Convergence :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="251"/>
         <source>Damping:</source>
-        <translation type="unfinished"></translation>
+        <translation>Amortissement :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="254"/>
         <source>Factor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="257"/>
         <source>Reuse Jacobian if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Réutiliser Jacobian si possible</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="167"/>
         <source>Analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="169"/>
         <source>Solver:</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="171"/>
         <source>Adaptivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivité :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="173"/>
         <source>Linear solver:</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur linéaire :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="185"/>
         <source>Polynomial order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="189"/>
         <source>Mesh parameters</source>
-        <translation type="unfinished">Paramètres de maillage</translation>
+        <translation>Paramètres de maillage</translation>
     </message>
     <message>
         <source>Type:</source>
@@ -950,27 +950,27 @@ Stacktrace:
         <location filename="../../agros2d-library/problemdialog.cpp" line="241"/>
         <location filename="../../agros2d-library/problemdialog.cpp" line="378"/>
         <source>Steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Les pas :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="380"/>
         <source>Tolerance (%):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolérance (%) :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="366"/>
         <source>Steps back in trans:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas en arrière en trans.:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="370"/>
         <source>Redone each trans st:</source>
-        <translation type="unfinished"></translation>
+        <translation>Refaire chaque pas trans.:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="216"/>
         <source>Space adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivité spatiale</translation>
     </message>
     <message>
         <source>Adaptivity</source>
@@ -979,12 +979,12 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="215"/>
         <source>Solver</source>
-        <translation type="unfinished">Solveur</translation>
+        <translation>Solveur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="220"/>
         <source>Partial differential equation</source>
-        <translation type="unfinished"></translation>
+        <translation>Équation aux dérivées partielles</translation>
     </message>
 </context>
 <context>
