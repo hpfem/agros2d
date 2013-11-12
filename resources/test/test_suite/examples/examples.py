@@ -39,11 +39,11 @@ data_dirs = [pythonlab.datadir('/resources/examples/Examples'),
 for dir in data_dirs:
     for (path, dirs, files) in os.walk(dir):
 
-        if not any("a2d" in file for file in files):
+        if not (any("a2d" in file for file in files) or
+                any("py" in file for file in files)):
             continue
 
-        name = "Examples{0}{1}".format(path.split('/')[-2].replace(" ", ""),
-                path.split('/')[-1].replace(" ", ""))
+        name = "Examples{0}".format(path.split('/')[-1].replace(" ", ""))
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
         exec code
         create_tests(globals()[name], path)
