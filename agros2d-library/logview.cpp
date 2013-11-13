@@ -182,13 +182,11 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     }
 
     // ensure cursor visible
-    if (m_printCounter % 2 == 0)
-    {
-        QTextCursor cursor = plainLog->textCursor();
-        cursor.movePosition(QTextCursor::End);
-        plainLog->setTextCursor(cursor);
-        plainLog->ensureCursorVisible();
-    }
+    QTextCursor cursor = plainLog->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    plainLog->setTextCursor(cursor);
+    plainLog->ensureCursorVisible();
+    plainLog->repaint();
 }
 
 void LogWidget::welcomeMessage()

@@ -207,8 +207,17 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Algebra::Mixin
 template <typename Scalar>
 QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::factory(Block* block)
 {
+    QString solverName;
+    QListIterator<Field*> iter(block->fields());
+    while (iter.hasNext())
+    {
+        solverName += iter.next()->fieldInfo()->fieldId();
+        if (iter.hasNext())
+            solverName += ", ";
+    }
+
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, block->matrixSolver());
-    Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(block->matrixSolver())));
+    Agros2D::log()->printDebug(QObject::tr("Solver (%1)").arg(solverName), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(block->matrixSolver())));
 
     if (block->matrixSolver() == Hermes::SOLVER_EXTERNAL)
     {
@@ -455,10 +464,10 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces());
     if (ndof == 0)
     {
-        Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(AgrosSolverException("DOF is zero"));
+        Agros2D::log()->printError(m_solverID, QObject::tr("DOF is zero"));
+        throw (AgrosSolverException("DOF is zero"));
     }
-    Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Number of DOFs: %1").arg(ndof));
+    Agros2D::log()->printDebug(m_solverID, QObject::tr("Number of DOFs: %1").arg(ndof));
 
     // cout << QString("updating with time %1\n").arg(Agros2D::problem()->actualTime()).toStdString() << endl;
     m_block->updateExactSolutionFunctions();
@@ -873,7 +882,8 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
         adapt = adapt || forceAdaptation;
 
-        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
+        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step: %1 (error: %2, DOFs: %3/%4)").
+                                     arg(adaptivityStep).
                                      arg(error).
                                      arg(Space<Scalar>::get_num_dofs(msa.spaces())).
                                      arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));

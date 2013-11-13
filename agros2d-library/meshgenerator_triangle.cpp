@@ -64,8 +64,6 @@ bool MeshGeneratorTriangle::mesh()
     // create triangle files
     if (writeToTriangle())
     {
-        Agros2D::log()->printDebug(tr("Mesh generator"), tr("Poly file was created"));
-
         // exec triangle
         m_process = new QProcess();
         m_process->setStandardOutputFile(tempProblemFileName() + ".triangle.out");
@@ -108,12 +106,12 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh files were created"));
+        // Agros2D::log()->printDebug(tr("Mesh generator"), tr("Mesh files were created"));
 
         // convert triangle mesh to hermes mesh
         if (readTriangleMeshFormat())
         {
-            Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
+            // Agros2D::log()->printDebug(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             //  remove triangle temp files
             QFile::remove(tempProblemFileName() + ".poly");

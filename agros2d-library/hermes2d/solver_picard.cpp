@@ -109,15 +109,14 @@ void PicardSolverAgros<Scalar>::setError()
 
     if (m_phase == Phase_DFDetermined)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1, damping coeff.: %2, rel. change of sol.: %3 %")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1 (rel. change of sol.: %3 %, damping: %2)")
                                      .arg(iteration)
                                      .arg(previous_damping_factor)
-                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 5)));
     }
     else if (m_phase == Phase_Finished)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Calculation finished, rel. change of sol.: %1 %")
-                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
+        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Calculation finished"));
     }
     else
         assert(0);

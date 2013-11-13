@@ -130,19 +130,19 @@ void NewtonSolverAgros<Scalar>::setError()
     }
     else if (m_phase == Phase_DFDetermined)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian recalculated, damping coeff.: %2, res. norm: %3, rel. change of sol.: %4 %")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1 (res. norm: %3, rel. change of sol.: %4 %, Jacobian recalculated, damping : %2)")
                                      .arg(iteration)
                                      .arg(previous_damping_factor)
                                      .arg(m_residualNorms.last())
-                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 5)));
     }
     else if (m_phase == Phase_JacobianReused)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian reused, damping coeff.: %2, res. norm: %3, rel. change of sol.: %4 %")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1 (res. norm: %3, rel. change of sol.: %4 %, Jacobian reused, damping: %2)")
                                      .arg(iteration)
                                      .arg(current_damping_factor)
                                      .arg(m_residualNorms.last())
-                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 5)));
     }
     else if (m_phase == Phase_Finished)
     {
@@ -161,9 +161,7 @@ void NewtonSolverAgros<Scalar>::setError()
             }
         }
 
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Calculation finished, res. norm: %1, rel. change of sol.: %2 %, Jacobian recalculated %3x")
-                                     .arg(m_residualNorms.last())
-                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3))
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Calculation finished (Jacobian recalculated %1x)")
                                      .arg(m_jacobianCalculations));
     }
     else

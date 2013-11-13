@@ -406,7 +406,7 @@ bool Problem::meshAction(bool emitMeshed)
 {
     clearSolution();
 
-    Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Mesh generation"));
+    Agros2D::log()->printMessage(QObject::tr("Mesh Generator"), QObject::tr("Initial mesh generation"));
 
     // check geometry
     Agros2D::scene()->checkGeometryResult();
@@ -676,7 +676,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         m_lastTimeElapsed = milisecondsToTime(timeCounter.elapsed());
 
         // elapsed time
-        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Elapsed time: %1 s").arg(m_lastTimeElapsed.toString("mm:ss.zzz")));
+        Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Elapsed time: %1 s").arg(m_lastTimeElapsed.toString("mm:ss.zzz")));
 
         // delete temp file
         if (config()->fileName() == tempProblemFileName() + ".a2d")
@@ -783,7 +783,7 @@ void Problem::solveAction()
 
     QMap<Block*, QSharedPointer<ProblemSolver<double> > > solvers;
 
-    Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
+    // Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
 
     foreach (Block* block, m_blocks)
     {
@@ -909,7 +909,7 @@ void Problem::solveAdaptiveStepAction()
 
     assert(isMeshed());
 
-    Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
+    // Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving adaptive problem"));
 
     assert(actualTimeStep() == 0);
     assert(m_blocks.size() == 1);
@@ -970,16 +970,18 @@ void Problem::stepMessage(Block* block)
         if(config()->isTransientAdaptive())
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                         QObject::tr("Transient step %1 (%2%)").
+                                         QObject::tr("Transient step %1 (actual time: %3 s, %2 %)").
                                          arg(actualTimeStep()).
-                                         arg(int(100*actualTime() / config()->value(ProblemConfig::TimeTotal).toDouble())));
+                                         arg(int(100*actualTime() / config()->value(ProblemConfig::TimeTotal).toDouble())).
+                                         arg(actualTime()));
         }
         else
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                         QObject::tr("Transient step %1/%2").
+                                         QObject::tr("Transient step %1/%2 (actual time: %3 s)").
                                          arg(actualTimeStep()).
-                                         arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()));
+                                         arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()).
+                                         arg(actualTime()));
         }
 
         Agros2D::log()->updateTransientChartInfo(actualTime());
@@ -1031,7 +1033,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
     }
     else
     {
-        Agros2D::log()->printMessage(tr("Problem"), tr("Reading initial mesh from memory"));
+        Agros2D::log()->printDebug(tr("Mesh Generator"), tr("Reading initial mesh from memory"));
 
         // read from memory
         std::auto_ptr<XMLSubdomains::domain> xml(xmldomain);
