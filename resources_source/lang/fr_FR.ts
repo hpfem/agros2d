@@ -1536,34 +1536,34 @@ Stacktrace:
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="301"/>
         <source>Intersection parity failed (tangent &gt; 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Parité d&apos;intersection échoué (tangente &gt; 10).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="588"/>
         <source>Some areas do not have a marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Certaines régions n&apos;ont pas de marqueur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="595"/>
         <location filename="../../agros2d-library/util/loops.cpp" line="677"/>
         <source>There is a label outside of the domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Une étiquette est à l&apos;extérieur du domaine</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="615"/>
         <location filename="../../agros2d-library/util/loops.cpp" line="651"/>
         <source>There is no label in some subdomain</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y a pas d&apos;étiquette dans certain sous-domaine</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="667"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Urreur inconnue</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="695"/>
         <source>There is multiple labels in the domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Il ya plusieurs étiquettes dans le domaine</translation>
     </message>
 </context>
 <context>
@@ -2148,7 +2148,7 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="51"/>
         <source>Material editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de matériaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="81"/>
@@ -2164,12 +2164,12 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="88"/>
         <source>Add property</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter la propriété</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="121"/>
         <source>Value:</source>
-        <translation type="unfinished">Valeur :</translation>
+        <translation>Valeur :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="124"/>
@@ -2179,77 +2179,78 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="132"/>
         <source>Keys:</source>
-        <translation type="unfinished"></translation>
+        <translation>Clés :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="134"/>
         <source>Values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="147"/>
         <source>Function:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonction :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="149"/>
         <source>From:</source>
-        <translation type="unfinished"></translation>
+        <translation>De :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="151"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>À :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="160"/>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonction</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="161"/>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tableau</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="166"/>
         <source>Source:</source>
-        <translation type="unfinished">Source :</translation>
+        <translation>Source :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="168"/>
         <source>Shortname:</source>
-        <translation type="unfinished">Nom court :</translation>
+        <translation>Nom court :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="170"/>
         <source>Unit:</source>
-        <translation type="unfinished">Unité :</translation>
+        <translation>Unité :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="172"/>
         <source>Dependence shortname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépendance abrégé :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="174"/>
         <source>Dependence unit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unité de la dépendance:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="331"/>
         <source>New property</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle propriété</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="339"/>
         <source>Delete property</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la propriété</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="340"/>
         <source>Property &apos;%1&apos; will be pernamently deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err</translatorcomment>
+        <translation>La propriété &apos;%1&apos; sera pernamently supprimé. Etes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="341"/>
@@ -2303,42 +2304,42 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="54"/>
         <source>GMSH geometry file was created</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de géométrie GMSH a été créée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="88"/>
         <source>Could not start GMSH</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de démarrer GMSH</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="97"/>
         <source>Mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de maillage ont été créés</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="101"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage a été converti en fichier de maillage Hermes2D</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="146"/>
         <source>Invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide de nœuds (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="151"/>
         <source>Invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide d&apos;arêtes (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="165"/>
         <source>Could not create GMSH geometry file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le fichier de géométrie GMSH (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_gmsh.cpp" line="398"/>
         <source>Could not read GMSH mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier de maillage GMSH</translation>
     </message>
     <message>
         <source>GMSH</source>
@@ -2363,68 +2364,68 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="406"/>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="413"/>
         <source>Mesh generator</source>
-        <translation type="unfinished">Générator de maillage</translation>
+        <translation>Générator de maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="67"/>
         <source>Poly file was created</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier Poly a été créé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="102"/>
         <source>Could not start Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de démarrer Triangle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="110"/>
         <source>Mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de maillage ont été créés</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="115"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage a été converti en fichier de maillage Hermes2D</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="166"/>
         <source>Invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide de nœuds (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="171"/>
         <source>Invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide d&apos;arêtes (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="185"/>
         <source>Could not create Triangle poly mesh file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le fichier poly de maillage Triangle (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="339"/>
         <source>Could not read Triangle node file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier Triangle de nœuds </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="347"/>
         <source>Could not read Triangle edge file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier Triangle d&apos;arêtes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="355"/>
         <source>Could not read Triangle elements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier Triangle d&apos;éléments</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="363"/>
         <source>Could not read Triangle neighbors elements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier Triangle d&apos;éléments voisins</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="406"/>
         <location filename="../../agros2d-library/meshgenerator_triangle.cpp" line="413"/>
         <source>Some areas do not have a marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Certaines régions n&apos;ont pas de marqueur</translation>
     </message>
 </context>
 <context>
@@ -2432,7 +2433,7 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1080"/>
         <source>Module editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de modules</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1158"/>
@@ -2468,44 +2469,44 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1407"/>
         <source>Scalar view</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage scalaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1423"/>
         <source>Vector view</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage vectorielle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1539"/>
         <source>Main</source>
-        <translation type="unfinished"></translation>
+        <translation>Principal</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1544"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1707"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1766"/>
         <source>Weakforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulations faibles</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1549"/>
         <source>Preprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Préprocesseur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1554"/>
         <source>Postprocessor</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocessor</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1569"/>
         <source>Build plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Construire plug-in</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1573"/>
         <source>XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier XML</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1600"/>
@@ -2557,17 +2558,17 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1634"/>
         <source>Number of Solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero de solution</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1641"/>
         <source>Constants:</source>
-        <translation type="unfinished"></translation>
+        <translation>Constantes :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1642"/>
         <source>Analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1666"/>
@@ -2578,36 +2579,36 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1869"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1887"/>
         <source>Shortname</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom court</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1677"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1736"/>
         <source>Linearity</source>
-        <translation type="unfinished"></translation>
+        <translation>Linéarité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1677"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1736"/>
         <source>Dependence</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépendance</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1683"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1742"/>
         <source>Definitions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Définitions :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1684"/>
         <source>Parameters for particular analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres d&apos;analyse particulière:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1688"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1747"/>
         <source>Quantities</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantités</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1699"/>
@@ -2619,7 +2620,7 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1699"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1758"/>
         <source>Test function</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonction de test</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1699"/>
@@ -2630,17 +2631,17 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1743"/>
         <source>Parameters for partial analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres d&apos;analyse partielle :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1778"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1779"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1793"/>
@@ -2649,12 +2650,12 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1869"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1887"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1823"/>
         <source>Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1824"/>
@@ -2666,22 +2667,22 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1869"/>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1887"/>
         <source>Analyses</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyses</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1850"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1850"/>
         <source>Local variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Variable locale</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1899"/>
         <source>Local variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Variables locales</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/moduledialog.cpp" line="1900"/>
@@ -3252,7 +3253,7 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="149"/>
         <source>Width and height of bounding box over vector count.</source>
-        <translation type="unfinished"></translation>
+        <translation>La largeur et la hauteur du cadre de sélection est plus de nombre de vecteurs.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/postprocessorview.cpp" line="266"/>
@@ -3647,17 +3648,17 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="107"/>
         <source>Tooltip_OperateOnNodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tooltip_OperateOnNodes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="112"/>
         <source>Tooltip_OperateOnEdges</source>
-        <translation type="unfinished"></translation>
+        <translation>Tooltip_OperateOnEdges</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/preprocessorview.cpp" line="117"/>
         <source>Tooltip_OperateOnLabels</source>
-        <translation type="unfinished"></translation>
+        <translation>Tooltip_OperateOnLabels</translation>
     </message>
 </context>
 <context>
@@ -3668,43 +3669,44 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="323"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="331"/>
         <source>Mesh</source>
-        <translation type="unfinished">Maillage</translation>
+        <translation>Maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="295"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="592"/>
         <source>No fields defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun champ défini</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="307"/>
         <source>Geometry</source>
-        <translation type="unfinished">Géométrie</translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="331"/>
         <source>An unknown exception occured and has been ignored</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err</translatorcomment>
+        <translation>Une exception inconnue s&apos;est produite et a été ignorée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="484"/>
         <source>Total time is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée totale est zéro</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="486"/>
         <source>Time method tolerance is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolérance de méthode de temps est zéro</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="512"/>
         <source>Could not create mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="517"/>
         <source>No field defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun champ défini</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="568"/>
@@ -3715,65 +3717,67 @@ d&apos;adaptivité</translation>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="597"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="699"/>
         <source>Solver</source>
-        <translation type="unfinished">Solveur</translation>
+        <translation>Solveur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="568"/>
         <source>Coupling of more transient fields not possible at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couplage de plusieurs champs transitoires est indisponible en ce moment.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="574"/>
         <source>Space adaptivity for transient coupled problems not possible at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;adaptivité spatiale pour des problèmes couplés transitoires est indisponible en ce moment.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="580"/>
         <source>Both space and time adaptivity at the same time not possible at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;adaptivité de l&apos;espace et de temps simultané est indisponible en ce moment.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="699"/>
         <source>An unknown exception occured in solver and has been ignored</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err</translatorcomment>
+        <translation>Une exception inconnue s&apos;est produite dans solveur et a été ignorée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="729"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="819"/>
         <source>Cannot create solver.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le solveur.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="503"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="894"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="980"/>
         <source>Problem</source>
-        <translation type="unfinished">Problème</translation>
+        <translation>Problème</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="586"/>
         <source>Select higher order of time method to use adaptivity.</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez l&apos;ordre supérieur de la méthode de temps pour utiliser l&apos;adaptivité.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="597"/>
         <source>Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err application</translatorcomment>
+        <translation>Matrix et RHS seront sauvegardés sur le disque et cela va ralentir le calcul. Vous pouvez le désactiver dans les paramètres de appllication.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="894"/>
         <source>Loading initial mesh from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de maillage initial</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="939"/>
         <source>Marker index is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice de marqueur est hors de portée.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="980"/>
         <source>Loading spaces and solutions from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement des espaces et des solutions</translation>
     </message>
 </context>
 <context>
@@ -3791,7 +3795,7 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1071"/>
         <source>Physical fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Champs physiques</translation>
     </message>
     <message>
         <source>Name:</source>
@@ -3800,77 +3804,78 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1083"/>
         <source>Coordinate type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type des coordonnées :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1085"/>
         <source>Mesh type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de maillage :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1088"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1098"/>
         <source>Frequency (Hz):</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence (Hz) :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1101"/>
         <source>Harmonic analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse harmonique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1117"/>
         <source>Number of constant steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de pas de temps const. :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1123"/>
         <source>Method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode : </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1125"/>
         <source>Order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1127"/>
         <source>Tolerance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolérance :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1129"/>
         <source>Total time (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée totale (s) :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1133"/>
         <source>Constant time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de temps constant :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1136"/>
         <source>Transient analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse transitoire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1149"/>
         <source>Couplings</source>
-        <translation type="unfinished"></translation>
+        <translation>Couplages</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1299"/>
         <source>Number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de pas :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1301"/>
         <source>Aprox. number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err</translatorcomment>
+        <translation>Nombre approx de pas :</translation>
     </message>
 </context>
 <context>
@@ -3878,57 +3883,57 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="40"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigateur</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="55"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="55"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="55"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="74"/>
         <source>Copy name</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier le nom</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="77"/>
         <source>Copy value</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier la valeur</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="80"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">Su&amp;pprimer</translation>
+        <translation>Su&amp;pprimer</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="120"/>
         <source>Variables</source>
-        <translation type="unfinished">Variables</translation>
+        <translation>Variables</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="124"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Autre</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="128"/>
         <source>Functions</source>
-        <translation type="unfinished">Fonctions</translation>
+        <translation>Fonctions</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythonbrowser.cpp" line="132"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Classes</translation>
     </message>
 </context>
 <context>
@@ -4001,33 +4006,33 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="392"/>
         <source>Find &amp;next</source>
-        <translation type="unfinished"></translation>
+        <translation>Trouver &amp;prochaine</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="396"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="400"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="404"/>
         <source>Indent</source>
-        <translation type="unfinished"></translation>
+        <translation>Indenter</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="405"/>
         <source>Unindent</source>
-        <translation type="unfinished"></translation>
+        <translation>Désindenter</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="407"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commenter</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="409"/>
         <source>Uncomment</source>
-        <translation type="unfinished"></translation>
+        <translation>DécommenteR</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="410"/>
@@ -4037,7 +4042,7 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="412"/>
         <source>Goto line</source>
-        <translation type="unfinished">Aller à la ligne</translation>
+        <translation>Aller à la ligne</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="413"/>
@@ -4047,7 +4052,7 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="415"/>
         <source>&amp;Run Python script</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exécuter le script Python</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="416"/>
@@ -4057,37 +4062,37 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="418"/>
         <source>Replace tabs with spaces</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer les tabulations par des espaces</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="421"/>
         <source>&amp;Check Python script (PyLint)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vérifier le script Python (PyLint)</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="423"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="425"/>
         <source>PyFlakes enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>PyFlakes activé</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="430"/>
         <source>PyLint enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>PyLint activé</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="435"/>
         <source>Print stacktrace</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimer stacktrace</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="440"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quitter</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="441"/>
@@ -4098,27 +4103,27 @@ d&apos;adaptivité</translation>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="444"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="513"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aide</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="449"/>
         <source>&amp;Keyword List</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste de &amp;mots-clés</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="454"/>
         <source>About &amp;PythonLab</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de Python&amp;Lab</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="458"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de &amp;Qt</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="465"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers &amp;récents</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="467"/>
@@ -4158,38 +4163,38 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="565"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="571"/>
         <source>Working directory: </source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire de travail :</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="582"/>
         <source>Add new document</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter nouveau document</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="626"/>
         <source>File browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigateur de fichiers</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="649"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Prêt</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="667"/>
         <source>Run script: %1
 </source>
-        <translation type="unfinished">Exécuter le script : %1</translation>
+        <translation>Exécuter le script : %1</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="782"/>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le répertoire</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="789"/>
@@ -4197,72 +4202,73 @@ d&apos;adaptivité</translation>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1088"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1109"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Sans titre</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="802"/>
         <source>Open File</source>
-        <translation type="unfinished">Ouvrir le fichier</translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="802"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="863"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="899"/>
         <source>Python scripts (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Python scripts (*.py)</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="819"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="819"/>
         <source>Script is already opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le script est déjà ouvert.</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="863"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="899"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="916"/>
         <source>Save file</source>
-        <translation type="unfinished">Enregistrer le fichier</translation>
+        <translation>Enregistrer le fichier</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="886"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; ne peut pas être enregistré.</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="916"/>
         <source>Html files (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers HTML : (*.html)</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="945"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimer le document</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1021"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Application</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1021"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; a été modifiée.
+Voulez-vous enregistrer vos modifications ?</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1094"/>
         <source>PythonLab - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PythonLab : %1</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1102"/>
         <source>Line: %1, Col: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne : %1, Col : %2</translation>
     </message>
 </context>
 <context>
@@ -4277,7 +4283,7 @@ Do you want to save your changes?</source>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="138"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="185"/>
         <source>Warning</source>
-        <translation type="unfinished">Avertissement</translation>
+        <translation>Avertissement</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="142"/>
@@ -4288,7 +4294,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="149"/>
         <source>Could not read PyLint output.</source>
-        <translation type="unfinished">Impossible de lire la sortie du PyLint.</translation>
+        <translation>Impossible de lire la sortie du PyLint.</translation>
     </message>
 </context>
 <context>
@@ -4329,7 +4335,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pythonengine_agros.cpp" line="89"/>
         <source>Console output</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie de la console</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pythonengine_agros.cpp" line="97"/>
