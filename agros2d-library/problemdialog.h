@@ -244,6 +244,7 @@ private:
     QLabel* lblTransientSteps;
     QSpinBox *txtTransientSteps;
     LineEditDouble *txtTransientTolerance;
+    LineEditDouble *txtTransientInitialStepSize;
     QLabel *lblTransientTimeTotal;
     QSpinBox *txtTransientOrder;
     QComboBox *cmbTransientMethod;

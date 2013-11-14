@@ -557,6 +557,8 @@ void Problem::solveInit(bool reCreateStructure)
             throw AgrosSolverException(tr("Total time is zero"));
         if (!Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble() > 0.0)
             throw AgrosSolverException(tr("Time method tolerance is zero"));
+        if (!Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble() > 0.0)
+            throw AgrosSolverException(tr("Initial step size is zero"));
     }
 
     // open indicator progress

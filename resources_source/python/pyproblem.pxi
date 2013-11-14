@@ -30,6 +30,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         int getNumConstantTimeSteps()
         void setNumConstantTimeSteps(int timeSteps) except +
 
+        double getTimeInitialTimeStep()
+        void setTimeInitialTimeStep(double timeInitialTimeStep) except +
+
         string getCouplingType(string &sourceField, string &targetField) except +
         void setCouplingType(string &sourceField, string &targetField, string &type) except +
 
@@ -110,6 +113,12 @@ cdef class __Problem__:
             return self.thisptr.getNumConstantTimeSteps()
         def __set__(self, time_steps):
             self.thisptr.setNumConstantTimeSteps(time_steps)
+
+    property time_initial_time_step:
+        def __get__(self):
+            return self.thisptr.getTimeInitialTimeStep()
+        def __set__(self, time_initial_time_step):
+            self.thisptr.setTimeInitialTimeStep(time_initial_time_step)
 
     property time_callback:
         def __get__(self):

@@ -46,6 +46,7 @@ public:
         Frequency,
         TimeMethod,
         TimeMethodTolerance,
+        TimeInitialStepSize,
         TimeOrder,
         TimeConstantTimeSteps,
         TimeTotal

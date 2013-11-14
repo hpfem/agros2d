@@ -242,6 +242,8 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()).toStdString());
     problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
     problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble()).toStdString());
+    problemInfo.SetValue("TRANSIENT_INITIALTIMESTEP_LABEL", tr("Initial step size:").toStdString());
+    problemInfo.SetValue("TRANSIENT_INITIALTIMESTEP", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble()).toStdString());
     problemInfo.SetValue("TRANSIENT_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
     problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Agros2D::problem()->config()->constantTimeStepLength()).toStdString() + " " + Agros2D::problem()->timeUnit().toStdString());
     problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());

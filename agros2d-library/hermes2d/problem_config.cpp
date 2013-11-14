@@ -75,16 +75,14 @@ bool ProblemConfig::isTransientAdaptive() const
     assert(0);
 }
 
-// todo: put to gui
-const double initialTimeStepRatio = 500;
 double ProblemConfig::initialTimeStepLength()
 {
-    if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
-        return value(ProblemConfig::TimeTotal).toDouble() / initialTimeStepRatio;
-    else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
-        return constantTimeStepLength() / 3.;
-    else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
+    if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
         return constantTimeStepLength();
+    else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
+        return value(ProblemConfig::TimeInitialStepSize).toDouble();
+    else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
+        return value(ProblemConfig::TimeInitialStepSize).toDouble();
     else
         assert(0);
 }
@@ -132,6 +130,7 @@ void ProblemConfig::setStringKeys()
     m_settingKey[Frequency] = "Frequency";
     m_settingKey[TimeMethod] = "TimeMethod";
     m_settingKey[TimeMethodTolerance] = "TimeMethodTolerance";
+    m_settingKey[TimeInitialStepSize] = "TimeInitialStepSize";
     m_settingKey[TimeOrder] = "TimeOrder";
     m_settingKey[TimeConstantTimeSteps] = "TimeSteps";
     m_settingKey[TimeTotal] = "TimeTotal";
@@ -144,9 +143,10 @@ void ProblemConfig::setDefaultValues()
     m_settingDefault[Frequency] = 50.0;
     m_settingDefault[TimeMethod] = TimeStepMethod_BDFNumSteps;
     m_settingDefault[TimeMethodTolerance] = 0.05;
+    m_settingDefault[TimeInitialStepSize] = 0.01;
     m_settingDefault[TimeOrder] = 2;
     m_settingDefault[TimeConstantTimeSteps] = 10;
-    m_settingDefault[TimeTotal] = 15000.0;
+    m_settingDefault[TimeTotal] = 10.0;
 }
 
 // ********************************************************************************************

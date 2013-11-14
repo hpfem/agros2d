@@ -283,14 +283,17 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
         if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
         {
-            str += QString("problem.time_method_tolerance = %3\n").
+            str += QString("problem.time_method_tolerance = %1\n").
                     arg(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble());
         }
         else
         {
-            str += QString("problem.time_steps = %5\n").
+            str += QString("problem.time_steps = %1\n").
                     arg(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
         }
+        if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) != TimeStepMethod_Fixed)
+            str += QString("problem.time_initial_time_step = %1\n").
+                    arg(Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble());
     }
 
     // fields

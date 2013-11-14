@@ -98,6 +98,14 @@ void PyProblem::setTimeMethodTolerance(double timeMethodTolerance)
         throw out_of_range(QObject::tr("The time method tolerance must be positive.").toStdString());
 }
 
+void PyProblem::setTimeInitialTimeStep(double timeInitialTimeStep)
+{
+    if (timeInitialTimeStep > 0.0)
+        Agros2D::problem()->config()->setValue(ProblemConfig::TimeInitialStepSize, timeInitialTimeStep);
+    else
+        throw out_of_range(QObject::tr("Initial time step must be positive.").toStdString());
+}
+
 void PyProblem::setNumConstantTimeSteps(int timeSteps)
 {
     if (timeSteps >= 1)
