@@ -10,7 +10,8 @@ def create_tests(case, dir):
         for file in files:
             name, extension = os.path.splitext(file)
 
-            method = 'test_{0}_{1}'.format(os.path.split(path)[-1].replace(" ", "_"), name.replace(" ", "_")).lower()
+            method = 'test_{0}_{1}'.format(os.path.split(path)[-1].replace(" ", "_"),
+                                           name.replace(" ", "_")).lower().replace("~1", "")
             example = '{0}/{1}'.format(path, file)
 
             if (extension == '.a2d'):
@@ -38,12 +39,11 @@ data_dirs = [pythonlab.datadir('/resources/examples/Examples'),
 
 for dir in data_dirs:
     for (path, dirs, files) in os.walk(dir):
-
         if not (any("a2d" in file for file in files) or
                 any("py" in file for file in files)):
             continue
 
-        name = "Examples{0}".format(path.split('/')[-1].replace(" ", ""))
+        name = "Examples{0}".format(os.path.split(path)[-1].replace(" ", "")).replace("~1", "")
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
         exec code
         create_tests(globals()[name], path)

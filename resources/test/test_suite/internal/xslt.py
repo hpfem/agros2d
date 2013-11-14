@@ -10,7 +10,7 @@ def create_tests(case, dir):
         name, extension = os.path.splitext(file)
 
         method = 'test_{0}_{1}'.format(os.path.split(path)[-1].replace(" ", "_"),
-                                           name.replace(" ", "_")).lower()
+                                       name.replace(" ", "_")).lower().replace("~1", "")
         file = '{0}/{1}'.format(path, file)
 
         if (extension == '.a2d'):
@@ -32,9 +32,9 @@ for dir in data_dirs:
         if (dirs):
             continue
 
-        version = path.split('/')[-2]
-        field = path.split('/')[-1]
-        name = "XSLT{0}{1}".format(version, field.title())
+        rest, field = os.path.split(path)
+        rest, version = os.path.split(rest)
+        name = "XSLT{0}{1}".format(version, field.title()).replace("~1", "")
 
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
         exec code
