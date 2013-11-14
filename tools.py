@@ -155,7 +155,7 @@ if __name__ == "__main__":
     eqs = subparsers.add_parser('eqs', help='generate equations from modules')
 	
 	# callgrind
-    call = subparsers.add_parser('callgrind', help='call callgrind')
+    cgrind = subparsers.add_parser('callgrind', help='call callgrind')
 	    
     args = parser.parse_args()
 
