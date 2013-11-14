@@ -159,7 +159,7 @@
     <message>
         <location filename="../../agros2d-solver/agros_solver.cpp" line="82"/>
         <source>Problem &apos;%1&apos; successfuly loaded</source>
-        <translation type="unfinished">Problem &apos;%1&apos; nebyl správně načten</translation>
+        <translation>Problem &apos;%1&apos; byl správně načten</translation>
     </message>
     <message>
         <location filename="../../agros2d-solver/agros_solver.cpp" line="89"/>
@@ -1424,7 +1424,7 @@ Výstup:
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="316"/>
         <source>Sufficient improvement factor Jacobian:</source>
-        <translation>Dostatečující zlepšení Jacobiánu</translation>
+        <translation>Dostatečné zlepšení Jacobiánu:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/infowidget.cpp" line="318"/>
@@ -5355,12 +5355,12 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="155"/>
         <source>Sufficient improvement factor for Jacobian reuse is out of range (0.00001 - 1.0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostatečné zlepšení faktoru pro znovupoužití Jacobiánu je mimo rozsah (0.00001 - 1.0).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="163"/>
         <source>Sufficient improvement factor is out of range (0.00001 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostatečné zlepšení faktoru je mimo rozsah (0.00001 - 100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="171"/>
@@ -5385,7 +5385,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="224"/>
         <source>Linear solver iterations is out of range (1 - 10000).</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet iterací solveru je mimo rozsah (1 - 10000).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="259"/>
@@ -5406,7 +5406,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="322"/>
         <source>Time skip must be greater than or equal to zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Časový skok musí být větší nebo roven nule.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="333"/>
@@ -5582,7 +5582,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="167"/>
         <source>Convergence measurement &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Měření konvergence &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="175"/>
@@ -5855,7 +5855,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="226"/>
         <source>Number of multiple show particles is out of range (1 - 500).</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet vícenásobného zobrazení částic je mimo rozsah (1 - 500).</translation>
     </message>
     <message>
         <source>Mass must be positive.</source>
@@ -5955,7 +5955,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="122"/>
         <source>Font size must be in the range from 6 to 40.</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost písma musí být mezi 6 a 40.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="136"/>
@@ -5979,7 +5979,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="179"/>
         <source>Field &apos;%1&apos; was not solved with space adaptivity.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole &apos;%1&apos; nebylo řešeno s využití prostorové adaptivity.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="334"/>
@@ -6004,7 +6004,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="426"/>
         <source>Contour width must be in the range from 0.1 to 5.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka kontur musí být mezi 0.1 a 5.0.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="434"/>
