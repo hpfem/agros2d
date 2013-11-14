@@ -355,6 +355,8 @@ void LogDialog::createControls()
             timeTitle->setFont(fontTitle);
             m_timeChart->plotLayout()->insertRow(0);
             m_timeChart->plotLayout()->addElement(0, 0, timeTitle);
+            m_timeChart->legend->setVisible(true);
+            m_timeChart->legend->setFont(fontChart);
 
             m_timeChart->xAxis->setTickLabelFont(fontChart);
             m_timeChart->xAxis->setLabelFont(fontChart);
@@ -365,12 +367,22 @@ void LogDialog::createControls()
             m_timeChart->yAxis->setTickLabelFont(fontChart);
             m_timeChart->yAxis->setLabelFont(fontChart);
             m_timeChart->yAxis->setLabel(tr("step length"));
+            m_timeChart->yAxis2->setVisible(true);
+            m_timeChart->yAxis2->setTickLabelFont(fontChart);
+            m_timeChart->yAxis2->setLabelFont(fontChart);
+            m_timeChart->yAxis2->setLabel(tr("total time"));
 
             m_timeTimeStepGraph = m_timeChart->addGraph(m_timeChart->xAxis, m_timeChart->yAxis);
             m_timeTimeStepGraph->setLineStyle(QCPGraph::lsLine);
-            m_timeTimeStepGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
+            // m_timeTimeStepGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
             m_timeTimeStepGraph->setPen(pen);
             m_timeTimeStepGraph->setBrush(QBrush(QColor(0, 0, 255, 20)));
+            m_timeTimeStepGraph->setName(tr("step length"));
+            m_timeTimeTotalGraph = m_timeChart->addGraph(m_timeChart->xAxis, m_timeChart->yAxis2);
+            m_timeTimeTotalGraph->setLineStyle(QCPGraph::lsLine);
+            m_timeTimeTotalGraph->setPen(pen);
+            m_timeTimeTotalGraph->setBrush(QBrush(QColor(255, 0, 0, 20)));
+            m_timeTimeTotalGraph->setName(tr("total time"));
 
             m_timeProgress = new QProgressBar(this);
             m_timeProgress->setMaximum(10000);
@@ -547,17 +559,23 @@ void LogDialog::updateTransientChartInfo(double actualTime)
 
     QVector<double> timeSteps;
     QVector<double> timeLengths = Agros2D::problem()->timeStepLengths().toVector();
+    QVector<double> timeTotal;
     double maximum = 0.0;
     for (int i = 0; i < timeLengths.size(); i++)
     {
         timeSteps.append(i + 1);
         if (timeLengths[i] > maximum)
             maximum = timeLengths[i];
+
+        timeTotal.append(timeTotal.last() + timeLengths[i]);
     }
 
     m_timeTimeStepGraph->setData(timeSteps, timeLengths);
     m_timeChart->yAxis->setRangeLower(0.0);
     m_timeChart->yAxis->setRangeUpper(maximum);
+    m_timeTimeTotalGraph->setData(timeSteps, timeTotal);
+    m_timeChart->yAxis2->setRangeLower(0.0);
+    m_timeChart->yAxis2->setRangeUpper(timeTotal.last());
     m_timeTimeStepGraph->rescaleKeyAxis();
     m_timeChart->replot();
 

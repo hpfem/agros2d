@@ -181,8 +181,6 @@ QStringList availableLanguages()
 
 QIcon icon(const QString &name)
 {
-    QString fileName;
-
 #ifdef Q_WS_WIN
     if (QFile::exists(":/" + name + "-windows.png")) return QIcon(":/" + name + "-windows.png");
 #endif
@@ -191,29 +189,6 @@ QIcon icon(const QString &name)
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
     return QIcon::fromTheme(name, QIcon(":/" + name + ".png"));
 #endif
-
-    QString style = "";
-    QStringList styles = QStyleFactory::keys();
-
-    // kde 3
-    if (getenv("KDE_FULL_SESSION") != NULL)
-    {}
-    // kde 4
-    if (getenv("KDE_SESSION_VERSION") != NULL)
-    {
-        // oxygen
-        fileName = "/usr/share/icons/oxygen/22x22/actions/" + name;
-        if (QFile::exists(fileName + ".svg")) return QIcon(fileName + ".svg");
-        if (QFile::exists(fileName + ".png")) return QIcon(fileName + ".png");
-    }
-    // gtk+
-    if (style == "")
-    {
-        // humanity (disabled - corrupted svg reader - Qt 4.6 has new method QIcon::fromTheme)
-        // fileName = "/usr/share/icons/Humanity/actions/24/" + name;
-        // if (QFile::exists(fileName + ".svg")) return QIcon(fileName + ".svg");
-        // if (QFile::exists(fileName + ".png")) return QIcon(fileName + ".png");
-    }
 #endif
 
     if (QFile::exists(":/" + name + ".svg")) return QIcon(":/" + name + ".svg");

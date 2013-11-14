@@ -95,9 +95,9 @@ InfoWidget::~InfoWidget()
 void InfoWidget::refresh()
 {
     if (Agros2D::problem()->fieldInfos().isEmpty())
-        QTimer::singleShot(0, this, SLOT(showWelcome()));
+        showWelcome();
     else
-        QTimer::singleShot(0, this, SLOT(showInfo()));
+        showInfo();
 }
 
 void InfoWidget::showWelcome()

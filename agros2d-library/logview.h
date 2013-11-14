@@ -146,6 +146,7 @@ private:
 
     QCustomPlot *m_timeChart;
     QCPGraph *m_timeTimeStepGraph;
+    QCPGraph *m_timeTimeTotalGraph;
     QProgressBar *m_timeProgress;
 
     QListWidget *m_progress;
