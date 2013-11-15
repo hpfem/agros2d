@@ -34,7 +34,7 @@ class TestField(Agros2DTestCase):
     """ matrix_solver """
     def test_matrix_solver(self):
         for solver in ['umfpack', 'paralution_iterative', 'paralution_amg',
-                     'mumps', 'external', 'empty']:
+                       'mumps', 'external', 'empty']:
             self.field.matrix_solver = solver
             self.assertEqual(self.field.matrix_solver, solver)
 
@@ -121,7 +121,7 @@ class TestFieldNewtonSolver(Agros2DTestCase):
         self.field = a2d.field('magnetic')
         self.field.solver = 'newton'
 
-    """ residual """
+    """ relative_change_of_solutions """
     def test_relative_change_of_solutions(self):
         self.field.solver_parameters['relative_change_of_solutions'] = 10
         self.assertEqual(self.field.solver_parameters['relative_change_of_solutions'], 10)
@@ -234,7 +234,6 @@ class TestFieldMatrixSolver(Agros2DTestCase):
     def test_set_wrong_tolerance(self):
         with self.assertRaises(IndexError):
             self.field.matrix_solver_parameters['tolerance'] = -1
-
 
     """ iterations """
     def test_iterations(self):

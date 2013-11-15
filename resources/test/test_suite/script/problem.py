@@ -130,11 +130,11 @@ class TestProblemSolution(Agros2DTestCase):
         current.add_boundary("Neumann", "current_inward_current_flow", {"current_inward_current_flow" : 0})
         current.add_material("Copper", {"current_conductivity" : 33e6})
 
-        heat = a2d.field('heat')
-        heat.analysis_type = 'transient'
-        heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 10,
-                                                           "heat_convection_external_temperature" : 293})
-        heat.add_material("Copper", {"heat_conductivity" : 200, "heat_density" : 8700, "heat_specific_heat" : 385})
+        self.heat = a2d.field('heat')
+        self.heat.analysis_type = 'transient'
+        self.heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 10,
+                                                                "heat_convection_external_temperature" : 293})
+        self.heat.add_material("Copper", {"heat_conductivity" : 200, "heat_density" : 8700, "heat_specific_heat" : 385})
 
         a2d.geometry.add_edge(0, 0, 1, 0, boundaries = {'current' : 'Neumann', 'heat' : 'Convection'})
         a2d.geometry.add_edge(1, 0, 1, 1, boundaries = {'current' : 'Ground', 'heat' : 'Convection'})
@@ -160,6 +160,51 @@ class TestProblemSolution(Agros2DTestCase):
         self.problem.clear()
         self.assertEqual(a2d.geometry.nodes_count(), 0)
 
+class TestProblemAdaptiveSolution(Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.problem.coordinate_type = "axisymmetric"
+
+        self.electrostatic = a2d.field("electrostatic")
+        self.electrostatic.number_of_refinements = 0
+        self.electrostatic.polynomial_order = 1
+        self.electrostatic.adaptivity_type = "hp-adaptivity"
+        self.electrostatic.adaptivity_parameters['steps'] = 3
+        self.electrostatic.adaptivity_parameters['tolerance'] = 1e-3
+
+        self.electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 1000})
+        self.electrostatic.add_boundary("Ground", "electrostatic_potential", {"electrostatic_potential" : 0})
+        self.electrostatic.add_boundary("Border", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
+
+        self.electrostatic.add_material("Air", {"electrostatic_permittivity" : 1})
+
+        geometry = a2d.geometry
+        geometry.add_edge(0.2, 1, 0, 0.5, boundaries = {"electrostatic" : "Source"})
+        geometry.add_edge(0, 0.5, 0, 0.25, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, -0.25, 0, -1, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, -1, 1.5, 0.5, angle = 90, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(1.5, 0.5, 0, 2, angle = 90, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, 1, 0.2, 1, boundaries = {"electrostatic" : "Source"})
+        geometry.add_edge(0, 2, 0, 1, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, -0.25, 0.25, 0, angle = 90, boundaries = {"electrostatic" : "Ground"})
+        geometry.add_edge(0.25, 0, 0, 0.25, angle = 90, boundaries = {"electrostatic" : "Ground"})
+        geometry.add_label(0.879551, 0.764057, area = 0.06, materials = {"electrostatic" : "Air"})
+
+    """ solve_adaptivity_step """
+    def test_solve_adaptivity_step(self):
+        self.problem.solve()
+        steps = len(self.electrostatic.adaptivity_info()['dofs'])
+        error = self.electrostatic.adaptivity_info()['error'][-1]
+
+        for step in range(4):
+            self.problem.solve_adaptive_step()
+
+            self.assertNotEqual(len(self.electrostatic.adaptivity_info()['dofs']), steps)
+            self.assertGreater(error, self.electrostatic.adaptivity_info()['error'][-1])
+
+            steps = len(self.electrostatic.adaptivity_info()['dofs'])
+            error = self.electrostatic.adaptivity_info()['error'][-1]
+
 if __name__ == '__main__':        
     import unittest as ut
     
@@ -168,4 +213,5 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemTime))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemSolution))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemAdaptiveSolution))
     suite.run(result)

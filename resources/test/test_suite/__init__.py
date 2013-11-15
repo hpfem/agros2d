@@ -94,10 +94,16 @@ coupled_problems.basic_coupled_problems.CoupledProblemsBasic4,
 ]
 
 test_script = [
+# problem
 script.problem.TestProblem,
+script.problem.TestProblemTime,
+script.problem.TestProblemSolution,
+script.problem.TestProblemAdaptiveSolution,
+# geometry
 script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
 script.benchmark.BenchmarkGeometryTransformation,
+#generator
 script.generator.Generator
 ]
 
