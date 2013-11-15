@@ -423,102 +423,102 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="622"/>
         <source>Incompressible flow</source>
-        <translation type="unfinished"></translation>
+        <translation>Fluide incompressible</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="628"/>
         <source>Steady state</source>
-        <translation type="unfinished">État stationnaire</translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="631"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="634"/>
         <source>Outlet</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="637"/>
         <source>Pressure</source>
-        <translation type="unfinished">Pression</translation>
+        <translation>Pression</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="640"/>
         <source>Axial symmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Symétrie axiale</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="643"/>
         <source>Density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="646"/>
         <source>Viscosity</source>
-        <translation type="unfinished"></translation>
+        <translation>Viscosité</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="649"/>
         <source>Force - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Force : x</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="652"/>
         <source>Force - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Force : y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="655"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : x</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="658"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="661"/>
         <source>Vorticity</source>
-        <translation type="unfinished"></translation>
+        <translation>Tourbillon</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="664"/>
         <source>Inner force</source>
-        <translation type="unfinished"></translation>
+        <translation>Force intérieure</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="667"/>
         <source>Volume</source>
-        <translation type="unfinished">Volume</translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="670"/>
         <source>Cross section</source>
-        <translation type="unfinished">Coupe transversale</translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="673"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="676"/>
         <source>Force X</source>
-        <translation type="unfinished"></translation>
+        <translation>Force X</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="679"/>
         <source>Force Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Force Y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="686"/>
         <source>Incompressible flow model using Navier-Stokes equations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulation de fluide incompressible en utilisant les équations de Navier-Stokes.</translation>
     </message>
 </context>
 <context>
@@ -526,117 +526,117 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="388"/>
         <source>Heat transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Transfert thermique</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="394"/>
         <source>Steady state</source>
-        <translation type="unfinished">État stationnaire</translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="397"/>
         <source>Transient</source>
-        <translation type="unfinished">Transitoire</translation>
+        <translation>Transitoire</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="400"/>
         <source>Temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Température</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="403"/>
         <source>Heat flux</source>
-        <translation type="unfinished"></translation>
+        <translation>Flux de chaleur</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="406"/>
         <source>Thermal conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Conductivité thermique</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="409"/>
         <source>Volume heat</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaleur du volume</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="412"/>
         <source>Density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="415"/>
         <source>Specific heat</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaleur spécifique</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="418"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="421"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : x</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="424"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : y</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="427"/>
         <source>Velocity - angular</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : angulaire</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="430"/>
         <source>Heat transfer coefficient</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient de transfert thermique</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="433"/>
         <source>Convection - external temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Convection : température extérieure</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="436"/>
         <source>Emissivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Émissivité</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="439"/>
         <source>Radiation - ambient temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Radiation : température ambiante</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="442"/>
         <source>Temperature gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient de température</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="445"/>
         <source>Volume</source>
-        <translation type="unfinished">Volume</translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="448"/>
         <source>Cross section</source>
-        <translation type="unfinished">Coupe transversale</translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="451"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="454"/>
         <source>Surface</source>
-        <translation type="unfinished">Surface</translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="461"/>
         <source>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un transfert thermique est un transfert d&apos;énergie microscopique désordonnée. Cela correspond en réalité à un transfert d&apos;énergie thermique entre particules, au gré des chocs aléatoires qui se produisent à l&apos;échelle microscopique.</translation>
     </message>
 </context>
 <context>
@@ -644,302 +644,302 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="676"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="682"/>
         <source>Steady state</source>
-        <translation type="unfinished">État stationnaire</translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="685"/>
         <source>Harmonic</source>
-        <translation type="unfinished">Harmonique</translation>
+        <translation>Harmonique</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="688"/>
         <source>Transient</source>
-        <translation type="unfinished">Transitoire</translation>
+        <translation>Transitoire</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="691"/>
         <source>Magnetic potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel magnétique</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="694"/>
         <source>Surface current</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant de surface</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="697"/>
         <source>Material properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Les propriétés des matériaux</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="700"/>
         <source>Permeability</source>
-        <translation type="unfinished"></translation>
+        <translation>Perméabilité</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="703"/>
         <source>Electrical conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Conductivité électrique</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="706"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Source</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="709"/>
         <source>Current dens. - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : ext. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="712"/>
         <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : ext. : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="715"/>
         <source>Permanent magnet</source>
-        <translation type="unfinished"></translation>
+        <translation>Aimant permanent</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="718"/>
         <source>Remanent flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux rémanent</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="721"/>
         <source>Remanent flux density - angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux rémanent : angle</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="724"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="727"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : x</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="730"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : y</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="733"/>
         <source>Velocity - angular</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse : angulaire</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="736"/>
         <source>Vector potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel vecteur : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="739"/>
         <source>Vector potential - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel vecteur : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="742"/>
         <source>Surface current - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant de surface : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="745"/>
         <source>Surface current - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant de surface : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="748"/>
         <source>Vector potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel vecteur</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="751"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="754"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="757"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="760"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="763"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="766"/>
         <source>Energy density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité d&apos;énergie</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="769"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Conductivité</translation>
+        <translation>Conductivité</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="772"/>
         <source>Current dens. - ext.</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : ext.</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="775"/>
         <source>Current dens. - ind. velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : vitesse ind.</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="778"/>
         <source>Current dens. - ind. velocity - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : vitesse ind. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="781"/>
         <source>Current dens. - ind. velocity - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : vitesse ind. : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="784"/>
         <source>Current dens. - ind. transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : transform. ind.</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="787"/>
         <source>Current dens. - ind. transform - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : transform. ind. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="790"/>
         <source>Current dens. - ind. transform - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : transform. ind. : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="793"/>
         <source>Current dens. - total</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : totale</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="796"/>
         <source>Current dens. - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : totale : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="799"/>
         <source>Current dens. - total - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : totale : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="802"/>
         <source>Losses density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité des pertes</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="805"/>
         <source>Lorentz force - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Force de Lorentz : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="808"/>
         <source>Lorentz force - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Force de Lorentz : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="811"/>
         <source>Volume</source>
-        <translation type="unfinished">Volume</translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="814"/>
         <source>Cross section</source>
-        <translation type="unfinished">Coupe transversale</translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="817"/>
         <source>Current - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : ext. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="820"/>
         <source>Current - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : ext. : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="823"/>
         <source>Current - ind. transform - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : transform. ind. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="826"/>
         <source>Current - ind. transform - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : transform. ind. : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="829"/>
         <source>Current - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : total : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="832"/>
         <source>Current - total - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : total : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="835"/>
         <source>Energy</source>
-        <translation type="unfinished"></translation>
+        <translation>Energie</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="838"/>
         <source>Power losses</source>
-        <translation type="unfinished"></translation>
+        <translation>Pertes de puissance</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="841"/>
         <source>Torque</source>
-        <translation type="unfinished"></translation>
+        <translation>Moment de torsion</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="844"/>
         <source>Lorentz force - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Force de Lorentz : x</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="847"/>
         <source>Lorentz force - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Force de Lorentz : y</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="850"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="853"/>
         <source>Surface</source>
-        <translation type="unfinished">Surface</translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="860"/>
         <source>Magnetic field ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique permet de modéliser et quantifier les effets magnétiques du courant électrique ou des matériaux magnétiques comme les aimants permanents.</translation>
     </message>
 </context>
 <context>
@@ -962,162 +962,163 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="544"/>
         <source>RF waves</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondes RF</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="550"/>
         <source>Harmonic</source>
-        <translation type="unfinished">Harmonique</translation>
+        <translation>Harmonique</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="553"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ électrique</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="556"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="559"/>
         <source>Surface current</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant de surface</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="562"/>
         <source>Impedance boundary condition</source>
-        <translation type="unfinished">Condition aux limites d&apos;impédance</translation>
+        <translation>Condition aux limites d&apos;impédance</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="565"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Permittivité</translation>
+        <translation>Permittivité</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="568"/>
         <source>Permeability</source>
-        <translation type="unfinished"></translation>
+        <translation>Perméabilité</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="571"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Conductivité</translation>
+        <translation>Conductivité</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="574"/>
         <source>Current dens. - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : ext. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="577"/>
         <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : ext. : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="580"/>
         <source>Electric field - real</source>
-        <translation type="unfinished">C</translation>
+        <translation>Champ électrique : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="583"/>
         <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ électrique : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="586"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="589"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ magnétique : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="592"/>
         <source>Surface current - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant de surface : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="595"/>
         <source>Surface current - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant de surface : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="598"/>
         <source>Impedance</source>
-        <translation type="unfinished"></translation>
+        <translation>Impédance</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="601"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="604"/>
         <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="607"/>
         <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="610"/>
         <source>Current density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="613"/>
         <source>Current density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="616"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="619"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="622"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de flux : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="625"/>
         <source>Poyting vector</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err</translatorcomment>
+        <translation>Vecteur de Poynting</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="628"/>
         <source>Volume</source>
-        <translation type="unfinished">Volume</translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="631"/>
         <source>Cross section</source>
-        <translation type="unfinished">Coupe transversale</translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="634"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="637"/>
         <source>Surface</source>
-        <translation type="unfinished">Surface</translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="644"/>
         <source>Solving TE waves in RF field.</source>
-        <translation type="unfinished"></translation>
+        <translation>TE ondes dans le champ RF.</translation>
     </message>
 </context>
 </TS>

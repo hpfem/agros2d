@@ -64,22 +64,22 @@
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="73"/>
         <source>%1: generating plugin project file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de projet de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="96"/>
         <source>%1: generating plugin interface file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;interface de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="154"/>
         <source>%1: generating plugin weakform header file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de header de formulations faibles.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="194"/>
         <source>%1: generating plugin weakform source file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de source de formulations faibles.</translation>
     </message>
 </context>
 <context>
@@ -87,52 +87,52 @@
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="69"/>
         <source>%1: generating plugin project file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de projet de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="91"/>
         <source>%1: generating plugin interface file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;interface de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="184"/>
         <source>%1: generating plugin equations.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération des équations de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="234"/>
         <source>%1: generating plugin weakform source file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de source de formulations faibles.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="260"/>
         <source>%1: generating plugin weakform header file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de header de formulations faibles.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="326"/>
         <source>%1: generating plugin filter file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de filtre de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="442"/>
         <source>%1: generating plugin force file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier des forces de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="528"/>
         <source>%1: generating plugin local point file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de point local de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="603"/>
         <source>%1: generating plugin surface integral file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;intégrale de surface de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="674"/>
         <source>%1: generating plugin volume integral file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;intégrale de volume de plugin.</translation>
     </message>
 </context>
 <context>
@@ -4425,12 +4425,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="344"/>
         <source>Mesh generation</source>
-        <translation type="unfinished"></translation>
+        <translation>Génération de maillage</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="516"/>
         <source>No fields defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun champ défini</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="535"/>
@@ -4449,7 +4449,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="186"/>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="193"/>
         <source>Solver (Newton)</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur (Newton) :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="640"/>
@@ -4484,13 +4484,13 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="678"/>
         <source>Geometry</source>
-        <translation type="unfinished">Géométrie</translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="721"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="812"/>
         <source>Solving problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolution du problème</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="868"/>
@@ -4751,7 +4751,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="411"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="439"/>
         <source>Problem is not solved.</source>
-        <translation type="unfinished">Problème n&apos;est pas résolu.</translation>
+        <translation>Problème n&apos;est pas résolu.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="659"/>
@@ -5183,7 +5183,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="380"/>
         <source>Transient</source>
-        <translation type="unfinished">Transitoire</translation>
+        <translation>Transitoire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="382"/>
@@ -5208,12 +5208,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="410"/>
         <source>Scalar</source>
-        <translation type="unfinished">Scalaire</translation>
+        <translation>Scalaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="412"/>
         <source>Magnitude</source>
-        <translation type="unfinished">Ampleur</translation>
+        <translation>Ampleur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="418"/>
@@ -5325,17 +5325,17 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="782"/>
         <source>CG</source>
-        <translation type="unfinished"></translation>
+        <translation>CG</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="784"/>
         <source>GMRES</source>
-        <translation type="unfinished"></translation>
+        <translation>GMRES</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="786"/>
         <source>BiCGStab</source>
-        <translation type="unfinished"></translation>
+        <translation>BiCGStab</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="798"/>
@@ -5439,57 +5439,57 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="592"/>
         <source>Agros2D</source>
-        <translation type="unfinished">Agros2D</translation>
+        <translation>Agros2D</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="594"/>
         <source>Jet</source>
-        <translation type="unfinished">Jet</translation>
+        <translation>Jet</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="596"/>
         <source>Copper</source>
-        <translation type="unfinished">Cuivre</translation>
+        <translation>Cuivre</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="598"/>
         <source>Hot</source>
-        <translation type="unfinished">Chaud</translation>
+        <translation>Chaud</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="600"/>
         <source>Cool</source>
-        <translation type="unfinished">Frais</translation>
+        <translation>Frais</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="602"/>
         <source>Bone</source>
-        <translation type="unfinished">Ivoire</translation>
+        <translation>Ivoire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="604"/>
         <source>Pink</source>
-        <translation type="unfinished">Rose</translation>
+        <translation>Rose</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="606"/>
         <source>Spring</source>
-        <translation type="unfinished">Printemps</translation>
+        <translation>Printemps</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="608"/>
         <source>Summer</source>
-        <translation type="unfinished">Été</translation>
+        <translation>Été</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="610"/>
         <source>Autumn</source>
-        <translation type="unfinished">Automne</translation>
+        <translation>Automne</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="612"/>
         <source>Winter</source>
-        <translation type="unfinished">Hiver</translation>
+        <translation>Hiver</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="614"/>
@@ -5499,12 +5499,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="616"/>
         <source>B/W ascending</source>
-        <translation type="unfinished">NB ascendant</translation>
+        <translation>NB ascendant</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="618"/>
         <source>B/W descending</source>
-        <translation type="unfinished">NB descendant</translation>
+        <translation>NB descendant</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="630"/>
@@ -5564,7 +5564,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="689"/>
         <source>Linear</source>
-        <translation type="unfinished">Linéaire</translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="691"/>
@@ -5604,7 +5604,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="725"/>
         <source>Constant</source>
-        <translation type="unfinished">Constante</translation>
+        <translation>Constante</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="737"/>
@@ -5706,7 +5706,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="812"/>
         <location filename="../../agros2d-library/value.cpp" line="307"/>
         <source>Problem</source>
-        <translation type="unfinished">Problème</translation>
+        <translation>Problème</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_interface.cpp" line="43"/>
@@ -5734,12 +5734,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="52"/>
         <source>Boundary dialog doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogue des limites n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="81"/>
         <source>Material dialog doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogue des matériaux n&apos;existe pas.</translation>
     </message>
 </context>
 <context>
@@ -5747,17 +5747,17 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="36"/>
         <source>Opening gzip for both reading and writing is not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;ouverture de Gzip pour la lecture et l&apos;écriture non supporté</translation>
     </message>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="44"/>
         <source>You can open a gzip either for reading or for writing. Which is it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous pouvez ouvrir une gzip soit pour la lecture ou l&apos;écriture.</translation>
     </message>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="50"/>
         <source>Could not gzopen() file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de gzopen() le fichier</translation>
     </message>
 </context>
 <context>
@@ -6092,48 +6092,48 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1162"/>
         <source>Loading problem from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de problème</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1166"/>
         <location filename="../../agros2d-library/scene.cpp" line="1239"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; ne peut pas être ouvert (%2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1172"/>
         <source>File &apos;%1&apos; is not valid Agros2D data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;est pas un fichier valid d´Agros2D.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1201"/>
         <source>Data file was transformed to new version and saved to temp dictionary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de données a été transformé en nouvelle version et enregistré dans le dictionnaire temporaire.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1220"/>
         <source>It is impossible to transform data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de transformer le fichier de données.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1224"/>
         <source>File cannot be saved (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier ne peut pas être enregistré (%2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1255"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;est pas un fichier valid d´Agros2D.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1266"/>
         <source>Convert file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir le fichier?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1267"/>
         <source>File %1 must be converted to the new version. Do you want to convert and replace current file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier %1 doit être converti à la nouvelle version. Voulez-vous transformer et remplacer le fichier actuel ?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1268"/>
@@ -6148,68 +6148,68 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1277"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; ne peut pas être enregistré (%2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2338"/>
         <source>Loading solution from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de solution</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2352"/>
         <location filename="../../agros2d-library/scene.cpp" line="2357"/>
         <source>Initial mesh is corrupted (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage initial est corrompu (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2378"/>
         <source>Saving solution to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement de solution</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2385"/>
         <source>Access denied &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Accès refusé &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2449"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il ya de nœuds &apos;%1&apos; avec la composante radiale négative.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2463"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il existe des nœuds qui sont connectés à une seule arête (rouge surbrillance). Cela n&apos;est pas autorisé à Agros.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2474"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il y a des croisements dans la géométrie (rouge en surbrillance). Retirez сes croisements d&apos;abord.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2458"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il y a des nœuds qui ne sont pas connectés à une arête (rouge en surbrillance). Tous les nœuds doivent être connectés.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="443"/>
         <source>At least one boundary condition has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Au moins une condition aux limites doit être attribuée</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="457"/>
         <source>At least one material has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Au moins une matière doit être attribué</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="461"/>
         <source>Invalid number of boundary conditions (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide de conditions aux limites (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="464"/>
         <source>Invalid number of materials (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide de matériaux (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2385"/>
@@ -6226,7 +6226,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2468"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il existe des nœuds qui se trouvent sur l&apos;arête, mais ils ne sont pas connectées à l&apos;arête. Supprimer ces nœuds d&apos;abord.</translation>
     </message>
 </context>
 <context>
@@ -6252,12 +6252,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="432"/>
         <source>Boundary marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marqueur des limites</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="432"/>
         <source>Boundary condition with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition aux limites avec le même nom existe déjà.</translation>
     </message>
 </context>
 <context>
@@ -6277,12 +6277,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="501"/>
         <source>Start node:</source>
-        <translation type="unfinished"></translation>
+        <translation>Premier nœud :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="502"/>
         <source>End node:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dernièr nœud :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="503"/>
@@ -6297,17 +6297,17 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="513"/>
         <source>Swap direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Direction d&apos;échange</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="578"/>
         <source>Start and end node are same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Premier et dernièr nœud sont les mêmes.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="589"/>
         <source>Edge already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arête existe déjà.</translation>
     </message>
 </context>
 <context>
@@ -6320,7 +6320,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/sceneedge.cpp" line="392"/>
         <source>Refine towards edge:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raffiner vers l&apos;arête :</translation>
     </message>
 </context>
 <context>
@@ -6372,7 +6372,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="361"/>
         <source>Element area (Triangle) (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Aire d&apos;élément (Triangle) (m&lt;sup&gt;2&lt;/sup&gt;) :</translation>
     </message>
     <message>
         <source>Triangle area (m):</source>
@@ -6389,27 +6389,27 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="197"/>
         <source>Global refinement is %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raffinement global est %1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="211"/>
         <source>Global order is %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre global est %1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="215"/>
         <source>Material:</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériel :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="216"/>
         <source>Area refinement (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Raffinement de la région (-) :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="217"/>
         <source>Polynomial order (-):</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial (-) :</translation>
     </message>
 </context>
 <context>
@@ -6422,7 +6422,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="454"/>
         <source>Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériaux</translation>
     </message>
 </context>
 <context>
@@ -6448,22 +6448,22 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="467"/>
         <source>Material - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériel : %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="485"/>
         <source>Name:</source>
-        <translation type="unfinished">Nom :</translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="525"/>
         <source>Material marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marqueur de matériel</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="525"/>
         <source>Material marker with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Marqueur de matériel avec le même nom existe déjà.</translation>
     </message>
 </context>
 <context>
@@ -6471,47 +6471,47 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="33"/>
         <source>Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transform</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="96"/>
         <source>Angle:</source>
-        <translation type="unfinished">Angle :</translation>
+        <translation>Angle :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="115"/>
         <source>Scaling factor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur d&apos;échelle :</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="122"/>
         <source>Copy objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier les objets</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="125"/>
         <source>Apply</source>
-        <translation type="unfinished">Appliquer</translation>
+        <translation>Appliquer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="129"/>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="139"/>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Traduire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="140"/>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Tourner</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenetransformdialog.cpp" line="141"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Redimensionner</translation>
     </message>
 </context>
 <context>
@@ -6624,32 +6624,32 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1123"/>
         <source>Post View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue post</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1123"/>
         <source>Particle view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue de particules</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1162"/>
         <source>Particle tracing failed (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tracé de particules a échoué (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1170"/>
         <source>Catched unknown exception in particle tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception inconnue en traçage de particules </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1185"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
-        <translation type="unfinished"></translation>
+        <translation>Particule %1 : %2 pas, temps total %3 s</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1191"/>
         <source>Total cpu time %1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée totale de CPU %1 ms</translation>
     </message>
 </context>
 <context>
@@ -6759,79 +6759,85 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="63"/>
         <source>Operate on &amp;nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Actionner sur les &amp;nœuds</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="228"/>
         <source>Operate on nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Actionner sur les nœuds</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="68"/>
         <source>Operate on &amp;edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Actionner sur les &amp;arêtes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="231"/>
         <source>Operate on edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Actionner sur les arêtes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="72"/>
         <source>Operate on &amp;labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Actionner sur les &amp;étiquettes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="234"/>
         <source>Operate on labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Actionner sur les étiquettes</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="84"/>
         <source>&amp;Select region</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Choisir une région</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="88"/>
         <source>Object properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Les propriétés des objets</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="93"/>
         <source>Swap direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Direction d&apos;échange</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="300"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nœud&lt;/h3&gt;Point : [%1; %2]&lt;br/&gt;Indice : %3</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="329"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Boundary conditions:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Refinement:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Angle:&lt;/b&gt; %7 deg.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</source>
-        <translation type="unfinished"></translation>
+        <translation variants="yes">
+            <lengthvariant>&lt;h3&gt;Arête&lt;/h3&gt;&lt;b&gt;Point :&lt;/b&gt; [%1; %2]  [%3; %4]&lt;br/&gt;&lt;b&gt;Conditions aux limites :&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Raffinement :&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Angle :&lt;/b&gt; %7 deg.&lt;br/&gt;&lt;b&gt;Indice :&lt;/b&gt; %8</lengthvariant>
+            <lengthvariant></lengthvariant>
+            <lengthvariant></lengthvariant>
+            <lengthvariant></lengthvariant>
+        </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="367"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Material:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Étiquette&lt;/h3&gt;&lt;b&gt;Point :&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Matériel :&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Raffinement de région :&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Ordre polynomiale :&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Indice :&lt;/b&gt; %6</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="545"/>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="591"/>
         <source>Node</source>
-        <translation type="unfinished">Nœud</translation>
+        <translation>Nœud</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="545"/>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="591"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err then</translatorcomment>
+        <translation>Composante radiale doit être supérieure ou égale à zéro.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.h" line="69"/>
         <source>Geometry editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de géométrie</translation>
     </message>
 </context>
 <context>
@@ -6860,22 +6866,22 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="32"/>
         <source>Error: Unable to start the server (agros2d-server): %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : Impossible de démarrer le serveur (agros2d-server) : %1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="100"/>
         <source>Server error: The host was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de serveur: L&apos;hôte n&apos;a pas été trouvé.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="103"/>
         <source>Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de serveur. La connexion a été refusée par le peer. Assurez-vous que le serveur agros2d-client fonctionne.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="106"/>
         <source>Server error: The following error occurred: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de serveur. L&apos;erreur suivante s&apos;est produite : %1.</translation>
     </message>
 </context>
 <context>
@@ -6883,27 +6889,27 @@ de particules</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1525"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher :</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1526"/>
         <source>Replace with:</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer par :</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1533"/>
         <source>Find</source>
-        <translation type="unfinished"></translation>
+        <translation>Trouver</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1537"/>
         <source>Replace all</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer tout</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1540"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Masquer</translation>
     </message>
 </context>
 <context>
@@ -6934,7 +6940,7 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/collaboration.cpp" line="78"/>
         <source>Remember password</source>
-        <translation type="unfinished"></translation>
+        <translation>Souvenir de mot de passe</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/collaboration.cpp" line="81"/>
@@ -7279,37 +7285,37 @@ de particules</translation>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="115"/>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="137"/>
         <source>%1: cannot parse number (line %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 : impossible d&apos;analyser le numéro (ligne %2)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="125"/>
         <source>%1: points must be in ascending order (line %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: les points doivent être en ordre ascendant (ligne %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="214"/>
         <source>Show markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les marqueurs</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="217"/>
         <source>Show extrapolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher extrapolation</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="220"/>
         <source>Derivative chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Tableau des dérivées</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="232"/>
         <source>First</source>
-        <translation type="unfinished"></translation>
+        <translation>Première</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="233"/>
         <source>Second</source>
-        <translation type="unfinished"></translation>
+        <translation>Deuxième</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="242"/>
@@ -7319,7 +7325,7 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="243"/>
         <source>Linear function</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonction linéaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="258"/>
@@ -7359,7 +7365,7 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="305"/>
         <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Graphe</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="307"/>
