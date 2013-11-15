@@ -40,7 +40,11 @@ public:
     /// get all values
     const QMap<QString, QSharedPointer<Value> > values() const;
 
+    // creates new shared pointer and copy Value inside
     void setValue(const QString &name, Value value);
+
+    // modify existing Value object using its operator=
+    void modifyValue(const QString &name, Value value);
 
     /// return name
     QString name() {return m_name; }

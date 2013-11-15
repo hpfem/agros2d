@@ -461,13 +461,13 @@ void PyField::modifyMaterial(const std::string &name, const map<std::string, dou
                 {
                     if (expressions.count((*i).first) == 0)
                     {
-                        sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
+                        sceneMaterial->modifyValue(QString::fromStdString((*i).first), Value((*i).second,
                                                                                           (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                                                           (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
                     }
                     else
                     {
-                        sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first)),
+                        sceneMaterial->modifyValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first)),
                                                                                           (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                                                           (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
                     }
