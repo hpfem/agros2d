@@ -291,7 +291,8 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             str += QString("problem.time_steps = %1\n").
                     arg(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
         }
-        if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) != TimeStepMethod_Fixed)
+        if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) != TimeStepMethod_Fixed &&
+                (Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble() > 0.0))
             str += QString("problem.time_initial_time_step = %1\n").
                     arg(Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble());
     }

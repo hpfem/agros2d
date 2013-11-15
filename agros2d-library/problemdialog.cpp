@@ -1119,8 +1119,9 @@ void ProblemWidget::createControls()
     lblTransientTimeTotal = new QLabel("Total time");
     txtTransientTolerance = new LineEditDouble(0.1);
     txtTransientTolerance->setBottom(0.0);
+    chkTransientInitialStepSize = new QCheckBox(this);
     txtTransientInitialStepSize = new LineEditDouble(0.01);
-    txtTransientInitialStepSize->setBottom(EPS_ZERO);
+    txtTransientInitialStepSize->setBottom(0);
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
@@ -1130,21 +1131,22 @@ void ProblemWidget::createControls()
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
     layoutTransientAnalysis->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutTransientAnalysis->setColumnStretch(1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Method:")), 0, 0);
-    layoutTransientAnalysis->addWidget(cmbTransientMethod, 0, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Order:")), 1, 0);
-    layoutTransientAnalysis->addWidget(txtTransientOrder, 1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
-    layoutTransientAnalysis->addWidget(txtTransientTolerance, 2, 1);
-    layoutTransientAnalysis->addWidget(lblTransientTimeTotal, 3, 0);
-    layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 3, 1);
-    layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 0);
-    layoutTransientAnalysis->addWidget(txtTransientSteps, 4, 1);
+    layoutTransientAnalysis->setColumnStretch(2, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Method:")), 0, 0, 1, 2);
+    layoutTransientAnalysis->addWidget(cmbTransientMethod, 0, 2);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Order:")), 1, 0, 1, 2);
+    layoutTransientAnalysis->addWidget(txtTransientOrder, 1, 2);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Tolerance:")), 2, 0, 1, 2);
+    layoutTransientAnalysis->addWidget(txtTransientTolerance, 2, 2);
+    layoutTransientAnalysis->addWidget(lblTransientTimeTotal, 3, 0, 1, 2);
+    layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 3, 2);
+    layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 0, 1, 2);
+    layoutTransientAnalysis->addWidget(txtTransientSteps, 4, 2);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Initial time step:")), 5, 0);
-    layoutTransientAnalysis->addWidget(txtTransientInitialStepSize, 5, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step:")), 6, 0);
-    layoutTransientAnalysis->addWidget(lblTransientTimeStep, 6, 1);
+    layoutTransientAnalysis->addWidget(chkTransientInitialStepSize, 5, 1, 1, 1, Qt::AlignRight);
+    layoutTransientAnalysis->addWidget(txtTransientInitialStepSize, 5, 2);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Constant time step:")), 6, 0, 1, 2);
+    layoutTransientAnalysis->addWidget(lblTransientTimeStep, 6, 2);
 
     grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
     grpTransientAnalysis->setLayout(layoutTransientAnalysis);
@@ -1218,6 +1220,7 @@ void ProblemWidget::updateControls()
     txtTransientOrder->disconnect();
     txtTransientTimeTotal->disconnect();
     txtTransientTolerance->disconnect();
+    chkTransientInitialStepSize->disconnect();
     txtTransientInitialStepSize->disconnect();
     txtTransientSteps->disconnect();
 
@@ -1239,6 +1242,8 @@ void ProblemWidget::updateControls()
     txtTransientSteps->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
     txtTransientTimeTotal->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble());
     txtTransientTolerance->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble());
+    chkTransientInitialStepSize->setChecked(Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble() > 0.0);
+    txtTransientInitialStepSize->setEnabled(chkTransientInitialStepSize->isChecked());
     txtTransientInitialStepSize->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeInitialStepSize).toDouble());
     txtTransientOrder->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
     cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()));
@@ -1266,7 +1271,8 @@ void ProblemWidget::updateControls()
     connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
     connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
     connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
-    connect(txtTransientTolerance, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
+    connect(txtTransientTolerance, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));    
+    connect(chkTransientInitialStepSize, SIGNAL(stateChanged(int)), this, SLOT(changedWithClear()));
     connect(txtTransientInitialStepSize, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
@@ -1287,9 +1293,18 @@ void ProblemWidget::changedWithClear()
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethod, (TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeOrder, txtTransientOrder->value());
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethodTolerance, txtTransientTolerance->value());
-    Agros2D::problem()->config()->setValue(ProblemConfig::TimeInitialStepSize, txtTransientInitialStepSize->value());
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeConstantTimeSteps, txtTransientSteps->value());
-    Agros2D::problem()->config()->setValue(ProblemConfig::TimeTotal, txtTransientTimeTotal->value());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeTotal, txtTransientTimeTotal->value());    
+    txtTransientInitialStepSize->setEnabled(chkTransientInitialStepSize->isChecked());
+    if (chkTransientInitialStepSize->isChecked())
+    {
+        Agros2D::problem()->config()->setValue(ProblemConfig::TimeInitialStepSize, txtTransientInitialStepSize->value());
+    }
+    else
+    {
+        txtTransientInitialStepSize->setValue(0.0);
+        Agros2D::problem()->config()->setValue(ProblemConfig::TimeInitialStepSize, 0.0);
+    }
 
     // save couplings
     couplingsWidget->save();
@@ -1306,6 +1321,7 @@ void ProblemWidget::transientChanged()
 
     if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
     {
+        chkTransientInitialStepSize->setEnabled(false);
         txtTransientInitialStepSize->setEnabled(false);
         txtTransientTolerance->setEnabled(false);
         txtTransientSteps->setEnabled(true);
@@ -1313,13 +1329,13 @@ void ProblemWidget::transientChanged()
     }
     else if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
     {
-        txtTransientInitialStepSize->setEnabled(true);
+        chkTransientInitialStepSize->setEnabled(true);
         txtTransientTolerance->setEnabled(true);
         txtTransientSteps->setEnabled(false);
     }
     else if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
     {
-        txtTransientInitialStepSize->setEnabled(true);
+        chkTransientInitialStepSize->setEnabled(true);
         txtTransientTolerance->setEnabled(false);
         txtTransientSteps->setEnabled(true);        
     }

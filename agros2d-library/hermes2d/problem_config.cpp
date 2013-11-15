@@ -78,11 +78,23 @@ bool ProblemConfig::isTransientAdaptive() const
 double ProblemConfig::initialTimeStepLength()
 {
     if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
+    {
         return constantTimeStepLength();
+    }
     else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
-        return value(ProblemConfig::TimeInitialStepSize).toDouble();
+    {
+        if (value(ProblemConfig::TimeInitialStepSize).toDouble() > 0.0)
+            return value(ProblemConfig::TimeInitialStepSize).toDouble();
+        else
+            return constantTimeStepLength() / 3.0;
+    }
     else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
-        return value(ProblemConfig::TimeInitialStepSize).toDouble();
+    {
+        if (value(ProblemConfig::TimeInitialStepSize).toDouble() > 0.0)
+            return value(ProblemConfig::TimeInitialStepSize).toDouble();
+        else
+            return value(ProblemConfig::TimeTotal).toDouble() / 500.0;
+    }
     else
         assert(0);
 }
@@ -143,7 +155,7 @@ void ProblemConfig::setDefaultValues()
     m_settingDefault[Frequency] = 50.0;
     m_settingDefault[TimeMethod] = TimeStepMethod_BDFNumSteps;
     m_settingDefault[TimeMethodTolerance] = 0.05;
-    m_settingDefault[TimeInitialStepSize] = 0.01;
+    m_settingDefault[TimeInitialStepSize] = 0.0;
     m_settingDefault[TimeOrder] = 2;
     m_settingDefault[TimeConstantTimeSteps] = 10;
     m_settingDefault[TimeTotal] = 10.0;

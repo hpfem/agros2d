@@ -244,6 +244,7 @@ private:
     QLabel* lblTransientSteps;
     QSpinBox *txtTransientSteps;
     LineEditDouble *txtTransientTolerance;
+    QCheckBox *chkTransientInitialStepSize;
     LineEditDouble *txtTransientInitialStepSize;
     QLabel *lblTransientTimeTotal;
     QSpinBox *txtTransientOrder;
@@ -260,7 +261,6 @@ private:
 
 private slots:
     void transientChanged();
-
     void changedWithClear();
 };
 

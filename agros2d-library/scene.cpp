@@ -1277,8 +1277,7 @@ void Scene::readFromFile21(const QString &fileName)
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethod, timeStepMethodFromStringKey(
                                                eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethodTolerance, eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05").toDouble());
-    Agros2D::problem()->config()->setValue(ProblemConfig::TimeInitialStepSize,
-                                           eleProblemInfo.toElement().attribute("time_initial_time_step", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble())).toDouble());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeInitialStepSize, eleProblemInfo.toElement().attribute("time_initial_time_step", "0.0").toDouble());
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
