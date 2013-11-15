@@ -64,6 +64,16 @@ void Marker::setValue(const QString& name, Value value)
     mutex.unlock();
 }
 
+void Marker::modifyValue(const QString& name, Value value)
+{
+    QMutex mutex;
+    mutex.lock();
+    if(! m_values.contains(name))
+        m_values[name] = QSharedPointer<Value>(new Value(value));
+    else
+        *m_values[name].data() = value;
+    mutex.unlock();
+}
 
 bool Marker::evaluate(const QString &id, double time)
 {
