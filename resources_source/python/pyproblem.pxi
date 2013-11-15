@@ -189,4 +189,5 @@ __problem__ = __Problem__()
 def problem(clear = False):
     if (clear):
         __problem__.clear()
+        __problem__.time_callback = None
     return __problem__

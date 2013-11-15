@@ -270,9 +270,9 @@ void PyField::modifyBoundary(const std::string &name, const std::string &type,
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    sceneBoundary->setValue(QString::fromStdString((*i).first), Value((*i).second));
+                    sceneBoundary->modifyValue(QString::fromStdString((*i).first), Value((*i).second));
                 else
-                    sceneBoundary->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first))));
+                    sceneBoundary->modifyValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first))));
                 break;
             }
         }
