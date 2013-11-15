@@ -235,19 +235,25 @@ void FieldWidget::createContent()
 QWidget *FieldWidget::createSolverWidget()
 {
     // linearity
+    chkNonlinearResidual = new QCheckBox(this);
+    connect(chkNonlinearResidual, SIGNAL(stateChanged(int)), this, SLOT(doNonlinearResidual(int)));
     txtNonlinearResidual = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearResidualNorm).toDouble());
     txtNonlinearResidual->setBottom(0.0);
 
+    chkNonlinearRelativeChangeOfSolutions = new QCheckBox(this);
+    connect(chkNonlinearRelativeChangeOfSolutions, SIGNAL(stateChanged(int)), this, SLOT(doNonlinearRelativeChangeOfSolutions(int)));
     txtNonlinearRelativeChangeOfSolutions = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble());
     txtNonlinearRelativeChangeOfSolutions->setBottom(0.0);
 
     QGridLayout *layoutSolverConvergence = new QGridLayout();
     layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
 
-    layoutSolverConvergence->addWidget(new QLabel(tr("Residual:")), 1, 0);
-    layoutSolverConvergence->addWidget(txtNonlinearResidual, 1, 1);
-    layoutSolverConvergence->addWidget(new QLabel(tr("Relative change of solutions (%):")), 2, 0);
-    layoutSolverConvergence->addWidget(txtNonlinearRelativeChangeOfSolutions, 2, 1);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Residual:")), 0, 0);
+    layoutSolverConvergence->addWidget(chkNonlinearResidual, 0, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearResidual, 0, 2);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Relative change of solutions (%):")), 1, 0);
+    layoutSolverConvergence->addWidget(chkNonlinearRelativeChangeOfSolutions, 1, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearRelativeChangeOfSolutions, 1, 2);
 
     QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
     grpSolverConvergence->setLayout(layoutSolverConvergence);
@@ -342,6 +348,8 @@ QWidget *FieldWidget::createAdaptivityWidget()
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivitySteps->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivitySteps).toInt());
+    chkAdaptivityTolerance = new QCheckBox(this);
+    connect(chkAdaptivityTolerance, SIGNAL(stateChanged(int)), this, SLOT(doAdaptivityTolerance(int)));
     txtAdaptivityTolerance = new LineEditDouble(1.0);
     txtAdaptivityTolerance->setBottom(0.0);
     cmbAdaptivityStoppingCriterionType = new QComboBox();
@@ -365,29 +373,53 @@ QWidget *FieldWidget::createAdaptivityWidget()
     txtAdaptivityRedoneEach->setMinimum(1);
     txtAdaptivityRedoneEach->setMaximum(100);
 
-    // adaptivity
-    QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutAdaptivity->addWidget(new QLabel(tr("Maximum steps:")), 1, 0);
-    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 1, 2);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 2, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 2, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 2, 2);
-    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 2, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Order increase:")), 3, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityOrderIncrease, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Error calculator:")), 4, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityErrorCalculator, 4, 1);
-    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 5, 1, 1, 3);
-    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 6, 1, 1, 3);
-    layoutAdaptivity->addWidget(chkAdaptivitySpaceRefinement, 7, 1, 1, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Steps back in transient:")), 10, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 10, 1, 1, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans. step:")), 11, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 11, 1, 1, 3);
-    layoutAdaptivity->setRowStretch(50, 1);
+    // control
+    QGridLayout *layoutAdaptivityControl = new QGridLayout();
+    layoutAdaptivityControl->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutAdaptivityControl->addWidget(new QLabel(tr("Maximum steps:")), 0, 0, 1, 2);
+    layoutAdaptivityControl->addWidget(txtAdaptivitySteps, 0, 2);
+    layoutAdaptivityControl->addWidget(new QLabel(tr("Tolerance (%):")), 1, 0);
+    layoutAdaptivityControl->addWidget(chkAdaptivityTolerance, 1, 1, 1, 1, Qt::AlignRight);
+    layoutAdaptivityControl->addWidget(txtAdaptivityTolerance, 1, 2);
+    layoutAdaptivityControl->addWidget(new QLabel(tr("Stopping criterion:")), 0, 3);
+    layoutAdaptivityControl->addWidget(cmbAdaptivityStoppingCriterionType, 0, 4);
+    layoutAdaptivityControl->addWidget(new QLabel(tr("Threshold:")), 1, 3);
+    layoutAdaptivityControl->addWidget(txtAdaptivityThreshold, 1, 4);
+    layoutAdaptivityControl->setRowStretch(50, 1);
+
+    QGroupBox *grpControl = new QGroupBox(tr("Control"), this);
+    grpControl->setLayout(layoutAdaptivityControl);
+
+    // reference solution
+    QGridLayout *layoutAdaptivityReferenceSolution = new QGridLayout();
+    layoutAdaptivityReferenceSolution->addWidget(new QLabel(tr("Order increase:")), 0, 0);
+    layoutAdaptivityReferenceSolution->addWidget(txtAdaptivityOrderIncrease, 0, 1);
+    layoutAdaptivityReferenceSolution->addWidget(new QLabel(tr("Error calculator:")), 1, 0);
+    layoutAdaptivityReferenceSolution->addWidget(cmbAdaptivityErrorCalculator, 1, 1);
+    layoutAdaptivityReferenceSolution->addWidget(chkAdaptivitySpaceRefinement, 0, 2);
+    layoutAdaptivityReferenceSolution->addWidget(chkAdaptivityUseAniso, 1, 2);
+    layoutAdaptivityReferenceSolution->addWidget(chkAdaptivityFinerReference, 2, 2);
+    layoutAdaptivityReferenceSolution->setRowStretch(50, 1);
+
+    QGroupBox *grpReferenceSolution = new QGroupBox(tr("Reference solution"), this);
+    grpReferenceSolution->setLayout(layoutAdaptivityReferenceSolution);
+
+    // transient
+    QGridLayout *layoutAdaptivityTransient = new QGridLayout();
+    layoutAdaptivityTransient->addWidget(new QLabel(tr("Steps back in transient:")), 0, 0);
+    layoutAdaptivityTransient->addWidget(txtAdaptivityBackSteps, 0, 1);
+    layoutAdaptivityTransient->addWidget(new QLabel(tr("Redone each trans. step:")), 1, 0);
+    layoutAdaptivityTransient->addWidget(txtAdaptivityRedoneEach, 1, 1);
+    layoutAdaptivityTransient->setRowStretch(50, 1);
+
+    QGroupBox *grpTransient = new QGroupBox(tr("Transient analysis"), this);
+    grpTransient->setLayout(layoutAdaptivityTransient);
+
+    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
+    layoutAdaptivity->addWidget(grpControl);
+    layoutAdaptivity->addWidget(grpReferenceSolution);
+    layoutAdaptivity->addWidget(grpTransient);
+    layoutAdaptivity->addStretch(1);
 
     QWidget *widAdaptivity = new QWidget(this);
     widAdaptivity->setLayout(layoutAdaptivity);
@@ -517,6 +549,7 @@ void FieldWidget::load()
     // adaptivity
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
     txtAdaptivitySteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
+    chkAdaptivityTolerance->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble() > 0);
     txtAdaptivityTolerance->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
     txtAdaptivityThreshold->setValue(m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
     cmbAdaptivityStoppingCriterionType->setCurrentIndex(cmbAdaptivityStoppingCriterionType->findData((AdaptivityStoppingCriterionType) m_fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()));
@@ -537,7 +570,9 @@ void FieldWidget::load()
     txtTransientTimeSkip->setValue(m_fieldInfo->value(FieldInfo::TransientTimeSkip).toDouble());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
+    chkNonlinearResidual->setChecked(m_fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble() > 0);
     txtNonlinearResidual->setValue(m_fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble());
+    chkNonlinearRelativeChangeOfSolutions->setChecked(m_fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble() > 0);
     txtNonlinearRelativeChangeOfSolutions->setValue(m_fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble());
     cmbNonlinearDampingType->setCurrentIndex(cmbNonlinearDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()));
     txtNonlinearDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble());
@@ -565,7 +600,7 @@ bool FieldWidget::save()
     // adaptivity
     m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivitySteps, txtAdaptivitySteps->value());
-    m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, txtAdaptivityTolerance->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, chkAdaptivityTolerance->isChecked() ? txtAdaptivityTolerance->value() : 0.0);
     m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, txtAdaptivityThreshold->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityStoppingCriterion, (AdaptivityStoppingCriterionType) cmbAdaptivityStoppingCriterionType->itemData(cmbAdaptivityStoppingCriterionType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivityErrorCalculator, cmbAdaptivityErrorCalculator->itemData(cmbAdaptivityErrorCalculator->currentIndex()).toString());
@@ -584,9 +619,9 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::TransientInitialCondition, txtTransientInitialCondition->value());
     m_fieldInfo->setValue(FieldInfo::TransientTimeSkip, txtTransientTimeSkip->value());
     // linearity
-    m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
-    m_fieldInfo->setValue(FieldInfo::NonlinearResidualNorm, txtNonlinearResidual->value());
-    m_fieldInfo->setValue(FieldInfo::NonlinearRelativeChangeOfSolutions, txtNonlinearRelativeChangeOfSolutions->value());
+    m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());    
+    m_fieldInfo->setValue(FieldInfo::NonlinearResidualNorm, chkNonlinearResidual->isChecked() ? txtNonlinearResidual->value() : 0.0);
+    m_fieldInfo->setValue(FieldInfo::NonlinearRelativeChangeOfSolutions, chkNonlinearRelativeChangeOfSolutions->isChecked() ? txtNonlinearRelativeChangeOfSolutions->value() : 0.0);
     m_fieldInfo->setValue(FieldInfo::NonlinearDampingCoeff, txtNonlinearDampingCoeff->value());
     m_fieldInfo->setValue(FieldInfo::NonlinearDampingType, (DampingType) cmbNonlinearDampingType->itemData(cmbNonlinearDampingType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, chkNewtonReuseJacobian->isChecked());
@@ -661,7 +696,8 @@ void FieldWidget::doShowEquation()
 void FieldWidget::doAdaptivityChanged(int index)
 {
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    chkAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityTolerance->setEnabled(((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None) && chkAdaptivityTolerance->isChecked());
     txtAdaptivityThreshold->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     cmbAdaptivityStoppingCriterionType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     cmbAdaptivityErrorCalculator->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
@@ -677,8 +713,10 @@ void FieldWidget::doAdaptivityChanged(int index)
 
 void FieldWidget::doLinearityTypeChanged(int index)
 {
-    txtNonlinearResidual->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
-    txtNonlinearRelativeChangeOfSolutions->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    chkNonlinearResidual->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtNonlinearResidual->setEnabled(((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear) && chkNonlinearResidual->isChecked());
+    chkNonlinearRelativeChangeOfSolutions->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    txtNonlinearRelativeChangeOfSolutions->setEnabled(((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear) && chkNonlinearRelativeChangeOfSolutions->isChecked());
 
     cmbNonlinearDampingType->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     doNonlinearDampingChanged(cmbNonlinearDampingType->currentIndex());
@@ -728,6 +766,21 @@ void FieldWidget::doPicardAndersonChanged(int index)
 {
     txtPicardAndersonBeta->setEnabled((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
     txtPicardAndersonNumberOfLastVectors->setEnabled((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
+}
+
+void FieldWidget::doAdaptivityTolerance(int state)
+{
+    txtAdaptivityTolerance->setEnabled(((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt() != AdaptivityType_None) && chkAdaptivityTolerance->isChecked());
+}
+
+void FieldWidget::doNonlinearResidual(int state)
+{
+    txtNonlinearResidual->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) && chkNonlinearResidual->isChecked());
+}
+
+void FieldWidget::doNonlinearRelativeChangeOfSolutions(int state)
+{
+    txtNonlinearRelativeChangeOfSolutions->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) && chkNonlinearRelativeChangeOfSolutions->isChecked());
 }
 
 // ********************************************************************************************

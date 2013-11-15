@@ -107,6 +107,7 @@ private:
     // adaptivity
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
+    QCheckBox *chkAdaptivityTolerance;
     LineEditDouble *txtAdaptivityTolerance;
     LineEditDouble *txtAdaptivityThreshold;
     QComboBox *cmbAdaptivityErrorCalculator;
@@ -126,7 +127,9 @@ private:
     QSpinBox *txtPolynomialOrder;
 
     // linearity
+    QCheckBox *chkNonlinearResidual;
     LineEditDouble *txtNonlinearResidual;
+    QCheckBox *chkNonlinearRelativeChangeOfSolutions;
     LineEditDouble *txtNonlinearRelativeChangeOfSolutions;
     QComboBox *cmbNonlinearDampingType;
     LineEditDouble *txtNonlinearDampingCoeff;
@@ -169,6 +172,10 @@ private slots:
     void doNewtonReuseJacobian(bool checked);
     void doPicardAndersonChanged(int index);
     void doShowEquation();
+
+    void doAdaptivityTolerance(int state);
+    void doNonlinearResidual(int state);
+    void doNonlinearRelativeChangeOfSolutions(int state);
 };
 
 class FieldDialog : public QDialog
