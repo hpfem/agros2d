@@ -64,22 +64,22 @@
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="73"/>
         <source>%1: generating plugin project file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de projet de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="96"/>
         <source>%1: generating plugin interface file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;interface de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="154"/>
         <source>%1: generating plugin weakform header file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de header de formulations faibles.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_coupling.cpp" line="194"/>
         <source>%1: generating plugin weakform source file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de source de formulations faibles.</translation>
     </message>
 </context>
 <context>
@@ -87,52 +87,52 @@
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="69"/>
         <source>%1: generating plugin project file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de projet de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="91"/>
         <source>%1: generating plugin interface file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;interface de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="184"/>
         <source>%1: generating plugin equations.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération des équations de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="234"/>
         <source>%1: generating plugin weakform source file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de source de formulations faibles.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="260"/>
         <source>%1: generating plugin weakform header file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de header de formulations faibles.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="326"/>
         <source>%1: generating plugin filter file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de filtre de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="442"/>
         <source>%1: generating plugin force file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier des forces de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="528"/>
         <source>%1: generating plugin local point file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier de point local de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="603"/>
         <source>%1: generating plugin surface integral file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;intégrale de surface de plugin.</translation>
     </message>
     <message>
         <location filename="../../agros2d-generator/generator_module.cpp" line="674"/>
         <source>%1: generating plugin volume integral file.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: génération de fichier d&apos;intégrale de volume de plugin.</translation>
     </message>
 </context>
 <context>
@@ -5734,12 +5734,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="52"/>
         <source>Boundary dialog doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogue des limites n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scenemarkerdialog.cpp" line="81"/>
         <source>Material dialog doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogue des matériaux n&apos;existe pas.</translation>
     </message>
 </context>
 <context>
@@ -5747,17 +5747,17 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="36"/>
         <source>Opening gzip for both reading and writing is not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;ouverture de Gzip pour la lecture et l&apos;écriture non supporté</translation>
     </message>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="44"/>
         <source>You can open a gzip either for reading or for writing. Which is it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous pouvez ouvrir une gzip soit pour la lecture ou l&apos;écriture.</translation>
     </message>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="50"/>
         <source>Could not gzopen() file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de gzopen() le fichier</translation>
     </message>
 </context>
 <context>
@@ -6092,48 +6092,48 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1162"/>
         <source>Loading problem from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de problème</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1166"/>
         <location filename="../../agros2d-library/scene.cpp" line="1239"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; ne peut pas être ouvert (%2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1172"/>
         <source>File &apos;%1&apos; is not valid Agros2D data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;est pas un fichier valid d´Agros2D.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1201"/>
         <source>Data file was transformed to new version and saved to temp dictionary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de données a été transformé en nouvelle version et enregistré dans le dictionnaire temporaire.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1220"/>
         <source>It is impossible to transform data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de transformer le fichier de données.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1224"/>
         <source>File cannot be saved (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier ne peut pas être enregistré (%2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1255"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;est pas un fichier valid d´Agros2D.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1266"/>
         <source>Convert file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir le fichier?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1267"/>
         <source>File %1 must be converted to the new version. Do you want to convert and replace current file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier %1 doit être converti à la nouvelle version. Voulez-vous transformer et remplacer le fichier actuel ?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1268"/>
@@ -6148,23 +6148,23 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1277"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; ne peut pas être enregistré (%2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2338"/>
         <source>Loading solution from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de solution</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2352"/>
         <location filename="../../agros2d-library/scene.cpp" line="2357"/>
         <source>Initial mesh is corrupted (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage initial est corrompu (%1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2378"/>
         <source>Saving solution to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement de solution</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="2385"/>
