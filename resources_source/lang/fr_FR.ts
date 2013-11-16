@@ -4593,27 +4593,27 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="1032"/>
         <source>Adaptive process failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus d&apos;adaptation a échoué : %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="1019"/>
         <source>Adaptivity step (error = %1, DOFs = %2/%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas d&apos;adaptivité (erreur = %1, DDL = %2/%3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="1048"/>
         <source>Initial time step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de temps initial</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="45"/>
         <source>Invalid field id. Plugin %1 cannot be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de champ incorrect. Plugin %1 ne peut pas être chargé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="53"/>
         <source>Invalid field id. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de champ incorrect. Les clés valides :%1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="69"/>
@@ -4640,48 +4640,48 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="398"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="423"/>
         <source>Invalid argument. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Argument invalide. Les clés valides : %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="78"/>
         <source>Number of refinements is out of range (0 - 5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de raffinement est hors de portée (0–5).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="86"/>
         <source>Polynomial order is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial est hors de portée (1–10).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="110"/>
         <source>Nonlinearity tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolérance de non-linéarité doit être positif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="155"/>
         <source>Sufficient improvement factor for Jacobian reuse is out of range (0.00001 - 1.0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur d&apos;amélioration suffisante pour réutilisation de Jacobian est hors de portée (0,00001–1,0).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="163"/>
         <source>Sufficient improvement factor is out of range (0.00001 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur d&apos;amélioration suffisante est hors de portée (0,00001–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="216"/>
         <source>Adaptivity tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolérance d&apos;adaptivité doit être positif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="298"/>
         <source>Boundary condition &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition aux limites &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="302"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="348"/>
         <source>Wrong boundary type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mauvais type de limite &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="325"/>
@@ -4689,48 +4689,48 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="476"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="574"/>
         <source>Wrong parameter &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètre non valide &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="337"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="182"/>
         <source>Boundary condition &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition aux limites &apos;%1&apos; n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="389"/>
         <source>Material &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériel &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/datatable.cpp" line="81"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="406"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="506"/>
         <source>Size doesn&apos;t match (%1 &gt; %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>La taille ne correspond pas (%1 &gt; %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/datatable.cpp" line="87"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="408"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="508"/>
         <source>Size doesn&apos;t match (%1 &lt; %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>La taille ne correspond pas (%1 &lt; %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/datatable.cpp" line="95"/>
         <source>Points must be in ascending order (%1 &lt; %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Les points doivent être en ordre ascendant (%1 &lt; %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="491"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="290"/>
         <source>Material &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériel &apos;%1&apos; n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="864"/>
         <source>Time step is out of range (0 - %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de temps est hors de portée (0–%1).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="628"/>
@@ -4761,12 +4761,12 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="367"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="443"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice d&apos;arête doit se trouver entre 0 et &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="726"/>
         <source>Label with index &apos;%1&apos; is &apos;none&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquette avec indice &apos;%1 n&apos;est pas définie.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="731"/>
@@ -4774,104 +4774,104 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="392"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="468"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice d&apos;étiquette doit se trouver entre 0 et &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="854"/>
         <source>Reference solution does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Solution de référence n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="874"/>
         <source>Adaptivity step is out of range. (0 to %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas d&apos;adaptativité est hors de portée. (0 à %1).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="775"/>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="185"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="225"/>
         <source>Problem is not meshed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le problème n&apos;est pas maillé.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="118"/>
         <source>Nonlinearity steps is out of range (1 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Les pas de non-linéarité sont hors de portée (1–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="126"/>
         <source>Newton damping coefficient is out of range (0 - 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient d&apos;amortissement (Newton) est hors de portée (0–1).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="147"/>
         <source>Number of steps needed to increase the damping coefficient is out of range (1 - 5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro de des pas nécessaires pour augmenter le coefficient d&apos;amortissement est hors de portée (1–5).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="171"/>
         <source>Maximum steps with reused Jacobian is out of range (1 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas maximale avec Jacobian réutilisé est hors de portée (1–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="184"/>
         <source>Anderson coefficient is out of range (0 - 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient d&apos;Anderson est hors de portée (0–1).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="192"/>
         <source>Number of last vector is out of range (1 - 5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de dernier vecteur est hors de portée (1–5).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="224"/>
         <source>Adaptivity steps is out of range (1 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Les pas d&apos;adaptativité sont hors de portée (1–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="232"/>
         <source>Adaptivity threshold must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuil d&apos;adaptivité doit être positif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="266"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="274"/>
         <source>Adaptivity back steps is out of range (0 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Les Pps arrières d&apos;adaptivité sont hors de portée (0–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="287"/>
         <source>Time skip must be greater than or equal to zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Saut de temps doit être plus grand ou égal à zéro.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="432"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="532"/>
         <source>Invalid parameter &apos;%1&apos;. Valid parameters are &apos;constant&apos; or &apos;linear&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètre non valide &apos;%1&apos;. Les paramètres valides sont «constante» ou «linéaire».</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="442"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="542"/>
         <source>Invalid parameter &apos;%1&apos;. Valid parameters are &apos;first&apos; or &apos;second&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètre non valide &apos;%1&apos;. Les paramètres valides sont «première» ou «deuxième».</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="832"/>
         <source>Solution is not adaptive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Solution n&apos;est pas adaptive.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="38"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="57"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="210"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Composante radiale doit être supérieure ou égale à zéro.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="157"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Angle &apos;%1&apos; est hors de portée.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="168"/>
@@ -4880,107 +4880,108 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="303"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="320"/>
         <source>Invalid field id &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de champ &apos;%1&apos; invalide.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="95"/>
         <source>Geometry does not contain nodes.</source>
-        <translation type="unfinished"></translation>
+        <translation>La géométrie ne contient pas de nœuds.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="43"/>
         <source>Node already exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœud existe déjà.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="65"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="111"/>
         <source>Edge already exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arête existe déjà.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="98"/>
         <source>Start node index is the same as index of end node.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice de premier nœud d&apos;est la même que indice de nœud terminal.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="101"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="103"/>
         <source>Node with index &apos;%1&apos; does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœud avec indice &apos;%1&apos; n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="138"/>
         <source>No edges are defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune arête est défini.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="197"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="306"/>
         <source>Number of refinements &apos;%1&apos; is out of range (0 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de raffinement &apos;%1&apos; est hors de portée (0–10).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="213"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="253"/>
         <source>Area must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aire doit être positive.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="218"/>
         <source>Label already exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquette existe déjà.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="247"/>
         <source>No labels are defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune étiquette défini.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="323"/>
         <source>Polynomial order &apos;%1&apos; is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial &apos;%1&apos; est hors de portée (1–10).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="342"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="417"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice de nœud doit se trouver entre 0 et &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="494"/>
         <source>There are no nodes around the point [%1, %2].</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y a aucun nœud autour du point [%1,%2].</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="511"/>
         <source>There are no edges around the point [%1, %2].</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y a aucune arête autour du point [%1,%2].</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="528"/>
         <source>There are no labels around the point [%1, %2].</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y a aucune étiquette autour du point [%1,%2].</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="76"/>
         <source>Trajectories of particles are not solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trajectoires des particules ne sont pas résolus.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="96"/>
         <source>The x coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>La coordonnée X est hors de portée.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="98"/>
         <source>The y coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>La coordonnée Y est hors de portée.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="119"/>
         <source>Number of particles is out of range (1 - 200).</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>–</translatorcomment>
+        <translation>Nombre de particules est hors de portée (1–200).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="127"/>
@@ -5066,7 +5067,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="156"/>
         <source>No fields are defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun champ défini.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="159"/>
@@ -5146,7 +5147,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="716"/>
         <source>Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : %1</translation>
     </message>
     <message>
         <source>Warning</source>
