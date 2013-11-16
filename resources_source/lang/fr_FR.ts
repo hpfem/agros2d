@@ -4364,37 +4364,37 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab_functions.cpp" line="37"/>
         <source>Script input</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrée de script</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab_functions.cpp" line="43"/>
         <source>Script message</source>
-        <translation type="unfinished"></translation>
+        <translation>Message de script</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/common.cpp" line="181"/>
         <source>Initial step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas initial</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/common.cpp" line="184"/>
         <source>Step: %1, time: %2 s</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas: %1, temps: %2 s</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/coupling.cpp" line="88"/>
         <source>Hard coupling is not available yet, switching to weak coupling</source>
-        <translation type="unfinished"></translation>
+        <translation>Couplage dur n&apos;est pas encore disponible, couplage faible est utilisé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/coupling.cpp" line="198"/>
         <source>Couplings dir &apos;%1&apos; doesn&apos;t exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Dir. de couplages &apos;%1&apos; n&apos;existe pas</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/coupling.cpp" line="216"/>
         <source>Unable to read coupling file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier de couplage %1 : %2</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/coupling.cpp" line="88"/>
@@ -4435,7 +4435,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="535"/>
         <source>Aborting calculation...</source>
-        <translation type="unfinished"></translation>
+        <translation>Abandon de calcul...</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="640"/>
@@ -4454,32 +4454,33 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="640"/>
         <source>Newton solver did not converge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur de Newton n&apos;a pas convergé.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="645"/>
         <source>Damping coefficient below minimum.</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient d&apos;amortissement en dessous du minimum.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="650"/>
         <source>Residual norm exceeded limit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Norme résiduelle a dépassé la limite.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="655"/>
         <source>Number of iterations exceeded limit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;itérations a dépassé la limite.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="660"/>
         <source>An error occured in Newton solver.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err occurred</translatorcomment>
+        <translation>Une erreur s&apos;est produite dans le solveur Newton.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="664"/>
         <source>Newton solver failed from unknown reason.</source>
-        <translation type="unfinished"></translation>
+        <translation>Newton solveur a échoué de raison inconnue.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="678"/>
@@ -4504,89 +4505,90 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="869"/>
         <source>Transient step %1 (%2%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas transitoire %1 (%2%)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="876"/>
         <source>Transient step %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas transitoire %1/%2</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="884"/>
         <source>Field solving (single analysis)</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolution du champ (analyse simple)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="886"/>
         <source>Fields solving (coupled analysis)</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolution du champ (analyse couplée)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="953"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err do</translatorcomment>
+        <translation>Lecteur de maillage (%1) : arêtes &apos;%2&apos; n&apos;ont pas une condition aux limites</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solutionstore.cpp" line="597"/>
         <source>Field &apos;%1&apos; info mismatch.</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ &apos;%1&apos; information décalage.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="653"/>
         <source>Solver failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur a échoué: %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="604"/>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="878"/>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="879"/>
         <source>DOF is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>DDL sont égales à zéro</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="125"/>
         <source>%1%2, </source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2, </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="166"/>
         <source>Convergence measurement &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesure de convergence &apos;%1&apos; n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="174"/>
         <source>Initial step, error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas initial, erreur : %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="179"/>
         <source>Iteration: %1, Jacobian recalculated, damping coeff.: %2, error: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Itération : %1, Jacobian recalculé, coef. d&apos;amortissement : %2, erreur : %3</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="186"/>
         <source>Iteration: %1, Jacobian reused, damping coeff.: %2, error: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Itération : %1, Jacobian réutilisé, coef. d&apos;amortissement : %2, erreur : %3</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="193"/>
         <source>Iteration: %1, calculation finished, error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Itération : %1, calcul terminé, erreur : %2</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="241"/>
         <source>Linear solver: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur linéaire : %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="584"/>
         <source>Iterative solver statistics: %1 iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistiques du solveur itératif : %1 itérations</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="763"/>
         <source>Problem is not meshed</source>
-        <translation type="unfinished"></translation>
+        <translation>Le problème n&apos;est pas maillé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="1032"/>
@@ -5153,32 +5155,32 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="358"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norme</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="360"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norme</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="362"/>
         <source>H1 seminorm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 seminorme</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="364"/>
         <source>Hdiv norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Hdiv norme</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="366"/>
         <source>Hcurl norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Hcurl norme</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="378"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="380"/>
@@ -5188,22 +5190,22 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="382"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="394"/>
         <source>Not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Inutilisé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="396"/>
         <source>Hard</source>
-        <translation type="unfinished"></translation>
+        <translation>Dur</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="398"/>
         <source>Weak</source>
-        <translation type="unfinished"></translation>
+        <translation>Faible</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="410"/>
@@ -5218,7 +5220,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="418"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Indéfini</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="424"/>
@@ -5234,93 +5236,93 @@ Voulez-vous enregistrer vos modifications ?</translation>
         <location filename="../../agros2d-library/util/enums.cpp" line="432"/>
         <location filename="../../agros2d-library/util/enums.cpp" line="574"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normale</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="434"/>
         <source>Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Référence</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="436"/>
         <location filename="../../agros2d-library/util/enums.cpp" line="578"/>
         <source>Finer</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus fin</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="448"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactivé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="450"/>
         <source>h-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>h-adaptivité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="452"/>
         <source>p-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>p-adaptivité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="454"/>
         <source>hp-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>hp-adaptivité</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="482"/>
         <source>Fixed step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas fixe</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="484"/>
         <source>Adaptive (tolerance)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivité (tolerance)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="486"/>
         <source>Adaptive (num steps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivité (nombre de pas)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="498"/>
         <source>Matrix volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume de la matrice</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="500"/>
         <source>Matrix surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface de la matrice</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="502"/>
         <source>Vector volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume vectoriel</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="504"/>
         <source>Vector surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface vectorielle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="524"/>
         <source>GMSH (exp.) - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH (exp.) : triangle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="526"/>
         <source>GMSH (exp.) - quad</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH (exp.) : quad</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="528"/>
         <source>GMSH (exp.) - quad Delaunay</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH (exp.) : quad Delaunay</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="668"/>
         <source>PARALUTION (exp.)</source>
-        <translation type="unfinished"></translation>
+        <translation>PARALUTION (exp.)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="782"/>
@@ -5340,32 +5342,32 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="798"/>
         <source>Jacobi</source>
-        <translation type="unfinished"></translation>
+        <translation>Jacobi</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="800"/>
         <source>ILU</source>
-        <translation type="unfinished"></translation>
+        <translation>ILU</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="802"/>
         <source>MultiColoredSGS</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiColoredSGS</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="804"/>
         <source>MultiColoredILU</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiColoredILU</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="806"/>
         <source>IC</source>
-        <translation type="unfinished"></translation>
+        <translation>IC</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="808"/>
         <source>AIChebyshev</source>
-        <translation type="unfinished"></translation>
+        <translation>AIChebyshev</translation>
     </message>
     <message>
         <source>Triangle</source>
@@ -5374,67 +5376,68 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="518"/>
         <source>Triangle - quad fine div.</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle : quad fin div.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="520"/>
         <source>Triangle - quad rough div.</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle : quad rêche div.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="522"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle : quad relié
+</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="516"/>
         <source>Triangle - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle : triangle</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="466"/>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Cumulative</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="468"/>
         <source>Single element</source>
-        <translation type="unfinished"></translation>
+        <translation>Élément unique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="470"/>
         <source>Levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="566"/>
         <source>Extremely coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrêmement rêche</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="568"/>
         <source>Extra coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Très rêche</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="570"/>
         <source>Coarser</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus rêche</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="572"/>
         <source>Coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Rêche</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="576"/>
         <source>Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="580"/>
         <source>Extra fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Très fin</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="592"/>
@@ -5509,27 +5512,27 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="630"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Flèche</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="632"/>
         <source>Cone</source>
-        <translation type="unfinished"></translation>
+        <translation>Cône</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="644"/>
         <source>Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Queue</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="646"/>
         <source>Head</source>
-        <translation type="unfinished"></translation>
+        <translation>Tête</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="648"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="660"/>
@@ -5569,37 +5572,37 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="691"/>
         <source>Picard&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode de Picard</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="693"/>
         <source>Newton&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode de Newton</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="705"/>
         <source>No damping</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun amortissement</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="707"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixé</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="709"/>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="721"/>
         <source>Cubic spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Spline cubique</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="723"/>
         <source>Piecewise linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linéaire par morceaux</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="725"/>
@@ -5609,92 +5612,92 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="737"/>
         <source>Heun-Euler (2,1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Heun-Euler (2,1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="739"/>
         <source>Bogacki-Shampine (2,3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bogacki-Shampine (2,3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="741"/>
         <source>Fehlberg (4,5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlberg (4,5)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="743"/>
         <source>Cash-Karp (4,5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cash-Karp (4,5)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="745"/>
         <source>Dormand-Prince (4,5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dormand-Prince (4,5)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="758"/>
         <source>Residual relative to initial norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Résiduel par rapport à la norme initiale</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="760"/>
         <source>Residual relative to previous norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Résiduel par rapport à la norme précédente</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="762"/>
         <source>Residual ratio to initial norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Taux de résiduel à la norme initiale</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="764"/>
         <source>Residual ratio to previous norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Taux de résiduel à la norme précédente</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="766"/>
         <source>Residual absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Résiduel absolu</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="768"/>
         <source>Absolute solution distance from previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance absolute à la solution précédent</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="770"/>
         <source>Relative solution distance from previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance relative de la solution précédent</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/global.cpp" line="111"/>
         <source>Could not find &apos;agros2d_plugin_%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/global.cpp" line="117"/>
         <source>Could not load &apos;agros2d_plugin_%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/xml.cpp" line="45"/>
         <source>Schema &apos;%1&apos; is not valid. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Schéma &apos;%1&apos; n&apos;est pas valide. &apos;%2&apos;</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/xml.cpp" line="58"/>
         <source>File &apos;%1&apos; is not valid Agros2D problem file. Error (line %3, column %4): %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; n&apos;est pas un fichier valid d´Agros2D. Erreur (ligne %3, colonne %4) : %2</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="88"/>
         <source>Node %1 already visited.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœud %1 déjà visité.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="553"/>
         <source>Two loops connected by one edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deux boucles reliées par une arête.</translation>
     </message>
     <message>
         <source>Solution</source>
@@ -5711,22 +5714,22 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/form_interface.cpp" line="43"/>
         <source>Could not find &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_interface.cpp" line="51"/>
         <source>Could not load &apos;%1&apos;. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger &apos;%1&apos;. %2</translation>
     </message>
     <message>
         <location filename="../../agros2d-solver/main.cpp" line="82"/>
         <source>Unknown suffix.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suffixe inconnu.</translation>
     </message>
     <message>
         <location filename="../../agros2d-solver/main.cpp" line="91"/>
         <source>File &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &apos;%1&apos; est introuvable.</translation>
     </message>
 </context>
 <context>
