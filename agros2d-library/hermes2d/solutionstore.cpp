@@ -64,8 +64,10 @@ void SolutionStore::clearAll()
     foreach (FieldSolutionID sid, m_multiSolutions)
         removeSolution(sid, false);
 
-    // speedup
-    saveRunTimeDetails();
+    // remove runtime
+    QString fn = QString("%1/runtime.xml").arg(cacheProblemDir());
+    if (QFile::exists(fn))
+        QFile::remove(fn);
 
     assert(m_multiSolutions.isEmpty());
     assert(m_multiSolutionRunTimeDetails.isEmpty());
