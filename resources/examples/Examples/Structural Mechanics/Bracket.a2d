@@ -38,7 +38,7 @@
 
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="hp-adaptivity" analysis_type="steadystate" field_id="elasticity" linearity_type="linear" matrix_solver="mumps">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="elasticity" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -116,7 +116,7 @@
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
-          <field_item field_key="SpacePolynomialOrder" field_value="1"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="8"/>
           <field_item field_key="AdaptivityTolerance" field_value="0"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="3"/>
@@ -232,7 +232,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="2.64316176123077e-07"/>
+    <item key="View_ScalarRangeMax" value="2.64462112076273e-07"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="elasticity_displacement"/>
     <item key="View_VectorProportional" value="1"/>
@@ -241,7 +241,7 @@
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
-    <item key="View_OrderComponent" value="2"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
