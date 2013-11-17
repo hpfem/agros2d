@@ -10,7 +10,7 @@ FILEVERSION    ${VERSION_MAJOR},${VERSION_MINOR},${VERSION_SUB},${NUMBER_OF_COMM
   {
    VALUE "CompanyName", "hpfem.org"
    VALUE "ProductName", "Agros2D"
-   VALUE "FileDescription", "An aplication for solution of physical fields"
+   VALUE "FileDescription", "Application for the solution of physical problems"
   }
  }
  BLOCK "VarFileInfo"
