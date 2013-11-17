@@ -121,6 +121,17 @@ class TestProblemTime(Agros2DTestCase):
         with self.assertRaises(RuntimeError):
             self.problem.elapsed_time()
 
+    """ time_callback """
+    def time_callback(self, time_step):
+        self.steps += 1
+        return True
+
+    def test_time_callback(self):
+        self.steps = 0
+        self.problem.time_callback = self.time_callback
+        self.problem.solve()
+        self.assertEqual(self.problem.time_steps, self.steps)
+
 class TestProblemSolution(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
@@ -210,8 +221,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemTime))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemSolution))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemAdaptiveSolution))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemSolution))
+    #uite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemAdaptiveSolution))
     suite.run(result)
