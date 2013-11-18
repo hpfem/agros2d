@@ -52,9 +52,6 @@ public:
     // number of threads
     int numberOfThreads;
 
-    // solver cache
-    bool useSolverCache;
-
     void load();
     void save();
 };

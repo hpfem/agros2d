@@ -122,9 +122,6 @@ cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
         int getCacheSize()
         void setCacheSize(int size) except +
 
-        bool getSolverCache()
-        void setSolverCache(bool cache)
-
         bool getSaveMatrixRHS()
         void setSaveMatrixRHS(bool save)
 
@@ -175,12 +172,6 @@ cdef class __Options__:
             return self.thisptr.getCacheSize()
         def __set__(self, size):
             self.thisptr.setCacheSize(size)
-
-    property solver_cache:
-        def __get__(self):
-            return self.thisptr.getSolverCache()
-        def __set__(self, cache):
-            self.thisptr.setSolverCache(cache)
 
     property save_matrix_and_rhs:
         def __get__(self):

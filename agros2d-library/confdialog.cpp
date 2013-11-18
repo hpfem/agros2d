@@ -73,9 +73,6 @@ void ConfigComputerDialog::load()
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
 
-    // solver cache
-    chkUseSolverCache->setChecked(Agros2D::configComputer()->useSolverCache);
-
     // cache size
     txtCacheSize->setValue(Agros2D::configComputer()->cacheSize);
 
@@ -118,9 +115,6 @@ void ConfigComputerDialog::save()
 
     // number of threads
     Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();
-
-    // solver cache
-    Agros2D::configComputer()->useSolverCache = chkUseSolverCache->isChecked();
 
     // cache size
     Agros2D::configComputer()->cacheSize = txtCacheSize->value();
@@ -245,7 +239,6 @@ QWidget *ConfigComputerDialog::createMainWidget()
 QWidget *ConfigComputerDialog::createSolverWidget()
 {
     // general
-    chkUseSolverCache = new QCheckBox(tr("Use solver cache (large memory requirements)"));
     txtCacheSize = new QSpinBox(this);
     txtCacheSize->setMinimum(2);
     txtCacheSize->setMaximum(50);
@@ -259,7 +252,6 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     layoutSolver->addWidget(txtNumOfThreads, 0, 1);
     layoutSolver->addWidget(new QLabel(tr("Number of cache slots:")), 1, 0);
     layoutSolver->addWidget(txtCacheSize, 1, 1);
-    layoutSolver->addWidget(chkUseSolverCache, 2, 0, 1, 2);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);

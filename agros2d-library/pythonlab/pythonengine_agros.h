@@ -144,10 +144,6 @@ struct PyOptions
     inline int getCacheSize() const { return Agros2D::configComputer()->cacheSize; }
     void setCacheSize(int size);
 
-    // solver cache
-    inline bool getSolverCache() const { return Agros2D::configComputer()->useSolverCache; }
-    inline void setSolverCache(bool cache) { Agros2D::configComputer()->useSolverCache = cache; }
-
     // save matrix and rhs
     inline bool getSaveMatrixRHS() const { return Agros2D::configComputer()->saveMatrixRHS; }
     inline void setSaveMatrixRHS(bool save) { Agros2D::configComputer()->saveMatrixRHS = save; }
