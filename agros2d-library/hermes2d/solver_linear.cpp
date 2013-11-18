@@ -53,12 +53,6 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
     m_linearSolver = new LinearSolverAgros<Scalar>(block);
     m_linearSolver->set_verbose_output(false);
 
-    // solver cache
-    m_linearSolver->set_do_not_use_cache(true);
-    if (Agros2D::configComputer()->useSolverCache)
-        if (block->isTransient() || block->adaptivityType() != AdaptivityType_None)
-            m_linearSolver->set_do_not_use_cache(false);
-
     this->m_constJacobianPossible = true;
 }
 

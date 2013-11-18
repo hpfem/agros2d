@@ -17,6 +17,10 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#if QT_VERSION < 0x050000 && defined WIN32
+#include "GL/glew.h"
+#endif
+
 #include "sceneview_common.h"
 
 #include "util/global.h"
