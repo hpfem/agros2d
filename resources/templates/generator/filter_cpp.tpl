@@ -23,12 +23,10 @@
 #include "util.h"
 #include "util/global.h"
 
-
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
 #include "hermes2d/plugin_interface.h"
-
 
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
@@ -38,6 +36,11 @@
       m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
     m_variableHash = qHash(m_variable);
+
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
+        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
+    {{/SPECIAL_FUNCTION_SOURCE}}
 }
 
 Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, bool use_MeshHashGrid, Hermes::Hermes2D::Element* e)
@@ -76,12 +79,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     int elementMarker = e->marker;
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
-    {{/VARIABLE_MATERIAL}}
-    {{#SPECIAL_FUNCTION_SOURCE}}    
-    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
-    if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
-        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
-    {{/SPECIAL_FUNCTION_SOURCE}}
+    {{/VARIABLE_MATERIAL}}    
     {{#VARIABLE_SOURCE}}
     if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}})
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})

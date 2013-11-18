@@ -27,6 +27,8 @@
 #include "hermes2d/field.h"
 #include "hermes2d.h"
 
+#include "{{ID}}_interface.h"
+
 class {{CLASS}}ViewScalarFilter : public Hermes::Hermes2D::Filter<double>
 {
 public:
@@ -52,6 +54,9 @@ private:
     QString m_variable;
     uint m_variableHash;
     PhysicFieldVariableComp m_physicFieldVariableComp;
+
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
 };
 
 #endif // {{ID}}_FILTER_H

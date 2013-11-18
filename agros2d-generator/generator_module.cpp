@@ -752,10 +752,6 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
 
     std::string text;
 
-    // header - expand template
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                              ctemplate::DO_NOT_STRIP, &output, &text);
-
     foreach (XMLModule::quantity quantity, m_module->volume().quantity())
     {
         if (quantity.shortname().present())
@@ -838,6 +834,11 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
     }
 
     generateSpecialFunctionsPostprocessor(output);
+
+
+    // header - expand template
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_filter.h").
