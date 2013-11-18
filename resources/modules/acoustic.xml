@@ -217,6 +217,10 @@
         <module:expression analysistype="harmonic" axi="20 * log10(sqrt(value1*value1 + value2*value2) / P0)" planar="20 * log10(sqrt(value1*value1 + value2*value2) / P0)"/>
         <module:expression analysistype="transient" axi="20 * log10(value1 / P0)" planar="20 * log10(value1 / P0)"/>
       </module:localvariable>
+      <module:localvariable id="acoustic_local_acceleration" name="Local acceleration" shortname="a" shortname_html="&lt;i>a&lt;/i>" shortname_latex="a" type="vector" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}">
+        <module:expression analysistype="harmonic" axi_r="- sqrt(dr1*dr1 + dr2*dr2) / ac_rho" axi_z="- sqrt(dz1*dz1 + dz2*dz2) / ac_rho" planar_x="- sqrt(dx1*dx1 + dx2*dx2) / ac_rho" planar_y="- sqrt(dy1*dy1 + dy2*dy2) / ac_rho"/>
+        <module:expression analysistype="transient" axi_r="- sqrt(dr1*dr1 + dr2*dr2) / ac_rho" axi_z="- sqrt(dz1*dz1 + dz2*dz2) / ac_rho" planar_x="- sqrt(dx1*dx1 + dx2*dx2) / ac_rho" planar_y="- sqrt(dy1*dy1 + dy2*dy2) / ac_rho"/>
+      </module:localvariable>
       <module:localvariable id="acoustic_local_acceleration_real" name="Local acceleration - real" shortname="ar" shortname_html="&lt;i>a&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="a_{r}" type="vector" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}">
         <module:expression analysistype="harmonic" axi_r="- dr1 / ac_rho" axi_z="- dz1 / ac_rho" planar_x="- dx1 / ac_rho" planar_y="- dy1 / ac_rho"/>
         <module:expression analysistype="transient" axi_r="- dr1 / ac_rho" axi_z="- dz1 / ac_rho" planar_x="- dx1 / ac_rho" planar_y="- dy1 / ac_rho"/>
@@ -224,7 +228,7 @@
       <module:localvariable id="acoustic_local_acceleration_imag" name="Local acceleration - imag" shortname="ai" shortname_html="&lt;i>a&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="a_{i}" type="vector" unit="m/s2" unit_html="m.s&lt;sup>-2&lt;/sup>" unit_latex="m \cdot s^{-2}">
         <module:expression analysistype="harmonic" axi_r="- dr2 / ac_rho" axi_z="- dz2 / ac_rho" planar_x="- dx2 / ac_rho" planar_y="- dy2 / ac_rho"/>
       </module:localvariable>
-      <module:localvariable id="acoustic_pressure derivative" name="Pressure derivative" shortname="dpr" shortname_html="&lt;i>dpr&lt;/i>" shortname_latex="c" type="scalar" unit="Pa/s" unit_html="Pa.s&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s^{-1}">
+      <module:localvariable id="acoustic_pressure_derivative" name="Pressure derivative" shortname="dpr" shortname_html="&lt;i>dpr&lt;/i>" shortname_latex="c" type="scalar" unit="Pa/s" unit_html="Pa.s&lt;sup>-1&lt;/sup>" unit_latex="Pa \cdot s^{-1}">
         <module:expression analysistype="transient" axi="value2" planar="value2"/>
       </module:localvariable>
       <module:localvariable id="acoustic_density" name="Mass density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" type="scalar" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}">
@@ -246,6 +250,7 @@
         <module:default analysistype="transient" id="acoustic_local_acceleration_real"/>
       </module:vector_view>
     </module:view>
+
     <module:volumeintegrals>
       <module:volumeintegral id="acoustic_volume" name="Volume" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
         <module:expression analysistype="harmonic" axi="2.0 * PI * r" planar="1.0"/>
@@ -255,7 +260,21 @@
         <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
         <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:volumeintegral>
+      <module:volumeintegral id="acoustic_pressure" name="Pressure" shortname="p" shortname_html="&lt;i>p&lt;/i>" shortname_latex="p" unit="Pa.m3" unit_html="Pa.m&lt;sup>3&lt;/sup>" unit_latex="Pa \cdot m^{3}">
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r * sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="acoustic_pressure_real" name="Pressure - real" shortname="pr" shortname_html="&lt;i>p&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="p_{r}" unit="Pa.m3" unit_html="Pa.m&lt;sup>3&lt;/sup>" unit_latex="Pa \cdot m^{3}">
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r * value1" planar="value1"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" shortname_html="&lt;i>p&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="p_{i}" unit="Pa.m3" unit_html="Pa.m&lt;sup>3&lt;/sup>" unit_latex="Pa \cdot m^{3}">
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r * value2" planar="value2"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * value2" planar="value2"/>
+      </module:volumeintegral>
+
     </module:volumeintegrals>
+
     <module:surfaceintegrals>
       <module:surfaceintegral id="acoustic_length" name="Length" shortname="l" shortname_html="&lt;i>l&lt;/i>" shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
         <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
