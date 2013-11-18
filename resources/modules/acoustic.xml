@@ -272,7 +272,6 @@
         <module:expression analysistype="harmonic" axi="2.0 * PI * r * value2" planar="value2"/>
         <module:expression analysistype="transient" axi="2.0 * PI * r * value2" planar="value2"/>
       </module:volumeintegral>
-
     </module:volumeintegrals>
 
     <module:surfaceintegrals>
@@ -283,6 +282,18 @@
       <module:surfaceintegral id="acoustic_surface" name="Surface" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
         <module:expression analysistype="harmonic" axi="2.0 * PI * r" planar="1.0"/>
         <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="acoustic_pressure" name="Pressure" shortname="p" shortname_html="&lt;i>p&lt;/i>" shortname_latex="p" unit="Pa.m2" unit_html="Pa.m&lt;sup>2&lt;/sup>" unit_latex="Pa \cdot m^{2}">
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r * sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="acoustic_pressure_real" name="Pressure - real" shortname="pr" shortname_html="&lt;i>p&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="p_{r}" unit="Pa.m2" unit_html="Pa.m&lt;sup>2&lt;/sup>" unit_latex="Pa \cdot m^{2}">
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r * value1" planar="value1"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="acoustic_pressure_imag" name="Pressure - imag" shortname="pi" shortname_html="&lt;i>p&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="p_{i}" unit="Pa.m2" unit_html="Pa.m&lt;sup>2&lt;/sup>" unit_latex="Pa \cdot m^{2}">
+        <module:expression analysistype="harmonic" axi="2.0 * PI * r * value2" planar="value2"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * value2" planar="value2"/>
       </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force/>

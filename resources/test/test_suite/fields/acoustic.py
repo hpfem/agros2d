@@ -67,11 +67,9 @@ class AcousticHarmonicPlanar(Agros2DTestCase):
         self.value_test("Acoustic pressure - imag", volume["pi"], -1.918928e-5)
         
         # surface integral 
-        # surface = acoustic.surface_integrals([0])
-        # testPs_real = agros2d.test("Pressure - real", surface["p_real"], 3.079084e-4)
-        # testPs_imag = agros2d.test("Pressure - imag", surface["p_imag"], 4.437581e-5)
-        
-        # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
+        surface = self.acoustic.surface_integrals([7])
+        self.value_test("Acoustic pressure - real", surface["pr"], 3.079084e-4)
+        self.value_test("Acoustic pressure - imag", surface["pi"], 4.437581e-5)      
         
 
 class AcousticHarmonicAxisymmetric(Agros2DTestCase):
@@ -134,18 +132,18 @@ class AcousticHarmonicAxisymmetric(Agros2DTestCase):
         self.value_test("Acoustic pressure", point["p"], 0.49271)
         self.value_test("Acoustic pressure - real", point["pr"], 0.395866)
         self.value_test("Acoustic pressure - imag", point["pi"], 0.293348)
-        # testSPL = acoustic.test("Acoustic sound level", point["SPL"], 84.820922)
-        
+        self.value_test("Acoustic sound level", point["SPL"], 84.820922, 8)  
+
         # volume integral
-        # volume = acoustic.volume_integrals([0])
-        #testPv_real = agros2d.test("Pressure - real", volume["p_real"], -0.030632)
-        #testPv_imag = aagros2d.test("Pressure - imag", volume["p_imag"], -0.010975)
+        volume = self.acoustic.volume_integrals([0])
+        self.value_test("Acoustic pressure - real", volume["pr"], -0.030632)
+        self.value_test("Acoustic pressure - imag", volume["pi"], -0.010975)
         
-        # surface integral
-        # surface = acoustic.surface_integrals([0])
-        #testPs_real = agros2d.test("Pressure - real", surface["p_real"], 0.196756)
-        #testPs_imag = agros2d.test("Pressure - imag", surface["p_imag"], -0.324708)
-        
+        # surface integral 
+        surface = self.acoustic.surface_integrals([0])
+        self.value_test("Acoustic pressure - real", surface["pr"], 0.196756)
+        self.value_test("Acoustic pressure - imag", surface["pi"], -0.324708)   
+               
 class AcousticTransientPlanar(Agros2DTestCase):
     def setUp(self):          
         # problem
@@ -281,8 +279,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicPlanar))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicAxisymmetric))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicAxisymmetric))
     #suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticTransientPlanar))
     #suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticTransientAxisymmetric))    
     suite.run(result)
