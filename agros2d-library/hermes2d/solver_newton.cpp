@@ -207,9 +207,6 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     {
         assert(0);
     }
-
-    // solver cache
-    m_newtonSolver->set_do_not_use_cache(!Agros2D::configComputer()->useSolverCache);
 }
 
 template <typename Scalar>

@@ -163,9 +163,6 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     {
         m_picardSolver->use_Anderson_acceleration(false);
     }
-
-    // solver cache
-    m_picardSolver->set_do_not_use_cache(!Agros2D::configComputer()->useSolverCache);
 }
 
 template <typename Scalar>
