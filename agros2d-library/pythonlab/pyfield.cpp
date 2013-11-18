@@ -284,7 +284,11 @@ void PyField::modifyBoundary(const std::string &name, const std::string &type,
 
 void PyField::removeBoundary(const std::string &name)
 {
-    Agros2D::scene()->removeBoundary(Agros2D::scene()->getBoundary(m_fieldInfo, QString::fromStdString(name)));
+    SceneBoundary *sceneBoundary = Agros2D::scene()->getBoundary(m_fieldInfo, QString::fromStdString(name));
+    if (sceneBoundary == NULL)
+        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+
+    Agros2D::scene()->removeBoundary(sceneBoundary);
 }
 
 void PyField::addMaterial(const std::string &name, const map<std::string, double> &parameters,
@@ -313,10 +317,12 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
                 int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x.at((*i).first).size() : 0);
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y.at((*i).first).size() : 0);
                 if (lenx != leny)
+                {
                     if (lenx > leny)
                         throw invalid_argument(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
                     else
                         throw invalid_argument(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
+                }
 
                 DataTableType dataTableType = DataTableType_PiecewiseLinear;
                 bool splineFirstDerivatives = true;
@@ -329,6 +335,9 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
                     {
                         if (QString::fromStdString((*is).first) == "interpolation")
                         {
+                            if (!dataTableTypeStringKeys().contains(QString::fromStdString((*is).second)))
+                                throw invalid_argument(QObject::tr("Invalid parameter '%1'. Valid parameters: %2").arg(QString::fromStdString((*is).second))
+                                                                                                                  .arg(stringListToString(dataTableTypeStringKeys())).toStdString());
                             dataTableType = dataTableTypeFromStringKey(QString::fromStdString((*is).second));
                             assert(dataTableType != DataTableType_Undefined);
                         }
@@ -488,7 +497,11 @@ void PyField::modifyMaterial(const std::string &name, const map<std::string, dou
 
 void PyField::removeMaterial(const std::string &name)
 {
-    Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name)));
+    SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name));
+    if (sceneMaterial == NULL)
+        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
+
+    Agros2D::scene()->removeMaterial(sceneMaterial);
 }
 
 void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,

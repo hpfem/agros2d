@@ -94,16 +94,146 @@ class TestFieldBoundaries(Agros2DTestCase):
 
     """ add_boundary """
     def test_add_boundary(self):
-        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0,
-                                                                "magnetic_potential_imag" : 0})
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+        a2d.geometry.add_edge(0, 0, 1, 1, boundaries = {'magnetic' : 'A = 0'})
+
+    def test_add_existing_boundary(self):
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+        with self.assertRaises(ValueError):
+            self.field.add_boundary("A = 0", "wrong_boundary_type", {"magnetic_potential_real" : 0})
+    def test_add_boundary_with_wrong_type(self):
+        with self.assertRaises(ValueError):
+            self.field.add_boundary("A = 0", "wrong_boundary_type", {"magnetic_potential_real" : 0})
+    def test_add_boundary_with_wrong_parameter(self):
+        with self.assertRaises(ValueError):
+            self.field.add_boundary("A = 0", "magnetic_potential", {"wrong_parameter" : 0})
+
+    """ modify_boundary """
+    def test_modify_nonexistent_boundary(self):
+        with self.assertRaises(ValueError):
+            self.field.modify_boundary("Nonexistent boundary", "magnetic_potential", {"magnetic_potential_real" : 0})
+    def test_modify_boundary_with_wrong_type(self):
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+        with self.assertRaises(ValueError):
+            self.field.add_boundary("A = 0", "wrong_boundary_type", {"magnetic_potential_real" : 0})
+    def test_modify_boundary_with_wrong_parameter(self):
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+        with self.assertRaises(ValueError):
+            self.field.add_boundary("A = 0", "magnetic_potential", {"wrong_parameter" : 0})
+
+    """ remove_boundary """
+    def test_remove_boundary(self):
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+        self.field.remove_boundary("A = 0")
+
+        with self.assertRaises(ValueError):
+            a2d.geometry.add_edge(0, 0, 1, 1, boundaries = {'magnetic' : 'A = 0'})
+
+    def test_remove_nonexistent_boundary(self):
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
+        with self.assertRaises(ValueError):
+            self.field.remove_boundary("Nonexistent boundary")
+
+class TestFieldMaterials(Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.field = a2d.field('magnetic')
+        self.field.analysis_type = 'harmonic'
+
+    """ add_material """
+    def test_add_material(self):
+        self.field.add_material("Iron", {"magnetic_permeability" : 1e3})
+        a2d.geometry.add_label(0, 0, materials = {'magnetic' : 'Iron'})
+
+    def test_add_existing_material(self):
+        self.field.add_material("Iron", {"magnetic_permeability" : 1e3})
+        with self.assertRaises(ValueError):
+            self.field.add_material("Iron", {"magnetic_permeability" : 1e3})
+
+    def test_add_material_with_wrong_parameter(self):
+        with self.assertRaises(ValueError):
+            self.field.add_material("Iron", {"wrong_parameter" : 1e3})
+
+    """
+    TODO (Franta)
+    def test_add_material_with_wrong_parameter(self):
+        with self.assertRaises(ValueError):
+            self.field.add_material("Iron", {"magnetic_permeability" : -1e3})
+    """
+
+    def add_material(self, interpolation = "piecewise_linear",
+                           extrapolation = "constant",
+                           derivative = "first"):
+        self.field.add_material("Iron", {"magnetic_permeability" : { "value" : 1e3,
+                                                                     "x" : [0, 0.454, 1.1733, 1.4147, 1.7552, 1.8595, 1.9037, 1.9418],
+                                                                     "y" : [9300, 9264, 6717.2, 4710.5, 1664.8, 763.14, 453.7, 194.13],
+                                                                     "interpolation" : interpolation,
+                                                                     "extrapolation" : extrapolation,
+                                                                     "derivative_at_endpoints" : derivative}})
+
+    def test_add_nonlinear_material(self):
+        self.add_material()
+        a2d.geometry.add_label(0, 0, materials = {'magnetic' : 'Iron'})
+
+    def test_add_nonlinear_material_with_wrong_x_length(self):
+        with self.assertRaises(ValueError):
+            self.field.add_material("Iron", {"magnetic_permeability" : { "value" : 1e3,
+                                                                         "x" : [0, 0.454, 1.1733, 1.4147, 1.7552, 1.8595, 1.9037],
+                                                                         "y" : [9300, 9264, 6717.2, 4710.5, 1664.8, 763.14, 453.7, 194.13]}})
+
+    def test_add_nonlinear_material_with_wrong_y_length(self):
+        with self.assertRaises(ValueError):
+            self.field.add_material("Iron", {"magnetic_permeability" : { "value" : 1e3,
+                                                                         "x" : [0, 0.454, 1.1733, 1.4147, 1.7552, 1.8595, 1.9037, 1.9418],
+                                                                         "y" : [9300, 9264, 6717.2, 4710.5, 1664.8, 763.14, 453.7]}})
+
+    def test_add_nonlinear_material_with_nonascending_order(self):
+        with self.assertRaises(ValueError):
+            self.field.add_material("Iron", {"magnetic_permeability" : { "value" : 1e3,
+                                                                         "x" : [0, 0.454, 1.4147, 1.7552, 1.8595, 1.9037, 1.1733],
+                                                                         "y" : [9300, 9264, 4710.5, 1664.8, 763.14, 453.7, 6717.2]}})
+
+    def test_add_nonlinear_material_with_interpolation(self):
+        for interpolation in ['cubic_spline', 'piecewise_linear', 'constant']:
+            self.add_material(interpolation = interpolation)
+            self.field.remove_material('Iron')
+
+        with self.assertRaises(ValueError):
+            self.add_material(interpolation = "wrong_interpolation")
+
+    def test_add_nonlinear_material_with_extrapolation(self):
+        for extrapolation in ['constant', 'linear']:
+            self.add_material(extrapolation = extrapolation)
+            self.field.remove_material('Iron')
+
+        with self.assertRaises(ValueError):
+            self.add_material(extrapolation = "wrong_extrapolation")
+
+    def test_add_nonlinear_material_with_derivative_at_endpoints(self):
+        for derivative in ['first', 'second']:
+            self.add_material(derivative = derivative)
+            self.field.remove_material('Iron')
+
+        with self.assertRaises(ValueError):
+            self.add_material(derivative = "wrong_derivative")
+
+    """ remove_material """
+    def test_remove_material(self):
+        self.add_material()
+        self.field.remove_material("Iron")
+
+        with self.assertRaises(ValueError):
+            a2d.geometry.add_label(0, 0, materials = {'magnetic' : 'Iron'})
+
+    def test_remove_nonexistent_material(self):
+        self.add_material()
+        with self.assertRaises(ValueError):
+            self.field.remove_material("Nonexistent material")
 
 # TODO (Franta) :
 """
-modify_boundary
-remove_boundary
-add_material
 modify_material
-remove_material
+
 local_values
 surface_integrals
 volume_integrals
@@ -364,9 +494,10 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMatrixSolver))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMaterials))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMatrixSolver))
+    #uite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
     suite.run(result)

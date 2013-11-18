@@ -57,7 +57,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         void modifyBoundary(string &name, string &type,
                             map[string, double] &parameters,
                             map[string, string] &expressions) except +
-        void removeBoundary(string &name)
+        void removeBoundary(string &name) except +
 
         void addMaterial(string &name, map[string, double] &parameters,
                          map[string, string] &expressions,
@@ -69,7 +69,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
                             map[string, vector[double]] &nonlin_x,
                             map[string, vector[double]] &nonlin_y,
                             map[string, map[string, string]] &settings) except +
-        void removeMaterial(string &name)
+        void removeMaterial(string &name) except +
 
         void solve()
 
