@@ -5392,7 +5392,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="522"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished">Triangle : quad relié</translation>
+        <translation>Triangle : quad relié</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="516"/>
