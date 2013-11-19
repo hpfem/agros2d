@@ -47,7 +47,7 @@ int PyGeometry::addNode(double x, double y)
     return Agros2D::scene()->nodes->items().indexOf(node);
 }
 
-int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int segments, int isCurvilinear,
+int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int segments, int curvilinear,
                         const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
@@ -71,7 +71,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     SceneNode *nodeEnd = new SceneNode(Point(x2, y2));
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
     SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd,
-                                    angle, segments, isCurvilinear);
+                                    angle, segments, curvilinear);
 
     try
     {
@@ -89,7 +89,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     return Agros2D::scene()->edges->items().indexOf(edge);
 }
 
-int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int segments, int isCurvilinear,
+int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int segments, int curvilinear,
                                const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
@@ -117,7 +117,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     }
 
     SceneEdge *edge = new SceneEdge(Agros2D::scene()->nodes->at(nodeStartIndex), Agros2D::scene()->nodes->at(nodeEndIndex),
-                                    angle, segments, isCurvilinear);
+                                    angle, segments, curvilinear);
 
     try
     {

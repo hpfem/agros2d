@@ -589,7 +589,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                 if (edge->segments() > 3)
                     str += ", segments = " + QString::number(edge->segments());
                 if (!edge->isCurvilinear())
-                    str += ", is_curvilinear = False";
+                    str += ", curvilinear = False";
             }
 
             // refinement

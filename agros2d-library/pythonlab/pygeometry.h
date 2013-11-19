@@ -36,9 +36,9 @@ class PyGeometry
 
         // add operations
         int addNode(double x, double y);
-        int addEdge(double x1, double y1, double x2, double y2, double angle, int segments, int isCurvilinear,
+        int addEdge(double x1, double y1, double x2, double y2, double angle, int segments, int curvilinear,
                     const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries);
-        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int segments, int isCurvilinear,
+        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int segments, int curvilinear,
                            const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries);
         int addLabel(double x, double y, double area, const map<std::string, int> &refinements,
                      const map<std::string, int> &orders, const map<std::string, std::string> &materials);
