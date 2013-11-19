@@ -221,8 +221,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemTime))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemSolution))
-    #uite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemAdaptiveSolution))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemSolution))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemAdaptiveSolution))
     suite.run(result)

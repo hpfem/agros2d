@@ -1,11 +1,7 @@
 __all__ = ["scenario", "adaptivity", "coupled_problems", "fields", "internal", "particle_tracing", "script"]
 
-#from scenario import Agros2DTestCase
-#from scenario import Agros2DTestResult
-#from scenario import find_all_tests
-#from scenario import run
-
 import scenario
+import inspect
 
 import adaptivity
 import coupled_problems
@@ -15,91 +11,117 @@ import internal
 import particle_tracing
 import script
 
+def get_tests(object):
+    tests = list()
+
+    if isinstance(object, list):
+        for member in object:
+            tests += get_tests(member)
+    else:
+        for name, obj in inspect.getmembers(object):
+            test_or_benchmark = name.startswith('Test') or name.startswith('Benchmark')
+            if inspect.isclass(obj) and test_or_benchmark:
+                tests.append(obj)
+
+    return tests
+
+""" fields """
+test_fields = get_tests([fields.electrostatic, fields.current, fields.magnetic, fields.heat,
+                         fields.elasticity, fields.flow, fields.acoustic, fields.rf_te, fields.rf_tm])
+
+""" coupled """
+test_coupled = get_tests(coupled_problems.basic_coupled_problems)
+
+""" nonlin """
+test_nonlin = [
+fields.heat.TestHeatNonlinPlanar,
+fields.magnetic.TestMagneticNonlinPlanar,
+fields.magnetic.TestMagneticHarmonicNonlinPlanar,
+fields.magnetic.TestMagneticHarmonicNonlinAxisymmetric,
+fields.flow.TestFlowPlanar,
+fields.flow.TestFlowAxisymmetric
+]
+
+""" adaptivity """
+test_adaptivity = get_tests(adaptivity.adaptivity)
+
+""" fields """
+test_tracing = get_tests(particle_tracing.particle_tracing)
+
+""" script """
+test_script = get_tests([script.problem, script.field, script.geometry, script.benchmark])
+
+""" examples """
+test_examples = examples.examples.tests
+
+""" internal """
+test_internal = get_tests(internal.matrix_solvers)
+test_internal += get_tests(internal.generator)
+test_internal += internal.xslt.tests
+
+""" complete """
+test_complete = test_fields + test_coupled + test_adaptivity + test_tracing +\
+                test_script + test_examples + test_internal
+
+#print(len(test_complete))
+
+""" fast """
 test_fast = [
 # electrostatic field
-fields.electrostatic.ElectrostaticPlanar, 
-fields.electrostatic.ElectrostaticAxisymmetric,
+fields.electrostatic.TestElectrostaticPlanar, 
+fields.electrostatic.TestElectrostaticAxisymmetric,
 # current field
-fields.current.CurrentPlanar,
-fields.current.CurrentAxisymmetric,
+fields.current.TestCurrentPlanar,
+fields.current.TestCurrentAxisymmetric,
 # elasticity
-fields.elasticity.ElasticityPlanar,
-fields.elasticity.ElasticityAxisymmetric,
+fields.elasticity.TestElasticityPlanar,
+fields.elasticity.TestElasticityAxisymmetric,
 # incompressible flow
-fields.flow.FlowPlanar,
-fields.flow.FlowAxisymmetric,
+fields.flow.TestFlowPlanar,
+fields.flow.TestFlowAxisymmetric,
 # acoustic field
-fields.acoustic.AcousticHarmonicPlanar,
-fields.acoustic.AcousticHarmonicAxisymmetric,
+fields.acoustic.TestAcousticHarmonicPlanar,
+fields.acoustic.TestAcousticHarmonicAxisymmetric,
 # heat transfer
-fields.heat.HeatPlanar,
-fields.heat.HeatAxisymmetric,
-fields.heat.HeatNonlinPlanar,
-fields.heat.HeatTransientAxisymmetric,
+fields.heat.TestHeatPlanar,
+fields.heat.TestHeatAxisymmetric,
+fields.heat.TestHeatNonlinPlanar,
+fields.heat.TestHeatTransientAxisymmetric,
 # magnetic field
-fields.magnetic.MagneticPlanar,
-fields.magnetic.MagneticPlanarTotalCurrent,
-fields.magnetic.MagneticAxisymmetric,
-fields.magnetic.MagneticAxisymmetricTotalCurrent,
-fields.magnetic.MagneticHarmonicPlanar,
-fields.magnetic.MagneticHarmonicAxisymmetric,
-fields.magnetic.MagneticHarmonicPlanarTotalCurrent,
-fields.magnetic.MagneticHarmonicAxisymmetricTotalCurrent,
-fields.magnetic.MagneticNonlinPlanar,
-fields.magnetic.MagneticNonlinAxisymmetric,
-fields.magnetic.MagneticHarmonicNonlinPlanar,
-fields.magnetic.MagneticHarmonicNonlinAxisymmetric,
+fields.magnetic.TestMagneticPlanar,
+fields.magnetic.TestMagneticPlanarTotalCurrent,
+fields.magnetic.TestMagneticAxisymmetric,
+fields.magnetic.TestMagneticAxisymmetricTotalCurrent,
+fields.magnetic.TestMagneticHarmonicPlanar,
+fields.magnetic.TestMagneticHarmonicAxisymmetric,
+fields.magnetic.TestMagneticHarmonicPlanarTotalCurrent,
+fields.magnetic.TestMagneticHarmonicAxisymmetricTotalCurrent,
+fields.magnetic.TestMagneticNonlinPlanar,
+fields.magnetic.TestMagneticNonlinAxisymmetric,
+fields.magnetic.TestMagneticHarmonicNonlinPlanar,
+fields.magnetic.TestMagneticHarmonicNonlinAxisymmetric,
 # rf te
-fields.rf_te.RFTEHarmonicPlanar,
-fields.rf_te.RFTEHarmonicAxisymmetric,
+fields.rf_te.TestRFTEHarmonicPlanar,
+fields.rf_te.TestRFTEHarmonicAxisymmetric,
 # rf tm
-fields.rf_tm.RFTMHarmonicPlanar,
-fields.rf_tm.RFTMHarmonicAxisymmetric,
+fields.rf_tm.TestRFTMHarmonicPlanar,
+fields.rf_tm.TestRFTMHarmonicAxisymmetric,
 # adaptivity
-adaptivity.adaptivity.AdaptivityElectrostatic,
-adaptivity.adaptivity.AdaptivityAcoustic,
+adaptivity.adaptivity.TestAdaptivityElectrostatic,
+adaptivity.adaptivity.TestAdaptivityAcoustic,
 # particle tracing
-particle_tracing.particle_tracing.ParticleTracingPlanar,
-particle_tracing.particle_tracing.ParticleTracingAxisymmetric,
+particle_tracing.particle_tracing.TestParticleTracingPlanar,
+particle_tracing.particle_tracing.TestParticleTracingAxisymmetric,
 # coupled fields
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic1,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic3,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic4,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4,
 # script
-script.problem.TestProblem,
-script.geometry.TestGeometry,
-script.geometry.TestGeometryTransformations,
-script.benchmark.BenchmarkGeometryTransformation,
-]
-
-test_nonlin = [
-# heat transfer
-fields.heat.HeatNonlinPlanar,
-# magnetic field
-fields.magnetic.MagneticNonlinPlanar,
-#fields.magnetic.MagneticNonlinAxisymmetric,
-fields.magnetic.MagneticHarmonicNonlinPlanar,
-fields.magnetic.MagneticHarmonicNonlinAxisymmetric,
-# incompressible flow
-fields.flow.FlowPlanar,
-fields.flow.FlowAxisymmetric
-]
-
-test_coupled = [
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic1,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic3,
-coupled_problems.basic_coupled_problems.CoupledProblemsBasic4,
-]
-
-test_script = [
-# problem
 script.problem.TestProblem,
 script.problem.TestProblemTime,
 script.problem.TestProblemSolution,
 script.problem.TestProblemAdaptiveSolution,
-# field
 script.field.TestField,
 script.field.TestFieldBoundaries,
 script.field.TestFieldMaterials,
@@ -108,16 +130,8 @@ script.field.TestFieldMatrixSolver,
 script.field.TestFieldAdaptivity,
 script.field.TestFieldLocalValues,
 script.field.TestFieldIntegrals,
-# geometry
 script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
-script.benchmark.BenchmarkGeometryTransformation,
-#generator
-script.generator.Generator
+# internal
+internal.matrix_solvers.TestInternalMatrixSolvers
 ]
-
-test_examples = examples.examples.tests
-
-test_internal = [
-internal.matrix_solvers.InternalMatrixSolvers,
-] + internal.xslt.tests

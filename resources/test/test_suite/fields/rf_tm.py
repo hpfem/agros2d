@@ -2,7 +2,7 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
         
-class RFTMHarmonicPlanar(Agros2DTestCase):
+class TestRFTMHarmonicPlanar(Agros2DTestCase):
     def setUp(self): 
         # problem
         problem = agros2d.problem(clear = True)
@@ -84,7 +84,7 @@ class RFTMHarmonicPlanar(Agros2DTestCase):
         point = self.rf_tm.local_values(1.841e-01, -3.055e-02)
         self.value_test("Poynting vector - y", point["Ny"], -1.880639)
 
-class RFTMHarmonicAxisymmetric(Agros2DTestCase):
+class TestRFTMHarmonicAxisymmetric(Agros2DTestCase):
     def setUp(self): 
         # problem
         problem = agros2d.problem(clear = True)
@@ -170,7 +170,7 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(RFTMHarmonicPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(RFTMHarmonicAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestRFTMHarmonicPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestRFTMHarmonicAxisymmetric))
     suite.run(result)
     

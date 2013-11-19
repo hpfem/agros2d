@@ -2,7 +2,7 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class CoupledProblemsBasic1(Agros2DTestCase):
+class TestCoupledProblemsBasic1(Agros2DTestCase):
     def setUp(self): 
         # model
         problem = agros2d.problem(clear = True)
@@ -95,7 +95,7 @@ class CoupledProblemsBasic1(Agros2DTestCase):
         local_values_elasticity = self.elasticity.local_values(0.155787, 0.00713725)
         self.value_test("Thermoelasticity - Displacement", local_values_elasticity["d"], 1.592721e-4)
 
-class CoupledProblemsBasic2(Agros2DTestCase):
+class TestCoupledProblemsBasic2(Agros2DTestCase):
     def setUp(self): 
         # model
         problem = agros2d.problem(clear = True)
@@ -174,7 +174,7 @@ class CoupledProblemsBasic2(Agros2DTestCase):
         local_values_heat = self.heat.local_values(0.2956, 0.2190)
         self.value_test("Heat transfer - Temperature", local_values_heat["T"], 975.749917)
 
-class CoupledProblemsBasic3(Agros2DTestCase):
+class TestCoupledProblemsBasic3(Agros2DTestCase):
     def setUp(self): 
         # model
         problem = agros2d.problem(clear = True)
@@ -270,7 +270,7 @@ class CoupledProblemsBasic3(Agros2DTestCase):
         local_values_elasticity = self.elasticity.local_values(0.277308,-0.216051)
         self.value_test("Thermoelasticity - Displacement", local_values_elasticity["d"], 0.001958)        
 
-class CoupledProblemsBasic4(Agros2DTestCase):
+class TestCoupledProblemsBasic4(Agros2DTestCase):
     def setUp(self): 
         # model
         problem = agros2d.problem(clear = True)
@@ -362,8 +362,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(CoupledProblemsBasic1))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(CoupledProblemsBasic2))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(CoupledProblemsBasic3))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(CoupledProblemsBasic4))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsBasic1))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsBasic2))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsBasic3))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsBasic4))
     suite.run(result)

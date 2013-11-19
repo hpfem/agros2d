@@ -7,7 +7,7 @@ import numpy as np
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class InternalMatrixSolvers(Agros2DTestCase):
+class TestInternalMatrixSolvers(Agros2DTestCase):
     @classmethod
     def setUpClass(self): 
         # store state
@@ -157,5 +157,5 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(InternalMatrixSolvers))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestInternalMatrixSolvers))
     suite.run(result)

@@ -2,7 +2,7 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class AcousticHarmonicPlanar(Agros2DTestCase):
+class TestAcousticHarmonicPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -72,7 +72,7 @@ class AcousticHarmonicPlanar(Agros2DTestCase):
         self.value_test("Acoustic pressure - imag", surface["pi"], 4.437581e-5)      
         
 
-class AcousticHarmonicAxisymmetric(Agros2DTestCase):
+class TestAcousticHarmonicAxisymmetric(Agros2DTestCase):
     def setUp(self):         
         # model
         problem = agros2d.problem(clear = True)
@@ -144,7 +144,7 @@ class AcousticHarmonicAxisymmetric(Agros2DTestCase):
         self.value_test("Acoustic pressure - real", surface["pr"], 0.196756)
         self.value_test("Acoustic pressure - imag", surface["pi"], -0.324708)   
                
-class AcousticTransientPlanar(Agros2DTestCase):
+class TestAcousticTransientPlanar(Agros2DTestCase):
     def setUp(self):          
         # problem
         problem = agros2d.problem(clear = True)
@@ -216,7 +216,7 @@ class AcousticTransientPlanar(Agros2DTestCase):
         surface = self.acoustic.surface_integrals([0])
         self.value_test("Acoustic pressure - real", surface["pr"], 0.068864)
                
-class AcousticTransientAxisymmetric(Agros2DTestCase):
+class TestAcousticTransientAxisymmetric(Agros2DTestCase):
     def setUp(self):                 
         # problem
         problem = agros2d.problem(clear = True)
@@ -295,8 +295,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAcousticHarmonicPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAcousticHarmonicAxisymmetric))
     #suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticTransientPlanar))
     #suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticTransientAxisymmetric))    
     suite.run(result)

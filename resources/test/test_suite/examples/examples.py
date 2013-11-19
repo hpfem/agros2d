@@ -43,7 +43,7 @@ for dir in data_dirs:
                 any("py" in file for file in files)):
             continue
 
-        name = "Examples{0}".format(os.path.split(path)[-1].replace(" ", "")).replace("~1", "")
+        name = "TestExamples{0}".format(os.path.split(path)[-1].replace(" ", "")).replace("~1", "")
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
         exec code
         create_tests(globals()[name], path)

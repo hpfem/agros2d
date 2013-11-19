@@ -2,7 +2,7 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class ElectrostaticPlanar(Agros2DTestCase):
+class TestElectrostaticPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -82,7 +82,7 @@ class ElectrostaticPlanar(Agros2DTestCase):
         surface_integrals = self.electrostatic.surface_integrals([0, 1, 2, 3])
         self.value_test("Electric charge", surface_integrals["Q"], 1.048981e-7)
             
-class ElectrostaticAxisymmetric(Agros2DTestCase):
+class TestElectrostaticAxisymmetric(Agros2DTestCase):
     def setUp(self):       
         # model
         problem = agros2d.problem(clear = True)
@@ -161,7 +161,7 @@ if __name__ == '__main__':
 
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(ElectrostaticPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(ElectrostaticAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestElectrostaticPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestElectrostaticAxisymmetric))
     suite.run(result)
     

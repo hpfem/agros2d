@@ -2,7 +2,7 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class ParticleTracingPlanar(Agros2DTestCase):
+class TestParticleTracingPlanar(Agros2DTestCase):
     def setUp(self): 
         # problem
         problem = agros2d.problem(clear = True)
@@ -83,7 +83,7 @@ class ParticleTracingPlanar(Agros2DTestCase):
         self.value_test("Particle position", x[-1], 0.080043)
         self.value_test("Particle position", y[-1], 0.015374)
 
-class ParticleTracingAxisymmetric(Agros2DTestCase):
+class TestParticleTracingAxisymmetric(Agros2DTestCase):
     def setUp(self): 
         # problem
         problem = agros2d.problem(clear = True)
@@ -183,6 +183,6 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(ParticleTracingPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(ParticleTracingAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestParticleTracingPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestParticleTracingAxisymmetric))
     suite.run(result)            

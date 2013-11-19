@@ -2,7 +2,7 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
         
-class RFTEHarmonicPlanar(Agros2DTestCase):
+class TestRFTEHarmonicPlanar(Agros2DTestCase):
     def setUp(self):          
         # model
         problem = agros2d.problem(clear = True)
@@ -85,7 +85,7 @@ class RFTEHarmonicPlanar(Agros2DTestCase):
         # surface_integrals = rf.surface_integrals([1, 12])
         # testQ = agros2d.test("Electric charge", surface["Q"], -1.291778e-9)
         
-class RFTEHarmonicAxisymmetric(Agros2DTestCase):
+class TestRFTEHarmonicAxisymmetric(Agros2DTestCase):
     def setUp(self):         
         # problem
         problem = agros2d.problem(clear = True)
@@ -172,6 +172,6 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(RFTEHarmonicPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(RFTEHarmonicAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestRFTEHarmonicPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestRFTEHarmonicAxisymmetric))
     suite.run(result)        

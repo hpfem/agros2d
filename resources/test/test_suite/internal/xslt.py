@@ -34,7 +34,7 @@ for dir in data_dirs:
 
         rest, field = os.path.split(path)
         rest, version = os.path.split(rest)
-        name = "XSLT{0}{1}".format(version, field.title()).replace("~1", "")
+        name = "TestXSLT{0}{1}".format(version, field.title()).replace("~1", "")
 
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
         exec code

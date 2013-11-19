@@ -1,7 +1,6 @@
-__all__ = ["benchmark", "field", "geometry", "problem", "generator"]
+__all__ = ["benchmark", "field", "geometry", "problem"]
 
-import benchmark
+import problem
 import field
 import geometry
-import problem
-import generator
+import benchmark
