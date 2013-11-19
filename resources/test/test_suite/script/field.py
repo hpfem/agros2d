@@ -2,6 +2,8 @@ import agros2d as a2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
+from math import pi, sqrt
+
 class TestField(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
@@ -229,21 +231,6 @@ class TestFieldMaterials(Agros2DTestCase):
         self.add_material()
         with self.assertRaises(ValueError):
             self.field.remove_material("Nonexistent material")
-
-# TODO (Franta) :
-"""
-modify_material
-
-local_values
-surface_integrals
-volume_integrals
-initial_mesh_info
-solution_mesh_info
-solver_info
-adaptivity_info
-filename_matrix
-filename_rhs
-"""
 
 class TestFieldNewtonSolver(Agros2DTestCase):
     def setUp(self):
@@ -489,15 +476,146 @@ class TestFieldAdaptivity(Agros2DTestCase):
         with self.assertRaises(IndexError):
             self.field.adaptivity_parameters['transient_back_steps'] = 101
 
+class TestFieldLocalValues(Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.problem.coordinate_type = "planar"
+        self.problem.mesh_type = "triangle"
+
+        self.field = a2d.field("magnetic")
+        self.field.number_of_refinements = 0
+        self.field.polynomial_order = 1
+
+        self.B = 0.75
+        self.field.add_boundary("A={0}*x".format(self.B), "magnetic_potential",
+                                {"magnetic_potential_real" : { "expression" : "{0}*x".format(self.B)}})
+        self.field.add_material("Air", {"magnetic_permeability" : 1})
+
+        self.size = 3.141592653589793
+        geometry = a2d.geometry
+        geometry.add_edge(self.size, self.size, 0, self.size, boundaries = {"magnetic" : "A=0.75*x"})
+        geometry.add_edge(0, self.size, 0, 0, boundaries = {"magnetic" : "A=0.75*x"})
+        geometry.add_edge(0, 0, self.size, 0, boundaries = {"magnetic" : "A=0.75*x"})
+        geometry.add_edge(self.size, 0, self.size, self.size, boundaries = {"magnetic" : "A=0.75*x"})
+        geometry.add_label(self.size/2.0, self.size/2.0, area = 0.1, materials = {"magnetic" : "Air"})
+
+        self.problem.solve()
+
+    def test_local_values(self):
+        for (x, y) in [(self.size/4.0, self.size/4.0),
+                       (self.size/2.0, self.size/2.0),
+                       (3*self.size/4.0, 3*self.size/4.0)]:
+            self.assertAlmostEqual(self.field.local_values(x, y)['Brx'], 0, 3)
+            self.assertAlmostEqual(self.field.local_values(x, y)['Bry'], -self.B, 3)
+
+    def test_local_values_outside_area(self):
+        self.assertEqual(len(self.field.local_values(-1, -1)), 0)
+
+    def test_local_values_without_solution(self):
+        self.problem.clear_solution()
+        with self.assertRaises(RuntimeError):
+            self.field.local_values(-1, -1)
+
+class TestFieldIntegrals(Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.problem.coordinate_type = "planar"
+        self.problem.mesh_type = "triangle"
+
+        self.field = a2d.field("electrostatic")
+        self.field.analysis_type = "steadystate"
+        self.field.matrix_solver = "mumps"
+        self.field.number_of_refinements = 1
+        self.field.polynomial_order = 2
+        self.field.adaptivity_type = "disabled"
+        self.field.solver = "linear"
+        
+        self.field.add_boundary("Dirichlet", "electrostatic_potential", {"electrostatic_potential" : 1000})
+        self.field.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
+        
+        self.field.add_material("Source", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 10})
+        self.field.add_material("Material", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 0})
+
+        geometry = a2d.geometry
+        geometry.add_edge(0.25, 0, 0.75, 0, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0.75, 0, 0.75, 0.25, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0.75, 0.25, 1.25, 0.75, angle = 90, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(1.25, 0.75, 0.75, 1.25, angle = 90, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(0.75, 1.25, 0.25, 0.75, angle = 90, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(0.25, 0.75, 0, 0.75, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0, 0.75, 0, 0.25, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0.25, 0, 0, 0.25, angle = 90, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0.75, 0.5, 1, 0.75, angle = 90)
+        geometry.add_edge(1, 0.75, 0.75, 1, angle = 90)
+        geometry.add_edge(0.75, 1, 0.5, 0.75, angle = 90)
+        geometry.add_edge(0.5, 0.75, 0.75, 0.5, angle = 90)
+        geometry.add_edge(0.4, 0.1, 0.6, 0.1, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(0.6, 0.1, 0.6, 0.3, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(0.6, 0.3, 0.4, 0.3, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(0.4, 0.3, 0.4, 0.1, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(0.15, 0.45, 0.4, 0.45, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0.4, 0.45, 0.15, 0.55, boundaries = {"electrostatic" : "Dirichlet"})
+        geometry.add_edge(0.15, 0.55, 0.15, 0.45, boundaries = {"electrostatic" : "Dirichlet"})
+
+        geometry.add_label(0.75, 0.75, materials = {"electrostatic" : "Source"})
+        geometry.add_label(0.25, 0.25, materials = {"electrostatic" : "Material"})
+        geometry.add_label(0.2, 0.5, materials = {"electrostatic" : "none"})
+        geometry.add_label(0.5, 0.2, materials = {"electrostatic" : "none"})
+        a2d.view.zoom_best_fit()
+
+        self.problem.solve()
+        
+        self.volume = 0.75**2 + 3*(pi*0.5**2)/4.0 - (pi*0.25**2)/4.0 - 0.2**2 - (0.1*0.25)/2.0 - (pi*0.25**2)
+        self.surface = (2*pi*0.25) + (0.25+0.1+sqrt(0.25**2+0.1**2))
+
+    """ surface_integrals """
+    def test_surface_integrals(self):
+        self.assertAlmostEqual(self.field.surface_integrals([8,9,10,11,16,17,18])['l'], self.surface, 5)
+
+    def test_surface_integrals_on_nonexistent_edge(self):
+        with self.assertRaises(IndexError):
+            self.field.surface_integrals([99])['l']
+
+    def test_surface_itegrals_without_solution(self):
+        self.problem.clear_solution()
+        with self.assertRaises(RuntimeError):
+            self.field.surface_integrals()
+
+    """ volume_integrals """
+    def test_volume_integrals(self):
+        self.assertAlmostEqual(self.field.volume_integrals([1])['V'], self.volume, 5)
+
+    def test_volume_integrals_on_nonexistent_edge(self):
+        with self.assertRaises(IndexError):
+            self.field.volume_integrals([5])['V']
+
+    def test_volume_integrals_without_solution(self):
+        self.problem.clear_solution()
+        with self.assertRaises(RuntimeError):
+            self.field.volume_integrals()
+
 if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMaterials))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMatrixSolver))
-    #uite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMatrixSolver))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldLocalValues))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldIntegrals))
     suite.run(result)
+
+# TODO (Franta) :
+"""
+modify_material
+initial_mesh_info
+solution_mesh_info
+solver_info
+adaptivity_info
+filename_matrix
+filename_rhs
+"""
