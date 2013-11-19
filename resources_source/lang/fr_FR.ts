@@ -41,22 +41,24 @@
     <message>
         <location filename="../../util/gui/about.cpp" line="73"/>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, Python script (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; - Russion and French translation, University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D est une application multiplateforme multiphysique pour la solution des équations aux dérivées partielles, basée sur la bibliothèque&lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;utilisant la méthode des éléments finis d&apos;ordre supérieur (&lt;i&gt;hp&lt;/i&gt;-FEM) avec l&apos;adaptivité automatique.&lt;br/&gt;&lt;br/&gt;Page Web : &lt;a href=&quot;http://agros2d.org/&quot;&gt;agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook : &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;facebook.com/pages/Agros2D&lt;/a&gt;&lt;br/&gt;Problèmes : &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Créateurs :&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; : développeur principal (Université de Bohême de l&apos;Ouest, Pilsen, République tchèque)&lt;br/&gt;&lt;b&gt;Frantishek Mach&lt;/b&gt; : développeur, Python script (Université de Bohême de l&apos;Ouest, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel Kus&lt;/b&gt; : développeur, problèmes couplés, adaptivité de domaine temporel (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;David Panek&lt;/b&gt; : développeur (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;Luksh Korous&lt;/b&gt; : développeur (Université de Bohême de l&apos;Ouest)&lt;br/&gt;
+&lt;b&gt;Luksh Koudela&lt;/b&gt; : développeur, module RF (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; : localisation polonaise (École polytechnique de Varsovie, Pologne)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; : localisation allemande (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;Petr Kropi­k&lt;/b&gt; : Université de Bohême de l&apos;Ouest&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; : localisations russe et française, Université de Bohême de l&apos;Ouest&lt;br/&gt;S&apos;il vous plaît, signalez les erreurs éventuelles de localisation sur d@deniq.com&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../util/gui/about.cpp" line="117"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;Page Web : &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Créateurs :&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (chef de projet, Université du Nevada, Reno, Les États-Unis)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (Université du Texas à El Paso, Les États-Unis)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Académie des sciences de la République tchèque, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (Université du Texas à El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (Université du Texas à El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Académie des sciences de la République tchèque)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (Université du Nevada)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (Centre de Recherche en Nouvelles Technologies, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (Université de Bohême de l&apos;Ouest, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (Université du Nevada)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (Université du Nevada)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (Université du Nevada)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (Université de Bohême de l&apos;Ouest)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Université Charles, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../util/gui/about.cpp" line="157"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;QCustomChart:&lt;/b&gt; QCustomChart (&lt;a href=&quot;http://www.workslikeclockwork.com/index.php/components/qt-plotting-widget/&quot;&gt;A simple plotting widget for Qt&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;stb_truetype.h:&lt;/b&gt; TrueType processing library - Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;PARALUTION:&lt;/b&gt; Sparse iterative solvers on multi-core CPU and GPU devices (&lt;a href=&quot;http://www.paralution.com/&quot;&gt;PARALUTION&lt;/a&gt;)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Bibliothèques&lt;/h3&gt;&lt;b&gt;Digia Qt :&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt — le framework multi-plateforme&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;QCustomChart :&lt;/b&gt; QCustomChart (&lt;a href=&quot;http://www.workslikeclockwork.com/index.php/components/qt-plotting-widget/&quot;&gt;Un widget simple pour Qt&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python :&lt;/b&gt; Langage de programmation Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib :&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate :&lt;/b&gt; Langage de template simple mais puissant pour C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri :&lt;/b&gt; Une bibliothèque de triangulation de Delaunay contraint 2D (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;
+&lt;b&gt;stb_truetype.h :&lt;/b&gt; Bibliothèque de traitement TrueType — Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle :&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh :&lt;/b&gt; Un générateur de maillage des éléments finis en trois dimensions (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK :&lt;/b&gt; Unsymmetric MultiFrontal sparse package de factorisation LU (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS :&lt;/b&gt; MUltifrontal Massively Parallel Sparse solveur direct (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU :&lt;/b&gt; Solveur direct pour les grands systèmes creux d&apos;équations linéaires (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;PARALUTION :&lt;/b&gt; Solveurs iteratifs pour les appareils multi-core CPU et GPU (&lt;a href=&quot;http://www.paralution.com/&quot;&gt;PARALUTION&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../../util/gui/about.cpp" line="187"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes de la GNU General Public License telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre gré) toute version ultérieure.&lt;/p&gt;&lt;p&gt;Agros2D est distribué dans l&apos;espoir qu&apos;il sera utile, mais SANS AUCUNE GARANTIE ; pas même la garantie implicite de COMMERCIABILISABILITÉ ni d&apos;ADÉQUATION à UN OBJECTIF PARTICULIER. Consultez la GNU General Public License pour plus de détails.&lt;/p&gt;&lt;p&gt;Vous devez avoir reçu une copie de la GNU General Public License en même temps que ce programme ; si ce n&apos;est pas le cas, consultez&lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;gnu.org/licenses&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -4986,83 +4988,85 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="127"/>
         <source>Particles dispersion cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispersion de particules de ne peut être négative.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="135"/>
         <source>Particle mass cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Masse des particules ne peut pas être négative.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="148"/>
         <source>Drag force density cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de force de traînée peut pas être négative.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="156"/>
         <source>Drag force area cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aire de force de traînée peut pas être négative.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="164"/>
         <source>Drag force coefficient cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient de force de traînée peut pas être négatif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="199"/>
         <source>Maximum relative error cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur relative maximum ne peut pas être négatif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="207"/>
         <source>Maximum number of steps is out of range (10 - 1e5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre maximum de pas est hors de portée (10–1e5).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="238"/>
         <source>Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient de restitution doit être entre 0 (collision inélastique) et 1 (collision élastique).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="215"/>
         <source>Minimum step cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas minimal ne peut être négatif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="75"/>
         <source>The frequency must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>La fréquence doit être positive.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="91"/>
         <source>Number of time method order must be greater then 1.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err than</translatorcomment>
+        <translation>Nombre d&apos;ordre de méthode de temps doit être supérieur à 1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="99"/>
         <source>The time method tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>La tolérance de méthode de temps doit être positive.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="107"/>
         <source>Number of time steps must be greater then 1.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err than</translatorcomment>
+        <translation>Nombre de pas de temps doit être supérieur à 1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="115"/>
         <source>The total time must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>La durée totale doit être positif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="131"/>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="150"/>
         <source>Coupling &apos;%1&apos; + &apos;%2&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couplage &apos;%1&apos; + &apos;%2&apos; n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="147"/>
         <source>Invalid coupling type key. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalide clé de type de couplage. Les clés valides :%1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="156"/>
@@ -5072,77 +5076,78 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="159"/>
         <source>Source field &apos;%1&apos; is not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de source &apos;%1&apos; n&apos;est pas défini.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="162"/>
         <source>Target field &apos;%1&apos; is not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de cible &apos;%1&apos; n&apos;est pas défini.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="247"/>
         <source>Problem is not transient.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le problème n&apos;est pas transitoire.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="95"/>
         <source>Grid step must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de la grille doit être positif.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="142"/>
         <source>Time step must be in the range from 0 to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de temps doit être entre 0 et %1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="146"/>
         <source>Field &apos;%1&apos; does not have solution for time step %2 (%3 s).</source>
-        <translation type="unfinished"></translation>
+        <translation>Le champ &apos;%1&apos; n&apos;a pas de solution pour le pas de temps %2 (%3 s).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="165"/>
         <source>Adaptivity step for active field (%1) must be in the range from 0 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le pas d&apos;adaptivité pour le champ actif (%1) doit être entre 0 et %2.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="185"/>
         <source>Field &apos;%1&apos; was solved with space adaptivity.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le champ &apos;%1&apos; a été résolu avec l&apos;adaptivité d&apos;espace.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="303"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les pas de la palette doivent être entre %1 et %2.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="311"/>
         <source>Decimal place must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Décimale doit être entre %1 et %2.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="319"/>
         <source>Logarithm base must be possitive and can not be equal to 1.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>!err positive cannot</translatorcomment>
+        <translation>Base de logarithme doit être positive et ne peut pas être égal à 1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="340"/>
         <source>Contour count must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de contours doit être entre %1 et %2.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="371"/>
         <source>Vector count must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de vecteurs doit être entre %1 et %2.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="379"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échelle de vecteurs doit être entre %1 et %2.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_post.cpp" line="76"/>
         <source>Linearizer processing failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Linéarisation a échoué : %1</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="716"/>
@@ -5387,8 +5392,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="522"/>
         <source>Triangle - quad join</source>
-        <translation>Triangle : quad relié
-</translation>
+        <translation>Triangle : quad relié</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="516"/>
