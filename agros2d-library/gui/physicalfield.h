@@ -63,6 +63,7 @@ private:
     QComboBox *cmbAdaptivitySolutionType;
 
     QString m_currentFieldName;
+    AnalysisType m_currentAnalysisType;
 
 private slots:
     void doFieldInfo(int index);

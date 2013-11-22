@@ -211,11 +211,12 @@ void PhysicalFieldWidget::doFieldInfo(int index)
         }
         doTimeStep(-1);
 
-        if (m_currentFieldName != fieldName)
+        if ((m_currentFieldName != fieldName) || (m_currentAnalysisType != fieldInfo->analysisType()))
             emit fieldChanged();
 
         // set current field name
         m_currentFieldName = fieldName;
+        m_currentAnalysisType = fieldInfo->analysisType();
     }
     else
     {
