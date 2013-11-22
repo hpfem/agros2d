@@ -99,7 +99,7 @@ double fastsin(double angle)
 
 double fastcos(double angle)
 {
-   return fastsin(M_PI_2 - angle);
+    return fastsin(M_PI_2 - angle);
 }
 
 void setGUIStyle(const QString &styleName)
@@ -181,20 +181,35 @@ QStringList availableLanguages()
 
 QIcon icon(const QString &name)
 {
+    static QMap<QString, QIcon> iconCache;
+
+    if (iconCache.contains(name))
+        return iconCache[name];
+
 #ifdef Q_WS_WIN
-    if (QFile::exists(":/" + name + "-windows.png")) return QIcon(":/" + name + "-windows.png");
+    if (QFile::exists(":/" + name + "-windows.png"))
+        iconCache.insert(name, QIcon(":/" + name + "-windows.png"));
+        return iconCache[name];
+    }
 #endif
 
 #ifdef Q_WS_X11
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
-    return QIcon::fromTheme(name, QIcon(":/" + name + ".png"));
+    iconCache.insert(name, QIcon::fromTheme(name, QIcon(":/" + name + ".png")));
 #endif
 #endif
 
-    if (QFile::exists(":/" + name + ".svg")) return QIcon(":/" + name + ".svg");
-    if (QFile::exists(":/" + name + ".png")) return QIcon(":/" + name + ".png");
+    if (!iconCache.contains(name))
+    {
+        if (QFile::exists(":/" + name + ".svg"))
+            iconCache.insert(name, QIcon(":/" + name + ".svg"));
+        else if (QFile::exists(":/" + name + ".png"))
+            iconCache.insert(name, QIcon(":/" + name + ".png"));
+        else
+            iconCache.insert(name, QIcon());
+    }
 
-    return QIcon();
+    return iconCache[name];
 }
 
 QString compatibleFilename(const QString &fileName)
@@ -207,16 +222,16 @@ QString compatibleFilename(const QString &fileName)
 
 
 #ifdef UNICODE
-  // For some reason, it seems that unicode does not work on Qt 4.8.4 on Windows (the method from WCharArray gives a linker error).
-  #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    // For some reason, it seems that unicode does not work on Qt 4.8.4 on Windows (the method from WCharArray gives a linker error).
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     TCHAR szshortpath[4096];
     GetShortPathName((LPCWSTR) out.replace("/", "\\\\").utf16(), szshortpath, 4096);
     out = QString::fromWCharArray(szshortpath);
-  #else
+#else
     char szshortpath[4096];
     GetShortPathNameA((LPCSTR) out.replace("/", "\\").toAscii(), szshortpath, 4096);
     out = QString::fromLocal8Bit(szshortpath);
-  #endif
+#endif
 #else
     TCHAR szshortpath[4096];
     GetShortPathName((LPCSTR) out.replace("/", "\\").toAscii(), szshortpath, 4096);
