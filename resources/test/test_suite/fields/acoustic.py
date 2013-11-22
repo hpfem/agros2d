@@ -59,7 +59,7 @@ class TestAcousticHarmonicPlanar(Agros2DTestCase):
         self.value_test("Acoustic pressure", point["p"], 0.003064)
         self.value_test("Acoustic pressure - real", point["pr"], 0.002322)
         self.value_test("Acoustic pressure - imag", point["pi"], 0.001999)
-        self.value_test("Acoustic sound level", point["SPL"], 40.695085)        
+        self.value_test("Acoustic sound level", point["SPL"], 40.695085, 0.07)        
                         
         # volume integral
         volume = self.acoustic.volume_integrals([0])
@@ -132,7 +132,7 @@ class TestAcousticHarmonicAxisymmetric(Agros2DTestCase):
         self.value_test("Acoustic pressure", point["p"], 0.49271)
         self.value_test("Acoustic pressure - real", point["pr"], 0.395866)
         self.value_test("Acoustic pressure - imag", point["pi"], 0.293348)
-        self.value_test("Acoustic sound level", point["SPL"], 84.820922)  
+        self.value_test("Acoustic sound level", point["SPL"], 84.820922, 0.05)  
 
         # volume integral
         volume = self.acoustic.volume_integrals([0])
