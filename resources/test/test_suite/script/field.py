@@ -479,9 +479,6 @@ class TestFieldAdaptivity(Agros2DTestCase):
 class TestFieldLocalValues(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
-        self.problem.coordinate_type = "planar"
-        self.problem.mesh_type = "triangle"
-
         self.field = a2d.field("magnetic")
         self.field.number_of_refinements = 0
         self.field.polynomial_order = 1
@@ -499,9 +496,8 @@ class TestFieldLocalValues(Agros2DTestCase):
         geometry.add_edge(self.size, 0, self.size, self.size, boundaries = {"magnetic" : "A=0.75*x"})
         geometry.add_label(self.size/2.0, self.size/2.0, area = 0.1, materials = {"magnetic" : "Air"})
 
-        self.problem.solve()
-
     def test_local_values(self):
+        self.problem.solve()
         for (x, y) in [(self.size/4.0, self.size/4.0),
                        (self.size/2.0, self.size/2.0),
                        (3*self.size/4.0, 3*self.size/4.0)]:
@@ -509,30 +505,20 @@ class TestFieldLocalValues(Agros2DTestCase):
             self.assertAlmostEqual(self.field.local_values(x, y)['Bry'], -self.B, 3)
 
     def test_local_values_outside_area(self):
+        self.problem.solve()
         self.assertEqual(len(self.field.local_values(-1, -1)), 0)
 
     def test_local_values_without_solution(self):
-        self.problem.clear_solution()
         with self.assertRaises(RuntimeError):
             self.field.local_values(-1, -1)
 
 class TestFieldIntegrals(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
-        self.problem.coordinate_type = "planar"
-        self.problem.mesh_type = "triangle"
-
         self.field = a2d.field("electrostatic")
-        self.field.analysis_type = "steadystate"
-        self.field.matrix_solver = "mumps"
-        self.field.number_of_refinements = 1
-        self.field.polynomial_order = 2
-        self.field.adaptivity_type = "disabled"
-        self.field.solver = "linear"
-        
+
         self.field.add_boundary("Dirichlet", "electrostatic_potential", {"electrostatic_potential" : 1000})
         self.field.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
-        
         self.field.add_material("Source", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 10})
         self.field.add_material("Material", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 0})
 
@@ -562,37 +548,146 @@ class TestFieldIntegrals(Agros2DTestCase):
         geometry.add_label(0.2, 0.5, materials = {"electrostatic" : "none"})
         geometry.add_label(0.5, 0.2, materials = {"electrostatic" : "none"})
         a2d.view.zoom_best_fit()
-
-        self.problem.solve()
         
         self.volume = 0.75**2 + 3*(pi*0.5**2)/4.0 - (pi*0.25**2)/4.0 - 0.2**2 - (0.1*0.25)/2.0 - (pi*0.25**2)
         self.surface = (2*pi*0.25) + (0.25+0.1+sqrt(0.25**2+0.1**2))
 
     """ surface_integrals """
     def test_surface_integrals(self):
+        self.problem.solve()
         self.assertAlmostEqual(self.field.surface_integrals([8,9,10,11,16,17,18])['l'], self.surface, 5)
 
     def test_surface_integrals_on_nonexistent_edge(self):
+        self.problem.solve()
         with self.assertRaises(IndexError):
             self.field.surface_integrals([99])['l']
 
     def test_surface_itegrals_without_solution(self):
-        self.problem.clear_solution()
         with self.assertRaises(RuntimeError):
             self.field.surface_integrals()
 
     """ volume_integrals """
     def test_volume_integrals(self):
+        self.problem.solve()
         self.assertAlmostEqual(self.field.volume_integrals([1])['V'], self.volume, 5)
 
     def test_volume_integrals_on_nonexistent_edge(self):
+        self.problem.solve()
         with self.assertRaises(IndexError):
             self.field.volume_integrals([5])['V']
 
     def test_volume_integrals_without_solution(self):
-        self.problem.clear_solution()
         with self.assertRaises(RuntimeError):
             self.field.volume_integrals()
+
+class TestFieldAdaptivityInfo(Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.problem.coordinate_type = "axisymmetric"
+        self.problem.mesh_type = "triangle"
+        
+        self.field = a2d.field("electrostatic")
+        self.field.adaptivity_type = "hp-adaptivity"
+        self.field.number_of_refinements = 1
+        self.field.polynomial_order = 2
+        self.field.adaptivity_parameters["steps"] = 10
+        self.field.adaptivity_parameters["tolerance"] = 1
+        self.field.solver = "linear"
+        
+        self.field.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 1000})
+        self.field.add_boundary("Ground", "electrostatic_potential", {"electrostatic_potential" : 0})
+        self.field.add_boundary("Border", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
+        self.field.add_material("Air", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 0})
+        
+        geometry = a2d.geometry
+        geometry.add_edge(0.2, 0.6, 0, 0.1, boundaries = {"electrostatic" : "Source"})
+        geometry.add_edge(0, 0.1, 0, -0.1, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, -0.6, 0, -1.6, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, 0.6, 0.2, 0.6, boundaries = {"electrostatic" : "Source"})
+        geometry.add_edge(0, 1.6, 0, 0.6, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(0, -0.1, 0.2, -0.6, boundaries = {"electrostatic" : "Ground"})
+        geometry.add_edge(0, -0.6, 0.2, -0.6, boundaries = {"electrostatic" : "Ground"})
+        geometry.add_edge(0, 1.6, 1.6, 1.6, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(1.6, 1.6, 1.6, -1.6, boundaries = {"electrostatic" : "Border"})
+        geometry.add_edge(1.6, -1.6, 0, -1.6, boundaries = {"electrostatic" : "Border"})
+        
+        geometry.add_label(0.8, 0.8, materials = {"electrostatic" : "Air"})
+
+    def test_adaptivity_info(self):
+        self.problem.solve()
+        dofs = self.field.adaptivity_info()['dofs']
+        error = self.field.adaptivity_info()['error']
+
+        self.assertEqual(dofs, sorted(dofs))
+        self.assertEqual(error, sorted(error, reverse=True))
+
+    def test_adaptivity_info_without_solution(self):
+        with self.assertRaises(RuntimeError):
+            self.field.adaptivity_info()
+
+    def test_adaptivity_info_without_adaptive_solution(self):
+        self.field.adaptivity_type = "disabled"
+        self.problem.solve()
+        with self.assertRaises(RuntimeError):
+            self.field.adaptivity_info()
+
+    def test_adaptivity_info_with_solution_mode(self):
+        self.problem.solve()
+        normal_dofs = self.field.adaptivity_info(solution_type="normal")['dofs']
+        reference_dofs = self.field.adaptivity_info(solution_type="reference")['dofs']
+        self.assertGreater(sum(reference_dofs), sum(normal_dofs))
+
+    def test_adaptivity_info_with_nonexisted_time_step(self):
+        self.problem.solve()
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_info(time_step=1)
+
+class TestFieldAdaptivityInfoTransient(Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.problem.time_step_method = "fixed"
+        self.problem.time_method_order = 2
+        self.problem.time_total = 10
+        self.problem.time_steps = 10
+        
+        self.field = a2d.field("heat")
+        self.field.analysis_type = "transient"
+        self.field.transient_initial_condition = 293.15
+        self.field.number_of_refinements = 0
+        self.field.polynomial_order = 1
+        self.field.adaptivity_type = "hp-adaptivity"
+
+        self.field.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 0,
+                                                              "heat_convection_external_temperature" : 0, "heat_radiation_emissivity" : 0,
+                                                              "heat_radiation_ambient_temperature" : 0})
+        self.field.add_boundary("Dirichlet", "heat_temperature", {"heat_temperature" : { "expression" : "293.15*(time<4) + 393.15*(time>=4)" }})
+
+        self.field.add_material("Material", {"heat_conductivity" : 237, "heat_volume_heat" : 0, "heat_density" : 2700, "heat_specific_heat" : 896})
+
+        geometry = a2d.geometry
+        geometry.add_edge(0.25, 0, 0, 0.25, angle = 90, boundaries = {"heat" : "Neumann"})
+        geometry.add_edge(0, 0.25, -0.25, 0, angle = 90, boundaries = {"heat" : "Neumann"})
+        geometry.add_edge(-0.25, 0, 0, -0.25, angle = 90, boundaries = {"heat" : "Neumann"})
+        geometry.add_edge(0, -0.25, 0.25, 0, angle = 90, boundaries = {"heat" : "Neumann"})
+        geometry.add_edge(0.05, 0, 0, 0.05, boundaries = {"heat" : "Dirichlet"})
+        geometry.add_edge(0, 0.05, -0.05, 0, boundaries = {"heat" : "Dirichlet"})
+        geometry.add_edge(-0.05, 0, 0, -0.05, boundaries = {"heat" : "Dirichlet"})
+        geometry.add_edge(0, -0.05, 0.05, 0, boundaries = {"heat" : "Dirichlet"})
+
+        geometry.add_label(0, 0, materials = {"heat" : "none"})
+        geometry.add_label(0.15, 0, materials = {"heat" : "Material"})
+        a2d.view.zoom_best_fit()
+
+    def test_adaptivity_info_transient(self):
+        self.problem.solve()
+        
+        for step in range(self.problem.time_steps):
+            dofs = self.field.adaptivity_info(time_step=step)['dofs']
+
+            if (step < 4):
+                self.assertEqual(len(dofs), 1)
+            else:
+                self.assertNotEqual(len(dofs), 1)
 
 if __name__ == '__main__':
     import unittest as ut
@@ -607,15 +702,19 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldLocalValues))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldIntegrals))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfo))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfoTransient))
     suite.run(result)
 
 # TODO (Franta) :
 """
 modify_material
+
 initial_mesh_info
 solution_mesh_info
+
 solver_info
-adaptivity_info
+
 filename_matrix
 filename_rhs
 """
