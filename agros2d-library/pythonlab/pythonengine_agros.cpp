@@ -723,11 +723,14 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
 // ************************************************************************************
 
-void openFile(const std::string &file)
+void openFile(const std::string &file, bool openWithSolution)
 {
     try
     {
         Agros2D::scene()->readFromFile(QString::fromStdString(file));
+
+        if (openWithSolution)
+            Agros2D::scene()->readSolutionFromFile(QString::fromStdString(file));
     }
     catch (AgrosException &e)
     {

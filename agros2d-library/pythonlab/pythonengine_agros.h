@@ -127,7 +127,7 @@ QString createPythonFromModel(StartupScript_Type startupScript);
 
 // ************************************************************************************
 
-void openFile(const std::string &file);
+void openFile(const std::string &file, bool openWithSolution);
 void saveFile(const std::string &file, bool saveWithSolution);
 inline std::string getScriptFromModel() { return createPythonFromModel(StartupScript_Variable).toStdString(); }
 

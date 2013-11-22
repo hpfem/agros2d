@@ -106,7 +106,7 @@ include "pyparticletracing.pxi"
 
 cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
     # open and save
-    void openFile(string &file) except +
+    void openFile(string &file, bool saveWithSolution) except +
     void saveFile(string &file, bool saveWithSolution) except +
     string getScriptFromModel()
 
@@ -128,8 +128,8 @@ cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
         string getDumpFormat()
         void setDumpFormat(string format) except +
 
-def open_file(file):
-    openFile(string(file))
+def open_file(file, open_with_solution = False):
+    openFile(string(file), open_with_solution)
 
 def save_file(file, save_with_solution = False):
     saveFile(string(file), save_with_solution)

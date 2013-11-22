@@ -49,7 +49,8 @@ test_adaptivity = get_tests(adaptivity.adaptivity)
 test_tracing = get_tests(particle_tracing.particle_tracing)
 
 """ script """
-test_script = get_tests([script.problem, script.field, script.geometry, script.benchmark])
+test_script = get_tests([script.problem, script.field, script.geometry,
+                         script.benchmark, script.script])
 
 """ examples """
 test_examples = examples.examples.tests
