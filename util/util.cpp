@@ -189,8 +189,6 @@ QIcon icon(const QString &name)
 #ifdef Q_WS_WIN
     if (QFile::exists(":/" + name + "-windows.png"))
         iconCache.insert(name, QIcon(":/" + name + "-windows.png"));
-        return iconCache[name];
-    }
 #endif
 
 #ifdef Q_WS_X11
