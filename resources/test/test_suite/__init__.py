@@ -117,6 +117,7 @@ coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4,
+coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomains,
 # script
 script.problem.TestProblem,
 script.problem.TestProblemTime,
