@@ -175,6 +175,70 @@ class TestAdaptivityElasticityBracket(Agros2DTestCase):
         point1 = self.elasticity.local_values(2.042e-1, -3e-2)
         self.value_test("Displacement", point1["d"], 1.161e-7)
         
+class TestAdaptivityMagneticProfileConductor(Agros2DTestCase):
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "planar"
+        problem.mesh_type = "triangle"
+        problem.frequency = 50000
+
+        # disable view
+        agros2d.view.mesh.disable()
+        agros2d.view.post2d.disable()
+        
+        # fields
+        # magnetic
+        self.magnetic = agros2d.field("magnetic")
+        self.magnetic.analysis_type = "harmonic"
+        self.magnetic.matrix_solver = "mumps"
+        self.magnetic.number_of_refinements = 0
+        self.magnetic.polynomial_order = 1
+        self.magnetic.adaptivity_type = "hp-adaptivity"
+        self.magnetic.adaptivity_parameters['steps'] = 5
+        self.magnetic.adaptivity_parameters['tolerance'] = 0
+        self.magnetic.adaptivity_parameters['threshold'] = 0.6
+        self.magnetic.adaptivity_parameters['stopping_criterion'] = "singleelement"
+        self.magnetic.adaptivity_parameters['error_calculator'] = "h1"
+        self.magnetic.adaptivity_parameters['anisotropic_refinement'] = True
+        self.magnetic.adaptivity_parameters['finer_reference_solution'] = False
+        self.magnetic.adaptivity_parameters['space_refinement'] = True
+        self.magnetic.adaptivity_parameters['order_increase'] = 1
+        self.magnetic.solver = "linear"
+                
+        # boundaries
+        self.magnetic.add_boundary("Neumann", "magnetic_surface_current", {"magnetic_surface_current_real" : 0, "magnetic_surface_current_imag" : 0})
+        self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0, "magnetic_potential_imag" : 0})        
+        
+        # materials
+        self.magnetic.add_material("Air", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0, "magnetic_total_current_imag" : 0})
+        self.magnetic.add_material("Copper", {"magnetic_permeability" : 1, "magnetic_conductivity" : 57e6, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 1, "magnetic_total_current_real" : 0.25, "magnetic_total_current_imag" : 0})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(0, 0.002, 0, 0.000768, boundaries = {"magnetic" : "Neumann"})
+        geometry.add_edge(0, 0.000768, 0, 0, boundaries = {"magnetic" : "Neumann"})
+        geometry.add_edge(0, 0, 0.000768, 0, boundaries = {"magnetic" : "Neumann"})
+        geometry.add_edge(0.000768, 0, 0.002, 0, boundaries = {"magnetic" : "Neumann"})
+        geometry.add_edge(0.002, 0, 0, 0.002, angle = 90, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.000768, 0, 0.000576, 0.000192, angle = 90)
+        geometry.add_edge(0.000576, 0.000192, 0.000384, 0.000192)
+        geometry.add_edge(0.000192, 0.000384, 0.000384, 0.000192, angle = 90)
+        geometry.add_edge(0.000192, 0.000576, 0.000192, 0.000384)
+        geometry.add_edge(0.000192, 0.000576, 0, 0.000768, angle = 90)
+        
+        geometry.add_label(0.000585418, 0.00126858, materials = {"magnetic" : "Air"})
+        geometry.add_label(0.000109549, 8.6116e-05, materials = {"magnetic" : "Copper"})
+        agros2d.view.zoom_best_fit()                                                                                                                
+        problem.solve()
+        
+    def test_values(self):        
+        # exact values in this test are taken from Agros -> not a proper test
+        # only to see if adaptivity works, should be replaced with comsol values
+        point1 = self.magnetic.local_values(6.106e-04, 2.378e-04)
+        self.value_test("Vector potencial", point1["A"], 2.196e-07)
+        self.value_test("Flux density", point1["B"], 2.775e-04)
+        
 if __name__ == '__main__':        
     import unittest as ut
     
@@ -183,4 +247,5 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElectrostatic))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityAcoustic))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElasticityBracket))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityMagneticProfileConductor))    
     suite.run(result)
