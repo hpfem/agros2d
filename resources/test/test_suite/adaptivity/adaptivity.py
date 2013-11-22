@@ -109,6 +109,72 @@ class TestAdaptivityAcoustic(Agros2DTestCase):
         point2 = self.acoustic.local_values(6.994e-2, 1.894e-2)
         self.value_test("Acoustic pressure", point2["p"], 2.889e-1)
         
+class TestAdaptivityElasticityBracket(Agros2DTestCase):
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "planar"
+        problem.mesh_type = "triangle"
+        
+        # disable view
+        agros2d.view.mesh.disable()
+        agros2d.view.post2d.disable()
+        
+        # fields
+        # elasticity
+        self.elasticity = agros2d.field("elasticity")
+        self.elasticity.analysis_type = "steadystate"
+        self.elasticity.matrix_solver = "mumps"
+        self.elasticity.number_of_refinements = 0
+        self.elasticity.polynomial_order = 1
+        self.elasticity.adaptivity_type = "hp-adaptivity"
+        self.elasticity.adaptivity_parameters['steps'] = 3
+        self.elasticity.adaptivity_parameters['tolerance'] = 0
+        self.elasticity.adaptivity_parameters['threshold'] = 0.6
+        self.elasticity.adaptivity_parameters['stopping_criterion'] = "singleelement"
+        self.elasticity.adaptivity_parameters['error_calculator'] = "h1"
+        self.elasticity.adaptivity_parameters['anisotropic_refinement'] = True
+        self.elasticity.adaptivity_parameters['finer_reference_solution'] = False
+        self.elasticity.adaptivity_parameters['space_refinement'] = True
+        self.elasticity.adaptivity_parameters['order_increase'] = 1
+        self.elasticity.solver = "linear"
+                
+        # boundaries
+        self.elasticity.add_boundary("Wall", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
+        self.elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
+        self.elasticity.add_boundary("Load", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : -200})
+                
+        # materials
+        self.elasticity.add_material("Steel", {"elasticity_young_modulus" : 2e11, "elasticity_poisson_ratio" : 0.33, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : { "expression" : "-9.81*7800" }, "elasticity_alpha" : 0, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 0})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(0.3, 0, 0, 0, boundaries = {"elasticity" : "Load"})
+        geometry.add_edge(0, 0, 0, -0.3, boundaries = {"elasticity" : "Wall"})
+        geometry.add_edge(0, -0.3, 0.03, -0.27, angle = 90, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.27, -0.03, 0.3, 0, angle = 90, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.03, -0.03, 0.03, -0.15, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.03, -0.03, 0.15, -0.03, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.27, -0.03, 0.03, -0.27, angle = 90, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.03, -0.15, 0.030625, -0.150375, angle = 90, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.030625, -0.150375, 0.031, -0.15, angle = 30, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.150375, -0.030625, 0.15, -0.03, angle = 90, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.15, -0.031, 0.150375, -0.030625, angle = 30, boundaries = {"elasticity" : "Free"})
+        geometry.add_edge(0.15, -0.031, 0.031, -0.15, angle = 45, boundaries = {"elasticity" : "Free"})
+        
+        geometry.add_label(0.19805, -0.0157016, materials = {"elasticity" : "Steel"})
+        geometry.add_label(0.0484721, -0.0490752, materials = {"elasticity" : "none"})
+
+        agros2d.view.zoom_best_fit()       
+                                                                                                                
+        problem.solve()
+        
+    def test_values(self):        
+        # exact values in this test are taken from Agros -> not a proper test
+        # only to see if adaptivity works, should be replaced with comsol values
+        point1 = self.elasticity.local_values(2.042e-1, -3e-2)
+        self.value_test("Displacement", point1["d"], 1.161e-7)
+        
 if __name__ == '__main__':        
     import unittest as ut
     
@@ -116,4 +182,5 @@ if __name__ == '__main__':
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElectrostatic))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityAcoustic))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElasticityBracket))
     suite.run(result)

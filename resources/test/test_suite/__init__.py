@@ -116,6 +116,7 @@ fields.rf_tm.TestRFTMHarmonicAxisymmetric,
 # adaptivity
 adaptivity.adaptivity.TestAdaptivityElectrostatic,
 adaptivity.adaptivity.TestAdaptivityAcoustic,
+adaptivity.adaptivity.TestAdaptivityElasticityBracket,
 # particle tracing
 particle_tracing.particle_tracing.TestParticleTracingPlanar,
 particle_tracing.particle_tracing.TestParticleTracingAxisymmetric,
