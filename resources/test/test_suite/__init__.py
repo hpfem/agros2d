@@ -30,7 +30,13 @@ test_fields = get_tests([fields.electrostatic, fields.current, fields.magnetic, 
                          fields.elasticity, fields.flow, fields.acoustic, fields.rf_te, fields.rf_tm])
 
 """ coupled """
-test_coupled = get_tests(coupled_problems.basic_coupled_problems)
+test_coupled = [
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3,
+coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4,
+coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomains,
+]
 
 """ nonlin """
 test_nonlin = [
