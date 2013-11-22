@@ -140,10 +140,6 @@ bool Value::evaluateAtTimeAndPoint(double time, const Point &point)
 
 double Value::number() const
 {
-    if(!m_isEvaluated)
-    {
-        qDebug() << "not evaluated " << m_number << m_text;
-    }
     assert(m_isEvaluated);
     return m_number;
 }
