@@ -29,7 +29,7 @@
 	{{/ITEM}}
 </table>
 <hr/>
-<h2>{{LABEL_TOTAL_TIME}}: {{TOTAL_TIME}}</h2>
+<h2>{{LABEL_TEST_PASSED}}: {{TEST_PASSED}}/{{TEST_ALL}}, {{LABEL_TOTAL_TIME}}: {{TOTAL_TIME}}</h2>
 </div>
 
 {{#TEST_CHART_SECTION}}

@@ -353,8 +353,11 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
     if (m_test.date().present())
         testsTemplate.SetValue("DATE", QString::fromStdString(m_test.date().get()).replace(".", ":").toStdString());
     testsTemplate.SetValue("LABEL_TOTAL_TIME", tr("Total time").toStdString());
+    testsTemplate.SetValue("LABEL_TEST_PASSED", tr("Passed tests").toStdString());
+    testsTemplate.SetValue("TEST_ALL", QString::number(m_test.tests().item().size()).toStdString());
 
     double totalTime = 0.0;
+    int successful = 0;
     for (unsigned int i = 0; i < m_test.tests().item().size(); i++)
     {
         XMLTest::item item = m_test.tests().item().at(i);
@@ -381,9 +384,14 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
             ctemplate::TemplateDictionary *itemTemplateError = itemTemplate->AddSectionDictionary("ITEM_ERROR");
             itemTemplateError->SetValue("ERROR", err.toStdString());
         }
+        else
+        {
+            successful++;
+        }
 
         totalTime += item.time();
         testsTemplate.SetValue("TOTAL_TIME", milisecondsToTime(totalTime).toString("mm:ss.zzz").toStdString());
+        testsTemplate.SetValue("TEST_PASSED", QString::number(successful).toStdString());
     }
 
     // current test info
@@ -463,6 +471,8 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
         writeStringContent(tempProblemDir() + "/tests.html", QString::fromStdString(results));
         webView->load(QUrl::fromLocalFile(tempProblemDir() + "/tests.html"));
     }
+    // scroll down
+    webView->page()->mainFrame()->setScrollBarValue(Qt::Vertical, webView->page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
 }
 
 void UnitTestsWidget::showInfoTest(QAction *act)
