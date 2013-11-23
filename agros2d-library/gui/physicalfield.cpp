@@ -59,7 +59,7 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     lblAdaptivityStep = new QLabel(tr("Adaptivity step:"));
     cmbAdaptivityStep = new QComboBox(this);
     connect(cmbAdaptivityStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityStep(int)));
-    lblAdaptivitySolutionType = new QLabel(tr("Adaptivity type:"));
+    lblAdaptivitySolutionType = new QLabel(tr("Solution type:"));
     cmbAdaptivitySolutionType = new QComboBox(this);
 
     QGridLayout *layoutAdaptivity = new QGridLayout();
