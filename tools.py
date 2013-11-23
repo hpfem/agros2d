@@ -5,7 +5,7 @@ from multiprocessing import cpu_count
 from subprocess import call
 from glob import glob
 
-VERSION = 3.1
+VERSION = 3.2
 CORES = cpu_count()
 
 DOC_SOURCE_DIR = './resources_source/doc'
