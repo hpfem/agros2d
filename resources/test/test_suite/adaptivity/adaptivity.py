@@ -305,6 +305,79 @@ class TestAdaptivityRF_TE(Agros2DTestCase):
         self.value_test("Electric field", point1["E"], 1.725e-01)
         self.value_test("Flux density", point1["B"], 2.599e-09)
         
+            
+class TestAdaptivityHLenses(Agros2DTestCase):
+    # test for h-adaptivity
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "axisymmetric"
+        problem.mesh_type = "triangle"
+
+        # disable view
+        agros2d.view.mesh.disable()
+        agros2d.view.post2d.disable()
+        
+        # fields
+        # magnetic
+        self.magnetic = agros2d.field("magnetic")
+        self.magnetic.analysis_type = "steadystate"
+        self.magnetic.matrix_solver = "mumps"
+        self.magnetic.number_of_refinements = 0
+        self.magnetic.polynomial_order = 2
+        self.magnetic.adaptivity_type = "h-adaptivity"
+        self.magnetic.adaptivity_parameters['steps'] = 7
+        self.magnetic.adaptivity_parameters['tolerance'] = 0.01
+        self.magnetic.adaptivity_parameters['threshold'] = 0.6
+        self.magnetic.adaptivity_parameters['stopping_criterion'] = "singleelement"
+        self.magnetic.adaptivity_parameters['error_calculator'] = "h1"
+        self.magnetic.adaptivity_parameters['anisotropic_refinement'] = True
+        self.magnetic.adaptivity_parameters['finer_reference_solution'] = False
+        self.magnetic.adaptivity_parameters['space_refinement'] = True
+        self.magnetic.adaptivity_parameters['order_increase'] = 1
+        self.magnetic.solver = "linear"
+                
+        # boundaries
+        self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})        
+        
+        # materials
+        self.magnetic.add_material("Air", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
+        self.magnetic.add_material("Coil 1", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 8e6, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
+        self.magnetic.add_material("Coil 2", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 1e7, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(0, 0.04, 0.05, 0.04, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.05, 0.04, 0.05, -0.08, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.05, -0.08, 0, -0.08, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0, -0.08, 0, 0.04, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.0075, 0.00125, 0.01, 0.00125)
+        geometry.add_edge(0.01, 0.00125, 0.01, -0.00125)
+        geometry.add_edge(0.01, -0.00125, 0.0075, -0.00125)
+        geometry.add_edge(0.0075, 0.00125, 0.0075, -0.00125)
+        geometry.add_edge(0.0075, 0.00625, 0.01, 0.00625)
+        geometry.add_edge(0.01, 0.00375, 0.01, 0.00625)
+        geometry.add_edge(0.0075, 0.00625, 0.0075, 0.00375)
+        geometry.add_edge(0.01, 0.00375, 0.0075, 0.00375)
+        geometry.add_edge(0.0075, -0.01475, 0.01, -0.01475)
+        geometry.add_edge(0.01, -0.01475, 0.01, -0.02125)
+        geometry.add_edge(0.01, -0.02125, 0.0075, -0.02125)
+        geometry.add_edge(0.0075, -0.01475, 0.0075, -0.02125)
+        
+        geometry.add_label(0.00870469, 0.000204637, materials = {"magnetic" : "Coil 1"})
+        geometry.add_label(0.027331, 0.0261643, materials = {"magnetic" : "Air"})
+        geometry.add_label(0.00883434, 0.00543334, materials = {"magnetic" : "Coil 1"})
+        geometry.add_label(0.00902444, -0.0168831, materials = {"magnetic" : "Coil 2"})
+        agros2d.view.zoom_best_fit()
+        
+        problem.solve()
+        
+    def test_values(self):        
+        # exact values in this test are taken from Agros -> not a proper test
+        # only to see if adaptivity works, should be replaced with comsol values
+        point1 = self.magnetic.local_values(8.367e-03, 1.986e-03)
+        self.value_test("Flux density", point1["Br"], 4.890e-03, 0.003)
+        
 if __name__ == '__main__':        
     import unittest as ut
     
@@ -314,5 +387,7 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityAcoustic))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElasticityBracket))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityMagneticProfileConductor))    
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityRF_TE))    
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityRF_TE))  
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityHLenses))  
+      
     suite.run(result)
