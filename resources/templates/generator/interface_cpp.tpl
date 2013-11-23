@@ -226,7 +226,7 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
 {{#PARAMETERS_NONLINEAR}}    const Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex];
 {{/PARAMETERS_NONLINEAR}}
 {{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->number(); {{/PARAMETERS_LINEAR}}
-    double area = m_fieldInfo->initialMesh()->get_marker_area(e->elem_marker);
+    double area = m_fieldInfo->labelArea(labelIndex);
 
     for(int i = 0; i < n; i++)
     {
@@ -261,9 +261,11 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
 
 double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, double h) const
 {
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker);
+
 {{#PARAMETERS}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker)]->numberFromTable(h);
 {{/PARAMETERS}}
-    double area = m_fieldInfo->initialMesh()->get_marker_area(hermesMarker);
+    double area = m_fieldInfo->labelArea(labelIndex);
     if(m_useTable)
     {
         if(h < m_boundLow)

@@ -378,6 +378,111 @@ class TestAdaptivityHLenses(Agros2DTestCase):
         point1 = self.magnetic.local_values(8.367e-03, 1.986e-03)
         self.value_test("Flux density", point1["Br"], 4.890e-03, 0.003)
         
+class TestAdaptivityPAndHCoupled(Agros2DTestCase):
+    # test for h-adaptivity
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "axisymmetric"
+        problem.mesh_type = "triangle"
+        problem.frequency = 50
+        
+        # disable view
+        agros2d.view.mesh.disable()
+        agros2d.view.post2d.disable()
+  
+        # fields
+        # heat
+        self.heat = agros2d.field("heat")
+        self.heat.analysis_type = "steadystate"
+        self.heat.matrix_solver = "mumps"
+        self.heat.number_of_refinements = 0
+        self.heat.polynomial_order = 1
+        self.heat.adaptivity_type = "p-adaptivity"
+        self.heat.adaptivity_parameters['steps'] = 6
+        self.heat.adaptivity_parameters['tolerance'] = 0
+        self.heat.adaptivity_parameters['threshold'] = 0.6
+        self.heat.adaptivity_parameters['stopping_criterion'] = "levels"
+        self.heat.adaptivity_parameters['error_calculator'] = "h1"
+        self.heat.adaptivity_parameters['anisotropic_refinement'] = True
+        self.heat.adaptivity_parameters['finer_reference_solution'] = True
+        self.heat.adaptivity_parameters['space_refinement'] = True
+        self.heat.adaptivity_parameters['order_increase'] = 1
+        self.heat.solver = "linear"        
+        
+        # boundaries
+        self.heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_convection_external_temperature" : 0, "heat_radiation_emissivity" : 0, "heat_radiation_ambient_temperature" : 0})
+        self.heat.add_boundary("Convection", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 10, "heat_convection_external_temperature" : 323, "heat_radiation_emissivity" : 0, "heat_radiation_ambient_temperature" : 0})
+        self.heat.add_boundary("Radiation", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_convection_external_temperature" : 0, "heat_radiation_emissivity" : 0.6, "heat_radiation_ambient_temperature" : 293})       
+        
+        # materials
+        self.heat.add_material("Steel", {"heat_conductivity" : 70, "heat_volume_heat" : 0, "heat_velocity_x" : 0, "heat_velocity_y" : 0, "heat_velocity_angular" : 0, "heat_density" : 0, "heat_specific_heat" : 0})
+        self.heat.add_material("Insulation", {"heat_conductivity" : 6, "heat_volume_heat" : 0, "heat_velocity_x" : 0, "heat_velocity_y" : 0, "heat_velocity_angular" : 0, "heat_density" : 0, "heat_specific_heat" : 0})
+        
+        # magnetic
+        self.magnetic = agros2d.field("magnetic")
+        self.magnetic.analysis_type = "harmonic"
+        self.magnetic.matrix_solver = "mumps"
+        self.magnetic.number_of_refinements = 0
+        self.magnetic.polynomial_order = 1
+        self.magnetic.adaptivity_type = "h-adaptivity"
+        self.magnetic.adaptivity_parameters['steps'] = 8
+        self.magnetic.adaptivity_parameters['tolerance'] = 0
+        self.magnetic.adaptivity_parameters['threshold'] = 0.6
+        self.magnetic.adaptivity_parameters['stopping_criterion'] = "singleelement"
+        self.magnetic.adaptivity_parameters['error_calculator'] = "h1"
+        self.magnetic.adaptivity_parameters['anisotropic_refinement'] = False
+        self.magnetic.adaptivity_parameters['finer_reference_solution'] = False
+        self.magnetic.adaptivity_parameters['space_refinement'] = True
+        self.magnetic.adaptivity_parameters['order_increase'] = 1
+        self.magnetic.solver = "linear"
+        
+        
+        # boundaries
+        self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0, "magnetic_potential_imag" : 0})
+        
+        
+        # materials
+        self.magnetic.add_material("Air", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0, "magnetic_total_current_imag" : 0})
+        self.magnetic.add_material("Copper", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 6e5, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0, "magnetic_total_current_imag" : 0})
+        self.magnetic.add_material("Insulation", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0, "magnetic_total_current_imag" : 0})
+        self.magnetic.add_material("Steel", {"magnetic_permeability" : 100, "magnetic_conductivity" : 3e5, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0, "magnetic_total_current_imag" : 0})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(0.3, 0.6, 0, 0.6, boundaries = {"heat" : "Radiation"})
+        geometry.add_edge(0, 1.2, 0.9, 1.2, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.9, 1.2, 0.9, -0.5, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0.9, -0.5, 0, -0.5, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0, -0.5, 0, 0, boundaries = {"magnetic" : "A = 0"})
+        geometry.add_edge(0, 0, 0.32, 0, boundaries = {"heat" : "Convection"})
+        geometry.add_edge(0.3, 0.6, 0.3, 0.1)
+        geometry.add_edge(0, 0.1, 0.3, 0.1)
+        geometry.add_edge(0, 0.6, 0, 0.1, boundaries = {"heat" : "Symmetry", "magnetic" : "A = 0"})
+        geometry.add_edge(0, 0.1, 0, 0, boundaries = {"heat" : "Symmetry", "magnetic" : "A = 0"})
+        geometry.add_edge(0.33, 0.7, 0.4, 0.7)
+        geometry.add_edge(0.4, 0.7, 0.4, 0.046)
+        geometry.add_edge(0.4, 0.046, 0.33, 0.046)
+        geometry.add_edge(0.33, 0.046, 0.33, 0.7)
+        geometry.add_edge(0.3, 0.6, 0.32, 0.6, boundaries = {"heat" : "Convection"})
+        geometry.add_edge(0.32, 0, 0.32, 0.6, boundaries = {"heat" : "Convection"})
+        geometry.add_edge(0, 1.2, 0, 0.6, boundaries = {"magnetic" : "A = 0"})
+        
+        geometry.add_label(0.627519, 0.954318, materials = {"heat" : "none", "magnetic" : "Air"})
+        geometry.add_label(0.087409, 0.293345, materials = {"heat" : "Steel", "magnetic" : "Steel"})
+        geometry.add_label(0.132733, 0.0478408, materials = {"heat" : "Insulation", "magnetic" : "Insulation"})
+        geometry.add_label(0.378237, 0.221582, materials = {"heat" : "none", "magnetic" : "Copper"})
+        agros2d.view.zoom_best_fit()        
+        problem.solve()
+        
+    def test_values(self):        
+        # exact values in this test are taken from Agros -> not a proper test
+        # only to see if adaptivity works, should be replaced with comsol values
+        point_heat = self.heat.local_values(3.048e-01, 8.919e-02)
+        self.value_test("Temperature", point_heat["T"], 1.277e+03, 0.006)
+        point_mag = self.magnetic.local_values(2.920e-01, 1.333e-01)
+        self.value_test("Flux density", point_mag["Br"], 5.893e-01, 0.025)
+        
 if __name__ == '__main__':        
     import unittest as ut
     
@@ -389,5 +494,6 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityMagneticProfileConductor))    
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityRF_TE))  
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityHLenses))  
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityPAndHCoupled))  
       
     suite.run(result)
