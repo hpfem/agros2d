@@ -239,6 +239,72 @@ class TestAdaptivityMagneticProfileConductor(Agros2DTestCase):
         self.value_test("Vector potencial", point1["A"], 2.196e-07)
         self.value_test("Flux density", point1["B"], 2.775e-04)
         
+class TestAdaptivityRF_TE(Agros2DTestCase):
+    # test for hp-adaptivity, used different settings from implicit (l2 error, cumulative, finer_reference=false, order_increase=2)
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "planar"
+        problem.mesh_type = "triangle"
+        problem.frequency = 1.6e+10
+        
+        # disable view
+        agros2d.view.mesh.disable()
+        agros2d.view.post2d.disable()
+
+        # fields
+        # rf_te
+        self.rf_te = agros2d.field("rf_te")
+        self.rf_te.analysis_type = "harmonic"
+        self.rf_te.matrix_solver = "mumps"
+        self.rf_te.number_of_refinements = 0
+        self.rf_te.polynomial_order = 1
+        self.rf_te.adaptivity_type = "hp-adaptivity"
+        self.rf_te.adaptivity_parameters['steps'] = 6
+        self.rf_te.adaptivity_parameters['tolerance'] = 0
+        self.rf_te.adaptivity_parameters['threshold'] = 0.7
+        self.rf_te.adaptivity_parameters['stopping_criterion'] = "cumulative"
+        self.rf_te.adaptivity_parameters['error_calculator'] = "l2"
+        self.rf_te.adaptivity_parameters['anisotropic_refinement'] = True
+        self.rf_te.adaptivity_parameters['finer_reference_solution'] = False
+        self.rf_te.adaptivity_parameters['space_refinement'] = False
+        self.rf_te.adaptivity_parameters['order_increase'] = 2
+        self.rf_te.solver = "linear"
+                
+        # boundaries
+        self.rf_te.add_boundary("Perfect electric conductor", "rf_te_electric_field", {"rf_te_electric_field_real" : 0, "rf_te_electric_field_imag" : 0})
+        self.rf_te.add_boundary("Matched boundary", "rf_te_magnetic_field", {"rf_te_magnetic_field_real" : 0, "rf_te_magnetic_field_imag" : 0})
+        self.rf_te.add_boundary("Source", "rf_te_electric_field", {"rf_te_electric_field_real" : { "expression" : "cos(y/0.01143*pi/2)" }, "rf_te_electric_field_imag" : 0})
+                
+        # materials
+        self.rf_te.add_material("Air", {"rf_te_permittivity" : 1, "rf_te_permeability" : 1, "rf_te_conductivity" : 0, "rf_te_current_density_external_real" : 0, "rf_te_current_density_external_imag" : 0})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(0.17, -0.01143, 0.17, 0.01143, boundaries = {"rf_te" : "Matched boundary"})
+        geometry.add_edge(0, 0.01143, 0, -0.01143, boundaries = {"rf_te" : "Source"})
+        geometry.add_edge(0.076, 0.01143, 0.076, 0.0045, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.076, 0.0045, 0.081, 0.0045, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.081, 0.0045, 0.081, 0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.081, -0.0045, 0.081, -0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.081, -0.0045, 0.076, -0.0045, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.076, -0.0045, 0.076, -0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0, -0.01143, 0.076, -0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.081, -0.01143, 0.17, -0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.17, 0.01143, 0.081, 0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        geometry.add_edge(0.076, 0.01143, 0, 0.01143, boundaries = {"rf_te" : "Perfect electric conductor"})
+        
+        geometry.add_label(0.0367388, 0.0025708, area = 1e-05, materials = {"rf_te" : "Air"})
+        agros2d.view.zoom_best_fit()
+        problem.solve()
+        
+    def test_values(self):        
+        # exact values in this test are taken from Agros -> not a proper test
+        # only to see if adaptivity works, should be replaced with comsol values
+        point1 = self.rf_te.local_values(5.801e-02, 4.192e-03)
+        self.value_test("Electric field", point1["E"], 1.725e-01)
+        self.value_test("Flux density", point1["B"], 2.599e-09)
+        
 if __name__ == '__main__':        
     import unittest as ut
     
@@ -248,4 +314,5 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityAcoustic))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElasticityBracket))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityMagneticProfileConductor))    
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityRF_TE))    
     suite.run(result)
