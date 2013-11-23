@@ -399,7 +399,7 @@ class TestAdaptivityPAndHCoupled(Agros2DTestCase):
         self.heat.number_of_refinements = 0
         self.heat.polynomial_order = 1
         self.heat.adaptivity_type = "p-adaptivity"
-        self.heat.adaptivity_parameters['steps'] = 7
+        self.heat.adaptivity_parameters['steps'] = 6
         self.heat.adaptivity_parameters['tolerance'] = 0
         self.heat.adaptivity_parameters['threshold'] = 0.6
         self.heat.adaptivity_parameters['stopping_criterion'] = "levels"
@@ -426,7 +426,7 @@ class TestAdaptivityPAndHCoupled(Agros2DTestCase):
         self.magnetic.number_of_refinements = 0
         self.magnetic.polynomial_order = 1
         self.magnetic.adaptivity_type = "h-adaptivity"
-        self.magnetic.adaptivity_parameters['steps'] = 9
+        self.magnetic.adaptivity_parameters['steps'] = 8
         self.magnetic.adaptivity_parameters['tolerance'] = 0
         self.magnetic.adaptivity_parameters['threshold'] = 0.6
         self.magnetic.adaptivity_parameters['stopping_criterion'] = "singleelement"
@@ -479,21 +479,21 @@ class TestAdaptivityPAndHCoupled(Agros2DTestCase):
         # exact values in this test are taken from Agros -> not a proper test
         # only to see if adaptivity works, should be replaced with comsol values
         point_heat = self.heat.local_values(3.048e-01, 8.919e-02)
-        self.value_test("Temperature", point_heat["T"], 1.277e+03)
+        self.value_test("Temperature", point_heat["T"], 1.277e+03, 0.006)
         point_mag = self.magnetic.local_values(2.920e-01, 1.333e-01)
-        self.value_test("Flux density", point_mag["Br"], 5.893e-01)
+        self.value_test("Flux density", point_mag["Br"], 5.893e-01, 0.025)
         
 if __name__ == '__main__':        
     import unittest as ut
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElectrostatic))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityAcoustic))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElasticityBracket))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityMagneticProfileConductor))    
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityRF_TE))  
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityHLenses))  
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElectrostatic))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityAcoustic))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityElasticityBracket))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityMagneticProfileConductor))    
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityRF_TE))  
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityHLenses))  
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestAdaptivityPAndHCoupled))  
       
     suite.run(result)
