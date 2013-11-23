@@ -84,6 +84,11 @@ LogWidget::~LogWidget()
 {
 }
 
+void LogWidget::clear()
+{
+    plainLog->clear();
+}
+
 void LogWidget::contextMenu(const QPoint &pos)
 {
     mnuInfo->exec(QCursor::pos());
@@ -104,7 +109,7 @@ void LogWidget::createActions()
     connect(actShowDebug, SIGNAL(triggered()), this, SLOT(showDebug()));
 
     actClear = new QAction(icon(""), tr("Clear"), this);
-    connect(actClear, SIGNAL(triggered()), plainLog, SLOT(clear()));
+    connect(actClear, SIGNAL(triggered()), this, SLOT(clear()));
 }
 
 void LogWidget::showTimestamp()

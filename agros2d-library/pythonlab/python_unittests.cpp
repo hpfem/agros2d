@@ -21,6 +21,7 @@
 #include "pythonlab/python_unittests.h"
 #include "util/constants.h"
 #include "gui/common.h"
+#include "logview.h"
 
 #include <ctemplate/template.h>
 
@@ -37,7 +38,8 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     webView->setMinimumSize(200, 200);
 
-    // connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
+    logWidget = new LogWidget(this);
+    logWidget->setMemoryLabelVisible(false);
 
     trvTests = new QTreeWidget(this);
     trvTests->setMouseTracking(true);
@@ -75,10 +77,17 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     QWidget *leftWidget = new QWidget();
     leftWidget->setLayout(leftLayout);
 
+    QVBoxLayout *rightLayout = new QVBoxLayout();
+    rightLayout->addWidget(webView, 3);
+    rightLayout->addWidget(logWidget, 1);
+
+    QWidget *rightWidget = new QWidget();
+    rightWidget->setLayout(rightLayout);
+
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Horizontal);
     splitter->addWidget(leftWidget);
-    splitter->addWidget(webView);
+    splitter->addWidget(rightWidget);
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
@@ -129,6 +138,23 @@ UnitTestsWidget::~UnitTestsWidget()
     settings.setValue("UnitTestsWidget/SplitterState", splitter->saveState());
     settings.setValue("UnitTestsWidget/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("UnitTestsWidget/Geometry", saveGeometry());
+}
+
+QList<QTreeWidgetItem *> UnitTestsWidget::availableTests()
+{
+    QList<QTreeWidgetItem *> list;
+
+    for (int i = 0; i < trvTests->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem *module = trvTests->topLevelItem(i);
+
+        for (int j = 0; j < module->childCount(); j++)
+        {
+            list.append(module->child(j));
+        }
+    }
+
+    return list;
 }
 
 void UnitTestsWidget::doContextMenu(const QPoint &pos)
@@ -182,15 +208,14 @@ void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
         Py_XDECREF(result);
     }
 
-    for (int i = 0; i < trvTests->topLevelItemCount(); i++)
+    foreach (QTreeWidgetItem *item, availableTests())
     {
-        QTreeWidgetItem *item = trvTests->topLevelItem(i);
         item->setCheckState(0, Qt::Unchecked);
 
         for (int j = 0; j < modules.count(); j++)
         {
             if ((item->data(0, Qt::UserRole).toString() == modules.at(j)) &&
-                (item->data(1, Qt::UserRole).toString() == clss.at(j)))
+                    (item->data(1, Qt::UserRole).toString() == clss.at(j)))
             {
                 item->setCheckState(0, Qt::Checked);
 
@@ -209,12 +234,8 @@ void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
 
 void UnitTestsWidget::uncheckTests()
 {
-    for (int i = 0; i < trvTests->topLevelItemCount(); i++)
-    {
-        QTreeWidgetItem *item = trvTests->topLevelItem(i);
-
+    foreach (QTreeWidgetItem *item, availableTests())
         item->setCheckState(0, Qt::Unchecked);
-    }
 }
 
 void UnitTestsWidget::runTestsFromSuite()
@@ -229,6 +250,7 @@ void UnitTestsWidget::runTestsFromSuite()
     // clean test suite
     m_test = XMLTest::test(XMLTest::tests());
     webView->setHtml("");
+    logWidget->clear();
 
     // set date
     QString date = QString("%1").arg(QDateTime::currentDateTime().toString(DATE_FORMAT));
@@ -239,10 +261,8 @@ void UnitTestsWidget::runTestsFromSuite()
 
     try
     {
-        for (int i = 0; i < trvTests->topLevelItemCount(); i++)
+        foreach (QTreeWidgetItem *item, availableTests())
         {
-            QTreeWidgetItem *item = trvTests->topLevelItem(i);
-
             if (item->checkState(0) == Qt::Checked)
             {
                 runTestFromSuite(item->data(0, Qt::UserRole).toString(),
@@ -481,6 +501,12 @@ void UnitTestsWidget::readTestsFromSuite()
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_tests");
     if (result)
     {
+        QTreeWidgetItem *moduleItem = NULL;
+        QString previousModule;
+
+        QFont fnt = trvTests->font();
+        fnt.setBold(true);
+
         Py_INCREF(result);
         for (int i = 0; i < PyList_Size(result); i++)
         {
@@ -492,8 +518,22 @@ void UnitTestsWidget::readTestsFromSuite()
 
             QString key = QString("UnitTestsWidget/Tests/%1/%2").arg(module).arg(name);
 
-            QTreeWidgetItem *classItem = new QTreeWidgetItem(trvTests);
-            classItem->setText(0, QString("%1.%2").arg(module.right(module.count() - module.indexOf(".") - 1)).arg(name));
+            // create module item
+            if (previousModule.isEmpty() || previousModule != module)
+            {
+                moduleItem = new QTreeWidgetItem(trvTests);
+                moduleItem->setText(0, module.right(module.count() - module.indexOf(".") - 1));
+                moduleItem->setData(0, Qt::UserRole, module);
+                moduleItem->setData(1, Qt::UserRole, "");
+                moduleItem->setFont(0, fnt);
+                moduleItem->setExpanded(true);
+
+                // set previous module
+                previousModule = module;
+            }
+
+            QTreeWidgetItem *classItem = new QTreeWidgetItem(moduleItem);
+            classItem->setText(0, QString("%1").arg(name));
             classItem->setData(0, Qt::UserRole, module);
             classItem->setData(1, Qt::UserRole, name);
             if (settings.value(key, false).toBool())
@@ -541,10 +581,10 @@ void UnitTestsWidget::readScenariosFromSuite()
         Py_INCREF(result);
         for (int i = 0; i < PyList_Size(result); i++)
         {
-            QString name = PyString_AsString(PyList_GetItem(result, i));
+            QString testName = PyString_AsString(PyList_GetItem(result, i));
 
-            QAction *act = new QAction(name, this);
-            act->setData(name);
+            QAction *act = new QAction(testName, this);
+            act->setData(testName);
 
             menu->addAction(act);
         }
@@ -561,10 +601,8 @@ void UnitTestsWidget::saveTestsSettings()
 {
     QSettings settings;
 
-    for (int i = 0; i < trvTests->topLevelItemCount(); i++)
+    foreach (QTreeWidgetItem *item, availableTests())
     {
-        QTreeWidgetItem *item = trvTests->topLevelItem(i);
-
         QString key = QString("UnitTestsWidget/Tests/%1/%2").
                 arg(item->data(0, Qt::UserRole).toString()).
                 arg(item->data(1, Qt::UserRole).toString());

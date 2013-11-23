@@ -2,7 +2,8 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class TestMagneticPlanarGeneral(Agros2DTestCase):
+# abstract test suite class
+class TestMagneticPlanarGeneralTestSuite(Agros2DTestCase):
     def setUpGeneral(self, totalCurrent):  
         # model
         problem = agros2d.problem(clear = True)
@@ -106,15 +107,16 @@ class TestMagneticPlanarGeneral(Agros2DTestCase):
         self.value_test("Surface Maxwell force - x", surface["Ftx"], 2.66, 0.15)
         self.value_test("Surface Maxwell force - y", surface["Fty"], -11.87, 0.15)            
 
-class TestMagneticPlanar(TestMagneticPlanarGeneral):
+class TestMagneticPlanar(TestMagneticPlanarGeneralTestSuite):
     def setUp(self):  
         self.setUpGeneral(False)
         
-class TestMagneticPlanarTotalCurrent(TestMagneticPlanarGeneral):
+class TestMagneticPlanarTotalCurrent(TestMagneticPlanarGeneralTestSuite):
     def setUp(self):  
         self.setUpGeneral(True)
-                        
-class TestMagneticAxisymmetricGeneral(Agros2DTestCase):
+            
+# abstract test suite class            
+class TestMagneticAxisymmetricGeneralTestSuite(Agros2DTestCase):
     def setUpGeneral(self, totalCurrent):  
         # model
         problem = agros2d.problem(clear = True)
@@ -219,11 +221,11 @@ class TestMagneticAxisymmetricGeneral(Agros2DTestCase):
         surface = self.magnetic.surface_integrals([12, 13, 14, 15])
         self.value_test("Surface Maxwell force - z", surface["Fty"], 0.429770, 0.1)
 
-class TestMagneticAxisymmetric(TestMagneticAxisymmetricGeneral):
+class TestMagneticAxisymmetric(TestMagneticAxisymmetricGeneralTestSuite):
     def setUp(self):  
         self.setUpGeneral(False)
         
-class TestMagneticAxisymmetricTotalCurrent(TestMagneticAxisymmetricGeneral):
+class TestMagneticAxisymmetricTotalCurrent(TestMagneticAxisymmetricGeneralTestSuite):
     def setUp(self):  
         self.setUpGeneral(True)        
     

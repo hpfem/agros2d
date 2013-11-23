@@ -70,19 +70,10 @@ public:
     void welcomeMessage();
 
     bool isMemoryLabelVisible() const;
-    inline void setMemoryLabelVisible(bool visible = true);
+    void setMemoryLabelVisible(bool visible = true);
 
-private slots:
-    void contextMenu(const QPoint &pos);
-
-    void printMessage(const QString &module, const QString &message);
-    void printError(const QString &module, const QString &message);
-    void printWarning(const QString &module, const QString &message);
-    void printDebug(const QString &module, const QString &message);
-    void printHeading(const QString &message);
-
-    void showTimestamp();
-    void showDebug();
+public slots:
+    void clear();
 
 protected:
     void print(const QString &module, const QString &message,
@@ -104,6 +95,17 @@ private:
     void createActions();
 
 private slots:
+    void contextMenu(const QPoint &pos);
+
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
+    void printWarning(const QString &module, const QString &message);
+    void printDebug(const QString &module, const QString &message);
+    void printHeading(const QString &message);
+
+    void showTimestamp();
+    void showDebug();
+
     void refreshMemory(int usage);
 };
 

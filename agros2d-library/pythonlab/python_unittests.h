@@ -29,6 +29,8 @@
 
 #include "../../resources_source/classes/test_xml.h"
 
+class LogWidget;
+
 class AGROS_LIBRARY_API UnitTestsWidget : public QDialog
 {
     Q_OBJECT
@@ -47,12 +49,16 @@ private:
     QPushButton *btnUncheckTests;
     QDialogButtonBox *buttonBox;
 
+    LogWidget *logWidget;
+
     XMLTest::test m_test;
 
     QWebView *webView;
     QString m_cascadeStyleSheet;
 
     bool m_isAborted;
+
+    QList<QTreeWidgetItem *> availableTests();
 
     void readTestFromDisk(const QString& fileName);
 
