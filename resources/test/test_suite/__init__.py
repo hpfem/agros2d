@@ -118,6 +118,8 @@ adaptivity.adaptivity.TestAdaptivityElectrostatic,
 adaptivity.adaptivity.TestAdaptivityAcoustic,
 adaptivity.adaptivity.TestAdaptivityElasticityBracket,
 adaptivity.adaptivity.TestAdaptivityMagneticProfileConductor,
+adaptivity.adaptivity.TestAdaptivityRF_TE,
+adaptivity.adaptivity.TestAdaptivityHLenses,
 # particle tracing
 particle_tracing.particle_tracing.TestParticleTracingPlanar,
 particle_tracing.particle_tracing.TestParticleTracingAxisymmetric,
