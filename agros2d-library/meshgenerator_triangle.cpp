@@ -98,6 +98,7 @@ bool MeshGeneratorTriangle::mesh()
 
 void MeshGeneratorTriangle::meshTriangleError(QProcess::ProcessError error)
 {
+    m_isError = true;
     Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start Triangle"));
     m_process->kill();
 }

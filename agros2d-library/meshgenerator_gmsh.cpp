@@ -72,6 +72,7 @@ bool MeshGeneratorGMSH::mesh()
         // execute an event loop to process the request (nearly-synchronous)
         QEventLoop eventLoop;
         connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+        connect(m_process, SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
         eventLoop.exec();
     }
     else
@@ -84,6 +85,7 @@ bool MeshGeneratorGMSH::mesh()
 
 void MeshGeneratorGMSH::meshGmshError(QProcess::ProcessError error)
 {
+    m_isError = true;
     Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH"));
     m_process->kill();
 }
