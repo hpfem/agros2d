@@ -581,28 +581,18 @@ void UnitTestsWidget::readScenariosFromSuite()
     QMenu *menu = new QMenu();
     connect(menu, SIGNAL(triggered(QAction *)), this, SLOT(readTestsSettingsFromScenario(QAction *)));
 
-    // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenarios = []; test_suite.scenario.find_all_scenarios(test_suite, agros2d_scenarios)"));
+    QStringList list = currentPythonEngineAgros()->testSuiteScenarios();
 
-    // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
-    if (result)
+    foreach (QString test, list)
     {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
-        {
-            QString testName = PyString_AsString(PyList_GetItem(result, i));
+        QString testName = test;
+        testName.remove("test_");
 
-            QAction *act = new QAction(testName, this);
-            act->setData(testName);
+        QAction *act = new QAction(testName, this);
+        act->setData(test);
 
-            menu->addAction(act);
-        }
-        Py_XDECREF(result);
+        menu->addAction(act);
     }
-
-    // remove variables
-    currentPythonEngine()->runExpression("del agros2d_scenarios");
 
     btnScenarios->setMenu(menu);
 }

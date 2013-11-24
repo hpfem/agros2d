@@ -136,6 +136,33 @@ void PythonEngineAgros::materialValues(const QString &function, double from, dou
     }
 }
 
+QStringList PythonEngineAgros::testSuiteScenarios()
+{
+    QStringList list;
+
+    // run expression
+    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenarios = []; test_suite.scenario.find_all_scenarios(test_suite, agros2d_scenarios)"));
+
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
+    if (result)
+    {
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
+        {
+            QString testName = PyString_AsString(PyList_GetItem(result, i));
+
+            list.append(testName);
+        }
+        Py_XDECREF(result);
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_scenarios");
+
+    return list;
+}
+
 PythonEditorAgrosDialog::PythonEditorAgrosDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
     : PythonEditorDialog(pythonEngine, args, parent)
 {

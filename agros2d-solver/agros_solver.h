@@ -44,6 +44,7 @@ public slots:
     void solveProblem();
     void runScript();
     void runSuite();
+    void printTestSuites();
 
 private slots:
     void stdOut(const QString &str);

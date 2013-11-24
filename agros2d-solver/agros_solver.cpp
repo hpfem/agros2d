@@ -181,6 +181,18 @@ void AgrosSolver::runSuite()
     }
 }
 
+void AgrosSolver::printTestSuites()
+{
+    QStringList list = currentPythonEngineAgros()->testSuiteScenarios();
+
+    foreach (QString test, list)
+    {
+        std::cout << test.remove("test_").toStdString() << std::endl;
+    }
+
+    QApplication::exit(0);
+}
+
 void AgrosSolver::stdOut(const QString &str)
 {
     std::cout << str.toStdString();
