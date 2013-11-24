@@ -464,7 +464,9 @@ void PythonEditorDialog::createActions()
     connect(actReplace, SIGNAL(triggered()), this, SLOT(doReplace()));
 
     actIndentSelection = new QAction(icon(""), tr("Indent"), this);
+    actIndentSelection->setShortcut(tr("Ctrl+>"));
     actUnindentSelection = new QAction(icon(""), tr("Unindent"), this);
+    actUnindentSelection->setShortcut(tr("Ctrl+<"));
 
     actCommentAndUncommentSelection = new QAction(icon(""), tr("Toggle comment selection"), this);
     actCommentAndUncommentSelection->setShortcut(tr("Ctrl+/"));
