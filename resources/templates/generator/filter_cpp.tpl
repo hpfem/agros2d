@@ -41,6 +41,17 @@
     if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
     {{/SPECIAL_FUNCTION_SOURCE}}
+
+    value = new double*[this->num];
+    dudx = new double*[this->num];
+    dudy = new double*[this->num];
+}
+
+{{CLASS}}ViewScalarFilter::~{{CLASS}}ViewScalarFilter()
+{
+    delete [] value;
+    delete [] dudx;
+    delete [] dudy;
 }
 
 Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, bool use_MeshHashGrid, Hermes::Hermes2D::Element* e)
@@ -53,10 +64,6 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     Hermes::Hermes2D::Quad2D* quad = this->quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());
     Hermes::Hermes2D::Function<double>::Node* node = this->new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
-
-    double **value = new double*[this->num];
-    double **dudx = new double*[this->num];
-    double **dudy = new double*[this->num];
 
     for (int k = 0; k < this->num; k++)
     {
@@ -76,22 +83,20 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
+    CoordinateType coordinateType = Agros2D::problem()->config()->coordinateType();
+
     int elementMarker = e->marker;
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}    
     {{#VARIABLE_SOURCE}}
-    if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}})
+    if ((m_variableHash == {{VARIABLE_HASH}})
+            && (coordinateType == {{COORDINATE_TYPE}})
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
-            && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}})
-            && (m_variableHash == {{VARIABLE_HASH}}))
+            && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
         for (int i = 0; i < np; i++)
             node->values[0][0][i] = {{EXPRESSION}};
     {{/VARIABLE_SOURCE}}
-
-    delete [] value;
-    delete [] dudx;
-    delete [] dudy;
 
     if(this->nodes->present(order))
     {

@@ -37,10 +37,10 @@ Marker::~Marker()
 const QSharedPointer<Value> Marker::value(const QString &id) const
 {
     assert(! id.isEmpty());
-    if(!m_values.contains(id))
-    {
-        qDebug() << " marker does not contain " << id;
-    }
+    // if(!m_values.contains(id))
+    // {
+    //     qDebug() << " marker does not contain " << id;
+    // }
     assert(m_values.contains(id));
 
     return m_values[id];
@@ -58,21 +58,21 @@ const QMap<QString, QSharedPointer<Value> > Marker::values() const
 
 void Marker::setValue(const QString& name, Value value)
 {
-    QMutex mutex;
-    mutex.lock();
-    m_values[name] = QSharedPointer<Value>(new Value(value));
-    mutex.unlock();
+#pragma omp critical
+    {
+        m_values[name] = QSharedPointer<Value>(new Value(value));
+    }
 }
 
 void Marker::modifyValue(const QString& name, Value value)
 {
-    QMutex mutex;
-    mutex.lock();
-    if(! m_values.contains(name))
-        m_values[name] = QSharedPointer<Value>(new Value(value));
-    else
-        *m_values[name].data() = value;
-    mutex.unlock();
+#pragma omp critical
+    {
+        if(! m_values.contains(name))
+            m_values[name] = QSharedPointer<Value>(new Value(value));
+        else
+            *m_values[name].data() = value;
+    }
 }
 
 bool Marker::evaluate(const QString &id, double time)

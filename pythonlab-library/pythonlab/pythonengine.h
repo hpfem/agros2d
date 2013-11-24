@@ -137,7 +137,6 @@ protected:
 
 private:
     QString m_functions;
-    QMutex m_mutex;
 
     PyObject *errorType;
     PyObject *errorValue;

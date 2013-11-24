@@ -36,6 +36,7 @@ public:
                      Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                      const QString &variable,
                      PhysicFieldVariableComp physicFieldVariableComp);
+    virtual ~{{CLASS}}ViewScalarFilter();
 
     virtual Hermes::Hermes2D::Func<double> *get_pt_value(double x, double y, bool use_MeshHashGrid = false, Hermes::Hermes2D::Element* e = NULL);
 
@@ -57,6 +58,10 @@ private:
 
     {{#SPECIAL_FUNCTION_SOURCE}}
     QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
+
+    double **value;
+    double **dudx;
+    double **dudy;
 };
 
 #endif // {{ID}}_FILTER_H
