@@ -205,7 +205,7 @@ ADD_SUBDIRECTORY(agros2d-remote)
 
 message("\nAgros2D Configuration results")
 message("---------------------")
-message(" Version: ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_SUB}.${VERSION_GIT}")
+message(" Version: ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_SUB}")
 
 IF(AGROS_DEBUG)
   message(" Build version: Debug")
