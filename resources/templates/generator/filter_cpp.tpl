@@ -45,6 +45,9 @@
     value = new double*[this->num];
     dudx = new double*[this->num];
     dudy = new double*[this->num];
+
+    m_coordinateType = Agros2D::problem()->config()->coordinateType();
+    m_labels = Agros2D::scene()->labels;
 }
 
 {{CLASS}}ViewScalarFilter::~{{CLASS}}ViewScalarFilter()
@@ -80,10 +83,8 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     Hermes::Hermes2D::Element *e = this->refmap->get_active_element();
 
     // set material
-    SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
-                                                             get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
-
-    CoordinateType coordinateType = Agros2D::problem()->config()->coordinateType();
+    SceneMaterial *material = m_labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
+                                           get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
     int elementMarker = e->marker;
 
@@ -91,7 +92,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     {{/VARIABLE_MATERIAL}}    
     {{#VARIABLE_SOURCE}}
     if ((m_variableHash == {{VARIABLE_HASH}})
-            && (coordinateType == {{COORDINATE_TYPE}})
+            && (m_coordinateType == {{COORDINATE_TYPE}})
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
             && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
         for (int i = 0; i < np; i++)

@@ -29,6 +29,8 @@
 
 #include "{{ID}}_interface.h"
 
+class SceneLabelContainer;
+
 class {{CLASS}}ViewScalarFilter : public Hermes::Hermes2D::Filter<double>
 {
 public:
@@ -52,16 +54,19 @@ private:
     int m_adaptivityStep;
     SolutionMode m_solutionType;
 
+    SceneLabelContainer *m_labels;
+
     QString m_variable;
     uint m_variableHash;
     PhysicFieldVariableComp m_physicFieldVariableComp;
+    CoordinateType m_coordinateType;
 
     {{#SPECIAL_FUNCTION_SOURCE}}
     QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
 
     double **value;
     double **dudx;
-    double **dudy;
+    double **dudy;    
 };
 
 #endif // {{ID}}_FILTER_H

@@ -177,7 +177,7 @@ bool SceneBasicContainer<BasicType>::remove(BasicType *item)
 template <typename BasicType>
 BasicType *SceneBasicContainer<BasicType>::at(int i)
 {
-    return m_data.at(i);
+    return m_data[i];
 }
 
 template <typename BasicType>
