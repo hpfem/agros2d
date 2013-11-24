@@ -421,7 +421,7 @@ QString versionString()
     bool beta = false;
 #endif
 
-    return versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta);
+    return versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta);
 }
 
 QString stringListToString(const QStringList &list)

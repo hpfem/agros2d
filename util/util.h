@@ -174,13 +174,12 @@ AGROS_UTIL_API void writeStringContentByteArray(const QString &fileName, QByteAr
 AGROS_UTIL_API void appendToFile(const QString &fileName, const QString &str);
 
 // join version
-AGROS_UTIL_API inline QString versionString(int major, int minor, int sub, int git, int year, int month, int day, bool beta)
+AGROS_UTIL_API inline QString versionString(int major, int minor, int sub, int year, int month, int day, bool beta)
 {
-    return QString("%1.%2.%3.%4 %5 (%6-%7-%8)")
+    return QString("%1.%2.%3 %4 (%5-%6-%7)")
             .arg(major)
             .arg(minor)
-            .arg(sub)
-            .arg(git)
+            .arg(sub)            
             .arg(beta ? "beta" : "")
             .arg(year)
             .arg(QString("0%1").arg(month).right(2))

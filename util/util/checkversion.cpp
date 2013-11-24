@@ -76,28 +76,29 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
         int major = eleVersion.toElement().attribute("major").toInt();
         int minor = eleVersion.toElement().attribute("minor").toInt();
         int sub = eleVersion.toElement().attribute("sub").toInt();
-        int git = eleVersion.toElement().attribute("git").toInt();
         int year = eleVersion.toElement().attribute("year").toInt();
         int month = eleVersion.toElement().attribute("month").toInt();
         int day = eleVersion.toElement().attribute("day").toInt();
 
         QDomNode eleUrl = eleDoc.toElement().elementsByTagName("url").at(0);
 
-        if (!m_quiet && git == 0)
+        QString ver = QString("%1%2%3").arg(year, 8, 16, QChar('0'));
+
+        if (!m_quiet && major == 0)
         {
             QMessageBox::critical(QApplication::activeWindow(), tr("New version"), tr("File is corrupted or network is disconnected."));
             return;
         }
 
         QString downloadUrl = eleUrl.toElement().text();
-        if (git > VERSION_GIT)
+        if (QDate(year, month, day) > QDate(VERSION_YEAR, VERSION_MONTH, VERSION_DAY))
         {
             QString str(tr("<b>New version available.</b><br/><br/>"
                            "Actual version: %1<br/>"
                            "New version: %2<br/><br/>"
                            "URL: <a href=\"%3\">%3</a>").
                         arg(QApplication::applicationVersion()).
-                        arg(versionString(major, minor, sub, git, year, month, day, beta)).
+                        arg(versionString(major, minor, sub, year, month, day, beta)).
                         arg(downloadUrl));
 
             QMessageBox::information(QApplication::activeWindow(), tr("New version"), str);
