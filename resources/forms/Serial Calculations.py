@@ -49,15 +49,19 @@ def eval_and_print(variable, value):
     globals()[variable] = value
     print('{0} = {1}'.format(variable, value))
 
-results = {'transformation' : [0],
+results = {'transformation' : list(),
            'local' : list(), 'surface' : list(), 'volume' : list(),
            'expression' : list()}
 
 problem = a2d.problem()
 geometry = a2d.geometry
 
-calculate()
-for step in range({{txtSteps_text}}+1):
+for step in range(0, {{txtSteps_text}}, 1):
+    if not step:
+        calculate()
+        results['transformation'].append(0)
+        continue
+
     if ({{lstNodes_list}}):
         geometry.select_nodes({{lstNodes_list}})
         transform()
@@ -73,20 +77,20 @@ for step in range({{txtSteps_text}}+1):
     if ({{radDisplacement_checked}}):
         results['transformation'].append(results['transformation'][-1] + sqrt(({{txtMoveX_text}})**2 + ({{txtMoveY_text}})**2))
     elif ({{radRotation_checked}}):
-      results['transformation'].append(results['transformation'][-1] + {{txtRotateAngle_text}})
+        results['transformation'].append(results['transformation'][-1] + abs({{txtRotateAngle_text}}))
     elif ({{radScale_checked}}):
-      results['transformation'].append(results['transformation'][-1] + {{txtScaleFactor_text}})
+        results['transformation'].append(results['transformation'][-1] + abs({{txtScaleFactor_text}}))
 
     calculate()
 
 if (results['local']):
-  eval_and_print('{{trvLocalValues_variable}}', results['local'])
+    eval_and_print('{{trvLocalValues_variable}}', results['local'])
 
 if (results['surface']):
-  eval_and_print('{{trvSurfaceIntegrals_variable}}', results['surface'])
+    eval_and_print('{{trvSurfaceIntegrals_variable}}', results['surface'])
 
 if (results['volume']):
-  eval_and_print('{{trvVolumeIntegrals_variable}}', results['volume'])
+    eval_and_print('{{trvVolumeIntegrals_variable}}', results['volume'])
 
 eval_and_print('s', results['transformation'])
 
@@ -109,4 +113,4 @@ if ({{chkLocalValueDerivative_checked}} or
         eval_and_print('ds', ds)
 
 if (results['expression']):
-  eval_and_print('expression_results', results['expression'])
+    eval_and_print('expression_results', results['expression'])
