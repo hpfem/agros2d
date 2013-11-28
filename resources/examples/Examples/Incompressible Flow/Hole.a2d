@@ -13,14 +13,14 @@
       <node id="7" x="0" y="-0.3"/>
     </nodes>
     <edges>
-      <edge angle="0" end="2" id="0" start="1"/>
-      <edge angle="0" end="3" id="1" start="2"/>
-      <edge angle="0" end="0" id="2" start="3"/>
-      <edge angle="0" end="0" id="3" start="1"/>
-      <edge angle="90" end="4" id="4" start="6"/>
-      <edge angle="90" end="7" id="5" start="4"/>
-      <edge angle="90" end="5" id="6" start="7"/>
-      <edge angle="90" end="6" id="7" start="5"/>
+      <edge angle="0" end="2" id="0" is_curvilinear="1" segments="3" start="1"/>
+      <edge angle="0" end="3" id="1" is_curvilinear="1" segments="3" start="2"/>
+      <edge angle="0" end="0" id="2" is_curvilinear="1" segments="3" start="3"/>
+      <edge angle="0" end="0" id="3" is_curvilinear="1" segments="3" start="1"/>
+      <edge angle="90" end="4" id="4" is_curvilinear="1" segments="3" start="6"/>
+      <edge angle="90" end="7" id="5" is_curvilinear="1" segments="3" start="4"/>
+      <edge angle="90" end="5" id="6" is_curvilinear="1" segments="3" start="7"/>
+      <edge angle="90" end="6" id="7" is_curvilinear="1" segments="3" start="5"/>
     </edges>
     <labels>
       <label area="0" id="0" x="0.00662661" y="-0.0476999"/>
@@ -85,15 +85,15 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.05"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
-          <field_item field_key="NewtonDampingType" field_value="0"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
+          <field_item field_key="NonlinearResidualNorm" field_value="0.01"/>
+          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0"/>
+          <field_item field_key="NonlinearDampingType" field_value="0"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonReuseJacobian" field_value="0"/>
-          <field_item field_key="NewtonSufImprovForJacobianReuse" field_value="0.8"/>
-          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonJacobianReuseRatio" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingFactorDecreaseRatio" field_value="1.2"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
-          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
+          <field_item field_key="NonlinearStepsToIncreaseDampingFactor" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -105,7 +105,7 @@
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
           <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
-          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value=""/>
           <field_item field_key="AdaptivityUseAniso" field_value="1"/>
           <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
@@ -125,6 +125,7 @@
       <problem_item problem_key="Frequency" problem_value="0"/>
       <problem_item problem_key="TimeMethod" problem_value="0"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="1"/>
       <problem_item problem_key="TimeSteps" problem_value="40"/>
       <problem_item problem_key="TimeTotal" problem_value="8"/>
@@ -262,8 +263,6 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_MeshAngleSegmentsCount" value="3"/>
-    <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
   </config>

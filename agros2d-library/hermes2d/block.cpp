@@ -382,6 +382,11 @@ double Block::nonlinearResidualNorm() const
             tolerance = fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble();
     }
 
+    // if we do not want to use this stopping criterion, the value is 0.
+    // At the present moment, we want, however, Newton solver to satisfy both conditions. Thus we set very high number.
+    if(tolerance == 0)
+        tolerance = 1e20;
+
     return tolerance;
 }
 
@@ -395,6 +400,11 @@ double Block::nonlinearRelativeChangeOfSolutions() const
         if (fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble() < tolerance)
             tolerance = fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble();
     }
+
+    // if we do not want to use this stopping criterion, the value is 0.
+    // At the present moment, we want, however, Newton solver to satisfy both conditions. Thus we set very high number.
+    if(tolerance == 0)
+        tolerance = 1e20;
 
     return tolerance;
 }

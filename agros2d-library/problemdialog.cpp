@@ -248,12 +248,12 @@ QWidget *FieldWidget::createSolverWidget()
     QGridLayout *layoutSolverConvergence = new QGridLayout();
     layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
 
-    layoutSolverConvergence->addWidget(new QLabel(tr("Residual:")), 0, 0);
-    layoutSolverConvergence->addWidget(chkNonlinearResidual, 0, 1);
-    layoutSolverConvergence->addWidget(txtNonlinearResidual, 0, 2);
-    layoutSolverConvergence->addWidget(new QLabel(tr("Relative change of solutions (%):")), 1, 0);
-    layoutSolverConvergence->addWidget(chkNonlinearRelativeChangeOfSolutions, 1, 1);
-    layoutSolverConvergence->addWidget(txtNonlinearRelativeChangeOfSolutions, 1, 2);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Relative change of solutions (%):")), 0, 0);
+    layoutSolverConvergence->addWidget(chkNonlinearRelativeChangeOfSolutions, 0, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearRelativeChangeOfSolutions, 0, 2);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Residual:")), 1, 0);
+    layoutSolverConvergence->addWidget(chkNonlinearResidual, 1, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearResidual, 1, 2);
 
     QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
     grpSolverConvergence->setLayout(layoutSolverConvergence);
@@ -570,8 +570,8 @@ void FieldWidget::load()
     txtTransientTimeSkip->setValue(m_fieldInfo->value(FieldInfo::TransientTimeSkip).toDouble());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
-    chkNonlinearResidual->setChecked(m_fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble() > 0);
     txtNonlinearResidual->setValue(m_fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble());
+    chkNonlinearResidual->setChecked(m_fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble() > 0);
     chkNonlinearRelativeChangeOfSolutions->setChecked(m_fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble() > 0);
     txtNonlinearRelativeChangeOfSolutions->setValue(m_fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble());
     cmbNonlinearDampingType->setCurrentIndex(cmbNonlinearDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()));
