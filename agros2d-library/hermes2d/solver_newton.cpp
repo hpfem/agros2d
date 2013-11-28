@@ -177,8 +177,8 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
     m_newtonSolver->set_verbose_output(false);
     m_newtonSolver->clear_tolerances();
-    m_newtonSolver->set_tolerance(block->nonlinearResidualNorm(), ResidualNormAbsolute);
-    m_newtonSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative);
+    m_newtonSolver->set_tolerance(block->nonlinearResidualNorm(), ResidualNormAbsolute, true);
+    m_newtonSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative, true);
     m_newtonSolver->set_max_allowed_iterations(500);
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorForJacobianReuse());

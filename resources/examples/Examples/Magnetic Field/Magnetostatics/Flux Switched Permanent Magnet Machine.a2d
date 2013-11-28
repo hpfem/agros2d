@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/fmach/Projekty/Agros2D/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/pkus/sources/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -350,7 +350,7 @@
         </materials>
         <field_config>
           <field_item field_key="NonlinearResidualNorm" field_value="1e-06"/>
-          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0"/>
+          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="1e-06"/>
           <field_item field_key="NonlinearDampingType" field_value="0"/>
           <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonReuseJacobian" field_value="1"/>
@@ -389,6 +389,7 @@
       <problem_item problem_key="Frequency" problem_value="50"/>
       <problem_item problem_key="TimeMethod" problem_value="2"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="2"/>
       <problem_item problem_key="TimeSteps" problem_value="10"/>
       <problem_item problem_key="TimeTotal" problem_value="15000"/>
@@ -476,8 +477,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="1.48562644883181e-05"/>
-    <item key="View_ScalarRangeMax" value="1.54363008151479"/>
+    <item key="View_ScalarRangeMin" value="1.48563118127972e-05"/>
+    <item key="View_ScalarRangeMax" value="1.54025034570763"/>
     <item key="View_ShowVectorView" value="1"/>
     <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
     <item key="View_VectorProportional" value="1"/>

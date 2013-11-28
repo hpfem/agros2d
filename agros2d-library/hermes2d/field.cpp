@@ -940,8 +940,8 @@ void FieldInfo::setDefaultValues()
 {
     m_settingDefault.clear();
 
-    m_settingDefault[NonlinearResidualNorm] = 1e-6;
-    m_settingDefault[NonlinearRelativeChangeOfSolutions] = 0.0;
+    m_settingDefault[NonlinearResidualNorm] = 0.0;
+    m_settingDefault[NonlinearRelativeChangeOfSolutions] = 0.1;
     m_settingDefault[NonlinearDampingType] = DampingType_Automatic;
     m_settingDefault[NonlinearDampingCoeff] = 0.8;
     m_settingDefault[NewtonReuseJacobian] = true;
