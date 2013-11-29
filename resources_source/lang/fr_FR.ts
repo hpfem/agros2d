@@ -5910,7 +5910,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/resultsview.cpp" line="41"/>
         <source>Results view</source>
-        <translation>Voir les résultats</translation>
+        <translation>Résultats</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/resultsview.cpp" line="118"/>
