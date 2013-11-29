@@ -612,7 +612,7 @@ class TestFieldAdaptivityInfo(Agros2DTestCase):
         geometry.add_edge(1.6, -1.6, 0, -1.6, boundaries = {"electrostatic" : "Border"})
         
         geometry.add_label(0.8, 0.8, materials = {"electrostatic" : "Air"})
-
+    """
     def test_adaptivity_info(self):
         self.problem.solve()
         dofs = self.field.adaptivity_info()['dofs']
@@ -641,6 +641,38 @@ class TestFieldAdaptivityInfo(Agros2DTestCase):
         self.problem.solve()
         with self.assertRaises(IndexError):
             self.field.adaptivity_info(time_step=1)
+    """
+    def test_initial_and_solution_mesh_info(self):
+        self.problem.solve()
+        init = self.field.initial_mesh_info()
+        sol = self.field.solution_mesh_info()
+        info = self.field.adaptivity_info()
+        
+        self.assertEqual(init['dofs'], info['dofs'][0])
+        self.assertEqual(sol['dofs'], info['dofs'][-1])
+        
+        self.assertGreater(sol['dofs'], init['dofs'])
+        self.assertGreater(sol['elements'], init['elements'])
+        self.assertGreater(sol['nodes'], init['nodes'])
+
+    def test_initial_mesh_info(self):
+        self.problem.mesh()
+        self.assertTrue(self.field.initial_mesh_info()['elements'])
+        self.assertTrue(self.field.initial_mesh_info()['nodes'])
+
+    def test_solution_mesh_info(self):
+        self.problem.solve()
+        self.assertTrue(self.field.solution_mesh_info()['dofs'])
+        self.assertTrue(self.field.solution_mesh_info()['elements'])
+        self.assertTrue(self.field.solution_mesh_info()['nodes'])
+
+    def test_initial_mesh_info_without_mesh(self):
+        with self.assertRaises(RuntimeError):
+            self.field.initial_mesh_info()
+
+    def test_solution_mesh_info_without_solution(self):
+        with self.assertRaises(RuntimeError):
+            self.field.solution_mesh_info()
 
 class TestFieldAdaptivityInfoTransient(Agros2DTestCase):
     def setUp(self):
@@ -694,6 +726,7 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
+    """
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMaterials))
@@ -702,19 +735,15 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldLocalValues))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldIntegrals))
+    """
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfo))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfoTransient))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfoTransient))
     suite.run(result)
 
 # TODO (Franta) :
 """
 modify_material
-
-initial_mesh_info
-solution_mesh_info
-
 solver_info
-
 filename_matrix
 filename_rhs
 """
