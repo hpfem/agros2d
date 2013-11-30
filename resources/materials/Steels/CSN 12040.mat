@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="CSN 12040"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="SN 006004" unit="-">
+      <material:constant value="0"/>
+      <material:nonlinearity>
+        <material:table keys="0&#xA;1.41&#xA;1.585&#xA;1.73&#xA;1.79&#xA;1.875&#xA;" values="448.82&#xA;448.82&#xA;252.26&#xA;137.67&#xA;94.96&#xA;74.60&#xA;"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>
