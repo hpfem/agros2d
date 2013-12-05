@@ -29,6 +29,7 @@ class AGROS_LIBRARY_API MemoryMonitor : public QObject
 
 public:
     MemoryMonitor();
+    ~MemoryMonitor();
 
     int currentMemoryUsage() const;
     int lastMemoryUsage() const;

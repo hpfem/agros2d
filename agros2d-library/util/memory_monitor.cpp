@@ -31,6 +31,11 @@ MemoryMonitor::MemoryMonitor()
     m_memoryTimer->connect(m_memoryTimer, SIGNAL(timeout()), this, SLOT(refreshMemory()));
 }
 
+MemoryMonitor::~MemoryMonitor()
+{
+    delete m_memoryTimer;
+}
+
 void MemoryMonitor::refreshMemory()
 {
     int memory = currentMemoryUsage();
