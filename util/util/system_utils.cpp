@@ -21,6 +21,8 @@
 
 #ifdef Q_WS_X11
 #include <csignal>
+#include "sys/types.h"
+#include "sys/sysinfo.h"
 #endif
 
 CleanExit::CleanExit()
@@ -166,5 +168,154 @@ bool isProcessRunning(int pid)
         return true;
     else
         return false;
+#endif
+}
+
+void cpuID(unsigned i, int regs[4]) {
+#ifdef _WIN32
+    __cpuid((int *)regs, (int)i);
+
+#else
+    asm volatile
+            ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
+        : "a" (i), "c" (0));
+    // ECX is set to zero for CPUID function 4
+#endif
+}
+
+QString cpuType()
+{
+    int CPUInfo[4] = {-1};
+    unsigned nExIds, i =  0;
+    char CPUBrandString[0x40];
+    // Get the information associated with each extended ID.
+
+    cpuID(0x80000000, CPUInfo);
+    nExIds = CPUInfo[0];
+    for (i = 0x80000000; i <= nExIds; ++i)
+    {
+        cpuID(i, CPUInfo);
+        // Interpret CPU brand string
+        if  (i == 0x80000002)
+            memcpy(CPUBrandString, CPUInfo, sizeof(CPUInfo));
+        else if  (i == 0x80000003)
+            memcpy(CPUBrandString + 16, CPUInfo, sizeof(CPUInfo));
+        else if  (i == 0x80000004)
+            memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
+    }
+
+    //string includes manufacturer, model and clockspeed
+    return QString(CPUBrandString).trimmed();
+}
+
+int cpuNumberOfCores()
+{
+    /*
+#if defined(_WIN32)
+    SYSTEM_INFO sysInfo;
+    GetSystemInfo(&sysInfo);
+
+    return sysInfo.dwNumberOfProcessors;
+#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+    */
+    int CPUInfo[4] = {-1};
+
+    char vendor[12];
+    cpuID(0, CPUInfo);
+    ((unsigned *)vendor)[0] = CPUInfo[1]; // EBX
+    ((unsigned *)vendor)[1] = CPUInfo[3]; // EDX
+    ((unsigned *)vendor)[2] = CPUInfo[2]; // ECX
+    string cpuVendor = string(vendor, 12);
+
+    cpuID(1, CPUInfo);
+    unsigned logical = (CPUInfo[1] >> 16) & 0xff; // EBX[23:16]
+
+    int cores = -1;
+    if (cpuVendor == "GenuineIntel")
+    {
+        // Get DCP cache info
+        cpuID(4, CPUInfo);
+        cores = ((CPUInfo[0] >> 26) & 0x3f) + 1; // EAX[31:26] + 1
+
+    }
+    else if (cpuVendor == "AuthenticAMD")
+    {
+        // Get NC: Number of CPU cores - 1
+        cpuID(0x80000008, CPUInfo);
+        cores = ((unsigned)(CPUInfo[2] & 0xff)) + 1; // ECX[7:0] + 1
+    }
+
+    return cores;
+/* #endif */
+}
+
+long getMemorySize()
+{
+#if defined(_WIN32) && (defined(__CYGWIN__) || defined(__CYGWIN32__))
+    /* Cygwin under Windows. ------------------------------------ */
+    /* New 64-bit MEMORYSTATUSEX isn't available.  Use old 32.bit */
+    MEMORYSTATUS status;
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatus( &status );
+    return (size_t)status.dwTotalPhys;
+
+#elif defined(_WIN32)
+    /* Windows. ------------------------------------------------- */
+    /* Use new 64-bit MEMORYSTATUSEX, not old 32-bit MEMORYSTATUS */
+    MEMORYSTATUSEX status;
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx( &status );
+    return (size_t)status.ullTotalPhys;
+
+#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+    /* UNIX variants. ------------------------------------------- */
+    /* Prefer sysctl() over sysconf() except sysctl() HW_REALMEM and HW_PHYSMEM */
+
+#if defined(CTL_HW) && (defined(HW_MEMSIZE) || defined(HW_PHYSMEM64))
+    int mib[2];
+    mib[0] = CTL_HW;
+#if defined(HW_MEMSIZE)
+    mib[1] = HW_MEMSIZE;            /* OSX. --------------------- */
+#elif defined(HW_PHYSMEM64)
+    mib[1] = HW_PHYSMEM64;          /* NetBSD, OpenBSD. --------- */
+#endif
+    int64_t size = 0;               /* 64-bit */
+    size_t len = sizeof( size );
+    if ( sysctl( mib, 2, &size, &len, NULL, 0 ) == 0 )
+        return (size_t)size;
+    return 0L;			/* Failed? */
+
+#elif defined(_SC_AIX_REALMEM)
+    /* AIX. ----------------------------------------------------- */
+    return (size_t)sysconf( _SC_AIX_REALMEM ) * (size_t)1024L;
+
+#elif defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
+    /* FreeBSD, Linux, OpenBSD, and Solaris. -------------------- */
+    return (size_t)sysconf( _SC_PHYS_PAGES ) *
+            (size_t)sysconf( _SC_PAGESIZE );
+
+#elif defined(_SC_PHYS_PAGES) && defined(_SC_PAGE_SIZE)
+    /* Legacy. -------------------------------------------------- */
+    return (size_t)sysconf( _SC_PHYS_PAGES ) *
+            (size_t)sysconf( _SC_PAGE_SIZE );
+
+#elif defined(CTL_HW) && (defined(HW_PHYSMEM) || defined(HW_REALMEM))
+    /* DragonFly BSD, FreeBSD, NetBSD, OpenBSD, and OSX. -------- */
+    int mib[2];
+    mib[0] = CTL_HW;
+#if defined(HW_REALMEM)
+    mib[1] = HW_REALMEM;		/* FreeBSD. ----------------- */
+#elif defined(HW_PYSMEM)
+    mib[1] = HW_PHYSMEM;		/* Others. ------------------ */
+#endif
+    unsigned int size = 0;		/* 32-bit */
+    size_t len = sizeof( size );
+    if ( sysctl( mib, 2, &size, &len, NULL, 0 ) == 0 )
+        return (size_t)size;
+    return 0L;			/* Failed? */
+#endif /* sysctl and sysconf variants */
+
+#else
+    return 0L;			/* Unknown OS. */
 #endif
 }

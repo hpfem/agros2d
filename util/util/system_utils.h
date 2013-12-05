@@ -40,4 +40,8 @@ AGROS_UTIL_API long getCurrentRSS();
 
 AGROS_UTIL_API bool isProcessRunning(int pid);
 
+AGROS_UTIL_API QString cpuType();
+AGROS_UTIL_API int cpuNumberOfCores();
+AGROS_UTIL_API long getMemorySize();
+
 #endif // SYSTEM_UTILS_H
