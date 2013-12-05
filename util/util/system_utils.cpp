@@ -23,7 +23,10 @@
 #include <csignal>
 #include "sys/types.h"
 #include "sys/sysinfo.h"
+#include <sys/utsname.h>
 #endif
+
+#include <QSysInfo>
 
 CleanExit::CleanExit()
 {
@@ -240,7 +243,7 @@ int cpuNumberOfCores()
     return cores;
 }
 
-size_t getMemorySize()
+size_t totalMemorySize()
 {
 #if defined(_WIN32) && (defined(__CYGWIN__) || defined(__CYGWIN32__))
     /* Cygwin under Windows. ------------------------------------ */
@@ -308,5 +311,36 @@ size_t getMemorySize()
 
 #else
     return 0L;			/* Unknown OS. */
+#endif
+}
+
+QString operatingSystem()
+{
+#ifdef Q_WS_WIN
+    switch (QSysInfo::windowsVersion())
+    {
+    case QSysInfo::WV_WINDOWS8: return "Windows 8";
+    case QSysInfo::WV_WINDOWS7: return "Windows 7";
+    case QSysInfo::WV_VISTA: return "Windows Vista";
+    case QSysInfo::WV_2003: return "Windows 2003";
+    case QSysInfo::WV_2000: return "Windows 2000";
+    case QSysInfo::WV_XP: return "Windows XP";
+    default: return "Windows";
+    }
+#endif
+#ifdef Q_WS_X11
+    FILE* pipe = popen("lsb_release -ds", "r");
+    if (!pipe)
+        return "ERROR";
+    char buffer[128];
+    std::string result = "";
+    while (!feof(pipe))
+    {
+        if (fgets(buffer, 128, pipe) != NULL)
+            result += buffer;
+    }
+    pclose(pipe);
+
+    return QString::fromStdString(result).trimmed();
 #endif
 }

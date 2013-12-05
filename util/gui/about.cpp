@@ -21,6 +21,7 @@
 
 #include "../util.h"
 #include "../util/checkversion.h"
+#include "../util/system_utils.h"
 
 AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 {
@@ -48,6 +49,7 @@ void AboutDialog::createControls()
     tab->addTab(createHermes2D(), tr("Hermes2D"));
     tab->addTab(createLibraries(), tr("Libraries"));
     tab->addTab(createLicense(), tr("License"));
+    tab->addTab(createSysinfo(), tr("System Informations"));
 
     QPushButton *buttonClose = new QPushButton(tr("Close"));
     QPushButton *buttonCheckForNewVersion = new QPushButton(tr("Check version"));
@@ -194,6 +196,30 @@ QWidget *AboutDialog::createLicense()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(labelContent);
     layout->addStretch();
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(layout);
+
+    return widget;
+}
+
+QWidget *AboutDialog::createSysinfo()
+{
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(new QLabel(tr("OS:")), 0, 0);
+    layout->addWidget(new QLabel(operatingSystem()), 0, 1);
+    layout->addWidget(new QLabel(""), 1, 0);
+    layout->addWidget(new QLabel(tr("Processor:")), 2, 0);
+    layout->addWidget(new QLabel(cpuType()), 2, 1);
+    layout->addWidget(new QLabel(tr("Number of Cores:")), 3, 0);
+    layout->addWidget(new QLabel(QString::number(cpuNumberOfCores())), 3, 1);
+    layout->addWidget(new QLabel(tr("Memory:")), 4, 0);
+    layout->addWidget(new QLabel(QString("%1 MB").arg(totalMemorySize() / 1024 / 1024)), 4, 1);
+    layout->addWidget(new QLabel(tr("Screen resolution:")), 5, 0);
+    layout->addWidget(new QLabel(QString("%1 x %2").
+                                 arg(QApplication::desktop()->screenGeometry().width()).
+                                 arg(QApplication::desktop()->screenGeometry().height())), 5, 1);
+    layout->setRowStretch(10, 1);
 
     QWidget *widget = new QWidget();
     widget->setLayout(layout);

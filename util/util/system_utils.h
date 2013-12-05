@@ -42,6 +42,7 @@ AGROS_UTIL_API bool isProcessRunning(int pid);
 
 AGROS_UTIL_API QString cpuType();
 AGROS_UTIL_API int cpuNumberOfCores();
-AGROS_UTIL_API size_t getMemorySize();
+AGROS_UTIL_API size_t totalMemorySize();
+AGROS_UTIL_API QString operatingSystem();
 
 #endif // SYSTEM_UTILS_H

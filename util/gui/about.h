@@ -38,6 +38,7 @@ private:
     QWidget *createHermes2D();
     QWidget *createLibraries();
     QWidget *createLicense();
+    QWidget *createSysinfo();
 
 private slots:
     void checkVersion();
