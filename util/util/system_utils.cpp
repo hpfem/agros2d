@@ -210,14 +210,6 @@ QString cpuType()
 
 int cpuNumberOfCores()
 {
-    /*
-#if defined(_WIN32)
-    SYSTEM_INFO sysInfo;
-    GetSystemInfo(&sysInfo);
-
-    return sysInfo.dwNumberOfProcessors;
-#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
-    */
     int CPUInfo[4] = {-1};
 
     char vendor[12];
@@ -246,10 +238,9 @@ int cpuNumberOfCores()
     }
 
     return cores;
-/* #endif */
 }
 
-long getMemorySize()
+size_t getMemorySize()
 {
 #if defined(_WIN32) && (defined(__CYGWIN__) || defined(__CYGWIN32__))
     /* Cygwin under Windows. ------------------------------------ */
