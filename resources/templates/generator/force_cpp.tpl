@@ -100,8 +100,8 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
             dudx[k] = values->dx[0];
             dudy[k] = values->dy[0];
 
-            values->free_fn();
-            values->free_ord();
+            // values->free_fn();
+            // values->free_ord();
             delete values;
         }
 
