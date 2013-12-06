@@ -18,7 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "system_utils.h"
-#include "config.h"
+#include "../config.h"
 
 #ifdef Q_WS_X11
 #include <csignal>
@@ -32,7 +32,7 @@
 #else
 inline int omp_get_num_threads() { return 1; }
 inline int omp_get_thread_num() { return 0; }
-inline int omp_get_max_threads() { return 1; }
+inline int omp_get_max_threads() { return -1; }
 #endif
 
 #include <QSysInfo>

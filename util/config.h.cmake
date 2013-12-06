@@ -8,4 +8,6 @@ const int VERSION_YEAR = ${VERSION_YEAR};
 const int VERSION_MONTH = ${VERSION_MONTH}.0;
 const int VERSION_DAY = ${VERSION_DAY}.0;
 
+#cmakedefine WITH_OPENMP
+
 #endif

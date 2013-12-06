@@ -213,7 +213,7 @@ QWidget *AboutDialog::createSysinfo()
     layout->addWidget(new QLabel(""), 9, 0);
     layout->addWidget(new QLabel(tr("Processor:")), 10, 0);
     layout->addWidget(new QLabel(SystemUtils::cpuType()), 10, 1);
-    layout->addWidget(new QLabel(tr("Number of Threads:")), 11, 0);
+    layout->addWidget(new QLabel(tr("Number of threads:")), 11, 0);
     layout->addWidget(new QLabel(QString::number(SystemUtils::numberOfThreads())), 11, 1);
     layout->addWidget(new QLabel(tr("Memory:")), 12, 0);
     layout->addWidget(new QLabel(QString("%1 MB").arg(SystemUtils::totalMemorySize() / 1024 / 1024)), 12, 1);
