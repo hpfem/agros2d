@@ -476,7 +476,8 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
 bool PythonEngine::runExpressionConsole(const QString &expression)
 {
     bool successfulRun = runExpression(expression);
-    emit executedScript();
+    if (successfulRun)
+        emit executedScript();
 
     return successfulRun;
 }

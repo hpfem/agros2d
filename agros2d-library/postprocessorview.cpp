@@ -62,7 +62,7 @@ PostprocessorWidget::PostprocessorWidget(PostHermes *postHermes,
     createControls();
 
     loadBasic();
-    loadAdvanced();    
+    loadAdvanced();
 }
 
 void PostprocessorWidget::loadBasic()
@@ -483,6 +483,7 @@ QWidget *PostprocessorWidget::controlsBasic()
 {
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(doCalculationFinished()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doCalculationFinished()));
+    connect(currentPythonEngine(), SIGNAL(executedScript()), this, SLOT(doCalculationFinished()));
 
     fieldWidget = new PhysicalFieldWidget(this);
     connect(fieldWidget, SIGNAL(fieldChanged()), this, SLOT(doField()));
@@ -728,12 +729,18 @@ void PostprocessorWidget::doField()
 
 void PostprocessorWidget::doCalculationFinished()
 {
-    fieldWidget->selectField(m_postHermes->activeViewField());
-    fieldWidget->selectTimeStep(m_postHermes->activeTimeStep());
-    fieldWidget->selectAdaptivityStep(m_postHermes->activeAdaptivityStep());
-    fieldWidget->selectedAdaptivitySolutionType(m_postHermes->activeAdaptivitySolutionType());
+    if (currentPythonEngine()->isScriptRunning())
+        return;
 
-    emit apply();
+    if (Agros2D::problem()->isSolved())
+    {
+        fieldWidget->selectField(m_postHermes->activeViewField());
+        fieldWidget->selectTimeStep(m_postHermes->activeTimeStep());
+        fieldWidget->selectAdaptivityStep(m_postHermes->activeAdaptivityStep());
+        fieldWidget->selectedAdaptivitySolutionType(m_postHermes->activeAdaptivitySolutionType());
+
+        emit apply();
+    }
 }
 
 void PostprocessorWidget::doScalarFieldVariable(int index)

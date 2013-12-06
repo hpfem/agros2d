@@ -48,6 +48,8 @@
 #include "hermes2d/solutiontypes.h"
 #include "hermes2d/solutionstore.h"
 
+#include "pythonlab/pythonengine.h"
+
 PostHermes::PostHermes() :
     m_activeViewField(NULL), m_activeTimeStep(NOT_FOUND_SO_FAR), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
 {
