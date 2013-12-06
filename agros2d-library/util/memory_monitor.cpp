@@ -48,7 +48,7 @@ void MemoryMonitor::refreshMemory()
 
 int MemoryMonitor::currentMemoryUsage() const
 {
-    return (getCurrentRSS() / 1024 / 1024);
+    return (SystemUtils::getCurrentRSS() / 1024 / 1024);
 }
 
 int MemoryMonitor::lastMemoryUsage() const

@@ -29,6 +29,10 @@ struct AGROS_LIBRARY_API CleanExit
     static void exitQt(int sig);
 };
 
+
+namespace SystemUtils
+{
+
 // Returns the peak (maximum so far) resident set size (physical
 // memory use) measured in bytes, or zero if the value cannot be
 // determined on this OS.
@@ -41,8 +45,11 @@ AGROS_UTIL_API long getCurrentRSS();
 AGROS_UTIL_API bool isProcessRunning(int pid);
 
 AGROS_UTIL_API QString cpuType();
-AGROS_UTIL_API int cpuNumberOfCores();
+AGROS_UTIL_API int numberOfThreads();
 AGROS_UTIL_API size_t totalMemorySize();
 AGROS_UTIL_API QString operatingSystem();
+AGROS_UTIL_API bool is64bit();
+
+}
 
 #endif // SYSTEM_UTILS_H

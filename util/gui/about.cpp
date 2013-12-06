@@ -207,19 +207,21 @@ QWidget *AboutDialog::createSysinfo()
 {
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel(tr("OS:")), 0, 0);
-    layout->addWidget(new QLabel(operatingSystem()), 0, 1);
-    layout->addWidget(new QLabel(""), 1, 0);
-    layout->addWidget(new QLabel(tr("Processor:")), 2, 0);
-    layout->addWidget(new QLabel(cpuType()), 2, 1);
-    layout->addWidget(new QLabel(tr("Number of Cores:")), 3, 0);
-    layout->addWidget(new QLabel(QString::number(cpuNumberOfCores())), 3, 1);
-    layout->addWidget(new QLabel(tr("Memory:")), 4, 0);
-    layout->addWidget(new QLabel(QString("%1 MB").arg(totalMemorySize() / 1024 / 1024)), 4, 1);
-    layout->addWidget(new QLabel(tr("Screen resolution:")), 5, 0);
+    layout->addWidget(new QLabel(SystemUtils::operatingSystem()), 0, 1);
+    layout->addWidget(new QLabel(tr("Version:")), 1, 0);
+    layout->addWidget(new QLabel(SystemUtils::is64bit() ? "64 bit" : "32 bit"), 1, 1);
+    layout->addWidget(new QLabel(""), 9, 0);
+    layout->addWidget(new QLabel(tr("Processor:")), 10, 0);
+    layout->addWidget(new QLabel(SystemUtils::cpuType()), 10, 1);
+    layout->addWidget(new QLabel(tr("Number of Threads:")), 11, 0);
+    layout->addWidget(new QLabel(QString::number(SystemUtils::numberOfThreads())), 11, 1);
+    layout->addWidget(new QLabel(tr("Memory:")), 12, 0);
+    layout->addWidget(new QLabel(QString("%1 MB").arg(SystemUtils::totalMemorySize() / 1024 / 1024)), 12, 1);
+    layout->addWidget(new QLabel(tr("Screen resolution:")), 13, 0);
     layout->addWidget(new QLabel(QString("%1 x %2").
                                  arg(QApplication::desktop()->screenGeometry().width()).
-                                 arg(QApplication::desktop()->screenGeometry().height())), 5, 1);
-    layout->setRowStretch(10, 1);
+                                 arg(QApplication::desktop()->screenGeometry().height())), 13, 1);
+    layout->setRowStretch(20, 1);
 
     QWidget *widget = new QWidget();
     widget->setLayout(layout);

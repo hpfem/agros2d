@@ -18,12 +18,21 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "system_utils.h"
+#include "config.h"
 
 #ifdef Q_WS_X11
 #include <csignal>
 #include "sys/types.h"
 #include "sys/sysinfo.h"
 #include <sys/utsname.h>
+#endif
+
+#ifdef WITH_OPENMP
+#include <omp.h>
+#else
+inline int omp_get_num_threads() { return 1; }
+inline int omp_get_thread_num() { return 0; }
+inline int omp_get_max_threads() { return 1; }
 #endif
 
 #include <QSysInfo>
@@ -79,7 +88,7 @@ void CleanExit::exitQt(int sig)
  * memory use) measured in bytes, or zero if the value cannot be
  * determined on this OS.
  */
-long getPeakRSS( )
+long SystemUtils::getPeakRSS( )
 {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
@@ -121,7 +130,7 @@ long getPeakRSS( )
  * Returns the current resident set size (physical memory use) measured
  * in bytes, or zero if the value cannot be determined on this OS.
  */
-long getCurrentRSS()
+long SystemUtils::getCurrentRSS()
 {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
@@ -158,7 +167,7 @@ long getCurrentRSS()
 #endif
 }
 
-bool isProcessRunning(int pid)
+bool SystemUtils::isProcessRunning(int pid)
 {
 #if defined(_WIN32)
     HANDLE process = OpenProcess(SYNCHRONIZE, FALSE, pid);
@@ -186,7 +195,7 @@ void cpuID(unsigned i, int regs[4]) {
 #endif
 }
 
-QString cpuType()
+QString SystemUtils::cpuType()
 {
     int CPUInfo[4] = {-1};
     unsigned nExIds, i =  0;
@@ -211,39 +220,12 @@ QString cpuType()
     return QString(CPUBrandString).trimmed();
 }
 
-int cpuNumberOfCores()
+int SystemUtils::numberOfThreads()
 {
-    int CPUInfo[4] = {-1};
-
-    char vendor[12];
-    cpuID(0, CPUInfo);
-    ((unsigned *)vendor)[0] = CPUInfo[1]; // EBX
-    ((unsigned *)vendor)[1] = CPUInfo[3]; // EDX
-    ((unsigned *)vendor)[2] = CPUInfo[2]; // ECX
-    string cpuVendor = string(vendor, 12);
-
-    cpuID(1, CPUInfo);
-    unsigned logical = (CPUInfo[1] >> 16) & 0xff; // EBX[23:16]
-
-    int cores = -1;
-    if (cpuVendor == "GenuineIntel")
-    {
-        // Get DCP cache info
-        cpuID(4, CPUInfo);
-        cores = ((CPUInfo[0] >> 26) & 0x3f) + 1; // EAX[31:26] + 1
-
-    }
-    else if (cpuVendor == "AuthenticAMD")
-    {
-        // Get NC: Number of CPU cores - 1
-        cpuID(0x80000008, CPUInfo);
-        cores = ((unsigned)(CPUInfo[2] & 0xff)) + 1; // ECX[7:0] + 1
-    }
-
-    return cores;
+    return omp_get_max_threads();
 }
 
-size_t totalMemorySize()
+size_t SystemUtils::totalMemorySize()
 {
 #if defined(_WIN32) && (defined(__CYGWIN__) || defined(__CYGWIN32__))
     /* Cygwin under Windows. ------------------------------------ */
@@ -314,7 +296,7 @@ size_t totalMemorySize()
 #endif
 }
 
-QString operatingSystem()
+QString SystemUtils::operatingSystem()
 {
 #ifdef Q_WS_WIN
     switch (QSysInfo::windowsVersion())
@@ -342,5 +324,24 @@ QString operatingSystem()
     pclose(pipe);
 
     return QString::fromStdString(result).trimmed();
+#endif
+}
+
+AGROS_UTIL_API bool SystemUtils::is64bit()
+{
+#if _WIN32 || _WIN64
+#if _WIN64
+    return true;
+#else
+    return false;
+#endif
+#endif
+
+#if __GNUC__
+#if __x86_64__ || __ppc64__
+    return true;
+#else
+    return false;
+#endif
 #endif
 }

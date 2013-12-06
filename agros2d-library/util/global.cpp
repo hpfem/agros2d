@@ -175,7 +175,7 @@ void clearAgros2DCache()
         if (fileInfo.isDir())
         {
             // process doesn't exists
-            if (!isProcessRunning(fileInfo.fileName().toInt()))
+            if (!SystemUtils::isProcessRunning(fileInfo.fileName().toInt()))
                 removeDirectory(QString("%1/%2").arg(QFileInfo(cacheProblemDir()).absolutePath()).arg(fileInfo.fileName()));
         }
     }
