@@ -122,6 +122,7 @@ struct PyViewMesh : PyViewMeshAndPost
     void setProblemSetting(ProblemSetting::Type type, bool value);
 
     void activate();
+    void refresh();
 
     // field
     void setField(const std::string &fieldId);
@@ -200,6 +201,7 @@ struct PyViewPost : PyViewMeshAndPost
 struct PyViewPost2D : PyViewPost
 {
     void activate();
+    void refresh();
 
     // scalar view
     void setScalarViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowScalarView, show); }
@@ -235,6 +237,7 @@ struct PyViewPost2D : PyViewPost
 struct PyViewPost3D : PyViewPost
 {
     void activate();
+    void refresh();
 
     // mode
     void setPost3DMode(const std::string &mode);
@@ -248,6 +251,7 @@ struct PyViewPost3D : PyViewPost
 struct PyViewParticleTracing
 {
     void activate();
+    void refresh();
 };
 
 #endif // PYTHONLABVIEW_H

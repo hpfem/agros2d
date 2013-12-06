@@ -46,6 +46,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         int getIntParameter(string &parameter)
 
         void activate() except +
+        void refresh() except +
 
         void setField(string &fieldid) except +
         string getField()
@@ -95,6 +96,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         double getDoubleParameter(string &parameter)
 
         void activate() except +
+        void refresh() except +
 
         void setScalarViewShow(bool show) except +
         bool getScalarViewShow()
@@ -121,6 +123,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     # PyViewPost3D
     cdef cppclass PyViewPost3D:
         void activate() except +
+        void refresh() except +
 
         void setPost3DMode(string &mode) except +
         string getPost3DMode()
@@ -128,6 +131,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     # PyViewParticleTracing
     cdef cppclass PyViewParticleTracing:
         void activate() except +
+        void refresh() except +
 
 # ViewConfig
 cdef class __ViewConfig__:
@@ -252,6 +256,9 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 
     def activate(self):
         self.thisptr.activate()
+
+    def refresh(self):
+        self.thisptr.refresh()
 
     def disable(self):
       self.initial_mesh = False
@@ -392,6 +399,9 @@ cdef class __ViewPost2D__(__ViewPost__):
     def activate(self):
         self.thisptr2d.activate()
 
+    def refresh(self):
+        self.thisptr2d.refresh()
+
     def disable(self):
       self.scalar = False
       self.contours = False
@@ -488,6 +498,9 @@ cdef class __ViewPost3D__(__ViewPost__):
     def activate(self):
         self.thisptr3d.activate()
 
+    def refresh(self):
+        self.thisptr3d.refresh()
+
     property mode:
         def __get__(self):
             return self.thisptr3d.getPost3DMode().c_str()
@@ -505,6 +518,9 @@ cdef class __ViewParticleTracing__:
 
     def activate(self):
         self.thisptrpt.activate()
+
+    def refresh(self):
+        self.thisptrpt.refresh()
 
 # View
 cdef class __View__:

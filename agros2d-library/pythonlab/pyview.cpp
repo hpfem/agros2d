@@ -190,6 +190,14 @@ void PyViewMesh::activate()
     }
 }
 
+void PyViewMesh::refresh()
+{
+    checkExistingMesh();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
+}
+
 void PyViewMesh::setField(const std::string &fieldId)
 {
     checkExistingMesh();
@@ -341,6 +349,14 @@ void PyViewPost2D::activate()
     }
 }
 
+void PyViewPost2D::refresh()
+{
+    checkExistingSolution();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
+}
+
 void PyViewPost2D::setContourVariable(const std::string &var)
 {
     checkExistingSolution();
@@ -436,6 +452,14 @@ void PyViewPost3D::activate()
     }
 }
 
+void PyViewPost3D::refresh()
+{
+    checkExistingSolution();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
+}
+
 void PyViewPost3D::setPost3DMode(const std::string &mode)
 {
     if (!sceneViewPost3DModeStringKeys().contains(QString::fromStdString(mode)))
@@ -457,4 +481,13 @@ void PyViewParticleTracing::activate()
         currentPythonEngineAgros()->sceneViewParticleTracing()->actSceneModeParticleTracing->trigger();
         currentPythonEngineAgros()->postHermes()->refresh();
     }
+}
+
+void PyViewParticleTracing::refresh()
+{
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
