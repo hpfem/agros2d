@@ -415,13 +415,7 @@ void appendToFile(const QString &fileName, const QString &str)
 
 QString versionString()
 {
-#ifdef VERSION_BETA
-    bool beta = true;
-#else
-    bool beta = false;
-#endif
-
-    return versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta);
+    return versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_YEAR, VERSION_MONTH, VERSION_DAY);
 }
 
 QString stringListToString(const QStringList &list)

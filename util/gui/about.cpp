@@ -208,8 +208,8 @@ QWidget *AboutDialog::createSysinfo()
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel(tr("OS:")), 0, 0);
     layout->addWidget(new QLabel(SystemUtils::operatingSystem()), 0, 1);
-    layout->addWidget(new QLabel(tr("Version:")), 1, 0);
-    layout->addWidget(new QLabel(SystemUtils::is64bit() ? "64 bit" : "32 bit"), 1, 1);
+    layout->addWidget(new QLabel(tr("Architecture:")), 1, 0);
+    layout->addWidget(new QLabel(SystemUtils::operatingSystemArch()), 1, 1);
     layout->addWidget(new QLabel(""), 9, 0);
     layout->addWidget(new QLabel(tr("Processor:")), 10, 0);
     layout->addWidget(new QLabel(SystemUtils::cpuType()), 10, 1);

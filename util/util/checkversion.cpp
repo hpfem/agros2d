@@ -21,16 +21,23 @@
 
 #include "../util.h"
 #include "../config.h"
+#include "../util/system_utils.h"
+
+QString esc(const QString &str)
+{
+#if QT_VERSION < 0x050000
+    return Qt::escape(str);
+#else
+    return QString(str).toHtmlEscaped();
+#endif
+}
 
 static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
 {
     // download version
-#ifdef VERSION_BETA
-    QUrl url("http://www.agros2d.org/version/version_beta.xml");
-#else
-    QUrl url("http://www.agros2d.org/version/version.xml");
-#endif
+    QUrl url("http://www.agros2d.org/version/log/version.php");
+
     if (checkVersion == NULL)
         checkVersion = new CheckVersion(url);
 
@@ -51,55 +58,41 @@ CheckVersion::~CheckVersion()
 void CheckVersion::run(bool quiet)
 {
     m_quiet = quiet;
-    m_networkReply = m_manager->get(QNetworkRequest(m_url));
 
-    connect(m_networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(showProgress(qint64,qint64)));
+    QByteArray postData;
+    postData.append("OS=" +  esc(SystemUtils::operatingSystem()) + "&");
+    postData.append("OS_ARCH=" +  esc(SystemUtils::operatingSystemArch()) + "&");
+    postData.append("PROCESSOR=" +  esc(SystemUtils::cpuType()) + "&");
+    postData.append("THREADS=" +  QString::number(SystemUtils::numberOfThreads()) + "&");
+    postData.append("MEMORY=" +  QString::number(SystemUtils::totalMemorySize()) + "&");
+    postData.append("RESOLUTION=" +  esc(QString("%1 x %2").
+                                         arg(QApplication::desktop()->screenGeometry().width()).
+                                         arg(QApplication::desktop()->screenGeometry().height())) + "&");
+    postData.append("AGROS2D_VERSION=" +  esc(QApplication::applicationVersion()) + "&");
+    postData.append("AGROS2D_ARCH=" +  esc(SystemUtils::is64bit() ? "64 bit" : "32 bit") + "&");
+
+    QNetworkRequest req(m_url);
+    req.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/x-www-form-urlencoded"));
+
+    m_networkReply = m_manager->post(req, postData);
+
     connect(m_networkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(handleError(QNetworkReply::NetworkError)));
 }
 
 void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 {
-    QString text = networkReply->readAll();
+    QString text = networkReply->readAll().trimmed();
 
     if (!text.isEmpty())
     {
-        QDomDocument doc;
-        doc.setContent(text);
-
-        // main document
-        QDomElement eleDoc = doc.documentElement();
-
-        // problems
-        QDomNode eleVersion = eleDoc.toElement().elementsByTagName("version").at(0);
-
-        int beta = eleVersion.toElement().attribute("beta").toInt() == 1;
-        int major = eleVersion.toElement().attribute("major").toInt();
-        int minor = eleVersion.toElement().attribute("minor").toInt();
-        int sub = eleVersion.toElement().attribute("sub").toInt();
-        int year = eleVersion.toElement().attribute("year").toInt();
-        int month = eleVersion.toElement().attribute("month").toInt();
-        int day = eleVersion.toElement().attribute("day").toInt();
-
-        QDomNode eleUrl = eleDoc.toElement().elementsByTagName("url").at(0);
-
-        QString ver = QString("%1%2%3").arg(year, 8, 16, QChar('0'));
-
-        if (!m_quiet && major == 0)
-        {
-            QMessageBox::critical(QApplication::activeWindow(), tr("New version"), tr("File is corrupted or network is disconnected."));
-            return;
-        }
-
-        QString downloadUrl = eleUrl.toElement().text();
-        if (QDate(year, month, day) > QDate(VERSION_YEAR, VERSION_MONTH, VERSION_DAY))
+        if (text > versionString())
         {
             QString str(tr("<b>New version available.</b><br/><br/>"
                            "Actual version: %1<br/>"
                            "New version: %2<br/><br/>"
-                           "URL: <a href=\"%3\">%3</a>").
-                        arg(QApplication::applicationVersion()).
-                        arg(versionString(major, minor, sub, year, month, day, beta)).
-                        arg(downloadUrl));
+                           "URL: <a href=\"http://www.agros2d.org/down/\">http://www.agros2d.org/down/</a>").
+                        arg(versionString()).
+                        arg(text));
 
             QMessageBox::information(QApplication::activeWindow(), tr("New version"), str);
         }
@@ -108,11 +101,12 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
             QMessageBox::information(QApplication::activeWindow(), tr("New version"), tr("You are using actual version."));
         }
     }
-}
+    else if (!m_quiet)
+    {
+        QMessageBox::critical(QApplication::activeWindow(), tr("New version"), tr("File is corrupted or network is disconnected."));
+        return;
+    }
 
-void CheckVersion::showProgress(qint64 dl, qint64 all)
-{
-    // qDebug() << QString("\rDownloaded %1 bytes of %2).").arg(dl).arg(all);
 }
 
 void CheckVersion::handleError(QNetworkReply::NetworkError error)

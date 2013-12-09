@@ -26,7 +26,6 @@ INCLUDE(CMake.vars OPTIONAL)
 include(QtHandling.cmake)
 
 # versions
-# SET(VERSION_BETA)
 SET(VERSION_MAJOR 3)
 SET(VERSION_MINOR 2)
 SET(VERSION_SUB 0)

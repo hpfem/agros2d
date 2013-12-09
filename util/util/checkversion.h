@@ -44,7 +44,6 @@ private:
 
 private slots:
     void downloadFinished(QNetworkReply *networkReply);
-    void showProgress(qint64, qint64);
     void handleError(QNetworkReply::NetworkError error);
 };
 
