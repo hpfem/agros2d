@@ -133,13 +133,18 @@ void PyViewMeshAndPost::setActiveAdaptivityStep(int adaptivityStep)
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    if (adaptivityStep < 0 || adaptivityStep >= currentPythonEngineAgros()->postHermes()->activeViewField()->value(FieldInfo::AdaptivitySteps).toInt())
-        throw out_of_range(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).
-                           arg(currentPythonEngineAgros()->postHermes()->activeViewField()->value(FieldInfo::AdaptivitySteps).toInt() - 1).toStdString());
+    int last_step = Agros2D::solutionStore()->lastAdaptiveStep(currentPythonEngineAgros()->postHermes()->activeViewField(),
+                                                               currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType(),
+                                                               currentPythonEngineAgros()->postHermes()->activeTimeStep());
+
+    if (adaptivityStep < 1 || adaptivityStep > last_step + 1)
+        throw out_of_range(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.")
+                           .arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId())
+                           .arg(last_step + 1).toStdString());
 
     if (!silentMode())
     {
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
+        currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep - 1);
         currentPythonEngineAgros()->postHermes()->refresh();
     }
 }
