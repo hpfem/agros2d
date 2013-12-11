@@ -23,7 +23,6 @@ public:
     {
         CalculationType_Mesh,
         CalculationType_Solve,
-        CalculationType_SolveAdaptiveStep,
         CalculationType_SolveTimeStep
     };
 
@@ -85,7 +84,6 @@ public:
     void mesh();
     // solve
     void solve();
-    void solveAdaptiveStep();
 
     // check geometry
     bool checkGeometry();
@@ -98,8 +96,7 @@ public:
     bool isPreparedForAction() const { return !isMeshing() && !isSolving() && !m_isPostprocessingRunning; }
 
     inline QAction *actionMesh() { return actMesh; }
-    inline QAction *actionSolve() { return actSolve; }
-    inline QAction *actionSolveAdaptiveStep() { return actSolveAdaptiveStep; }
+    inline QAction *actionSolve() { return actSolve; }    
 
     bool isTransient() const;
     int numTransientFields() const;
@@ -182,7 +179,6 @@ private:
 
     QAction *actMesh;
     QAction *actSolve;
-    QAction *actSolveAdaptiveStep;
 
     // determined in create structure to speed up the calculation
     bool m_isNonlinear;
@@ -200,10 +196,9 @@ private:
     bool mesh(bool emitMeshed);
     bool meshAction(bool emitMeshed);
     void solveInit(bool reCreateStructure = true);
-    void solve(bool adaptiveStepOnly, bool commandLine);
+    void solve(bool commandLine);
     void solveAction(); // called by solve, can throw SolverException
 
-    void solveAdaptiveStepAction();
     void stepMessage(Block* block);    
 
     friend class CalculationThread;
@@ -213,7 +208,6 @@ private:
 private slots:
     void doMeshWithGUI();
     void doSolveWithGUI();
-    void doSolveAdaptiveStepWithGUI();
 };
 
 #endif // PROBLEM_H

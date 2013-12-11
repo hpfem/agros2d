@@ -813,7 +813,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
 }
 
 template <typename Scalar>
-bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation)
+bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
     MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
@@ -878,9 +878,6 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
 
         // adaptive tolerance
         adapt = error >= m_block->adaptivityTolerance();
-
-        // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
-        adapt = adapt || forceAdaptation;
 
         Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step: %1 (error: %2, DOFs: %3/%4)").
                                      arg(adaptivityStep).

@@ -38,7 +38,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
 
         void mesh() except +
         void solve() except +
-        void solveAdaptiveStep() except +
 
         double timeElapsed() except +
         void timeStepsLength(vector[double] &steps) except +
@@ -156,10 +155,6 @@ cdef class __Problem__:
     def solve(self):
         """Solve problem."""
         self.thisptr.solve()
-
-    def solve_adaptive_step(self):
-        """Solve one adaptive step."""
-        self.thisptr.solveAdaptiveStep()
 
     def elapsed_time(self):
         """Return elapsed time in seconds."""

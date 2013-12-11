@@ -62,10 +62,7 @@ void CalculationThread::run()
         Agros2D::problem()->mesh(true);
         break;
     case CalculationType_Solve:
-        Agros2D::problem()->solve(false, false);
-        break;
-    case CalculationType_SolveAdaptiveStep:
-        Agros2D::problem()->solve(true, false);
+        Agros2D::problem()->solve(false);
         break;
     case CalculationType_SolveTimeStep:
         assert(0);
@@ -97,9 +94,6 @@ Problem::Problem()
     actSolve = new QAction(icon("run"), tr("&Solve"), this);
     actSolve->setShortcut(QKeySequence(tr("Alt+S")));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolveWithGUI()));
-
-    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive step"), this);
-    connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStepWithGUI()));
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 }
@@ -611,15 +605,7 @@ void Problem::solve()
     m_calculationThread->startCalculation(CalculationThread::CalculationType_Solve);
 }
 
-void Problem::solveAdaptiveStep()
-{
-    if (!isPreparedForAction())
-        return;
-
-    m_calculationThread->startCalculation(CalculationThread::CalculationType_SolveAdaptiveStep);
-}
-
-void Problem::solve(bool adaptiveStepOnly, bool commandLine)
+void Problem::solve(bool commandLine)
 {
     if (!isPreparedForAction())
         return;
@@ -670,10 +656,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
         m_isSolving = true;
 
-        if (adaptiveStepOnly)
-            solveAdaptiveStepAction();
-        else
-            solveAction();
+        solveAction();
 
         m_lastTimeElapsed = milisecondsToTime(timeCounter.elapsed());
 
@@ -903,52 +886,6 @@ void Problem::solveAction()
                 doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     } while (doNextTimeStep && !m_abort);
-}
-
-void Problem::solveAdaptiveStepAction()
-{
-    solveInit(false);
-
-    assert(isMeshed());
-
-    // Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving adaptive problem"));
-
-    assert(actualTimeStep() == 0);
-    assert(m_blocks.size() == 1);
-    Block* block = m_blocks.at(0);
-    QSharedPointer<ProblemSolver<double> > solver = block->prepareSolver();
-    if (solver.isNull())
-        throw AgrosSolverException(tr("Cannot create solver."));
-
-    int adaptStep = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
-    int adaptStepReference = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0);
-
-    if (adaptStep == NOT_FOUND_SO_FAR)
-    {
-        // it does not exist, problem has not been solved yet
-        adaptStep = 0;
-        solver.data()->createInitialSpace();
-        solver.data()->solveReferenceAndProject(0, adaptStep);
-    }
-    else
-    {
-        solver.data()->resumeAdaptivityProcess(adaptStep);
-        if(adaptStepReference == NOT_FOUND_SO_FAR)
-        {
-            // previously simple solve was used
-            BlockSolutionID sidRemove(block, 0, 0, SolutionMode_Normal);
-            Agros2D::solutionStore()->removeSolution(sidRemove);
-            solver.data()->solveReferenceAndProject(0, adaptStep);
-        }
-        else
-        {
-            // previously solveAdaptiveStep was used
-            assert(adaptStep == adaptStepReference);
-        }
-    }
-
-    solver.data()->createAdaptedSpace(0, adaptStep + 1, true);
-    solver.data()->solveReferenceAndProject(0, adaptStep + 1);
 }
 
 void Problem::stepMessage(Block* block)
@@ -1193,18 +1130,6 @@ void Problem::doSolveWithGUI()
 
     // solve problem
     solve();
-}
-
-void Problem::doSolveAdaptiveStepWithGUI()
-{
-    if (!isPreparedForAction())
-        return;
-
-    LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Adaptive step"));
-    logDialog->show();
-
-    // solve problem
-    solveAdaptiveStep();
 }
 
 QString Problem::timeUnit()

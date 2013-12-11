@@ -77,8 +77,7 @@ class PyProblem
 
         // mesh and solve
         void mesh();
-        void solve();
-        void solveAdaptiveStep();
+        void solve();        
 
         // time elapsed
         double timeElapsed() const;

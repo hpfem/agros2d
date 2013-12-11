@@ -181,16 +181,7 @@ void PyProblem::mesh()
 void PyProblem::solve()
 {
     Agros2D::scene()->invalidate();
-    Agros2D::problem()->solve(false, false);
-
-    if (!Agros2D::problem()->isSolved())
-        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
-}
-
-void PyProblem::solveAdaptiveStep()
-{
-    Agros2D::scene()->invalidate();
-    Agros2D::problem()->solve(true, false);
+    Agros2D::problem()->solve(false);
 
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());

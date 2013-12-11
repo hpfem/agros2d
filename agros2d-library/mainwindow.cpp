@@ -507,7 +507,6 @@ void MainWindow::createMenus()
     mnuProblem->addSeparator();
     mnuProblem->addAction(Agros2D::problem()->actionMesh());
     mnuProblem->addAction(Agros2D::problem()->actionSolve());
-    mnuProblem->addAction(Agros2D::problem()->actionSolveAdaptiveStep());
 
     QMenu *mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);

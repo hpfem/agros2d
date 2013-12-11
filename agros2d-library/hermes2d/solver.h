@@ -144,7 +144,7 @@ public:
 
     void solveSimple(int timeStep, int adaptivityStep);
     void solveReferenceAndProject(int timeStep, int adaptivityStep);
-    bool createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation = false);
+    bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
     // to be used in solveAdaptivityStep
     void resumeAdaptivityProcess(int adaptivityStep);
