@@ -60,8 +60,7 @@ void CheckVersion::run(bool quiet)
     m_quiet = quiet;
 
     QByteArray postData;
-    postData.append("OS=" +  esc(SystemUtils::operatingSystem()) + "&");
-    postData.append("OS_ARCH=" +  esc(SystemUtils::operatingSystemArch()) + "&");
+    postData.append("OS=" +  esc(SystemUtils::operatingSystem()) + "&");    
     postData.append("PROCESSOR=" +  esc(SystemUtils::cpuType()) + "&");
     postData.append("THREADS=" +  QString::number(SystemUtils::numberOfThreads()) + "&");
     postData.append("MEMORY=" +  QString::number(SystemUtils::totalMemorySize()) + "&");
@@ -69,7 +68,7 @@ void CheckVersion::run(bool quiet)
                                          arg(QApplication::desktop()->screenGeometry().width()).
                                          arg(QApplication::desktop()->screenGeometry().height())) + "&");
     postData.append("AGROS2D_VERSION=" +  esc(QApplication::applicationVersion()) + "&");
-    postData.append("AGROS2D_ARCH=" +  esc(SystemUtils::is64bit() ? "64 bit" : "32 bit") + "&");
+    postData.append("AGROS2D_ARCH=" +  esc(version64bit() ? "64 bit" : "32 bit") + "&");
 
     QNetworkRequest req(m_url);
     req.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/x-www-form-urlencoded"));

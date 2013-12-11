@@ -326,27 +326,3 @@ QString SystemUtils::operatingSystem()
     return QString::fromStdString(result).trimmed();
 #endif
 }
-
-QString SystemUtils::operatingSystemArch()
-{
-    return "TODO";
-}
-
-AGROS_UTIL_API bool SystemUtils::is64bit()
-{
-#if _WIN32 || _WIN64
-#if _WIN64
-    return true;
-#else
-    return false;
-#endif
-#endif
-
-#if __GNUC__
-#if __x86_64__ || __ppc64__
-    return true;
-#else
-    return false;
-#endif
-#endif
-}

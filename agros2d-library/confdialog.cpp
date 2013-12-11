@@ -57,12 +57,6 @@ void ConfigComputerDialog::load()
     if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0)
         cmbLanguage->setCurrentIndex(0);
 
-    // collaboration server
-    // txtCollaborationServerURL->setText(Agros2D::configComputer()->collaborationServerURL);
-
-    // check version
-    chkCheckVersion->setChecked(Agros2D::configComputer()->checkVersion);
-
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(Agros2D::configComputer()->lineEditValueShowResult);
 
@@ -92,19 +86,6 @@ void ConfigComputerDialog::save()
                              tr("Language change"),
                              tr("Interface language has been changed. You must restart the application."));
     Agros2D::configComputer()->language = cmbLanguage->currentText();
-
-    // collaboration server
-    // QString collaborationServerUrl = txtCollaborationServerURL->text();
-    // if (!collaborationServerUrl.startsWith("http://"))
-    //     collaborationServerUrl = QString("http://%1").arg(collaborationServerUrl);
-
-    // if (!collaborationServerUrl.endsWith("/"))
-    //     collaborationServerUrl = QString("%1/").arg(collaborationServerUrl);
-
-    // Agros2D::configComputer()->collaborationServerURL = collaborationServerUrl;
-
-    // check version
-    Agros2D::configComputer()->checkVersion = chkCheckVersion->isChecked();
 
     // show result in line edit value widget
     Agros2D::configComputer()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
@@ -212,13 +193,11 @@ QWidget *ConfigComputerDialog::createMainWidget()
 
     // other
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
-    chkCheckVersion = new QCheckBox(tr("Check new version during startup"));
 
     chkLogStdOut = new QCheckBox(tr("Print application log to standard output."));
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);
-    layoutOther->addWidget(chkCheckVersion);
     layoutOther->addWidget(chkLogStdOut);
 
     QGroupBox *grpOther = new QGroupBox(tr("Other"));

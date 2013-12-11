@@ -418,6 +418,25 @@ QString versionString()
     return versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_YEAR, VERSION_MONTH, VERSION_DAY);
 }
 
+bool version64bit()
+{
+#if _WIN32 || _WIN64
+#if _WIN64
+    return true;
+#else
+    return false;
+#endif
+#endif
+
+#if __GNUC__
+#if __x86_64__ || __ppc64__
+    return true;
+#else
+    return false;
+#endif
+#endif
+}
+
 QString stringListToString(const QStringList &list)
 {
     QString out;

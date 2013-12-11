@@ -187,6 +187,8 @@ AGROS_UTIL_API inline QString versionString(int major, int minor, int sub, int y
 
 AGROS_UTIL_API QString versionString();
 
+AGROS_UTIL_API bool version64bit();
+
 // dirty html unit replace
 QString unitToHTML(const QString &str);
 

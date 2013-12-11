@@ -47,9 +47,6 @@ void Config::load()
     guiStyle = settings.value("General/GUIStyle").toString();
     language = settings.value("General/Language", QLocale::system().name()).toString();
 
-    collaborationServerURL = settings.value("General/CollaborationServerURL", QString("http://agros2d.org/collaboration/")).toString();
-
-    checkVersion = settings.value("General/CheckVersion", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
 
     // development
@@ -77,9 +74,6 @@ void Config::save()
     settings.setValue("General/GUIStyle", guiStyle);
     settings.setValue("General/Language", language);
 
-    settings.setValue("General/CollaborationServerURL", collaborationServerURL);
-
-    settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
 
     // development

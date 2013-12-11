@@ -207,8 +207,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
 
-    if (settings.value("General/CheckVersion", true).value<bool>())
-        checkForNewVersion(true);
+    checkForNewVersion(true);
 
     restoreGeometry(settings.value("MainWindow/Geometry", saveGeometry()).toByteArray());
     restoreState(settings.value("MainWindow/State", saveState()).toByteArray());
@@ -327,13 +326,6 @@ void MainWindow::createActions()
     actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
     actHelpShortCut->setEnabled(false);
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
-
-    // actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
-    // connect(actCollaborationServer, SIGNAL(triggered()), this, SLOT(doCollaborationServer()));
-
-    actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
-    actOnlineHelp->setEnabled(false);
-    connect(actOnlineHelp, SIGNAL(triggered()), this, SLOT(doOnlineHelp()));
 
     actCheckVersion = new QAction(icon(""), tr("Check version"), this);
     connect(actCheckVersion, SIGNAL(triggered()), this, SLOT(doCheckVersion()));
@@ -1526,16 +1518,6 @@ void MainWindow::doHelp()
 void MainWindow::doHelpShortCut()
 {
     showPage("getting_started/shortcut_keys.html");
-}
-
-void MainWindow::doCollaborationServer()
-{
-    QDesktopServices::openUrl(QUrl(Agros2D::configComputer()->collaborationServerURL + "problems.php"));
-}
-
-void MainWindow::doOnlineHelp()
-{
-    QDesktopServices::openUrl(QUrl("http://hpfem.org/agros2d/help"));
 }
 
 void MainWindow::doCheckVersion()

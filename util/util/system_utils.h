@@ -48,8 +48,6 @@ AGROS_UTIL_API QString cpuType();
 AGROS_UTIL_API int numberOfThreads();
 AGROS_UTIL_API size_t totalMemorySize();
 AGROS_UTIL_API QString operatingSystem();
-AGROS_UTIL_API QString operatingSystemArch();
-AGROS_UTIL_API bool is64bit();
 
 }
 

@@ -54,9 +54,6 @@ private:
     // show result in line edit value widget
     QCheckBox *chkLineEditValueShowResult;
 
-    // check version
-    QCheckBox *chkCheckVersion;
-
     // log std out
     QCheckBox *chkLogStdOut;
 

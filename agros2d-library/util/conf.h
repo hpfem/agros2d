@@ -37,10 +37,7 @@ public:
 
     bool showLogStdOut;
 
-    bool checkVersion;
     bool lineEditValueShowResult;
-
-    QString collaborationServerURL;
 
     // development
     bool saveMatrixRHS;

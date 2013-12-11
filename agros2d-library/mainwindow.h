@@ -103,8 +103,6 @@ private slots:
 
     void doHelp();
     void doHelpShortCut();
-    void doCollaborationServer();
-    void doOnlineHelp();
     void doCheckVersion();
     void doAbout();
     void doStartedScript();
