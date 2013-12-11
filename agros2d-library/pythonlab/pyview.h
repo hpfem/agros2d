@@ -143,15 +143,16 @@ struct PyViewMesh : PyViewMeshAndPost
     void setOrderViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderView, show); }
     inline bool getOrderViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool(); }
 
+    // component
+    void setComponent(int component);
+    inline int getComponent() { return Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt(); }
+
     // order pallete
     void setOrderViewPalette(const std::string & palette);
     inline std::string getOrderViewPalette() const
     {
         return paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString();
     }
-
-    // component
-    void setOrderComponent(int component);
 };
 
 struct PyViewPost : PyViewMeshAndPost

@@ -230,7 +230,7 @@ void PyViewMesh::setOrderViewPalette(const std::string &palette)
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderPaletteOrderType, paletteOrderTypeFromStringKey(QString::fromStdString(palette)));
 }
 
-void PyViewMesh::setOrderComponent(int component)
+void PyViewMesh::setComponent(int component)
 {
     checkExistingMesh();
 

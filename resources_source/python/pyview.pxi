@@ -61,7 +61,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setOrderViewPalette(string &palette) except +
         string getOrderViewPalette()
 
-        void setOrderComponent(int component) except +
+        void setComponent(int component) except +
+        int getComponent()
 
     # PyViewPost
     cdef cppclass PyViewPost:
@@ -283,6 +284,13 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
         def __set__(self, show):
             self.thisptr.setInitialMeshViewShow(show)
 
+    # component
+    property component:
+        def __get__(self):
+            return self.thisptr.getComponent()
+        def __set__(self, component):
+            self.thisptr.setComponent(component)
+
     # order
     property order:
         def __get__(self):
@@ -297,8 +305,7 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
     def __get_order_view_parameters__(self):
         return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
                 'color_bar' : self.thisptr.getBoolParameter(string('View_ShowOrderColorBar')),
-                'label' : self.thisptr.getBoolParameter(string('View_ShowOrderLabel')),
-                'component' : self.thisptr.getIntParameter(string('View_OrderComponent'))}
+                'label' : self.thisptr.getBoolParameter(string('View_ShowOrderLabel'))}
 
     def __set_order_view_parameters__(self, parameters):
         # palette
@@ -307,9 +314,6 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
         # color bar, label
         self.thisptr.setParameter(string('View_ShowOrderColorBar'), <bool>parameters['color_bar'])
         self.thisptr.setParameter(string('View_ShowOrderLabel'), <bool>parameters['label'])
-
-        # component
-        self.thisptr.setOrderComponent(parameters['component'])
 
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):
