@@ -1,14 +1,12 @@
 import agros2d as a2d
 import pythonlab
+import numpy as np
+import os.path
 
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-from scipy.misc import imread, imresize
-from scipy.linalg import norm
-from scipy import sum, average
-
-import os.path
+from scipy.misc import imread, imsave, imresize
 
 def simple_model():
     problem = a2d.problem(clear = True)
@@ -79,32 +77,24 @@ def adaptive_model():
 
 class TestView(Agros2DTestCase):
     def resize(self, image, size):
-        return imresize(image, size)
-
-    def grayscale(self, image):
-        if len(image.shape) == 3:
-            return average(image, -1)
-        else:
-            return image
-
-    def normalize(self, image):
-        rng = image.max() - image.min()
-        return (image - image.min())*255/rng
+      return imresize(image, size)
+    
+    def auto_crop(self, image):
+      non_empty_columns = np.where(image.min(axis=0)<255)[0]
+      non_empty_rows = np.where(image.min(axis=1)<255)[0]
+      crop_box = (min(non_empty_rows), max(non_empty_rows), min(non_empty_columns), max(non_empty_columns))
+      return image[crop_box[0]:crop_box[1]+1, crop_box[2]:crop_box[3]+1]
 
     def compare(self, image, reference_image):
-        cmp_img = self.normalize(image)
-        ref_img = self.normalize(reference_image)
-        
-        if (cmp_img.size > ref_img.size):
-            cmp_img = self.resize(cmp_img, ref_img.shape)
-        elif (cmp_img.size < ref_img.size):
-            ref_img = self.resize(ref_img, cmp_img.shape)
+        histograms = list()
+        for img in [image, reference_image]:
+            r, bins = np.histogram(img[:,:,0], bins=256, normed=True)
+            g, bins = np.histogram(img[:,:,1], bins=256, normed=True)
+            b, bins = np.histogram(img[:,:,2], bins=256, normed=True)
+            histograms.append(np.array([r,g,b]).ravel())
 
-        diff = cmp_img - ref_img
-        Nm = sum(abs(diff))
-        Nf = norm(diff.ravel(), 0)
-
-        return Nm, Nf
+        diff = histograms[0] - histograms[1]
+        return np.sqrt(np.dot(diff, diff))
  
     def process(self, name):
         image_file = pythonlab.tempname('png')
@@ -112,13 +102,15 @@ class TestView(Agros2DTestCase):
 
         if os.path.exists(reference_image_file):
             a2d.view.save_image(image_file)
-            manhattan_norm, frobenius_norm = self.compare(self.grayscale(imread(image_file).astype(float)),
-                                                          self.grayscale(imread(reference_image_file).astype(float)))
-            print(manhattan_norm, frobenius_norm)
-            self.assertLess(manhattan_norm, 1e6)
-            self.assertAlmostEqual(frobenius_norm, 0, 1e5)
+            image = self.auto_crop(imread(image_file))
+            reference_image = imread(reference_image_file)
+
+            difference = self.compare(image, reference_image)
+            print(difference)
+            self.assertLess(difference, 0.25)
         else:
             a2d.view.save_image(reference_image_file)
+            imsave(reference_image_file, self.auto_crop(imread(reference_image_file)))
 
 class TestMeshViewSimpleProblem(TestView):
     @classmethod
@@ -127,6 +119,10 @@ class TestMeshViewSimpleProblem(TestView):
         a2d.problem().solve()
 
     def setUp(self):
+        a2d.view.config.workspace_parameters['rulers'] = False
+        a2d.view.config.workspace_parameters['grid'] = False
+        a2d.view.config.workspace_parameters['axes'] = False
+
         a2d.view.mesh.activate()
         a2d.view.mesh.disable()
         a2d.view.zoom_best_fit()
@@ -143,6 +139,7 @@ class TestMeshViewSimpleProblem(TestView):
 
     def test_order(self):
         a2d.view.mesh.order = True
+        a2d.view.mesh.order_view_parameters['color_bar'] = False
         a2d.view.mesh.refresh()
         self.process('simple_problem-mesh_view-oder')
 
@@ -151,12 +148,6 @@ class TestMeshViewSimpleProblem(TestView):
         a2d.view.mesh.order_view_parameters['palette'] = 'jet'
         a2d.view.mesh.refresh()
         self.process('simple_problem-mesh_view-oder_palette')
-
-    def test_order_color_bar(self):
-        a2d.view.mesh.order = True
-        a2d.view.mesh.order_view_parameters['color_bar'] = False
-        a2d.view.mesh.refresh()
-        self.process('simple_problem-mesh_view-oder_color_bar')
 
     def test_order_label(self):
         a2d.view.mesh.order = True
@@ -171,10 +162,16 @@ class TestMeshViewAdaptiveProblem(TestView):
         a2d.problem().solve()
 
     def setUp(self):
-        a2d.view.mesh.activate()
+        a2d.view.config.workspace_parameters['rulers'] = False
+        a2d.view.config.workspace_parameters['grid'] = False
+        a2d.view.config.workspace_parameters['axes'] = False
+        a2d.view.mesh.order_view_parameters['color_bar'] = False
+
         a2d.view.mesh.initial_mesh = True
         a2d.view.mesh.solution_mesh = True
         a2d.view.mesh.order = True
+
+        a2d.view.mesh.activate()
         a2d.view.zoom_best_fit()
 
     """
@@ -187,7 +184,7 @@ class TestMeshViewAdaptiveProblem(TestView):
             self.process('adaptive_problem-mesh-adaptive_step_{0}'.format(i))
     """
 
-    def test_adaptive_type(self):
+    def test_solution_type(self):
         a2d.view.mesh.adaptivity_step = len(a2d.field('magnetic').adaptivity_info()['dofs'])
         a2d.view.mesh.solution_type = 'reference'
         a2d.view.mesh.refresh()
@@ -199,6 +196,7 @@ class TestMeshViewAdaptiveProblem(TestView):
             a2d.view.mesh.solution_type = 'normal'
             a2d.view.mesh.component = i
             a2d.view.mesh.refresh()
+
             self.process('adaptive_problem-mesh_view-component-{0}'.format(i))
 
 if __name__ == '__main__':
