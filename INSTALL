@@ -38,28 +38,17 @@ This defines needs package libunity-dev.
 Compilation
 ===========
 
-In first step of compilation, you have to make makefiles and compile by following commands:
+In the first step of compilation, you have to generate makefiles and compile the code by issuing the following commands:
 
-$ qmake -r ./agros2d.pro
-$ make
+$ cmake .
+# replace the previous line with ## $ cmake -G "Visual Studio 10" . ## if you are using Windows.
+$ make # Or open agros2d.sln with Visual Studio 10 (2010) and build.
 
 If you have more than one CPU, you can use “make -jN” where N is the number of CPUs of your computer.
 Next step is generating of plugins source code and their compilation:
 
 ./agros2d_generator
-qmake ./plugins/plugins.pro
-make -C ./plugins/
-
-You can also use script agros2d.sh with parameter comp in simple way of automatic compilation.
-
-Generating of localization files
-================================
-
-Agros2D is available in English, German, French, Russian, Czech and Polish translations. Localization
-files can be generated as follows:
-
-$ lrelease ./resources_source/lang/*.ts
-
-or using the agros2d.sh script
-
-$ ./agros2d.sh lang release
+cd plugins
+cmake .
+# replace the previous line with ## $ cmake -G "Visual Studio 10" . ## if you are using Windows.
+$ make # Or open plugins.sln with Visual Studio 10 (2010) and build.
