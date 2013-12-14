@@ -738,9 +738,10 @@ void PostprocessorWidget::doCalculationFinished()
         fieldWidget->selectTimeStep(m_postHermes->activeTimeStep());
         fieldWidget->selectAdaptivityStep(m_postHermes->activeAdaptivityStep());
         fieldWidget->selectedAdaptivitySolutionType(m_postHermes->activeAdaptivitySolutionType());
-
-        emit apply();
     }
+
+    if ((Agros2D::problem()->isMeshed() && !Agros2D::problem()->isSolving()) || Agros2D::problem()->isSolved())
+        emit apply();
 }
 
 void PostprocessorWidget::doScalarFieldVariable(int index)
