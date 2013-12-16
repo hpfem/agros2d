@@ -194,11 +194,6 @@ void SceneViewPost3D::paintScalarField3D()
             irange = 1.0;
         }
 
-        double3* linVert = m_postHermes->linScalarView().get_vertices();
-        int3* linTris = m_postHermes->linScalarView().get_triangles();
-        Point point[3];
-        double value[3];
-
         RectPoint rect = Agros2D::scene()->boundingBox();
 
         double max = qMax(rect.width(), rect.height());
@@ -226,21 +221,14 @@ void SceneViewPost3D::paintScalarField3D()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+             it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
         {
-            point[0].x = linVert[linTris[i][0]][0];
-            point[0].y = linVert[linTris[i][0]][1];
-            value[0]   = linVert[linTris[i][0]][2];
-            point[1].x = linVert[linTris[i][1]][0];
-            point[1].y = linVert[linTris[i][1]][1];
-            value[1]   = linVert[linTris[i][1]][2];
-            point[2].x = linVert[linTris[i][2]][0];
-            point[2].y = linVert[linTris[i][2]][1];
-            value[2]   = linVert[linTris[i][2]][2];
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
             if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
-                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                double avgValue = (triangle[0][2] + triangle[1][2] + triangle[2][2]) / 3.0;
                 if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                     continue;
             }
@@ -249,17 +237,17 @@ void SceneViewPost3D::paintScalarField3D()
 
             if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool())
             {
-                computeNormal(point[0].x, point[0].y, - delta - (value[0] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
-                        point[1].x, point[1].y, - delta - (value[1] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
-                        point[2].x, point[2].y, - delta - (value[2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
+                computeNormal(triangle[0][0], triangle[0][1], - delta - (triangle[0][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
+                        triangle[1][0], triangle[1][1], - delta - (triangle[1][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
+                        triangle[2][0], triangle[2][1], - delta - (triangle[2][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
                         normal);
 
                 glNormal3d(normal[0], normal[1], normal[2]);
             }
             for (int j = 0; j < 3; j++)
             {
-                glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                glVertex3d(point[j].x, point[j].y, - delta - (value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()));
+                glTexCoord1d((triangle[j][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                glVertex3d(triangle[j][0], triangle[j][1], - delta - (triangle[j][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()));
             }
         }
         glEnd();
@@ -277,16 +265,16 @@ void SceneViewPost3D::paintScalarField3D()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
-        double3* linVertMesh = m_postHermes->linInitialMeshView().get_vertices();
-        int3* linTrisMesh = m_postHermes->linInitialMeshView().get_triangles();
-
         // triangles
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+             it = m_postHermes->linInitialMeshView().triangles_begin(); !it.end; ++it)
         {
-            glVertex2d(linVertMesh[linTrisMesh[i][0]][0], linVertMesh[linTrisMesh[i][0]][1]);
-            glVertex2d(linVertMesh[linTrisMesh[i][1]][0], linVertMesh[linTrisMesh[i][1]][1]);
-            glVertex2d(linVertMesh[linTrisMesh[i][2]][0], linVertMesh[linTrisMesh[i][2]][1]);
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
+
+            glVertex2d(triangle[0][0], triangle[0][1]);
+            glVertex2d(triangle[1][0], triangle[1][1]);
+            glVertex2d(triangle[2][0], triangle[2][1]);
         }
         glEnd();
 
@@ -418,26 +406,26 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         double phi = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DAngle).toDouble();
 
-        double3* linVert = m_postHermes->linScalarView().get_vertices();
-        int3* linTris = m_postHermes->linScalarView().get_triangles();
-        int* linTrisMarkers = m_postHermes->linScalarView().get_triangle_markers();
-        int2* linEdges = m_postHermes->linScalarView().get_edges();
-        int* linEdgesMarkers = m_postHermes->linScalarView().get_edge_markers();
+        // double3* linVert = m_postHermes->linScalarView().get_vertices();
+        // int3* linTris = m_postHermes->linScalarView().get_triangles();
+        // int* linTrisMarkers = m_postHermes->linScalarView().get_triangle_markers();
+        // int2* linEdges = m_postHermes->linScalarView().get_edges();
+        // int* linEdgesMarkers = m_postHermes->linScalarView().get_edge_markers();
 
         QVector<int> linTrisBoundaries;
-        for (int edge = 0; edge < m_postHermes->linScalarView().get_num_edges(); edge++)
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t>
+             it = m_postHermes->linScalarView().edges_begin(); !it.end; ++it)
         {
-            if (linEdgesMarkers[edge] > 0)
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t& edge = it.get();
+
+            // if (linEdgesMarkers[edge] > 0)
             {
-                if (!linTrisBoundaries.contains(linEdges[edge][0]))
-                    linTrisBoundaries.append(linEdges[edge][0]);
-                if (!linTrisBoundaries.contains(linEdges[edge][1]))
-                    linTrisBoundaries.append(linEdges[edge][1]);
+                // if (!linTrisBoundaries.contains(linEdges[edge][0]))
+                //     linTrisBoundaries.append(linEdges[edge][0]);
+                // if (!linTrisBoundaries.contains(linEdges[edge][1]))
+                //     linTrisBoundaries.append(linEdges[edge][1]);
             }
         }
-
-        Point point[3];
-        double value[3];
 
         glPushMatrix();
 
@@ -467,17 +455,13 @@ void SceneViewPost3D::paintScalarField3DSolid()
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
             {
-                for (int j = 0; j < 3; j++)
-                {
-                    point[j].x = linVert[linTris[i][j]][0];
-                    point[j].y = linVert[linTris[i][j]][1];
-                    value[j]   = linVert[linTris[i][j]][2];
-                }
+                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                 SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                 // hide material
@@ -486,7 +470,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                 if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
                 {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    double avgValue = (triangle[0][2] + triangle[1][2] + triangle[2][2]) / 3.0;
                     if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                         continue;
                 }
@@ -494,52 +478,48 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 // z = - depth / 2.0
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                 {
-                    computeNormal(point[0].x, point[0].y, -depth/2.0,
-                            point[1].x, point[1].y, -depth/2.0,
-                            point[2].x, point[2].y, -depth/2.0,
+                    computeNormal(triangle[0][0], triangle[0][1], -depth/2.0,
+                            triangle[1][0], triangle[1][1], -depth/2.0,
+                            triangle[2][0], triangle[2][1], -depth/2.0,
                             normal);
                     glNormal3d(normal[0], normal[1], normal[2]);
                 }
 
                 for (int j = 0; j < 3; j++)
                 {
-                    if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                    glVertex3d(point[j].x, point[j].y, -depth/2.0);
+                    if (!isModel) glTexCoord1d((triangle[j][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                    glVertex3d(triangle[j][0], triangle[j][1], -depth/2.0);
                 }
 
                 // z = + depth / 2.0
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                 {
-                    computeNormal(point[0].x, point[0].y, depth/2.0,
-                            point[1].x, point[1].y, depth/2.0,
-                            point[2].x, point[2].y, depth/2.0,
+                    computeNormal(triangle[0][0], triangle[0][1], depth/2.0,
+                            triangle[1][0], triangle[1][1], depth/2.0,
+                            triangle[2][0], triangle[2][1], depth/2.0,
                             normal);
                     glNormal3d(normal[0], normal[1], normal[2]);
                 }
 
                 for (int j = 0; j < 3; j++)
                 {
-                    if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                    glVertex3d(point[j].x, point[j].y, depth/2.0);
+                    if (!isModel) glTexCoord1d((triangle[j][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                    glVertex3d(triangle[j][0], triangle[j][1], depth/2.0);
                 }
             }
             glEnd();
 
             glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
             {
-                // boundary element
-                if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        point[j].x = linVert[linTris[i][j]][0];
-                        point[j].y = linVert[linTris[i][j]][1];
-                        value[j]   = linVert[linTris[i][j]][2];
-                    }
+                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
+                // boundary element
+                // if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
+                {
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                     SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                     // hide material
@@ -551,22 +531,22 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     {
                         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                         {
-                            computeNormal(point[k].x, point[k].y, -depth/2.0,
-                                          point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0,
-                                    point[(k + 1) % 3].x, point[(k + 1) % 3].y,  depth/2.0,
+                            computeNormal(triangle[k][0], triangle[k][1], -depth/2.0,
+                                    triangle[(k + 1) % 3][0], triangle[(k + 1) % 3][1], -depth/2.0,
+                                    triangle[(k + 1) % 3][0], triangle[(k + 1) % 3][1],  depth/2.0,
                                     normal);
                             glNormal3d(normal[0], normal[1], normal[2]);
                         }
 
-                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                        glVertex3d(point[k].x, point[k].y, -depth/2.0);
-                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                        glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0);
+                        if (!isModel) glTexCoord1d((triangle[k][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                        glVertex3d(triangle[k][0], triangle[k][1], -depth/2.0);
+                        if (!isModel) glTexCoord1d((triangle[(k + 1) % 3][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                        glVertex3d(triangle[(k + 1) % 3][0], triangle[(k + 1) % 3][1], -depth/2.0);
 
-                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                        glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, depth/2.0);
-                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                        glVertex3d(point[k].x, point[k].y, depth/2.0);
+                        if (!isModel) glTexCoord1d((triangle[(k + 1) % 3][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                        glVertex3d(triangle[(k + 1) % 3][0], triangle[(k + 1) % 3][1], depth/2.0);
+                        if (!isModel) glTexCoord1d((triangle[k][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                        glVertex3d(triangle[k][0], triangle[k][1], depth/2.0);
                     }
                 }
             }
@@ -576,17 +556,13 @@ void SceneViewPost3D::paintScalarField3DSolid()
         {
             // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
             {
-                for (int j = 0; j < 3; j++)
-                {
-                    point[j].x = linVert[linTris[i][j]][0];
-                    point[j].y = linVert[linTris[i][j]][1];
-                    value[j]   = linVert[linTris[i][j]][2];
-                }
+                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                 SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                 // hide material
@@ -595,7 +571,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                 if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
                 {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    double avgValue = (triangle[0][2] + triangle[1][2] + triangle[2][2]) / 3.0;
                     if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                         continue;
                 }
@@ -604,37 +580,33 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 {
                     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                     {
-                        computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
-                                point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
-                                point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI),
+                        computeNormal(triangle[0][0] * cos(j*phi/180.0*M_PI), triangle[0][1], triangle[0][0] * sin(j*phi/180.0*M_PI),
+                                triangle[1][0] * cos(j*phi/180.0*M_PI), triangle[1][1], triangle[1][0] * sin(j*phi/180.0*M_PI),
+                                triangle[2][0] * cos(j*phi/180.0*M_PI), triangle[2][1], triangle[2][0] * sin(j*phi/180.0*M_PI),
                                 normal);
                         glNormal3d(normal[0], normal[1], normal[2]);
                     }
 
-                    glTexCoord1d((value[0] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                    glVertex3d(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI));
-                    glTexCoord1d((value[1] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                    glVertex3d(point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI));
-                    glTexCoord1d((value[2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                    glVertex3d(point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI));
+                    glTexCoord1d((triangle[0][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                    glVertex3d(triangle[0][0] * cos(j*phi/180.0*M_PI), triangle[0][1], triangle[0][0] * sin(j*phi/180.0*M_PI));
+                    glTexCoord1d((triangle[1][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                    glVertex3d(triangle[1][0] * cos(j*phi/180.0*M_PI), triangle[1][1], triangle[1][0] * sin(j*phi/180.0*M_PI));
+                    glTexCoord1d((triangle[2][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                    glVertex3d(triangle[2][0] * cos(j*phi/180.0*M_PI), triangle[2][1], triangle[2][0] * sin(j*phi/180.0*M_PI));
                 }
             }
             glEnd();
 
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
             {
-                // boundary element
-                if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        point[j].x = linVert[linTris[i][j]][0];
-                        point[j].y = linVert[linTris[i][j]][1];
-                        value[j]   = linVert[linTris[i][j]][2];
-                    }
+                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
+                // boundary element
+                // if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
+                {
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
                     SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                     // hide material
@@ -643,7 +615,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                     if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
                     {
-                        double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                        double avgValue = (triangle[0][2] + triangle[1][2] + triangle[2][2]) / 3.0;
                         if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                             continue;
                     }
@@ -659,17 +631,21 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                             if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                             {
-                                computeNormal(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI),
-                                              point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI),
-                                        point[(k + 1) % 3].x * cos((j+1)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+1)*step/180.0*M_PI),
+                                computeNormal(triangle[k][0] * cos((j+0)*step/180.0*M_PI), triangle[k][1], triangle[k][0] * sin((j+0)*step/180.0*M_PI),
+                                        triangle[(k + 1) % 3][0] * cos((j+0)*step/180.0*M_PI), triangle[(k + 1) % 3][1], triangle[(k + 1) % 3][0] * sin((j+0)*step/180.0*M_PI),
+                                        triangle[(k + 1) % 3][0] * cos((j+1)*step/180.0*M_PI), triangle[(k + 1) % 3][1], triangle[(k + 1) % 3][0] * sin((j+1)*step/180.0*M_PI),
                                         normal);
                                 glNormal3d(normal[0], normal[1], normal[2]);
                             }
 
-                            if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                            glVertex3d(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI));
-                            if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                            glVertex3d(point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI));
+                            if (!isModel) glTexCoord1d((triangle[k][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                            glVertex3d(triangle[k][0] * cos((j+0)*step/180.0*M_PI),
+                                    triangle[k][1],
+                                    triangle[k][0] * sin((j+0)*step/180.0*M_PI));
+                            if (!isModel) glTexCoord1d((triangle[(k + 1) % 3][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                            glVertex3d(triangle[(k + 1) % 3][0] * cos((j+0)*step/180.0*M_PI),
+                                    triangle[(k + 1) % 3][1],
+                                    triangle[(k + 1) % 3][0] * sin((j+0)*step/180.0*M_PI));
                         }
                         glEnd();
                     }

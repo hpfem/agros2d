@@ -72,7 +72,7 @@ protected:
 
     void paintScalarField(); // paint scalar field surface
     void paintContours(); // paint scalar field contours
-    void paintContoursTri(double3* vert, int3* tri, double step);
+    void paintContoursTri(Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle, double step);
     void paintVectors(); // paint vector field vectors
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration

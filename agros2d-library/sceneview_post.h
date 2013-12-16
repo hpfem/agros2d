@@ -38,9 +38,9 @@ public:
     ~PostHermes();
 
     // mesh
-    inline bool initialMeshIsPrepared() { return !m_linInitialMeshView.is_empty(); }
+    inline bool initialMeshIsPrepared() { return m_linInitialMeshView.get_vertex_count() > 0; }
     inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
-    inline bool solutionMeshIsPrepared() { return !m_linSolutionMeshView.is_empty(); }
+    inline bool solutionMeshIsPrepared() { return m_linSolutionMeshView.get_vertex_count() > 0; }
     inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
 
     // order view
@@ -48,15 +48,15 @@ public:
     Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
 
     // contour
-    inline bool contourIsPrepared() { return !m_linContourView.is_empty(); }
+    inline bool contourIsPrepared() { return m_linContourView.get_vertex_count() > 0; }
     inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
 
     // scalar view
-    inline bool scalarIsPrepared() { return !m_linScalarView.is_empty(); }
+    inline bool scalarIsPrepared() { return m_linScalarView.get_vertex_count() > 0; }
     inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
 
     // vector view
-    inline bool vectorIsPrepared() { return !m_vecVectorView.is_empty(); }
+    inline bool vectorIsPrepared() { return m_vecVectorView.get_vertex_count() > 0; }
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     Hermes::Hermes2D::MeshFunctionSharedPtr<double> viewScalarFilter(Module::LocalVariable physicFieldVariable,

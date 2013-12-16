@@ -51,7 +51,16 @@
 #include "pythonlab/pythonengine.h"
 
 PostHermes::PostHermes() :
-    m_activeViewField(NULL), m_activeTimeStep(NOT_FOUND_SO_FAR), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
+    m_activeViewField(NULL),
+    m_activeTimeStep(NOT_FOUND_SO_FAR),
+    m_activeAdaptivityStep(NOT_FOUND_SO_FAR),
+    m_activeSolutionMode(SolutionMode_Undefined),
+    m_isProcessed(false),
+    m_linInitialMeshView(Hermes::Hermes2D::Views::OpenGL),
+    m_linSolutionMeshView(Hermes::Hermes2D::Views::OpenGL),
+    m_linContourView(Hermes::Hermes2D::Views::OpenGL),
+    m_linScalarView(Hermes::Hermes2D::Views::OpenGL),
+    m_vecVectorView(Hermes::Hermes2D::Views::OpenGL)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(Agros2D::problem(), SIGNAL(clearedSolution()), this, SLOT(clearView()));
@@ -309,9 +318,10 @@ void PostHermes::processRangeVector()
         }
 
         // process solution
-        m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
-                                         Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slns[2] = { slnVectorXView, slnVectorYView };
+        int items[2] = { Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0 };
+
+        m_vecVectorView.process_solution(slns, items, Hermes::Hermes2D::Views::HERMES_EPS_LOW);
     }
 }
 

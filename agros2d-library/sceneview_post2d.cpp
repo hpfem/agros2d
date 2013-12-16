@@ -321,11 +321,6 @@ void SceneViewPost2D::paintScalarField()
         if (fabs(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) < EPS_ZERO)
             irange = 1.0;
 
-        double3* linVert = m_postHermes->linScalarView().get_vertices();
-        int3* linTris = m_postHermes->linScalarView().get_triangles();
-        Point point[3];
-        double value[3];
-
         // set texture for coloring
         glEnable(GL_TEXTURE_1D);
         glBindTexture(GL_TEXTURE_1D, m_textureScalar);
@@ -338,18 +333,14 @@ void SceneViewPost2D::paintScalarField()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+             it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                point[j].x = linVert[linTris[i][j]][0];
-                point[j].y = linVert[linTris[i][j]][1];
-                value[j]   = linVert[linTris[i][j]][2];
-            }
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
             if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
-                double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                double avgValue = (triangle[0][2] + triangle[1][2] + triangle[2][2]) / 3.0;
                 if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                     continue;
             }
@@ -358,10 +349,11 @@ void SceneViewPost2D::paintScalarField()
             {
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool())
                     glTexCoord1d(log10((double) (1 + (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt() - 1))
-                                       * (value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange) / log10((double) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()));
+                                       * (triangle[j][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange) / log10((double) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()));
                 else
-                    glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
-                glVertex2d(point[j].x, point[j].y);
+                    glTexCoord1d((triangle[j][2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+
+                glVertex2d(triangle[j][0], triangle[j][1]);
             }
         }
         glEnd();
@@ -424,30 +416,22 @@ void SceneViewPost2D::paintScalarField()
         glCallList(m_listScalarField);
 
         /*
-        double3* linVert = m_postHermes->linScalarView().get_vertices();
-        int3* linTris = m_postHermes->linScalarView().get_triangles();
-
-        Point point[3];
-        double value[3];
-
         glLineWidth(1.0);
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+             it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                point[j].x = linVert[linTris[i][j]][0];
-                point[j].y = linVert[linTris[i][j]][1];
-                value[j]   = linVert[linTris[i][j]][2];
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
 
-                glVertex2d(point[j].x, point[j].y);
-            }
+            for (int j = 0; j < 3; j++)
+                glVertex2d(triangle[j][0], triangle[j][1]);
         }
         glEnd();
         */
+
         /*
         glEnableClientState(GL_COLOR_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -475,22 +459,17 @@ void SceneViewPost2D::paintContours()
         m_listContours = glGenLists(1);
         glNewList(m_listContours, GL_COMPILE);
 
-        double3* vecVert = m_postHermes->linContourView().get_vertices();
-        int3* tris = m_postHermes->linContourView().get_contour_triangles();
-
         // transform variable
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        double3* vert = new double3[m_postHermes->linContourView().get_num_vertices()];
-        for (int i = 0; i < m_postHermes->linContourView().get_num_vertices(); i++)
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::vertex_t>
+             it = m_postHermes->linContourView().vertices_begin(); !it.end; ++it)
         {
-            vert[i][0] = vecVert[i][0];
-            vert[i][1] = vecVert[i][1];
-            vert[i][2] = vecVert[i][2];
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::vertex_t& vertex = it.get();
 
-            if (vert[i][2] > rangeMax) rangeMax = vecVert[i][2];
-            if (vert[i][2] < rangeMin) rangeMin = vecVert[i][2];
+            if (vertex[2] > rangeMax) rangeMax = vertex[2];
+            if (vertex[2] < rangeMin) rangeMin = vertex[2];
         }
 
         // draw contours
@@ -505,17 +484,14 @@ void SceneViewPost2D::paintContours()
                       Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursBlue).toInt() / 255.0);
 
             glBegin(GL_LINES);
-            for (int i = 0; i < m_postHermes->linContourView().get_num_contour_triangles(); i++)
+            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+                 it = m_postHermes->linContourView().triangles_begin(); !it.end; ++it)
             {
-                if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
-                {
-                    paintContoursTri(vert, &tris[i], step);
-                }
+                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
+                paintContoursTri(triangle, step);
             }
             glEnd();
         }
-
-        delete vert;
 
         glEndList();
 
@@ -527,20 +503,28 @@ void SceneViewPost2D::paintContours()
     }
 }
 
-void SceneViewPost2D::paintContoursTri(double3* vert, int3* tri, double step)
+void SceneViewPost2D::paintContoursTri(Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle, double step)
 {
-    // sort the vertices by their value, keep track of the permutation sign
-    int i, idx[3], perm = 0;
-    memcpy(idx, tri, sizeof(idx));
+    // sort the vertices by their value, keep track of the permutation sign.
+    int i, idx[3] = { 0, 1, 2 }, perm = 0;
     for (i = 0; i < 2; i++)
     {
-        if (vert[idx[0]][2] > vert[idx[1]][2]) { std::swap(idx[0], idx[1]); perm++; }
-        if (vert[idx[1]][2] > vert[idx[2]][2]) { std::swap(idx[1], idx[2]); perm++; }
+        if (triangle[idx[0]][2] > triangle[idx[1]][2])
+        {
+            std::swap(idx[0], idx[1]);
+            perm++;
+        }
+        if (triangle[idx[1]][2] > triangle[idx[2]][2])
+        {
+            std::swap(idx[1], idx[2]);
+            perm++;
+        }
     }
-    if (fabs(vert[idx[0]][2] - vert[idx[2]][2]) < 1e-3 * fabs(step)) return;
+    if (fabs(triangle[idx[0]][2] - triangle[idx[2]][2]) < 1e-3 * fabs(step))
+        return;
 
     // get the first (lowest) contour value
-    double val = vert[idx[0]][2];
+    double val = triangle[idx[0]][2];
 
     double y = ceil(val / step);
     if (y < val / step) y + 1.0;
@@ -548,21 +532,22 @@ void SceneViewPost2D::paintContoursTri(double3* vert, int3* tri, double step)
 
     int l1 = 0, l2 = 1;
     int r1 = 0, r2 = 2;
-    while (val < vert[idx[r2]][2])
+
+    while (val < triangle[idx[r2]][2])
     {
-        double ld = vert[idx[l2]][2] - vert[idx[l1]][2];
-        double rd = vert[idx[r2]][2] - vert[idx[r1]][2];
+        double ld = triangle[idx[l2]][2] - triangle[idx[l1]][2];
+        double rd = triangle[idx[r2]][2] - triangle[idx[r1]][2];
 
         // draw a slice of the triangle
-        while (val < vert[idx[l2]][2])
+        while (val < triangle[idx[l2]][2])
         {
-            double lt = (val - vert[idx[l1]][2]) / ld;
-            double rt = (val - vert[idx[r1]][2]) / rd;
+            double lt = (val - triangle[idx[l1]][2]) / ld;
+            double rt = (val - triangle[idx[r1]][2]) / rd;
 
-            double x1 = (1.0 - lt) * vert[idx[l1]][0] + lt * vert[idx[l2]][0];
-            double y1 = (1.0 - lt) * vert[idx[l1]][1] + lt * vert[idx[l2]][1];
-            double x2 = (1.0 - rt) * vert[idx[r1]][0] + rt * vert[idx[r2]][0];
-            double y2 = (1.0 - rt) * vert[idx[r1]][1] + rt * vert[idx[r2]][1];
+            double x1 = (1.0 - lt) * triangle[idx[l1]][0] + lt * triangle[idx[l2]][0];
+            double y1 = (1.0 - lt) * triangle[idx[l1]][1] + lt * triangle[idx[l2]][1];
+            double x2 = (1.0 - rt) * triangle[idx[r1]][0] + rt * triangle[idx[r2]][0];
+            double y2 = (1.0 - rt) * triangle[idx[r1]][1] + rt * triangle[idx[r2]][1];
 
             if (perm & 1)
             {
@@ -633,15 +618,15 @@ void SceneViewPost2D::paintVectors()
             double miny = 1e100;
             int idx = -1;
 
-            Point v1(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
-            Point v2(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
-            Point v3(vecVert[vecTris[i][2]][0], vecVert[vecTris[i][2]][1]);
+            Point v1(triangle[0][0], triangle[0][1]);
+            Point v2(triangle[1][0], triangle[1][1]);
+            Point v3(triangle[2][0], triangle[2][1]);
 
             // double wh = output_height + gt, ww = output_width + gs;
-            // if ((vecVert[vecTris[i][0]][0] < -gs) && (vecVert[vecTris[i][1]][0] < -gs) && (vecVert[vecTris[i][2]][0] < -gs)) continue;
-            // if ((vecVert[vecTris[i][0]][0] >  ww) && (vecVert[vecTris[i][1]][0] >  ww) && (vecVert[vecTris[i][2]][0] >  ww)) continue;
-            // if ((vecVert[vecTris[i][0]][1] < -gt) && (vecVert[vecTris[i][1]][1] < -gt) && (vecVert[vecTris[i][2]][1] < -gt)) continue;
-            // if ((vecVert[vecTris[i][0]][1] >  wh) && (vecVert[vecTris[i][1]][1] >  wh) && (vecVert[vecTris[i][2]][1] >  wh)) continue;
+            // if ((triangle[0][0] < -gs) && (triangle[1][0] < -gs) && (triangle[2][0] < -gs)) continue;
+            // if ((triangle[0][0] >  ww) && (triangle[1][0] >  ww) && (triangle[2][0] >  ww)) continue;
+            // if ((triangle[0][1] < -gt) && (triangle[1][1] < -gt) && (triangle[2][1] < -gt)) continue;
+            // if ((triangle[0][1] >  wh) && (triangle[1][1] >  wh) && (triangle[2][1] >  wh)) continue;
 
 
             // find vertex with min y-coordinate
@@ -838,10 +823,6 @@ void SceneViewPost2D::paintVectors()
         RectPoint rect = Agros2D::scene()->boundingBox();
         double gs = (rect.width() + rect.height()) / Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt();
 
-        // paint
-        double4* vecVert = m_postHermes->vecVectorView().get_vertices();
-        int3* vecTris = m_postHermes->vecVectorView().get_triangles();
-
         /*
         Point point[3];
         double value[3];
@@ -868,11 +849,14 @@ void SceneViewPost2D::paintVectors()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glBegin(GL_TRIANGLES);
-        for (int i = 0; i < m_postHermes->vecVectorView().get_num_triangles(); i++)
+        for (Hermes::Hermes2D::Views::Vectorizer::Iterator<Hermes::Hermes2D::Views::VectorLinearizerDataDimensions::triangle_t>
+             it = m_postHermes->vecVectorView().triangles_begin(); !it.end; ++it)
         {
-            Point a(vecVert[vecTris[i][0]][0], vecVert[vecTris[i][0]][1]);
-            Point b(vecVert[vecTris[i][1]][0], vecVert[vecTris[i][1]][1]);
-            Point c(vecVert[vecTris[i][2]][0], vecVert[vecTris[i][2]][1]);
+            Hermes::Hermes2D::Views::VectorLinearizerDataDimensions::triangle_t& triangle = it.get();
+
+            Point a(triangle[0][0], triangle[0][1]);
+            Point b(triangle[1][0], triangle[1][1]);
+            Point c(triangle[2][0], triangle[2][1]);
 
             RectPoint r;
             r.start = Point(qMin(qMin(a.x, b.x), c.x), qMin(qMin(a.y, b.y), c.y));
@@ -892,13 +876,13 @@ void SceneViewPost2D::paintVectors()
             double cb = a.x - c.x;
             double cc = b.x - a.x;
 
-            double ax = (aa * vecVert[vecTris[i][0]][2] + ab * vecVert[vecTris[i][1]][2] + ac * vecVert[vecTris[i][2]][2]) / area2;
-            double bx = (ba * vecVert[vecTris[i][0]][2] + bb * vecVert[vecTris[i][1]][2] + bc * vecVert[vecTris[i][2]][2]) / area2;
-            double cx = (ca * vecVert[vecTris[i][0]][2] + cb * vecVert[vecTris[i][1]][2] + cc * vecVert[vecTris[i][2]][2]) / area2;
+            double ax = (aa * triangle[0][2] + ab * triangle[1][2] + ac * triangle[2][2]) / area2;
+            double bx = (ba * triangle[0][2] + bb * triangle[1][2] + bc * triangle[2][2]) / area2;
+            double cx = (ca * triangle[0][2] + cb * triangle[1][2] + cc * triangle[2][2]) / area2;
 
-            double ay = (aa * vecVert[vecTris[i][0]][3] + ab * vecVert[vecTris[i][1]][3] + ac * vecVert[vecTris[i][2]][3]) / area2;
-            double by = (ba * vecVert[vecTris[i][0]][3] + bb * vecVert[vecTris[i][1]][3] + bc * vecVert[vecTris[i][2]][3]) / area2;
-            double cy = (ca * vecVert[vecTris[i][0]][3] + cb * vecVert[vecTris[i][1]][3] + cc * vecVert[vecTris[i][2]][3]) / area2;
+            double ay = (aa * triangle[0][3] + ab * triangle[1][3] + ac * triangle[2][3]) / area2;
+            double by = (ba * triangle[0][3] + bb * triangle[1][3] + bc * triangle[2][3]) / area2;
+            double cy = (ca * triangle[0][3] + cb * triangle[1][3] + cc * triangle[2][3]) / area2;
 
             for (int j = floor(r.start.x / gs); j < ceil(r.end.x / gs); j++)
             {
@@ -916,8 +900,7 @@ void SceneViewPost2D::paintVectors()
                         if (p == 3)
                             p = 0;
 
-                        double z = (vecVert[vecTris[i][p]][0] - vecVert[vecTris[i][l]][0]) * (point.y - vecVert[vecTris[i][l]][1]) -
-                                (vecVert[vecTris[i][p]][1] - vecVert[vecTris[i][l]][1]) * (point.x - vecVert[vecTris[i][l]][0]);
+                        double z = (triangle[p][0] - triangle[l][0]) * (point.y - triangle[l][1]) - (triangle[p][1] - triangle[l][1]) * (point.x - triangle[l][0]);
 
                         if (z < 0)
                         {
@@ -1214,7 +1197,7 @@ void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable
                 QFile::remove(fn);
         }
 
-        Hermes::Hermes2D::Views::Linearizer linScalarView;
+        Hermes::Hermes2D::Views::Linearizer linScalarView(Hermes::Hermes2D::Views::FileExport);
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(variable), physicFieldVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,

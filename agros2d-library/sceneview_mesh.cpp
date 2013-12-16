@@ -245,15 +245,16 @@ void SceneViewMesh::paintInitialMesh()
 
     if (m_arrayInitialMesh.isEmpty())
     {
-        double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
-        int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
-
         // edges
-        m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView().get_num_edges());
-        for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+        m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView().get_edge_count());
+
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t>
+             it = m_postHermes->linInitialMeshView().edges_begin(); !it.end; ++it)
         {
-            m_arrayInitialMesh.append(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
-            m_arrayInitialMesh.append(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t& edge = it.get();
+
+            m_arrayInitialMesh.append(QVector2D(edge[0][0], edge[0][1]));
+            m_arrayInitialMesh.append(QVector2D(edge[1][0], edge[1][1]));
         }
     }
     else
@@ -283,15 +284,16 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
-        double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
-        int2* linEdges = m_postHermes->linSolutionMeshView().get_edges();
-
         // edges
-        m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView().get_num_edges());
-        for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
+        m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView().get_edge_count());
+
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t>
+             it = m_postHermes->linSolutionMeshView().edges_begin(); !it.end; ++it)
         {
-            m_arraySolutionMesh.append(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
-            m_arraySolutionMesh.append(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t& edge = it.get();
+
+            m_arraySolutionMesh.append(QVector2D(edge[0][0], edge[0][1]));
+            m_arraySolutionMesh.append(QVector2D(edge[1][0], edge[1][1]));
         }
     }
     else
