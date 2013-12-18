@@ -241,7 +241,6 @@ void SceneViewMesh::paintGeometry()
 void SceneViewMesh::paintInitialMesh()
 {
     if (!Agros2D::problem()->isMeshed()) return;
-    if (!m_postHermes->initialMeshIsPrepared()) return;
 
     if (m_arrayInitialMesh.isEmpty())
     {
@@ -280,7 +279,6 @@ void SceneViewMesh::paintInitialMesh()
 void SceneViewMesh::paintSolutionMesh()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->solutionMeshIsPrepared()) return;
 
     if (m_arraySolutionMesh.isEmpty())
     {
@@ -318,7 +316,6 @@ void SceneViewMesh::paintSolutionMesh()
 void SceneViewMesh::paintOrder()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->orderIsPrepared()) return;
 
     if (m_arrayOrderMesh.isEmpty())
     {
@@ -406,7 +403,6 @@ void SceneViewMesh::paintOrder()
 void SceneViewMesh::paintOrderColorBar()
 {
     if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool()) return;
-    if (!m_postHermes->orderIsPrepared()) return;
 
     // order scalar view
     double3* vert = m_postHermes->ordView().get_vertices();

@@ -304,7 +304,6 @@ void SceneViewPost2D::paintGeometry()
 void SceneViewPost2D::paintScalarField()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->scalarIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -450,7 +449,6 @@ void SceneViewPost2D::paintScalarField()
 void SceneViewPost2D::paintContours()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->contourIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -798,7 +796,6 @@ void SceneViewPost2D::paintVectors()
 void SceneViewPost2D::paintVectors()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->vectorIsPrepared()) return;
 
     loadProjection2d(true);
 
@@ -1197,7 +1194,7 @@ void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable
                 QFile::remove(fn);
         }
 
-        Hermes::Hermes2D::Views::Linearizer linScalarView(Hermes::Hermes2D::Views::FileExport);
+        Hermes::Hermes2D::Views::Linearizer linScalarView(Hermes::Hermes2D::FileExport);
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(variable), physicFieldVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
