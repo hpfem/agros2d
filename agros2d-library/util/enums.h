@@ -169,18 +169,6 @@ enum PaletteType
     Palette_BWDesc = 13
 };
 
-enum PaletteQuality
-{
-    PaletteQuality_ExtremelyCoarse = 0,
-    PaletteQuality_ExtraCoarse = 1,
-    PaletteQuality_Coarser = 2,
-    PaletteQuality_Coarse = 3,
-    PaletteQuality_Normal = 4,
-    PaletteQuality_Fine = 5,
-    PaletteQuality_Finer = 6,
-    PaletteQuality_ExtraFine = 7
-};
-
 enum PaletteOrderType
 {
     PaletteOrder_Hermes = 0,
@@ -375,13 +363,6 @@ AGROS_LIBRARY_API QStringList paletteTypeStringKeys();
 AGROS_LIBRARY_API QString paletteTypeToStringKey(PaletteType paletteType);
 AGROS_LIBRARY_API PaletteType paletteTypeFromStringKey(const QString &paletteType);
 AGROS_LIBRARY_API QString paletteTypeString(PaletteType paletteType);
-
-// palette quality
-AGROS_LIBRARY_API QStringList paletteQualityStringKeys();
-AGROS_LIBRARY_API QString paletteQualityToStringKey(PaletteQuality paletteQuality);
-AGROS_LIBRARY_API PaletteQuality paletteQualityFromStringKey(const QString &quality);
-AGROS_LIBRARY_API double paletteQualityToDouble(PaletteQuality paletteQuality);
-AGROS_LIBRARY_API QString paletteQualityString(PaletteQuality paletteQuality);
 
 // palette order
 AGROS_LIBRARY_API QStringList paletteOrderTypeStringKeys();

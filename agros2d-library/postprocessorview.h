@@ -95,7 +95,6 @@ private:
     QComboBox *cmbPalette;
     QCheckBox *chkPaletteFilter;
     QSpinBox *txtPaletteSteps;
-    QComboBox *cmbLinearizerQuality;
     QCheckBox *chkScalarFieldRangeLog;
     LineEditDouble *txtScalarFieldRangeBase;
     QSpinBox *txtScalarDecimalPlace;

@@ -192,11 +192,6 @@ struct PyViewPost : PyViewMeshAndPost
     {
         return paletteTypeToStringKey((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt()).toStdString();
     }
-    void setScalarViewPaletteQuality(const std::string &quality);
-    inline std::string getScalarViewPaletteQuality() const
-    {
-        return paletteQualityToStringKey((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()).toStdString();
-    }
 };
 
 struct PyViewPost2D : PyViewPost

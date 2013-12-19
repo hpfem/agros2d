@@ -316,7 +316,6 @@ void ProblemSetting::setStringKeys()
     m_settingKey[View_ChartHorizontalAxis] = "View_ChartHorizontalAxis";
     m_settingKey[View_ChartHorizontalAxisReverse] = "View_ChartHorizontalAxisReverse";
     m_settingKey[View_ChartHorizontalAxisPoints] = "View_ChartHorizontalAxisPoints";
-    m_settingKey[View_LinearizerQuality] = "View_LinearizerQuality";
     m_settingKey[View_SolidViewHide] = "View_SolidViewHide";    
 }
 
@@ -454,7 +453,6 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[View_ChartHorizontalAxis] = ChartAxis_Length;
     m_settingDefault[View_ChartHorizontalAxisReverse] = false;
     m_settingDefault[View_ChartHorizontalAxisPoints] = 200;        
-    m_settingDefault[View_LinearizerQuality] = PaletteQuality_Normal;
     m_settingDefault[View_SolidViewHide] = QStringList();
 }
 

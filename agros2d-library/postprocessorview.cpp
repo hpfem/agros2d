@@ -131,7 +131,6 @@ void PostprocessorWidget::loadAdvanced()
     chkPaletteFilter->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool());
     doPaletteFilter(chkPaletteFilter->checkState());
     txtPaletteSteps->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
 
     // contours
     txtContoursCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt());
@@ -219,7 +218,6 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteType, (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteFilter, chkPaletteFilter->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteSteps, txtPaletteSteps->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_LinearizerQuality, (PaletteQuality) cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toInt());
 
     // contours
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContoursCount, txtContoursCount->value());
@@ -545,11 +543,6 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     foreach (QString key, paletteTypeStringKeys())
         cmbPalette->addItem(paletteTypeString(paletteTypeFromStringKey(key)), paletteTypeFromStringKey(key));
 
-    // quality
-    cmbLinearizerQuality = new QComboBox();
-    foreach (QString key, paletteQualityStringKeys())
-        cmbLinearizerQuality->addItem(paletteQualityString(paletteQualityFromStringKey(key)), paletteQualityFromStringKey(key));
-
     chkPaletteFilter = new QCheckBox(tr("Filter"));
     connect(chkPaletteFilter, SIGNAL(stateChanged(int)), this, SLOT(doPaletteFilter(int)));
 
@@ -596,8 +589,6 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
-    gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Quality:")), 1, 0);
-    gridLayoutScalarFieldPalette->addWidget(cmbLinearizerQuality, 1, 1, 1, 2);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Steps:")), 2, 0);
     gridLayoutScalarFieldPalette->addWidget(txtPaletteSteps, 2, 1);
     gridLayoutScalarFieldPalette->addWidget(chkPaletteFilter, 2, 2);
@@ -966,7 +957,6 @@ void PostprocessorWidget::doScalarFieldDefault()
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteType).toInt()));
     chkPaletteFilter->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteFilter).toBool());
     txtPaletteSteps->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteSteps).toInt());
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData((PaletteQuality) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_LinearizerQuality).toInt()));
     chkShowScalarColorBar->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ShowScalarColorBar).toBool());
     chkScalarFieldRangeLog->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeLog).toBool());
     txtScalarFieldRangeBase->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeBase).toInt());

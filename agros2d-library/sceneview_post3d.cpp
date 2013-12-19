@@ -366,7 +366,6 @@ void SceneViewPost3D::paintScalarField3D()
 void SceneViewPost3D::paintScalarField3DSolid()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3DSolid) return;
 
     loadProjection3d(true, ((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D);
 

@@ -251,7 +251,6 @@ public:
         View_ChartHorizontalAxis,
         View_ChartHorizontalAxisReverse,
         View_ChartHorizontalAxisPoints,
-        View_LinearizerQuality,
         View_SolidViewHide
     };
 

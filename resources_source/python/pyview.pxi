@@ -83,8 +83,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         string getScalarViewVariableComp()
         void setScalarViewPalette(string &palette) except +
         string getScalarViewPalette()
-        void setScalarViewPaletteQuality(string &quality) except +
-        string getScalarViewPaletteQuality()
 
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
@@ -341,7 +339,6 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
         return {'variable' : self.thisptrp.getScalarViewVariable().c_str(),
                 'component' : self.thisptrp.getScalarViewVariableComp().c_str(),
                 'palette' : self.thisptrp.getScalarViewPalette().c_str(),
-                'quality' : self.thisptrp.getScalarViewPaletteQuality().c_str(),
                 'steps' : self.thisptrp.getIntParameter(string('View_PaletteSteps')),
                 'filter' : self.thisptrp.getBoolParameter(string('View_PaletteFilter')),
                 'color_bar' : self.thisptrp.getBoolParameter(string('View_ShowScalarColorBar')),
@@ -357,9 +354,8 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
         self.thisptrp.setScalarViewVariable(string(parameters['variable']))
         self.thisptrp.setScalarViewVariableComp(string(parameters['component']))
 
-        # palette, quality
+        # palette
         self.thisptrp.setScalarViewPalette(string(parameters['palette']))
-        self.thisptrp.setScalarViewPaletteQuality(string(parameters['quality']))
 
         # steps, filter
         value_in_range(parameters['steps'], 3, 256, 'steps')

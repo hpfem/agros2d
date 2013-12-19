@@ -85,7 +85,8 @@ void PostHermes::processInitialMesh()
         try
         {
             m_linInitialMeshView.free();
-            m_linInitialMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
+            m_linInitialMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())),
+                                                  1.0);
         }
         catch (Hermes::Exceptions::Exception& e)
         {
@@ -106,7 +107,8 @@ void PostHermes::processSolutionMesh()
         const Hermes::Hermes2D::MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(comp)->get_mesh();
 
         m_linSolutionMeshView.free();
-        m_linSolutionMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
+        m_linSolutionMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)),
+                                               1.0);
     }
 }
 
@@ -179,7 +181,6 @@ void PostHermes::processRangeContour()
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
                                           2.0);
-                                          // paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
     }
 }
 
@@ -203,38 +204,6 @@ void PostHermes::processRangeScalar()
 
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
                                                                                          (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
-
-
-        /*
-        FieldSolutionID fsid(m_activeViewField, m_activeTimeStep, m_activeAdaptivityStep, m_activeSolutionMode);
-        MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
-
-        Hermes::vector<std::string> markers;
-        Hermes::vector<std::string> markersInverted;
-        for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
-        {
-            SceneLabel *label = Agros2D::scene()->labels->at(i);
-            if (label->isSelected())
-            {
-                markers.push_back(QString::number(i).toStdString());
-            }
-            else
-            {
-                markersInverted.push_back(QString::number(i).toStdString());
-            }
-        }
-
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView;
-        if (markers.size() > 0)
-        {
-            Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 2);
-            slnScalarView = Hermes::Hermes2D::MeshFunctionSharedPtr<double> (new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
-        }
-        else
-        {
-            return;
-        }
-        */
 
         m_linScalarView.free();
 
@@ -263,8 +232,8 @@ void PostHermes::processRangeScalar()
         // process solution
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
+                                         // Hermes::Hermes2D::Views::HERMES_EPS_HIGH);
                                          2.0);
-                                         // paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
 
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {

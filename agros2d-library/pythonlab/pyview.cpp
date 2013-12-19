@@ -330,17 +330,6 @@ void PyViewPost::setScalarViewPalette(const std::string &palette)
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteType, paletteTypeFromStringKey(QString::fromStdString(palette)));
 }
 
-void PyViewPost::setScalarViewPaletteQuality(const std::string &quality)
-{
-    checkExistingSolution();
-
-    if (!paletteQualityStringKeys().contains(QString::fromStdString(quality)))
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteQualityStringKeys())).toStdString());
-
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_LinearizerQuality, paletteQualityFromStringKey(QString::fromStdString(quality)));
-}
-
 // ************************************************************************************
 
 void PyViewPost2D::activate()

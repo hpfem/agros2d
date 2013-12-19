@@ -45,7 +45,6 @@ static QMap<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 static QMap<Hermes::Algebra::MatrixExportFormat, QString> dumpFormatList;
 static QMap<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
 static QMap<PaletteType, QString> paletteTypeList;
-static QMap<PaletteQuality, QString> paletteQualityList;
 static QMap<PaletteOrderType, QString> paletteOrderTypeList;
 static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
@@ -130,10 +129,6 @@ SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPos
 QStringList paletteTypeStringKeys() { return paletteTypeList.values(); }
 QString paletteTypeToStringKey(PaletteType paletteType) { return paletteTypeList[paletteType]; }
 PaletteType paletteTypeFromStringKey(const QString &paletteType) { return paletteTypeList.key(paletteType); }
-
-QStringList paletteQualityStringKeys() { return paletteQualityList.values(); }
-QString paletteQualityToStringKey(PaletteQuality paletteQuality) { return paletteQualityList[paletteQuality]; }
-PaletteQuality paletteQualityFromStringKey(const QString &paletteQuality) { return paletteQualityList.key(paletteQuality); }
 
 QStringList paletteOrderTypeStringKeys() { return paletteOrderTypeList.values(); }
 QString paletteOrderTypeToStringKey(PaletteOrderType paletteType) { return paletteOrderTypeList[paletteType]; }
@@ -302,16 +297,6 @@ void initLists()
     paletteTypeList.insert(Palette_HSV, "hsv");
     paletteTypeList.insert(Palette_BWAsc, "bw_ascending");
     paletteTypeList.insert(Palette_BWDesc, "bw_descending");
-
-    // PaletteQuality
-    paletteQualityList.insert(PaletteQuality_ExtremelyCoarse, "extremely_coarse");
-    paletteQualityList.insert(PaletteQuality_ExtraCoarse, "extra_coarse");
-    paletteQualityList.insert(PaletteQuality_Coarser, "coarser");
-    paletteQualityList.insert(PaletteQuality_Coarse, "coarse");
-    paletteQualityList.insert(PaletteQuality_Normal, "normal");
-    paletteQualityList.insert(PaletteQuality_Fine, "fine");
-    paletteQualityList.insert(PaletteQuality_Finer, "finer");
-    paletteQualityList.insert(PaletteQuality_ExtraFine, "extra_fine");
 
     // PaletteOrderType
     paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
@@ -564,58 +549,6 @@ QString meshTypeString(MeshType meshType)
         return QObject::tr("GMSH (exp.) - quad Delaunay");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
-        throw;
-    }
-}
-
-double paletteQualityToDouble(PaletteQuality paletteQuality)
-{
-    switch (paletteQuality)
-    {
-    case PaletteQuality_ExtremelyCoarse:
-        return 0.1;
-    case PaletteQuality_ExtraCoarse:
-        return 0.01;
-    case PaletteQuality_Coarser:
-        return 0.001;
-    case PaletteQuality_Coarse:
-        return 0.0007;
-    case PaletteQuality_Normal:
-        return 0.0004;
-    case PaletteQuality_Fine:
-        return 0.0002;
-    case PaletteQuality_Finer:
-        return 0.00001;
-    case PaletteQuality_ExtraFine:
-        return 0.00003;
-    default:
-        std::cerr << "Palette quality '" + QString::number(paletteQuality).toStdString() + "' is not implemented. paletteQualityToDouble(PaletteQuality paletteQuality)" << endl;
-        throw;
-    }
-}
-
-QString paletteQualityString(PaletteQuality paletteQuality)
-{
-    switch (paletteQuality)
-    {
-    case PaletteQuality_ExtremelyCoarse:
-        return QObject::tr("Extremely coarse");
-    case PaletteQuality_ExtraCoarse:
-        return QObject::tr("Extra coarse");
-    case PaletteQuality_Coarser:
-        return QObject::tr("Coarser");
-    case PaletteQuality_Coarse:
-        return QObject::tr("Coarse");
-    case PaletteQuality_Normal:
-        return QObject::tr("Normal");
-    case PaletteQuality_Fine:
-        return QObject::tr("Fine");
-    case PaletteQuality_Finer:
-        return QObject::tr("Finer");
-    case PaletteQuality_ExtraFine:
-        return QObject::tr("Extra fine");
-    default:
-        std::cerr << "Palette quality '" + QString::number(paletteQuality).toStdString() + "' is not implemented. paletteQualityString(PaletteQuality paletteQuality)" << endl;
         throw;
     }
 }
