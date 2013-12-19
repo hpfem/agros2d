@@ -332,10 +332,10 @@ void SceneViewPost2D::paintScalarField()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
              it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
             if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
@@ -414,22 +414,20 @@ void SceneViewPost2D::paintScalarField()
     {
         glCallList(m_listScalarField);
 
-        /*
         glLineWidth(1.0);
-        glEnable(GL_POLYGON_OFFSET_FILL);
+        glDisable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glBegin(GL_TRIANGLES);
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
              it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
             for (int j = 0; j < 3; j++)
                 glVertex2d(triangle[j][0], triangle[j][1]);
         }
         glEnd();
-        */
 
         /*
         glEnableClientState(GL_COLOR_ARRAY);
@@ -461,10 +459,10 @@ void SceneViewPost2D::paintContours()
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::vertex_t>
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
              it = m_postHermes->linContourView().vertices_begin(); !it.end; ++it)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::vertex_t& vertex = it.get();
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
 
             if (vertex[2] > rangeMax) rangeMax = vertex[2];
             if (vertex[2] < rangeMin) rangeMin = vertex[2];
@@ -482,10 +480,10 @@ void SceneViewPost2D::paintContours()
                       Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursBlue).toInt() / 255.0);
 
             glBegin(GL_LINES);
-            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t>
+            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
                  it = m_postHermes->linContourView().triangles_begin(); !it.end; ++it)
             {
-                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle = it.get();
+                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
                 paintContoursTri(triangle, step);
             }
             glEnd();
@@ -501,7 +499,7 @@ void SceneViewPost2D::paintContours()
     }
 }
 
-void SceneViewPost2D::paintContoursTri(Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::triangle_t& triangle, double step)
+void SceneViewPost2D::paintContoursTri(Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle, double step)
 {
     // sort the vertices by their value, keep track of the permutation sign.
     int i, idx[3] = { 0, 1, 2 }, perm = 0;
@@ -846,10 +844,10 @@ void SceneViewPost2D::paintVectors()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glBegin(GL_TRIANGLES);
-        for (Hermes::Hermes2D::Views::Vectorizer::Iterator<Hermes::Hermes2D::Views::VectorLinearizerDataDimensions::triangle_t>
+        for (Hermes::Hermes2D::Views::Vectorizer::Iterator<Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
              it = m_postHermes->vecVectorView().triangles_begin(); !it.end; ++it)
         {
-            Hermes::Hermes2D::Views::VectorLinearizerDataDimensions::triangle_t& triangle = it.get();
+            Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
             Point a(triangle[0][0], triangle[0][1]);
             Point b(triangle[1][0], triangle[1][1]);

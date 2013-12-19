@@ -177,10 +177,10 @@ void PostHermes::processRangeContour()
             m_linContourView.set_displacement(NULL, NULL);
         }
 
-        // process solution
-        m_linContourView.process_solution(slnContourView,
-                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          2.0);
+        // process solution.
+        m_linContourView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt())));
+
+        m_linContourView.process_solution(slnContourView, Hermes::Hermes2D::H2D_FN_VAL_0);
     }
 }
 
@@ -230,10 +230,7 @@ void PostHermes::processRangeScalar()
         }
 
         // process solution
-        m_linScalarView.process_solution(slnScalarView,
-                                         Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         // Hermes::Hermes2D::Views::HERMES_EPS_HIGH);
-                                         2.0);
+        m_linScalarView.process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::Views::HERMES_EPS_HIGH);
 
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {
@@ -292,10 +289,7 @@ void PostHermes::processRangeVector()
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slns[2] = { slnVectorXView, slnVectorYView };
         int items[2] = { Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0 };
 
-        m_vecVectorView.process_solution(slns,
-                                         items,
-                                         2.0);
-                                         // Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+        m_vecVectorView.process_solution(slns, items, 2.0);
     }
 }
 
