@@ -44,7 +44,7 @@ public:
     inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
 
     // order view
-    inline bool orderIsPrepared() { return !m_orderView.is_empty(); }
+    inline bool orderIsPrepared() { return true; }
     Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
 
     // contour
