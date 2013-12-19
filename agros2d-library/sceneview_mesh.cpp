@@ -248,10 +248,10 @@ void SceneViewMesh::paintInitialMesh()
         // edges
         m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView().get_edge_count());
 
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t>
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
              it = m_postHermes->linInitialMeshView().edges_begin(); !it.end; ++it)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t& edge = it.get();
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
 
             m_arrayInitialMesh.append(QVector2D(edge[0][0], edge[0][1]));
             m_arrayInitialMesh.append(QVector2D(edge[1][0], edge[1][1]));
@@ -287,10 +287,10 @@ void SceneViewMesh::paintSolutionMesh()
         // edges
         m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView().get_edge_count());
 
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t>
+        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
              it = m_postHermes->linSolutionMeshView().edges_begin(); !it.end; ++it)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions::edge_t& edge = it.get();
+            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
 
             m_arraySolutionMesh.append(QVector2D(edge[0][0], edge[0][1]));
             m_arraySolutionMesh.append(QVector2D(edge[1][0], edge[1][1]));

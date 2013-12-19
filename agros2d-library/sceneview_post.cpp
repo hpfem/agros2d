@@ -56,11 +56,11 @@ PostHermes::PostHermes() :
     m_activeAdaptivityStep(NOT_FOUND_SO_FAR),
     m_activeSolutionMode(SolutionMode_Undefined),
     m_isProcessed(false),
-    m_linInitialMeshView(Hermes::Hermes2D::Views::OpenGL),
-    m_linSolutionMeshView(Hermes::Hermes2D::Views::OpenGL),
-    m_linContourView(Hermes::Hermes2D::Views::OpenGL),
-    m_linScalarView(Hermes::Hermes2D::Views::OpenGL),
-    m_vecVectorView(Hermes::Hermes2D::Views::OpenGL)
+    m_linInitialMeshView(Hermes::Hermes2D::OpenGL),
+    m_linSolutionMeshView(Hermes::Hermes2D::OpenGL),
+    m_linContourView(Hermes::Hermes2D::OpenGL),
+    m_linScalarView(Hermes::Hermes2D::OpenGL),
+    m_vecVectorView(Hermes::Hermes2D::OpenGL)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(Agros2D::problem(), SIGNAL(clearedSolution()), this, SLOT(clearView()));
@@ -175,10 +175,11 @@ void PostHermes::processRangeContour()
             m_linContourView.set_displacement(NULL, NULL);
         }
 
-        // process solution
+        // process solution.
+        m_linContourView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt())));
+
         m_linContourView.process_solution(slnContourView,
-                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
+                                          Hermes::Hermes2D::H2D_FN_VAL_0);
     }
 }
 
@@ -260,9 +261,9 @@ void PostHermes::processRangeScalar()
         }
 
         // process solution
-        m_linScalarView.process_solution(slnScalarView,
-                                         Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
+        m_linScalarView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt())));
+
+        m_linScalarView.process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
 
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {
@@ -321,7 +322,7 @@ void PostHermes::processRangeVector()
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slns[2] = { slnVectorXView, slnVectorYView };
         int items[2] = { Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0 };
 
-        m_vecVectorView.process_solution(slns, items, Hermes::Hermes2D::Views::HERMES_EPS_LOW);
+        m_vecVectorView.process_solution(slns, items);
     }
 }
 
