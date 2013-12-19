@@ -414,6 +414,7 @@ void SceneViewPost2D::paintScalarField()
     {
         glCallList(m_listScalarField);
 
+        /*
         glLineWidth(1.0);
         glDisable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -428,6 +429,7 @@ void SceneViewPost2D::paintScalarField()
                 glVertex2d(triangle[j][0], triangle[j][1]);
         }
         glEnd();
+        */
 
         /*
         glEnableClientState(GL_COLOR_ARRAY);
