@@ -84,6 +84,14 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 
     if (!text.isEmpty())
     {
+        QRegExp rx("^(\\d{1,1}.\\d{1,1}.\\d{1,1}.\\d{8,8})");
+        if (!QString(text).contains(rx))
+        {
+            // be quiet
+            qDebug() << text;
+            return;
+        }
+
         if (text > versionString())
         {
             QString str(tr("<b>New version available.</b><br/><br/>"
@@ -100,12 +108,6 @@ void CheckVersion::downloadFinished(QNetworkReply *networkReply)
             QMessageBox::information(QApplication::activeWindow(), tr("New version"), tr("You are using actual version."));
         }
     }
-    else if (!m_quiet)
-    {
-        QMessageBox::critical(QApplication::activeWindow(), tr("New version"), tr("File is corrupted or network is disconnected."));
-        return;
-    }
-
 }
 
 void CheckVersion::handleError(QNetworkReply::NetworkError error)
