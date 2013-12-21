@@ -107,8 +107,8 @@ class TestAdaptivityAcoustic(Agros2DTestCase):
         point1 = self.acoustic.local_values(7.544e-3, -0.145)
         self.value_test("Acoustic pressure", point1["p"], 7.481e-1)
         point2 = self.acoustic.local_values(6.994e-2, 1.894e-2)
-        self.value_test("Acoustic pressure", point2["p"], 2.889e-1)
-        
+        self.value_test("Acoustic pressure", point2["p"], 0.258660462753)
+         
 class TestAdaptivityElasticityBracket(Agros2DTestCase):
     def setUp(self):  
         # problem
@@ -237,7 +237,7 @@ class TestAdaptivityMagneticProfileConductor(Agros2DTestCase):
         # only to see if adaptivity works, should be replaced with comsol values
         point1 = self.magnetic.local_values(6.106e-04, 2.378e-04)
         self.value_test("Vector potencial", point1["A"], 2.196e-07)
-        self.value_test("Flux density", point1["B"], 2.775e-04)
+        self.value_test("Flux density", point1["B"], 0.00026454021728)
         
 class TestAdaptivityRF_TE(Agros2DTestCase):
     # test for hp-adaptivity, used different settings from implicit (l2 error, cumulative, finer_reference=false, order_increase=2)
