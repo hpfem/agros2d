@@ -116,10 +116,9 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         # MUMPS
         filename_mumps_matrix, filename_mumps_rhs = self.model("mumps")
         mumps_mat, mumps_rhs = self.read_matrix_and_rhs(filename_mumps_matrix, filename_mumps_rhs)
-        
         self.assertTrue(np.allclose(self.reference_mat.todense(), mumps_mat.todense(), rtol=1e-15, atol=1e-15), 
                         "MUMPS matrix failed.")
-        self.assertTrue(np.allclose(self.reference_rhs, mumps_rhs, rtol=1e-15, atol=1e-15), 
+        self.assertTrue(np.allclose(self.reference_rhs, mumps_rhs, rtol=1e-15, atol=1e-10), 
                         "MUMPS rhs failed.")
 
     def test_umfpack(self):
@@ -129,7 +128,7 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         
         self.assertTrue(np.allclose(self.reference_mat.todense(), umfpack_mat.todense(), rtol=1e-15, atol=1e-15), 
                         "UMFPACK matrix failed.")
-        self.assertTrue(np.allclose(self.reference_rhs, umfpack_rhs, rtol=1e-15, atol=1e-15), 
+        self.assertTrue(np.allclose(self.reference_rhs, umfpack_rhs, rtol=1e-15, atol=1e-10), 
                         "UMFPACK rhs failed.")
 
     def test_paralution_iter(self):
@@ -139,7 +138,7 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         
         self.assertTrue(np.allclose(self.reference_mat.todense(), paralution_iterative_mat.todense(), rtol=1e-15, atol=1e-15), 
                         "PARALUTION iterative matrix failed.")
-        self.assertTrue(np.allclose(self.reference_rhs, paralution_iterative_rhs, rtol=1e-15, atol=1e-15), 
+        self.assertTrue(np.allclose(self.reference_rhs, paralution_iterative_rhs, rtol=1e-15, atol=1e-10), 
                         "PARALUTION iterative rhs failed.")
                         
     def test_paralution_amg(self):
@@ -149,7 +148,7 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         
         self.assertTrue(np.allclose(self.reference_mat.todense(), paralution_amg_mat.todense(), rtol=1e-15, atol=1e-15), 
                         "PARALUTION AMG matrix failed.")
-        self.assertTrue(np.allclose(self.reference_rhs, paralution_amg_rhs, rtol=1e-15, atol=1e-15), 
+        self.assertTrue(np.allclose(self.reference_rhs, paralution_amg_rhs, rtol=1e-15, atol=1e-10), 
                         "PARALUTION AMG rhs failed.")
         
 if __name__ == '__main__':        
