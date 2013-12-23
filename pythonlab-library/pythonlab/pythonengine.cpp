@@ -682,13 +682,26 @@ void PythonEngine::addCustomExtensions()
 QList<PythonVariable> PythonEngine::variableList()
 {
     QStringList filter_name;
-    filter_name << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
-                << "python_engine_get_completion_interpreter" << "python_engine_get_completion_script"
+    filter_name << "__builtins__"
+                << "StdoutCatcher"
+                << "python_engine_stdout"
+                << "result_pythonlab"
+                << "python_engine_get_completion_interpreter"
+                << "python_engine_get_completion_script"
                 << "PythonLabRopeProject"
                 << "pythonlab_rope_project"
                 << "python_engine_pyflakes_check"
                 << "CatchOutErr"
                 << "agros2d_material_eval"
+                << "chart"
+                << "memory_chart"
+                << "sgn"
+                << "test"
+                << "vtk_contours_actor"
+                << "vtk_figure"
+                << "vtk_geometry_actor"
+                << "vtk_scalar_actor"
+                << "help"
                 << "__a2d_help__";
 
     QStringList filter_type;
