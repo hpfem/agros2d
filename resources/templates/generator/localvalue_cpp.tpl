@@ -110,7 +110,7 @@ void {{CLASS}}LocalValue::calculate()
             {{#VARIABLE_SOURCE}}
             if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
                     && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[QLatin1String("{{VARIABLE}}")] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
+                m_values[QLatin1String("{{VARIABLE}}")] = LocalPointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
             {{/VARIABLE_SOURCE}}
 
             delete [] value;
