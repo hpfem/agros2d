@@ -66,10 +66,7 @@ void SettingsWidget::load()
     chkZoomToMouse->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ZoomToMouse).toBool());
     txtGeometryNodeSize->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt());
     txtGeometryEdgeWidth->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
-    txtGeometryLabelSize->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt());
-
-    // script
-    txtStartupScript->setPlainText(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
+    txtGeometryLabelSize->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt());    
 
     // 3d
     chkView3DLighting->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool());
@@ -125,16 +122,6 @@ void SettingsWidget::load()
 
 void SettingsWidget::save()
 {
-    // run and check startup script
-    if (!txtStartupScript->toPlainText().isEmpty())
-    {
-        currentPythonEngineAgros()->blockSignals(true);
-        bool successfulRun = currentPythonEngineAgros()->runExpression(txtStartupScript->toPlainText());
-        currentPythonEngineAgros()->blockSignals(false);
-        if (!successfulRun)
-            return;
-    }
-
     // workspace
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, chkShowGrid->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, chkShowRulers->isChecked());
@@ -151,9 +138,6 @@ void SettingsWidget::save()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_NodeSize, txtGeometryNodeSize->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_EdgeWidth, txtGeometryEdgeWidth->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_LabelSize, txtGeometryLabelSize->value());
-
-    // script
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Problem_StartupScript, txtStartupScript->toPlainText());
 
     // 3d
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DLighting, chkView3DLighting->isChecked());
@@ -222,13 +206,11 @@ void SettingsWidget::createControls()
 {
     QWidget *workspace = controlsWorkspace();
     QWidget *colors = controlsColors();
-    QWidget *startupScript = controlsStartupScript();
 
     // tab widget
     QToolBox *tbxWorkspace = new QToolBox();
     tbxWorkspace->addItem(workspace, icon(""), tr("Workspace"));
     tbxWorkspace->addItem(colors, icon(""), tr("Colors"));
-    tbxWorkspace->addItem(startupScript, icon(""), tr("Startup script"));
 
     // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
@@ -254,26 +236,6 @@ void SettingsWidget::createControls()
     setControls();
 
     setLayout(layoutMain);
-}
-
-QWidget *SettingsWidget::controlsStartupScript()
-{
-    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
-    connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(doStartupScriptChanged()));
-    lblStartupScriptError = new QLabel();
-
-    QPalette palette = lblStartupScriptError->palette();
-    palette.setColor(QPalette::WindowText, QColor(Qt::red));
-    lblStartupScriptError->setPalette(palette);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(txtStartupScript);
-    layout->addWidget(lblStartupScriptError);
-
-    QWidget *widget = new QWidget();
-    widget->setLayout(layout);
-
-    return widget;
 }
 
 QWidget *SettingsWidget::controlsWorkspace()
@@ -553,25 +515,6 @@ void SettingsWidget::doColorsDefault()
     colorSelected->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedRed).toInt(),
                                    Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedGreen).toInt(),
                                    Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedBlue).toInt()));
-}
-
-void SettingsWidget::doStartupScriptChanged()
-{
-    lblStartupScriptError->clear();
-
-    // run and check startup script
-    if (!txtStartupScript->toPlainText().isEmpty())
-    {
-        currentPythonEngineAgros()->blockSignals(true);
-        bool successfulRun = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
-        currentPythonEngineAgros()->blockSignals(false);
-
-        if (!successfulRun)
-        {
-            ErrorResult result = currentPythonEngineAgros()->parseError();
-            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(result.error()));
-        }
-    }
 }
 
 // *******************************************************************************************************

@@ -100,9 +100,6 @@ protected:
 
 private:
     QAction *actCreateFromModel;
-
-    QAction *actStartupScriptVariables;
-    QAction *actStartupScriptValues;
     QAction *actConsoleOutput;
 
 private slots:
@@ -118,20 +115,14 @@ private slots:
 // current python engine agros
 AGROS_LIBRARY_API PythonEngineAgros *currentPythonEngineAgros();
 
-enum StartupScript_Type
-{
-    StartupScript_Variable,
-    StartupScript_Value
-};
-
 // create script from model
-QString createPythonFromModel(StartupScript_Type startupScript);
+QString createPythonFromModel();
 
 // ************************************************************************************
 
 void openFile(const std::string &file, bool openWithSolution);
 void saveFile(const std::string &file, bool saveWithSolution);
-inline std::string getScriptFromModel() { return createPythonFromModel(StartupScript_Variable).toStdString(); }
+inline std::string getScriptFromModel() { return createPythonFromModel().toStdString(); }
 
 int appTime();
 void memoryUsage(std::vector<int> &time, std::vector<int> &usage);

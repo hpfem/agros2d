@@ -138,6 +138,11 @@ bool Value::evaluateAtTimeAndPoint(double time, const Point &point)
     return evaluateAndSave();
 }
 
+double Value::setNumber(double value)
+{
+    setText(QString::number(value));
+}
+
 double Value::number() const
 {
     assert(m_isEvaluated);
@@ -337,14 +342,69 @@ bool Value::evaluateExpression(const QString &expression, double time, const Poi
     }
 
     // eval expression
-    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &evaluationResult, command);
+    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &evaluationResult, command);    
     if (!successfulRun)
     {
-        ErrorResult result = currentPythonEngineAgros()->parseError();
+        // ErrorResult result = currentPythonEngineAgros()->parseError();
     }
 
     if (!signalBlocked)
         currentPythonEngineAgros()->blockSignals(false);
 
     return successfulRun;
+}
+
+// ************************************************************************************************
+
+PointValue::PointValue(double x, double y)
+    : m_x(Value(x)), m_y(Value(y))
+{
+}
+
+PointValue::PointValue(const Point &point)
+{
+    m_x.setNumber(point.x);
+    m_y.setNumber(point.y);
+}
+
+PointValue::PointValue(const Value &x, const Value &y)
+    : m_x(x), m_y(y)
+{    
+}
+
+PointValue& PointValue::operator =(const PointValue &origin)
+{
+    m_x = origin.m_x;
+    m_y = origin.m_y;
+
+    return *this;
+}
+
+void PointValue::setPoint(double x, double y)
+{
+    m_x.setNumber(x);
+    m_y.setNumber(y);
+}
+
+void PointValue::setPoint(const Point &point)
+{
+    m_x.setNumber(point.x);
+    m_y.setNumber(point.y);
+}
+
+void PointValue::setPoint(const Value &x, const Value &y)
+{
+    m_x = x;
+    m_y = y;
+}
+
+void PointValue::setPoint(const QString &x, const QString &y)
+{
+    m_x.setText(x);
+    m_y.setText(y);
+}
+
+QString PointValue::toString() const
+{
+    return QString("[%1, %2]").arg(m_x.toString()).arg(m_y.toString());
 }

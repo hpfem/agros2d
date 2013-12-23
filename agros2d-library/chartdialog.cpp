@@ -430,7 +430,7 @@ void ChartWidget::plotGeometry()
                                                                                         fieldWidget->selectedAdaptivityStep(),
                                                                                         fieldWidget->selectedAdaptivitySolutionType(),
                                                                                         point);
-            QMap<QString, PointValue> values = localValue->values();
+            QMap<QString, LocalPointValue> values = localValue->values();
 
             if (variable.isScalar())
             {
@@ -507,7 +507,7 @@ void ChartWidget::plotTime()
                                                                                         Agros2D::solutionStore()->lastAdaptiveStep(fieldWidget->selectedField(), SolutionMode_Normal, timeLevelIndex),
                                                                                         SolutionMode_Normal,
                                                                                         point);
-            QMap<QString, PointValue> values = localValue->values();
+            QMap<QString, LocalPointValue> values = localValue->values();
 
             if (variable.isScalar())
                 yval.append(values[variable.id()].scalar);
@@ -764,7 +764,7 @@ QMap<QString, double> ChartWidget::getData(Point point, int timeStep, int adapti
                                                                                     adaptivityStep,
                                                                                     solutionType,
                                                                                     point);
-        QMap<QString, PointValue> values = localValue->values();
+        QMap<QString, LocalPointValue> values = localValue->values();
 
         if (variable.isScalar())
         {

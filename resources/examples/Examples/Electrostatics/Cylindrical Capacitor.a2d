@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
-      <node id="0" x="0" y="0.2"/>
-      <node id="1" x="0" y="0.08"/>
-      <node id="2" x="0.01" y="0.08"/>
-      <node id="3" x="0.01" y="0"/>
-      <node id="4" x="0.03" y="0"/>
-      <node id="5" x="0.03" y="0.08"/>
-      <node id="6" x="0.05" y="0.08"/>
-      <node id="7" x="0.05" y="0"/>
-      <node id="8" x="0.06" y="0"/>
-      <node id="9" x="0.06" y="0.08"/>
-      <node id="10" x="0.2" y="0"/>
+      <node id="0" valuex="0" valuey="RB" x="0" y="0.2"/>
+      <node id="1" valuex="0" valuey="L" x="0" y="0.08"/>
+      <node id="2" valuex="R1" valuey="L" x="0.01" y="0.08"/>
+      <node id="3" valuex="R1" valuey="0" x="0.01" y="0"/>
+      <node id="4" valuex="R2" valuey="0" x="0.03" y="0"/>
+      <node id="5" valuex="R2" valuey="L" x="0.03" y="0.08"/>
+      <node id="6" valuex="R3" valuey="L" x="0.05" y="0.08"/>
+      <node id="7" valuex="R3" valuey="0" x="0.05" y="0"/>
+      <node id="8" valuex="R4" valuey="0" x="0.06" y="0"/>
+      <node id="9" valuex="R4" valuey="L" x="0.06" y="0.08"/>
+      <node id="10" valuex="RB" valuey="0" x="0.2" y="0"/>
     </nodes>
     <edges>
-      <edge angle="0" end="1" id="0" start="0"/>
-      <edge angle="0" end="3" id="1" start="2"/>
-      <edge angle="0" end="4" id="2" start="3"/>
-      <edge angle="0" end="5" id="3" start="4"/>
-      <edge angle="0" end="6" id="4" start="5"/>
-      <edge angle="0" end="4" id="5" start="7"/>
-      <edge angle="0" end="7" id="6" start="6"/>
-      <edge angle="0" end="9" id="7" start="8"/>
-      <edge angle="0" end="9" id="8" start="6"/>
-      <edge angle="0" end="10" id="9" start="8"/>
-      <edge angle="90" end="0" id="10" start="10"/>
-      <edge angle="0" end="5" id="11" start="2"/>
-      <edge angle="0" end="1" id="12" start="2"/>
+      <edge angle="0" end="1" id="0" is_curvilinear="1" segments="3" start="0" valueangle="0"/>
+      <edge angle="0" end="3" id="1" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
+      <edge angle="0" end="4" id="2" is_curvilinear="1" segments="3" start="3" valueangle="0"/>
+      <edge angle="0" end="5" id="3" is_curvilinear="1" segments="3" start="4" valueangle="0"/>
+      <edge angle="0" end="6" id="4" is_curvilinear="1" segments="3" start="5" valueangle="0"/>
+      <edge angle="0" end="4" id="5" is_curvilinear="1" segments="3" start="7" valueangle="0"/>
+      <edge angle="0" end="7" id="6" is_curvilinear="1" segments="3" start="6" valueangle="0"/>
+      <edge angle="0" end="9" id="7" is_curvilinear="1" segments="3" start="8" valueangle="0"/>
+      <edge angle="0" end="9" id="8" is_curvilinear="1" segments="3" start="6" valueangle="0"/>
+      <edge angle="0" end="10" id="9" is_curvilinear="1" segments="3" start="8" valueangle="0"/>
+      <edge angle="90" end="0" id="10" is_curvilinear="1" segments="3" start="10" valueangle="90"/>
+      <edge angle="0" end="5" id="11" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
+      <edge angle="0" end="1" id="12" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
     </edges>
     <labels>
-      <label area="0" id="0" x="0.019" y="0.021"/>
-      <label area="0" id="1" x="0.0379" y="0.051"/>
-      <label area="0" id="2" x="0.0284191" y="0.123601"/>
+      <label area="0" id="0" valuex="(R1+R2)/2.0" valuey="L/2.0" x="0.02" y="0.04"/>
+      <label area="0" id="1" valuex="(R2+R3)/2.0" valuey="L/2.0" x="0.04" y="0.04"/>
+      <label area="0" id="2" valuex="R1" valuey="RB-R1" x="0.01" y="0.19"/>
     </labels>
   </geometry>
 
-  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="axisymmetric" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges>
-          <refinement_edge refinement_edge_id="8" refinement_edge_number="1"/>
           <refinement_edge refinement_edge_id="1" refinement_edge_number="1"/>
-          <refinement_edge refinement_edge_id="12" refinement_edge_number="1"/>
           <refinement_edge refinement_edge_id="6" refinement_edge_number="1"/>
+          <refinement_edge refinement_edge_id="8" refinement_edge_number="1"/>
+          <refinement_edge refinement_edge_id="12" refinement_edge_number="1"/>
         </refinement_edges>
         <refinement_labels/>
         <polynomial_orders/>
@@ -56,6 +56,7 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="electrostatic_potential" value="U"/>
+              <boundary_type key="electrostatic_surface_charge_density" value="0"/>
             </boundary_types>
           </boundary>
           <boundary id="2" name="Ground" type="electrostatic_potential">
@@ -66,6 +67,7 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="electrostatic_potential" value="0"/>
+              <boundary_type key="electrostatic_surface_charge_density" value="0"/>
             </boundary_types>
           </boundary>
           <boundary id="3" name="Neumann" type="electrostatic_surface_charge_density">
@@ -77,6 +79,7 @@
               <boundary_edge id="10"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="electrostatic_potential" value="1000"/>
               <boundary_type key="electrostatic_surface_charge_density" value="0"/>
             </boundary_types>
           </boundary>
@@ -111,15 +114,15 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="10"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NonlinearResidualNorm" field_value="0"/>
+          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0.1"/>
+          <field_item field_key="NonlinearDampingType" field_value="0"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonJacobianReuseRatio" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingFactorDecreaseRatio" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NonlinearStepsToIncreaseDampingFactor" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -129,8 +132,20 @@
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="100"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="100"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -139,6 +154,7 @@
       <problem_item problem_key="Frequency" problem_value="0"/>
       <problem_item problem_key="TimeMethod" problem_value="2"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.1"/>
+      <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="2"/>
       <problem_item problem_key="TimeSteps" problem_value="10"/>
       <problem_item problem_key="TimeTotal" problem_value="1"/>
@@ -146,8 +162,7 @@
   </problem>
 
   <config>
-    <item key="Problem_StartupScript" value="U = 10&#xA;eps1 = 3&#xA;eps2 = 4&#xA;"/>
-    <item key="Problem_Description" value=""/>
+    <item key="Problem_StartupScript" value="R1 = 0.01&#xA;R2 = 0.03&#xA;R3 = 0.05&#xA;R4 = 0.06&#xA;L = 0.08&#xA;RB = 0.2&#xA;&#xA;U = 10&#xA;eps1 = 3&#xA;eps2 = 4"/>
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
@@ -227,7 +242,7 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-1.14560359083197e-16"/>
+    <item key="View_ScalarRangeMin" value="-9.18251477459442e-17"/>
     <item key="View_ScalarRangeMax" value="10"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="electrostatic_electric_field"/>
@@ -237,6 +252,7 @@
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -276,21 +292,7 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_MeshAngleSegmentsCount" value="3"/>
-    <item key="View_MeshCurvilinearElements" value="1"/>
-    <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>

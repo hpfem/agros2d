@@ -179,45 +179,23 @@ PythonEditorAgrosDialog::PythonEditorAgrosDialog(PythonEngine *pythonEngine, QSt
     tlbTools->addSeparator();
     tlbTools->addAction(actCreateFromModel);
 
-    // startup script options
-    actStartupScriptVariables = new QAction(tr("Variables"), this);
-    actStartupScriptVariables->setCheckable(true);
-    actStartupScriptVariables->setChecked(settings.value("PythonEditorDialog/StartupScriptVariables", true).toBool());
-
-    actStartupScriptValues = new QAction(tr("Values"), this);
-    actStartupScriptValues->setCheckable(true);
-    actStartupScriptValues->setChecked(settings.value("PythonEditorDialog/StartupScriptValues", false).toBool());
-
     // console output
     actConsoleOutput = new QAction(tr("Console output"), this);
     actConsoleOutput->setCheckable(true);
     actConsoleOutput->setChecked(settings.value("PythonEditorDialog/ConsoleOutput", true).toBool());
 
-    QActionGroup *actStartupScriptGroup = new QActionGroup(this);
-    actStartupScriptGroup->addAction(actStartupScriptVariables);
-    actStartupScriptGroup->addAction(actStartupScriptValues);
-
-    QMenu *mnuStartupScript = new QMenu(tr("Startup script"), this);
-    mnuStartupScript->addAction(actStartupScriptVariables);
-    mnuStartupScript->addAction(actStartupScriptValues);
-
     mnuOptions->addAction(actConsoleOutput);
-    mnuOptions->addSeparator();
-    mnuOptions->addMenu(mnuStartupScript);
 }
 
 PythonEditorAgrosDialog::~PythonEditorAgrosDialog()
 {
     QSettings settings;
-    settings.setValue("PythonEditorDialog/StartupScriptVariables", actStartupScriptVariables->isChecked());
-    settings.setValue("PythonEditorDialog/StartupScriptValues", actStartupScriptValues->isChecked());
     settings.setValue("PythonEditorDialog/ConsoleOutput", actConsoleOutput->isChecked());
 }
 
 void PythonEditorAgrosDialog::doCreatePythonFromModel()
 {
-    StartupScript_Type type = actStartupScriptVariables->isChecked() ? StartupScript_Variable : StartupScript_Value;
-    txtEditor->setPlainText(createPythonFromModel(type));
+    txtEditor->setPlainText(createPythonFromModel());
 }
 
 void PythonEditorAgrosDialog::scriptPrepare()
@@ -274,7 +252,7 @@ void PythonEditorAgrosDialog::printDebug(const QString &module, const QString &m
 // *****************************************************************************
 
 // create script from model
-QString createPythonFromModel(StartupScript_Type startupScript)
+QString createPythonFromModel()
 {
     QString str;
 
@@ -518,7 +496,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             {
                 QSharedPointer<Value> value = values[variable.id()];
 
-                if (!value->isNumber() && startupScript == StartupScript_Variable)
+                if (value->isTimeDependent() || value->isCoordinateDependent() || (value->hasTable() && (fieldInfo->linearityType() != LinearityType_Linear)))
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
@@ -570,7 +548,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                                 arg(value->table().extrapolateConstant() == true ? "constant" : "linear").
                                 arg(value->table().splineFirstDerivatives() == true ? "first" : "second");
                 }
-                else if (!value->isNumber() && startupScript == StartupScript_Variable)
+                if (value->isTimeDependent() || value->isCoordinateDependent() || (value->hasTable() && (fieldInfo->linearityType() != LinearityType_Linear)))
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
@@ -605,10 +583,10 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
         {
             str += QString("geometry.add_edge(%1, %2, %3, %4").
-                    arg(edge->nodeStart()->point().x).
-                    arg(edge->nodeStart()->point().y).
-                    arg(edge->nodeEnd()->point().x).
-                    arg(edge->nodeEnd()->point().y);
+                    arg(edge->nodeStart()->pointValue().x().isNumber() ? QString::number(edge->nodeStart()->point().x) : edge->nodeStart()->pointValue().x().toString()).
+                    arg(edge->nodeStart()->pointValue().y().isNumber() ? QString::number(edge->nodeStart()->point().y) : edge->nodeStart()->pointValue().y().toString()).
+                    arg(edge->nodeEnd()->pointValue().x().isNumber() ? QString::number(edge->nodeEnd()->point().x) : edge->nodeEnd()->pointValue().x().toString()).
+                    arg(edge->nodeEnd()->pointValue().y().isNumber() ? QString::number(edge->nodeEnd()->point().y) : edge->nodeEnd()->pointValue().y().toString());
 
             if (edge->angle() > 0.0)
             {
@@ -676,8 +654,8 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
             str += QString("geometry.add_label(%1, %2").
-                    arg(label->point().x).
-                    arg(label->point().y);
+                    arg(label->pointValue().x().isNumber() ? QString::number(label->point().x) : label->pointValue().x().toString()).
+                    arg(label->pointValue().y().isNumber() ? QString::number(label->point().y) : label->pointValue().y().toString());
 
             if (label->area() > 0.0)
                 str += ", area = " + QString::number(label->area());

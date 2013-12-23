@@ -117,16 +117,16 @@ protected:
     double valueFromTable(int hermesMarker, double h) const;
 };
 
-struct PointValue
+struct LocalPointValue
 {
-    PointValue()
+    LocalPointValue()
     {
         this->scalar = 0.0;
         this->vector = Point();
         this->material = NULL;
     }
 
-    PointValue(double scalar, Point vector, Material *material)
+    LocalPointValue(double scalar, Point vector, Material *material)
     {
         this->scalar = scalar;
         this->vector = vector;
@@ -148,7 +148,7 @@ public:
     inline Point point() { return m_point; }
 
     // variables
-    QMap<QString, PointValue> values() const { return m_values; }
+    QMap<QString, LocalPointValue> values() const { return m_values; }
 
     virtual void calculate() = 0;
 
@@ -162,7 +162,7 @@ protected:
     SolutionMode m_solutionType;
 
     // variables
-    QMap<QString, PointValue> m_values;
+    QMap<QString, LocalPointValue> m_values;
 };
 
 class IntegralValue

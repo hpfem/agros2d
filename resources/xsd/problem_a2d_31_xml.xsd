@@ -14,6 +14,8 @@
                         <attribute name="id" type="int" use="required"/>
                         <attribute name="x" type="float" use="required"/>
                         <attribute name="y" type="float" use="required"/>
+                        <attribute name="valuex" type="string" use="optional"/>
+                        <attribute name="valuey" type="string" use="optional"/>
                       </complexType>
                     </element>
                   </sequence>
@@ -29,7 +31,8 @@
                         <attribute name="end" type="int" use="required"/>
                         <attribute name="angle" type="float" use="required"/>
                         <attribute name="segments" type="int"/>                        
-                        <attribute name="is_curvilinear" type="int"/>   
+                        <attribute name="is_curvilinear" type="int"/> 
+                        <attribute name="valueangle" type="string" use="optional"/>  
                       </complexType>
                     </element>
                   </sequence>
@@ -44,6 +47,8 @@
                         <attribute name="x" type="float" use="required"/>
                         <attribute name="y" type="float" use="required"/>
                         <attribute name="area" type="float" use="required"/>
+                        <attribute name="valuex" type="string" use="optional"/>
+                        <attribute name="valuey" type="string" use="optional"/>
                       </complexType>
                     </element>
                   </sequence>

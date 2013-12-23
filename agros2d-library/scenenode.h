@@ -21,6 +21,7 @@
 #define SCENENODE_H
 
 #include "util.h"
+#include "value.h"
 #include "scenebasic.h"
 
 class SceneNodeCommandRemove;
@@ -30,9 +31,11 @@ class SceneNode : public SceneBasic
 {
 public:
     SceneNode(const Point &point);
+    SceneNode(const PointValue &pointValue);
 
-    inline Point point() const { return m_point; }
-    void setPoint(const Point &point);
+    inline Point point() const { return m_point.point(); }
+    inline PointValue pointValue() const { return m_point; }
+    void setPointValue(const PointValue &point);
 
     // geometry editor
     bool isConnected() const;
@@ -43,7 +46,7 @@ public:
     QList<SceneEdge *> lyingEdges() const;
     bool isOutsideArea() const;
     bool isError();
-    double distance(const Point &m_point) const;
+    double distance(const Point &point) const;
 
     int showDialog(QWidget *parent, bool isNew = false);
 
@@ -52,7 +55,7 @@ public:
     static SceneNode *findClosestNode(const Point &point);
 
 private:
-    Point m_point;
+    PointValue m_point;
 };
 
 Q_DECLARE_METATYPE(SceneNode *)
@@ -81,13 +84,13 @@ public:
 
 // *************************************************************************************************************************************
 
-class DSceneNode : public SceneBasicDialog
+class SceneNodeDialog : public SceneBasicDialog
 {
     Q_OBJECT
 
 public:
-    DSceneNode(SceneNode *node, QWidget *parent, bool m_isNew = false);
-    ~DSceneNode();
+    SceneNodeDialog(SceneNode *node, QWidget *parent, bool m_isNew = false);
+    ~SceneNodeDialog();
 
 protected:
     QLayout *createContent();
@@ -111,77 +114,77 @@ private slots:
 class SceneNodeCommandAdd : public QUndoCommand
 {
 public:
-    SceneNodeCommandAdd(const Point &point, QUndoCommand *parent = 0);
+    SceneNodeCommandAdd(const PointValue &point, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    Point m_point;
+    PointValue m_point;
 };
 
 class SceneNodeCommandRemove : public QUndoCommand
 {
 public:
-    SceneNodeCommandRemove(const Point &point, QUndoCommand *parent = 0);
+    SceneNodeCommandRemove(const PointValue &point, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    Point m_point;
+    PointValue m_point;
 };
 
 class SceneNodeCommandEdit : public QUndoCommand
 {
 public:
-    SceneNodeCommandEdit(const Point &point, const Point &pointNew,  QUndoCommand *parent = 0);
+    SceneNodeCommandEdit(const PointValue &point, const PointValue &pointNew,  QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    Point m_point;
-    Point m_pointNew;
+    PointValue m_point;
+    PointValue m_pointNew;
 };
 
 class SceneNodeCommandMoveMulti : public QUndoCommand
 {
 public:
-    SceneNodeCommandMoveMulti(QList<Point> points, QList<Point> pointsNew,  QUndoCommand *parent = 0);
+    SceneNodeCommandMoveMulti(QList<PointValue> points, QList<PointValue> pointsNew,  QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    static void moveAll(QList<Point> moveFrom, QList<Point> moveTo);
+    static void moveAll(QList<PointValue> moveFrom, QList<PointValue> moveTo);
 
-    QList<Point> m_points;
-    QList<Point> m_pointsNew;
+    QList<PointValue> m_points;
+    QList<PointValue> m_pointsNew;
 };
 
 class SceneNodeCommandAddMulti : public QUndoCommand
 {
 public:
-    SceneNodeCommandAddMulti(QList<Point> points,  QUndoCommand *parent = 0);
+    SceneNodeCommandAddMulti(QList<PointValue> points,  QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    QList<Point> m_points;
+    QList<PointValue> m_points;
 };
 
 class SceneNodeCommandRemoveMulti : public QUndoCommand
 {
 public:
-    SceneNodeCommandRemoveMulti(QList<Point> points,  QUndoCommand *parent = 0);
+    SceneNodeCommandRemoveMulti(QList<PointValue> points,  QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
     // nodes
-    QList<Point> m_nodePoints;
+    QList<PointValue> m_nodePoints;
     // edges
     QList<Point> m_edgePointStart;
     QList<Point> m_edgePointEnd;
     QList<QMap<QString, QString> > m_edgeMarkers;
-    QList<double> m_edgeAngle;
+    QList<Value> m_edgeAngle;
 };
 
 

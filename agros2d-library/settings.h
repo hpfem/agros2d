@@ -87,16 +87,11 @@ private:
     ColorButton *colorHighlighted;
     ColorButton *colorSelected;
 
-    // script
-    ScriptEditor *txtStartupScript;
-    QLabel *lblStartupScriptError;
-
     QPushButton *btnOK;
 
     void createActions();
 
     void createControls();
-    QWidget *controlsStartupScript();
     QWidget *controlsWorkspace();
     QWidget *controlsColors();
 
@@ -113,7 +108,6 @@ public slots:
 private slots:
     void doWorkspaceDefault();
     void doColorsDefault();    
-    void doStartupScriptChanged();
 };
 
 // *************************************************************************

@@ -158,7 +158,7 @@ void ResultsView::showPoint()
                                                             m_postHermes->activeAdaptivityStep(),
                                                             m_postHermes->activeAdaptivitySolutionType(),
                                                             m_point);
-        QMap<QString, PointValue> values = value->values();
+        QMap<QString, LocalPointValue> values = value->values();
         delete value;
 
         if (values.size() > 0)

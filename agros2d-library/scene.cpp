@@ -519,16 +519,16 @@ void Scene::deleteSelected()
     m_undoStack->beginMacro(tr("Delete selected"));
 
     // nodes
-    QList<Point> selectedNodePoints;
+    QList<PointValue> selectedNodePoints;
     foreach (SceneNode *node, nodes->selected().items())
-        selectedNodePoints.append(node->point());
+        selectedNodePoints.append(node->pointValue());
     if (!selectedNodePoints.isEmpty())
         undoStack()->push(new SceneNodeCommandRemoveMulti(selectedNodePoints));
 
     // edges
     QList<Point> selectedEdgePointsStart;
     QList<Point> selectedEdgePointsEnd;
-    QList<double> selectedEdgeAngles;
+    QList<Value> selectedEdgeAngles;
     QList<int> selectedEdgeSegments;
     QList<bool> selectedEdgeIsCurvilinear;
     QList<QMap<QString, QString> > selectedEdgeMarkers;
@@ -536,7 +536,7 @@ void Scene::deleteSelected()
     {
         selectedEdgePointsStart.append(edge->nodeStart()->point());
         selectedEdgePointsEnd.append(edge->nodeEnd()->point());
-        selectedEdgeAngles.append(edge->angle());
+        selectedEdgeAngles.append(edge->angleValue());
         selectedEdgeSegments.append(edge->segments());
         selectedEdgeIsCurvilinear.append(edge->isCurvilinear());
         selectedEdgeMarkers.append(edge->markersKeys());
@@ -547,12 +547,12 @@ void Scene::deleteSelected()
                                                           selectedEdgeMarkers));
 
     // labels
-    QList<Point> selectedLabelPointsStart;
+    QList<PointValue> selectedLabelPointsStart;
     QList<double> selectedLabelAreas;
     QList<QMap<QString, QString> > selectedLabelMarkers;
     foreach (SceneLabel *label, labels->selected().items())
     {
-        selectedLabelPointsStart.append(label->point());
+        selectedLabelPointsStart.append(label->pointValue());
         selectedLabelAreas.append(label->area());
         selectedLabelMarkers.append(label->markersKeys());
     }
@@ -621,7 +621,7 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         }
     }
 
-    QList<Point> points, newPoints, pointsToSelect;
+    QList<PointValue> points, newPoints, pointsToSelect;
 
     foreach (SceneNode *node, nodes->selected().items())
     {
@@ -634,7 +634,7 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
             return false;
         }
 
-        points.push_back(node->point());
+        points.push_back(node->pointValue());
 
         // when copying, add only those points, that did not exist
         // when moving, add all, because if poit on place where adding exist, it will be moved away (otherwise it would be obstruct node and function would not reach this point)
@@ -658,11 +658,11 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         nodes->setSelected(false);
 
         // select new
-        foreach(Point point, newPoints)
-            getNode(point)->setSelected(true);
+        foreach(PointValue point, newPoints)
+            getNode(point.point())->setSelected(true);
 
-        foreach(Point point, pointsToSelect)
-            getNode(point)->setSelected(true);
+        foreach(PointValue point, pointsToSelect)
+            getNode(point.point())->setSelected(true);
     }
     else
     {
@@ -691,7 +691,7 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
     QList<QPair<Point, Point> > newEdgeEndPoints;
     QList<Point> edgeStartPointsToAdd, edgeEndPointsToAdd;
-    QList<double> edgeAnglesToAdd;
+    QList<Value> edgeAnglesToAdd;
     QList<int> edgeSegmentsToAdd;
     QList<bool> edgeIsCurvilinearToAdd;
     QList<QMap<QString, QString> > edgeMarkersToAdd;
@@ -718,7 +718,7 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
         {
             edgeStartPointsToAdd.push_back(newPointStart);
             edgeEndPointsToAdd.push_back(newPointEnd);
-            edgeAnglesToAdd.push_back(edge->angle());
+            edgeAnglesToAdd.push_back(edge->angleValue());
             edgeSegmentsToAdd.push_back(edge->segments());
             edgeIsCurvilinearToAdd.push_back(edge->isCurvilinear());
 
@@ -746,15 +746,15 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
 bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy, bool withMarkers)
 {
-    QList<Point> points, newPoints, pointsToSelect;
+    QList<PointValue> points, newPoints, pointsToSelect;
     QList<double> newAreas;
     QList<QMap<QString, QString> > newMarkers;
 
     foreach (SceneLabel *label, labels->selected().items())
     {
-        Point newPoint = calculateNewPoint(mode, label->point(), point, angle, scaleFactor);
+        PointValue newPoint = calculateNewPoint(mode, label->point(), point, angle, scaleFactor);
 
-        SceneLabel *obstructLabel = getLabel(newPoint);
+        SceneLabel *obstructLabel = getLabel(newPoint.point());
         if (obstructLabel && !obstructLabel->isSelected())
         {
             Agros2D::log()->printWarning(tr("Geometry"), tr("Cannot perform transformation, existing label would be overwritten"));
@@ -787,18 +787,18 @@ bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
         }
     }
 
-    if(copy)
+    if (copy)
     {
         m_undoStack->push(new SceneLabelCommandAddMulti(newPoints, newMarkers, newAreas));
 
         labels->setSelected(false);
 
         // select new
-        foreach(Point point, newPoints)
-            getLabel(point)->setSelected(true);
+        foreach(PointValue point, newPoints)
+            getLabel(point.point())->setSelected(true);
 
-        foreach(Point point, pointsToSelect)
-            getLabel(point)->setSelected(true);
+        foreach(PointValue point, pointsToSelect)
+            getLabel(point.point())->setSelected(true);
     }
     else
     {
@@ -846,6 +846,14 @@ void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
+
+    // evaluate point values
+    foreach (SceneNode *node, nodes->items())
+        node->setPointValue(node->pointValue());
+    foreach (SceneEdge *edge, edges->items())
+        edge->setAngleValue(edge->angleValue());
+    foreach (SceneLabel *label, labels->items())
+        label->setPointValue(label->pointValue());
 
     if (currentPythonEngineAgros() && !currentPythonEngineAgros()->isScriptRunning())
     {
@@ -1522,15 +1530,39 @@ void Scene::readFromFile31(const QString &fileName)
         // general config
         Agros2D::problem()->setting()->load(&doc->config());
 
+        // run script
+        currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
+
         // nodes
         for (unsigned int i = 0; i < doc->geometry().nodes().node().size(); i++)
         {
             XMLProblem::node node = doc->geometry().nodes().node().at(i);
 
-            Point point = Point(node.x(),
-                                node.y());
+            if (node.valuex().present() && node.valuey().present())
+            {
+                Value x = Value(QString::fromStdString(node.valuex().get()));
+                if (!x.isEvaluated())
+                {
+                    ErrorResult result = currentPythonEngineAgros()->parseError();
+                    throw AgrosException(result.error());
+                }
 
-            addNode(new SceneNode(point));
+                Value y = Value(QString::fromStdString(node.valuey().get()));
+                if (!y.isEvaluated())
+                {
+                    ErrorResult result = currentPythonEngineAgros()->parseError();
+                    throw AgrosException(result.error());
+                }
+
+                addNode(new SceneNode(PointValue(x, y)));
+            }
+            else
+            {
+                Point point = Point(node.x(),
+                                    node.y());
+
+                addNode(new SceneNode(point));
+            }
         }
 
         // edges
@@ -1548,7 +1580,25 @@ void Scene::readFromFile31(const QString &fileName)
             if (edge.is_curvilinear().present())
                 isCurvilinear = edge.is_curvilinear().get();
 
-            addEdge(new SceneEdge(nodeFrom, nodeTo, edge.angle(), segments, isCurvilinear));
+            if (edge.valueangle().present())
+            {
+                Value angle = Value(QString::fromStdString(edge.valueangle().get()));
+                if (!angle.isEvaluated())
+                {
+                    ErrorResult result = currentPythonEngineAgros()->parseError();
+                    throw AgrosException(result.error());
+                }
+                if (angle.number() < 0.0) angle.setNumber(0.0);
+                if (angle.number() > 90.0) angle.setNumber(90.0);
+
+                addEdge(new SceneEdge(nodeFrom, nodeTo, angle, segments, isCurvilinear));
+            }
+            else
+            {
+                addEdge(new SceneEdge(nodeFrom, nodeTo, edge.angle(), segments, isCurvilinear));
+            }
+
+
         }
 
         // labels
@@ -1556,7 +1606,31 @@ void Scene::readFromFile31(const QString &fileName)
         {
             XMLProblem::label label = doc->geometry().labels().label().at(i);
 
-            addLabel(new SceneLabel(Point(label.x(), label.y()), label.area()));
+            if (label.valuex().present() && label.valuey().present())
+            {
+                Value x = Value(QString::fromStdString(label.valuex().get()));
+                if (!x.isEvaluated())
+                {
+                    ErrorResult result = currentPythonEngineAgros()->parseError();
+                    throw AgrosException(result.error());
+                }
+
+                Value y = Value(QString::fromStdString(label.valuey().get()));
+                if (!y.isEvaluated())
+                {
+                    ErrorResult result = currentPythonEngineAgros()->parseError();
+                    throw AgrosException(result.error());
+                }
+
+                addLabel(new SceneLabel(PointValue(x, y), label.area()));
+            }
+            else
+            {
+                Point point = Point(label.x(),
+                                    label.y());
+
+                addLabel(new SceneLabel(point, label.area()));
+            }
         }
 
         for (unsigned int i = 0; i < doc->problem().fields().field().size(); i++)
@@ -1621,7 +1695,14 @@ void Scene::readFromFile31(const QString &fileName)
                 {
                     XMLProblem::boundary_type type = boundary.boundary_types().boundary_type().at(k);
 
-                    bound->setValue(QString::fromStdString(type.key()), Value(QString::fromStdString(type.value())));
+                    Value b = Value(QString::fromStdString(type.value()));
+                    if (!b.isEvaluated())
+                    {
+                        ErrorResult result = currentPythonEngineAgros()->parseError();
+                        throw AgrosException(result.error());
+                    }
+
+                    bound->setValue(QString::fromStdString(type.key()), b);
                 }
 
                 addBoundary(bound);
@@ -1654,7 +1735,14 @@ void Scene::readFromFile31(const QString &fileName)
                 {
                     XMLProblem::material_type type = material.material_types().material_type().at(k);
 
-                    mat->setValue(QString::fromStdString(type.key()), Value(QString::fromStdString(type.value())));
+                    Value m = Value(QString::fromStdString(type.value()));
+                    if (!m.isEvaluated())
+                    {
+                        ErrorResult result = currentPythonEngineAgros()->parseError();
+                        throw AgrosException(result.error());
+                    }
+
+                    mat->setValue(QString::fromStdString(type.key()), m);
                 }
 
                 addMaterial(mat);
@@ -1700,9 +1788,6 @@ void Scene::readFromFile31(const QString &fileName)
         emit defaultValues();
 
         m_loopsInfo->processPolygonTriangles();
-
-        // run script
-        currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
     }
     catch (const xml_schema::expected_element& e)
     {
@@ -2189,9 +2274,14 @@ void Scene::writeToFile31(const QString &fileName)
         int inode = 0;
         foreach (SceneNode *node, this->nodes->items())
         {
-            nodes.node().push_back(XMLProblem::node(inode,
-                                                    node->point().x,
-                                                    node->point().y));
+            XMLProblem::node nodexml(inode,
+                                     node->point().x,
+                                     node->point().y);
+
+            nodexml.valuex().set(node->pointValue().x().toString().toStdString());
+            nodexml.valuey().set(node->pointValue().y().toString().toStdString());
+
+            nodes.node().push_back(nodexml);
             inode++;
         }
 
@@ -2200,14 +2290,16 @@ void Scene::writeToFile31(const QString &fileName)
         int iedge = 0;
         foreach (SceneEdge *edge, this->edges->items())
         {
-            XMLProblem::edge e = XMLProblem::edge(iedge,
-                                                  this->nodes->items().indexOf(edge->nodeStart()),
-                                                  this->nodes->items().indexOf(edge->nodeEnd()),
-                                                  edge->angle());
-            e.segments().set(edge->segments());
-            e.is_curvilinear().set(edge->isCurvilinear());
-            edges.edge().push_back(e);
+            XMLProblem::edge edgexml = XMLProblem::edge(iedge,
+                                                        this->nodes->items().indexOf(edge->nodeStart()),
+                                                        this->nodes->items().indexOf(edge->nodeEnd()),
+                                                        edge->angle());
 
+            edgexml.segments().set(edge->segments());
+            edgexml.is_curvilinear().set(edge->isCurvilinear());
+            edgexml.valueangle().set(edge->angleValue().toString().toStdString());
+
+            edges.edge().push_back(edgexml);
             iedge++;
         }
 
@@ -2216,11 +2308,15 @@ void Scene::writeToFile31(const QString &fileName)
         int ilabel = 0;
         foreach (SceneLabel *label, this->labels->items())
         {
-            labels.label().push_back(XMLProblem::label(ilabel,
-                                                       label->point().x,
-                                                       label->point().y,
-                                                       label->area()));
+            XMLProblem::label labelxml(ilabel,
+                                       label->point().x,
+                                       label->point().y,
+                                       label->area());
 
+            labelxml.valuex().set(label->pointValue().x().toString().toStdString());
+            labelxml.valuey().set(label->pointValue().y().toString().toStdString());
+
+            labels.label().push_back(labelxml);
             ilabel++;
         }
 
@@ -2331,11 +2427,11 @@ void Scene::checkNodeConnect(SceneNode *node)
                 assert(nodeStart);
                 assert(nodeEnd);
 
-                double edgeAngle = edgeCheck->angle();
+                Value edgeAngle = edgeCheck->angleValue();
                 edges->remove(edgeCheck);
 
                 SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, 0.0);
-                edge->setAngle(edgeAngle);
+                edge->setAngleValue(edgeAngle);
             }
         }
     }

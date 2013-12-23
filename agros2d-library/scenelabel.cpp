@@ -36,12 +36,26 @@
 #include "hermes2d/problem_config.h"
 
 SceneLabel::SceneLabel(const Point &point, double area)
-    : MarkedSceneBasic<SceneMaterial>(), m_point(point), m_area(area)
+    : MarkedSceneBasic<SceneMaterial>(), m_point(point.x, point.y), m_area(area)
 {
     foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
     {
         this->addMarker(SceneMaterialContainer::getNone(field));
     }
+}
+
+SceneLabel::SceneLabel(const PointValue &pointValue, double area)
+    : MarkedSceneBasic<SceneMaterial>(), m_point(pointValue), m_area(area)
+{
+    foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
+    {
+        this->addMarker(SceneMaterialContainer::getNone(field));
+    }
+}
+
+void SceneLabel::setPointValue(const PointValue &point)
+{    
+    m_point = point;
 }
 
 double SceneLabel::distance(const Point &point) const
@@ -400,8 +414,8 @@ bool SceneLabelDialog::load()
 {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-    txtPointX->setNumber(sceneLabel->point().x);
-    txtPointY->setNumber(sceneLabel->point().y);
+    txtPointX->setValue(sceneLabel->pointValue().x());
+    txtPointY->setValue(sceneLabel->pointValue().y());
     txtArea->setNumber(sceneLabel->area());
     chkArea->setChecked(sceneLabel->area() > 0.0);
     txtArea->setEnabled(chkArea->isChecked());
@@ -420,10 +434,10 @@ bool SceneLabelDialog::save()
 
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel *>(m_object);
 
-    Point point(txtPointX->number(), txtPointY->number());
+    PointValue point(txtPointX->value(), txtPointY->value());
 
     // check if label doesn't exists
-    if (Agros2D::scene()->getLabel(point) && ((sceneLabel->point() != point) || m_isNew))
+    if (Agros2D::scene()->getLabel(point.point()) && ((sceneLabel->point() != point.point()) || m_isNew))
     {
         QMessageBox::warning(this, "Label", "Label already exists.");
         return false;
@@ -439,13 +453,13 @@ bool SceneLabelDialog::save()
 
     if (!m_isNew)
     {
-        if (sceneLabel->point() != point)
+        if (sceneLabel->point() != point.point())
         {
-            Agros2D::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point(), point));
+            Agros2D::scene()->undoStack()->push(new SceneLabelCommandEdit(sceneLabel->point(), point.point()));
         }
     }
 
-    sceneLabel->setPoint(point);
+    sceneLabel->setPointValue(point);
     sceneLabel->setArea(chkArea->isChecked() ? txtArea->number() : 0.0);
 
     foreach (SceneLabelMarker *labelMarker, m_labelMarkers)
@@ -562,16 +576,16 @@ void SceneLabelSelectDialog::doReject()
 
 // undo framework *******************************************************************************************************************
 
-SceneLabelCommandAdd::SceneLabelCommandAdd(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandAdd::SceneLabelCommandAdd(const PointValue &pointValue, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    m_point = point;
+    m_point = pointValue;
     m_markers = markers;
     m_area = area;
 }
 
 void SceneLabelCommandAdd::undo()
 {
-    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_point));
+    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_point.point()));
     Agros2D::scene()->invalidate();
 }
 
@@ -587,9 +601,9 @@ void SceneLabelCommandAdd::redo()
     Agros2D::scene()->invalidate();
 }
 
-SceneLabelCommandRemove::SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandRemove::SceneLabelCommandRemove(const PointValue &pointValue, const QMap<QString, QString> &markers, double area, QUndoCommand *parent) : QUndoCommand(parent)
 {
-    m_point = point;
+    m_point = pointValue;
     m_markers = markers;
     m_area = area;
 }
@@ -608,11 +622,11 @@ void SceneLabelCommandRemove::undo()
 
 void SceneLabelCommandRemove::redo()
 {
-    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_point));
+    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_point.point()));
     Agros2D::scene()->invalidate();
 }
 
-SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandEdit::SceneLabelCommandEdit(const PointValue &point, const PointValue &pointNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_point = point;
     m_pointNew = pointNew;
@@ -620,49 +634,47 @@ SceneLabelCommandEdit::SceneLabelCommandEdit(const Point &point, const Point &po
 
 void SceneLabelCommandEdit::undo()
 {
-    SceneLabel *label = Agros2D::scene()->getLabel(m_pointNew);
+    SceneLabel *label = Agros2D::scene()->getLabel(m_pointNew.point());
     if (label)
     {
-        label->setPoint(m_point);
+        label->setPointValue(m_point);
         Agros2D::scene()->invalidate();
     }
 }
 
 void SceneLabelCommandEdit::redo()
 {
-    SceneLabel *label = Agros2D::scene()->getLabel(m_point);
+    SceneLabel *label = Agros2D::scene()->getLabel(m_point.point());
     if (label)
     {
-        label->setPoint(m_pointNew);
+        label->setPointValue(m_pointNew);
         Agros2D::scene()->invalidate();
     }
 }
 
-SceneLabelCommandMoveMulti::SceneLabelCommandMoveMulti(QList<Point> points, QList<Point> pointsNew, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandMoveMulti::SceneLabelCommandMoveMulti(QList<PointValue> points, QList<PointValue> pointsNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_points = points;
     m_pointsNew = pointsNew;
 }
 
-void SceneLabelCommandMoveMulti::moveAll(QList<Point> moveFrom, QList<Point> moveTo)
+void SceneLabelCommandMoveMulti::moveAll(QList<PointValue> moveFrom, QList<PointValue> moveTo)
 {
     assert(moveFrom.size() == moveTo.size());
     QList<SceneLabel*> labels;
-    for(int i = 0; i < moveFrom.size(); i++)
+    for (int i = 0; i < moveFrom.size(); i++)
     {
-        Point point = moveFrom[i];
-        SceneLabel *label = Agros2D::scene()->getLabel(point);
+        PointValue point = moveFrom[i];
+        SceneLabel *label = Agros2D::scene()->getLabel(point.point());
         labels.push_back(label);
     }
 
-    for(int i = 0; i < moveFrom.size(); i++)
+    for (int i = 0; i < moveFrom.size(); i++)
     {
-        Point pointNew = moveTo[i];
+        PointValue pointNew = moveTo[i];
         SceneLabel *label = labels[i];
         if (label)
-        {
-            label->setPoint(pointNew);
-        }
+            label->setPointValue(pointNew);
     }
 }
 
@@ -678,7 +690,7 @@ void SceneLabelCommandMoveMulti::redo()
     Agros2D::scene()->invalidate();
 }
 
-SceneLabelCommandAddOrRemoveMulti::SceneLabelCommandAddOrRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandAddOrRemoveMulti::SceneLabelCommandAddOrRemoveMulti(QList<PointValue> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_points = points;
     m_areas = areas;
@@ -688,13 +700,11 @@ SceneLabelCommandAddOrRemoveMulti::SceneLabelCommandAddOrRemoveMulti(QList<Point
 void SceneLabelCommandAddOrRemoveMulti::remove()
 {
     Agros2D::scene()->stopInvalidating(true);
-    foreach(Point point, m_points)
+    foreach(PointValue point, m_points)
     {
-        SceneLabel *label = Agros2D::scene()->getLabel(point);
+        SceneLabel *label = Agros2D::scene()->getLabel(point.point());
         if (label)
-        {
             Agros2D::scene()->labels->remove(label);
-        }
     }
 
     Agros2D::scene()->stopInvalidating(false);
@@ -705,7 +715,7 @@ void SceneLabelCommandAddOrRemoveMulti::add()
 {
     Agros2D::scene()->stopInvalidating(true);
 
-    for(int i = 0; i < m_points.size(); i++)
+    for (int i = 0; i < m_points.size(); i++)
     {
         SceneLabel *label = new SceneLabel(m_points[i], m_areas[i]);
 

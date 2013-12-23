@@ -151,7 +151,7 @@ void PyGeometry::modifyEdge(int index, double angle, int segments, int isCurvili
 
     SceneEdge *edge = Agros2D::scene()->edges->items().at(index);
 
-    edge->setAngle(angle);
+    edge->setAngleValue(Value(angle));
     edge->setSegments(segments);
     edge->setCurvilinear(isCurvilinear);
 

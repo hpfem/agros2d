@@ -520,7 +520,7 @@ void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,
         adaptivityStep = getAdaptivityStep(adaptivityStep, timeStep, solutionMode);
 
         LocalValue *value = m_fieldInfo->plugin()->localValue(m_fieldInfo, timeStep, adaptivityStep, solutionMode, point);
-        QMapIterator<QString, PointValue> it(value->values());
+        QMapIterator<QString, LocalPointValue> it(value->values());
         while (it.hasNext())
         {
             it.next();

@@ -28,7 +28,8 @@ class CouplingInfo;
 
 class LineEditDouble;
 class ValueLineEdit;
-class LaTeXViewer;
+class CollapsableGroupBoxButton;
+class ScriptEditor;
 
 class FieldInfo;
 
@@ -261,6 +262,12 @@ private:
     // couplings
     QGroupBox *grpCouplings;
 
+    // startup script
+    CollapsableGroupBoxButton *grpStartupScript;
+    QWidget *widStartupScript;
+    ScriptEditor *txtStartupScript;
+    QLabel *lblStartupScriptError;
+
     void createActions();
     void createControls();
 
@@ -269,6 +276,8 @@ private:
 private slots:
     void transientChanged();
     void changedWithClear();
+    void startupScriptCollapse(bool collapsed);
+    void startupScriptChanged();
 };
 
 #endif // PROBLEMDIALOG_H

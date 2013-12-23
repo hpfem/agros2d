@@ -32,10 +32,14 @@ class AGROS_LIBRARY_API SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
     SceneLabel(const Point &point, double area);
+    SceneLabel(const PointValue &pointValue, double area);
 
     inline virtual SceneMaterial* marker(const FieldInfo *fieldInfo) { return MarkedSceneBasic<SceneMaterial>::marker(fieldInfo); }
-    inline Point point() const { return m_point; }
-    inline void setPoint(const Point &point) { m_point = point; }
+
+    inline Point point() const { return m_point.point(); }
+    inline PointValue pointValue() const { return m_point; }
+    void setPointValue(const PointValue &point);
+
     inline double area() const { return m_area; }
     inline void setArea(double area) { m_area = area; }
 
@@ -54,7 +58,8 @@ public:
     void addMarkersFromStrings(QMap<QString, QString> markers);
 
 private:
-    Point m_point;
+    PointValue m_point;
+
     double m_area;
 };
 
@@ -161,12 +166,13 @@ private slots:
 class SceneLabelCommandAdd : public QUndoCommand
 {
 public:
-    SceneLabelCommandAdd(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandAdd(const PointValue &pointValue, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    Point m_point;
+    PointValue m_point;
+
     QMap<QString, QString> m_markers;
     double m_area;
 };
@@ -174,12 +180,13 @@ private:
 class SceneLabelCommandRemove : public QUndoCommand
 {
 public:
-    SceneLabelCommandRemove(const Point &point, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
+    SceneLabelCommandRemove(const PointValue &pointValue, const QMap<QString, QString> &markers, double area, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    Point m_point;
+    PointValue m_point;
+
     QMap<QString, QString> m_markers;
     double m_area;
 };
@@ -187,25 +194,25 @@ private:
 class SceneLabelCommandEdit : public QUndoCommand
 {
 public:
-    SceneLabelCommandEdit(const Point &point, const Point &pointNew,  QUndoCommand *parent = 0);
+    SceneLabelCommandEdit(const PointValue &point, const PointValue &pointNew,  QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    Point m_point;
-    Point m_pointNew;
+    PointValue m_point;
+    PointValue m_pointNew;
 };
 
 class SceneLabelCommandAddOrRemoveMulti : public QUndoCommand
 {
 public:
-    SceneLabelCommandAddOrRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent = 0);
+    SceneLabelCommandAddOrRemoveMulti(QList<PointValue> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent = 0);
     void add();
     void remove();
 
 private:
     // nodes
-    QList<Point> m_points;
+    QList<PointValue> m_points;
     QList<QMap<QString, QString> > m_markers;
     QList<double> m_areas;
 };
@@ -213,7 +220,7 @@ private:
 class SceneLabelCommandAddMulti : public SceneLabelCommandAddOrRemoveMulti
 {
 public:
-    SceneLabelCommandAddMulti(QList<Point> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0) :
+    SceneLabelCommandAddMulti(QList<PointValue> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0) :
         SceneLabelCommandAddOrRemoveMulti(points, markers, areas, parent) {}
 
     void undo() { remove(); }
@@ -223,7 +230,7 @@ public:
 class SceneLabelCommandRemoveMulti : public SceneLabelCommandAddOrRemoveMulti
 {
 public:
-    SceneLabelCommandRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0) :
+    SceneLabelCommandRemoveMulti(QList<PointValue> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0) :
         SceneLabelCommandAddOrRemoveMulti(points, markers, areas, parent) {}
 
     void undo() { add(); }
@@ -233,15 +240,15 @@ public:
 class SceneLabelCommandMoveMulti : public QUndoCommand
 {
 public:
-    SceneLabelCommandMoveMulti(QList<Point> points, QList<Point> pointsNew,  QUndoCommand *parent = 0);
+    SceneLabelCommandMoveMulti(QList<PointValue> points, QList<PointValue> pointsNew, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
-    static void moveAll(QList<Point> moveFrom, QList<Point> moveTo);
+    static void moveAll(QList<PointValue> moveFrom, QList<PointValue> moveTo);
 
-    QList<Point> m_points;
-    QList<Point> m_pointsNew;
+    QList<PointValue> m_points;
+    QList<PointValue> m_pointsNew;
 };
 
 #endif // SCENELABEL_H

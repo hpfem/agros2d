@@ -47,6 +47,7 @@ public:
     ~Value();
 
     // expression
+    double setNumber(double value);
     double number() const;
     double numberAtPoint(const Point &point) const;
     double numberAtTime(double time) const;
@@ -59,6 +60,7 @@ public:
     bool evaluateAtPoint(const Point &point);
     bool evaluateAtTime(double time);
     bool evaluateAtTimeAndPoint(double time, const Point &point);
+    inline bool isEvaluated() const { return m_isEvaluated; }
 
     // table
     double numberFromTable(double key) const;
@@ -79,7 +81,7 @@ public:
 protected:
 
 private:
-    bool m_isEvaluated;
+    bool m_isEvaluated;   
 
     // expression
     double m_number;
@@ -98,6 +100,34 @@ private:
     bool evaluateExpression(const QString &expression, double time, const Point &point, double& evaluationResult) const ;
 
     friend class ValueLineEdit;
+    friend class PointValue;
+};
+
+class AGROS_LIBRARY_API PointValue
+{
+public:
+    PointValue(double x = 0.0, double y = 0.0);
+    PointValue(const Point &point);
+    PointValue(const Value &x, const Value &y);
+    PointValue& operator=(const PointValue &origin);
+
+    void setPoint(double x, double y);
+    void setPoint(const Point &point);
+    void setPoint(const Value &x, const Value &y);
+    void setPoint(const QString &x, const QString &y);
+
+    inline Point point() const { return Point(m_x.number(), m_y.number()); }
+    inline Value x() const { return m_x; }
+    inline Value y() const { return m_y; }
+
+    inline double numberX() const { return m_x.number(); }
+    inline double numberY() const { return m_y.number(); }
+
+    QString toString() const;
+
+private:
+    Value m_x;
+    Value m_y;
 };
 
 #endif // VALUE_H

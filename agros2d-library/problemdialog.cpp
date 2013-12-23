@@ -36,6 +36,8 @@
 #include "gui/groupbox.h"
 #include "gui/common.h"
 
+#include "pythonlab/pythoneditor.h"
+
 FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : QDialog(parent)
 {
     setWindowTitle(tr("Select field"));
@@ -619,7 +621,7 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::TransientInitialCondition, txtTransientInitialCondition->value());
     m_fieldInfo->setValue(FieldInfo::TransientTimeSkip, txtTransientTimeSkip->value());
     // linearity
-    m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());    
+    m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NonlinearResidualNorm, chkNonlinearResidual->isChecked() ? txtNonlinearResidual->value() : 0.0);
     m_fieldInfo->setValue(FieldInfo::NonlinearRelativeChangeOfSolutions, chkNonlinearRelativeChangeOfSolutions->isChecked() ? txtNonlinearRelativeChangeOfSolutions->value() : 0.0);
     m_fieldInfo->setValue(FieldInfo::NonlinearDampingCoeff, txtNonlinearDampingCoeff->value());
@@ -746,11 +748,11 @@ void FieldWidget::doLinearSolverChanged(int index)
 void FieldWidget::doNonlinearDampingChanged(int index)
 {
     txtNonlinearDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) &&
-                                      ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() != DampingType_Off));
+                                         ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() != DampingType_Off));
     txtNonlinearDampingStepsForFactorIncrease->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) &&
-                                                 ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() == DampingType_Automatic));
+                                                          ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() == DampingType_Automatic));
     txtNonlinearDampingRatioForFactorDecrease->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) &&
-                                                     ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() == DampingType_Automatic));
+                                                          ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() == DampingType_Automatic));
 
 }
 
@@ -1218,6 +1220,39 @@ void ProblemWidget::createControls()
     grpCouplings = new QGroupBox(tr("Couplings"));
     grpCouplings->setLayout(layoutCouplings);
 
+    // startup script
+    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
+    lblStartupScriptError = new QLabel();
+
+    QPalette palette = lblStartupScriptError->palette();
+    palette.setColor(QPalette::WindowText, QColor(Qt::red));
+    lblStartupScriptError->setPalette(palette);
+    lblStartupScriptError->setVisible(false);
+
+    QPushButton *btnStartupScriptApply = new QPushButton(tr("Apply"));
+    connect(btnStartupScriptApply, SIGNAL(clicked()), this, SLOT(startupScriptChanged()));
+
+    QHBoxLayout *layoutStartupScriptButton = new QHBoxLayout();
+    layoutStartupScriptButton->addStretch(1);
+    layoutStartupScriptButton->addWidget(btnStartupScriptApply);
+
+    QVBoxLayout *layoutStartupScriptWidget = new QVBoxLayout();
+    layoutStartupScriptWidget->addWidget(txtStartupScript);
+    layoutStartupScriptWidget->addWidget(lblStartupScriptError);
+    layoutStartupScriptWidget->addLayout(layoutStartupScriptButton);
+
+    widStartupScript = new QWidget();
+    widStartupScript->setLayout(layoutStartupScriptWidget);
+
+    QVBoxLayout *layoutStartupScript = new QVBoxLayout();
+    layoutStartupScript->addWidget(widStartupScript);
+
+    grpStartupScript = new CollapsableGroupBoxButton(tr("Script"));
+    connect(grpStartupScript, SIGNAL(collapseEvent(bool)), this, SLOT(startupScriptCollapse(bool)));
+    grpStartupScript->setCollapsed(true);
+    grpStartupScript->setLayout(layoutStartupScript);
+
+    // problem widget
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->setContentsMargins(0, 0, 0, 0);
     layoutArea->addWidget(grpGeneral);
@@ -1225,6 +1260,7 @@ void ProblemWidget::createControls()
     layoutArea->addWidget(grpCouplings);
     layoutArea->addWidget(grpHarmonicAnalysis);
     layoutArea->addWidget(grpTransientAnalysis);
+    layoutArea->addWidget(grpStartupScript);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -1276,6 +1312,7 @@ void ProblemWidget::updateControls()
     chkTransientInitialStepSize->disconnect();
     txtTransientInitialStepSize->disconnect();
     txtTransientSteps->disconnect();
+    txtStartupScript->disconnect();
 
     // main
     cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Agros2D::problem()->config()->coordinateType()));
@@ -1313,6 +1350,10 @@ void ProblemWidget::updateControls()
 
     transientChanged();
 
+    // startup script
+    txtStartupScript->setPlainText(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
+    grpStartupScript->setCollapsed(txtStartupScript->toPlainText().trimmed().isEmpty());
+
     // connect signals
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
@@ -1324,7 +1365,7 @@ void ProblemWidget::updateControls()
     connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
     connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
     connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
-    connect(txtTransientTolerance, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));    
+    connect(txtTransientTolerance, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
     connect(chkTransientInitialStepSize, SIGNAL(stateChanged(int)), this, SLOT(changedWithClear()));
     connect(txtTransientInitialStepSize, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
@@ -1332,6 +1373,9 @@ void ProblemWidget::updateControls()
     connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(transientChanged()));
     connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
+
+    // startup
+    // connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(changedWithClear()));
 }
 
 void ProblemWidget::changedWithClear()
@@ -1347,7 +1391,7 @@ void ProblemWidget::changedWithClear()
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeOrder, txtTransientOrder->value());
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethodTolerance, txtTransientTolerance->value());
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeConstantTimeSteps, txtTransientSteps->value());
-    Agros2D::problem()->config()->setValue(ProblemConfig::TimeTotal, txtTransientTimeTotal->value());    
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeTotal, txtTransientTimeTotal->value());
     txtTransientInitialStepSize->setEnabled(chkTransientInitialStepSize->isChecked());
     if (chkTransientInitialStepSize->isChecked())
     {
@@ -1390,7 +1434,7 @@ void ProblemWidget::transientChanged()
     {
         chkTransientInitialStepSize->setEnabled(true);
         txtTransientTolerance->setEnabled(false);
-        txtTransientSteps->setEnabled(true);        
+        txtTransientSteps->setEnabled(true);
     }
 
     if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
@@ -1399,3 +1443,40 @@ void ProblemWidget::transientChanged()
         lblTransientSteps->setText(tr("Aprox. number of steps:"));
 }
 
+void ProblemWidget::startupScriptCollapse(bool collapsed)
+{
+    widStartupScript->setVisible(!collapsed);
+}
+
+void ProblemWidget::startupScriptChanged()
+{
+    lblStartupScriptError->clear();
+    lblStartupScriptError->setVisible(false);
+
+    // run and check startup script
+    if (!txtStartupScript->toPlainText().isEmpty())
+    {
+        currentPythonEngineAgros()->blockSignals(true);
+        bool successfulRun = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        currentPythonEngineAgros()->blockSignals(false);
+
+        if (successfulRun)
+        {
+            Agros2D::problem()->setting()->setValue(ProblemSetting::Problem_StartupScript, txtStartupScript->toPlainText());
+
+            // invalidate geometry
+            Agros2D::scene()->invalidate();
+
+            changedWithClear();
+        }
+        else
+        {
+            ErrorResult result = currentPythonEngineAgros()->parseError();
+            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(result.error()));
+            lblStartupScriptError->setVisible(true);
+
+            // original script
+            currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
+        }
+    }
+}
