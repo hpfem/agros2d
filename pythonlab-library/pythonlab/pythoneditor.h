@@ -262,6 +262,9 @@ public:
     inline int profilerMaxAccumulatedCall() const { return m_profilerMaxAccumulatedCall; }
     inline void setProfilerMaxAccumulatedCall(int val) { m_profilerMaxAccumulatedCall = val; }
 
+    inline bool isLineNumbersVisible() const { return m_isLineNumbersVisible; }
+    void setLineNumbersVisible(bool visible) { m_isLineNumbersVisible = visible; updateLineNumberAreaWidth(); }
+
 public slots:
     void gotoLine(int line = -1, bool isError = false);
 
@@ -270,7 +273,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
+    void updateLineNumberAreaWidth();
     void highlightCurrentLine(bool isError = false);
     void updateLineNumberArea(const QRect &, int);
 
@@ -285,7 +288,8 @@ private:
     PythonEngine *pythonEngine;
     QCompleter* completer;
 
-    QWidget *lineNumberArea;
+    bool m_isLineNumbersVisible;
+    QWidget *lineNumberArea;    
 
     // profiler
     bool m_isProfiled;

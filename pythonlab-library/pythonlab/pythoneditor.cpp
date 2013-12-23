@@ -782,7 +782,7 @@ void PythonEditorDialog::doRunPython()
         txtEditor->setProfilerMaxAccumulatedCall(currentPythonEngine()->profilerMaxAccumulatedCall());
 
         // refresh
-        txtEditor->updateLineNumberAreaWidth(0);
+        txtEditor->updateLineNumberAreaWidth();
     }
 
     // run script
@@ -1309,7 +1309,7 @@ bool PythonEditorDialog::isScriptModified()
 // ********************************************************************************
 
 ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
-    : PlainTextEditParenthesis(parent), pythonEngine(pythonEngine), m_isProfiled(false)
+    : PlainTextEditParenthesis(parent), pythonEngine(pythonEngine), m_isProfiled(false), m_isLineNumbersVisible(true)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
@@ -1321,11 +1321,11 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
     // highlighter
     new PythonHighlighter(document());
 
-    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth()));
     connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(updateLineNumberArea(const QRect &, int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
-    updateLineNumberAreaWidth(0);
+    updateLineNumberAreaWidth();
     highlightCurrentLine();
 
     completer = new PythonCompleter();
@@ -1346,7 +1346,7 @@ void ScriptEditor::resizeEvent(QResizeEvent *e)
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
-void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+void ScriptEditor::updateLineNumberAreaWidth()
 {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
@@ -1363,7 +1363,7 @@ void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
     }
 
     if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
+        updateLineNumberAreaWidth();
 }
 
 void ScriptEditor::keyPressEvent(QKeyEvent *event)
@@ -1740,22 +1740,29 @@ void ScriptEditor::lineNumberAreaMouseMoveEvent(QMouseEvent *event)
 
 int ScriptEditor::lineNumberAreaWidth()
 {
-    int digits = 1;
-    int max = qMax(1, blockCount());
-    while (max >= 10) {
-        max /= 10;
-        ++digits;
-    }
-
-    if (isProfiled())
+    if (m_isLineNumbersVisible)
     {
-        digits += QString::number(profilerMaxAccumulatedTime()).length() +
-                QString::number(profilerMaxAccumulatedCall()).length();
+        int digits = 1;
+        int max = qMax(1, blockCount());
+        while (max >= 10) {
+            max /= 10;
+            ++digits;
+        }
+
+        if (isProfiled())
+        {
+            digits += QString::number(profilerMaxAccumulatedTime()).length() +
+                    QString::number(profilerMaxAccumulatedCall()).length();
+        }
+
+        int space = 15 + fontMetrics().width(QLatin1Char('9')) * digits;
+
+        return space;
     }
-
-    int space = 15 + fontMetrics().width(QLatin1Char('9')) * digits;
-
-    return space;
+    else
+    {
+        return 0;
+    }
 }
 
 void ScriptEditor::insertCompletion(const QString& completion)

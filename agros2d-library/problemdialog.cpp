@@ -1222,6 +1222,7 @@ void ProblemWidget::createControls()
 
     // startup script
     txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
+    txtStartupScript->setLineNumbersVisible(false);
     lblStartupScriptError = new QLabel();
 
     QPalette palette = lblStartupScriptError->palette();
