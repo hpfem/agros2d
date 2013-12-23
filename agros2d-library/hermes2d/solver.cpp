@@ -598,19 +598,24 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
 
     // this guess is based on assymptotic considerations
     int timeOrder = Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt();
-    double nextTimeStepLength = pow(TOL / error, 1.0 / (timeOrder + 1)) * Agros2D::problem()->actualTimeStepLength();
+    double nextTimeStepLength;
+    if(error == 0)
+        nextTimeStepLength = maxTimeStepLength;
+    else
+        nextTimeStepLength = pow(TOL / error, 1.0 / (timeOrder + 1)) * Agros2D::problem()->actualTimeStepLength();
 
     nextTimeStepLength = min(nextTimeStepLength, maxTimeStepLength);
     nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * maxTimeStepRatio);
     nextTimeStepLength = max(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() / maxTimeStepRatio);
 
-    Agros2D::log()->printDebug(m_solverID, QString("Time adaptivity, time %1 s, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
+    Agros2D::log()->printDebug(m_solverID, QString("Time adaptivity, time %1 s, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %), average err/len %7").
                                arg(Agros2D::problem()->actualTime()).
                                arg(error).
                                arg(TOL).
                                arg(Agros2D::problem()->actualTimeStepLength()).
                                arg(nextTimeStepLength).
-                               arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
+                               arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.).
+                               arg(m_averageErrorToLenghtRatio));
     if(refuseThisStep)
         Agros2D::log()->printMessage(m_solverID, "Transient step refused");
 
