@@ -1261,8 +1261,8 @@ void ProblemWidget::createControls()
     layoutArea->addWidget(grpCouplings);
     layoutArea->addWidget(grpHarmonicAnalysis);
     layoutArea->addWidget(grpTransientAnalysis);
-    layoutArea->addWidget(grpStartupScript);
-    layoutArea->addStretch(1);
+    layoutArea->addWidget(grpStartupScript, 1);
+    // layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layoutArea);
