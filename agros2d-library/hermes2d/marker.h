@@ -38,7 +38,7 @@ public:
     const QSharedPointer<Value> value(const QString &id) const;
 
     /// get all values
-    const QMap<QString, QSharedPointer<Value> > values() const;
+    const QHash<QString, QSharedPointer<Value> > values() const;
 
     // creates new shared pointer and copy Value inside
     void setValue(const QString &name, Value value);
@@ -75,7 +75,7 @@ protected:
 
 private:
     /// variables - the way to customize boundary "template", given by the type parameter
-    QMap<QString, QSharedPointer<Value> > m_values;
+    QHash<QString, QSharedPointer<Value> > m_values;
 
     /// we don't want those objects to be copied since we compare pointers
     Marker(const Marker& );

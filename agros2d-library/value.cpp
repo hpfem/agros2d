@@ -26,14 +26,14 @@
 #include "parser/lex.h"
 
 Value::Value(double value)
-    : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
+    : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable()), m_problem(Agros2D::problem())
 {
     m_text = QString::number(value);
-    m_number = value;
+    m_number = value;      
 }
 
 Value::Value(double value, std::vector<double> x, std::vector<double> y, DataTableType type, bool splineFirstDerivatives, bool extrapolateConstant)
-    : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
+    : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable()), m_problem(Agros2D::problem())
 {
     assert(x.size() == y.size());
 
@@ -42,18 +42,18 @@ Value::Value(double value, std::vector<double> x, std::vector<double> y, DataTab
     m_table.setValues(x, y);
     m_table.setType(type);
     m_table.setSplineFirstDerivatives(splineFirstDerivatives);
-    m_table.setExtrapolateConstant(extrapolateConstant);
+    m_table.setExtrapolateConstant(extrapolateConstant);       
 }
 
 Value::Value(const QString &value)
-    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
+    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable()), m_problem(Agros2D::problem())
 {
     parseFromString(value.isEmpty() ? "0" : value);
     evaluateAndSave();
 }
 
 Value::Value(const QString &value, std::vector<double> x, std::vector<double> y, DataTableType type, bool splineFirstDerivatives, bool extrapolateConstant)
-    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
+    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable()), m_problem(Agros2D::problem())
 {
     assert(x.size() == y.size());
 
@@ -66,7 +66,7 @@ Value::Value(const QString &value, std::vector<double> x, std::vector<double> y,
 }
 
 Value::Value(const QString &value, const DataTable &table)
-    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(table)
+    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(table), m_problem(Agros2D::problem())
 {
     parseFromString(value.isEmpty() ? "0" : value);
 }
@@ -80,6 +80,8 @@ Value::Value(const Value &origin)
 
 Value& Value::operator =(const Value &origin)
 {
+    m_problem = origin.m_problem;
+
     m_text = origin.m_text;
     m_time = origin.m_time;
     m_point = origin.m_point;
@@ -181,7 +183,7 @@ double Value::numberAtTimeAndPoint(double time, const Point &point) const
 
 double Value::numberFromTable(double key) const
 {
-    if (Agros2D::problem()->isNonlinear() && hasTable())
+    if (m_problem->isNonlinear() && hasTable())
         return m_table.value(key);
     else
         return number();
@@ -194,7 +196,7 @@ Hermes::Ord Value::numberFromTable(Hermes::Ord key) const
 
 double Value::derivativeFromTable(double key) const
 {
-    if (Agros2D::problem()->isNonlinear() && hasTable())
+    if (m_problem->isNonlinear() && hasTable())
         return m_table.derivative(key);
     else
         return 0.0;
@@ -232,7 +234,7 @@ void Value::setText(const QString &str)
         {
             if (token.toString() == "time")
                 m_isTimeDependent = true;
-            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+            if (m_problem->config()->coordinateType() == CoordinateType_Planar)
             {
                 if (token.toString() == "x" || token.toString() == "y")
                     m_isCoordinateDependent = true;
@@ -322,7 +324,7 @@ bool Value::evaluateExpression(const QString &expression, double time, const Poi
 
     if (m_isCoordinateDependent && !m_isTimeDependent)
     {
-        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+        if (m_problem->config()->coordinateType() == CoordinateType_Planar)
             command = QString("x = %1; y = %2").arg(point.x).arg(point.y);
         else
             command = QString("r = %1; z = %2").arg(point.x).arg(point.y);
@@ -335,14 +337,14 @@ bool Value::evaluateExpression(const QString &expression, double time, const Poi
 
     if (m_isCoordinateDependent && m_isTimeDependent)
     {
-        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+        if (m_problem->config()->coordinateType() == CoordinateType_Planar)
             command = QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y);
         else
             command = QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y);
     }
 
     // eval expression
-    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &evaluationResult, command);    
+    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &evaluationResult, command);
     if (!successfulRun)
     {
         // ErrorResult result = currentPythonEngineAgros()->parseError();
@@ -369,7 +371,7 @@ PointValue::PointValue(const Point &point)
 
 PointValue::PointValue(const Value &x, const Value &y)
     : m_x(x), m_y(y)
-{    
+{
 }
 
 PointValue& PointValue::operator =(const PointValue &origin)

@@ -34,138 +34,150 @@
 class {{CLASS}}VolumetricIntegralEggShellCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-{{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-    : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
-{
-}
-
-{{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-    : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
-{
-}
-
-virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
-{
-    SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-    SceneMaterial *material = label->marker(m_fieldInfo);
-
-    double *x = e->x;
-    double *y = e->y;
-
-    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
-    {{/VARIABLE_MATERIAL}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
-    if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
-        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
-    {{/SPECIAL_FUNCTION_SOURCE}}
-
-    // functions
-    double **value = new double*[source_functions.size()];
-    double **dudx = new double*[source_functions.size()];
-    double **dudy = new double*[source_functions.size()];
-
-    for (int i = 0; i < source_functions.size(); i++)
+    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
-        value[i] = fns[i]->val;
-        dudx[i] = fns[i]->dx;
-        dudy[i] = fns[i]->dy;
+        {{#SPECIAL_FUNCTION_SOURCE}}
+        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    // expressions
-    {{#VARIABLE_SOURCE_EGGSHELL}}
-    if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
-        for (int i = 0; i < n; i++)
-            result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
+        {{#SPECIAL_FUNCTION_SOURCE}}
+        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
-    {{/VARIABLE_SOURCE_EGGSHELL}}
 
-    delete [] value;
-    delete [] dudx;
-    delete [] dudy;
-}
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    {
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
+        SceneMaterial *material = label->marker(m_fieldInfo);
 
-virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
-{
-    {{#VARIABLE_SOURCE_EGGSHELL}}
-    if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-        result[{{POSITION}}] = Hermes::Ord(20);
-    {{/VARIABLE_SOURCE_EGGSHELL}}
-}
+        double *x = e->x;
+        double *y = e->y;
+
+        {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{/VARIABLE_MATERIAL}}
+        // {{#SPECIAL_FUNCTION_SOURCE}}
+        // QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
+        // if (m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
+        //     {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
+        // {{/SPECIAL_FUNCTION_SOURCE}}
+
+        double **value = new double*[source_functions.size()];
+        double **dudx = new double*[source_functions.size()];
+        double **dudy = new double*[source_functions.size()];
+
+        for (int i = 0; i < source_functions.size(); i++)
+        {
+            value[i] = fns[i]->val;
+            dudx[i] = fns[i]->dx;
+            dudy[i] = fns[i]->dy;
+        }
+
+        // expressions
+        {{#VARIABLE_SOURCE_EGGSHELL}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+        {
+            for (int i = 0; i < n; i++)
+                result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
+        }
+        {{/VARIABLE_SOURCE_EGGSHELL}}
+
+        delete [] value;
+        delete [] dudx;
+        delete [] dudy;
+    }
+
+    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
+    {
+        {{#VARIABLE_SOURCE_EGGSHELL}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+            result[{{POSITION}}] = Hermes::Ord(20);
+        {{/VARIABLE_SOURCE_EGGSHELL}}
+    }
 
 private:
-// field info
-const FieldInfo *m_fieldInfo;
+    // field info
+    const FieldInfo *m_fieldInfo;
+
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
 };
 
 class {{CLASS}}VolumetricIntegralCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-{{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-    : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
-{
-}
-
-{{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-    : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
-{
-}
-
-virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
-{
-    SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-    SceneMaterial *material = label->marker(m_fieldInfo);
-
-    double *x = e->x;
-    double *y = e->y;
-    int elementMarker = e->elem_marker;
-
-    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
-    {{/VARIABLE_MATERIAL}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
-    if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
-        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
-    {{/SPECIAL_FUNCTION_SOURCE}}
-
-    // functions
-    double **value = new double*[source_functions.size()];
-    double **dudx = new double*[source_functions.size()];
-    double **dudy = new double*[source_functions.size()];
-
-    for (int i = 0; i < source_functions.size(); i++)
+    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
-        value[i] = fns[i]->val;
-        dudx[i] = fns[i]->dx;
-        dudy[i] = fns[i]->dy;
+        {{#SPECIAL_FUNCTION_SOURCE}}
+        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    // expressions
-    {{#VARIABLE_SOURCE}}
-    if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
-        for (int i = 0; i < n; i++)
-            result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
+        {{#SPECIAL_FUNCTION_SOURCE}}
+        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
-    {{/VARIABLE_SOURCE}}
 
-    delete [] value;
-    delete [] dudx;
-    delete [] dudy;
-}
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    {
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
+        SceneMaterial *material = label->marker(m_fieldInfo);
 
-virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
-{
-    {{#VARIABLE_SOURCE}}
-    if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-        result[{{POSITION}}] = Hermes::Ord(20);
-    {{/VARIABLE_SOURCE}}
-}
+        double *x = e->x;
+        double *y = e->y;
+        int elementMarker = e->elem_marker;
+
+        {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{/VARIABLE_MATERIAL}}
+        // {{#SPECIAL_FUNCTION_SOURCE}}
+        // QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
+        // if (isInCalculation_{{SPECIAL_FUNCTION_ID}})
+        //     {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
+        // {{/SPECIAL_FUNCTION_SOURCE}}
+
+        double **value = new double*[source_functions.size()];
+        double **dudx = new double*[source_functions.size()];
+        double **dudy = new double*[source_functions.size()];
+
+        for (int i = 0; i < source_functions.size(); i++)
+        {
+            value[i] = fns[i]->val;
+            dudx[i] = fns[i]->dx;
+            dudy[i] = fns[i]->dy;
+        }
+
+        // expressions
+        {{#VARIABLE_SOURCE}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+        {
+            for (int i = 0; i < n; i++)
+                result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
+        }
+        {{/VARIABLE_SOURCE}}
+
+        delete [] value;
+        delete [] dudx;
+        delete [] dudy;
+    }
+
+    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
+    {
+        {{#VARIABLE_SOURCE}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+            result[{{POSITION}}] = Hermes::Ord(20);
+        {{/VARIABLE_SOURCE}}
+    }
 
 private:
-// field info
-const FieldInfo *m_fieldInfo;
+    // field info
+    const FieldInfo *m_fieldInfo;
+
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
 };
 
 {{CLASS}}VolumeIntegral::{{CLASS}}VolumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
@@ -191,18 +203,11 @@ void {{CLASS}}VolumeIntegral::calculate()
         }
 
         Hermes::vector<std::string> markers;
-        Hermes::vector<std::string> markersInverted;
         for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
         {
             SceneLabel *label = Agros2D::scene()->labels->at(i);
             if (label->isSelected())
-            {
                 markers.push_back(QString::number(i).toStdString());
-            }
-            else
-            {
-                markersInverted.push_back(QString::number(i).toStdString());
-            }
         }
 
         if (markers.size() > 0)
@@ -218,25 +223,36 @@ void {{CLASS}}VolumeIntegral::calculate()
             ::free(values);
         }
 
-        if ({{INTEGRAL_COUNT_EGGSHELL}} > 0 && markers.size() > 0 && markersInverted.size() > 0)
+        if ({{INTEGRAL_COUNT_EGGSHELL}} > 0)
         {
-            Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 3);
-            Hermes::Hermes2D::MeshFunctionSharedPtr<double> eggShell(new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
+            Hermes::vector<std::string> markersInverted;
+            for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
+            {
+                SceneLabel *label = Agros2D::scene()->labels->at(i);
+                if (!label->isSelected())
+                    markersInverted.push_back(QString::number(i).toStdString());
+            }
 
-            Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
-            for (int i = 0; i < ma.solutions().size(); i++)
-                slns.push_back(ma.solutions().at(i));
-            slns.push_back(eggShell);
+            if (markers.size() > 0 && markersInverted.size() > 0)
+            {
+                Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 3);
+                Hermes::Hermes2D::MeshFunctionSharedPtr<double> eggShell(new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
 
-            {{CLASS}}VolumetricIntegralEggShellCalculator calcEggShell(m_fieldInfo, slns, {{INTEGRAL_COUNT_EGGSHELL}});
-            double *valuesEggShell = calcEggShell.calculate(markersInverted);
+                Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
+                for (int i = 0; i < ma.solutions().size(); i++)
+                    slns.push_back(ma.solutions().at(i));
+                slns.push_back(eggShell);
 
-            {{#VARIABLE_SOURCE_EGGSHELL}}
-            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[QLatin1String("{{VARIABLE}}")] = valuesEggShell[{{POSITION}}];
-            {{/VARIABLE_SOURCE_EGGSHELL}}
+                {{CLASS}}VolumetricIntegralEggShellCalculator calcEggShell(m_fieldInfo, slns, {{INTEGRAL_COUNT_EGGSHELL}});
+                double *valuesEggShell = calcEggShell.calculate(markersInverted);
 
-            ::free(valuesEggShell);
+                {{#VARIABLE_SOURCE_EGGSHELL}}
+                if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+                    m_values[QLatin1String("{{VARIABLE}}")] = valuesEggShell[{{POSITION}}];
+                {{/VARIABLE_SOURCE_EGGSHELL}}
+
+                ::free(valuesEggShell);
+            }
         }
     }
 }

@@ -28,6 +28,7 @@
 
 class DataTable;
 class FieldInfo;
+class Problem;
 
 class AGROS_LIBRARY_API Value
 {
@@ -81,6 +82,7 @@ public:
 protected:
 
 private:
+    Problem *m_problem; // pointer to problem
     bool m_isEvaluated;   
 
     // expression

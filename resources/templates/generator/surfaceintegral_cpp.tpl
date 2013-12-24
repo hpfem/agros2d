@@ -55,7 +55,6 @@ public:
         {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
         {{/VARIABLE_MATERIAL}}
 
-        // functions
         double **value = new double*[source_functions.size()];
         double **dudx = new double*[source_functions.size()];
         double **dudy = new double*[source_functions.size()];
