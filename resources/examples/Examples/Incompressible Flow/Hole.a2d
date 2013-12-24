@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/pkus/sources/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
-      <node id="0" x="-1.5" y="-1"/>
-      <node id="1" x="-1.5" y="1"/>
-      <node id="2" x="3.5" y="1"/>
-      <node id="3" x="3.5" y="-1"/>
-      <node id="4" x="-0.25" y="-0.05"/>
-      <node id="5" x="0.25" y="-0.05"/>
-      <node id="6" x="0" y="0.2"/>
-      <node id="7" x="0" y="-0.3"/>
+      <node id="0" valuex="-0" valuey="-0.2" x="0" y="-0.2"/>
+      <node id="1" valuex="0" valuey="0.2" x="0" y="0.2"/>
+      <node id="2" valuex="2.2" valuey="0.2" x="2.2" y="0.2"/>
+      <node id="3" valuex="2.2" valuey="-0.2" x="2.2" y="-0.2"/>
+      <node id="4" valuex="0.2" valuey="-0.05" x="0.2" y="-0.05"/>
+      <node id="5" valuex="0.25" valuey="0" x="0.25" y="0"/>
+      <node id="6" valuex="0.2" valuey="0.05" x="0.2" y="0.05"/>
+      <node id="7" valuex="0.15" valuey="0" x="0.15" y="0"/>
     </nodes>
     <edges>
-      <edge angle="0" end="2" id="0" is_curvilinear="1" segments="3" start="1"/>
-      <edge angle="0" end="3" id="1" is_curvilinear="1" segments="3" start="2"/>
-      <edge angle="0" end="0" id="2" is_curvilinear="1" segments="3" start="3"/>
-      <edge angle="0" end="0" id="3" is_curvilinear="1" segments="3" start="1"/>
-      <edge angle="90" end="4" id="4" is_curvilinear="1" segments="3" start="6"/>
-      <edge angle="90" end="7" id="5" is_curvilinear="1" segments="3" start="4"/>
-      <edge angle="90" end="5" id="6" is_curvilinear="1" segments="3" start="7"/>
-      <edge angle="90" end="6" id="7" is_curvilinear="1" segments="3" start="5"/>
+      <edge angle="0" end="2" id="0" is_curvilinear="1" segments="3" start="1" valueangle="0"/>
+      <edge angle="0" end="3" id="1" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
+      <edge angle="0" end="0" id="2" is_curvilinear="1" segments="3" start="3" valueangle="0"/>
+      <edge angle="0" end="0" id="3" is_curvilinear="1" segments="3" start="1" valueangle="0"/>
+      <edge angle="90" end="5" id="4" is_curvilinear="1" segments="3" start="4" valueangle="90"/>
+      <edge angle="90" end="6" id="5" is_curvilinear="1" segments="3" start="5" valueangle="90"/>
+      <edge angle="90" end="7" id="6" is_curvilinear="1" segments="3" start="6" valueangle="90"/>
+      <edge angle="90" end="4" id="7" is_curvilinear="1" segments="3" start="7" valueangle="90"/>
     </edges>
     <labels>
-      <label area="0" id="0" x="0.00662661" y="-0.0476999"/>
-      <label area="0" id="1" x="1.71743" y="0.461503"/>
+      <label area="0" id="0" valuex="0.2" valuey="0" x="0.2" y="0"/>
+      <label area="0" id="1" valuex="1" valuey="0" x="1" y="0"/>
     </labels>
   </geometry>
 
@@ -41,7 +41,7 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="flow_pressure" value="0"/>
-              <boundary_type key="flow_velocity_x" value="cos(y*pi/2)*((time&lt;2)*time + (time>=2)*(time&lt;=100)*2)"/>
+              <boundary_type key="flow_velocity_x" value="37.5*(y+0.2)*(0.2-y)*((time&lt;0.1)*time/0.1 + (time>=0.1)*1)"/>
               <boundary_type key="flow_velocity_y" value="0"/>
             </boundary_types>
           </boundary>
@@ -72,7 +72,7 @@
           </boundary>
         </boundaries>
         <materials>
-          <material id="1" name="Air">
+          <material id="1" name="Medium">
             <material_labels>
               <material_label id="1"/>
             </material_labels>
@@ -97,7 +97,7 @@
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
@@ -127,8 +127,8 @@
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
       <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="1"/>
-      <problem_item problem_key="TimeSteps" problem_value="40"/>
-      <problem_item problem_key="TimeTotal" problem_value="8"/>
+      <problem_item problem_key="TimeSteps" problem_value="34"/>
+      <problem_item problem_key="TimeTotal" problem_value="3.4"/>
     </problem_config>
   </problem>
 
@@ -214,7 +214,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1.85749005116802"/>
+    <item key="View_ScalarRangeMax" value="2.12613940202643"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="flow_velocity"/>
     <item key="View_VectorProportional" value="1"/>
@@ -263,7 +263,6 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
   </config>
 
