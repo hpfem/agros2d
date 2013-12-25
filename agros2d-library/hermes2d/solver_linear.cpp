@@ -52,6 +52,7 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
 {
     m_linearSolver = new LinearSolverAgros<Scalar>(block);
     m_linearSolver->set_verbose_output(false);
+    m_linearSolver->get_linear_matrix_solver()->set_verbose_output(false);
 
     this->m_constJacobianPossible = true;
 }
