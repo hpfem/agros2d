@@ -140,7 +140,7 @@ bool Value::evaluateAtTimeAndPoint(double time, const Point &point)
     return evaluateAndSave();
 }
 
-double Value::setNumber(double value)
+void Value::setNumber(double value)
 {
     setText(QString::number(value));
 }

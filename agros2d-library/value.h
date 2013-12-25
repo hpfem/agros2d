@@ -48,7 +48,7 @@ public:
     ~Value();
 
     // expression
-    double setNumber(double value);
+    void setNumber(double value);
     double number() const;
     double numberAtPoint(const Point &point) const;
     double numberAtTime(double time) const;
