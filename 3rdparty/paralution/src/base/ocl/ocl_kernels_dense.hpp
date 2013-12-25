@@ -25,6 +25,23 @@ const char *ocl_kernels_dense =
 	"//\n"
 	"// *************************************************************************\n"
 	"\n"
+	"__kernel void kernel_dense_spmv(const int nrow, const int ncol, __global const ValueType *val,\n"
+	"                                __global const ValueType *in, __global ValueType *out) {\n"
+	"\n"
+	"  int ai = get_global_id(0);\n"
+	"\n"
+	"  if (ai < nrow) {\n"
+	"\n"
+	"    ValueType sum = (ValueType)(0.0);\n"
+	"\n"
+	"    for (int aj=0; aj<ncol; ++aj)\n"
+	"      sum += val[ai+aj*nrow] * in[aj];\n"
+	"\n"
+	"    out[ai] = sum;\n"
+	"\n"
+	"  }\n"
+	"\n"
+	"}\n"
 	"\n";
 }
 

@@ -64,7 +64,7 @@ struct oclHandle_t {
   cl_device_id *OCL_devices;
 
   // OCL kernel array
-  cl_kernel OCL_kernel[104];
+  cl_kernel OCL_kernel[106];
 
 };
 

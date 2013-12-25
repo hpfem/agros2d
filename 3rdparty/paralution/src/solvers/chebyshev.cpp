@@ -235,7 +235,7 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vect
   op->Apply(*x, r);
   r->ScaleAdd(ValueType(-1.0), rhs);
   
-  while (!this->iter_ctrl_.CheckResidual(r->Norm())) {
+  while (!this->iter_ctrl_.CheckResidual(r->Norm(), this->index_)) {
 
     beta = (c*alpha/ValueType(2.0))*(c*alpha/ValueType(2.0));
     
@@ -298,7 +298,7 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorT
   op->Apply(*x, r);
   r->ScaleAdd(ValueType(-1.0), rhs);
   
-  while (!this->iter_ctrl_.CheckResidual(r->Norm())) {
+  while (!this->iter_ctrl_.CheckResidual(r->Norm(), this->index_)) {
 
     // Solve Mz=r
     this->precond_->SolveZeroSol(*r, z);

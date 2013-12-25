@@ -70,31 +70,33 @@ void LocalVector<ValueType>::Allocate(std::string name, const int size) {
 
   this->object_name_ = name;
 
-  Paralution_Backend_Descriptor backend = this->local_backend_;
+  if (size > 0) {
 
-  // init host vector
-  if (this->vector_ == this->vector_host_) {
-
-    delete this->vector_host_;
-
-    this->vector_host_ = new HostVector<ValueType>(backend);
-    assert(this->vector_host_ != NULL);    
-    this->vector_host_->Allocate(size);   
-    this->vector_ = this->vector_host_;
-
-  } else { 
-    // init accel vector
-    assert(this->vector_ == this->vector_accel_);
-
-    delete this->vector_accel_;
-
-    this->vector_accel_ = _paralution_init_base_backend_vector<ValueType>(backend);
-    assert(this->vector_accel_ != NULL);
-    this->vector_accel_->Allocate(size);   
-    this->vector_ = this->vector_accel_;
-
+    Paralution_Backend_Descriptor backend = this->local_backend_;
+    
+    // init host vector
+    if (this->vector_ == this->vector_host_) {
+      
+      delete this->vector_host_;
+      
+      this->vector_host_ = new HostVector<ValueType>(backend);
+      assert(this->vector_host_ != NULL);    
+      this->vector_host_->Allocate(size);   
+      this->vector_ = this->vector_host_;
+      
+    } else { 
+      // init accel vector
+      assert(this->vector_ == this->vector_accel_);
+      
+      delete this->vector_accel_;
+      
+      this->vector_accel_ = _paralution_init_base_backend_vector<ValueType>(backend);
+      assert(this->vector_accel_ != NULL);
+      this->vector_accel_->Allocate(size);   
+      this->vector_ = this->vector_accel_;
+      
+    }
   }
-
 
 }
 
@@ -131,43 +133,55 @@ void LocalVector<ValueType>::Clear(void) {
 template <typename ValueType>
 void LocalVector<ValueType>::Zeros(void) {
 
-  this->vector_->Zeros();
-
+  if (this->get_size() > 0) {
+    this->vector_->Zeros();
+  }
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::Ones(void) {
 
-  this->vector_->Ones();
+  if (this->get_size() > 0) {
+    this->vector_->Ones();
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::SetValues(const ValueType val) {
 
-  this->vector_->SetValues(val);
+  if (this->get_size() > 0) {
+    this->vector_->SetValues(val);
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::SetRandom(const ValueType a, const ValueType b, const int seed) {
 
-  // host only
-  bool on_host = this->is_host();
-  if (on_host == false)
-    this->MoveToHost();
-  
-  assert(this->vector_ == this->vector_host_);
-  this->vector_host_->SetRandom(a, b, seed);
-  
-  if (on_host == false)
-    this->MoveToAccelerator();
+  if (this->get_size() > 0) {
+
+    assert(b > a);
+
+    // host only
+    bool on_host = this->is_host();
+    if (on_host == false)
+      this->MoveToHost();
+    
+    assert(this->vector_ == this->vector_host_);
+    this->vector_host_->SetRandom(a, b, seed);
+    
+    if (on_host == false)
+      this->MoveToAccelerator();
+    
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::CopyFrom(const LocalVector<ValueType> &src) {
 
+  assert(&src != NULL);
   assert(this != &src);
 
   this->vector_->CopyFrom(*src.vector_);
@@ -177,6 +191,7 @@ void LocalVector<ValueType>::CopyFrom(const LocalVector<ValueType> &src) {
 template <typename ValueType>
 void LocalVector<ValueType>::CopyFromFloat(const LocalVector<float> &src) {
 
+  assert(&src != NULL);
   this->vector_->CopyFromFloat(*src.vector_);
 
 }
@@ -184,6 +199,7 @@ void LocalVector<ValueType>::CopyFromFloat(const LocalVector<float> &src) {
 template <typename ValueType>
 void LocalVector<ValueType>::CopyFromDouble(const LocalVector<double> &src) {
 
+  assert(&src != NULL);
   this->vector_->CopyFromDouble(*src.vector_);
 
 }
@@ -204,6 +220,7 @@ bool LocalVector<ValueType>::is_accel(void) const {
 template <typename ValueType>
 void LocalVector<ValueType>::CloneFrom(const LocalVector<ValueType> &src) {
 
+  assert(&src != NULL);
   assert(this != &src);
 
   this->CloneBackend(src);
@@ -327,115 +344,186 @@ void LocalVector<ValueType>::WriteFileASCII(const std::string name) const {
 template <typename ValueType>
 void LocalVector<ValueType>::AddScale(const LocalVector<ValueType> &x, const ValueType alpha) {
 
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+  assert(this->get_size() == x.get_size());
 
-  this->vector_->AddScale(*x.vector_, alpha);
-          
+  if (this->get_size() > 0 ) {
+    
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+    
+    this->vector_->AddScale(*x.vector_, alpha);
+  }
+
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::ScaleAdd(const ValueType alpha, const LocalVector<ValueType> &x) {
-  
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
 
-  this->vector_->ScaleAdd(alpha, *x.vector_);
+  assert(this->get_size() == x.get_size());
+
+  if (this->get_size() > 0 ) {
+  
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+    
+    this->vector_->ScaleAdd(alpha, *x.vector_);
+  }
 
 }
  
 template <typename ValueType>
 void LocalVector<ValueType>::ScaleAddScale(const ValueType alpha, const LocalVector<ValueType> &x, const ValueType beta) {
-  
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
 
-  this->vector_->ScaleAddScale(alpha, *x.vector_, beta);
+  assert(this->get_size() == x.get_size());
+
+  if (this->get_size() > 0 ) {
+  
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+    
+    this->vector_->ScaleAddScale(alpha, *x.vector_, beta);
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::ScaleAdd2(const ValueType alpha, const LocalVector<ValueType> &x, const ValueType beta, const LocalVector<ValueType> &y, const ValueType gamma) {
-  
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_) && (y.vector_ == y.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_) && (y.vector_ == y.vector_accel_)) );
 
-  this->vector_->ScaleAdd2(alpha, *x.vector_, beta, *y.vector_, gamma);
+  assert(this->get_size() == x.get_size());
+  assert(this->get_size() == y.get_size());
+
+  if (this->get_size() > 0 ) {
+  
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_) && (y.vector_ == y.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_) && (y.vector_ == y.vector_accel_)) );
+    
+    this->vector_->ScaleAdd2(alpha, *x.vector_, beta, *y.vector_, gamma);
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::Scale(const ValueType alpha) {
 
-  this->vector_->Scale(alpha);
+  if (this->get_size() > 0 ) {
+    this->vector_->Scale(alpha);
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::PartialSum(const LocalVector<ValueType> &x) {
 
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+  assert(this->get_size() == x.get_size());
 
-  this->vector_->PartialSum(*x.vector_);
+  if (this->get_size() > 0 ) {
+    
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+    
+    this->vector_->PartialSum(*x.vector_);
+  }
 
 }
 
 template <typename ValueType>
 ValueType LocalVector<ValueType>::Dot(const LocalVector<ValueType> &x) const {
-  
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
 
-  return this->vector_->Dot(*x.vector_);
+  assert(this->get_size() == x.get_size());
+
+  if (this->get_size() > 0 ) {
+    
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+    
+    return this->vector_->Dot(*x.vector_);
+  } else {
+    return ValueType(0.0);
+  }
 
 }
 
 template <typename ValueType>
 ValueType LocalVector<ValueType>::Norm(void) const {
 
-  return this->vector_->Norm();
+  if (this->get_size() > 0 ) {
+
+    return this->vector_->Norm();
+
+  } else {
+    return ValueType(0.0);
+  }
 
 }
 
 template <typename ValueType>
 ValueType LocalVector<ValueType>::Reduce(void) const {
 
+  if (this->get_size() > 0 ) {
+
   return this->vector_->Reduce();
+
+  } else {
+    return ValueType(0.0);
+  }
 
 }
 
 template <typename ValueType>
 ValueType LocalVector<ValueType>::Asum(void) const {
 
+  if (this->get_size() > 0 ) {
+
   return this->vector_->Asum();
+
+  } else {
+    return ValueType(0.0);
+  }
 
 }
 
 template <typename ValueType>
-ValueType LocalVector<ValueType>::Amax(void) const {
+int LocalVector<ValueType>::Amax(ValueType &value) const {
 
-  return this->vector_->Amax();
+  if (this->get_size() > 0 ) {
+
+  return this->vector_->Amax(value);
+
+  } else {
+    value = ValueType(0.0);
+    return -1;
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::PointWiseMult(const LocalVector<ValueType> &x) {
 
-  assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+  assert(this->get_size() == x.get_size());
 
-  this->vector_->PointWiseMult(*x.vector_);
+  if (this->get_size() > 0 ) {
+    
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_)) );
+    
+    this->vector_->PointWiseMult(*x.vector_);
+  }
 
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::PointWiseMult(const LocalVector<ValueType> &x, const LocalVector<ValueType> &y) {
 
-   assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_) && (y.vector_ == y.vector_host_)) ||
-           ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_) && (y.vector_ == y.vector_accel_)) );
+  assert(this->get_size() == x.get_size());
+  assert(this->get_size() == y.get_size());
 
-   this->vector_->PointWiseMult(*x.vector_, *y.vector_);
+  if (this->get_size() > 0 ) {
+    
+    assert( ( (this->vector_ == this->vector_host_)  && (x.vector_ == x.vector_host_) && (y.vector_ == y.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (x.vector_ == x.vector_accel_) && (y.vector_ == y.vector_accel_)) );
+    
+    this->vector_->PointWiseMult(*x.vector_, *y.vector_);
+  }
 
 }
 
@@ -444,7 +532,10 @@ void LocalVector<ValueType>::CopyFrom(const LocalVector<ValueType> &src,
                                       const int src_offset,
                                       const int dst_offset,
                                       const int size) {
+  assert(&src != NULL);
   assert(&src != this);
+  assert(src_offset < src.get_size());
+  assert(dst_offset < this->get_size());
 
   assert( ( (this->vector_ == this->vector_host_)  && (src.vector_ == src.vector_host_)) ||
           ( (this->vector_ == this->vector_accel_) && (src.vector_ == src.vector_accel_)) );
@@ -457,15 +548,23 @@ void LocalVector<ValueType>::CopyFrom(const LocalVector<ValueType> &src,
 template <typename ValueType>
 void LocalVector<ValueType>::Permute(const LocalVector<int> &permutation) {
 
+  assert(&permutation != NULL);
+  assert(permutation.get_size() == this->get_size());
 
-  this->vector_->Permute(*permutation.vector_);
-
+  if (this->get_size() > 0 ) {
+    this->vector_->Permute(*permutation.vector_);
+  }
 }
 
 template <typename ValueType>
 void LocalVector<ValueType>::PermuteBackward(const LocalVector<int> &permutation) {
 
-  this->vector_->PermuteBackward(*permutation.vector_);
+  assert(&permutation != NULL);
+  assert(permutation.get_size() == this->get_size());
+
+  if (this->get_size() > 0 ) {
+    this->vector_->PermuteBackward(*permutation.vector_);
+  }
 
 }
 
@@ -473,10 +572,17 @@ template <typename ValueType>
 void LocalVector<ValueType>::CopyFromPermute(const LocalVector<ValueType> &src,
                                              const LocalVector<int> &permutation) {
 
+  assert(&src != NULL);   
   assert(&src != this);   
+  assert(&permutation != NULL);
+  assert(permutation.get_size() == this->get_size());
+  assert(this->get_size() == src.get_size());
+
+  if (this->get_size() > 0 ) {
     
-  this->vector_->CopyFromPermute(*src.vector_,
-                                 *permutation.vector_);
+    this->vector_->CopyFromPermute(*src.vector_,
+                                   *permutation.vector_);
+  }
 
 }
 
@@ -484,10 +590,17 @@ template <typename ValueType>
 void LocalVector<ValueType>::CopyFromPermuteBackward(const LocalVector<ValueType> &src,
                                                      const LocalVector<int> &permutation) {
 
-  assert(&src != this);
+  assert(&src != NULL);   
+  assert(&src != this);   
+  assert(&permutation != NULL);
+  assert(permutation.get_size() == this->get_size());
+  assert(this->get_size() == src.get_size());
 
-  this->vector_->CopyFromPermuteBackward(*src.vector_,
-                                         *permutation.vector_);
+  if (this->get_size() > 0 ) {
+
+    this->vector_->CopyFromPermuteBackward(*src.vector_,
+                                           *permutation.vector_);
+  }
 
 }
 
@@ -496,41 +609,51 @@ template <typename ValueType>
 void LocalVector<ValueType>::Restriction(const LocalVector<ValueType> &vec_fine, 
                                          const LocalVector<int> &map) {
 
+  assert(&vec_fine != NULL);
+  assert(&map != NULL);
   assert(&vec_fine != this);
 
-  bool err = this->vector_->Restriction(*vec_fine.vector_,
-                                        *map.vector_);
+  if (this->get_size() > 0) {
 
-  if ((err == false) && (this->is_host() == true)) {
-    LOG_INFO("Computation of LocalVector::Restriction() fail");
-    this->info();
-    FATAL_ERROR(__FILE__, __LINE__);    
-  }
-  
-  if (err == false) {
-
-    this->MoveToHost();
+    assert( ( (this->vector_ == this->vector_host_)  && (vec_fine.vector_ == vec_fine.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (vec_fine.vector_ == vec_fine.vector_accel_) ) );
     
-    LocalVector<int> map_tmp;
-    map_tmp.CopyFrom(map);
-    map_tmp.MoveToHost();
+    assert( ( (this->vector_ == this->vector_host_)  && (map.vector_ == map.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (map.vector_ == map.vector_accel_) ) );
 
-    LocalVector<ValueType> vec_fine_tmp;
-    vec_fine_tmp.CopyFrom(vec_fine);
-    vec_fine_tmp.MoveToHost();
-
-    if (this->vector_->Restriction(*vec_fine_tmp.vector_, *map_tmp.vector_) == false) {
+    bool err = this->vector_->Restriction(*vec_fine.vector_,
+                                          *map.vector_);
+    
+    if ((err == false) && (this->is_host() == true)) {
       LOG_INFO("Computation of LocalVector::Restriction() fail");
       this->info();
-      FATAL_ERROR(__FILE__, __LINE__);
+      FATAL_ERROR(__FILE__, __LINE__);    
     }
-
-    LOG_VERBOSE_INFO(2, "*** warning: LocalVector::Restriction() is performed on the host");
-
-    this->MoveToAccelerator();
-
+    
+    if (err == false) {
+      
+      this->MoveToHost();
+      
+      LocalVector<int> map_tmp;
+      map_tmp.CopyFrom(map);
+      map_tmp.MoveToHost();
+      
+      LocalVector<ValueType> vec_fine_tmp;
+      vec_fine_tmp.CopyFrom(vec_fine);
+      vec_fine_tmp.MoveToHost();
+      
+      if (this->vector_->Restriction(*vec_fine_tmp.vector_, *map_tmp.vector_) == false) {
+        LOG_INFO("Computation of LocalVector::Restriction() fail");
+        this->info();
+        FATAL_ERROR(__FILE__, __LINE__);
+      }
+      
+      LOG_VERBOSE_INFO(2, "*** warning: LocalVector::Restriction() is performed on the host");
+      
+      this->MoveToAccelerator();
+      
+    }
   }
-
 
 
 }
@@ -539,47 +662,52 @@ template <typename ValueType>
 void LocalVector<ValueType>::Prolongation(const LocalVector<ValueType> &vec_coarse, 
                                           const LocalVector<int> &map) {
 
-  assert( ( (this->vector_ == this->vector_host_)  && (vec_coarse.vector_ == vec_coarse.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (vec_coarse.vector_ == vec_coarse.vector_accel_) ) );
-
-  assert( ( (this->vector_ == this->vector_host_)  && (map.vector_ == map.vector_host_)) ||
-          ( (this->vector_ == this->vector_accel_) && (map.vector_ == map.vector_accel_) ) );
-
+  assert(&vec_coarse != NULL);
+  assert(&map != NULL);
   assert(&vec_coarse != this);
 
-  bool err = this->vector_->Prolongation(*vec_coarse.vector_,
-                                        *map.vector_);
-
-  if ((err == false) && (this->is_host() == true)) {
-    LOG_INFO("Computation of LocalVector::Prolongation() fail");
-    this->info();
-    FATAL_ERROR(__FILE__, __LINE__);    
-  }
-  
-  if (err == false) {
-
-    this->MoveToHost();
+  if (this->get_size() > 0) {
     
-    LocalVector<int> map_tmp;
-    map_tmp.CopyFrom(map);
-    map_tmp.MoveToHost();
-
-    LocalVector<ValueType> vec_coarse_tmp;
-    vec_coarse_tmp.CopyFrom(vec_coarse);
-    vec_coarse_tmp.MoveToHost();
-
-    if (this->vector_->Prolongation(*vec_coarse_tmp.vector_, *map_tmp.vector_) == false) {
+    assert( ( (this->vector_ == this->vector_host_)  && (vec_coarse.vector_ == vec_coarse.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (vec_coarse.vector_ == vec_coarse.vector_accel_) ) );
+    
+    assert( ( (this->vector_ == this->vector_host_)  && (map.vector_ == map.vector_host_)) ||
+            ( (this->vector_ == this->vector_accel_) && (map.vector_ == map.vector_accel_) ) );
+    
+    
+    bool err = this->vector_->Prolongation(*vec_coarse.vector_,
+                                           *map.vector_);
+    
+    if ((err == false) && (this->is_host() == true)) {
       LOG_INFO("Computation of LocalVector::Prolongation() fail");
       this->info();
-      FATAL_ERROR(__FILE__, __LINE__);
+      FATAL_ERROR(__FILE__, __LINE__);    
     }
-
-    LOG_VERBOSE_INFO(2, "*** warning: LocalVector::Prolongation() is performed on the host");
-
-    this->MoveToAccelerator();
-
+    
+    if (err == false) {
+      
+      this->MoveToHost();
+      
+      LocalVector<int> map_tmp;
+      map_tmp.CopyFrom(map);
+      map_tmp.MoveToHost();
+      
+      LocalVector<ValueType> vec_coarse_tmp;
+      vec_coarse_tmp.CopyFrom(vec_coarse);
+      vec_coarse_tmp.MoveToHost();
+      
+      if (this->vector_->Prolongation(*vec_coarse_tmp.vector_, *map_tmp.vector_) == false) {
+        LOG_INFO("Computation of LocalVector::Prolongation() fail");
+        this->info();
+        FATAL_ERROR(__FILE__, __LINE__);
+      }
+      
+      LOG_VERBOSE_INFO(2, "*** warning: LocalVector::Prolongation() is performed on the host");
+      
+      this->MoveToAccelerator();
+      
+    }
   }
-
 
 }
 

@@ -248,13 +248,16 @@ __kernel void kernel_asum(         const       int  size,
 __kernel void kernel_amax(         const       int  size,
                           __global const ValueType *data,
                           __global       ValueType *out,
+                          __global             int *iout,
                           __local        ValueType *sdata,
+                          __local              int *idata,
                                    const       int  GROUP_SIZE,
                                    const       int  LOCAL_SIZE) {
 
     int tid = get_local_id(0);
 
     sdata[tid] = (ValueType)(0);
+    idata[tid] = 0;
 
     // get global id
     int gid = GROUP_SIZE * get_group_id(0) + tid;
@@ -263,8 +266,10 @@ __kernel void kernel_amax(         const       int  size,
 
       if (gid < size) {
         ValueType tmp = fabs(data[gid]);
-        if (tmp > sdata[tid])
+        if (tmp > sdata[tid]) {
           sdata[tid] = tmp;
+          idata[tid] = gid;
+        }
       }
 
     }
@@ -275,16 +280,20 @@ __kernel void kernel_amax(         const       int  size,
 
       if (tid < i) {
         ValueType tmp = fabs(sdata[tid+i]);
-        if (tmp > sdata[tid])
+        if (tmp > sdata[tid]) {
           sdata[tid] = tmp;
+          idata[tid] = idata[tid+i];
+        }
       }
 
       barrier(CLK_LOCAL_MEM_FENCE);
 
     }
 
-    if (tid == 0)
+    if (tid == 0) {
       out[get_group_id(0)] = sdata[tid];
+      iout[get_group_id(0)] = idata[tid];
+    }
 
 }
 

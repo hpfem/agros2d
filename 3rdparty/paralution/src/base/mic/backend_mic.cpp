@@ -43,6 +43,7 @@ namespace paralution {
 
 bool paralution_init_mic(void) {
 
+  LOG_INFO("MIC backed is initialized");
   return true;
 
 }
@@ -59,8 +60,12 @@ void paralution_stop_mic(void) {
 
 void paralution_info_mic(const struct Paralution_Backend_Descriptor backend_descriptor) {
 
-  LOG_INFO("MIC backed is initialized");
-    
+  int num_dev = 0 ;
+  num_dev = _Offload_number_of_devices();
+
+  LOG_INFO("Number of MIC devices in the sytem: " << num_dev);
+  LOG_INFO("Selected MIC devices:" << backend_descriptor.MIC_dev);
+
 }
 
 template <typename ValueType>

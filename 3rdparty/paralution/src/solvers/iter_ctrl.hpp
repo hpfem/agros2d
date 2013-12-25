@@ -63,6 +63,10 @@ public:
   
   /// Check the residual (this count also the number of iterations)
   bool CheckResidual(const ValueType res);
+
+  /// Check the residual and index value for the inf norm 
+  /// (this count also the number of iterations)
+  bool CheckResidual(const ValueType res, const int index);
   
   /// Record the history of the residual
   void RecordHistory(void);
@@ -87,6 +91,9 @@ public:
 
   // Return the current status
   int GetSolverStatus(void);
+
+  /// Return absolute maximum index of residual vector when using Linf norm
+  int GetAmaxResidualIndex(void);
 
 private:
 
@@ -127,6 +134,9 @@ private:
 
   /// Current residual (obtained via CheckResidual())
   ValueType current_res_;
+
+  /// Current residual, index for the inf norm (obtained via CheckResidual())
+  int current_index_;
 
   /// Flag == true then the residual is recorded in the residual_history_ vector
   bool rec_;

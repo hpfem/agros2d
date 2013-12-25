@@ -75,7 +75,7 @@ public:
   virtual bool ExtractDiagonal(BaseVector<ValueType> *vec_diag) const;
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
 
-  virtual bool DiagMatMult(const BaseVector<ValueType> &diag);
+  virtual bool DiagonalMatrixMult(const BaseVector<ValueType> &diag);
 
   virtual void SymbolicPower(const int p);
 

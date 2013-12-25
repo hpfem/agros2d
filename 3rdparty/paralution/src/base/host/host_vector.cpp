@@ -24,6 +24,7 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../../utils/math_functions.hpp"
 
 #include <typeinfo>
 #include <stdlib.h>
@@ -291,7 +292,7 @@ void HostVector<ValueType>::ReadFileASCII(const std::string filename) {
 
   while (std::getline(file, line)) {
     
-    this->vec_[n] = atof(line.c_str());
+    this->vec_[n] = ValueType(atof(line.c_str()));
     ++n;
     
   }
@@ -524,7 +525,7 @@ void HostVector<ValueType>::PartialSum(const BaseVector<ValueType> &x) {
 
   assert(this->get_size() == x.get_size());
 
-  const HostVector<double> *cast_x = dynamic_cast<const HostVector<double>*> (&x);
+  const HostVector<ValueType> *cast_x = dynamic_cast<const HostVector<ValueType>*> (&x);
   assert(cast_x != NULL);
 
   this->vec_[0] = cast_x->vec_[0];
@@ -596,23 +597,6 @@ ValueType HostVector<ValueType>::Dot(const BaseVector<ValueType> &x) const {
 
 #endif
 
-#ifdef _MSC_VER
-template <>
-int HostVector<int>::Asum(void) const {
-
-  int asum = int(0.0);
-
-  omp_set_num_threads(this->local_backend_.OpenMP_threads);
-
-#pragma omp parallel for reduction(+:asum)
-  for (int i=0; i<this->size_; ++i)
-    asum += fabs((double)this->vec_[i]);
-
-  return asum;
-
-}
-#endif
-
 template <typename ValueType>
 ValueType HostVector<ValueType>::Asum(void) const {
 
@@ -622,55 +606,34 @@ ValueType HostVector<ValueType>::Asum(void) const {
 
 #pragma omp parallel for reduction(+:asum)
   for (int i=0; i<this->size_; ++i)
-    asum += fabs(this->vec_[i]);
+    asum += paralution_abs(this->vec_[i]);
 
   return asum;
 
 }
 
-#ifdef _MSC_VER
-template <>
-int HostVector<int>::Amax(void) const {
-
-  int amax = 0.0;
-
-  omp_set_num_threads(this->local_backend_.OpenMP_threads);
-
-#pragma omp parallel for
-  for (int i=0; i<this->size_; ++i) {
-    int val = fabs((double)this->vec_[i]);
-    if (val > amax)
-#pragma omp critical
-{
-      if (val > amax)
-        amax = val;
-}
-  }
-
-  return amax;
-
-}
-#endif
-
 template <typename ValueType>
-ValueType HostVector<ValueType>::Amax(void) const {
+int HostVector<ValueType>::Amax(ValueType &value) const {
 
-  ValueType amax = 0.0;
+  int index;
+  value = ValueType(0.0);
 
   omp_set_num_threads(this->local_backend_.OpenMP_threads);
 
 #pragma omp parallel for
   for (int i=0; i<this->size_; ++i) {
-    ValueType val = fabs(this->vec_[i]);
-    if (val > amax)
+    ValueType val = paralution_abs(this->vec_[i]);
+    if (val > value)
 #pragma omp critical
 {
-      if (val > amax)
-        amax = val;
+      if (val > value) {
+        value = val;
+        index = i;
+      }
 }
   }
 
-  return amax;
+  return index;
 
 }
 

@@ -19,7 +19,7 @@
 //
 // *************************************************************************
 
-#include "cg.hpp"
+#include "cr.hpp"
 #include "../iter_ctrl.hpp"
 
 #include "../../base/global_matrix.hpp"
@@ -39,24 +39,24 @@
 namespace paralution {
 
 template <class OperatorType, class VectorType, typename ValueType>
-CG<OperatorType, VectorType, ValueType>::CG() {
+CR<OperatorType, VectorType, ValueType>::CR() {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-CG<OperatorType, VectorType, ValueType>::~CG() {
+CR<OperatorType, VectorType, ValueType>::~CR() {
   this->Clear();
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::Print(void) const {
+void CR<OperatorType, VectorType, ValueType>::Print(void) const {
   
   if (this->precond_ == NULL) { 
     
-    LOG_INFO("CG solver");
+    LOG_INFO("CR solver");
     
   } else {
     
-    LOG_INFO("PCG solver, with preconditioner:");
+    LOG_INFO("PCR solver, with preconditioner:");
     this->precond_->Print();
 
   }
@@ -66,15 +66,15 @@ void CG<OperatorType, VectorType, ValueType>::Print(void) const {
 
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::PrintStart_(void) const {
+void CR<OperatorType, VectorType, ValueType>::PrintStart_(void) const {
 
   if (this->precond_ == NULL) { 
 
-    LOG_INFO("CG (non-precond) linear solver starts");
+    LOG_INFO("CR (non-precond) linear solver starts");
 
   } else {
 
-    LOG_INFO("PCG solver starts, with preconditioner:");
+    LOG_INFO("PCR solver starts, with preconditioner:");
     this->precond_->Print();
 
   }
@@ -82,22 +82,22 @@ void CG<OperatorType, VectorType, ValueType>::PrintStart_(void) const {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
+void CR<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 
   if (this->precond_ == NULL) { 
 
-    LOG_INFO("CG (non-precond) ends");
+    LOG_INFO("CR (non-precond) ends");
 
   } else {
 
-    LOG_INFO("PCG ends");
+    LOG_INFO("PCR ends");
 
   }
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::Build(void) {
+void CR<OperatorType, VectorType, ValueType>::Build(void) {
 
   if (this->build_ == true)
     this->Clear();
@@ -118,6 +118,9 @@ void CG<OperatorType, VectorType, ValueType>::Build(void) {
     
     this->z_.CloneBackend(*this->op_);
     this->z_.Allocate("z", this->op_->get_nrow());
+
+    this->t_.CloneBackend(*this->op_);
+    this->t_.Allocate("t", this->op_->get_nrow());
     
   } 
 
@@ -130,10 +133,13 @@ void CG<OperatorType, VectorType, ValueType>::Build(void) {
   this->q_.CloneBackend(*this->op_);
   this->q_.Allocate("q", this->op_->get_nrow());
 
+  this->v_.CloneBackend(*this->op_);
+  this->v_.Allocate("v", this->op_->get_nrow());
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::Clear(void) {
+void CR<OperatorType, VectorType, ValueType>::Clear(void) {
 
   if (this->build_ == true) {
 
@@ -146,6 +152,8 @@ void CG<OperatorType, VectorType, ValueType>::Clear(void) {
     this->z_.Clear();
     this->p_.Clear();
     this->q_.Clear();
+    this->v_.Clear();
+    this->t_.Clear();
     
     this->iter_ctrl_.Clear();
     
@@ -155,16 +163,18 @@ void CG<OperatorType, VectorType, ValueType>::Clear(void) {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+void CR<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
   if (this->build_ == true) {
 
     this->r_.MoveToHost();
     this->p_.MoveToHost();
     this->q_.MoveToHost();
+    this->v_.MoveToHost();
 
     if (this->precond_ != NULL) {
       this->z_.MoveToHost();
+      this->t_.MoveToHost();
       this->precond_->MoveToHost();
     }
     
@@ -173,16 +183,18 @@ void CG<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+void CR<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
 
   if (this->build_ == true) {
 
     this->r_.MoveToAccelerator();
     this->p_.MoveToAccelerator();
     this->q_.MoveToAccelerator();
+    this->v_.MoveToAccelerator();
 
     if (this->precond_ != NULL) {
       this->z_.MoveToAccelerator();
+      this->t_.MoveToAccelerator();
       this->precond_->MoveToAccelerator();
     }
     
@@ -190,11 +202,8 @@ void CG<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) 
 
 }
 
-// TODO
-// re-orthogonalization and
-// residual - re-computed % iter
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
+void CR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                               VectorType *x) {
 
   assert(x != NULL);
@@ -208,10 +217,10 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   VectorType *r = &this->r_;
   VectorType *p = &this->p_;
   VectorType *q = &this->q_;
+  VectorType *v = &this->v_;
  
   ValueType alpha, beta;
   ValueType rho, rho_old;
-  ValueType res_norm;
 
   // initial residual = b - Ax
   op->Apply(*x, r); 
@@ -220,69 +229,63 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   // p = r
   p->CopyFrom(*r);
 
-  // rho = (r,r)
-  rho = r->Dot(*r);
-
-  res_norm = this->Norm(*r);
-
   // use for |b-Ax0|
-  this->iter_ctrl_.InitResidual(res_norm);
+  this->iter_ctrl_.InitResidual(this->Norm(*r));
 
   // use for |b|
   //  this->iter_ctrl_.InitResidual(rhs.Norm());
-  
+
+  // v=Ar
+  op->Apply(*r, v);
+
+  // rho = (r,v)
+  rho = r->Dot(*v);
+
   // q=Ap
   op->Apply(*p, q);
 
-  // alpha = rho / (p,q)
-  alpha = rho / p->Dot(*q);
-  
-  // x = x + alpha*p
+  // alpha = rho / (q,q)
+  alpha = rho / q->Dot(*q);
+
+  // x = x + alpha * p
   x->AddScale(*p, alpha);
 
-  // r = r - alpha*q
+  // r = r - alpha * q
   r->AddScale(*q, ValueType(-1.0)*alpha);
 
-  rho_old = rho;
-
-  // rho = (r,r)
-  rho = r->Dot(*r);
-
-  res_norm = this->Norm(*r);
-  
-  while (!this->iter_ctrl_.CheckResidual(res_norm, this->index_)) {
-    
-    beta = rho / rho_old;
-
-    // p = beta*p + r 
-    p->ScaleAdd(beta, *r);
-
-    // q=Ap
-    op->Apply(*p, q);
-
-    // alpha = rho / (p,q)
-    alpha = rho / p->Dot(*q);
-
-    // x = x + alpha*p
-    x->AddScale(*p, alpha);
-
-    // r = r - alpha*q
-    r->AddScale(*q, ValueType(-1.0)*alpha);
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
 
     rho_old = rho;
-    
-    // rho = (r,r)
-    rho = r->Dot(*r);
 
-    res_norm = this->Norm(*r);
+    // v=Ar
+    op->Apply(*r, v);
+
+    // rho = (r,v)
+    rho = r->Dot(*v);
+
+    beta = rho / rho_old;
+
+    // p = beta*p + r
+    p->ScaleAdd(beta, *r);
+
+    // q = beta*q + v
+    q->ScaleAdd(beta, *v);
+
+    // alpha = rho / (q,q)
+    alpha = rho / q->Dot(*q);
+
+    // x = x + alpha * p
+    x->AddScale(*p, alpha);
+
+    // r = r - alpha * q
+    r->AddScale(*q, ValueType(-1.0)*alpha);
 
   }
-
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
+void CR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                             VectorType *x) {
 
   assert(x != NULL);
@@ -297,89 +300,104 @@ void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
   VectorType *z = &this->z_;
   VectorType *p = &this->p_;
   VectorType *q = &this->q_;
+  VectorType *v = &this->v_;
+  VectorType *t = &this->t_;
  
   ValueType alpha, beta;
   ValueType rho, rho_old;
 
   // initial residual = b - Ax
-  op->Apply(*x, r);
-  r->ScaleAdd(ValueType(-1.0), rhs);
+  op->Apply(*x, z);
+  z->ScaleAdd(ValueType(-1.0), rhs);
 
-  // Solve Mz=r
-  this->precond_->SolveZeroSol(*r, z);
+  // Solve Mr=z
+  this->precond_->SolveZeroSol(*z, r);
 
-  // p = z 
-  p->CopyFrom(*z);
+  // p = r
+  p->CopyFrom(*r);
 
-  // rho = (r,z)
-  rho = r->Dot(*z);
-
-  // initial residual norm
+  // t = z
+  t->CopyFrom(*z);
 
   // use for |b-Ax0|
-  ValueType res_norm;
-  res_norm = this->Norm(*r) ;
-  this->iter_ctrl_.InitResidual(res_norm);
+  this->iter_ctrl_.InitResidual(this->Norm(*t));
 
   // use for |b|
   //  this->iter_ctrl_.InitResidual(rhs.Norm());
 
+  // v=Ar
+  op->Apply(*r, v);
+
+  // rho = (r,v)
+  rho = r->Dot(*v);
+
   // q=Ap
   op->Apply(*p, q);
 
-  // alpha = rho / (p,q)
-  alpha = rho / p->Dot(*q);
-  
-  // x = x + alpha*p
+  // Mz=q
+  this->precond_->SolveZeroSol(*q, z);
+
+  // alpha = rho / (q,z)
+  alpha = rho / q->Dot(*z);
+
+  // x = x + alpha * p
   x->AddScale(*p, alpha);
 
-  // r = r - alpha*q
-  r->AddScale(*q, ValueType(-1.0)*alpha);
+  // r = r - alpha * z
+  r->AddScale(*z, ValueType(-1.0)*alpha);
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
+  // t = t - alpha * q
+  t->AddScale(*q, ValueType(-1.0)*alpha);
+
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*t), this->index_)) {
 
     rho_old = rho;
 
-    // Solve Mz=r
-    this->precond_->SolveZeroSol(*r, z);
+    // v=Ar
+    op->Apply(*r, v);
 
-    // rho = (r,z)
-    rho = r->Dot(*z);
+    // rho = (r,v)
+    rho = r->Dot(*v);
 
     beta = rho / rho_old;
 
-    // p = beta*p + z
-    p->ScaleAdd(beta, *z);
+    // p = beta*p + r
+    p->ScaleAdd(beta, *r);
 
-    // q=Ap
-    op->Apply(*p, q);
+    // q = beta*q + v
+    q->ScaleAdd(beta, *v);
 
-    // alpha = rho / (p,q)
-    alpha = rho / p->Dot(*q);
+    // Mz=q
+    this->precond_->SolveZeroSol(*q, z);
 
-    // x = x + alpha*p
+    // alpha = rho / (q,z)
+    alpha = rho / q->Dot(*z);
+
+    // x = x + alpha * p
     x->AddScale(*p, alpha);
 
-    // r = r - alpha*q
-    r->AddScale(*q, ValueType(-1.0)*alpha);
+    // r = r - alpha * z
+    r->AddScale(*z, ValueType(-1.0)*alpha);
+
+    // t = t - alpha * q
+    t->AddScale(*q, ValueType(-1.0)*alpha);
 
   }
 
 }
 
 
+template class CR< LocalMatrix<double>, LocalVector<double>, double >;
+template class CR< LocalMatrix<float>,  LocalVector<float>, float >;
 
-template class CG< LocalMatrix<double>, LocalVector<double>, double >;
-template class CG< LocalMatrix<float>,  LocalVector<float>, float >;
+template class CR< LocalStencil<double>, LocalVector<double>, double >;
+template class CR< LocalStencil<float>,  LocalVector<float>, float >;
 
-template class CG< LocalStencil<double>, LocalVector<double>, double >;
-template class CG< LocalStencil<float>,  LocalVector<float>, float >;
+template class CR< GlobalMatrix<double>, GlobalVector<double>, double >;
+template class CR< GlobalMatrix<float>,  GlobalVector<float>, float >;
 
-template class CG< GlobalMatrix<double>, GlobalVector<double>, double >;
-template class CG< GlobalMatrix<float>,  GlobalVector<float>, float >;
-
-template class CG< GlobalStencil<double>, GlobalVector<double>, double >;
-template class CG< GlobalStencil<float>,  GlobalVector<float>, float >;
+template class CR< GlobalStencil<double>, GlobalVector<double>, double >;
+template class CR< GlobalStencil<float>,  GlobalVector<float>, float >;
 
 }
 

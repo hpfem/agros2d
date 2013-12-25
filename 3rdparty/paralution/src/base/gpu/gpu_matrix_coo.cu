@@ -116,6 +116,51 @@ void GPUAcceleratorMatrixCOO<ValueType>::AllocateCOO(const int nnz, const int nr
 }
 
 template <typename ValueType>
+void GPUAcceleratorMatrixCOO<ValueType>::SetDataPtrCOO(int **row, int **col, ValueType **val,
+                                                       const int nnz, const int nrow, const int ncol) {
+
+  assert(*row != NULL);
+  assert(*col != NULL);
+  assert(*val != NULL);
+  assert(nnz > 0);
+  assert(nrow > 0);
+  assert(ncol > 0);
+
+  this->Clear();
+
+  this->nrow_ = nrow;
+  this->ncol_ = ncol;
+  this->nnz_  = nnz;
+
+  this->mat_.row = *row;
+  this->mat_.col = *col;
+  this->mat_.val = *val;
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixCOO<ValueType>::LeaveDataPtrCOO(int **row, int **col, ValueType **val) {
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  assert(this->get_nnz() > 0);
+
+  // see free_host function for details
+  *row = this->mat_.row;
+  *col = this->mat_.col;
+  *val = this->mat_.val;
+
+  this->mat_.row = NULL;
+  this->mat_.col = NULL;
+  this->mat_.val = NULL;
+
+  this->nrow_ = 0;
+  this->ncol_ = 0;
+  this->nnz_  = 0;
+
+}
+
+template <typename ValueType>
 void GPUAcceleratorMatrixCOO<ValueType>::Clear() {
 
   if (this->get_nnz() > 0) {

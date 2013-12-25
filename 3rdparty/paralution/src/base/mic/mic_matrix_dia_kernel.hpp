@@ -27,13 +27,14 @@
 namespace paralution {
 
 template <typename ValueType>
-void spmv_dia(const int *offset,  const ValueType *val,
+void spmv_dia(const int mic_dev, 
+	      const int *offset,  const ValueType *val,
 	      const int nrow,
 	      const int ndiag,
 	      const ValueType *in, ValueType *out) {
   
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(offset:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(val:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(in:length(0) MIC_REUSE MIC_RETAIN)		    \
@@ -69,14 +70,15 @@ void spmv_dia(const int *offset,  const ValueType *val,
 }
 
 template <typename ValueType>
-void spmv_add_dia(const int *offset,  const ValueType *val,
+void spmv_add_dia(const int mic_dev, 
+		  const int *offset,  const ValueType *val,
 		  const int nrow,
 		  const int ndiag,
 		  const ValueType scalar,
 		  const ValueType *in, ValueType *out) {
   
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(offset:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(val:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(in:length(0) MIC_REUSE MIC_RETAIN)		    \

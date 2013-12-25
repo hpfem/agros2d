@@ -19,38 +19,19 @@
 //
 // *************************************************************************
 
-#ifndef PARALUTION_MATRIX_FORMATS_IND_HPP_
-#define PARALUTION_MATRIX_FORMATS_IND_HPP_
+#ifndef PARALUTION_UTILS_MATH_FUNCTIONS_HPP_
+#define PARALUTION_UTILS_MATH_FUNCTIONS_HPP_
 
-// Matrix indexing
-#define DENSE_IND(ai,aj,nrow,ncol) ai + aj*nrow
-//#define DENSE_IND(ai,aj,nrow,ncol) aj + ai*nol
+namespace paralution {
 
+/// Return absolute float value
+float paralution_abs(const float val);
+/// Return absolute double value
+double paralution_abs(const double val);
+/// Return absolute int value
+int paralution_abs(const int val);
 
+}
 
-// ELL indexing
-#define ELL_IND_ROW(row, el , nrow, max_row) el*nrow + row
-#define ELL_IND_EL(row, el , nrow, max_row) el + max_row*row
-
-#ifdef SUPPORT_MIC
-#define ELL_IND(row, el , nrow, max_row)  ELL_IND_EL(row, el , nrow, max_row)
-#else
-#define ELL_IND(row, el , nrow, max_row)  ELL_IND_ROW(row, el , nrow, max_row)
-#endif
-
-
-
-// DIA indexing
-#define DIA_IND_ROW(row, el, nrow, ndiag) el*nrow + row
-#define DIA_IND_EL(row, el, nrow, ndiag) el + ndiag*row
-
-#ifdef SUPPORT_MIC
-#define DIA_IND(row, el, nrow, ndiag) DIA_IND_EL(row, el, nrow, ndiag)
-#else
-#define DIA_IND(row, el, nrow, ndiag) DIA_IND_ROW(row, el, nrow, ndiag)
-#endif
-
-
-
-#endif // PARALUTION_MATRIX_FORMATS_IND_HPP_
+#endif // PARALUTION_UTILS_MATH_FUNCTIONS_HPP_
 

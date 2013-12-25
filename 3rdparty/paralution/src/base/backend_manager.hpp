@@ -43,10 +43,12 @@ struct Paralution_Backend_Descriptor {
   
   // current backend
   int backend;
-  int accelerator;
+  bool accelerator;
   
   // OpenMP threads
   int OpenMP_threads;
+  // OpenMP threads before PARALUTION init
+  int OpenMP_def_threads;
 
   // GPU section
   // gpu handles
@@ -69,6 +71,9 @@ struct Paralution_Backend_Descriptor {
   size_t OCL_max_work_group_size;
   size_t OCL_computeUnits;
 
+
+  // MIC section
+  int MIC_dev;
 };
   
 /// Global backend descriptor
@@ -86,10 +91,16 @@ enum _paralution_backend_id {None=0,
                              OCL=2,
                              MIC=3};
 
+
+
 /// Initialization of the paralution platform
 int init_paralution(void);
+
 /// Shutdown the paralution platform
 int stop_paralution(void);
+
+/// Select a device
+int set_device_paralution(int dev);
 
 /// Set the number of threads in the platform
 void set_omp_threads_paralution(int nthreads);
@@ -102,6 +113,7 @@ void set_ocl_paralution(int nplatform, int ndevice);
 
 /// Print information about the platform
 void info_paralution(void);
+
 /// Print information about the platform via specific backend descriptor
 void info_paralution(const struct Paralution_Backend_Descriptor backend_descriptor);
 

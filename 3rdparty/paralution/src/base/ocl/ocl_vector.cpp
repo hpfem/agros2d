@@ -25,6 +25,7 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../../utils/math_functions.hpp"
 #include "ocl_utils.hpp"
 #include "ocl_allocate_free.hpp"
 
@@ -101,7 +102,6 @@ void OCLAcceleratorVector<ValueType>::Allocate(const int n) {
 
 }
 
-
 template <typename ValueType>
 void OCLAcceleratorVector<ValueType>::SetDataPtr(ValueType **ptr, const int size) {
 
@@ -116,7 +116,6 @@ void OCLAcceleratorVector<ValueType>::SetDataPtr(ValueType **ptr, const int size
 //  this->size_ = size;
 
 }
-
 
 template <typename ValueType>
 void OCLAcceleratorVector<ValueType>::LeaveDataPtr(ValueType **ptr) {
@@ -133,7 +132,6 @@ void OCLAcceleratorVector<ValueType>::LeaveDataPtr(ValueType **ptr) {
 //  this->size_ = 0 ;
 
 }
-
 
 template <typename ValueType>
 void OCLAcceleratorVector<ValueType>::Clear(void) {
@@ -936,7 +934,7 @@ ValueType OCLAcceleratorVector<ValueType>::Asum(void) const {
     free_ocl(&deviceBuffer);
 
     for ( int i=0; i<FinalReduceSize; ++i ) {
-      res += fabs(hostBuffer[i]);
+      res += paralution_abs(hostBuffer[i]);
     }
 
     free_host(&hostBuffer);
@@ -948,15 +946,17 @@ ValueType OCLAcceleratorVector<ValueType>::Asum(void) const {
 }
 
 template <typename ValueType>
-ValueType OCLAcceleratorVector<ValueType>::Amax(void) const {
+int OCLAcceleratorVector<ValueType>::Amax(ValueType &value) const {
 
   ValueType res = 0.0;
+  int idx = 0;
 
   if (this->get_size() > 0) {
 
     cl_int    err;
     cl_event  ocl_event;
     cl_mem    *deviceBuffer = NULL;
+    cl_mem    *iDeviceBuffer = NULL;
     int       size = this->get_size();
     int       FinalReduceSize;
     int       GROUP_SIZE;
@@ -964,6 +964,7 @@ ValueType OCLAcceleratorVector<ValueType>::Amax(void) const {
     size_t    localWorkSize[1];
     size_t    globalWorkSize[1];
     ValueType *hostBuffer = NULL;
+    int       *iHostBuffer = NULL;
 
     localWorkSize[0] = this->local_backend_.OCL_max_work_group_size;
     GROUP_SIZE = ( size_t( ( size_t( size / ( this->local_backend_.OCL_computeUnits * 4 ) ) + 1 ) / localWorkSize[0] ) + 1 ) * localWorkSize[0];
@@ -971,13 +972,16 @@ ValueType OCLAcceleratorVector<ValueType>::Amax(void) const {
     globalWorkSize[0] = this->local_backend_.OCL_computeUnits * 4 * localWorkSize[0];
 
     allocate_ocl<ValueType>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
+    allocate_ocl<int>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &iDeviceBuffer);
 
     err  = clSetKernelArg( CL_KERNEL_AMAX, 0, sizeof(int),    (void *) &size );
     err |= clSetKernelArg( CL_KERNEL_AMAX, 1, sizeof(cl_mem), (void *) this->vec_ );
     err |= clSetKernelArg( CL_KERNEL_AMAX, 2, sizeof(cl_mem), (void *) deviceBuffer );
-    err |= clSetKernelArg( CL_KERNEL_AMAX, 3, sizeof(ValueType) * localWorkSize[0], NULL );
-    err |= clSetKernelArg( CL_KERNEL_AMAX, 4, sizeof(int),    (void *) &GROUP_SIZE );
-    err |= clSetKernelArg( CL_KERNEL_AMAX, 5, sizeof(int),    (void *) &LOCAL_SIZE );
+    err |= clSetKernelArg( CL_KERNEL_AMAX, 3, sizeof(cl_mem), (void *) iDeviceBuffer );
+    err |= clSetKernelArg( CL_KERNEL_AMAX, 4, sizeof(ValueType) * localWorkSize[0], NULL );
+    err |= clSetKernelArg( CL_KERNEL_AMAX, 5, sizeof(int) * localWorkSize[0], NULL);
+    err |= clSetKernelArg( CL_KERNEL_AMAX, 6, sizeof(int),    (void *) &GROUP_SIZE );
+    err |= clSetKernelArg( CL_KERNEL_AMAX, 7, sizeof(int),    (void *) &LOCAL_SIZE );
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
@@ -999,21 +1003,29 @@ ValueType OCLAcceleratorVector<ValueType>::Amax(void) const {
 
     FinalReduceSize = this->local_backend_.OCL_computeUnits * 4;
     allocate_host(FinalReduceSize, &hostBuffer);
+    allocate_host(FinalReduceSize, &iHostBuffer);
 
     ocl_dev2host<ValueType>(FinalReduceSize, deviceBuffer, hostBuffer, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
     free_ocl(&deviceBuffer);
+    ocl_dev2host<int>(FinalReduceSize, iDeviceBuffer, iHostBuffer, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+    free_ocl(&iDeviceBuffer);
 
     for (int i=0; i<FinalReduceSize; ++i) {
-      ValueType tmp = fabs(hostBuffer[i]);
-      if (res < tmp)
+      ValueType tmp = paralution_abs(hostBuffer[i]);
+      if (res < tmp) {
         res = tmp;
+        idx = iHostBuffer[i];
+      }
     }
 
     free_host(&hostBuffer);
+    free_host(&iHostBuffer);
 
   }
 
-  return res;
+  value = res;
+
+  return idx;
 
 }
 

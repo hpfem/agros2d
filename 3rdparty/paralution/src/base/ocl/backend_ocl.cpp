@@ -173,6 +173,10 @@ void paralution_set_ocl_kernels(void) {
   (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[72] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_sp, "kernel_coo_spmv_serial", &err);
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
 
+  // Single Precision ocl_kernels_dense.cl
+  (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[104] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_sp, "kernel_dense_spmv", &err);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
   // Double Precision ocl_kernels_general_dp.cl
   (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[2]  = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_dp, "kernel_set_to", &err);
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
@@ -272,6 +276,7 @@ void paralution_set_ocl_kernels(void) {
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
   (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[65] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_dp, "kernel_dia_add_spmv", &err);
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
   // Single Precision ocl_kernels_coo.cl
   (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[67] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_dp, "kernel_coo_permute", &err);
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
@@ -280,6 +285,10 @@ void paralution_set_ocl_kernels(void) {
   (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[71] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_dp, "kernel_coo_spmv_reduce_update", &err);
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
   (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[73] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_dp, "kernel_coo_spmv_serial", &err);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Double Precision ocl_kernels_dense.cl
+  (OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_kernel)[105] = clCreateKernel(OCL_HANDLE(_Backend_Descriptor.OCL_handle)->OCL_program_dp, "kernel_dense_spmv", &err);
   CHECK_OCL_ERROR(err, __FILE__, __LINE__);
 
   // Integer ocl_kernels_general_int.cl
@@ -772,10 +781,6 @@ template AcceleratorMatrix<float>* _paralution_init_base_ocl_matrix(const struct
                                                                      const unsigned int matrix_format);
 template AcceleratorMatrix<double>* _paralution_init_base_ocl_matrix(const struct Paralution_Backend_Descriptor backend_descriptor,
                                                                      const unsigned int matrix_format);
-
-template cl_kernel paralution_get_ocl_kernel<float>(int kernel);
-template cl_kernel paralution_get_ocl_kernel<double>(int kernel);
-template cl_kernel paralution_get_ocl_kernel<int>(int kernel);
 
 }
 

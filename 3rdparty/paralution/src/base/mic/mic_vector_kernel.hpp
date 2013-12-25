@@ -25,11 +25,11 @@
 namespace paralution {
 
 template <typename ValueType>
-void dot(const ValueType *vec1, const ValueType *vec2, const int size, ValueType &d) {
+void dot(const int mic_dev, const ValueType *vec1, const ValueType *vec2, const int size, ValueType &d) {
   
   ValueType tmp = ValueType(0.0);
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN)	    
 #pragma omp parallel for reduction(+:tmp)
@@ -41,11 +41,11 @@ void dot(const ValueType *vec1, const ValueType *vec2, const int size, ValueType
 }
 
 template <typename ValueType>
-void asum(const ValueType *vec, const int size, ValueType &d) {
+void asum(const int mic_dev, const ValueType *vec, const int size, ValueType &d) {
   
   ValueType tmp = ValueType(0.0);
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(vec:length(0) MIC_REUSE MIC_RETAIN)	    
 #pragma omp parallel for reduction(+:tmp)
   for (int i=0; i<size; ++i)
@@ -57,11 +57,12 @@ void asum(const ValueType *vec, const int size, ValueType &d) {
 
 
 template <typename ValueType>
-void amax(const ValueType *vec, const int size, ValueType &d) {
+void amax(const int mic_dev, const ValueType *vec, const int size, ValueType &d, int &index) {
   
+  int ind = 0;
   ValueType tmp = ValueType(0.0);
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(vec:length(0) MIC_REUSE MIC_RETAIN)	    
 #pragma omp parallel for
   for (int i=0; i<size; ++i) {
@@ -69,22 +70,25 @@ void amax(const ValueType *vec, const int size, ValueType &d) {
     if (val > tmp)
 #pragma omp critical
       {
-	if (val > tmp)
+	if (val > tmp) {
 	  tmp = val;
+	  ind = i;
+	}
       }
     }
 
   d = tmp;
+  index = ind;
 
 }
 
 
 template <typename ValueType>
-void norm(const ValueType *vec, const int size, ValueType &d) {
+void norm(const int mic_dev, const ValueType *vec, const int size, ValueType &d) {
   
   ValueType tmp = ValueType(0.0);
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(vec:length(0) MIC_REUSE MIC_RETAIN)	    
 #pragma omp parallel for reduction(+:tmp)
   for (int i=0; i<size; ++i)
@@ -95,11 +99,11 @@ void norm(const ValueType *vec, const int size, ValueType &d) {
 }
 
 template <typename ValueType>
-void reduce(const ValueType *vec, const int size, ValueType &d) {
+void reduce(const int mic_dev, const ValueType *vec, const int size, ValueType &d) {
   
   ValueType tmp = ValueType(0.0);
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(vec:length(0) MIC_REUSE MIC_RETAIN)	    
 #pragma omp parallel for reduction(+:tmp)
   for (int i=0; i<size; ++i)
@@ -111,9 +115,9 @@ void reduce(const ValueType *vec, const int size, ValueType &d) {
 
 
 template <typename ValueType>
-void scaleadd(const ValueType *vec1, const ValueType alpha, const int size, ValueType *vec2) {
+void scaleadd(const int mic_dev, const ValueType *vec1, const ValueType alpha, const int size, ValueType *vec2) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN) 
 #pragma omp parallel for 
@@ -123,9 +127,9 @@ void scaleadd(const ValueType *vec1, const ValueType alpha, const int size, Valu
 }
 
 template <typename ValueType>
-void addscale(const ValueType *vec1, const ValueType alpha, const int size, ValueType *vec2) {
+void addscale(const int mic_dev, const ValueType *vec1, const ValueType alpha, const int size, ValueType *vec2) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN) 
 #pragma omp parallel for 
@@ -136,10 +140,11 @@ void addscale(const ValueType *vec1, const ValueType alpha, const int size, Valu
 
 
 template <typename ValueType>
-void scaleaddscale(const ValueType *vec1, const ValueType alpha, const ValueType beta, 
+void scaleaddscale(const int mic_dev, 
+		   const ValueType *vec1, const ValueType alpha, const ValueType beta, 
 		   const int size, ValueType *vec2) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN) 
 #pragma omp parallel for 
@@ -149,11 +154,12 @@ void scaleaddscale(const ValueType *vec1, const ValueType alpha, const ValueType
 }
 
 template <typename ValueType>
-void scaleadd2(const ValueType *vec1, const ValueType *vec2, 
+void scaleadd2(const int mic_dev, 
+	       const ValueType *vec1, const ValueType *vec2, 
 	       const ValueType alpha, const ValueType beta, const ValueType gamma,
 	       const int size, ValueType *vec3) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec3:length(0) MIC_REUSE MIC_RETAIN) 
@@ -164,9 +170,10 @@ void scaleadd2(const ValueType *vec1, const ValueType *vec2,
 }
 
 template <typename ValueType>
-void scale(const ValueType alpha, const int size, ValueType *vec) {
+void scale(const int mic_dev, 
+	   const ValueType alpha, const int size, ValueType *vec) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec:length(0) MIC_REUSE MIC_RETAIN)		    
 #pragma omp parallel for 
   for (int i=0; i<size; ++i)
@@ -175,9 +182,10 @@ void scale(const ValueType alpha, const int size, ValueType *vec) {
 }
 
 template <typename ValueType>
-void pointwisemult(const ValueType *vec1, const int size, ValueType *vec2) {
+void pointwisemult(const int mic_dev, 
+		   const ValueType *vec1, const int size, ValueType *vec2) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN) 
 #pragma omp parallel for 
@@ -187,10 +195,11 @@ void pointwisemult(const ValueType *vec1, const int size, ValueType *vec2) {
 }
 
 template <typename ValueType>
-void pointwisemult2(const ValueType *vec1,  const ValueType *vec2, 
+void pointwisemult2(const int mic_dev, 
+		    const ValueType *vec1,  const ValueType *vec2, 
 		    const int size, ValueType *vec3) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec2:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(vec3:length(0) MIC_REUSE MIC_RETAIN)		    
@@ -201,10 +210,11 @@ void pointwisemult2(const ValueType *vec1,  const ValueType *vec2,
 }
 
 template <typename ValueType>
-void permute(const int *perm, const ValueType *in, 
+void permute(const int mic_dev, 
+	     const int *perm, const ValueType *in, 
 	     const int size, ValueType *out) {
   
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(perm:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(in:length(0) MIC_REUSE MIC_RETAIN)			    \
   in(out:length(0) MIC_REUSE MIC_RETAIN)		    
@@ -215,10 +225,11 @@ void permute(const int *perm, const ValueType *in,
 }
 
 template <typename ValueType>
-void permuteback(const int *perm, const ValueType *in, 
+void permuteback(const int mic_dev, 
+		 const int *perm, const ValueType *in, 
 		 const int size, ValueType *out) {
   
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)				    \
   in(perm:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(in:length(0) MIC_REUSE MIC_RETAIN)			    \
   in(out:length(0) MIC_REUSE MIC_RETAIN)		    

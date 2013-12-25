@@ -142,6 +142,50 @@ void GPUAcceleratorMatrixCSR<ValueType>::AllocateCSR(const int nnz, const int nr
 
 }
 
+template <typename ValueType>
+void GPUAcceleratorMatrixCSR<ValueType>::SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
+                                                       const int nnz, const int nrow, const int ncol) {
+
+  assert(*row_offset != NULL);
+  assert(*col != NULL);
+  assert(*val != NULL);
+  assert(nnz > 0);
+  assert(nrow > 0);
+  assert(ncol > 0);
+
+  this->Clear();
+
+  this->nrow_ = nrow;
+  this->ncol_ = ncol;
+  this->nnz_  = nnz;
+
+  this->mat_.row_offset = *row_offset;
+  this->mat_.col = *col;
+  this->mat_.val = *val;
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixCSR<ValueType>::LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val) {
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  assert(this->get_nnz() > 0);
+
+  // see free_host function for details
+  *row_offset = this->mat_.row_offset;
+  *col = this->mat_.col;
+  *val = this->mat_.val;
+
+  this->mat_.row_offset = NULL;
+  this->mat_.col = NULL;
+  this->mat_.val = NULL;
+
+  this->nrow_ = 0;
+  this->ncol_ = 0;
+  this->nnz_  = 0;
+
+}
 
 template <typename ValueType>
 void GPUAcceleratorMatrixCSR<ValueType>::Clear() {
@@ -157,6 +201,7 @@ void GPUAcceleratorMatrixCSR<ValueType>::Clear() {
     this->nnz_  = 0;
 
     this->LUAnalyseClear();
+    this->LLAnalyseClear();
 
   }
 
@@ -1261,19 +1306,298 @@ bool GPUAcceleratorMatrixCSR<double>::LUSolve(const BaseVector<double> &in, Base
   return true;
 }
 
+template <>
+void GPUAcceleratorMatrixCSR<float>::LLAnalyse(void) {
 
-template <typename ValueType>
-void GPUAcceleratorMatrixCSR<ValueType>::LLAnalyse(void) {
-  FATAL_ERROR(__FILE__, __LINE__);
+    cusparseStatus_t stat_t;         
+
+    // L part
+    stat_t = cusparseCreateMatDescr(&this->L_mat_descr_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__);
+
+    stat_t = cusparseSetMatType(this->L_mat_descr_,CUSPARSE_MATRIX_TYPE_GENERAL);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  
+    stat_t = cusparseSetMatIndexBase(this->L_mat_descr_,CUSPARSE_INDEX_BASE_ZERO);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatFillMode(this->L_mat_descr_, CUSPARSE_FILL_MODE_LOWER);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatDiagType(this->L_mat_descr_, CUSPARSE_DIAG_TYPE_UNIT);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseCreateSolveAnalysisInfo(&this->L_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+
+    // U part
+    stat_t = cusparseCreateMatDescr(&this->U_mat_descr_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatType(this->U_mat_descr_,CUSPARSE_MATRIX_TYPE_GENERAL);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatIndexBase(this->U_mat_descr_,CUSPARSE_INDEX_BASE_ZERO);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatFillMode(this->U_mat_descr_, CUSPARSE_FILL_MODE_UPPER);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatDiagType(this->U_mat_descr_, CUSPARSE_DIAG_TYPE_NON_UNIT);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseCreateSolveAnalysisInfo(&this->U_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+
+    // Analysis
+    // L
+    stat_t = cusparseScsrsv_analysis(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                     CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                     this->get_nrow(), this->get_nnz(), 
+                                     this->L_mat_descr_, 
+                                     this->mat_.val, this->mat_.row_offset, this->mat_.col,                                     
+                                     this->L_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    // U
+    stat_t = cusparseScsrsv_analysis(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                     CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                     this->get_nrow(), this->get_nnz(), 
+                                     this->U_mat_descr_, 
+                                     this->mat_.val, this->mat_.row_offset, this->mat_.col,                                  
+                                     this->U_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__);
+
+    assert(this->get_ncol() == this->get_nrow());
+    assert(this->tmp_vec_ == NULL);
+    this->tmp_vec_ = new GPUAcceleratorVector<float>;
+    assert(this->tmp_vec_ != NULL);
+
+    tmp_vec_->Allocate(this->get_nrow());
+
 }
+
+template <>
+void GPUAcceleratorMatrixCSR<double>::LLAnalyse(void) {
+
+    cusparseStatus_t stat_t;         
+
+    // L part
+    stat_t = cusparseCreateMatDescr(&this->L_mat_descr_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__);
+
+    stat_t = cusparseSetMatType(this->L_mat_descr_,CUSPARSE_MATRIX_TYPE_GENERAL);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  
+    stat_t = cusparseSetMatIndexBase(this->L_mat_descr_,CUSPARSE_INDEX_BASE_ZERO);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatFillMode(this->L_mat_descr_, CUSPARSE_FILL_MODE_LOWER);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatDiagType(this->L_mat_descr_, CUSPARSE_DIAG_TYPE_NON_UNIT);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseCreateSolveAnalysisInfo(&this->L_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+
+    // U part
+    stat_t = cusparseCreateMatDescr(&this->U_mat_descr_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatType(this->U_mat_descr_,CUSPARSE_MATRIX_TYPE_GENERAL);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatIndexBase(this->U_mat_descr_,CUSPARSE_INDEX_BASE_ZERO);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatFillMode(this->U_mat_descr_, CUSPARSE_FILL_MODE_UPPER);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseSetMatDiagType(this->U_mat_descr_, CUSPARSE_DIAG_TYPE_NON_UNIT);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseCreateSolveAnalysisInfo(&this->U_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+
+    // Analysis
+    stat_t = cusparseDcsrsv_analysis(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                     CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                     this->get_nrow(), this->get_nnz(), 
+                                     this->L_mat_descr_, 
+                                     this->mat_.val, this->mat_.row_offset, this->mat_.col,                                     
+                                     this->L_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    stat_t = cusparseDcsrsv_analysis(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                     CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                     this->get_nrow(), this->get_nnz(), 
+                                     this->U_mat_descr_, 
+                                     this->mat_.val, this->mat_.row_offset, this->mat_.col,                                  
+                                     this->U_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__);
+
+    assert(this->get_ncol() == this->get_nrow());
+    assert(this->tmp_vec_ == NULL);
+    this->tmp_vec_ = new GPUAcceleratorVector<double>(this->local_backend_);
+    assert(this->tmp_vec_ != NULL);
+
+    tmp_vec_->Allocate(this->get_nrow());   
+
+}
+
 
 template <typename ValueType>
 void GPUAcceleratorMatrixCSR<ValueType>::LLAnalyseClear(void) {
-  FATAL_ERROR(__FILE__, __LINE__);
+
+  cusparseStatus_t stat_t;
+
+  if (this->L_mat_info_ != 0) {
+    stat_t = cusparseDestroySolveAnalysisInfo(this->L_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  }
+
+  if (this->L_mat_descr_ != 0) {
+    stat_t = cusparseDestroyMatDescr(this->L_mat_descr_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  }
+
+  if (this->U_mat_info_ != 0) {
+    stat_t = cusparseDestroySolveAnalysisInfo(this->U_mat_info_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  }
+
+  if (this->U_mat_descr_ != 0) {
+    stat_t = cusparseDestroyMatDescr(this->U_mat_descr_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  }
+
+  this->L_mat_descr_ = 0;
+  this->U_mat_descr_ = 0;
+  this->L_mat_info_ = 0;
+  this->U_mat_info_ = 0;
+    
+  delete this->tmp_vec_ ;
+  this->tmp_vec_ = NULL;
+
 }
 
-template <typename ValueType>
-bool GPUAcceleratorMatrixCSR<ValueType>::LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
+template <>
+bool GPUAcceleratorMatrixCSR<float>::LLSolve(const BaseVector<float> &in, BaseVector<float> *out) const {
+
+  if (this->get_nnz() > 0) {
+
+    assert(this->L_mat_descr_ != 0);
+    assert(this->U_mat_descr_ != 0);
+    assert(this->L_mat_info_  != 0);
+    assert(this->U_mat_info_  != 0);
+
+    assert(in.  get_size()  >= 0);
+    assert(out->get_size()  >= 0);
+    assert(in.  get_size()  == this->get_ncol());
+    assert(out->get_size()  == this->get_nrow());
+    assert(this->get_ncol() == this->get_nrow());
+
+    assert(this->tmp_vec_ != NULL);
+
+    const GPUAcceleratorVector<float> *cast_in = dynamic_cast<const GPUAcceleratorVector<float>*> (&in) ; 
+    GPUAcceleratorVector<float> *cast_out      = dynamic_cast<      GPUAcceleratorVector<float>*> (out) ; 
+    
+    assert(cast_in != NULL);
+    assert(cast_out!= NULL);
+
+
+    cusparseStatus_t stat_t;         
+    
+    float one = float(1.0);
+    
+    // Solve L
+    stat_t = cusparseScsrsv_solve(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                  CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                  this->get_nrow(), 
+                                  &one, 
+                                  this->L_mat_descr_,
+                                  this->mat_.val, this->mat_.row_offset, this->mat_.col,                                     
+                                  this->L_mat_info_, 
+                                  cast_in->vec_, 
+                                  tmp_vec_->vec_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+
+    // Solve U
+    stat_t = cusparseScsrsv_solve(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                  CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                  this->get_nrow(), 
+                                  &one, 
+                                  this->U_mat_descr_,
+                                  this->mat_.val, this->mat_.row_offset, this->mat_.col,                                     
+                                  this->U_mat_info_, 
+                                  tmp_vec_->vec_,
+                                  cast_out->vec_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+  
+  }
+
+  return true;
+}
+
+template <>
+bool GPUAcceleratorMatrixCSR<double>::LLSolve(const BaseVector<double> &in, BaseVector<double> *out) const {
+
+  if (this->get_nnz() > 0) {
+
+    assert(this->L_mat_descr_ != 0);
+    assert(this->U_mat_descr_ != 0);
+    assert(this->L_mat_info_  != 0);
+    assert(this->U_mat_info_  != 0);
+
+    assert(in.  get_size()  >= 0);
+    assert(out->get_size()  >= 0);
+    assert(in.  get_size()  == this->get_ncol());
+    assert(out->get_size()  == this->get_nrow());
+    assert(this->get_ncol() == this->get_nrow());
+    
+    const GPUAcceleratorVector<double> *cast_in = dynamic_cast<const GPUAcceleratorVector<double>*> (&in) ; 
+    GPUAcceleratorVector<double> *cast_out      = dynamic_cast<      GPUAcceleratorVector<double>*> (out) ; 
+    
+    assert(cast_in != NULL);
+    assert(cast_out!= NULL);
+
+
+    cusparseStatus_t stat_t;         
+    
+    double one = double(1.0);
+
+    // Solve L
+    stat_t = cusparseDcsrsv_solve(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                  CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                  this->get_nrow(), 
+                                  &one, 
+                                  this->L_mat_descr_,
+                                  this->mat_.val, this->mat_.row_offset, this->mat_.col,                                     
+                                  this->L_mat_info_, 
+                                  cast_in->vec_, 
+                                  this->tmp_vec_->vec_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+    // Solve U
+    stat_t = cusparseDcsrsv_solve(CUSPARSE_HANDLE(this->local_backend_.GPU_cusparse_handle),
+                                  CUSPARSE_OPERATION_NON_TRANSPOSE, 
+                                  this->get_nrow(), 
+                                  &one, 
+                                  this->U_mat_descr_,
+                                  this->mat_.val, this->mat_.row_offset, this->mat_.col,                                     
+                                  this->U_mat_info_, 
+                                  this->tmp_vec_->vec_,
+                                  cast_out->vec_);
+    CHECK_CUSPARSE_ERROR(stat_t, __FILE__, __LINE__); 
+
+  }
+
   return true;
 }
 
@@ -1827,6 +2151,366 @@ bool GPUAcceleratorMatrixCSR<ValueType>::ExtractSubMatrix(const int row_offset,
 }
 
 template <typename ValueType>
+bool GPUAcceleratorMatrixCSR<ValueType>::ExtractL(BaseMatrix<ValueType> *L) const {
+  
+  assert(L != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  GPUAcceleratorMatrixCSR<ValueType> *cast_L = dynamic_cast<GPUAcceleratorMatrixCSR<ValueType>*> (L);
+  
+  assert(cast_L != NULL);
+  
+  cast_L->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_gpu<int>(nrow+1, &cast_L->mat_.row_offset);
+  
+  dim3 BlockSize(this->local_backend_.GPU_block_size);
+  dim3 GridSize(nrow / this->local_backend_.GPU_block_size + 1);
+  
+  
+  kernel_csr_slower_nnz_per_row<int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                              this->mat_.col, cast_L->mat_.row_offset+1);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+  cudaMemcpy(h_buffer+1, // dst
+             cast_L->mat_.row_offset+1, // src
+             nrow*sizeof(int), // size
+             cudaMemcpyDeviceToHost);
+  
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+  
+  int nnz_L = h_buffer[nrow];
+  
+  cudaMemcpy(cast_L->mat_.row_offset, // dst
+             h_buffer, // src
+             (nrow+1)*sizeof(int), // size
+             cudaMemcpyHostToDevice);
+  
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_gpu<int>(nnz_L, &cast_L->mat_.col);
+  allocate_gpu<ValueType>(nnz_L, &cast_L->mat_.val);
+  
+  // fill lower triangular part
+  kernel_csr_extract_lu_triangular<ValueType, int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                                             this->mat_.col, this->mat_.val,
+                                                                             cast_L->mat_.row_offset,
+                                                                             cast_L->mat_.col,
+                                                                             cast_L->mat_.val);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  cast_L->nrow_ = this->get_nrow();
+  cast_L->ncol_ = this->get_ncol();
+  cast_L->nnz_ = nnz_L;
+  
+  return true;
+  
+}
+
+
+template <typename ValueType>
+bool GPUAcceleratorMatrixCSR<ValueType>::ExtractLDiagonal(BaseMatrix<ValueType> *L) const {
+
+  assert(L != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  GPUAcceleratorMatrixCSR<ValueType> *cast_L = dynamic_cast<GPUAcceleratorMatrixCSR<ValueType>*> (L);
+  
+  assert(cast_L != NULL);
+  
+  cast_L->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_gpu<int>(nrow+1, &cast_L->mat_.row_offset);
+  
+  dim3 BlockSize(this->local_backend_.GPU_block_size);
+  dim3 GridSize(nrow / this->local_backend_.GPU_block_size + 1);
+  
+  
+  kernel_csr_lower_nnz_per_row<int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                              this->mat_.col, cast_L->mat_.row_offset+1);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+  cudaMemcpy(h_buffer+1, // dst
+             cast_L->mat_.row_offset+1, // src
+             nrow*sizeof(int), // size
+             cudaMemcpyDeviceToHost);
+  
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+  
+  int nnz_L = h_buffer[nrow];
+  
+  cudaMemcpy(cast_L->mat_.row_offset, // dst
+             h_buffer, // src
+             (nrow+1)*sizeof(int), // size
+             cudaMemcpyHostToDevice);
+  
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_gpu<int>(nnz_L, &cast_L->mat_.col);
+  allocate_gpu<ValueType>(nnz_L, &cast_L->mat_.val);
+  
+  // fill lower triangular part
+  kernel_csr_extract_lu_triangular<ValueType, int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                                             this->mat_.col, this->mat_.val,
+                                                                             cast_L->mat_.row_offset,
+                                                                             cast_L->mat_.col,
+                                                                             cast_L->mat_.val);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  cast_L->nrow_ = this->get_nrow();
+  cast_L->ncol_ = this->get_ncol();
+  cast_L->nnz_ = nnz_L;
+  
+  return true;
+
+}
+
+template <typename ValueType>
+bool GPUAcceleratorMatrixCSR<ValueType>::ExtractU(BaseMatrix<ValueType> *U) const {
+  
+  assert(U != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  GPUAcceleratorMatrixCSR<ValueType> *cast_U = dynamic_cast<GPUAcceleratorMatrixCSR<ValueType>*> (U);
+  
+  assert(cast_U != NULL);
+  
+  cast_U->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_gpu<int>(nrow+1, &cast_U->mat_.row_offset);
+  
+  dim3 BlockSize(this->local_backend_.GPU_block_size);
+  dim3 GridSize(nrow / this->local_backend_.GPU_block_size + 1);
+  
+  
+  kernel_csr_supper_nnz_per_row<int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                              this->mat_.col, cast_U->mat_.row_offset+1);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+  cudaMemcpy(h_buffer+1, // dst
+             cast_U->mat_.row_offset+1, // src
+             nrow*sizeof(int), // size
+             cudaMemcpyDeviceToHost);
+  
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+  
+  int nnz_L = h_buffer[nrow];
+  
+  cudaMemcpy(cast_U->mat_.row_offset, // dst
+             h_buffer, // src
+             (nrow+1)*sizeof(int), // size
+             cudaMemcpyHostToDevice);
+  
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_gpu<int>(nnz_L, &cast_U->mat_.col);
+  allocate_gpu<ValueType>(nnz_L, &cast_U->mat_.val);
+  
+  // fill upper triangular part
+  kernel_csr_extract_lu_triangular<ValueType, int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                                             this->mat_.col, this->mat_.val,
+                                                                             cast_U->mat_.row_offset,
+                                                                             cast_U->mat_.col,
+                                                                             cast_U->mat_.val);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  cast_U->nrow_ = this->get_nrow();
+  cast_U->ncol_ = this->get_ncol();
+  cast_U->nnz_ = nnz_L;
+  
+  return true;
+  
+}
+
+
+template <typename ValueType>
+bool GPUAcceleratorMatrixCSR<ValueType>::ExtractUDiagonal(BaseMatrix<ValueType> *U) const {
+
+  assert(U != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  GPUAcceleratorMatrixCSR<ValueType> *cast_U = dynamic_cast<GPUAcceleratorMatrixCSR<ValueType>*> (U);
+  
+  assert(cast_U != NULL);
+  
+  cast_U->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_gpu<int>(nrow+1, &cast_U->mat_.row_offset);
+  
+  dim3 BlockSize(this->local_backend_.GPU_block_size);
+  dim3 GridSize(nrow / this->local_backend_.GPU_block_size + 1);
+  
+  
+  kernel_csr_upper_nnz_per_row<int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                              this->mat_.col, cast_U->mat_.row_offset+1);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+  cudaMemcpy(h_buffer+1, // dst
+             cast_U->mat_.row_offset+1, // src
+             nrow*sizeof(int), // size
+             cudaMemcpyDeviceToHost);
+  
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+  
+  int nnz_L = h_buffer[nrow];
+  
+  cudaMemcpy(cast_U->mat_.row_offset, // dst
+             h_buffer, // src
+             (nrow+1)*sizeof(int), // size
+             cudaMemcpyHostToDevice);
+  
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_gpu<int>(nnz_L, &cast_U->mat_.col);
+  allocate_gpu<ValueType>(nnz_L, &cast_U->mat_.val);
+  
+  // fill lower triangular part
+  kernel_csr_extract_lu_triangular<ValueType, int> <<<GridSize, BlockSize>>>(nrow, this->mat_.row_offset,
+                                                                             this->mat_.col, this->mat_.val,
+                                                                             cast_U->mat_.row_offset,
+                                                                             cast_U->mat_.col,
+                                                                             cast_U->mat_.val);
+  CHECK_CUDA_ERROR(__FILE__,__LINE__);
+  
+  cast_U->nrow_ = this->get_nrow();
+  cast_U->ncol_ = this->get_ncol();
+  cast_U->nnz_ = nnz_L;
+  
+  return true;
+
+}
+
+template <typename ValueType>
+bool GPUAcceleratorMatrixCSR<ValueType>::MaximalIndependentSet(int &size,
+                                                               BaseVector<int> *permutation) const {
+  assert(permutation != NULL);
+  GPUAcceleratorVector<int> *cast_perm = dynamic_cast<GPUAcceleratorVector<int>*> (permutation);
+  assert(cast_perm != NULL);
+  assert(this->get_nrow() == this->get_ncol());
+
+  int *h_row_offset = NULL;
+  int *h_col = NULL;
+
+  allocate_host(this->get_nrow()+1, &h_row_offset);
+  allocate_host(this->get_nnz(), &h_col);
+
+  cudaMemcpy(h_row_offset, this->mat_.row_offset, (this->get_nrow()+1)*sizeof(int), cudaMemcpyDeviceToHost);
+  cudaMemcpy(h_col, this->mat_.col, this->get_nnz()*sizeof(int), cudaMemcpyDeviceToHost);
+
+  int *mis = NULL;
+  allocate_host(this->get_nrow(), &mis);
+  memset(mis, 0, sizeof(int)*this->get_nrow());
+
+  size = 0 ;
+
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    if (mis[ai] == 0) {
+
+      // set the node
+      mis[ai] = 1;
+      ++size ;
+
+      //remove all nbh nodes (without diagonal)
+      for (int aj=h_row_offset[ai]; aj<h_row_offset[ai+1]; ++aj)
+        if (ai != h_col[aj])
+          mis[h_col[aj]] = -1 ;
+      
+    }
+  }
+
+  int *h_perm = NULL;
+  allocate_host(this->get_nrow(), &h_perm);
+
+  int pos = 0;
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    if (mis[ai] == 1) {
+
+      h_perm[ai] = pos;
+      ++pos;
+
+    } else {
+
+      h_perm[ai] = size + ai - pos;
+
+    }
+
+  }
+  
+  // Check the permutation
+  //
+  //  for (int ai=0; ai<this->get_nrow(); ++ai) {
+  //    assert( h_perm[ai] >= 0 );
+  //    assert( h_perm[ai] < this->get_nrow() );
+  //  }
+
+
+  cast_perm->Allocate(this->get_nrow());
+  cudaMemcpy(cast_perm->vec_, h_perm, permutation->get_size()*sizeof(int), cudaMemcpyHostToDevice);
+
+  free_host(&h_row_offset);
+  free_host(&h_col);
+
+  free_host(&h_perm);
+  free_host(&mis);
+
+  return true;
+}
+
+template <typename ValueType>
 bool GPUAcceleratorMatrixCSR<ValueType>::MultiColoring(int &num_colors,
                                                        int **size_colors,
                                                        BaseVector<int> *permutation) const {
@@ -2051,7 +2735,7 @@ bool GPUAcceleratorMatrixCSR<ValueType>::AddScalar(const ValueType alpha) {
 
 
 template <typename ValueType>
-bool GPUAcceleratorMatrixCSR<ValueType>::DiagMatMult(const BaseVector<ValueType> &diag) {
+bool GPUAcceleratorMatrixCSR<ValueType>::DiagonalMatrixMult(const BaseVector<ValueType> &diag) {
 
   assert(diag.get_size() == this->get_ncol());
   
@@ -2294,21 +2978,78 @@ bool GPUAcceleratorMatrixCSR<ValueType>::MatrixAdd(const BaseMatrix<ValueType> &
 template <typename ValueType>
 bool GPUAcceleratorMatrixCSR<ValueType>::Compress(const ValueType drop_off) {
 
-  // TODO
-  return false;
-
-  /*
   assert(drop_off > ValueType(0.0));
 
   if (this->get_nnz() > 0) {
 
+    GPUAcceleratorMatrixCSR<ValueType> tmp(this->local_backend_);
+
+    tmp.CopyFrom(*this);
+
+    int mat_nnz = 0;
+
+    int *row_offset = NULL;
+    allocate_gpu(this->get_nrow()+1, &row_offset);
+
+    int *mat_row_offset = NULL;
+    allocate_gpu(this->get_nrow()+1, &mat_row_offset);
+    
+    set_to_zero_gpu(this->local_backend_.GPU_block_size, 
+                    this->local_backend_.GPU_max_threads,
+                    this->get_nrow()+1, row_offset); 
 
 
-  FATAL_ERROR(__FILE__, __LINE__);  
+    dim3 BlockSize(this->local_backend_.GPU_block_size);
+    dim3 GridSize(this->get_nrow() / this->local_backend_.GPU_block_size + 1);
+    
+    cudaDeviceSynchronize();
+    
+    kernel_csr_compress_count_nrow<ValueType, int> <<<GridSize, BlockSize>>> (this->mat_.row_offset,
+                                                                              this->mat_.col,
+                                                                              this->mat_.val,
+                                                                              this->get_nrow(),
+                                                                              drop_off,
+                                                                              row_offset);
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);      
 
+    // TODO
+    cum_sum<int, 256>(mat_row_offset, row_offset, this->get_nrow());
+  
+    // get the new mat nnz
+    cudaMemcpy(&mat_nnz, &mat_row_offset[this->get_nrow()],
+               sizeof(int), cudaMemcpyDeviceToHost);
+    
+    this->AllocateCSR(mat_nnz, this->get_nrow(), this->get_ncol());
+
+    // TODO - just exchange memory pointers
+    // copy row_offset
+    cudaMemcpy(this->mat_.row_offset, mat_row_offset,
+               (this->get_nrow()+1)*sizeof(int), cudaMemcpyDeviceToDevice);
+    
+    
+    // copy col and val
+
+    cudaDeviceSynchronize();
+    
+    kernel_csr_compress_copy<ValueType, int> <<<GridSize, BlockSize>>> (tmp.mat_.row_offset,
+                                                                        tmp.mat_.col,
+                                                                        tmp.mat_.val,
+                                                                        tmp.get_nrow(),
+                                                                        drop_off,
+                                                                        this->mat_.row_offset,
+                                                                        this->mat_.col,
+                                                                        this->mat_.val);
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);      
+
+
+    free_gpu(&row_offset);
+    free_gpu(&mat_row_offset);
+        
+    
   }
-  */
+ 
 
+  return true;
 }
 
 template <>

@@ -30,19 +30,23 @@ SET(SOURCES src/base/backend_manager.cpp
     src/solvers/iter_ctrl.cpp 
     src/solvers/mixed_precision.cpp 
     src/solvers/solver.cpp 
+    src/solvers/deflation/dpcg.cpp
     src/solvers/krylov/bicgstab.cpp 
     src/solvers/krylov/cg.cpp 
+    src/solvers/krylov/cr.cpp
     src/solvers/krylov/gmres.cpp 
     src/solvers/krylov/idr.cpp
     src/solvers/multigrid/multigrid_amg.cpp 
     src/solvers/multigrid/multigrid.cpp 
     src/solvers/preconditioners/preconditioner.cpp 
+    src/solvers/preconditioners/preconditioner_blockprecond.cpp
     src/solvers/preconditioners/preconditioner_multicolored.cpp 
     src/solvers/preconditioners/preconditioner_multicolored_gs.cpp 
     src/solvers/preconditioners/preconditioner_multicolored_ilu.cpp 
     src/solvers/preconditioners/preconditioner_multielimination.cpp 
     src/solvers/preconditioners/preconditioner_saddlepoint.cpp
     src/utils/allocate_free.cpp 
+    src/utils/math_functions.cpp
     thirdparty/matrix-market/mmio.c
   )
   

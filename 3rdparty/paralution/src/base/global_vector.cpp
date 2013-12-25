@@ -146,8 +146,8 @@ ValueType GlobalVector<ValueType>::Asum(void) const {
 }
 
 template <typename ValueType>
-ValueType GlobalVector<ValueType>::Amax(void) const {
-  return ValueType(0.0);
+int GlobalVector<ValueType>::Amax(ValueType &value) const {
+  return 0;
 }
 
 template <typename ValueType>

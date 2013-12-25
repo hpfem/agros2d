@@ -60,6 +60,8 @@ public:
 
   virtual void LUFactorize(void);
   virtual bool LUSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+
+  virtual void Invert(void);
   
 private:
   

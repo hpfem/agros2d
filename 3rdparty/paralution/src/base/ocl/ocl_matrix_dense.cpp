@@ -58,7 +58,6 @@ OCLAcceleratorMatrixDENSE<ValueType>::OCLAcceleratorMatrixDENSE(const Paralution
   this->mat_.val = NULL;
   this->set_backend(local_backend); 
 
-  FATAL_ERROR(__FILE__, __LINE__);
 }
 
 
@@ -354,28 +353,63 @@ template <typename ValueType>
 void OCLAcceleratorMatrixDENSE<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
 
   if (this->get_nnz() > 0) {
-/*
+
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
     assert(in.  get_size() == this->get_ncol());
     assert(out->get_size() == this->get_nrow());
-
+    
     const OCLAcceleratorVector<ValueType> *cast_in = dynamic_cast<const OCLAcceleratorVector<ValueType>*> (&in) ; 
     OCLAcceleratorVector<ValueType> *cast_out      = dynamic_cast<      OCLAcceleratorVector<ValueType>*> (out) ; 
-
+    
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
-*/
-    FATAL_ERROR(__FILE__, __LINE__);
 
-    // to avoid compiler warnings
-    int err;
-    CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+    int nrow = this->get_nrow();
+    int ncol = this->get_ncol();
+
+    cl_int    err;
+    cl_event  ocl_event;
+    size_t    localWorkSize[1];
+    size_t    globalWorkSize[1];
+
+    // Set arguments for kernel call
+    err  = clSetKernelArg( CL_KERNEL_DENSE_SPMV, 0, sizeof(int),    (void *) &nrow );
+    err |= clSetKernelArg( CL_KERNEL_DENSE_SPMV, 1, sizeof(int),    (void *) &ncol );
+    err |= clSetKernelArg( CL_KERNEL_DENSE_SPMV, 2, sizeof(cl_mem), (void *) this->mat_.val );
+    err |= clSetKernelArg( CL_KERNEL_DENSE_SPMV, 3, sizeof(cl_mem), (void *) cast_in->vec_ );
+    err |= clSetKernelArg( CL_KERNEL_DENSE_SPMV, 4, sizeof(cl_mem), (void *) cast_out->vec_ );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Determine local work size for kernel call
+    localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+    localWorkSize[0] /= 2;
+    // Determine global work size for kernel call
+    globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+    // Start kernel run
+    err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                                  CL_KERNEL_DENSE_SPMV,
+                                  1,
+                                  NULL,
+                                  &globalWorkSize[0],
+                                  &localWorkSize[0],
+                                  0,
+                                  NULL,
+                                  &ocl_event);
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Wait for kernel run to finish
+    err = clWaitForEvents( 1, &ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Release event when kernel run finished
+    err = clReleaseEvent( ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
   }
-
+    
 }
-
 
 template <typename ValueType>
 void OCLAcceleratorMatrixDENSE<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,

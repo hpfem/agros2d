@@ -155,7 +155,6 @@ void BaseMatrix<ValueType>::AllocateMCSR(const int nnz, const int nrow, const in
 
 }
 
-
 template <typename ValueType>
 void BaseMatrix<ValueType>::ReadFileMTX(const std::string filename) {
 
@@ -171,6 +170,28 @@ template <typename ValueType>
 void BaseMatrix<ValueType>::WriteFileMTX(const std::string filename) const {
 
   LOG_INFO("BaseMatrix<ValueType>::WriteFileMTX(const std::string)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::ReadFileCSR(const std::string filename) {
+
+  LOG_INFO("BaseMatrix<ValueType>::ReadFileCSR(const std::string)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::WriteFileCSR(const std::string filename) const {
+
+  LOG_INFO("BaseMatrix<ValueType>::WriteFileCSR(const std::string)");
   LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
   this->info();
   LOG_INFO("The function is not implemented (yet)!");
@@ -203,7 +224,17 @@ bool BaseMatrix<ValueType>::ExtractL(BaseMatrix<ValueType> *L) const {
 }
 
 template <typename ValueType>
+bool BaseMatrix<ValueType>::ExtractLDiagonal(BaseMatrix<ValueType> *L) const {
+  return false;
+}
+
+template <typename ValueType>
 bool BaseMatrix<ValueType>::ExtractU(BaseMatrix<ValueType> *U) const {
+  return false;
+}
+
+template <typename ValueType>
+bool BaseMatrix<ValueType>::ExtractUDiagonal(BaseMatrix<ValueType> *U) const {
   return false;
 }
 
@@ -251,15 +282,10 @@ bool BaseMatrix<ValueType>::MultiColoring(int &num_colors,
 }
 
 template <typename ValueType>
-void BaseMatrix<ValueType>::MaximalIndependentSet(int &size,
+bool BaseMatrix<ValueType>::MaximalIndependentSet(int &size,
                                                   BaseVector<int> *permutation) const {
 
-  LOG_INFO("MaximalIndependentSet(int &size, BaseVector<int> *permutation) const");
-  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
-  this->info();
-  LOG_INFO("The function is not implemented (yet)!");
-  FATAL_ERROR(__FILE__, __LINE__);
-
+  return false;
 }
 
 template <typename ValueType>
@@ -570,6 +596,17 @@ void BaseMatrix<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVector<
 }
 
 template <typename ValueType>
+void BaseMatrix<ValueType>::Invert(void) {
+
+  LOG_INFO("BaseMatrix<ValueType>::Invert()");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
 bool BaseMatrix<ValueType>::FSAI(const int power, const BaseMatrix<ValueType> *pattern) {
   return false;
 }
@@ -586,7 +623,7 @@ void BaseMatrix<ValueType>::SPAI(void) {
 }
 
 template <typename ValueType>
-bool BaseMatrix<ValueType>::DiagMatMult(const BaseVector<ValueType> &diag) {
+bool BaseMatrix<ValueType>::DiagonalMatrixMult(const BaseVector<ValueType> &diag) {
   return false;
 }
 
@@ -630,6 +667,17 @@ void BaseMatrix<ValueType>::SetDataPtrCOO(int **row, int **col, ValueType **val,
                                           const int nnz, const int nrow, const int ncol) {
 
   LOG_INFO("BaseMatrix<ValueType>::SetDataPtrCOO(...)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)! Check the backend?");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::LeaveDataPtrCOO(int **row, int **col, ValueType **val) {
+
+  LOG_INFO("BaseMatrix<ValueType>::LeaveDataPtrCOO(...)");
   LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
   this->info();
   LOG_INFO("The function is not implemented (yet)! Check the backend?");

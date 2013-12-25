@@ -83,7 +83,7 @@ public:
   // L1 norm, sum(|this|)
   virtual ValueType Asum(void) const;
   // Amax, max(|this|)
-  virtual ValueType Amax(void) const;
+  virtual int Amax(ValueType &value) const;
   // point-wise multiplication
   virtual void PointWiseMult(const GlobalVector<ValueType> &x);
   virtual void PointWiseMult(const GlobalVector<ValueType> &x, const GlobalVector<ValueType> &y);

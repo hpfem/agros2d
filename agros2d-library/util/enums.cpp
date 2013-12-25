@@ -342,15 +342,17 @@ void initLists()
     iterLinearSolverMethodList.insert(Hermes::Solvers::CG, "cg");
     iterLinearSolverMethodList.insert(Hermes::Solvers::GMRES, "gmres");
     iterLinearSolverMethodList.insert(Hermes::Solvers::BiCGStab, "bicgstab");
+    iterLinearSolverMethodList.insert(Hermes::Solvers::CR, "cr");
     // iterLinearSolverMethodList.insert(Hermes::Solvers::IDR, "idr");
 
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::Jacobi, "jacobi");
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ILU, "ilu");
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::MultiColoredSGS, "multicoloredsgs");
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::MultiColoredILU, "multicoloredilu");
-    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::DiagJacobiSaddlePointPrecond, "jacobisaddlepoint");
-    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::IC, "ic");
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::SaddlePoint, "saddlepoint");
     // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::AIChebyshev, "aichebyshev");
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::IC, "ic");
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::MultiElimination, "multielimination");
 }
 
 QString errorNormString(Hermes::Hermes2D::NormType projNormType)
@@ -764,8 +766,10 @@ QString iterLinearSolverMethodString(Hermes::Solvers::IterSolverType type)
         return QObject::tr("GMRES");
     case Hermes::Solvers::BiCGStab:
         return QObject::tr("BiCGStab");
-    // case Hermes::Solvers::IDR:
-    //     return QObject::tr("IDR");
+    case Hermes::Solvers::IDR:
+        return QObject::tr("IDR");
+    case Hermes::Solvers::CR:
+        return QObject::tr("CR");
     default:
         std::cerr << "Iterative solver method '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverTypeString(Hermes::Solvers::ParalutionSolverType type)" << endl;
         throw;
@@ -788,8 +792,10 @@ QString iterLinearSolverPreconditionerTypeString(PreconditionerType type)
         return QObject::tr("IC");
     case Hermes::Solvers::AIChebyshev:
         return QObject::tr("AIChebyshev");
-    // case Hermes::Solvers::DiagJacobiSaddlePointPrecond:
-    //     return QObject::tr("JacobiSaddlePoint");
+    case Hermes::Solvers::MultiElimination:
+        return QObject::tr("MultiElimination");
+    case Hermes::Solvers::SaddlePoint:
+        return QObject::tr("SaddlePoint");
     default:
         std::cerr << "Iterative solver preconditioner '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverPreconditionerTypeString(Hermes::Solvers::PreconditionerType type)" << endl;
         throw;

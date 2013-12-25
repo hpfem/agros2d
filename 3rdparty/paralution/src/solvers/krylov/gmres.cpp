@@ -298,7 +298,7 @@ void GMRES<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorTy
         r = Hx;
 
       if (Hxy != 0.0) {
-        double rsq = r * r;
+        ValueType rsq = r * r;
         if (r < 0.0)
           r *= sqrt(Hx * Hx / rsq + Hy * Hy / rsq);
         else
@@ -435,7 +435,7 @@ void GMRES<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType 
         r = Hx;
 
       if (Hxy != 0.0) {
-        double rsq = r * r;
+        ValueType rsq = r * r;
         if (r < 0.0)
           r *= sqrt(Hx * Hx / rsq + Hy * Hy / rsq);
         else

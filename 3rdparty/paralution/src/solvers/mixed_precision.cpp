@@ -253,7 +253,7 @@ void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
 
   this->iter_ctrl_.InitResidual(this->Norm(this->r_h_));
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(this->r_h_))) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(this->r_h_), this->index_)) {
 
   // cast to lower precision 
 

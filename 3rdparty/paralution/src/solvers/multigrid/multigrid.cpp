@@ -42,6 +42,8 @@ template <class OperatorType, class VectorType, typename ValueType>
 MultiGrid<OperatorType, VectorType, ValueType>::MultiGrid() {
 
   this->levels_ = -1;
+  this->current_level_ = 0;
+
   this->iter_pre_smooth_ = 1;
   this->iter_post_smooth_ = 2;
 
@@ -58,11 +60,17 @@ MultiGrid<OperatorType, VectorType, ValueType>::MultiGrid() {
   this->r_level_ = NULL;
   this->t_level_ = NULL;
   this->s_level_ = NULL;
+  this->p_level_ = NULL;
+  this->q_level_ = NULL;
+  this->k_level_ = NULL;
+  this->l_level_ = NULL;
 
   this->solver_coarse_ = NULL;
   this->smoother_level_ = NULL;
 
   this->scaling_ = true;
+
+  this->cycle_ = 0;
 
 }
 
@@ -184,6 +192,13 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetScaling(const bool scali
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
+void MultiGrid<OperatorType, VectorType, ValueType>::SetCycle(const _cycle cycle) {
+
+  this->cycle_ = cycle;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Print(void) const {
   
   LOG_INFO("MultiGrid solver");
@@ -249,6 +264,32 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Build(void) {
   this->t_level_ = new VectorType*[this->levels_];
   this->s_level_ = new VectorType*[this->levels_];
 
+  // Extra structure for K-cycle
+  if (this->cycle_ == 2) {
+    this->p_level_ = new VectorType*[this->levels_-2];
+    this->q_level_ = new VectorType*[this->levels_-2];
+    this->k_level_ = new VectorType*[this->levels_-2];
+    this->l_level_ = new VectorType*[this->levels_-2];
+
+    for (int i=0; i<this->levels_-2; ++i) {
+      this->p_level_[i] = new VectorType;
+      this->p_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->p_level_[i]->Allocate("p", this->op_level_[i]->get_nrow());
+
+      this->q_level_[i] = new VectorType;
+      this->q_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->q_level_[i]->Allocate("q", this->op_level_[i]->get_nrow());
+
+      this->k_level_[i] = new VectorType;
+      this->k_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->k_level_[i]->Allocate("k", this->op_level_[i]->get_nrow());
+
+      this->l_level_[i] = new VectorType;
+      this->l_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->l_level_[i]->Allocate("l", this->op_level_[i]->get_nrow());
+    }
+  }
+
   for (int i=1; i<this->levels_; ++i) {
 
     // On finest level, we need to get the size from this->op_ instead
@@ -291,11 +332,8 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Clear(void) {
 
     for (int i=0; i<this->levels_; ++i) {
 
-      // Leave solution VectorType (d_level_[0])
-      if (i > 0)
-        delete this->d_level_[i];
-
       // Clear temporary VectorTypes
+      if (i > 0) delete this->d_level_[i];
       delete this->r_level_[i];
       delete this->t_level_[i];
       delete this->s_level_[i];
@@ -305,6 +343,23 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Clear(void) {
     delete[] this->r_level_;
     delete[] this->t_level_;
     delete[] this->s_level_;
+
+    // Extra structure for K-cycle
+    if (this->cycle_ == 2) {
+
+      for (int i=0; i<this->levels_-2; ++i) {
+        delete this->p_level_[i];
+        delete this->q_level_[i];
+        delete this->k_level_[i];
+        delete this->l_level_[i];
+      }
+
+      delete[] this->p_level_;
+      delete[] this->q_level_;
+      delete[] this->k_level_;
+      delete[] this->l_level_;
+
+    }
 
     // Clear smoothers - we built it
     for (int i=0; i<this->levels_-1; ++i)
@@ -338,8 +393,7 @@ void MultiGrid<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) 
       this->op_level_[i]->MoveToHost();
       this->smoother_level_[i]->MoveToHost();
       this->r_level_[i]->MoveToHost();
-      if (i > 0)
-        this->d_level_[i]->MoveToHost();
+      if (i > 0) this->d_level_[i]->MoveToHost();
       this->t_level_[i]->MoveToHost();
       this->s_level_[i]->MoveToHost();
 
@@ -348,6 +402,16 @@ void MultiGrid<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) 
         this->prolong_op_level_[i]->MoveToHost();
       } else
         this->restrict_vector_level_[i]->MoveToHost();
+    }
+
+    // Extra structure for K-cycle
+    if (this->cycle_ == 2) {
+      for (int i=0; i<this->levels_-2; ++i) {
+        this->p_level_[i]->MoveToHost();
+        this->q_level_[i]->MoveToHost();
+        this->k_level_[i]->MoveToHost();
+        this->l_level_[i]->MoveToHost();
+      }
     }
 
     if (this->precond_ != NULL) {
@@ -373,8 +437,7 @@ void MultiGrid<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_
       this->op_level_[i]->MoveToAccelerator();
       this->smoother_level_[i]->MoveToAccelerator();
       this->r_level_[i]->MoveToAccelerator();
-      if (i > 0)
-        this->d_level_[i]->MoveToAccelerator();
+      if (i > 0) this->d_level_[i]->MoveToAccelerator();
       this->t_level_[i]->MoveToAccelerator();
       this->s_level_[i]->MoveToAccelerator();
 
@@ -383,6 +446,16 @@ void MultiGrid<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_
         this->prolong_op_level_[i]->MoveToAccelerator();
       } else
         this->restrict_vector_level_[i]->MoveToAccelerator();
+    }
+
+    // Extra structure for K-cycle
+    if (this->cycle_ == 2) {
+      for (int i=0; i<this->levels_-2; ++i) {
+        this->p_level_[i]->MoveToAccelerator();
+        this->q_level_[i]->MoveToAccelerator();
+        this->k_level_[i]->MoveToAccelerator();
+        this->l_level_[i]->MoveToAccelerator();
+      }
     }
 
     if (this->precond_ != NULL) {
@@ -397,52 +470,33 @@ template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                                  VectorType *x) {
 
+  assert(this->levels_ > 1);
   assert(x != NULL);
   assert(x != &rhs);
   assert(this->op_ != NULL);
   assert(this->build_ == true);
-
-  if (this->verb_ > 0) {
-    this->PrintStart_();
-    this->iter_ctrl_.PrintInit();
-  }
-
-  this->SolveV(rhs, x);
-
-  if (this->verb_ > 0) {
-    this->iter_ctrl_.PrintStatus();
-    this->PrintEnd_();
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void MultiGrid<OperatorType, VectorType, ValueType>::SolveV(const VectorType &rhs,
-                                                                  VectorType *x) {
-
-  int levels = this->levels_;
-
-  assert(this->levels_ > 1);
-  assert(x != NULL);
-  assert(x != &rhs);
-  assert(this->op_  != NULL);
-  assert(this->r_level_[levels-1] != NULL);
-  assert(this->d_level_[levels-1] != NULL);
-  assert(this->t_level_[levels-1] != NULL);
-  assert(this->s_level_[levels-1] != NULL);
   assert(this->precond_  == NULL);
-  assert(this->build_ == true);
   assert(this->solver_coarse_ != NULL);
 
-  for (int i=0; i<levels-1; ++i) {
-    if (i>0)
-      assert(this->op_level_[i] != NULL);
-    assert(this->smoother_level_[i] != NULL);
+  for (int i=0; i<this->levels_; ++i) {
+    if (i > 0) assert(this->d_level_[i] != NULL);
     assert(this->r_level_[i] != NULL);
-    if (i > 0)
-      assert(this->d_level_[i] != NULL);
     assert(this->t_level_[i] != NULL);
     assert(this->s_level_[i] != NULL);
+  }
+
+  if (this->cycle_ == 2) {
+    for (int i=0; i<this->levels_-2; ++i) {
+      assert(this->k_level_[i] != NULL);
+      assert(this->l_level_[i] != NULL);
+      assert(this->p_level_[i] != NULL);
+      assert(this->q_level_[i] != NULL);
+    }
+  }
+
+  for (int i=0; i<this->levels_-1; ++i) {
+    if (i > 0) assert(this->op_level_[i] != NULL);
+    assert(this->smoother_level_[i] != NULL);
 
     if (this->operator_type_) {
       assert(this->restrict_op_level_[i] != NULL);
@@ -451,129 +505,25 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SolveV(const VectorType &rh
       assert(this->restrict_vector_level_[i] != NULL);
   }
 
-  // initial residual = b - Ax
-  this->op_->Apply(*x, this->t_level_[0]);
-  this->t_level_[0]->ScaleAdd(ValueType(-1.0), rhs);
-
-  ValueType res_norm;
-  res_norm = this->Norm(*this->t_level_[0]);
-
-
-  this->iter_ctrl_.InitResidual(res_norm);
-
-  this->d_level_[0] = x;
-  ValueType scale1, scale2;
-  bool scaling = this->scaling_;
-
-  while (!this->iter_ctrl_.CheckResidual(res_norm)) {
-
-    // Set vectors to zero
-    for (int i=1; i<levels; ++i)
-      this->d_level_[i]->Zeros();
-
-    // Restrict residual vector on finest level
-    this->Restrict_(*this->t_level_[0], this->r_level_[1], 0);
-
-    // Loop over levels until coarsest level is reached
-    for (int i=1; i<levels-1; ++i) {
-
-      // Pre-smoothing
-      this->smoother_level_[i]->InitMaxIter(this->iter_pre_smooth_);
-      this->smoother_level_[i]->Solve(*r_level_[i], d_level_[i]);
-
-      if (scaling) {
-        // Scaling
-        if (i < levels-2 && this->iter_pre_smooth_ > 0) {
-          t_level_[i]->PointWiseMult(*r_level_[i], *d_level_[i]);
-          scale1 = t_level_[i]->Reduce();
-          this->op_level_[i-1]->Apply(*d_level_[i],t_level_[i]);
-          t_level_[i]->PointWiseMult(*d_level_[i]);
-          scale2 = t_level_[i]->Reduce();
-          d_level_[i]->Scale(scale1/scale2);
-        }
-      }
-
-      // Update residual
-      this->op_level_[i-1]->Apply(*this->d_level_[i], this->t_level_[i]);
-      this->t_level_[i]->ScaleAdd(ValueType(-1.0), *this->r_level_[i]);
-
-      // Restrict residual vector
-      this->Restrict_(*this->t_level_[i], this->r_level_[i+1], i);
-
-    }
-
-    this->solver_coarse_->Solve(*this->r_level_[levels-1], this->d_level_[levels-1]);
-
-    for (int i=levels-2; i>=1; --i) {
-
-      // Prolong solution vector
-      this->Prolong_(*this->d_level_[i+1], this->t_level_[i], i);
-
-      if (scaling && (i < levels-2)) {
-        // Scaling factor + defect correction
-        s_level_[i]->PointWiseMult(*r_level_[i], *t_level_[i]);
-        scale1 = s_level_[i]->Reduce();
-        this->op_level_[i-1]->Apply(*t_level_[i], s_level_[i]);
-        s_level_[i]->PointWiseMult(*t_level_[i]);
-        scale2 = s_level_[i]->Reduce();
-      
-        // Defect correction
-        this->d_level_[i]->AddScale(*this->t_level_[i], scale1/scale2);
-      } else
-        this->d_level_[i]->AddScale(*this->t_level_[i], ValueType(1.0));
-
-      // Post-smoothing
-      this->smoother_level_[i]->InitMaxIter(this->iter_post_smooth_);
-      this->smoother_level_[i]->Solve(*this->r_level_[i], this->d_level_[i]);
-
-    }
-
-    // Prolong solution vector on finest level
-    this->Prolong_(*this->d_level_[1], this->r_level_[0], 0);
-
-    if (scaling) {
-      // Scaling factor
-      s_level_[0]->PointWiseMult(*r_level_[0], *t_level_[0]);
-      scale1 = s_level_[0]->Reduce();
-      this->op_->Apply(*r_level_[0], s_level_[0]);
-      s_level_[0]->PointWiseMult(*r_level_[0]);
-      scale2 = s_level_[0]->Reduce();
-
-      // Defect correction + scaling factor
-      this->d_level_[0]->AddScale(*this->r_level_[0], scale1/scale2);
-    } else
-      // Defect correction + scaling factor
-      this->d_level_[0]->AddScale(*this->r_level_[0], ValueType(1.0));
-
-    // Post-smoothing on finest level
-    this->smoother_level_[0]->InitMaxIter(this->iter_post_smooth_);
-    this->smoother_level_[0]->Solve(rhs, this->d_level_[0]);
-
-    // Update residual
-    this->op_->Apply(*this->d_level_[0], this->t_level_[0]); 
-    this->t_level_[0]->ScaleAdd(ValueType(-1.0), rhs);
-
-    res_norm = this->Norm(*this->t_level_[0]);
-
+  if (this->verb_ > 0) {
+    this->PrintStart_();
+    this->iter_ctrl_.PrintInit();
   }
 
-}
+  // initial residual = b - Ax
+  this->op_->Apply(*x, this->r_level_[0]);
+  this->r_level_[0]->ScaleAdd(ValueType(-1.0), rhs);
 
-template <class OperatorType, class VectorType, typename ValueType>
-void MultiGrid<OperatorType, VectorType, ValueType>::SolveW(const VectorType &rhs,
-                                                                  VectorType *x) {
+  this->res_norm_ = this->Norm(*this->r_level_[0]);
+  this->iter_ctrl_.InitResidual(this->res_norm_);
 
-  LOG_INFO("MultiGrid:SolveW() not implemented yet");
-  FATAL_ERROR(__FILE__, __LINE__);
+  while (!this->iter_ctrl_.CheckResidual(this->res_norm_, this->index_))
+    this->Vcycle_(rhs, x);
 
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void MultiGrid<OperatorType, VectorType, ValueType>::SolveF(const VectorType &rhs,
-                                                                  VectorType *x) {
-
-  LOG_INFO("MultiGrid:SolveW() not implemented yet");
-  FATAL_ERROR(__FILE__, __LINE__);
+  if (this->verb_ > 0) {
+    this->iter_ctrl_.PrintStatus();
+    this->PrintEnd_();
+  }
 
 }
 
@@ -602,29 +552,131 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Prolong_(const VectorType &
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void MultiGrid<OperatorType, VectorType, ValueType>::Vcycle_() {
+void MultiGrid<OperatorType, VectorType, ValueType>::Vcycle_(const VectorType &rhs,
+                                                                   VectorType *x) {
 
+  // Perform cycle
+  if (this->current_level_ < this->levels_-1) {
 
+    ValueType factor;
+
+    // Pre-smoothing on finest level
+    this->smoother_level_[this->current_level_]->InitMaxIter(this->iter_pre_smooth_);
+    this->smoother_level_[this->current_level_]->Solve(rhs, x);
+
+    if (this->scaling_ == true) {
+      if (this->current_level_ > 0 && this->current_level_ < this->levels_ - 2 && this->iter_pre_smooth_ > 0) {
+
+        this->r_level_[this->current_level_]->PointWiseMult(rhs, *x);
+        factor = this->r_level_[this->current_level_]->Reduce();
+        this->op_level_[this->current_level_-1]->Apply(*x, this->r_level_[this->current_level_]);
+        this->r_level_[this->current_level_]->PointWiseMult(*x);
+        factor /= this->r_level_[this->current_level_]->Reduce();
+        x->Scale(factor);
+      }
+    }
+
+    // Update residual
+    if (this->current_level_ == 0)
+      this->op_->Apply(*x, this->s_level_[this->current_level_]);
+    else
+      this->op_level_[this->current_level_-1]->Apply(*x, this->s_level_[this->current_level_]);
+    this->s_level_[this->current_level_]->ScaleAdd(ValueType(-1.0), rhs);
+
+    // Restrict residual vector on finest level
+    this->Restrict_(*this->s_level_[this->current_level_], this->t_level_[this->current_level_+1], this->current_level_);
+    ++this->current_level_;
+
+    // Set new solution for recursion to zero
+    this->d_level_[this->current_level_]->Zeros();
+
+    // Recursive call dependent on the cycle
+    switch (this->cycle_) {
+      // V-cycle
+      case 0:   this->Vcycle_(*this->t_level_[this->current_level_], d_level_[this->current_level_]);
+                break;
+
+      // W-cycle
+      case 1:   this->Wcycle_(*this->t_level_[this->current_level_], d_level_[this->current_level_]);
+                break;
+
+      // K-cycle
+      case 2:   this->Kcycle_(*this->t_level_[this->current_level_], d_level_[this->current_level_]);
+                break;
+
+      // F-cycle
+      case 3:   this->Fcycle_(*this->t_level_[this->current_level_], d_level_[this->current_level_]);
+                break;
+
+      default:  FATAL_ERROR(__FILE__, __LINE__);
+                break;
+    }
+
+    // Prolong solution vector on finest level
+    this->Prolong_(*this->d_level_[this->current_level_], this->r_level_[this->current_level_-1], this->current_level_-1);
+    --this->current_level_;
+
+    // Scaling
+    if (this->scaling_ == true && this->current_level_ < this->levels_ - 2) {
+      if (this->current_level_ == 0)
+        this->s_level_[this->current_level_]->PointWiseMult(*this->r_level_[this->current_level_]);
+      else
+        this->s_level_[this->current_level_]->PointWiseMult(*this->r_level_[this->current_level_], *this->t_level_[this->current_level_]);
+      factor = this->s_level_[this->current_level_]->Reduce();
+      if (this->current_level_ == 0)
+        this->op_->Apply(*this->r_level_[this->current_level_], this->s_level_[this->current_level_]);
+      else
+        this->op_level_[this->current_level_-1]->Apply(*this->r_level_[this->current_level_], this->s_level_[this->current_level_]);
+      this->s_level_[this->current_level_]->PointWiseMult(*this->r_level_[this->current_level_]);
+      factor /= this->s_level_[this->current_level_]->Reduce();
+
+      // Defect correction
+      x->AddScale(*this->r_level_[this->current_level_], factor);
+    } else
+      // Defect correction
+      x->AddScale(*this->r_level_[this->current_level_], ValueType(1.0));
+
+    // Post-smoothing on finest level
+    this->smoother_level_[this->current_level_]->InitMaxIter(this->iter_post_smooth_);
+    this->smoother_level_[this->current_level_]->Solve(rhs, x);
+
+    if (this->current_level_ == 0) {
+      // Update residual
+      this->op_->Apply(*x, this->r_level_[this->current_level_]);
+      this->r_level_[this->current_level_]->ScaleAdd(ValueType(-1.0), rhs);
+
+      this->res_norm_ = this->Norm(*this->r_level_[this->current_level_]);
+    }
+
+  } else
+    // Coarse grid solver
+    this->solver_coarse_->SolveZeroSol(rhs, x);
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void MultiGrid<OperatorType, VectorType, ValueType>::Wcycle_() {
+void MultiGrid<OperatorType, VectorType, ValueType>::Wcycle_(const VectorType &rhs, VectorType *x) {
 
-
+  LOG_INFO("MultiGrid:Wcycle_() not implemented yet");
+  FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void MultiGrid<OperatorType, VectorType, ValueType>::Fcycle_() {
+void MultiGrid<OperatorType, VectorType, ValueType>::Fcycle_(const VectorType &rhs, VectorType *x) {
 
-
+  LOG_INFO("MultiGrid:Fcycle_() not implemented yet");
+  FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
+template <class OperatorType, class VectorType, typename ValueType>
+void MultiGrid<OperatorType, VectorType, ValueType>::Kcycle_(const VectorType &rhs, VectorType *x) {
 
+  LOG_INFO("MultiGrid:Kcycle_() not implemented yet");
+  FATAL_ERROR(__FILE__, __LINE__);
 
-
+}
 
 // do nothing
 template <class OperatorType, class VectorType, typename ValueType>

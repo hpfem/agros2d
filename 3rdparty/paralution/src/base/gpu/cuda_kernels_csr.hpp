@@ -187,7 +187,7 @@ __global__ void kernel_csr_extract_submatrix_row_nnz(const IndexType *row_offset
 
   if (ai <smrow_size) {
 
-    int nnz = 0 ;
+    IndexType nnz = 0 ;
 
     IndexType ind = ai+smrow_offset;
 
@@ -263,7 +263,7 @@ template <typename IndexType>
 __global__ void kernel_calc_row_nnz( const IndexType nrow,
                               const IndexType *row_offset,
                               IndexType *row_nnz){
-  int ai = blockIdx.x*blockDim.x + threadIdx.x;
+  IndexType ai = blockIdx.x*blockDim.x + threadIdx.x;
   if(ai < nrow){
     row_nnz[ai] = row_offset[ai+1]-row_offset[ai];
   }
@@ -278,10 +278,10 @@ __global__ void kernel_calc_row_nnz( const IndexType nrow,
 template <typename IndexType>
 __global__ void kernel_permute_row_nnz(const IndexType nrow,
                                        const IndexType *row_nnz_src,
-                                       const int *perm_vec,
+                                       const IndexType *perm_vec,
                                        IndexType *row_nnz_dst) {
 
-  int ai = blockIdx.x*blockDim.x + threadIdx.x;
+  IndexType ai = blockIdx.x*blockDim.x + threadIdx.x;
 
   if (ai < nrow) {
     row_nnz_dst[perm_vec[ai]] = row_nnz_src[ai];
@@ -310,15 +310,15 @@ __global__ void kernel_permute_rows(const IndexType nrow,
                                     IndexType *perm_col,
                                     ValueType *perm_data) {
 
-  int ai = blockIdx.x*blockDim.x + threadIdx.x;
+  IndexType ai = blockIdx.x*blockDim.x + threadIdx.x;
 
   if (ai < nrow) {
 
-    int num_elems = row_nnz[ai];
-    int perm_index = perm_row_offset[perm_vec[ai]];
-    int prev_index = row_offset[ai];
+    IndexType num_elems = row_nnz[ai];
+    IndexType perm_index = perm_row_offset[perm_vec[ai]];
+    IndexType prev_index = row_offset[ai];
 
-    for (int i = 0; i < num_elems; ++i) {
+    for (IndexType i = 0; i < num_elems; ++i) {
       perm_data[perm_index + i] = data[prev_index + i];
       perm_col[perm_index + i]  = col[prev_index + i];
     }
@@ -337,7 +337,7 @@ __global__ void kernel_permute_rows(const IndexType nrow,
 //           perm_data:        row-permuted data
 // Outputs:  col:              fully permuted column indices of elements
 //           data:             fully permuted data
-template <typename ValueType, typename IndexType, const int size>
+template <typename ValueType, typename IndexType, const IndexType size>
 __global__ void kernel_permute_cols(const IndexType nrow,
                                     const IndexType *row_offset,
                                     const IndexType *perm_vec,
@@ -347,8 +347,8 @@ __global__ void kernel_permute_cols(const IndexType nrow,
                                     IndexType *col,
                                     ValueType *data) {
 
-  int ai = blockIdx.x*blockDim.x + threadIdx.x;
-  int j;
+  IndexType ai = blockIdx.x*blockDim.x + threadIdx.x;
+  IndexType j;
 
   IndexType ccol[size];
   ValueType cval[size];
@@ -358,12 +358,12 @@ __global__ void kernel_permute_cols(const IndexType nrow,
     IndexType num_elems = row_nnz[ai];
     IndexType elem_index = row_offset[ai];
 
-    for (int i=0; i<num_elems; ++i) {
+    for (IndexType i=0; i<num_elems; ++i) {
       ccol[i] = col[elem_index+i];
       cval[i] = data[elem_index+i];
     }
 
-    for (int i = 0; i < num_elems; ++i) {
+    for (IndexType i = 0; i < num_elems; ++i) {
 
       IndexType comp = perm_vec[perm_col[elem_index+i]];
 
@@ -381,7 +381,7 @@ __global__ void kernel_permute_cols(const IndexType nrow,
 
     }
 
-    for (int i=0; i<num_elems; ++i) {
+    for (IndexType i=0; i<num_elems; ++i) {
       col[elem_index+i] = ccol[i];
       data[elem_index+i] = cval[i];
     }
@@ -404,7 +404,7 @@ __global__ void kernel_csr_add_csr_same_struct(const IndexType nrow,
 
   if (ai <nrow) {
 
-    int first_col = in_row_offset[ai];
+    IndexType first_col = in_row_offset[ai];
       
     for (ajj=out_row_offset[ai]; ajj<out_row_offset[ai+1]; ++ajj)
       for (aj=first_col; aj<in_row_offset[ai+1]; ++aj)
@@ -416,6 +416,151 @@ __global__ void kernel_csr_add_csr_same_struct(const IndexType nrow,
           
         }
   }
+
+}
+
+
+// Computes the lower triangular part nnz per row
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_lower_nnz_per_row(const IndexType nrow, const IndexType *src_row_offset,
+                                             const IndexType *src_col, IndexType *nnz_per_row) {
+  
+  IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
+  IndexType aj;
+  
+  if (ai < nrow) {
+    nnz_per_row[ai] = 0;
+    for (aj=src_row_offset[ai]; aj<src_row_offset[ai+1]; ++aj)
+      if (src_col[aj] <= ai)
+        ++nnz_per_row[ai];
+  }
+}
+
+// Computes the upper triangular part nnz per row
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_upper_nnz_per_row(const IndexType nrow, const IndexType *src_row_offset,
+                                             const IndexType *src_col, IndexType *nnz_per_row) {
+  
+  IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
+  IndexType aj;
+  
+  if (ai < nrow) {
+    nnz_per_row[ai] = 0;
+    for (aj=src_row_offset[ai]; aj<src_row_offset[ai+1]; ++aj)
+      if (src_col[aj] >= ai)
+        ++nnz_per_row[ai];
+  }
+}
+  
+// Computes the stricktly lower triangular part nnz per row
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_slower_nnz_per_row(const IndexType nrow, const IndexType *src_row_offset,
+                                              const IndexType *src_col, IndexType *nnz_per_row) {
+  
+  IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
+  IndexType aj;
+  
+  if (ai < nrow) {
+    nnz_per_row[ai] = 0;
+    for (aj=src_row_offset[ai]; aj<src_row_offset[ai+1]; ++aj)
+      if (src_col[aj] < ai)
+        ++nnz_per_row[ai];
+  }
+}
+
+
+// Computes the stricktly upper triangular part nnz per row
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_supper_nnz_per_row(const IndexType nrow, const IndexType *src_row_offset,
+                                              const IndexType *src_col, IndexType *nnz_per_row) {
+  
+  IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
+  IndexType aj;
+  
+  if (ai < nrow) {
+    nnz_per_row[ai] = 0;
+    for (aj=src_row_offset[ai]; aj<src_row_offset[ai+1]; ++aj)
+      if (src_col[aj] > ai)
+        ++nnz_per_row[ai];
+  }
+}
+
+
+// Extracts lower/upper triangular part for given nnz per row array (partial sums nnz)
+// Should work not only for lower/upper matrices but for all patterns
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_extract_lu_triangular(const IndexType nrow,
+                                                 const IndexType *src_row_offset, const IndexType *src_col,
+                                                 const ValueType *src_val, IndexType *nnz_per_row,
+                                                 IndexType *dst_col, ValueType *dst_val) {
+  
+  IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
+  IndexType aj;
+  
+  if (ai < nrow) {
+    
+    for (aj=0; aj<nnz_per_row[ai+1]-nnz_per_row[ai]; ++aj) {
+      
+      IndexType dst_index = nnz_per_row[ai] + aj;
+      IndexType src_index = aj + src_row_offset[ai];
+      
+      dst_col[dst_index] = src_col[src_index];
+      dst_val[dst_index] = src_val[src_index];
+      
+    }
+  }
+}
+
+
+// Compress 
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_compress_count_nrow(const IndexType *row_offset, const IndexType *col, const ValueType *val,
+                                               const IndexType nrow,
+                                               const ValueType drop_off, 
+                                               IndexType *row_offset_new) {
+  
+  IndexType ai = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType aj;
+
+  if (ai <nrow) {
+
+    for (aj=row_offset[ai]; aj<row_offset[ai+1]; ++aj) {
+
+      if ( (abs(val[aj]) > drop_off) ||
+           ( col[aj] == ai))
+        row_offset_new[ai]++;
+    }
+  }
+
+
+}
+
+// Compress 
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_compress_copy(const IndexType *row_offset, const IndexType *col, const ValueType *val,
+                                         const IndexType nrow,
+                                         const ValueType drop_off, 
+                                         const IndexType *row_offset_new,
+                                         IndexType *col_new,
+                                         ValueType *val_new) {
+  
+  IndexType ai = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType aj;
+  IndexType ajj = row_offset_new[ai];
+
+  if (ai <nrow) {
+
+    for (aj=row_offset[ai]; aj<row_offset[ai+1]; ++aj) {
+
+      if ( (abs(val[aj]) > drop_off) ||
+           ( col[aj] == ai)) {
+        col_new[ajj] = col[aj];
+        val_new[ajj] = val[aj];
+        ajj++;
+      }
+    }
+  }
+
 
 }
 

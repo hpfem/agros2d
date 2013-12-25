@@ -152,6 +152,27 @@ void HostMatrixCOO<ValueType>::SetDataPtrCOO(int **row, int **col, ValueType **v
 
 }
 
+template <typename ValueType>
+void HostMatrixCOO<ValueType>::LeaveDataPtrCOO(int **row, int **col, ValueType **val) {
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  assert(this->get_nnz() > 0);
+
+  // see free_host function for details
+  *row = this->mat_.row;
+  *col = this->mat_.col;
+  *val = this->mat_.val;
+
+  this->mat_.row = NULL;
+  this->mat_.col = NULL;
+  this->mat_.val = NULL;
+
+  this->nrow_ = 0;
+  this->ncol_ = 0;
+  this->nnz_  = 0;
+
+}
 
 template <typename ValueType>
 void HostMatrixCOO<ValueType>::CopyFromCOO(const int *row, const int *col, const ValueType *val) {
@@ -340,13 +361,13 @@ void HostMatrixCOO<ValueType>::ReadFileMTX(const std::string filename) {
 
     this->mat_.row[ii] = row;
     this->mat_.col[ii] = col;
-    this->mat_.val[ii] = val;
+    this->mat_.val[ii] = ValueType(val);
 
     if (sym && (row!=col)) {
       ++ii;
       this->mat_.row[ii] = col;
       this->mat_.col[ii] = row;
-      this->mat_.val[ii] = val;
+      this->mat_.val[ii] = ValueType(val);
     }
       
     ++ii;

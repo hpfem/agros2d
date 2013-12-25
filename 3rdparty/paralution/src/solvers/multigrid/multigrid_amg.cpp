@@ -51,8 +51,8 @@ AMG<OperatorType, VectorType, ValueType>::AMG() {
   // TODO also assuming 1 dof per node
 
   // parameter for strong couplings in smoothed aggregation
-  this->eps_   = 0.01;
-  this->relax_ = 2./3.;
+  this->eps_   = ValueType(0.01);
+  this->relax_ = ValueType(2.0/3.0);
   this->over_interp_ = 1.5;
   this->coarse_size_ = 300;
   this->interp_type_ = SmoothedAggregation;
@@ -83,7 +83,7 @@ AMG<OperatorType, VectorType, ValueType>::~AMG() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::Print(void) const {
-  
+
   LOG_INFO("AMG solver");
 
   LOG_INFO("AMG number of levels " << this->levels_);
@@ -228,20 +228,43 @@ void AMG<OperatorType, VectorType, ValueType>::Build(void) {
   this->t_level_ = new VectorType*[this->levels_];
   this->s_level_ = new VectorType*[this->levels_];
 
+  // Extra structure for K-cycle
+  if (this->cycle_ == 2) {
+    this->p_level_ = new VectorType*[this->levels_-2];
+    this->q_level_ = new VectorType*[this->levels_-2];
+    this->k_level_ = new VectorType*[this->levels_-2];
+    this->l_level_ = new VectorType*[this->levels_-2];
+
+    for (int i=0; i<this->levels_-2; ++i) {
+      this->p_level_[i] = new VectorType;
+      this->p_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->p_level_[i]->Allocate("p", this->op_level_[i]->get_nrow());
+
+      this->q_level_[i] = new VectorType;
+      this->q_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->q_level_[i]->Allocate("q", this->op_level_[i]->get_nrow());
+
+      this->k_level_[i] = new VectorType;
+      this->k_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->k_level_[i]->Allocate("k", this->op_level_[i]->get_nrow());
+
+      this->l_level_[i] = new VectorType;
+      this->l_level_[i]->CloneBackend(*this->op_level_[i]);
+      this->l_level_[i]->Allocate("l", this->op_level_[i]->get_nrow());
+    }
+  }
+
   for (int i=0; i<this->levels_; ++i) {
 
     this->r_level_[i] = new VectorType;
     this->t_level_[i] = new VectorType;
     this->s_level_[i] = new VectorType;
+    if (i > 0) this->d_level_[i] = new VectorType;
 
     this->r_level_[i]->CloneBackend(*this->op_);
     this->t_level_[i]->CloneBackend(*this->op_);
     this->s_level_[i]->CloneBackend(*this->op_);
-
-    if (i > 0) {
-      this->d_level_[i] = new VectorType;
-      this->d_level_[i]->CloneBackend(*this->op_);
-    }
+    if (i > 0) this->d_level_[i]->CloneBackend(*this->op_);
 
   }
 
@@ -279,7 +302,7 @@ void AMG<OperatorType, VectorType, ValueType>::Build(void) {
       gs[i]->SetPrecondMatrixFormat(this->sm_format_);
 
       // relxation
-      sm[i]->SetRelaxation(1.3);
+      sm[i]->SetRelaxation(ValueType(1.3));
       sm[i]->SetPreconditioner(*gs[i]);
 
       // be quite
@@ -335,11 +358,8 @@ void AMG<OperatorType, VectorType, ValueType>::Clear(void) {
 
     for (int i=0; i<this->levels_; ++i) {
 
-      // Leave solution VectorType (d_level_[0])
-      if (i > 0)
-        delete this->d_level_[i];
-
       // Clear temporary VectorTypes
+      if (i > 0) delete this->d_level_[i];
       delete this->r_level_[i];
       delete this->t_level_[i];
       delete this->s_level_[i];
@@ -349,6 +369,23 @@ void AMG<OperatorType, VectorType, ValueType>::Clear(void) {
     delete[] this->r_level_;
     delete[] this->t_level_;
     delete[] this->s_level_;
+
+    // Extra structure for K-cycle
+    if (this->cycle_ == 2) {
+
+      for (int i=0; i<this->levels_-2; ++i) {
+        delete this->p_level_[i];
+        delete this->q_level_[i];
+        delete this->k_level_[i];
+        delete this->l_level_[i];
+      }
+
+      delete[] this->p_level_;
+      delete[] this->q_level_;
+      delete[] this->k_level_;
+      delete[] this->l_level_;
+
+    }
 
     for (int i=0; i<this->levels_-1; ++i) {
 
@@ -421,19 +458,18 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
     restrict_list_.push_back(new OperatorType);
     prolong_list_.push_back(new OperatorType);
 
-    this->Connect(*this->op_, connections_type_);
-    this->Aggregate(*this->op_, *connections_type_, aggregates_type_);
-
-    if (this->interp_type_ == SmoothedAggregation)
-      this->eps_ *= 0.5;
-
     switch(this->interp_type_) {
 
       case Aggregation:
+        this->Connect(*this->op_, connections_type_);
+        this->Aggregate(*this->op_, *connections_type_, aggregates_type_);
         this->Aggr(*this->op_, *aggregates_type_, prolong_list_.back(), restrict_list_.back());
         break;
 
       case SmoothedAggregation:
+        this->Connect(*this->op_, connections_type_);
+        this->Aggregate(*this->op_, *connections_type_, aggregates_type_);
+        this->eps_ *= 0.5;
         this->SmoothedAggr(*this->op_, *aggregates_type_, *connections_type_, 
                            prolong_list_.back(), restrict_list_.back());
         break;
@@ -452,17 +488,11 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
     this->CoarsenOperator(*restrict_list_.back(), *prolong_list_.back(), *this->op_, op_list_.back());
 
     if (this->interp_type_ == Aggregation && this->over_interp_ > 1.0)
-      op_list_.back()->Scale(1./this->over_interp_);
+      op_list_.back()->Scale(ValueType(1.0)/this->over_interp_);
 
     ++this->levels_;
 
     while(op_list_.back()->get_nrow() > this->coarse_size_) {
-
-      this->Connect(*op_list_.back(), connections_type_);
-      this->Aggregate(*op_list_.back(), *connections_type_, aggregates_type_);
-
-      if (this->interp_type_ == SmoothedAggregation)
-        this->eps_ *= 0.5;
 
       // Add new list elements
       restrict_list_.push_back(new OperatorType);
@@ -471,10 +501,15 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
       switch(this->interp_type_) {
 
         case Aggregation:
+          this->Connect(*op_list_.back(), connections_type_);
+          this->Aggregate(*op_list_.back(), *connections_type_, aggregates_type_);
           this->Aggr(*op_list_.back(), *aggregates_type_, prolong_list_.back(), restrict_list_.back());
           break;
 
         case SmoothedAggregation:
+          this->Connect(*op_list_.back(), connections_type_);
+          this->Aggregate(*op_list_.back(), *connections_type_, aggregates_type_);
+          this->eps_ *= 0.5;
           this->SmoothedAggr(*op_list_.back(), *aggregates_type_, *connections_type_, 
                              prolong_list_.back(), restrict_list_.back());
           break;
@@ -493,7 +528,7 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
       this->CoarsenOperator(*restrict_list_.back(), *prolong_list_.back(), *prev_op_, op_list_.back());
 
       if (this->interp_type_ == Aggregation && this->over_interp_ > 1.0)
-        op_list_.back()->Scale(1./this->over_interp_);
+        op_list_.back()->Scale(ValueType(1.0)/this->over_interp_);
 
       ++this->levels_;
 

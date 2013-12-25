@@ -47,6 +47,9 @@ public:
   virtual void Zeros(void);
 
   virtual void AllocateCSR(const int nnz, const int nrow, const int ncol);
+  virtual void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
+                             const int nnz, const int nrow, const int ncol);
+  virtual void LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val);
 
   virtual bool ConvertFrom(const BaseMatrix<ValueType> &mat);
 
@@ -73,12 +76,19 @@ public:
 
   virtual bool ExtractDiagonal(BaseVector<ValueType> *vec_diag) const;
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
+  virtual bool ExtractL(BaseMatrix<ValueType> *L) const;
+  virtual bool ExtractLDiagonal(BaseMatrix<ValueType> *L) const;
 
+  virtual bool ExtractU(BaseMatrix<ValueType> *U) const;
+  virtual bool ExtractUDiagonal(BaseMatrix<ValueType> *U) const;
+  
+  virtual bool MaximalIndependentSet(int &size,
+                                     BaseVector<int> *permutation) const;
   virtual bool MultiColoring(int &num_colors,
                              int **size_colors,
                              BaseVector<int> *permutation) const;
 
-  virtual bool DiagMatMult(const BaseVector<ValueType> &diag);
+  virtual bool DiagonalMatrixMult(const BaseVector<ValueType> &diag);
 
   virtual void SymbolicPower(const int p);
 

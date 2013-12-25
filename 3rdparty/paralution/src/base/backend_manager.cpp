@@ -19,6 +19,7 @@
 //
 // *************************************************************************
 
+#include "version.hpp" 
 #include "backend_manager.hpp" 
 #include "base_vector.hpp"
 #include "base_matrix.hpp"
@@ -78,6 +79,7 @@ Paralution_Backend_Descriptor _Backend_Descriptor = {
 #endif
   false, // use Accelerator
   1,     // OpenMP threads
+  -1,    // pre-init OpenMP threads
   // GPU section
   NULL,  // *GPU_cublas_handle
   NULL,  // *GPU_cusparse_handle
@@ -90,7 +92,9 @@ Paralution_Backend_Descriptor _Backend_Descriptor = {
   -1,    // OCL_platform;
   -1,    // OCL_device;
   0,     // OCL_max_work_group_size;
-  0      // OCL_max_compute_units
+  0,     // OCL_max_compute_units
+  // MIC
+  0      // default is zero device
 };
 
 /// Host name
@@ -131,6 +135,7 @@ int init_paralution(void) {
 #endif
 
 #ifdef _OPENMP
+  _Backend_Descriptor.OpenMP_def_threads = omp_get_max_threads();
   _Backend_Descriptor.OpenMP_threads = omp_get_max_threads();
 #else 
   _Backend_Descriptor.OpenMP_threads = 1;
@@ -145,8 +150,20 @@ int init_paralution(void) {
 #endif
 
 #ifdef SUPPORT_MIC
+
+#ifdef __INTEL_OFFLOAD
+
   _Backend_Descriptor.accelerator = paralution_init_mic();
+
+#else
+
+  LOG_INFO("The MIC backend is compiled without __INTEL_OFFLOAD - Double check the compilation process!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
 #endif
+
+#endif
+
 
   _Backend_Descriptor.init = true ;
   return 0;
@@ -167,9 +184,35 @@ int stop_paralution(void) {
   paralution_stop_mic();
 #endif
 
+#ifdef _OPENMP
+  assert(_Backend_Descriptor.OpenMP_def_threads > 0);
+  omp_set_num_threads(_Backend_Descriptor.OpenMP_def_threads);
+#endif
+
   _Backend_Descriptor.init = false;
 
   return 0;
+}
+
+int set_device_paralution(int dev) {
+
+  assert(_Backend_Descriptor.init == false);
+
+#ifdef SUPPORT_CUDA
+  set_gpu_cuda_paralution(dev);
+#endif
+
+#ifdef SUPPORT_OCL
+  // see set_ocl_paralution()
+  _Backend_Descriptor.OCL_dev = dev;
+#endif
+
+#ifdef SUPPORT_MIC
+  _Backend_Descriptor.MIC_dev = dev;
+#endif
+
+  return 0;
+
 }
 
 void set_omp_threads_paralution(int nthreads) {
@@ -205,6 +248,11 @@ void set_ocl_paralution(int nplatform, int ndevice) {
 
 void info_paralution(void) {
 
+  LOG_INFO("PARALUTION ver " <<
+           __PARALUTION_VER_MAJOR << "." <<
+           __PARALUTION_VER_MINOR << "." <<
+           __PARALUTION_VER_REV << 
+           __PARALUTION_VER_PRE);
   info_paralution(_Backend_Descriptor);
 
 }

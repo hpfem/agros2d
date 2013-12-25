@@ -56,11 +56,12 @@ void IterationControl<ValueType>::Clear(void) {
   this->reached_ = 0 ;
 
   this->current_res_ = 0.0f ;
+  this->current_index_ = -1;
 
-  this->absolute_tol_ = 1e-15;
-  this->relative_tol_ = 1e-6;
-  this->divergence_tol_ = 1e+8;
-  this->maximum_iter_ = 1000000;
+  this->absolute_tol_   = ValueType(1e-15);
+  this->relative_tol_   = ValueType(1e-6);
+  this->divergence_tol_ = ValueType(1e+8);
+  this->maximum_iter_   = 1000000;
 }
 
 template <typename ValueType>
@@ -129,6 +130,14 @@ ValueType IterationControl<ValueType>::GetCurrentResidual(void) {
 }
 
 template <typename ValueType>
+int IterationControl<ValueType>::GetAmaxResidualIndex(void) {
+
+  return this->current_index_;
+
+}
+
+
+template <typename ValueType>
 int IterationControl<ValueType>::GetSolverStatus(void) {
 
   return this->reached_;
@@ -187,6 +196,14 @@ bool IterationControl<ValueType>::CheckResidual(const ValueType res) {
  }
 
   return false;
+
+}
+
+template <typename ValueType>
+bool IterationControl<ValueType>::CheckResidual(const ValueType res, const int index) {
+
+  this->current_index_ = index;
+  return this->CheckResidual(res);
 
 }
 
@@ -254,7 +271,7 @@ void IterationControl<ValueType>::PrintStatus(void) {
   case 1:
     LOG_INFO("IterationControl ABSOLUTE criteria has been reached: "
              << "res norm=" << fabs(this->current_res_) << "; "
-             << "rel val=" << this->initial_residual_ / this->current_res_ << "; "
+             << "rel val=" << this->current_res_ / this->initial_residual_ << "; "
              << "iter=" << this->iteration_);
     break;
 

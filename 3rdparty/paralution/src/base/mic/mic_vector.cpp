@@ -77,8 +77,10 @@ void MICAcceleratorVector<ValueType>::Allocate(const int n) {
 
   if (n > 0) {
 
-    allocate_mic(n, &this->vec_);
-    set_to_zero_mic(n, this->vec_);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 n, &this->vec_);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    n, this->vec_);
     this->size_ = n;
   }
 
@@ -113,7 +115,8 @@ void MICAcceleratorVector<ValueType>::Clear(void) {
   
   if (this->get_size() >0) {
 
-    free_mic(&this->vec_);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->vec_);
 
     this->size_ = 0 ;
 
@@ -135,7 +138,8 @@ void MICAcceleratorVector<ValueType>::CopyFromHost(const HostVector<ValueType> &
 
     if (this->get_size() >0) {
 
-      copy_to_mic(cast_vec->vec_, this->vec_, this->get_size());
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_vec->vec_, this->vec_, this->get_size());
 
     }
 
@@ -166,7 +170,8 @@ void MICAcceleratorVector<ValueType>::CopyToHost(HostVector<ValueType> *dst) con
 
     if (this->get_size() >0) {
 
-      copy_to_host(this->vec_, cast_vec->vec_, this->get_size());
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->vec_, cast_vec->vec_, this->get_size());
 
     }
 
@@ -202,7 +207,8 @@ void MICAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src)
 
         if (this->get_size() >0) {
 
-	  copy_mic_mic(mic_cast_vec->vec_, this->vec_, this->get_size());
+	  copy_mic_mic(this->local_backend_.MIC_dev,
+		       mic_cast_vec->vec_, this->vec_, this->get_size());
 
         }
 
@@ -248,7 +254,8 @@ void MICAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src,
   assert(cast_src != NULL);
 
   
-  copy_mic_mic(cast_src->vec_+src_offset, 
+  copy_mic_mic(this->local_backend_.MIC_dev,
+	       cast_src->vec_+src_offset, 
 	       this->vec_+dst_offset, 
 	       size);
   
@@ -272,7 +279,8 @@ void MICAcceleratorVector<ValueType>::CopyTo(BaseVector<ValueType> *dst) const{
 
         if (this->get_size() >0) {
 
-	  copy_mic_mic(this->vec_, mic_cast_vec->vec_, this->get_size());
+	  copy_mic_mic(this->local_backend_.MIC_dev,
+		       this->vec_, mic_cast_vec->vec_, this->get_size());
 
         }
       }
@@ -305,7 +313,8 @@ void MICAcceleratorVector<ValueType>::Zeros(void) {
 
   if (this->get_size() > 0) {
 
-    set_to_zero_mic(this->get_size(), this->vec_);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    this->get_size(), this->vec_);
     
   }
 
@@ -315,7 +324,8 @@ template <typename ValueType>
 void MICAcceleratorVector<ValueType>::Ones(void) {
 
   if (this->get_size() > 0)
-    set_to_one_mic(this->get_size(), this->vec_);
+    set_to_one_mic(this->local_backend_.MIC_dev,
+		   this->get_size(), this->vec_);
 
 }
 
@@ -337,7 +347,8 @@ void MICAcceleratorVector<ValueType>::AddScale(const BaseVector<ValueType> &x, c
     const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
     assert(cast_x != NULL);
 
-    addscale(cast_x->vec_, alpha, this->get_size(), this->vec_);
+    addscale(this->local_backend_.MIC_dev,
+	     cast_x->vec_, alpha, this->get_size(), this->vec_);
 
   }
 
@@ -354,7 +365,8 @@ void MICAcceleratorVector<ValueType>::ScaleAdd(const ValueType alpha, const Base
     const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
     assert(cast_x != NULL);
 
-    scaleadd(cast_x->vec_, alpha, this->get_size(), this->vec_);
+    scaleadd(this->local_backend_.MIC_dev,
+	     cast_x->vec_, alpha, this->get_size(), this->vec_);
 
   }
 
@@ -370,7 +382,8 @@ void MICAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const
     const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
     assert(cast_x != NULL);
 
-    scaleaddscale(cast_x->vec_, alpha, beta, this->get_size(), this->vec_);
+    scaleaddscale(this->local_backend_.MIC_dev,
+		  cast_x->vec_, alpha, beta, this->get_size(), this->vec_);
 
   }
 
@@ -389,7 +402,8 @@ void MICAcceleratorVector<ValueType>::ScaleAdd2(const ValueType alpha, const Bas
     assert(cast_x != NULL);
     assert(cast_y != NULL);
 
-    scaleadd2(cast_x->vec_, cast_y->vec_,
+    scaleadd2(this->local_backend_.MIC_dev,
+	      cast_x->vec_, cast_y->vec_,
 	      alpha, beta, gamma,
 	      this->get_size(),
 	      this->vec_);
@@ -403,7 +417,8 @@ void MICAcceleratorVector<ValueType>::Scale(const ValueType alpha) {
 
   if (this->get_size() > 0) {
 
-    scale(alpha, this->get_size(), this->vec_);
+    scale(this->local_backend_.MIC_dev,
+	  alpha, this->get_size(), this->vec_);
 
   }
 
@@ -427,7 +442,8 @@ ValueType MICAcceleratorVector<ValueType>::Dot(const BaseVector<ValueType> &x) c
 
   ValueType d;
 
-  dot(this->vec_, cast_x->vec_, this->get_size(), d);
+  dot(this->local_backend_.MIC_dev,
+      this->vec_, cast_x->vec_, this->get_size(), d);
 
   return d;
 }
@@ -438,20 +454,22 @@ ValueType MICAcceleratorVector<ValueType>::Asum(void) const {
 
   ValueType asumv;
 
-  asum(this->vec_, this->get_size(), asumv);
+  asum(this->local_backend_.MIC_dev,
+       this->vec_, this->get_size(), asumv);
 
   return asumv;
 
 }
 
 template <typename ValueType>
-ValueType MICAcceleratorVector<ValueType>::Amax(void) const {
+int MICAcceleratorVector<ValueType>::Amax(ValueType &value) const {
 
-  ValueType amaxv;
+  int index = 0;
 
-  amax(this->vec_, this->get_size(), amaxv);
+  amax(this->local_backend_.MIC_dev,
+       this->vec_, this->get_size(), value, index);
 
-  return amaxv;
+  return index;
 
 }
 
@@ -461,7 +479,8 @@ ValueType MICAcceleratorVector<ValueType>::Norm(void) const {
 
   ValueType n;
 
-  norm(this->vec_, this->get_size(), n);
+  norm(this->local_backend_.MIC_dev,
+       this->vec_, this->get_size(), n);
 
   return n;
 
@@ -473,7 +492,8 @@ ValueType MICAcceleratorVector<ValueType>::Reduce(void) const {
 
   ValueType r = ValueType(0.0);
 
-  reduce(this->vec_, this->get_size(), r);
+  reduce(this->local_backend_.MIC_dev,
+	 this->vec_, this->get_size(), r);
 
   return r;
 
@@ -489,7 +509,8 @@ void MICAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> 
     const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
     assert(cast_x != NULL);
 
-    pointwisemult(cast_x->vec_, this->get_size(), this->vec_);
+    pointwisemult(this->local_backend_.MIC_dev,
+		  cast_x->vec_, this->get_size(), this->vec_);
 
   }
 
@@ -508,7 +529,8 @@ void MICAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> 
     assert(cast_x != NULL);
     assert(cast_y != NULL);
 
-    pointwisemult2(cast_x->vec_, cast_y->vec_, this->get_size(), this->vec_);
+    pointwisemult2(this->local_backend_.MIC_dev,
+		   cast_x->vec_, cast_y->vec_, this->get_size(), this->vec_);
 
   }
 
@@ -529,7 +551,8 @@ void MICAcceleratorVector<ValueType>::Permute(const BaseVector<int> &permutation
     vec_tmp.Allocate(this->get_size());
     vec_tmp.CopyFrom(*this);
 
-    permute(cast_perm->vec_, vec_tmp.vec_,
+    permute(this->local_backend_.MIC_dev,
+	    cast_perm->vec_, vec_tmp.vec_,
 	    this->get_size(), this->vec_);
 
   }
@@ -551,7 +574,8 @@ void MICAcceleratorVector<ValueType>::PermuteBackward(const BaseVector<int> &per
     vec_tmp.Allocate(this->get_size());
     vec_tmp.CopyFrom(*this);
 
-    permuteback(cast_perm->vec_, vec_tmp.vec_,
+    permuteback(this->local_backend_.MIC_dev,
+		cast_perm->vec_, vec_tmp.vec_,
 		this->get_size(), this->vec_);
 
   }
@@ -574,7 +598,8 @@ void MICAcceleratorVector<ValueType>::CopyFromPermute(const BaseVector<ValueType
     assert(cast_vec ->get_size() == this->get_size());
     assert(cast_perm->get_size() == this->get_size());
 
-    permute(cast_perm->vec_, cast_vec->vec_,
+    permute(this->local_backend_.MIC_dev,
+	    cast_perm->vec_, cast_vec->vec_,
 	    this->get_size(),
 	    this->vec_);
  
@@ -598,7 +623,8 @@ void MICAcceleratorVector<ValueType>::CopyFromPermuteBackward(const BaseVector<V
     assert(cast_vec ->get_size() == this->get_size());
     assert(cast_perm->get_size() == this->get_size());
 
-    permuteback(cast_perm->vec_, cast_vec->vec_,
+    permuteback(this->local_backend_.MIC_dev,
+		cast_perm->vec_, cast_vec->vec_,
 		this->get_size(),
 		this->vec_);
         

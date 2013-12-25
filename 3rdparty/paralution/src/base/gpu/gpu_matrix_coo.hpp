@@ -43,6 +43,10 @@ public:
   virtual void Clear(void);
   virtual void AllocateCOO(const int nnz, const int nrow, const int ncol);
 
+  virtual void SetDataPtrCOO(int **row, int **col, ValueType **val,
+                             const int nnz, const int nrow, const int ncol);
+  virtual void LeaveDataPtrCOO(int **row, int **col, ValueType **val);
+
   virtual bool ConvertFrom(const BaseMatrix<ValueType> &mat);
 
   virtual bool Permute(const BaseVector<int> &permutation);

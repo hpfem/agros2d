@@ -136,7 +136,7 @@ public:
   /// Compute sum of absolute values of the vector (L1 norm), return =  sum(|this|)
   virtual ValueType Asum(void) const = 0;
   /// Compute the absolute max value of the vector, return =  max(|this|)
-  virtual ValueType Amax(void) const = 0;
+  virtual int Amax(ValueType &value) const = 0;
   /// Perform point-wise multiplication (element-wise) of type this = this * x
   virtual void PointWiseMult(const BaseVector<ValueType> &x) = 0;
   /// Perform point-wise multiplication (element-wise) of type this = x*y

@@ -1612,7 +1612,7 @@ bool OCLAcceleratorMatrixCSR<ValueType>::AddScalar(const ValueType alpha) {
 
 
 template <typename ValueType>
-bool OCLAcceleratorMatrixCSR<ValueType>::DiagMatMult(const BaseVector<ValueType> &diag) {
+bool OCLAcceleratorMatrixCSR<ValueType>::DiagonalMatrixMult(const BaseVector<ValueType> &diag) {
 
   assert(diag.get_size() == this->get_ncol());
   

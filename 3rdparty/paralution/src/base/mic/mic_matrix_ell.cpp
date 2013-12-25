@@ -91,11 +91,15 @@ void MICAcceleratorMatrixELL<ValueType>::AllocateELL(const int nnz, const int nr
 
     assert(nnz == max_row * nrow);
 
-    allocate_mic(nnz, &this->mat_.val);
-    allocate_mic(nnz, &this->mat_.col);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 nnz, &this->mat_.val);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 nnz, &this->mat_.col);
     
-    set_to_zero_mic(nnz, this->mat_.val);
-    set_to_zero_mic(nnz, this->mat_.col);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    nnz, this->mat_.val);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    nnz, this->mat_.col);
     
     this->mat_.max_row = max_row;
     this->nrow_ = nrow;
@@ -111,8 +115,10 @@ void MICAcceleratorMatrixELL<ValueType>::Clear() {
 
   if (this->get_nnz() > 0) {
 
-    free_mic(&this->mat_.val);
-    free_mic(&this->mat_.col);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.val);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.col);
 
     this->nrow_ = 0;
     this->ncol_ = 0;
@@ -142,17 +148,10 @@ void MICAcceleratorMatrixELL<ValueType>::CopyFromHost(const HostMatrix<ValueType
 
     if (this->get_nnz() > 0) { 
 
-      copy_to_mic(cast_mat->mat_.val, this->mat_.val, this->get_nnz());
-      copy_to_mic(cast_mat->mat_.col, this->mat_.col, this->get_nnz());
-
-      // TODO
-      /*
-      for (int i=0; i<this->get_nnz(); ++i)
-        this->mat_.val[i] = cast_mat->mat_.val[i];
-
-      for (int i=0; i<this->get_nnz(); ++i)
-        this->mat_.col[i] = cast_mat->mat_.col[i];
-      */
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.val, this->mat_.val, this->get_nnz());
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.col, this->mat_.col, this->get_nnz());
 
     }
     
@@ -189,17 +188,11 @@ void MICAcceleratorMatrixELL<ValueType>::CopyToHost(HostMatrix<ValueType> *dst) 
 
     if (this->get_nnz() > 0) {
 
-      copy_to_host(this->mat_.val, cast_mat->mat_.val, this->get_nnz());
-      copy_to_host(this->mat_.col, cast_mat->mat_.col, this->get_nnz());
-      /*
-      // TODO
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.val, cast_mat->mat_.val, this->get_nnz());
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.col, cast_mat->mat_.col, this->get_nnz());
 
-      for (int i=0; i<this->get_nnz(); ++i)
-        cast_mat->mat_.val[i] = this->mat_.val[i];
-
-      for (int i=0; i<this->get_nnz(); ++i)
-        cast_mat->mat_.col[i] = this->mat_.col[i];
-      */
     }
     
   } else {
@@ -234,17 +227,10 @@ void MICAcceleratorMatrixELL<ValueType>::CopyFrom(const BaseMatrix<ValueType> &s
 
     if (this->get_nnz() > 0) {
 
-      copy_mic_mic(mic_cast_mat->mat_.val, this->mat_.val, this->get_nnz());
-      copy_mic_mic(mic_cast_mat->mat_.val, this->mat_.val, this->get_nnz());
-
-      // TODO
-      /*
-      for (int i=0; i<this->get_nnz(); ++i)
-        mic_cast_mat->mat_.val[i] = this->mat_.val[i];
-
-      for (int i=0; i<this->get_nnz(); ++i)
-        mic_cast_mat->mat_.col[i] = this->mat_.col[i];
-      */
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.val, this->mat_.val, this->get_nnz());
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.val, this->mat_.val, this->get_nnz());
 
     }
 
@@ -291,18 +277,10 @@ void MICAcceleratorMatrixELL<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
 
     if (this->get_nnz() > 0) {
 
-      copy_mic_mic(this->mat_.val, mic_cast_mat->mat_.val, this->get_nnz());
-      copy_mic_mic(this->mat_.val, mic_cast_mat->mat_.val, this->get_nnz());
-
-      /*
-      // TODO
-
-      for (int i=0; i<this->get_nnz(); ++i)
-        mic_cast_mat->mat_.val[i] = this->mat_.val[i];
-
-      for (int i=0; i<this->get_nnz(); ++i)
-        mic_cast_mat->mat_.col[i] = this->mat_.col[i];
-      */
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.val, mic_cast_mat->mat_.val, this->get_nnz());
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.val, mic_cast_mat->mat_.val, this->get_nnz());
 
     }
     
@@ -367,7 +345,8 @@ void MICAcceleratorMatrixELL<ValueType>::Apply(const BaseVector<ValueType> &in, 
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    spmv_ell(this->mat_.col,
+    spmv_ell(this->local_backend_.MIC_dev,
+	     this->mat_.col,
 	     this->mat_.val,
 	     this->get_nrow(),
 	     this->get_ncol(),
@@ -397,7 +376,8 @@ void MICAcceleratorMatrixELL<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    spmv_add_ell(this->mat_.col,
+    spmv_add_ell(this->local_backend_.MIC_dev,
+		 this->mat_.col,
 		 this->mat_.val,
 		 this->get_nrow(),
 		 this->get_ncol(),

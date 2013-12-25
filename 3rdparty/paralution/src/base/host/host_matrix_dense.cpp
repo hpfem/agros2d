@@ -535,7 +535,7 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
       v[j] = this->mat_.val[DENSE_IND(j+i,i,this->get_nrow(), this->get_ncol())];
       sum += v[j] * v[j];
     }
-    sum = 2.0 / sum;
+    sum = ValueType(2.0) / sum;
 
     if (sum != 2.0) {
 
@@ -562,6 +562,41 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
     cast_out->vec_[i] = (copy_in.vec_[i] - sum) / this->mat_.val[DENSE_IND(i, i, this->get_nrow(), this->get_ncol())];
 
   }
+
+}
+
+template <typename ValueType>
+void HostMatrixDENSE<ValueType>::Invert(void) {
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  assert(this->get_nnz() > 0);
+  assert(this->get_nrow() == this->get_ncol());
+
+  ValueType *val = NULL;
+  allocate_host(this->get_nrow() * this->get_ncol(), &val);
+
+  this->QRDecompose();
+
+#pragma omp parallel for
+  for (int i=0; i<this->get_nrow(); ++i) {
+
+    HostVector<ValueType> sol(this->local_backend_);
+    HostVector<ValueType> rhs(this->local_backend_);
+    sol.Allocate(this->get_nrow());
+    rhs.Allocate(this->get_nrow());
+
+    rhs.vec_[i] = ValueType(1.0);
+
+    this->QRSolve(rhs, &sol);
+
+    for (int j=0; j<this->get_ncol(); ++j)
+      val[DENSE_IND(j, i, this->get_nrow(), this->get_ncol())] = sol.vec_[j];
+
+  }
+
+  free_host(&this->mat_.val);
+  this->mat_.val = val;
 
 }
 

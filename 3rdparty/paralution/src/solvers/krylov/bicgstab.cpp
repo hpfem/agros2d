@@ -286,7 +286,7 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vecto
   // r = r - omega*t
   r->AddScale(*t, ValueType(-1.0)*omega);      
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
 
     rho_old   = rho;
 
@@ -420,7 +420,7 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorTy
   // r = r - omega*t
   r->AddScale(*t, ValueType(-1.0)*omega);      
   
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
 
     rho_old   = rho;
 

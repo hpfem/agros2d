@@ -45,6 +45,7 @@ public:
 
   virtual void SetDataPtrCOO(int **row, int **col, ValueType **val,
                              const int nnz, const int nrow, const int ncol);
+  virtual void LeaveDataPtrCOO(int **row, int **col, ValueType **val);
 
   virtual bool Scale(const ValueType alpha);
   virtual bool ScaleDiagonal(const ValueType alpha);

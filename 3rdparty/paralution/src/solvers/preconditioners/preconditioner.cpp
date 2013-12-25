@@ -270,7 +270,7 @@ void ILU<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
 template <class OperatorType, class VectorType, typename ValueType>
 ILUT<OperatorType, VectorType, ValueType>::ILUT() {
 
-  this->t_ = 0.05;
+  this->t_ = ValueType(0.05);
   this->max_row_ = 100;
 
 }

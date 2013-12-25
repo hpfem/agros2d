@@ -37,9 +37,9 @@
 namespace paralution {
 
 template <typename ValueType>
-void copy_to_mic(const ValueType *src, ValueType *dst, const int size) {
+void copy_to_mic(const int mic_dev, const ValueType *src, ValueType *dst, const int size) {
 
-#pragma offload target(mic:0)		    \
+#pragma offload target(mic:mic_dev)	    \
   in(dst:length(0) MIC_REUSE MIC_RETAIN)    \
   in(src:length(size))
 #pragma omp parallel for 
@@ -49,10 +49,10 @@ void copy_to_mic(const ValueType *src, ValueType *dst, const int size) {
 }
 
 template <typename ValueType>
-void copy_to_host(const ValueType *src, ValueType *dst, const int size) {
+void copy_to_host(const int mic_dev, const ValueType *src, ValueType *dst, const int size) {
 
 
-#pragma offload target(mic:0)			   \
+#pragma offload target(mic:mic_dev)	    \
   in(src:length(0) MIC_REUSE MIC_RETAIN)    \
   out(dst:length(size))
 #pragma omp parallel for 
@@ -62,9 +62,9 @@ void copy_to_host(const ValueType *src, ValueType *dst, const int size) {
 }
 
 template <typename ValueType>
-void copy_mic_mic(const ValueType *src, ValueType *dst, const int size) {
+void copy_mic_mic(const int mic_dev, const ValueType *src, ValueType *dst, const int size) {
 
-#pragma offload target(mic:0)				    \
+#pragma offload target(mic:mic_dev)			    \
   in(src:length(0) MIC_REUSE MIC_RETAIN)		    \
   in(dst:length(0) MIC_REUSE MIC_RETAIN) 
 #pragma omp parallel for 

@@ -28,16 +28,16 @@
 namespace paralution {
 
 template <typename DataType>
-void allocate_mic(const int size, DataType **ptr);
+void allocate_mic(const int mic_dev, const int size, DataType **ptr);
 
 template <typename DataType>
-void free_mic(DataType **ptr);
+void free_mic(const int mic_dev, DataType **ptr);
 
 template <typename DataType>
-void set_to_zero_mic(const int size, DataType *ptr);
+void set_to_zero_mic(const int mic_dev, const int size, DataType *ptr);
 
 template <typename DataType>
-void set_to_one_mic(const int size, DataType *ptr);
+void set_to_one_mic(const int mic_dev, const int size, DataType *ptr);
 
   // TODO
 

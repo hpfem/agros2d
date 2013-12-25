@@ -27,12 +27,13 @@
 namespace paralution {
 
 template <typename ValueType>
-void spmv_csr(const int *row, const int *col, const ValueType *val,
+void spmv_csr(const int mic_dev, 
+	      const int *row, const int *col, const ValueType *val,
 	      const int nrow,
 	      const ValueType *in, ValueType *out) {
   
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)		    \
   in(row:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(col:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(val:length(0) MIC_REUSE MIC_RETAIN)	    \
@@ -47,13 +48,14 @@ void spmv_csr(const int *row, const int *col, const ValueType *val,
 }
 
 template <typename ValueType>
-void spmv_add_csr(const int *row, const int *col, const ValueType *val,
+void spmv_add_csr(const int mic_dev, 
+		  const int *row, const int *col, const ValueType *val,
 		  const int nrow,
 		  const ValueType scalar,
 		  const ValueType *in, ValueType *out) {
   
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)		    \
   in(row:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(col:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(val:length(0) MIC_REUSE MIC_RETAIN)	    \

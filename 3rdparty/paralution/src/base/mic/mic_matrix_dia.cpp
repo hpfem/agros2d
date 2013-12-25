@@ -92,12 +92,15 @@ void MICAcceleratorMatrixDIA<ValueType>::AllocateDIA(const int nnz, const int nr
     assert(ndiag > 0);
 
 
-    allocate_mic(nnz, &this->mat_.val);
-    allocate_mic(ndiag, &this->mat_.offset);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 nnz, &this->mat_.val);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 ndiag, &this->mat_.offset);
  
-    set_to_zero_mic(nnz, mat_.val);
-    
-    set_to_zero_mic(ndiag, mat_.offset);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    nnz, mat_.val);    
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    ndiag, mat_.offset);
 
     this->nrow_ = nrow;
     this->ncol_ = ncol;
@@ -113,8 +116,10 @@ void MICAcceleratorMatrixDIA<ValueType>::Clear() {
 
   if (this->get_nnz() > 0) {
 
-    free_mic(&this->mat_.val);
-    free_mic(&this->mat_.offset);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.val);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.offset);
 
     this->nrow_ = 0;
     this->ncol_ = 0;
@@ -146,18 +151,10 @@ void MICAcceleratorMatrixDIA<ValueType>::CopyFromHost(const HostMatrix<ValueType
 
     if (this->get_nnz() > 0) {
 
-      copy_to_mic(cast_mat->mat_.val, this->mat_.val, this->get_nnz());
-      copy_to_mic(cast_mat->mat_.offset, this->mat_.offset, this->mat_.num_diag);
-
-      /*
-      // TODO
-
-      for (int j=0; j<this->get_nnz(); ++j)
-        this->mat_.val[j] = cast_mat->mat_.val[j];
-      
-      for (int j=0; j<this->mat_.num_diag; ++j)
-        this->mat_.offset[j] = cast_mat->mat_.offset[j];
-      */
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.val, this->mat_.val, this->get_nnz());
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.offset, this->mat_.offset, this->mat_.num_diag);
 
     }
       
@@ -194,18 +191,10 @@ void MICAcceleratorMatrixDIA<ValueType>::CopyToHost(HostMatrix<ValueType> *dst) 
 
     if (this->get_nnz() > 0) {
 
-      copy_to_host(this->mat_.val, cast_mat->mat_.val, this->get_nnz());
-      copy_to_host(this->mat_.offset, cast_mat->mat_.offset, this->mat_.num_diag);
-
-      /*
-      // TODO
-
-      for (int j=0; j<this->get_nnz(); ++j)
-        cast_mat->mat_.val[j] = this->mat_.val[j];
-      
-      for (int j=0; j<this->mat_.num_diag; ++j)
-        cast_mat->mat_.offset[j] = this->mat_.offset[j];
-      */
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.val, cast_mat->mat_.val, this->get_nnz());
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.offset, cast_mat->mat_.offset, this->mat_.num_diag);
 
     }
     
@@ -241,17 +230,10 @@ void MICAcceleratorMatrixDIA<ValueType>::CopyFrom(const BaseMatrix<ValueType> &s
 
     if (this->get_nnz() > 0) {
 
-      copy_mic_mic(mic_cast_mat->mat_.val, this->mat_.val, this->get_nnz());
-      copy_mic_mic(mic_cast_mat->mat_.offset, this->mat_.offset, this->mat_.num_diag);
-
-      /*
-      // TODO
-      for (int j=0; j<this->get_nnz(); ++j)
-        this->mat_.val[j] = mic_cast_mat->mat_.val[j];
-      
-      for (int j=0; j<this->mat_.num_diag; ++j)
-        this->mat_.offset[j] = mic_cast_mat->mat_.offset[j];
-      */
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.val, this->mat_.val, this->get_nnz());
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.offset, this->mat_.offset, this->mat_.num_diag);
 
     }
 
@@ -298,20 +280,10 @@ void MICAcceleratorMatrixDIA<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
 
     if (this->get_nnz() > 0) { 
 
-      copy_mic_mic(this->mat_.val, mic_cast_mat->mat_.val, this->get_nnz());
-      copy_mic_mic(this->mat_.offset, mic_cast_mat->mat_.offset, this->mat_.num_diag);
-
-      /*
-      // TODO
-
-      for (int j=0; j<this->get_nnz(); ++j)
-        mic_cast_mat->mat_.val[j] = this->mat_.val[j];
-      
-      for (int j=0; j<this->mat_.num_diag; ++j)
-        mic_cast_mat->mat_.offset[j] = this->mat_.offset[j];
-
-      FATAL_ERROR(__FILE__, __LINE__);
-      */
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.val, mic_cast_mat->mat_.val, this->get_nnz());
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.offset, mic_cast_mat->mat_.offset, this->mat_.num_diag);
 
     }
     
@@ -376,7 +348,8 @@ void MICAcceleratorMatrixDIA<ValueType>::Apply(const BaseVector<ValueType> &in, 
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    spmv_dia(this->mat_.offset,
+    spmv_dia(this->local_backend_.MIC_dev,
+	     this->mat_.offset,
 	     this->mat_.val,
 	     this->get_nrow(),
 	     this->get_ndiag(),
@@ -404,7 +377,8 @@ void MICAcceleratorMatrixDIA<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-   spmv_add_dia(this->mat_.offset,
+   spmv_add_dia(this->local_backend_.MIC_dev,
+		this->mat_.offset,
 		this->mat_.val,
 		this->get_nrow(),
 		this->get_ndiag(),

@@ -149,6 +149,8 @@ public:
   /// Initialize a COO matrix on the Host with externally allocated data
   virtual void SetDataPtrCOO(int **row, int **col, ValueType **val,
                              const int nnz, const int nrow, const int ncol);
+  /// Leave a COO matrix to Host pointers
+  virtual void LeaveDataPtrCOO(int **row, int **col, ValueType **val);
 
   /// Initialize a CSR matrix on the Host with externally allocated data
   virtual void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
@@ -193,8 +195,12 @@ public:
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
   /// Extract the upper triangular matrix
   virtual bool ExtractU(BaseMatrix<ValueType> *U) const;
+  /// Extract the upper triangular matrix including diagonal
+  virtual bool ExtractUDiagonal(BaseMatrix<ValueType> *U) const;
   /// Extract the lower triangular matrix
   virtual bool ExtractL(BaseMatrix<ValueType> *L) const;
+  /// Extract the lower triangular matrix including diagonal
+  virtual bool ExtractLDiagonal(BaseMatrix<ValueType> *L) const;
 
   /// Perform (forward) permutation of the matrix
   virtual bool Permute(const BaseVector<int> &permutation);
@@ -212,7 +218,7 @@ public:
 
   /// Perform maximal independent set decomposition of the matrix; Returns the 
   /// size of the maximal independent set and the corresponding permutation
-  virtual void MaximalIndependentSet(int &size,
+  virtual bool MaximalIndependentSet(int &size,
                                      BaseVector<int> *permutation) const;
 
   /// Return a permutation for saddle-point problems (zero diagonal entries),
@@ -246,6 +252,11 @@ public:
   /// Write matrix to MTX (Matrix Market Format) file
   virtual void WriteFileMTX(const std::string filename) const;
 
+  /// Read matrix from CSR (PARALUTION binary format) file
+  virtual void ReadFileCSR(const std::string filename);
+  /// Write matrix to CSR (PARALUTION binary format) file
+  virtual void WriteFileCSR(const std::string filename) const;
+
   /// Perform symbolic computation (structure only) of |this|^p
   virtual void SymbolicPower(const int p);
 
@@ -262,7 +273,7 @@ public:
   virtual void NumericMatMatMult(const BaseMatrix<ValueType> &A, const BaseMatrix<ValueType> &B);
   /// Multiply the matrix with diagonal matrix (stored in LocalVector), 
   /// this=this*diag
-  virtual bool DiagMatMult(const BaseVector<ValueType> &diag);
+  virtual bool DiagonalMatrixMult(const BaseVector<ValueType> &diag);
   /// Perform matrix addition, this = alpha*this + beta*mat; 
   /// if structure==false the structure of the matrix is not changed, 
   /// if structure==true new data structure is computed
@@ -326,6 +337,9 @@ public:
   virtual void QRDecompose(void);
   /// Solve QR out = in
   virtual void QRSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+
+  /// Invert this
+  virtual void Invert(void);
 
   /// Compute the spectrum approximation with Gershgorin circles theorem
   virtual bool Gershgorin(ValueType &lambda_min,

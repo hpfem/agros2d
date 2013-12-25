@@ -19,38 +19,50 @@
 //
 // *************************************************************************
 
-#ifndef PARALUTION_MATRIX_FORMATS_IND_HPP_
-#define PARALUTION_MATRIX_FORMATS_IND_HPP_
+#ifndef PARALUTION_KRYLOV_CR_HPP_
+#define PARALUTION_KRYLOV_CR_HPP_
 
-// Matrix indexing
-#define DENSE_IND(ai,aj,nrow,ncol) ai + aj*nrow
-//#define DENSE_IND(ai,aj,nrow,ncol) aj + ai*nol
+#include "../solver.hpp"
+
+#include <vector>
+
+namespace paralution {
+
+template <class OperatorType, class VectorType, typename ValueType>
+class CR : public IterativeLinearSolver<OperatorType, VectorType, ValueType> {
+  
+public:
+
+  CR();
+  virtual ~CR();
+
+  virtual void Print(void) const;
+
+  virtual void Build(void);
+  virtual void Clear(void);
+
+protected:
+
+  virtual void SolveNonPrecond_(const VectorType &rhs,
+                                VectorType *x);
+  virtual void SolvePrecond_(const VectorType &rhs,
+                             VectorType *x);
+
+  virtual void PrintStart_(void) const;
+  virtual void PrintEnd_(void) const;
+
+  virtual void MoveToHostLocalData_(void);
+  virtual void MoveToAcceleratorLocalData_(void);
+
+private:
+
+  VectorType r_, z_, t_;
+  VectorType p_, q_, v_;
+
+};
 
 
+}
 
-// ELL indexing
-#define ELL_IND_ROW(row, el , nrow, max_row) el*nrow + row
-#define ELL_IND_EL(row, el , nrow, max_row) el + max_row*row
-
-#ifdef SUPPORT_MIC
-#define ELL_IND(row, el , nrow, max_row)  ELL_IND_EL(row, el , nrow, max_row)
-#else
-#define ELL_IND(row, el , nrow, max_row)  ELL_IND_ROW(row, el , nrow, max_row)
-#endif
-
-
-
-// DIA indexing
-#define DIA_IND_ROW(row, el, nrow, ndiag) el*nrow + row
-#define DIA_IND_EL(row, el, nrow, ndiag) el + ndiag*row
-
-#ifdef SUPPORT_MIC
-#define DIA_IND(row, el, nrow, ndiag) DIA_IND_EL(row, el, nrow, ndiag)
-#else
-#define DIA_IND(row, el, nrow, ndiag) DIA_IND_ROW(row, el, nrow, ndiag)
-#endif
-
-
-
-#endif // PARALUTION_MATRIX_FORMATS_IND_HPP_
+#endif // PARALUTION_KRYLOV_CR_HPP_
 

@@ -61,7 +61,6 @@ GPUAcceleratorMatrixDENSE<ValueType>::GPUAcceleratorMatrixDENSE(const Paralution
 
   CHECK_CUDA_ERROR(__FILE__, __LINE__);
 
-  FATAL_ERROR(__FILE__, __LINE__);
 }
 
 
@@ -336,34 +335,152 @@ bool GPUAcceleratorMatrixDENSE<ValueType>::ConvertFrom(const BaseMatrix<ValueTyp
 
 }
 
-template <typename ValueType>
-void GPUAcceleratorMatrixDENSE<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
+template <>
+void GPUAcceleratorMatrixDENSE<float>::Apply(const BaseVector<float> &in, BaseVector<float> *out) const {
 
   if (this->get_nnz() > 0) {
-/*
+
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
     assert(in.  get_size() == this->get_ncol());
     assert(out->get_size() == this->get_nrow());
     
     
-    const GPUAcceleratorVector<ValueType> *cast_in = dynamic_cast<const GPUAcceleratorVector<ValueType>*> (&in) ; 
-    GPUAcceleratorVector<ValueType> *cast_out      = dynamic_cast<      GPUAcceleratorVector<ValueType>*> (out) ; 
+    const GPUAcceleratorVector<float> *cast_in = dynamic_cast<const GPUAcceleratorVector<float>*> (&in) ; 
+    GPUAcceleratorVector<float> *cast_out      = dynamic_cast<      GPUAcceleratorVector<float>*> (out) ; 
     
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
-*/
-    FATAL_ERROR(__FILE__, __LINE__);    
+
+    cublasStatus_t stat_t;
+    cublasOperation_t trans;
+    trans=CUBLAS_OP_N;
+
+    const float alpha = 1.0f, beta = 0.0f;
+    stat_t = cublasSgemv(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), trans, 
+                         this->get_nrow(), this->get_ncol(),
+                         &alpha,
+                         this->mat_.val, this->get_nrow(), 
+                         cast_in->vec_, 1, 
+                         &beta, cast_out->vec_, 1);
+    
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+
   }
 
 }
 
+template <>
+void GPUAcceleratorMatrixDENSE<double>::Apply(const BaseVector<double> &in, BaseVector<double> *out) const {
 
-template <typename ValueType>
-void GPUAcceleratorMatrixDENSE<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
-                                                  BaseVector<ValueType> *out) const {
-  FATAL_ERROR(__FILE__, __LINE__);
+  if (this->get_nnz() > 0) {
+
+    assert(in.  get_size() >= 0);
+    assert(out->get_size() >= 0);
+    assert(in.  get_size() == this->get_ncol());
+    assert(out->get_size() == this->get_nrow());
+    
+    
+    const GPUAcceleratorVector<double> *cast_in = dynamic_cast<const GPUAcceleratorVector<double>*> (&in) ; 
+    GPUAcceleratorVector<double> *cast_out      = dynamic_cast<      GPUAcceleratorVector<double>*> (out) ; 
+    
+    assert(cast_in != NULL);
+    assert(cast_out!= NULL);
+
+    cublasStatus_t stat_t;
+    cublasOperation_t trans;
+    trans=CUBLAS_OP_N;
+
+    const double alpha = 1.0f, beta = 0.0f;
+    stat_t = cublasDgemv(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), trans, 
+                         this->get_nrow(), this->get_ncol(),
+                         &alpha,
+                         this->mat_.val, this->get_nrow(), 
+                         cast_in->vec_, 1, 
+                         &beta, cast_out->vec_, 1);
+    
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+
+  }
+
 }
+
+template <>
+void GPUAcceleratorMatrixDENSE<float>::ApplyAdd(const BaseVector<float> &in, const float scalar,
+                                                BaseVector<float> *out) const {
+
+  if (this->get_nnz() > 0) {
+
+    assert(in.  get_size() >= 0);
+    assert(out->get_size() >= 0);
+    assert(in.  get_size() == this->get_ncol());
+    assert(out->get_size() == this->get_nrow());
+    
+    
+    const GPUAcceleratorVector<float> *cast_in = dynamic_cast<const GPUAcceleratorVector<float>*> (&in) ; 
+    GPUAcceleratorVector<float> *cast_out      = dynamic_cast<      GPUAcceleratorVector<float>*> (out) ; 
+    
+    assert(cast_in != NULL);
+    assert(cast_out!= NULL);
+
+    cublasStatus_t stat_t;
+    cublasOperation_t trans;
+    trans=CUBLAS_OP_N;
+
+    const float alpha = scalar, beta = 0.0f;
+    stat_t = cublasSgemv(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), trans, 
+                         this->get_nrow(), this->get_ncol(),
+                         &alpha,
+                         this->mat_.val, this->get_nrow(), 
+                         cast_in->vec_, 1, 
+                         &beta, cast_out->vec_, 1);
+    
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+
+  }
+
+}
+
+template <>
+void GPUAcceleratorMatrixDENSE<double>::ApplyAdd(const BaseVector<double> &in, const double scalar,
+                                                 BaseVector<double> *out) const {
+
+  if (this->get_nnz() > 0) {
+
+    assert(in.  get_size() >= 0);
+    assert(out->get_size() >= 0);
+    assert(in.  get_size() == this->get_ncol());
+    assert(out->get_size() == this->get_nrow());
+    
+    
+    const GPUAcceleratorVector<double> *cast_in = dynamic_cast<const GPUAcceleratorVector<double>*> (&in) ; 
+    GPUAcceleratorVector<double> *cast_out      = dynamic_cast<      GPUAcceleratorVector<double>*> (out) ; 
+    
+    assert(cast_in != NULL);
+    assert(cast_out!= NULL);
+
+    cublasStatus_t stat_t;
+    cublasOperation_t trans;
+    trans=CUBLAS_OP_N;
+
+    const double alpha = scalar, beta = 0.0f;
+    stat_t = cublasDgemv(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), trans, 
+                         this->get_nrow(), this->get_ncol(),
+                         &alpha,
+                         this->mat_.val, this->get_nrow(), 
+                         cast_in->vec_, 1, 
+                         &beta, cast_out->vec_, 1);
+    
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+
+  }
+
+}
+
 
 
 template class GPUAcceleratorMatrixDENSE<double>;

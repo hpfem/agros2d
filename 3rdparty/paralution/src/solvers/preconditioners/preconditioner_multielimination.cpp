@@ -95,11 +95,11 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Clear(void) {
     
     this->permutation_.Clear();
 
+   if (this->AA_solver_ != NULL)
+      this->AA_solver_->Clear();
+
     if (this->AA_me_ != NULL)
       delete this->AA_me_;
-
-    if (this->AA_solver_ != NULL)
-      this->AA_solver_->Clear();
 
     this->diag_solver_init_ = false;
     this->level_ = -1;

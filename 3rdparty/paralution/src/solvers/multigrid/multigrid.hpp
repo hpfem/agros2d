@@ -26,6 +26,13 @@
 
 namespace paralution {
 
+enum _cycle {
+  Vcycle = 0,
+  Wcycle = 1,
+  Kcycle = 2,
+  Fcycle = 3
+};
+
 template <class OperatorType, class VectorType, typename ValueType>
 class MultiGrid : public IterativeLinearSolver<OperatorType, VectorType, ValueType> {
   
@@ -66,6 +73,9 @@ public:
   /// Enable/disable scaling of intergrid transfers
   virtual void SetScaling(const bool scaling);
 
+  /// Set the MultiGrid Cycle (default: Vcycle)
+  virtual void SetCycle(const _cycle cycle);
+
   /// Set the depth of the multigrid solver
   virtual void InitLevels(const int levels);
 
@@ -74,18 +84,6 @@ public:
 
   /// Called by default the V-cycle
   virtual void Solve(const VectorType &rhs,
-                     VectorType *x);
-
-  /// Solving by V-cycles
-  virtual void SolveV(const VectorType &rhs,
-                     VectorType *x);
-
-  /// Solving by W-cycles
-  virtual void SolveW(const VectorType &rhs,
-                     VectorType *x);
-
-  /// Solving by F-cycles
-  virtual void SolveF(const VectorType &rhs,
                      VectorType *x);
 
   virtual void Build(void);
@@ -103,9 +101,10 @@ protected:
                         VectorType *fine,
                         const int level);
 
-  virtual void Vcycle_();
-  virtual void Wcycle_();
-  virtual void Fcycle_();
+  void Vcycle_(const VectorType &rhs, VectorType *x);
+  void Wcycle_(const VectorType &rhs, VectorType *x);
+  void Fcycle_(const VectorType &rhs, VectorType *x);
+  void Kcycle_(const VectorType &rhs, VectorType *x);
 
    /// disabled function
   virtual void SolveNonPrecond_(const VectorType &rhs,
@@ -123,10 +122,14 @@ protected:
 
 
   int levels_ ;
+  int current_level_;
   bool operator_type_;
   bool scaling_;
   int iter_pre_smooth_;
   int iter_post_smooth_;
+  int cycle_;
+
+  ValueType res_norm_;
 
   OperatorType **op_level_;
 
@@ -138,6 +141,10 @@ protected:
   VectorType **r_level_;
   VectorType **t_level_;
   VectorType **s_level_;
+  VectorType **p_level_;
+  VectorType **q_level_;
+  VectorType **k_level_;
+  VectorType **l_level_;
 
   Solver<OperatorType, VectorType, ValueType>  *solver_coarse_;
   IterativeLinearSolver<OperatorType, VectorType, ValueType> **smoother_level_;

@@ -104,12 +104,16 @@ protected:
   int verb_;
 
   /// Residual norm
-  /// res_norm = 0 L2 Norm
-  /// res_norm = 1 Reduction
+  /// res_norm = 1 L1 Norm
+  /// res_norm = 2 L2 Norm
+  /// res_norm = 3 Linf Norm
   int res_norm_;
 
+  /// Absolute maximum index of residual vector when using Linf norm
+  int index_;
+
   /// Computes the vector norm
-  ValueType Norm(const VectorType &vec) const;
+  ValueType Norm(const VectorType &vec);
 
   /// Print starting msg of the solver
   virtual void PrintStart_(void) const = 0;
@@ -134,9 +138,9 @@ public:
 
   /// Initialize the solver with absolute/relative/divergence 
   /// tolerance and maximum number of iterations
-  void Init(const double abs_tol,
-            const double rel_tol,
-            const double div_tol,
+  void Init(const ValueType abs_tol,
+            const ValueType rel_tol,
+            const ValueType div_tol,
             const int max_iter);
 
   /// Set the maximum number of iterations
@@ -169,6 +173,9 @@ public:
 
   /// Return the current status
   virtual int GetSolverStatus(void);
+
+  /// Return absolute maximum index of residual vector when using Linf norm
+  virtual int GetAmaxResidualIndex(void);
 
 protected:
 

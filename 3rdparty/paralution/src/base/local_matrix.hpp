@@ -78,7 +78,8 @@ public:
   /// Initialize a COO matrix on the Host with externally allocated data  
   void SetDataPtrCOO(int **row, int **col, ValueType **val,
                      std::string name, const int nnz, const int nrow, const int ncol);
-
+  /// Leave a COO matrix to Host pointers
+  void LeaveDataPtrCOO(int **row, int **col, ValueType **val);
   /// Initialize a CSR matrix on the Host with externally allocated data
   void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
                      std::string name, const int nnz, const int nrow, const int ncol);
@@ -132,9 +133,9 @@ public:
   void ExtractInverseDiagonal(LocalVector<ValueType> *vec_inv_diag) const;
 
   /// Extract the upper triangular matrix
-  void ExtractU(LocalMatrix<ValueType> *U) const;
+  void ExtractU(LocalMatrix<ValueType> *U, const bool diag) const;
   /// Extract the lower triangular matrix
-  void ExtractL(LocalMatrix<ValueType> *L) const;
+  void ExtractL(LocalMatrix<ValueType> *L, const bool diag) const;
 
   /// Perform (forward) permutation of the matrix
   void Permute(const LocalVector<int> &permutation);
@@ -222,10 +223,18 @@ public:
   /// Solve QR out = in
   void QRSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const;
 
+  /// Matrix inversion using QR decomposition
+  void Invert(void);
+
   /// Read matrix from MTX (Matrix Market Format) file
   void ReadFileMTX(const std::string filename);
   /// Write matrix to MTX (Matrix Market Format) file
   void WriteFileMTX(const std::string filename) const;
+
+  /// Read matrix from CSR (PARALUTION binary format) file
+  void ReadFileCSR(const std::string filename);
+  /// Write matrix to CSR (PARALUTION binary format) file
+  void WriteFileCSR(const std::string filename) const;
   
   virtual void MoveToAccelerator(void);
   virtual void MoveToHost(void);

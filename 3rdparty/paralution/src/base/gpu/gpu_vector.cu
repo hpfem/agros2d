@@ -25,6 +25,7 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../../utils/math_functions.hpp"
 #include "gpu_utils.hpp"
 #include "cuda_kernels_general.hpp"
 #include "cuda_kernels_vector.hpp"
@@ -812,59 +813,75 @@ int GPUAcceleratorVector<int>::Asum(void) const {
 
 }
 
-template <typename ValueType>
-ValueType GPUAcceleratorVector<ValueType>::Amax(void) const {
+template <>
+int GPUAcceleratorVector<float>::Amax(float &value) const {
 
-  ValueType res = 0.0;
+  int index;
+  value = 0.0;
 
   if (this->get_size() > 0) {
 
-    ValueType *d_buffer = NULL;
-    ValueType *h_buffer = NULL;
-    int GROUP_SIZE;
-    int LOCAL_SIZE;
-    int FinalReduceSize;
-
-    allocate_gpu<ValueType>(this->local_backend_.GPU_wrap * 4, &d_buffer);
-
-    dim3 BlockSize2(this->local_backend_.GPU_block_size);
-    dim3 GridSize2(this->local_backend_.GPU_wrap * 4);
-
-    GROUP_SIZE = ( size_t( ( size_t( this->get_size() / ( this->local_backend_.GPU_wrap * 4 ) ) + 1 ) 
-                 / this->local_backend_.GPU_block_size ) + 1 ) * this->local_backend_.GPU_block_size;
-    LOCAL_SIZE = GROUP_SIZE / this->local_backend_.GPU_block_size;
-
+    cublasStatus_t stat_t;
     cudaDeviceSynchronize();
 
-    kernel_amax<ValueType, int, 256> <<<GridSize2, BlockSize2>>> (this->get_size(),
-                                                                  this->vec_,
-                                                                  d_buffer,
-                                                                  GROUP_SIZE,
-                                                                  LOCAL_SIZE);
-    CHECK_CUDA_ERROR(__FILE__, __LINE__);
+    stat_t = cublasIsamax(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle),
+                          this->get_size(),
+                          this->vec_, 1, &index);
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
 
-    FinalReduceSize = this->local_backend_.GPU_wrap * 4;
-    allocate_host(FinalReduceSize, &h_buffer);
+    // cublas returns 1-based indexing
+    --index;
 
-    cudaMemcpy(h_buffer, // dst
-               d_buffer, // src
-               FinalReduceSize*sizeof(int), // size
+    cudaMemcpy(&value,
+               this->vec_+index,
+               sizeof(float),
                cudaMemcpyDeviceToHost);
     CHECK_CUDA_ERROR(__FILE__, __LINE__);
 
-    free_gpu<ValueType>(&d_buffer);
+  }
 
-    for (int i=0; i<FinalReduceSize; ++i) {
-      ValueType tmp = fabs(h_buffer[i]);
-      if (res < tmp)
-        res = tmp;
-    }
+  value = paralution_abs(value);
+  return index;
 
-    free_host(&h_buffer);
+}
+
+template <>
+int GPUAcceleratorVector<double>::Amax(double &value) const {
+
+  int index;
+  value = 0.0;
+
+  if (this->get_size() > 0) {
+
+    cublasStatus_t stat_t;
+    cudaDeviceSynchronize();
+
+    stat_t = cublasIdamax(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle),
+                          this->get_size(),
+                          this->vec_, 1, &index);
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+    // cublas returns 1-based indexing
+    --index;
+
+    cudaMemcpy(&value,
+               this->vec_+index,
+               sizeof(double),
+               cudaMemcpyDeviceToHost);
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);
 
   }
 
-  return res;
+  value = paralution_abs(value);
+  return index;
+
+}
+
+template <>
+int GPUAcceleratorVector<int>::Amax(int &value) const {
+
+  LOG_INFO("Amax<int> not implemented");
+  FATAL_ERROR(__FILE__, __LINE__);
 
 }
 

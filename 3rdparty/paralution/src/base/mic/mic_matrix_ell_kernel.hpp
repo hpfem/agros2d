@@ -27,14 +27,15 @@
 namespace paralution {
 
 template <typename ValueType>
-void spmv_ell(const int *col, const ValueType *val,
+void spmv_ell(const int mic_dev, 
+	      const int *col, const ValueType *val,
 	      const int nrow,
 	      const int ncol,
 	      const int max_row,
 	      const ValueType *in, ValueType *out) {
   
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(col:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(val:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(in:length(0) MIC_REUSE MIC_RETAIN)		    \
@@ -58,7 +59,8 @@ void spmv_ell(const int *col, const ValueType *val,
 }
 
 template <typename ValueType>
-void spmv_add_ell(const int *col, const ValueType *val,
+void spmv_add_ell(const int mic_dev, 
+		  const int *col, const ValueType *val,
 		  const int nrow,
 		  const int ncol,
 		  const int max_row,
@@ -66,7 +68,7 @@ void spmv_add_ell(const int *col, const ValueType *val,
 		  const ValueType *in, ValueType *out) {
   
 
-#pragma offload target(mic:0)			    \
+#pragma offload target(mic:mic_dev)			    \
   in(col:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(val:length(0) MIC_REUSE MIC_RETAIN)	    \
   in(in:length(0) MIC_REUSE MIC_RETAIN)		    \

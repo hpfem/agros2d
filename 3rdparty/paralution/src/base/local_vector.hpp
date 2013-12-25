@@ -122,7 +122,7 @@ public:
   virtual ValueType Norm(void) const;
   virtual ValueType Reduce(void) const;
   virtual ValueType Asum(void) const;
-  virtual ValueType Amax(void) const;
+  virtual int Amax(ValueType &value) const;
   virtual void PointWiseMult(const LocalVector<ValueType> &x);
   virtual void PointWiseMult(const LocalVector<ValueType> &x, const LocalVector<ValueType> &y);
 

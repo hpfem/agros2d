@@ -64,13 +64,15 @@ public:
   virtual bool ExtractDiagonal(BaseVector<ValueType> *vec_diag) const;
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
   virtual bool ExtractU(BaseMatrix<ValueType> *U) const;
+  virtual bool ExtractUDiagonal(BaseMatrix<ValueType> *U) const;
   virtual bool ExtractL(BaseMatrix<ValueType> *L) const;
+  virtual bool ExtractLDiagonal(BaseMatrix<ValueType> *L) const;
  
   virtual bool MultiColoring(int &num_colors,
                              int **size_colors,
                              BaseVector<int> *permutation) const;
 
-  virtual void MaximalIndependentSet(int &size,
+  virtual bool MaximalIndependentSet(int &size,
                                      BaseVector<int> *permutation) const;
   
   virtual void ZeroBlockPermutation(int &size,
@@ -84,7 +86,7 @@ public:
   virtual void SymbolicMatMatMult(const BaseMatrix<ValueType> &A, const BaseMatrix<ValueType> &B);
   virtual void NumericMatMatMult(const BaseMatrix<ValueType> &A, const BaseMatrix<ValueType> &B);
 
-  virtual bool DiagMatMult(const BaseVector<ValueType> &diag);
+  virtual bool DiagonalMatrixMult(const BaseVector<ValueType> &diag);
 
   virtual bool MatrixAdd(const BaseMatrix<ValueType> &mat, const ValueType alpha, 
                          const ValueType beta, const bool structure);
@@ -99,6 +101,9 @@ public:
   virtual void CopyToCSR(int *row_offsets, int *col, ValueType *val) const;
 
   virtual void CopyTo(BaseMatrix<ValueType> *mat) const;
+
+  virtual void ReadFileCSR(const std::string);
+  virtual void WriteFileCSR(const std::string) const;
 
   virtual bool CreateFromMap(const BaseVector<int> &map, const int n, const int m);
 

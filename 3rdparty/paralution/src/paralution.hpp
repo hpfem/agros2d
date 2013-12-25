@@ -22,6 +22,7 @@
 #ifndef PARALUTION_PARALUTION_HPP_
 #define PARALUTION_PARALUTION_HPP_
 
+#include "base/version.hpp"
 #include "base/backend_manager.hpp"
 
 #include "base/operator.hpp"
@@ -46,11 +47,13 @@
 #include "solvers/chebyshev.hpp"
 #include "solvers/mixed_precision.hpp"
 #include "solvers/krylov/cg.hpp"
+#include "solvers/krylov/cr.hpp"
 #include "solvers/krylov/bicgstab.hpp"
 #include "solvers/krylov/gmres.hpp"
 #include "solvers/krylov/idr.hpp"
 #include "solvers/multigrid/multigrid.hpp"
 #include "solvers/multigrid/multigrid_amg.hpp"
+#include "solvers/deflation/dpcg.hpp"
 
 #include "solvers/preconditioners/preconditioner.hpp"
 #include "solvers/preconditioners/preconditioner_multicolored.hpp"
@@ -58,8 +61,10 @@
 #include "solvers/preconditioners/preconditioner_multicolored_ilu.hpp"
 #include "solvers/preconditioners/preconditioner_multielimination.hpp"
 #include "solvers/preconditioners/preconditioner_saddlepoint.hpp"
+#include "solvers/preconditioners/preconditioner_blockprecond.hpp"
 
 #include "utils/allocate_free.hpp"
+#include "utils/math_functions.hpp"
 
 
 #endif // PARALUTION_PARALUTION_HPP_

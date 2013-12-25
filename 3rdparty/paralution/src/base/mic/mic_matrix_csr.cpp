@@ -88,13 +88,19 @@ void MICAcceleratorMatrixCSR<ValueType>::AllocateCSR(const int nnz, const int nr
 
   if (nnz > 0) {
 
-    allocate_mic(nrow+1, &this->mat_.row_offset);
-    allocate_mic(nnz,    &this->mat_.col);
-    allocate_mic(nnz,    &this->mat_.val);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 nrow+1, &this->mat_.row_offset);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 nnz,    &this->mat_.col);
+    allocate_mic(this->local_backend_.MIC_dev,
+		 nnz,    &this->mat_.val);
     
-    set_to_zero_mic(nrow+1, mat_.row_offset);
-    set_to_zero_mic(nnz, mat_.col);
-    set_to_zero_mic(nnz, mat_.val);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    nrow+1, mat_.row_offset);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    nnz, mat_.col);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    nnz, mat_.val);
 
     this->nrow_ = nrow;
     this->ncol_ = ncol;
@@ -110,9 +116,12 @@ void MICAcceleratorMatrixCSR<ValueType>::Clear() {
 
   if (this->get_nnz() > 0) {
 
-    free_mic(&this->mat_.row_offset);
-    free_mic(&this->mat_.col);
-    free_mic(&this->mat_.val);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.row_offset);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.col);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.val);
 
     this->nrow_ = 0;
     this->ncol_ = 0;
@@ -126,7 +135,8 @@ template <typename ValueType>
 void MICAcceleratorMatrixCSR<ValueType>::Zeros() {
 
   if (this->get_nnz() > 0)
-    set_to_zero_mic(this->get_nnz(), mat_.val);
+    set_to_zero_mic(this->local_backend_.MIC_dev,
+		    this->get_nnz(), mat_.val);
 
 }
 
@@ -151,13 +161,16 @@ void MICAcceleratorMatrixCSR<ValueType>::CopyFromHost(const HostMatrix<ValueType
   
     if (this->get_nnz() > 0) {
 
-      copy_to_mic(cast_mat->mat_.row_offset, this->mat_.row_offset,
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.row_offset, this->mat_.row_offset,
 		  this->get_nrow()+1);
 
-      copy_to_mic(cast_mat->mat_.col, this->mat_.col, 
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.col, this->mat_.col, 
 		  this->get_nnz());
 
-      copy_to_mic(cast_mat->mat_.val, this->mat_.val,
+      copy_to_mic(this->local_backend_.MIC_dev,
+		  cast_mat->mat_.val, this->mat_.val,
 		  this->get_nnz());
 
     }
@@ -195,13 +208,16 @@ void MICAcceleratorMatrixCSR<ValueType>::CopyToHost(HostMatrix<ValueType> *dst) 
    
     if (this->get_nnz() > 0) {
 
-      copy_to_host(this->mat_.row_offset, cast_mat->mat_.row_offset,
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.row_offset, cast_mat->mat_.row_offset,
 		   this->get_nrow()+1);
 
-      copy_to_host(this->mat_.col, cast_mat->mat_.col,
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.col, cast_mat->mat_.col,
 		   this->get_nnz());
 
-      copy_to_host(this->mat_.val, cast_mat->mat_.val,
+      copy_to_host(this->local_backend_.MIC_dev,
+		   this->mat_.val, cast_mat->mat_.val,
 		   this->get_nnz());
 
     }
@@ -241,13 +257,16 @@ void MICAcceleratorMatrixCSR<ValueType>::CopyFrom(const BaseMatrix<ValueType> &s
 
     if (this->get_nnz() > 0) {
 
-      copy_mic_mic(mic_cast_mat->mat_.row_offset, this->mat_.row_offset,
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.row_offset, this->mat_.row_offset,
 		   this->get_nrow()+1);
 
-      copy_mic_mic(mic_cast_mat->mat_.col, this->mat_.col, 
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.col, this->mat_.col, 
 		   this->get_nnz());
 
-      copy_mic_mic(mic_cast_mat->mat_.val, this->mat_.val,
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   mic_cast_mat->mat_.val, this->mat_.val,
 		   this->get_nnz());
 
 
@@ -297,13 +316,16 @@ void MICAcceleratorMatrixCSR<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
 
     if (this->get_nnz() > 0) {
 
-      copy_mic_mic(this->mat_.row_offset, mic_cast_mat->mat_.row_offset,
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.row_offset, mic_cast_mat->mat_.row_offset,
 		   this->get_nrow()+1);
 
-      copy_mic_mic(this->mat_.col, mic_cast_mat->mat_.col,
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.col, mic_cast_mat->mat_.col,
 		   this->get_nnz());
 
-      copy_mic_mic(this->mat_.val, mic_cast_mat->mat_.val,
+      copy_mic_mic(this->local_backend_.MIC_dev,
+		   this->mat_.val, mic_cast_mat->mat_.val,
 		   this->get_nnz());
 
       }
@@ -350,7 +372,8 @@ void MICAcceleratorMatrixCSR<ValueType>::Apply(const BaseVector<ValueType> &in, 
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    spmv_csr(this->mat_.row_offset,
+    spmv_csr(this->local_backend_.MIC_dev,
+	     this->mat_.row_offset,
 	     this->mat_.col,
 	     this->mat_.val,
 	     this->get_nrow(),
@@ -377,7 +400,8 @@ void MICAcceleratorMatrixCSR<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    spmv_add_csr(this->mat_.row_offset,
+    spmv_add_csr(this->local_backend_.MIC_dev,
+		 this->mat_.row_offset,
 		 this->mat_.col,
 		 this->mat_.val,
 		 this->get_nrow(),

@@ -56,6 +56,7 @@ MICAcceleratorMatrixDENSE<ValueType>::MICAcceleratorMatrixDENSE(const Paralution
   this->mat_.val = NULL;
   this->set_backend(local_backend); 
 
+  // under construction
   FATAL_ERROR(__FILE__, __LINE__);
 }
 
@@ -87,6 +88,7 @@ void MICAcceleratorMatrixDENSE<ValueType>::AllocateDENSE(const int nrow, const i
 
     // TODO
     FATAL_ERROR(__FILE__, __LINE__);
+
     /*
     allocate_mic(nrow*ncol, &this->mat_.val);
     set_to_zero_mic(nrow*ncol, mat_.val);   
@@ -106,7 +108,8 @@ void MICAcceleratorMatrixDENSE<ValueType>::Clear() {
 
   if (this->get_nnz() > 0) {
 
-    free_mic(&this->mat_.val);
+    free_mic(this->local_backend_.MIC_dev,
+	     &this->mat_.val);
 
     this->nrow_ = 0;
     this->ncol_ = 0;
@@ -138,13 +141,6 @@ void MICAcceleratorMatrixDENSE<ValueType>::CopyFromHost(const HostMatrix<ValueTy
 
       // TODO
       FATAL_ERROR(__FILE__, __LINE__);
-      /*
-      cudaMemcpy(this->mat_.val,     // dst
-                 cast_mat->mat_.val, // src
-                 this->get_nnz()*sizeof(ValueType), // size
-                 cudaMemcpyHostToDevice);    
-      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
-      */
 
     }
     
@@ -183,13 +179,6 @@ void MICAcceleratorMatrixDENSE<ValueType>::CopyToHost(HostMatrix<ValueType> *dst
 
       // TODO
       FATAL_ERROR(__FILE__, __LINE__);
-      /*
-      cudaMemcpy(cast_mat->mat_.val, // dst
-                 this->mat_.val,     // src
-                 this->get_nnz()*sizeof(ValueType), // size
-                 cudaMemcpyDeviceToHost);    
-      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
-      */
 
     }
     
@@ -227,13 +216,6 @@ void MICAcceleratorMatrixDENSE<ValueType>::CopyFrom(const BaseMatrix<ValueType> 
 
       // TODO
       FATAL_ERROR(__FILE__, __LINE__);
-      /*
-        cudaMemcpy(this->mat_.val,         // dst
-                   mic_cast_mat->mat_.val, // src
-                   this->get_nnz()*sizeof(ValueType), // size
-                   cudaMemcpyDeviceToDevice);    
-        CHECK_CUDA_ERROR(__FILE__, __LINE__);     
-      */
 
       }
 
@@ -283,13 +265,6 @@ void MICAcceleratorMatrixDENSE<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) co
       // TODO
       FATAL_ERROR(__FILE__, __LINE__);
       
-      /*
-        cudaMemcpy(mic_cast_mat->mat_.val, // dst
-                   this->mat_.val,         // src
-                   this->get_nnz()*sizeof(ValueType), // size
-                   cudaMemcpyDeviceToHost);    
-        CHECK_CUDA_ERROR(__FILE__, __LINE__);     
-      */
 
       }
     

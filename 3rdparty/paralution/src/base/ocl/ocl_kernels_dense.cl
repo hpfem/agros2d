@@ -19,3 +19,20 @@
 //
 // *************************************************************************
 
+__kernel void kernel_dense_spmv(const int nrow, const int ncol, __global const ValueType *val,
+                                __global const ValueType *in, __global ValueType *out) {
+
+  int ai = get_global_id(0);
+
+  if (ai < nrow) {
+
+    ValueType sum = (ValueType)(0.0);
+
+    for (int aj=0; aj<ncol; ++aj)
+      sum += val[ai+aj*nrow] * in[aj];
+
+    out[ai] = sum;
+
+  }
+
+}

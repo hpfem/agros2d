@@ -39,6 +39,7 @@ template <class OperatorType, class VectorType, typename ValueType>
 Solver<OperatorType, VectorType, ValueType>::Solver() {
 
   this->res_norm_ = 2;
+  this->index_ = -1;
 
   this->op_  = NULL;
   this->precond_   = NULL;
@@ -168,7 +169,7 @@ void Solver<OperatorType, VectorType, ValueType>::SetResidualNorm(const int resn
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-ValueType Solver<OperatorType, VectorType, ValueType>::Norm(const VectorType &vec) const {
+ValueType Solver<OperatorType, VectorType, ValueType>::Norm(const VectorType &vec) {
 
   // L1 norm
   if (this->res_norm_ == 1)
@@ -179,8 +180,11 @@ ValueType Solver<OperatorType, VectorType, ValueType>::Norm(const VectorType &ve
     return vec.Norm();
 
   // Infinity norm
-  if (this->res_norm_ == 3)
-    return vec.Amax();
+  if (this->res_norm_ == 3) {
+    ValueType amax;
+    this->index_ = vec.Amax(amax);
+    return amax;
+  }
 
   return 0;
  
@@ -201,9 +205,9 @@ IterativeLinearSolver<OperatorType, VectorType, ValueType>::~IterativeLinearSolv
 
 
 template <class OperatorType, class VectorType, typename ValueType>
-void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Init(const double abs_tol,
-                                                             const double rel_tol,
-                                                             const double div_tol,
+void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Init(const ValueType abs_tol,
+                                                             const ValueType rel_tol,
+                                                             const ValueType div_tol,
                                                              const int max_iter) {
 
   this->iter_ctrl_.Init(abs_tol, rel_tol, div_tol, max_iter);
@@ -242,6 +246,16 @@ template <class OperatorType, class VectorType, typename ValueType>
 int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetSolverStatus(void) {
 
   return this->iter_ctrl_.GetSolverStatus();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetAmaxResidualIndex(void) {
+
+  if (this->res_norm_ != 3)
+    LOG_INFO("Absolute maximum index of residual vector is only available when using Linf norm");
+
+  return this->iter_ctrl_.GetAmaxResidualIndex();
 
 }
 
@@ -469,7 +483,7 @@ void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const Vector
     this->op_->Apply(*x, &this->x_res_);
     this->x_res_.ScaleAdd(ValueType(-1.0), rhs); 
 
-    while (!this->iter_ctrl_.CheckResidual(this->Norm(this->x_res_))) {
+    while (!this->iter_ctrl_.CheckResidual(this->Norm(this->x_res_), this->index_)) {
       
       // Solve M x_old = x_res
       this->precond_->SolveZeroSol(this->x_res_, &this->x_old_);

@@ -37,9 +37,7 @@
 
 #include <assert.h>
 #include <math.h>
-#ifdef _MSC_VER
 #include <time.h>
-#endif
 
 namespace paralution {
 
@@ -47,7 +45,7 @@ template <class OperatorType, class VectorType, typename ValueType>
 IDR<OperatorType, VectorType, ValueType>::IDR() {
 
   this->s_ = 4;
-  this->kappa_ = 0.7;
+  this->kappa_ = ValueType(0.7);
 
   this->fhost_ = NULL;
   this->Mhost_ = NULL;
@@ -168,7 +166,7 @@ void IDR<OperatorType, VectorType, ValueType>::Build(void) {
     this->P_[i] = new VectorType;
     this->P_[i]->CloneBackend(*this->op_);
     this->P_[i]->Allocate("P", this->op_->get_nrow());
-    this->P_[i]->SetRandom(-2.0, 2.0, (i+1)*time(NULL));
+    this->P_[i]->SetRandom(-2.0, 2.0, int((i+1)*time(NULL)));
 
   }
 
@@ -335,7 +333,7 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
     Mhost[DENSE_IND(i,i,s,s)] = ValueType(1.0);
   }
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
 
     // f = P^T * r
     for (int i=0; i<s; ++i)
@@ -435,7 +433,7 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
       res_norm = this->Norm(*r);
 
       // Check inner loop for convergence
-      if (this->iter_ctrl_.CheckResidual(res_norm))
+      if (this->iter_ctrl_.CheckResidual(res_norm), this->index_)
         break;
 
       // f_i = f_i - beta * M_i_k
