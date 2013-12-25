@@ -168,6 +168,8 @@ void SceneViewPost3D::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
+        if (!m_postHermes->linScalarView()) return;
+
         paletteCreate();
 
         m_listScalarField3D = glGenLists(1);
@@ -221,7 +223,7 @@ void SceneViewPost3D::paintScalarField3D()
 
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+             it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -267,7 +269,7 @@ void SceneViewPost3D::paintScalarField3D()
         // triangles
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->linInitialMeshView().triangles_begin(); !it.end; ++it)
+             it = m_postHermes->linInitialMeshView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -371,6 +373,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
     if (m_listScalarField3DSolid == -1)
     {
+        if (!m_postHermes->linScalarView()) return;
+
         paletteCreate();
 
         m_listScalarField3DSolid = glGenLists(1);
@@ -406,7 +410,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         QVector<int> linTrisBoundaries;
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postHermes->linScalarView().edges_begin(); !it.end; ++it)
+             it = m_postHermes->linScalarView()->edges_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
             int& edge_marker = it.get_marker();
@@ -449,7 +453,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         {
             glBegin(GL_TRIANGLES);
             for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+                 it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
             {
                 Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
                 int& elem_marker = it.get_marker();
@@ -505,7 +509,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             glBegin(GL_QUADS);
             for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+                 it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
             {
                 Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -551,7 +555,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             // side
             glBegin(GL_TRIANGLES);
             for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+                 it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
             {
                 Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
                 int& elem_marker = it.get_marker();
@@ -593,7 +597,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             glEnd();
 
             for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-                 it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+                 it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
             {
                 Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
                 int& elem_marker = it.get_marker();

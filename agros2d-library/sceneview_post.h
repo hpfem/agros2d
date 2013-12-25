@@ -38,20 +38,20 @@ public:
     ~PostHermes();
 
     // mesh
-    inline Hermes::Hermes2D::Views::Linearizer &linInitialMeshView() { return m_linInitialMeshView; }
-    inline Hermes::Hermes2D::Views::Linearizer &linSolutionMeshView() { return m_linSolutionMeshView; }
+    inline Hermes::Hermes2D::Views::Linearizer *linInitialMeshView() { return m_linInitialMeshView; }
+    inline Hermes::Hermes2D::Views::Linearizer *linSolutionMeshView() { return m_linSolutionMeshView; }
 
     // order view
-    Hermes::Hermes2D::Views::Orderizer &ordView() { return m_orderView; }
+    Hermes::Hermes2D::Views::Orderizer *ordView() { return m_orderView; }
 
     // contour
-    inline Hermes::Hermes2D::Views::Linearizer &linContourView() { return m_linContourView; }
+    inline Hermes::Hermes2D::Views::Linearizer *linContourView() { return m_linContourView; }
 
     // scalar view
-    inline Hermes::Hermes2D::Views::Linearizer &linScalarView() { return m_linScalarView; }
+    inline Hermes::Hermes2D::Views::Linearizer *linScalarView() { return m_linScalarView; }
 
     // vector view
-    inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
+    inline Hermes::Hermes2D::Views::Vectorizer *vecVectorView() { return m_vecVectorView; }
 
     Hermes::Hermes2D::MeshFunctionSharedPtr<double> viewScalarFilter(Module::LocalVariable physicFieldVariable,
                                                                      PhysicFieldVariableComp physicFieldVariableComp);
@@ -85,22 +85,22 @@ private:
     bool m_isProcessed;
 
     // initial mesh
-    Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
+    Hermes::Hermes2D::Views::Linearizer *m_linInitialMeshView;
 
     // solution mesh
-    Hermes::Hermes2D::Views::Linearizer m_linSolutionMeshView;
+    Hermes::Hermes2D::Views::Linearizer *m_linSolutionMeshView;
 
     // order view
-    Hermes::Hermes2D::Views::Orderizer m_orderView;
+    Hermes::Hermes2D::Views::Orderizer *m_orderView;
 
     // contour
-    Hermes::Hermes2D::Views::Linearizer m_linContourView;
+    Hermes::Hermes2D::Views::Linearizer *m_linContourView;
 
     // scalar view
-    Hermes::Hermes2D::Views::Linearizer m_linScalarView; // linealizer for scalar view
+    Hermes::Hermes2D::Views::Linearizer *m_linScalarView; // linealizer for scalar view
 
     // vector view
-    Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
+    Hermes::Hermes2D::Views::Vectorizer *m_vecVectorView; // vectorizer for vector view
 
     // view
     FieldInfo *m_activeViewField;

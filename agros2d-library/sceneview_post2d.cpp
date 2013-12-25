@@ -309,6 +309,8 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
+        if (!m_postHermes->linScalarView()) return;
+
         paletteCreate();
 
         m_listScalarField = glGenLists(1);
@@ -333,7 +335,7 @@ void SceneViewPost2D::paintScalarField()
 
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+             it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -376,12 +378,12 @@ void SceneViewPost2D::paintScalarField()
         if (fabs(Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) < EPS_ZERO)
             irange = PALETTEENTRIES / 2;
 
-        double3* linVert = m_postHermes->linScalarView().get_vertices();
-        int3* linTris = m_postHermes->linScalarView().get_triangles();
+        double3* linVert = m_postHermes->linScalarView()->get_vertices();
+        int3* linTris = m_postHermes->linScalarView()->get_triangles();
         Point point[3];
         double value[3];
 
-        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+        for (int i = 0; i < m_postHermes->linScalarView()->get_num_triangles(); i++)
         {
             for (int j = 0; j < 3; j++)
             {
@@ -421,7 +423,7 @@ void SceneViewPost2D::paintScalarField()
 
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->linScalarView().triangles_begin(); !it.end; ++it)
+             it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -454,6 +456,8 @@ void SceneViewPost2D::paintContours()
 
     if (m_listContours == -1)
     {
+        if (!m_postHermes->linContourView()) return;
+
         m_listContours = glGenLists(1);
         glNewList(m_listContours, GL_COMPILE);
 
@@ -462,7 +466,7 @@ void SceneViewPost2D::paintContours()
         double rangeMax = -numeric_limits<double>::max();
 
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
-             it = m_postHermes->linContourView().vertices_begin(); !it.end; ++it)
+             it = m_postHermes->linContourView()->vertices_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
 
@@ -483,7 +487,7 @@ void SceneViewPost2D::paintContours()
 
             glBegin(GL_LINES);
             for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-                 it = m_postHermes->linContourView().triangles_begin(); !it.end; ++it)
+                 it = m_postHermes->linContourView()->triangles_begin(); !it.end; ++it)
             {
                 Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
                 paintContoursTri(triangle, step);
@@ -801,11 +805,13 @@ void SceneViewPost2D::paintVectors()
 
     if (m_listVectors == -1)
     {
+        if (!m_postHermes->vecVectorView()) return;
+
         m_listVectors = glGenLists(1);
         glNewList(m_listVectors, GL_COMPILE);
 
-        double vectorRangeMin = m_postHermes->vecVectorView().get_min_value();
-        double vectorRangeMax = m_postHermes->vecVectorView().get_max_value();
+        double vectorRangeMin = m_postHermes->vecVectorView()->get_min_value();
+        double vectorRangeMax = m_postHermes->vecVectorView()->get_max_value();
 
         //Add 20% margin to the range
         double vectorRange = vectorRangeMax - vectorRangeMin;
@@ -847,7 +853,7 @@ void SceneViewPost2D::paintVectors()
 
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Vectorizer::Iterator<Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->vecVectorView().triangles_begin(); !it.end; ++it)
+             it = m_postHermes->vecVectorView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 

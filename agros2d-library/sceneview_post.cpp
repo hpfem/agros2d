@@ -56,11 +56,12 @@ PostHermes::PostHermes() :
     m_activeAdaptivityStep(NOT_FOUND_SO_FAR),
     m_activeSolutionMode(SolutionMode_Undefined),
     m_isProcessed(false),
-    m_linInitialMeshView(Hermes::Hermes2D::OpenGL),
-    m_linSolutionMeshView(Hermes::Hermes2D::OpenGL),
-    m_linContourView(Hermes::Hermes2D::OpenGL),
-    m_linScalarView(Hermes::Hermes2D::OpenGL),
-    m_vecVectorView(Hermes::Hermes2D::OpenGL)
+    m_linInitialMeshView(NULL),
+    m_linSolutionMeshView(NULL),
+    m_orderView(NULL),
+    m_linContourView(NULL),
+    m_linScalarView(NULL),
+    m_vecVectorView(NULL)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(Agros2D::problem(), SIGNAL(clearedSolution()), this, SLOT(clearView()));
@@ -81,16 +82,22 @@ void PostHermes::processInitialMesh()
     {
         Agros2D::log()->printMessage(tr("Mesh View"), tr("Initial mesh with %1 elements").arg(m_activeViewField->initialMesh()->get_num_active_elements()));
 
+        if (m_linInitialMeshView)
+            delete m_linInitialMeshView;
+        m_linInitialMeshView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
+
         // init linearizer for initial mesh
         try
         {
-            m_linInitialMeshView.free();
-            m_linInitialMeshView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-            m_linInitialMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
+            m_linInitialMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
+            m_linInitialMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
         }
         catch (Hermes::Exceptions::Exception& e)
         {
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer processing failed: %1").arg(e.what()));
+            delete m_linInitialMeshView;
+            m_linInitialMeshView = NULL;
+
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (initial mesh) processing failed: %1").arg(e.what()));
         }
     }
 }
@@ -106,9 +113,22 @@ void PostHermes::processSolutionMesh()
         // init linearizer for solution mesh
         const Hermes::Hermes2D::MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(comp)->get_mesh();
 
-        m_linSolutionMeshView.free();
-        m_linSolutionMeshView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-        m_linSolutionMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
+        if (m_linSolutionMeshView)
+            delete m_linSolutionMeshView;
+        m_linSolutionMeshView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
+
+        try
+        {
+            m_linSolutionMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
+            m_linSolutionMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
+        }
+        catch (Hermes::Exceptions::Exception& e)
+        {
+            delete m_linSolutionMeshView;
+            m_linSolutionMeshView = NULL;
+
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (solution mesh) processing failed: %1").arg(e.what()));
+        }
     }
 }
 
@@ -121,8 +141,21 @@ void PostHermes::processOrder()
 
         int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
 
-        m_orderView.free();
-        m_orderView.process_space(activeMultiSolutionArray().spaces().at(comp));
+        if (m_orderView)
+            delete m_orderView;
+        m_orderView = new Hermes::Hermes2D::Views::Orderizer();
+
+        try
+        {
+            m_orderView->process_space(activeMultiSolutionArray().spaces().at(comp));
+        }
+        catch (Hermes::Exceptions::Exception& e)
+        {
+            delete m_orderView;
+            m_orderView = NULL;
+
+            Agros2D::log()->printError("Order View", QObject::tr("Orderizer processing failed: %1").arg(e.what()));
+        }
     }
 }
 
@@ -153,7 +186,11 @@ void PostHermes::processRangeContour()
             slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
                                               PhysicFieldVariableComp_Magnitude);
 
-        m_linContourView.free();
+        // new linearizer
+        if (m_linContourView)
+            delete m_linContourView;
+        m_linContourView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
+
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
@@ -166,7 +203,7 @@ void PostHermes::processRangeContour()
                 RectPoint rect = Agros2D::scene()->boundingBox();
                 double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-                m_linContourView.set_displacement(activeMultiSolutionArray().solutions().at(0),
+                m_linContourView->set_displacement(activeMultiSolutionArray().solutions().at(0),
                                                   activeMultiSolutionArray().solutions().at(1),
                                                   dmult);
             }
@@ -174,13 +211,23 @@ void PostHermes::processRangeContour()
         }
         else
         {
-            m_linContourView.set_displacement(NULL, NULL);
+            m_linContourView->set_displacement(NULL, NULL);
         }
 
         // process solution.
-        // m_linContourView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
-        m_linContourView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
-        m_linContourView.process_solution(slnContourView, Hermes::Hermes2D::H2D_FN_VAL_0);
+        try
+        {
+            // m_linContourView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
+            m_linContourView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
+            m_linContourView->process_solution(slnContourView, Hermes::Hermes2D::H2D_FN_VAL_0);
+        }
+        catch (Hermes::Exceptions::Exception& e)
+        {
+            delete m_linContourView;
+            m_linContourView = NULL;
+
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (contour view) processing failed: %1").arg(e.what()));
+        }
     }
 }
 
@@ -205,7 +252,10 @@ void PostHermes::processRangeScalar()
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
                                                                                          (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
-        m_linScalarView.free();
+        // new linearizer
+        if (m_linScalarView)
+            delete m_linScalarView;
+        m_linScalarView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())
@@ -218,26 +268,36 @@ void PostHermes::processRangeScalar()
                 RectPoint rect = Agros2D::scene()->boundingBox();
                 double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-                m_linScalarView.set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                 activeMultiSolutionArray().solutions().at(1),
-                                                 dmult);
+                m_linScalarView->set_displacement(activeMultiSolutionArray().solutions().at(0),
+                                                  activeMultiSolutionArray().solutions().at(1),
+                                                  dmult);
             }
             delete filter;
         }
         else
         {
-            m_linScalarView.set_displacement(NULL, NULL);
+            m_linScalarView->set_displacement(NULL, NULL);
         }
 
         // process solution
-        m_linScalarView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH));
-        // m_linScalarView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2)); // 13x times slower
-        m_linScalarView.process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
-
-        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
+        try
         {
-            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, m_linScalarView.get_min_value());
-            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, m_linScalarView.get_max_value());
+            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH));
+            // m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2)); // 13x times slower
+            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
+
+            if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
+            {
+                Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, m_linScalarView->get_min_value());
+                Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, m_linScalarView->get_max_value());
+            }
+        }
+        catch (Hermes::Exceptions::Exception &e)
+        {
+            delete m_linScalarView;
+            m_linScalarView = NULL;
+
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (scalar view) processing failed: %1").arg(e.what()));
         }
     }
 }
@@ -264,7 +324,10 @@ void PostHermes::processRangeVector()
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
                                                                                           PhysicFieldVariableComp_Y);
 
-        m_vecVectorView.free();
+        // new vectorizer
+        if (m_vecVectorView)
+            delete m_vecVectorView;
+        m_vecVectorView = new Hermes::Hermes2D::Views::Vectorizer(Hermes::Hermes2D::OpenGL);
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
@@ -276,7 +339,7 @@ void PostHermes::processRangeVector()
                 RectPoint rect = Agros2D::scene()->boundingBox();
                 double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-                m_vecVectorView.set_displacement(activeMultiSolutionArray().solutions().at(0),
+                m_vecVectorView->set_displacement(activeMultiSolutionArray().solutions().at(0),
                                                  activeMultiSolutionArray().solutions().at(1),
                                                  dmult);
             }
@@ -284,16 +347,26 @@ void PostHermes::processRangeVector()
         }
         else
         {
-            m_vecVectorView.set_displacement(NULL, NULL);
+            m_vecVectorView->set_displacement(NULL, NULL);
         }
 
         // process solution
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slns[2] = { slnVectorXView, slnVectorYView };
         int items[2] = { Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0 };
 
-        m_vecVectorView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
-        // m_vecVectorView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
-        m_vecVectorView.process_solution(slns, items);
+        try
+        {
+            m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
+            // m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
+            m_vecVectorView->process_solution(slns, items);
+        }
+        catch (Hermes::Exceptions::Exception &e)
+        {
+            delete m_vecVectorView;
+            m_vecVectorView = NULL;
+
+            Agros2D::log()->printError("Mesh View", QObject::tr("Vectorizer processing failed: %1").arg(e.what()));
+        }
     }
 }
 
@@ -301,13 +374,38 @@ void PostHermes::clearView()
 {
     m_isProcessed = false;
 
-    m_linInitialMeshView.free();
-    m_linSolutionMeshView.free();
-    m_orderView.free();
+    if (m_linInitialMeshView)
+    {
+        delete m_linInitialMeshView;
+        m_linInitialMeshView = NULL;
+    }
+    if (m_linSolutionMeshView)
+    {
+        delete m_linSolutionMeshView;
+        m_linSolutionMeshView = NULL;
+    }
+    if (m_orderView)
+    {
+        delete m_orderView;
+        m_orderView = NULL;
+    }
 
-    m_linContourView.free();
-    m_linScalarView.free();
-    m_vecVectorView.free();
+    if (m_linContourView)
+    {
+        delete m_linContourView;
+        m_linContourView = NULL;
+    }
+    if (m_linScalarView)
+    {
+        delete m_linScalarView;
+        m_linScalarView = NULL;
+    }
+
+    if (m_vecVectorView)
+    {
+        delete m_vecVectorView;
+        m_vecVectorView = NULL;
+    }
 }
 
 void PostHermes::refresh()

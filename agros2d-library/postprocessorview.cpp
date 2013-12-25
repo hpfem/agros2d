@@ -918,10 +918,15 @@ void PostprocessorWidget::doApply()
     // QApplication::processEvents();
 
     // read auto range values
-    if (chkScalarFieldRangeAuto->isChecked())
+    if (chkScalarFieldRangeAuto->isChecked() && m_postHermes->linScalarView())
     {
-        txtScalarFieldRangeMin->setValue(m_postHermes->linScalarView().get_min_value());
-        txtScalarFieldRangeMax->setValue(m_postHermes->linScalarView().get_max_value());
+        txtScalarFieldRangeMin->setValue(m_postHermes->linScalarView()->get_min_value());
+        txtScalarFieldRangeMax->setValue(m_postHermes->linScalarView()->get_max_value());
+    }
+    else
+    {
+        txtScalarFieldRangeMin->setValue(0.0);
+        txtScalarFieldRangeMax->setValue(0.0);
     }
 
     refresh();

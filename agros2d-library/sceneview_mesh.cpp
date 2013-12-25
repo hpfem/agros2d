@@ -244,11 +244,13 @@ void SceneViewMesh::paintInitialMesh()
 
     if (m_arrayInitialMesh.isEmpty())
     {
+        if (!m_postHermes->linInitialMeshView()) return;
+
         // edges
-        m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView().get_edge_count());
+        m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView()->get_edge_count());
 
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postHermes->linInitialMeshView().edges_begin(); !it.end; ++it)
+             it = m_postHermes->linInitialMeshView()->edges_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
 
@@ -282,11 +284,13 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
+        if (!m_postHermes->linSolutionMeshView()) return;
+
         // edges
-        m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView().get_edge_count());
+        m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView()->get_edge_count());
 
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postHermes->linSolutionMeshView().edges_begin(); !it.end; ++it)
+             it = m_postHermes->linSolutionMeshView()->edges_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
 
@@ -319,23 +323,25 @@ void SceneViewMesh::paintOrder()
 
     if (m_arrayOrderMesh.isEmpty())
     {
+        if (!m_postHermes->ordView()) return;
+
         // order scalar view
-        double3* vert = m_postHermes->ordView().get_vertices();
-        int3* tris = m_postHermes->ordView().get_triangles();
+        double3* vert = m_postHermes->ordView()->get_vertices();
+        int3* tris = m_postHermes->ordView()->get_triangles();
 
         // draw mesh
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
+        for (int i = 0; i < m_postHermes->ordView()->get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
         }
 
         // triangles
-        m_arrayOrderMesh.reserve(3 * m_postHermes->ordView().get_num_triangles());
-        m_arrayOrderMeshColor.reserve(3 * m_postHermes->ordView().get_num_triangles());
-        for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
+        m_arrayOrderMesh.reserve(3 * m_postHermes->ordView()->get_num_triangles());
+        m_arrayOrderMeshColor.reserve(3 * m_postHermes->ordView()->get_num_triangles());
+        for (int i = 0; i < m_postHermes->ordView()->get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             QVector3D colorVector = QVector3D(paletteColorOrder(color)[0],
@@ -380,11 +386,11 @@ void SceneViewMesh::paintOrder()
         glScaled(2.0 / width(), 2.0 / height(), 1.0);
         glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
-        double3* vert = m_postHermes->ordView().get_vertices();
+        double3* vert = m_postHermes->ordView()->get_vertices();
         int* lvert;
         char** ltext;
         double2* lbox;
-        int nl = m_postHermes->ordView().get_labels(lvert, ltext, lbox);
+        int nl = m_postHermes->ordView()->get_labels(lvert, ltext, lbox);
 
         for (int i = 0; i < nl; i++)
         {
@@ -405,12 +411,12 @@ void SceneViewMesh::paintOrderColorBar()
     if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool()) return;
 
     // order scalar view
-    double3* vert = m_postHermes->ordView().get_vertices();
-    int3* tris = m_postHermes->ordView().get_triangles();
+    double3* vert = m_postHermes->ordView()->get_vertices();
+    int3* tris = m_postHermes->ordView()->get_triangles();
 
     int min = 11;
     int max = 1;
-    for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
+    for (int i = 0; i < m_postHermes->ordView()->get_num_triangles(); i++)
     {
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
