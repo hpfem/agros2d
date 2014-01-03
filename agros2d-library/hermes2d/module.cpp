@@ -182,7 +182,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     if (type == WeakForm_MatVol)
     {
         MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, offsetI, offsetJ,
-                                                                          static_cast<Material *>(markerSource));
+                                                                          static_cast<Material *>(markerSource), offsetPreviousTimeExt);
         if (!weakFormAgros) return NULL;
 
         // volume

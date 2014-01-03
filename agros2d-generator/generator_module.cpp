@@ -1635,7 +1635,6 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
     // scalar field
     lex->addVariable("uval");
     lex->addVariable("upval");
-    lex->addVariable("uptval");
     lex->addVariable("vval");
 
     // vector field
@@ -1655,8 +1654,6 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("vdy");
         lex->addVariable("updx");
         lex->addVariable("updy");
-        lex->addVariable("uptdx");
-        lex->addVariable("uptdy");
 
         // vector field
         lex->addVariable("dx0");
@@ -1676,8 +1673,6 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("vdz");
         lex->addVariable("updr");
         lex->addVariable("updz");
-        lex->addVariable("uptdr");
-        lex->addVariable("uptdz");
 
         // vector field
         lex->addVariable("dr0");
@@ -1700,6 +1695,7 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
     for (int i = 1; i < numOfSol + 1; i++)
     {
         lex->addVariable(QString("value%1").arg(i));
+        lex->addVariable(QString("timedervec%1").arg(i));
         if (coordinateType == CoordinateType_Planar)
         {
             lex->addVariable(QString("dx%1").arg(i));
@@ -1809,8 +1805,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["vdy"] = "v->dy[i]";
             dict["updx"] = "u_ext[this->j]->dx[i]";
             dict["updy"] = "u_ext[this->j]->dy[i]";
-            dict["uptdx"] = "ext[this->j]->dx[i]";
-            dict["uptdy"] = "ext[this->j]->dy[i]";
         }
         else
         {
@@ -1821,8 +1815,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict["vdz"] = "v->dy[i]";
             dict["updr"] = "u_ext[this->j]->dx[i]";
             dict["updz"] = "u_ext[this->j]->dy[i]";
-            dict["uptdr"] = "ext[this->j]->dx[i]";
-            dict["uptdz"] = "ext[this->j]->dy[i]";
         }
 
         for (int i = 1; i < numOfSol + 1; i++)
@@ -1846,6 +1838,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             else
             {
                 dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
+                dict[QString("timedervec%1").arg(i)] = QString("(*this->m_table)->vectorFormCoefficient(ext, %1, this->m_markerSource->fieldInfo()->numberOfSolutions(), *this->m_offsetPreviousTimeExt, i)").arg(i-1);
 
                 if (coordinateType == CoordinateType_Planar)
                 {

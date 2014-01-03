@@ -52,10 +52,12 @@
     <module:matrix_form id="pressure_3_2" i="3" j="2" planar="udy * vval" axi="udz * vval" />
     <module:matrix_form id="time_mat_1_1" i="1" j="1" planar="fl_rho * uval * vval * timedermat" axi="fl_rho * uval * vval * timedermat"/>
     <module:matrix_form id="time_mat_2_2" i="2" j="2" planar="fl_rho * uval * vval * timedermat" axi="fl_rho * uval * vval * timedermat"/>
+    <module:matrix_form id="convection_time_linearisation_1" i="1" j="1" planar="fl_rho *  deltat * (timedervec1 * udx + timedervec2 * udy) * vval" axi="fl_rho * deltat * (timedervec1 * udr + timedervec2 * udz) * vval" />
+    <module:matrix_form id="convection_time_linearisation_2" i="2" j="2" planar="fl_rho *  deltat * (timedervec1 * udx + timedervec2 * udy) * vval" axi="fl_rho * deltat * (timedervec1 * udr + timedervec2 * udz) * vval"/>
 
     <module:vector_form id="rhs_1" i="1" j="1" planar="fl_fx * vval" axi="fl_fx * vval" />
-    <module:vector_form id="convection_residual_1" i="1" j="1" planar="fl_rho * (value1 * dx1 + value2 * dy1) * vval" axi="fl_rho * (value1 * dr1 + value2 * dz1) * vval" />
     <module:vector_form id="rhs_2" i="2" j="2" planar="fl_fy * vval" axi="fl_fy * vval"/>
+    <module:vector_form id="convection_residual_1" i="1" j="1" planar="fl_rho * (value1 * dx1 + value2 * dy1) * vval" axi="fl_rho * (value1 * dr1 + value2 * dz1) * vval" />
     <module:vector_form id="convection_residual_2" i="2" j="2" planar="fl_rho * (value1 * dx2 + value2 * dy2) * vval" axi="fl_rho * (value1 * dr2 + value2 * dz2) * vval"/>
     <module:vector_form id="time_vec_1_1" i="1" j="1" planar="fl_rho * timedervec * vval" axi="r * fl_rho * timedervec * vval"/>
     <module:vector_form id="time_vec_2_2" i="2" j="2" planar="fl_rho * timedervec * vval" axi="r * fl_rho * timedervec * vval"/>
@@ -131,6 +133,8 @@
           <module:matrix_form id="pressure_3_2" />
           <module:matrix_form id="time_mat_1_1" />
           <module:matrix_form id="time_mat_2_2" />
+          <module:matrix_form id="convection_time_linearisation_1" />
+          <module:matrix_form id="convection_time_linearisation_2" />
           <module:vector_form id="rhs_1" />
           <module:vector_form id="rhs_2" />
           <module:vector_form id="time_vec_1_1" />

@@ -55,8 +55,8 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, 
 
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
-    : MatrixFormVolAgros<Scalar>(i, j, offsetI, offsetJ)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int* offsetPreviousTimeExt)
+    : MatrixFormVolAgros<Scalar>(i, j, offsetI, offsetJ, offsetPreviousTimeExt)
 {       
 }
 

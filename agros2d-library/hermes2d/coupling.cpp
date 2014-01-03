@@ -186,11 +186,11 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 
 CouplingType CouplingInfo::couplingType() const
 {
-    if(m_couplingType == CouplingType_Hard)
-    {
-        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Hard coupling is not available yet, switching to weak coupling"));
-        return CouplingType_Weak;
-    }
+//    if(m_couplingType == CouplingType_Hard)
+//    {
+//        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Hard coupling is not available yet, switching to weak coupling"));
+//        return CouplingType_Weak;
+//    }
     return m_couplingType;
 }
 
