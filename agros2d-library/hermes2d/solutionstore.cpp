@@ -149,7 +149,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
                 }
                 catch (Hermes::Exceptions::Exception &e)
                 {
-                    Agros2D::log()->printError(QObject::tr("Solver"), QString::fromStdString(e.what()));
+                    Agros2D::log()->printError(QObject::tr("Solver"), QString::fromStdString(e.info()));
                     throw;
                 }
             }

@@ -378,7 +378,7 @@ bool Problem::mesh(bool emitMeshed)
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
         m_isMeshing = false;
-        Agros2D::log()->printWarning(tr("Mesh"), e.what());
+        Agros2D::log()->printWarning(tr("Mesh"), e.info().c_str());
         return false;
     }
     catch (...)
@@ -443,7 +443,7 @@ bool Problem::meshAction(bool emitMeshed)
         }
         catch (Hermes::Exceptions::Exception& e)
         {
-            throw AgrosMeshException(e.what());
+            throw AgrosMeshException(e.info().c_str());
         }
     }
 
@@ -720,7 +720,7 @@ void Problem::solve(bool commandLine)
     }
     catch (Hermes::Exceptions::Exception& e)
     {
-        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
+        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.info().c_str()));
         m_isSolving = false;
         return;
     }

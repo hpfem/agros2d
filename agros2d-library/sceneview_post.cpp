@@ -99,7 +99,7 @@ void PostHermes::processInitialMesh()
             delete m_linInitialMeshView;
             m_linInitialMeshView = NULL;
 
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (initial mesh) processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (initial mesh) processing failed: %1").arg(e.info().c_str()));
         }
     }
 }
@@ -129,7 +129,7 @@ void PostHermes::processSolutionMesh()
             delete m_linSolutionMeshView;
             m_linSolutionMeshView = NULL;
 
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (solution mesh) processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (solution mesh) processing failed: %1").arg(e.info().c_str()));
         }
     }
 }
@@ -156,7 +156,7 @@ void PostHermes::processOrder()
             delete m_orderView;
             m_orderView = NULL;
 
-            Agros2D::log()->printError("Order View", QObject::tr("Orderizer processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Order View", QObject::tr("Orderizer processing failed: %1").arg(e.info().c_str()));
         }
     }
 }
@@ -228,7 +228,7 @@ void PostHermes::processRangeContour()
             delete m_linContourView;
             m_linContourView = NULL;
 
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (contour view) processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (contour view) processing failed: %1").arg(e.info().c_str()));
         }
     }
 }
@@ -299,7 +299,7 @@ void PostHermes::processRangeScalar()
             delete m_linScalarView;
             m_linScalarView = NULL;
 
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (scalar view) processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (scalar view) processing failed: %1").arg(e.info().c_str()));
         }
     }
 }
@@ -367,7 +367,7 @@ void PostHermes::processRangeVector()
             delete m_vecVectorView;
             m_vecVectorView = NULL;
 
-            Agros2D::log()->printError("Mesh View", QObject::tr("Vectorizer processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Mesh View", QObject::tr("Vectorizer processing failed: %1").arg(e.info().c_str()));
         }
     }
 }

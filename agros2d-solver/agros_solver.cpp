@@ -48,7 +48,7 @@ bool AgrosSolver::notify(QObject *receiver, QEvent *event)
     }
     catch (Hermes::Exceptions::Exception& e)
     {
-        qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
+        qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.info().c_str());
         QApplication::exit(1);
     }
     catch (std::exception& e)

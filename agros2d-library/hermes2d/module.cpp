@@ -1135,8 +1135,8 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(cons
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
-        qDebug() << e.what();
-        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+        qDebug() << e.info().c_str();
+        throw;
     }
 
     // set system locale
@@ -1167,8 +1167,8 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(con
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
-        qDebug() << e.what();
-        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+        qDebug() << e.info().c_str();
+        throw;
     }
 
     return meshes;
