@@ -63,10 +63,15 @@
 	<element name="volume">
 		<complexType>
 			<sequence>
-				<element ref="coupling:weakforms_volume" />
+                                <choice maxOccurs="unbounded">
+                                        <element ref="coupling:matrix_form" />
+                                        <element ref="coupling:vector_form" />
+                                </choice>
+                                <element ref="coupling:weakforms_volume" />
 			</sequence>
 		</complexType>
 	</element>
+
 	<element name="weakforms_volume">
 		<complexType>
 			<sequence>
@@ -74,56 +79,58 @@
 			</sequence>
 		</complexType>
 	</element>
-	<element name="weakform_surface">
-		<complexType>
-			<sequence>
-				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:matrix_form" />
-				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:vector_form" />
-			</sequence>
-			<attribute name="couplingtype" use="required" type="string" />
-			<attribute name="sourceanalysis" use="required" type="string" />
-			<attribute name="targetanalysis" use="required" type="string" />
-		</complexType>
-	</element>
-	<element name="weakforms_surface">
-		<complexType>
-			<sequence>
-				<element minOccurs="1" maxOccurs="unbounded" ref="coupling:weakform_surface" />
-			</sequence>
-		</complexType>
-	</element>
-	
-	<element name="weakform_volume">
-		<complexType>
-			<sequence>
-				<element minOccurs="0" maxOccurs="unbounded" ref="coupling:matrix_form" />
-				<element maxOccurs="unbounded" ref="coupling:vector_form" />
-			</sequence>
-			<attribute name="couplingtype" use="required" type="string" />
-			<attribute name="sourceanalysis" use="required" type="string" />
-			<attribute name="targetanalysis" use="required" type="string" />
-		</complexType>
-	</element>
-	<element name="matrix_form">
-		<complexType>
-            <attribute name="id" use="required" type="string" />                		
-			<attribute name="i" use="required" type="integer" />
-			<attribute name="j" use="required" type="integer" />
-			<attribute name="axi_linear" use="required" type="string" />
-			<attribute name="planar_linear" use="required" type="string" />
-			<attribute name="axi_newton" use="required" type="string" />
-			<attribute name="planar_newton" use="required" type="string" />
-		</complexType>
-	</element>
-	<element name="vector_form">
-		<complexType>
-            <attribute name="id" use="required" type="string" />                		
-			<attribute name="i" use="required" type="integer" />
-			<attribute name="j" use="required" type="integer" />
-			<attribute name="axi_linear" use="required" type="string" />
-			<attribute name="planar_linear" use="required" type="string" />
-			<attribute name="axi_newton" use="required" type="string" />
-			<attribute name="planar_newton" use="required" type="string" />
-		</complexType>
-	</element>
+
+        <element name="weakform_volume">
+                <complexType>
+                        <sequence>
+                                <element minOccurs="1" maxOccurs="unbounded" ref="coupling:linearity_option" />
+                        </sequence>
+                        <attribute name="couplingtype" use="required" type="string" />
+                        <attribute name="sourceanalysis" use="required" type="string" />
+                        <attribute name="targetanalysis" use="required" type="string" />
+                        <attribute name="equation" use="required" type="string" />
+                </complexType>
+        </element>
+
+
+
+        <element name="linearity_option">
+                <complexType>
+                        <sequence>
+                                <choice minOccurs="0" maxOccurs="unbounded">
+                                       <element ref="coupling:matrix_form" />
+                                       <element ref="coupling:vector_form" />
+                                </choice>
+                        </sequence>
+                        <attribute name="type" use="required" type="string" />
+                </complexType>
+        </element>
+
+        <element name="matrix_form">
+                <complexType>
+                        <attribute name="id" use="required" type="string" />
+                        <attribute name="i" type="integer" />
+                        <attribute name="j" type="integer" />
+                        <attribute name="planar" type="string" />
+                        <attribute name="axi"  type="string" />
+                        <attribute name="symmetric" type="integer" />
+                        <attribute name="symmetric_planar" type="integer" />
+                        <attribute name="symmetric_axi" type="integer" />
+                        <attribute name="condition" type="string" />
+                </complexType>
+        </element>
+
+        <element name="vector_form">
+                <complexType>
+                        <attribute name="id" use="required" type="string" />
+                        <attribute name="i" type="integer" />
+                        <attribute name="j" type="integer" />
+                        <attribute name="planar"  type="string" />
+                        <attribute name="axi"  type="string" />
+                        <attribute name="variant"  type="string" />
+                        <attribute name="coefficient"  type="string" />
+                        <attribute name="condition" type="string" />
+                </complexType>
+        </element>
+
 </schema>

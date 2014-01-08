@@ -21,12 +21,18 @@
 #define GENERATOR_COUPLING_H
 
 #include "generator.h"
+struct FormInfo;
 
 class Agros2DGeneratorCoupling : public Agros2DGeneratorBase
 {
 
 public:
     Agros2DGeneratorCoupling(const QString &couplingId);
+
+    // todo: copied from module
+    void prepareWeakFormsOutput();
+    void deleteWeakFormOutput();
+
 
     void generatePluginProjectFile();
     void generatePluginFilterFiles();
@@ -38,6 +44,9 @@ public:
 
 
 private:
+
+    void generateWeakForms(ctemplate::TemplateDictionary &output);
+
     std::auto_ptr<XMLCoupling::coupling> coupling_xsd;
     XMLCoupling::coupling *m_coupling;
 
@@ -55,8 +64,8 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    template <typename Form>
-    void generateForm(Form form, XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output, QString weakFormType);
+    template <typename WeakForm>
+    void generateForm(FormInfo formInfo, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType);
 
     //template <typename Form>
     //QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
@@ -68,6 +77,9 @@ private:
     QMap<QString, int> quantityOrdering;
     QMap<QString, bool> quantityIsNonlinear;
     QMap<QString, int> functionOrdering;
+
+    ctemplate::TemplateDictionary* m_output;
+
 };
 
 #endif // GENERATOR_COUPLING_H

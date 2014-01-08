@@ -87,6 +87,7 @@ SET(SOURCES value.cpp
     gui/valuedatatabledialog.cpp
     gui/valuelineedit.cpp
     hermes2d/marker.cpp
+    hermes2d/weak_form.cpp
     hermes2d/module.cpp
     hermes2d/solver.cpp
     hermes2d/solver_linear.cpp

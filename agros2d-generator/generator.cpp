@@ -335,7 +335,9 @@ void Agros2DGenerator::generateCoupling(const QString &couplingId)
     Agros2DGeneratorCoupling generator(couplingId);
 
     generator.generatePluginProjectFile();
+    generator.prepareWeakFormsOutput();
     generator.generatePluginInterfaceFiles();
     generator.generatePluginWeakFormFiles();
+    generator.deleteWeakFormOutput();
 }
 
