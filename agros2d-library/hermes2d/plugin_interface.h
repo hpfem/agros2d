@@ -34,7 +34,7 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/field.h"
 
-#include "../../resources_source/classes/coupling_xml.h"
+#include "../../resources_source/classes/module_xml.h"
 
 //template <typename Scalar>
 class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
@@ -283,7 +283,7 @@ public:
     virtual QString fieldId() = 0;
 
     inline XMLModule::module *module() const { assert(m_module); return m_module; }
-    inline XMLCoupling::coupling *coupling() const { assert(m_coupling); return m_coupling; }
+    inline XMLModule::module *coupling() const { assert(m_coupling); return m_coupling; }
 
     // weak forms
     virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt) = 0;
@@ -325,7 +325,7 @@ public:
 
 protected:
     XMLModule::module *m_module;
-    XMLCoupling::coupling *m_coupling;
+    XMLModule::module *m_coupling;
 };
 
 

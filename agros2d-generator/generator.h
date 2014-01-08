@@ -25,7 +25,6 @@
 
 #include "ctemplate/template.h"
 #include "../../resources_source/classes/module_xml.h"
-#include "../../resources_source/classes/coupling_xml.h"
 
 const QString GENERATOR_TEMPLATEROOT = "resources/templates/generator";
 const QString GENERATOR_DOCROOT = "resources_source/doc/source/modules";

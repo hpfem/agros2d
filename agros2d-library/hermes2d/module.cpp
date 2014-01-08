@@ -74,12 +74,13 @@ QMap<QString, QString> Module::availableModules()
                     parsing_flags = 0;
                     qDebug() << "Warning: Validating all XML files. This is time-consuming and should be switched off in module.cpp for release. Set validateAtTheBeginning = false.";
                 }
-                std::auto_ptr<XMLModule::module> module_xsd(XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
+                std::auto_ptr<XMLModule::module> module_xsd(XMLModule::field_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
 
                 XMLModule::module *mod = module_xsd.get();
 
                 // module name
-                modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
+                assert(mod->general_field().present());
+                modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general_field().get().name());
             }
             catch (const xml_schema::expected_element& e)
             {

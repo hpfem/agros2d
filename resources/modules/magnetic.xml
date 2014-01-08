@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
 
-  <module:general id="magnetic" name="Magnetic field">
+  <module:general_field id="magnetic" name="Magnetic field">
     <module:description>Magnetic field ...</module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate">
@@ -15,7 +15,7 @@
       <module:analysis id="transient" name="Transient" solutions="2" type="transient">
       </module:analysis>
     </module:analyses>
-  </module:general>
+    </module:general_field>
 
   <module:constants>
   <module:constant id="MU0" value="1.2566371e-06"/>

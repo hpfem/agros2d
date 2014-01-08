@@ -26,14 +26,14 @@
 #include "util/global.h"
 #include "util/constants.h"
 
-static XMLCoupling::coupling *module_coupling = NULL;
+static XMLModule::module *module_coupling = NULL;
 
 {{CLASS}}Interface::{{CLASS}}Interface() : PluginInterface()
 {
     // xml coupling description
     if (!module_coupling)
     {
-        std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + "{{ID}}.xml").toStdString(),
+        std::auto_ptr<XMLModule::module> coupling_xsd = XMLModule::module_((datadir() + COUPLINGROOT + QDir::separator() + "{{ID}}.xml").toStdString(),
                                                                                    xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
         module_coupling = coupling_xsd.release();
     }

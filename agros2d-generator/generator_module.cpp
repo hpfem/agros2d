@@ -39,6 +39,7 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId) : m_outp
     // read module
     module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + moduleId + ".xml").toStdString(), xml_schema::flags::dont_validate);
     m_module = module_xsd.get();
+    assert(m_module->general_field().present());
 
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
 
@@ -76,7 +77,8 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating project file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     ctemplate::TemplateDictionary output("output");
     output.SetValue("ID", id.toStdString());
@@ -100,9 +102,9 @@ void Agros2DGeneratorModule::prepareWeakFormsOutput()
     assert(! m_output);
     m_output = new ctemplate::TemplateDictionary("output");
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
-    m_output->SetValue("ID", m_module->general().id());
+    m_output->SetValue("ID", m_module->general_field().get().id());
     m_output->SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
     //comment on beginning of weakform.cpp, may be removed
@@ -126,7 +128,7 @@ void Agros2DGeneratorModule::prepareWeakFormsOutput()
         field->SetValue("INDEX", QString("%1").arg(functionOrdering[funcID]).toStdString());
     }
 
-    QString description = QString::fromStdString(m_module->general().description());
+    QString description = QString::fromStdString(m_module->general_field().get().description());
     description = description.replace("\n","");
     m_output->SetValue("DESCRIPTION", description.toStdString());
     if (m_module->cpp().present())
@@ -153,7 +155,7 @@ void Agros2DGeneratorModule::deleteWeakFormOutput()
 void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating interface file").toLatin1());
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     std::string text;
 
@@ -192,7 +194,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
     std::string text;
 
     ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
@@ -210,7 +212,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     // header - expand template
     std::string text;
@@ -301,11 +303,11 @@ QString Agros2DGeneratorModule::createTable(QList<QStringList> table)
 
 void Agros2DGeneratorModule::generatePluginDocumentationFiles()
 {    
-    QString id = QString::fromStdString(m_module->general().id());
-    //    QString name = QString::fromStdString(m_module->general().name());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
+    //    QString name = QString::fromStdString(m_module->general_field().get().name());
     QString text = "";
     //   text += underline(name,'=');
-    //   text += QString::fromStdString(m_module->general().description()) + "\n\n";
+    //   text += QString::fromStdString(m_module->general_field().get().description()) + "\n\n";
 
     /* Creates table of constants */
 
@@ -485,12 +487,12 @@ void Agros2DGeneratorModule::generatePluginEquations()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating equations").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
     QString outputDir = QDir().absoluteFilePath(QString("%1/%2").arg(QApplication::applicationDirPath()).arg("resources/images/equations/"));
 
     ctemplate::TemplateDictionary output("output");
 
-    output.SetValue("ID", m_module->general().id());
+    output.SetValue("ID", m_module->general_field().get().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
     std::string text;
@@ -535,7 +537,7 @@ void Agros2DGeneratorModule::generatePluginErrorCalculator()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating error calculator file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
 
     ctemplate::TemplateDictionary output("output");
@@ -744,7 +746,7 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating filter file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -865,7 +867,7 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating force file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
 
     ctemplate::TemplateDictionary output("output");
@@ -951,7 +953,7 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating local point file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -1029,7 +1031,7 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating surface integral file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -1110,7 +1112,7 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
 {
     Hermes::Mixins::Loggable::Static::info(QString("generating volume integral file").toLatin1());
 
-    QString id = QString::fromStdString(m_module->general().id());
+    QString id = QString::fromStdString(m_module->general_field().get().id());
 
     ctemplate::TemplateDictionary output("output");
 
@@ -1421,7 +1423,7 @@ void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDiction
 
 LexicalAnalyser *Agros2DGeneratorModule::postprocessorLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType)
 {
-    int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+    int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general_field().get().analyses(), analysisType);
 
     LexicalAnalyser *lex = new LexicalAnalyser();
 
@@ -1507,7 +1509,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
 {
     try
     {
-        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general_field().get().analyses(), analysisType);
 
         QMap<QString, QString> dict;
 
@@ -1619,7 +1621,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
     }
     catch (ParserException e)
     {
-        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general().id())).toLatin1());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general_field().get().id())).toLatin1());
 
         return "";
     }
@@ -1629,7 +1631,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
 
 LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType)
 {
-    int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+    int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general_field().get().analyses(), analysisType);
 
     LexicalAnalyser *lex = new LexicalAnalyser();
 
@@ -1743,7 +1745,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 {
     try
     {
-        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general_field().get().analyses(), analysisType);
 
         QMap<QString, QString> dict;
 
@@ -1984,7 +1986,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     }
     catch (ParserException e)
     {
-        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general().id())).toLatin1());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general_field().get().id())).toLatin1());
 
         return "";
     }
@@ -2009,7 +2011,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
 {
     try
     {
-        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
+        int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general_field().get().analyses(), analysisType);
 
         QMap<QString, QString> dict;
         // TODO: remove
@@ -2099,7 +2101,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
     }
     catch (ParserException e)
     {
-        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general().id())).toLatin1());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(QString::fromStdString(m_module->general_field().get().id())).toLatin1());
 
         return "";
     }
@@ -2114,7 +2116,7 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
             type = "derivative";
 
         QString functionName = QString("ext_function_%1_%2_%3_%4_%5_%6").
-                arg(QString::fromStdString(m_module->general().id())).
+                arg(QString::fromStdString(m_module->general_field().get().id())).
                 arg(analysisTypeToStringKey(analysisType)).
                 arg(linearityTypeToStringKey(linearityType)).
                 arg(coordinateTypeToStringKey(coordinateType)).
@@ -2198,7 +2200,7 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             // source files
             QString functionName = QString("%1_%2_%3_%4_%5_%6_%7").
                     arg(weakFormType.toLower()).
-                    arg(QString::fromStdString(m_module->general().id())).
+                    arg(QString::fromStdString(m_module->general_field().get().id())).
                     arg(QString::fromStdString(weakform.analysistype())).
                     arg(coordinateTypeToStringKey(coordinateType)).
                     arg(linearityTypeToStringKey(linearityType)).
@@ -2255,7 +2257,7 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
             field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype()))).toStdString());
             field->SetValue("ROW_INDEX", QString::number(formInfo.i).toStdString());
-            field->SetValue("MODULE_ID", m_module->general().id());
+            field->SetValue("MODULE_ID", m_module->general_field().get().id());
             field->SetValue("WEAKFORM_ID", formInfo.id.toStdString());
 
             // expression
@@ -2284,7 +2286,7 @@ void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function functi
     functionTemplate->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
 
     QString fullName = QString("%1_ext_function_%2_%3_%4_%5").
-            arg(QString::fromStdString(m_module->general().id())).
+            arg(QString::fromStdString(m_module->general_field().get().id())).
             arg(analysisTypeToStringKey(analysisType)).
             arg(coordinateTypeToStringKey(coordinateType)).
             arg(linearityTypeToStringKey(linearityType)).
@@ -2360,7 +2362,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function functio
     functionTemplate->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
 
     QString fullName = QString("%1_ext_function_%2_%3_%4_%5").
-            arg(QString::fromStdString(m_module->general().id())).
+            arg(QString::fromStdString(m_module->general_field().get().id())).
             arg(analysisTypeToStringKey(analysisType)).
             arg(coordinateTypeToStringKey(coordinateType)).
             arg(linearityTypeToStringKey(linearityType)).

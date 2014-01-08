@@ -47,8 +47,8 @@ private:
 
     void generateWeakForms(ctemplate::TemplateDictionary &output);
 
-    std::auto_ptr<XMLCoupling::coupling> coupling_xsd;
-    XMLCoupling::coupling *m_coupling;
+    std::auto_ptr<XMLModule::module> coupling_xsd;
+    XMLModule::module *m_coupling;
 
     std::auto_ptr<XMLModule::module> m_source_module_xsd;
     XMLModule::module *m_sourceModule;

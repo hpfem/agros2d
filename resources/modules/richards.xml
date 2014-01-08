@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
 
-  <module:general id="richards" name="Richard's equation">
+  <module:general_field id="richards" name="Richard's equation">
     <module:description>The Richards equation represents the movement of water in unsaturated soils.</module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate">
@@ -13,7 +13,7 @@
       </module:analysis>
       <module:analysis id="transient" name="Transient" solutions="1" type="transient"/>
     </module:analyses>
-  </module:general>
+  </module:general_field>
 
   <module:constants/>
 

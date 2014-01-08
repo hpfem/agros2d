@@ -1191,9 +1191,9 @@ void ModuleDialog::load()
     ModuleDialog *moduleDialog = this;
 
     // main
-    txtId->setText(QString::fromStdString(moduleDialog->module()->general().id()));
-    txtName->setText(QString::fromStdString(moduleDialog->module()->general().name()));
-    txtDescription->setPlainText(QString::fromStdString(moduleDialog->module()->general().description()));
+    txtId->setText(QString::fromStdString(moduleDialog->module()->general_field().get().id()));
+    txtName->setText(QString::fromStdString(moduleDialog->module()->general_field().get().name()));
+    txtDescription->setPlainText(QString::fromStdString(moduleDialog->module()->general_field().get().description()));
 
     // constants
     treeConstants->clear();
@@ -1210,9 +1210,9 @@ void ModuleDialog::load()
 
     // analyses
     treeAnalyses->clear();
-    for (int i = 0; i < moduleDialog->module()->general().analyses().analysis().size(); i++)
+    for (int i = 0; i < moduleDialog->module()->general_field().get().analyses().analysis().size(); i++)
     {
-        XMLModule::analysis *analysis = &moduleDialog->module()->general().analyses().analysis().at(i);
+        XMLModule::analysis *analysis = &moduleDialog->module()->general_field().get().analyses().analysis().at(i);
 
         QTreeWidgetItem *item = new QTreeWidgetItem(treeAnalyses);
 
@@ -1588,8 +1588,8 @@ void ModuleDialog::save()
     XMLModule::module *module = m_module_xsd.get();
 
     // main
-    module->general().name(txtName->text().toStdString());
-    module->general().description(txtDescription->toPlainText().toStdString());
+    module->general_field().get().name(txtName->text().toStdString());
+    module->general_field().get().description(txtDescription->toPlainText().toStdString());
 
     try
     {
@@ -2005,9 +2005,9 @@ QWidget *ModuleDialog::createPostprocessor()
 
 int ModuleDialog::numberOfSolutions(std::string analysisType)
 {
-    for (int i = 0; i < module()->general().analyses().analysis().size(); i++)
+    for (int i = 0; i < module()->general_field().get().analyses().analysis().size(); i++)
     {
-        XMLModule::analysis analysis = module()->general().analyses().analysis().at(i);
+        XMLModule::analysis analysis = module()->general_field().get().analyses().analysis().at(i);
         if (analysis.id() == analysisType)
             return analysis.solutions();
     }
@@ -2036,7 +2036,7 @@ void ModuleDialog::buildPlugin()
     save();
 
     SystemOutputWidget *output = new SystemOutputWidget();
-    output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(QString::fromStdString(module()->general().id())));
+    output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(QString::fromStdString(module()->general_field().get().id())));
 }
 
 void ModuleDialog::showXML()
