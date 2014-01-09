@@ -35,12 +35,12 @@ public:
     // returns true if matrix unchanged
     bool setOrderAndPreviousSteps(int order, QList<double> previousStepsLengths);
 
-    int n() { return m_n;}
-    int order() { return m_n;}
+    int n() const { return m_n;}
+    int order() const { return m_n;}
 
-    inline double matrixFormCoefficient() {return m_alpha[0];}
-    double vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint);
-    Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint);
+    inline double matrixFormCoefficient() const {return m_alpha[0];}
+    double vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint) const;
+    Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint) const;
 
     static void test(bool varyLength = false);
 
