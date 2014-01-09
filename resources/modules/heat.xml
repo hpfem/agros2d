@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
+<module:field>
 
   <module:general_field id="heat" name="Heat transfer">
     <module:description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</module:description>
@@ -342,4 +343,5 @@
     <module:force/>
   </module:postprocessor>
 
+</module:field>
 </module:module>

@@ -193,7 +193,7 @@ void FieldInfo::setAnalysisType(AnalysisType at)
 {
     m_analysisType = at;
 
-    foreach (XMLModule::analysis an, m_plugin->module()->general_field().get().analyses().analysis())
+    foreach (XMLModule::analysis an, m_plugin->module()->general_field().analyses().analysis())
     {
         if (an.type() == analysisTypeToStringKey(at).toStdString())
         {
@@ -337,20 +337,20 @@ void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
 // name
 QString FieldInfo::name() const
 {
-    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general_field().get().name()));
+    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general_field().name()));
 }
 
 // description
 QString FieldInfo::description() const
 {
-    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general_field().get().description()));
+    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general_field().description()));
 }
 
 // deformable shape
 bool FieldInfo::hasDeformableShape() const
 {
-    if (m_plugin->module()->general_field().get().deformed_shape().present())
-        return m_plugin->module()->general_field().get().deformed_shape().get();
+    if (m_plugin->module()->general_field().deformed_shape().present())
+        return m_plugin->module()->general_field().deformed_shape().get();
 
     return false;
 }
@@ -395,9 +395,9 @@ QMap<AnalysisType, QString> FieldInfo::analyses() const
 {
     QMap<AnalysisType, QString> analyses;
 
-    for (unsigned int i = 0; i < m_plugin->module()->general_field().get().analyses().analysis().size(); i++)
+    for (unsigned int i = 0; i < m_plugin->module()->general_field().analyses().analysis().size(); i++)
     {
-        XMLModule::analysis an = m_plugin->module()->general_field().get().analyses().analysis().at(i);
+        XMLModule::analysis an = m_plugin->module()->general_field().analyses().analysis().at(i);
 
         analyses[analysisTypeFromStringKey(QString::fromStdString(an.id()))] = m_plugin->localeName(QString::fromStdString(an.name()));
     }

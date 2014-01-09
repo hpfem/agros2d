@@ -2,7 +2,7 @@
 <module:module xmlns:module="XMLModule"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
-
+<module:field>
   <module:general_field id="acoustic" name="Acoustics">
     <module:description>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids and solids.</module:description>
     <module:analyses>
@@ -303,4 +303,5 @@
     <module:force/>
   </module:postprocessor>
 
+</module:field>
 </module:module>

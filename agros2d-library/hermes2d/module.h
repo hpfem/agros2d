@@ -92,6 +92,7 @@ extern double actualTime;
 namespace XMLModule
 {
 class field;
+class coupling;
 class quantity;
 class boundary;
 class surface;
@@ -100,7 +101,7 @@ class localvariable;
 class gui;
 class space;
 class calculator;
-
+class volume;
 class linearity_option;
 }
 

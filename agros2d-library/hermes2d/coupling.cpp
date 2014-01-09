@@ -68,9 +68,11 @@ CouplingList::CouplingList()
                 qDebug() << "Warning: Validating all XML coupling files. This is time-consuming and should be switched off in coupling.cpp for release. Set validateAtTheBeginning = false.";
             }
 
-            std::auto_ptr<XMLModule::module> coupling_xsd = XMLModule::module_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(),
+            std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(),
                                                                                    xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
-            XMLModule::module *coup = coupling_xsd.get();
+            XMLModule::module *mod = module_xsd.get();
+            assert(mod->coupling().present());
+            XMLModule::coupling *coup = &mod->coupling().get();
 
             // check whether coupling is available for values of source and target fields such as analysis type
             for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
@@ -79,9 +81,9 @@ CouplingList::CouplingList()
 
                 CouplingList::Item item;
 
-                item.sourceField = QString::fromStdString(coup->general_coupling().get().modules().source().id());
+                item.sourceField = QString::fromStdString(coup->general_coupling().modules().source().id());
                 item.sourceAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.sourceanalysis().get()));
-                item.targetField = QString::fromStdString(coup->general_coupling().get().modules().target().id());
+                item.targetField = QString::fromStdString(coup->general_coupling().modules().target().id());
                 item.targetAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.analysistype()));
                 item.couplingType = couplingTypeFromStringKey(QString::fromStdString(wf.couplingtype().get()));
 
@@ -219,13 +221,13 @@ void CouplingInfo::reload()
 // name
 QString CouplingInfo::name() const
 {
-    return QString::fromStdString(m_plugin->coupling()->general_coupling().get().name());
+    return QString::fromStdString(m_plugin->coupling()->general_coupling().name());
 }
 
 // description
 QString CouplingInfo::description() const
 {
-    return QString::fromStdString(m_plugin->coupling()->general_coupling().get().description());
+    return QString::fromStdString(m_plugin->coupling()->general_coupling().description());
 }
 
 // constants
@@ -373,63 +375,21 @@ QList<FormInfo> wfVectorElements(SectionWithElements *section, AnalysisType anal
 
 
 // weak forms
-QList<FormInfo> CouplingInfo::wfMatrixVolumeSeparated(XMLModule::module* coupling, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType)
+QList<FormInfo> CouplingInfo::wfMatrixVolumeSeparated(XMLModule::volume* volume, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType)
 {
-    QList<FormInfo> templates = wfMatrixTemplates(&coupling->volume());
-    QList<FormInfo> elements = wfMatrixElements(&coupling->volume(), sourceAnalysis, targetAnalysis, couplingType, linearityType);
+    QList<FormInfo> templates = wfMatrixTemplates(volume);
+    QList<FormInfo> elements = wfMatrixElements(volume, sourceAnalysis, targetAnalysis, couplingType, linearityType);
 
     return generateSeparated(elements, templates);
-
-
-//    // matrix weakforms
-//    QList<FormInfo> wfMatrixVolume;
-//    for (int i = 0; i < m_plugin->coupling()->volume().weakforms_volume().weakform_volume().size(); i++)
-//    {
-//        XMLModule::weakform_volume wf = m_plugin->coupling()->volume().weakforms_volume().weakform_volume().at(i);
-
-//        if ((wf.couplingtype() == couplingTypeToStringKey(this->couplingType()).toStdString()) &&
-//                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceField->analysisType()).toStdString()) &&
-//                (wf.targetanalysis() == analysisTypeToStringKey(m_targetField->analysisType()).toStdString()))
-//        {
-//            for (int i = 0; i < wf.matrix_form().size(); i++)
-//            {
-//                XMLModule::matrix_form form = wf.matrix_form().at(i);
-//                wfMatrixVolume.push_back(FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
-//            }
-//        }
-//    }
-
-//    return wfMatrixVolume;
 }
 
-QList<FormInfo> CouplingInfo::wfVectorVolumeSeparated(XMLModule::module* coupling, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType)
+QList<FormInfo> CouplingInfo::wfVectorVolumeSeparated(XMLModule::volume* volume, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType)
 {
-    QList<FormInfo> templatesVector = wfVectorTemplates(&coupling->volume());
-    QList<FormInfo> templatesMatrix = wfMatrixTemplates(&coupling->volume());
-    QList<FormInfo> elements = wfVectorElements(&coupling->volume(), sourceAnalysis, targetAnalysis, couplingType, linearityType);
+    QList<FormInfo> templatesVector = wfVectorTemplates(volume);
+    QList<FormInfo> templatesMatrix = wfMatrixTemplates(volume);
+    QList<FormInfo> elements = wfVectorElements(volume, sourceAnalysis, targetAnalysis, couplingType, linearityType);
 
     return generateSeparated(elements, templatesVector, templatesMatrix);
-
-
-//    // vector weakforms
-//    QList<FormInfo> wfVectorVolume;
-//    for (int i = 0; i < m_plugin->coupling()->volume().weakforms_volume().weakform_volume().size(); i++)
-//    {
-//        XMLModule::weakform_volume wf = m_plugin->coupling()->volume().weakforms_volume().weakform_volume().at(i);
-
-//        if ((wf.couplingtype() == couplingTypeToStringKey(this->couplingType()).toStdString()) &&
-//                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceField->analysisType()).toStdString()) &&
-//                (wf.targetanalysis() == analysisTypeToStringKey(m_targetField->analysisType()).toStdString()))
-//        {
-//            for (int i = 0; i < wf.vector_form().size(); i++)
-//            {
-//                XMLModule::vector_form form = wf.vector_form().at(i);
-//                wfVectorVolume.push_back(FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
-//            }
-//        }
-//    }
-
-//    return wfVectorVolume;
 }
 
 LinearityType CouplingInfo::linearityType()

@@ -48,13 +48,13 @@ private:
     void generateWeakForms(ctemplate::TemplateDictionary &output);
 
     std::auto_ptr<XMLModule::module> coupling_xsd;
-    XMLModule::module *m_coupling;
+    XMLModule::coupling *m_coupling;
 
     std::auto_ptr<XMLModule::module> m_source_module_xsd;
-    XMLModule::module *m_sourceModule;
+    XMLModule::field *m_sourceModule;
 
     std::auto_ptr<XMLModule::module> m_target_module_xsd;
-    XMLModule::module *m_targetModule;
+    XMLModule::field *m_targetModule;
 
     // dictionary for variables used in weakforms
     QMap<QString, QString> m_sourceVariables;

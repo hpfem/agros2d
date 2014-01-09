@@ -74,13 +74,14 @@ QMap<QString, QString> Module::availableModules()
                     parsing_flags = 0;
                     qDebug() << "Warning: Validating all XML files. This is time-consuming and should be switched off in module.cpp for release. Set validateAtTheBeginning = false.";
                 }
-                std::auto_ptr<XMLModule::module> module_xsd(XMLModule::field_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
+                std::auto_ptr<XMLModule::module> module_xsd(XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
 
                 XMLModule::module *mod = module_xsd.get();
+                assert(mod->field().present());
+                XMLModule::field *field = &mod->field().get();
 
                 // module name
-                assert(mod->general_field().present());
-                modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general_field().get().name());
+                modules[filename.left(filename.size() - 4)] = QString::fromStdString(field->general_field().name());
             }
             catch (const xml_schema::expected_element& e)
             {
@@ -374,7 +375,7 @@ void WeakFormAgros<Scalar>::registerForms()
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->couplingInfos())
                 {
-                    foreach (FormInfo expression, couplingInfo->wfVectorVolumeSeparated(couplingInfo->plugin()->coupling(),
+                    foreach (FormInfo expression, couplingInfo->wfVectorVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(),
                                                                                         couplingInfo->sourceField()->analysisType(),
                                                                                         couplingInfo->targetField()->analysisType(),
                                                                                         couplingInfo->couplingType(),
@@ -413,12 +414,12 @@ void WeakFormAgros<Scalar>::registerForms()
 
                     qDebug() << "hard coupling form on marker " << labelNum;
 
-                    foreach (FormInfo pars, couplingInfo->wfMatrixVolumeSeparated(couplingInfo->plugin()->coupling(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
+                    foreach (FormInfo pars, couplingInfo->wfMatrixVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
                         registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
                                              sourceMaterial, targetMaterial, couplingInfo);
 
-                    foreach (FormInfo pars, couplingInfo->wfVectorVolumeSeparated(couplingInfo->plugin()->coupling(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
+                    foreach (FormInfo pars, couplingInfo->wfVectorVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
                         registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
                                              sourceMaterial, targetMaterial, couplingInfo);
@@ -440,7 +441,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        XMLModule::module* module = fieldInfo->plugin()->module();
+        XMLModule::field* module = fieldInfo->plugin()->module();
         ProblemID problemId;
         problemId.sourceFieldId = fieldInfo->fieldId();
         problemId.analysisTypeSource = fieldInfo->analysisType();
@@ -781,7 +782,7 @@ QList<FormInfo> wfEssentialElements(XMLModule::boundary *boundary, AnalysisType 
 
 
 template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
 {
     QList<FormInfo> templates = wfMatrixTemplates(&module->volume());
     QList<FormInfo> elements = wfMatrixElements(&module->volume(), analysisType, linearityType);
@@ -790,7 +791,7 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::module
 }
 
 template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
 {
     QList<FormInfo> templatesVector = wfVectorTemplates(&module->volume());
     QList<FormInfo> templatesMatrix = wfMatrixTemplates(&module->volume());
@@ -1108,7 +1109,7 @@ void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<Hermes:
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 }
 
-void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType)
+void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::field *module, AnalysisType analysisType, LinearityType linearityType)
 
 {
     for (unsigned int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
@@ -1129,7 +1130,7 @@ void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::m
     }
 }
 
-void Module::volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder)
+void Module::volumeQuantityProperties(XMLModule::field *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder)
 {
     int nextIndex = 0;
     foreach(XMLModule::quantity quantity, module->volume().quantity())

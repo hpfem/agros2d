@@ -282,8 +282,8 @@ public:
 
     virtual QString fieldId() = 0;
 
-    inline XMLModule::module *module() const { assert(m_module); return m_module; }
-    inline XMLModule::module *coupling() const { assert(m_coupling); return m_coupling; }
+    inline XMLModule::field *module() const { assert(m_module); return m_module; }
+    inline XMLModule::coupling *coupling() const { assert(m_coupling); return m_coupling; }
 
     // weak forms
     virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt) = 0;
@@ -324,8 +324,8 @@ public:
     virtual QString localeDescription() = 0;
 
 protected:
-    XMLModule::module *m_module;
-    XMLModule::module *m_coupling;
+    XMLModule::field *m_module;
+    XMLModule::coupling *m_coupling;
 };
 
 

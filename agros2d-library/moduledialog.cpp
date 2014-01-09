@@ -142,58 +142,58 @@ ModuleItemLocalValue::ModuleItemLocalValue(ModuleDialog *moduleDialog, const QSt
                                            XMLModule::expression *expr, QWidget *parent)
     : ModuleItem(parent), m_type(type), m_expr(expr)
 {
-    QGridLayout *layout = new QGridLayout();
+//    QGridLayout *layout = new QGridLayout();
 
-    int numberOfSolutions = moduleDialog->numberOfSolutions(expr->analysistype());
+//    int numberOfSolutions = moduleDialog->numberOfSolutions(expr->analysistype());
 
-    if (m_type == "scalar")
-    {
-        txtPlanar = new ModuleDialogTextEdit(this, 1);
-        txtPlanar->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
-                                                     numberOfSolutions, CoordinateType_Planar);
-        txtAxi = new ModuleDialogTextEdit(this, 1);
-        txtAxi->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
-                                                  numberOfSolutions, CoordinateType_Axisymmetric);
+//    if (m_type == "scalar")
+//    {
+//        txtPlanar = new ModuleDialogTextEdit(this, 1);
+//        txtPlanar->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
+//                                                     numberOfSolutions, CoordinateType_Planar);
+//        txtAxi = new ModuleDialogTextEdit(this, 1);
+//        txtAxi->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
+//                                                  numberOfSolutions, CoordinateType_Axisymmetric);
 
-        layout->addWidget(new QLabel(tr("Planar:")), 0, 0);
-        layout->addWidget(txtPlanar, 0, 1);
-        layout->addWidget(new QLabel(tr("Axisymmetric:")), 1, 0);
-        layout->addWidget(txtAxi, 1, 1);
+//        layout->addWidget(new QLabel(tr("Planar:")), 0, 0);
+//        layout->addWidget(txtPlanar, 0, 1);
+//        layout->addWidget(new QLabel(tr("Axisymmetric:")), 1, 0);
+//        layout->addWidget(txtAxi, 1, 1);
 
-        txtPlanar->setText(QString::fromStdString(expr->planar().get()));
-        txtAxi->setText(QString::fromStdString(expr->axi().get()));
-    }
-    else
-    {
-        txtPlanarX = new ModuleDialogTextEdit(this, 1);
-        txtPlanarX->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
-                                                      numberOfSolutions, CoordinateType_Planar);
-        txtPlanarY = new ModuleDialogTextEdit(this, 1);
-        txtPlanarY->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
-                                                      numberOfSolutions, CoordinateType_Planar);
-        txtAxiR = new ModuleDialogTextEdit(this, 1);
-        txtAxiR->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
-                                                   numberOfSolutions, CoordinateType_Axisymmetric);
-        txtAxiZ = new ModuleDialogTextEdit(this, 1);
-        txtAxiZ->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
-                                                   numberOfSolutions, CoordinateType_Axisymmetric);
+//        txtPlanar->setText(QString::fromStdString(expr->planar().get()));
+//        txtAxi->setText(QString::fromStdString(expr->axi().get()));
+//    }
+//    else
+//    {
+//        txtPlanarX = new ModuleDialogTextEdit(this, 1);
+//        txtPlanarX->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
+//                                                      numberOfSolutions, CoordinateType_Planar);
+//        txtPlanarY = new ModuleDialogTextEdit(this, 1);
+//        txtPlanarY->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
+//                                                      numberOfSolutions, CoordinateType_Planar);
+//        txtAxiR = new ModuleDialogTextEdit(this, 1);
+//        txtAxiR->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
+//                                                   numberOfSolutions, CoordinateType_Axisymmetric);
+//        txtAxiZ = new ModuleDialogTextEdit(this, 1);
+//        txtAxiZ->setPostprocessorVolumeHighlighter(moduleDialog->module()->volume().quantity(),
+//                                                   numberOfSolutions, CoordinateType_Axisymmetric);
 
-        layout->addWidget(new QLabel(tr("Planar X:")), 0, 0);
-        layout->addWidget(txtPlanarX, 0, 1);
-        layout->addWidget(new QLabel(tr("Planar Y:")), 1, 0);
-        layout->addWidget(txtPlanarY, 1, 1);
-        layout->addWidget(new QLabel(tr("Axisymmetric R:")), 2, 0);
-        layout->addWidget(txtAxiR, 2, 1);
-        layout->addWidget(new QLabel(tr("Axisymmetric Z:")), 3, 0);
-        layout->addWidget(txtAxiZ, 3, 1);
+//        layout->addWidget(new QLabel(tr("Planar X:")), 0, 0);
+//        layout->addWidget(txtPlanarX, 0, 1);
+//        layout->addWidget(new QLabel(tr("Planar Y:")), 1, 0);
+//        layout->addWidget(txtPlanarY, 1, 1);
+//        layout->addWidget(new QLabel(tr("Axisymmetric R:")), 2, 0);
+//        layout->addWidget(txtAxiR, 2, 1);
+//        layout->addWidget(new QLabel(tr("Axisymmetric Z:")), 3, 0);
+//        layout->addWidget(txtAxiZ, 3, 1);
 
-        txtPlanarX->setText(QString::fromStdString(expr->planar_x().get()));
-        txtPlanarY->setText(QString::fromStdString(expr->planar_y().get()));
-        txtAxiR->setText(QString::fromStdString(expr->axi_r().get()));
-        txtAxiZ->setText(QString::fromStdString(expr->axi_z().get()));
-    }
+//        txtPlanarX->setText(QString::fromStdString(expr->planar_x().get()));
+//        txtPlanarY->setText(QString::fromStdString(expr->planar_y().get()));
+//        txtAxiR->setText(QString::fromStdString(expr->axi_r().get()));
+//        txtAxiZ->setText(QString::fromStdString(expr->axi_z().get()));
+//    }
 
-    setLayout(layout);
+//    setLayout(layout);
 }
 
 void ModuleItemLocalValue::save()
@@ -715,20 +715,20 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
     txtSolutionIndex->setValue(m_form->i().get());
     txtTestFunctionIndex->setValue(m_form->j().get());
 
-    if (type == "volume")
-    {
-        txtPlanarLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtPlanarNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtAxiLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-        txtAxiNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-    }
-    else if (type == "surface")
-    {
-        txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-        txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-    }
+//    if (type == "volume")
+//    {
+//        txtPlanarLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtPlanarNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtAxiLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//        txtAxiNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//    }
+//    else if (type == "surface")
+//    {
+//        txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//        txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//    }
 
     assert(0);
 //    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
@@ -771,20 +771,20 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
     txtSolutionIndex->setValue(m_form->i().get());
     txtTestFunctionIndex->setValue(m_form->j().get());
 
-    if (type == "volume")
-    {
-        txtPlanarLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtPlanarNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtAxiLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-        txtAxiNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-    }
-    else if (type == "surface")
-    {
-        txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
-        txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-        txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-    }
+//    if (type == "volume")
+//    {
+//        txtPlanarLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtPlanarNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtAxiLinear->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//        txtAxiNewton->setWeakformVolumeHighlighter(moduleDialog->module()->volume().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//    }
+//    else if (type == "surface")
+//    {
+//        txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
+//        txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//        txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//    }
 
     assert(0);
 //    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
@@ -829,10 +829,10 @@ ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *modul
     txtTestFunctionIndex->setValue(0);
     txtTestFunctionIndex->setDisabled(true);
 
-    txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
-    txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
-    txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
-    txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//    txtPlanarLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
+//    txtPlanarNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Planar);
+//    txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
+//    txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
 
     assert(0);
 //    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
@@ -1165,449 +1165,449 @@ void ModuleSurfaceIntegralValueDialog::doAccept()
 ModuleDialog::ModuleDialog(const QString &fieldId, QWidget *parent)
     : QDialog(parent), m_fieldId(fieldId)
 {
-    setWindowIcon(icon(""));
-    setWindowTitle(tr("Module editor"));
+//    setWindowIcon(icon(""));
+//    setWindowTitle(tr("Module editor"));
 
-    createControls();
+//    createControls();
 
-    m_module_xsd = XMLModule::module_(QString("%1%2/%3.xml").arg(datadir()).arg(MODULEROOT).arg(m_fieldId).toLatin1().data());
+//    m_module_xsd = XMLModule::module_(QString("%1%2/%3.xml").arg(datadir()).arg(MODULEROOT).arg(m_fieldId).toLatin1().data());
 
-    load();
+//    load();
 
-    setMinimumSize(QSize(950, 600));
+//    setMinimumSize(QSize(950, 600));
 
-    QSettings settings;
-    restoreGeometry(settings.value("ModuleDialog/Geometry", saveGeometry()).toByteArray());
+//    QSettings settings;
+//    restoreGeometry(settings.value("ModuleDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 ModuleDialog::~ModuleDialog()
 {
-    QSettings settings;
-    settings.setValue("ModuleDialog/Geometry", saveGeometry());
+//    QSettings settings;
+//    settings.setValue("ModuleDialog/Geometry", saveGeometry());
 }
 
 void ModuleDialog::load()
 {
-    ModuleDialog *moduleDialog = this;
+//    ModuleDialog *moduleDialog = this;
 
-    // main
-    txtId->setText(QString::fromStdString(moduleDialog->module()->general_field().get().id()));
-    txtName->setText(QString::fromStdString(moduleDialog->module()->general_field().get().name()));
-    txtDescription->setPlainText(QString::fromStdString(moduleDialog->module()->general_field().get().description()));
+//    // main
+//    txtId->setText(QString::fromStdString(moduleDialog->module()->general_field().id()));
+//    txtName->setText(QString::fromStdString(moduleDialog->module()->general_field().name()));
+//    txtDescription->setPlainText(QString::fromStdString(moduleDialog->module()->general_field().description()));
 
-    // constants
-    treeConstants->clear();
-    for (int i = 0; i < moduleDialog->module()->constants().constant().size(); i++)
-    {
-        XMLModule::constant *cnst = &moduleDialog->module()->constants().constant().at(i);
+//    // constants
+//    treeConstants->clear();
+//    for (int i = 0; i < moduleDialog->module()->constants().constant().size(); i++)
+//    {
+//        XMLModule::constant *cnst = &moduleDialog->module()->constants().constant().at(i);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeConstants);
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeConstants);
 
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::constant *>(cnst));
-        item->setText(0, QString::fromStdString(cnst->id()));
-        item->setText(1, QString::number(cnst->value()));
-    }
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::constant *>(cnst));
+//        item->setText(0, QString::fromStdString(cnst->id()));
+//        item->setText(1, QString::number(cnst->value()));
+//    }
 
-    // analyses
-    treeAnalyses->clear();
-    for (int i = 0; i < moduleDialog->module()->general_field().get().analyses().analysis().size(); i++)
-    {
-        XMLModule::analysis *analysis = &moduleDialog->module()->general_field().get().analyses().analysis().at(i);
+//    // analyses
+//    treeAnalyses->clear();
+//    for (int i = 0; i < moduleDialog->module()->general_field().analyses().analysis().size(); i++)
+//    {
+//        XMLModule::analysis *analysis = &moduleDialog->module()->general_field().analyses().analysis().at(i);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeAnalyses);
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeAnalyses);
 
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::analysis *>(analysis));
-        item->setText(0, QString::fromStdString(analysis->name()));
-        item->setText(1, QString::fromStdString(analysis->type()));
-        item->setText(2, QString::number(analysis->solutions()));
-    }
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::analysis *>(analysis));
+//        item->setText(0, QString::fromStdString(analysis->name()));
+//        item->setText(1, QString::fromStdString(analysis->type()));
+//        item->setText(2, QString::number(analysis->solutions()));
+//    }
 
-    // volume weakform quantities
-    treeVolumeQuantityGlobal->clear();
-    for (int i = 0; i < moduleDialog->module()->volume().quantity().size(); i++)
-    {
-        XMLModule::quantity *quantity = &moduleDialog->module()->volume().quantity().at(i);
+//    // volume weakform quantities
+//    treeVolumeQuantityGlobal->clear();
+//    for (int i = 0; i < moduleDialog->module()->volume().quantity().size(); i++)
+//    {
+//        XMLModule::quantity *quantity = &moduleDialog->module()->volume().quantity().at(i);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeVolumeQuantityGlobal);
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeVolumeQuantityGlobal);
 
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
-        item->setText(0, QString::fromStdString(quantity->id()));
-        item->setText(1, QString::fromStdString((quantity->shortname().present()) ? quantity->shortname().get() : ""));
-    }
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
+//        item->setText(0, QString::fromStdString(quantity->id()));
+//        item->setText(1, QString::fromStdString((quantity->shortname().present()) ? quantity->shortname().get() : ""));
+//    }
 
-    treeVolumeQuantityAnalysis->clear();
-    for (int i = 0; i < moduleDialog->module()->volume().weakforms_volume().weakform_volume().size(); i++)
-    {
-        XMLModule::weakform_volume *wf = &moduleDialog->module()->volume().weakforms_volume().weakform_volume().at(i);
+//    treeVolumeQuantityAnalysis->clear();
+//    for (int i = 0; i < moduleDialog->module()->volume().weakforms_volume().weakform_volume().size(); i++)
+//    {
+//        XMLModule::weakform_volume *wf = &moduleDialog->module()->volume().weakforms_volume().weakform_volume().at(i);
 
-        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeVolumeQuantityAnalysis);
-        analysis->setExpanded(true);
-        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
+//        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeVolumeQuantityAnalysis);
+//        analysis->setExpanded(true);
+//        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
 
-        for (int i = 0; i < wf->quantity().size(); i++)
-        {
-            XMLModule::quantity *quantity = &wf->quantity().at(i);
-
-            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
-
-            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
-            item->setText(0, QString::fromStdString(quantity->id()));
-
-            item->setText(1, tr("linear"));
-            if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
-            {
-                if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
-                        !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
-                    item->setText(1, tr("nonlinear"));
-            }
-
-            item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
-                              QString::fromStdString(quantity->dependence().get()) : "");
-        }
-    }
-
-    // volume weakforms
-    for (int i = 0; i < moduleDialog->module()->volume().weakforms_volume().weakform_volume().size(); i++)
-    {
-        XMLModule::weakform_volume *wf = &moduleDialog->module()->volume().weakforms_volume().weakform_volume().at(i);
-
-        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeVolumeWeakforms);
-        analysis->setExpanded(true);
-        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
-
-        // TODO:
-//        // matrix form
-//        for (int i = 0; i < wf->matrix_form().size(); i++)
+//        for (int i = 0; i < wf->quantity().size(); i++)
 //        {
-//            XMLModule::matrix_form *form = &wf->matrix_form().at(i);
+//            XMLModule::quantity *quantity = &wf->quantity().at(i);
 
 //            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
 
-//            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
-//            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-//            item->setData(2, Qt::UserRole, "matrix");
-//            item->setData(3, Qt::UserRole, "volume");
-//            item->setText(0, tr("Matrix form"));
-//            item->setText(1, QString::number(form->i()));
-//            item->setText(2, QString::number(form->j()));
-//            item->setText(3, QString::fromStdString(form->id()));
-//            item->setIcon(0, icon("form-matrix"));
-//        }
+//            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
+//            item->setText(0, QString::fromStdString(quantity->id()));
 
-//        // vector form
-//        for (int i = 0; i < wf->vector_form().size(); i++)
+//            item->setText(1, tr("linear"));
+//            if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
+//            {
+//                if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
+//                        !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+//                    item->setText(1, tr("nonlinear"));
+//            }
+
+//            item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
+//                              QString::fromStdString(quantity->dependence().get()) : "");
+//        }
+//    }
+
+//    // volume weakforms
+//    for (int i = 0; i < moduleDialog->module()->volume().weakforms_volume().weakform_volume().size(); i++)
+//    {
+//        XMLModule::weakform_volume *wf = &moduleDialog->module()->volume().weakforms_volume().weakform_volume().at(i);
+
+//        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeVolumeWeakforms);
+//        analysis->setExpanded(true);
+//        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
+
+//        // TODO:
+////        // matrix form
+////        for (int i = 0; i < wf->matrix_form().size(); i++)
+////        {
+////            XMLModule::matrix_form *form = &wf->matrix_form().at(i);
+
+////            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+////            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
+////            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+////            item->setData(2, Qt::UserRole, "matrix");
+////            item->setData(3, Qt::UserRole, "volume");
+////            item->setText(0, tr("Matrix form"));
+////            item->setText(1, QString::number(form->i()));
+////            item->setText(2, QString::number(form->j()));
+////            item->setText(3, QString::fromStdString(form->id()));
+////            item->setIcon(0, icon("form-matrix"));
+////        }
+
+////        // vector form
+////        for (int i = 0; i < wf->vector_form().size(); i++)
+////        {
+////            XMLModule::vector_form *form = &wf->vector_form().at(i);
+
+////            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+
+////            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
+////            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+////            item->setData(2, Qt::UserRole, "vector");
+////            item->setData(3, Qt::UserRole, "volume");
+////            item->setText(0, tr("Vector form"));
+////            item->setText(1, QString::number(form->i()));
+////            item->setText(2, QString::number(form->j()));
+////            item->setText(3, QString::fromStdString(form->id()));
+////            item->setIcon(0, icon("form-vector"));
+////        }
+//    }
+
+//    // surface weakform quantities
+//    treeSurfaceQuantityGlobal->clear();
+//    for (int i = 0; i < moduleDialog->module()->surface().quantity().size(); i++)
+//    {
+//        XMLModule::quantity *quantity = &moduleDialog->module()->surface().quantity().at(i);
+
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeSurfaceQuantityGlobal);
+
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
+//        item->setText(0, QString::fromStdString(quantity->id()));
+//        item->setText(1, QString::fromStdString((quantity->shortname().present()) ? quantity->shortname().get() : ""));
+//    }
+
+//    treeSurfaceQuantityAnalysis->clear();
+//    for (int i = 0; i < moduleDialog->module()->surface().weakforms_surface().weakform_surface().size(); i++)
+//    {
+//        XMLModule::weakform_surface *wf = &moduleDialog->module()->surface().weakforms_surface().weakform_surface().at(i);
+
+//        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeSurfaceQuantityAnalysis);
+//        analysis->setExpanded(true);
+//        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
+//        for (int i = 0; i < wf->boundary().size(); i++)
 //        {
-//            XMLModule::vector_form *form = &wf->vector_form().at(i);
+//            XMLModule::boundary *bnd = &wf->boundary().at(i);
 
-//            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+//            QTreeWidgetItem *boundary = new QTreeWidgetItem(analysis);
+//            boundary->setExpanded(true);
+//            boundary->setText(0, QString::fromStdString(bnd->name()));
 
-//            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
-//            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-//            item->setData(2, Qt::UserRole, "vector");
-//            item->setData(3, Qt::UserRole, "volume");
-//            item->setText(0, tr("Vector form"));
-//            item->setText(1, QString::number(form->i()));
-//            item->setText(2, QString::number(form->j()));
-//            item->setText(3, QString::fromStdString(form->id()));
-//            item->setIcon(0, icon("form-vector"));
+//            for (int i = 0; i < bnd->quantity().size(); i++)
+//            {
+//                XMLModule::quantity *quantity = &bnd->quantity().at(i);
+
+//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+
+//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
+//                item->setText(0, QString::fromStdString(quantity->id()));
+
+//                item->setText(1, tr("linear"));
+//                if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
+//                {
+//                    if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
+//                            !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
+//                        item->setText(1, tr("nonlinear"));
+//                }
+
+//                item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
+//                                  QString::fromStdString(quantity->dependence().get()) : "");
+//            }
 //        }
-    }
+//    }
 
-    // surface weakform quantities
-    treeSurfaceQuantityGlobal->clear();
-    for (int i = 0; i < moduleDialog->module()->surface().quantity().size(); i++)
-    {
-        XMLModule::quantity *quantity = &moduleDialog->module()->surface().quantity().at(i);
+//    // surface weakforms
+//    for (int i = 0; i < moduleDialog->module()->surface().weakforms_surface().weakform_surface().size(); i++)
+//    {
+//        XMLModule::weakform_surface *wf = &moduleDialog->module()->surface().weakforms_surface().weakform_surface().at(i);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeSurfaceQuantityGlobal);
+//        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeSurfaceWeakforms);
+//        analysis->setExpanded(true);
+//        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
 
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
-        item->setText(0, QString::fromStdString(quantity->id()));
-        item->setText(1, QString::fromStdString((quantity->shortname().present()) ? quantity->shortname().get() : ""));
-    }
+//        for (int i = 0; i < wf->boundary().size(); i++)
+//        {
+//            XMLModule::boundary *bnd = &wf->boundary().at(i);
 
-    treeSurfaceQuantityAnalysis->clear();
-    for (int i = 0; i < moduleDialog->module()->surface().weakforms_surface().weakform_surface().size(); i++)
-    {
-        XMLModule::weakform_surface *wf = &moduleDialog->module()->surface().weakforms_surface().weakform_surface().at(i);
+//            QTreeWidgetItem *boundary = new QTreeWidgetItem(analysis);
+//            boundary->setExpanded(true);
+//            boundary->setText(0, QString::fromStdString(bnd->name()));
 
-        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeSurfaceQuantityAnalysis);
-        analysis->setExpanded(true);
-        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
-        for (int i = 0; i < wf->boundary().size(); i++)
-        {
-            XMLModule::boundary *bnd = &wf->boundary().at(i);
+//            assert(0);
+////            // matrix form
+////            for (int i = 0; i < bnd->matrix_form().size(); i++)
+////            {
+////                XMLModule::matrix_form *form = &bnd->matrix_form().at(i);
 
-            QTreeWidgetItem *boundary = new QTreeWidgetItem(analysis);
-            boundary->setExpanded(true);
-            boundary->setText(0, QString::fromStdString(bnd->name()));
+////                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
 
-            for (int i = 0; i < bnd->quantity().size(); i++)
-            {
-                XMLModule::quantity *quantity = &bnd->quantity().at(i);
+////                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
+////                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+////                item->setData(2, Qt::UserRole, "matrix");
+////                item->setData(3, Qt::UserRole, "surface");
+////                item->setText(0, tr("Matrix form"));
+////                item->setText(1, QString::number(form->i().get()));
+////                item->setText(2, QString::number(form->j().get()));
+////                item->setText(3, QString::fromStdString(form->id()));
+////                item->setIcon(0, icon("form-matrix"));
+////            }
 
-                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+////            // vector form
+////            for (int i = 0; i < bnd->vector_form().size(); i++)
+////            {
+////                XMLModule::vector_form *form = &bnd->vector_form().at(i);
 
-                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quantity));
-                item->setText(0, QString::fromStdString(quantity->id()));
+////                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
 
-                item->setText(1, tr("linear"));
-                if (quantity->nonlinearity_planar().present() || quantity->nonlinearity_axi().present())
-                {
-                    if (!QString::fromStdString(quantity->nonlinearity_planar().get()).isEmpty() ||
-                            !QString::fromStdString(quantity->nonlinearity_axi().get()).isEmpty())
-                        item->setText(1, tr("nonlinear"));
-                }
+////                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
+////                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+////                item->setData(2, Qt::UserRole, "vector");
+////                item->setData(3, Qt::UserRole, "surface");
+////                item->setText(0, tr("Vector form"));
+////                item->setText(1, QString::number(form->i().get()));
+////                item->setText(2, QString::number(form->j().get()));
+////                item->setText(3, QString::fromStdString(form->id()));
+////                item->setIcon(0, icon("form-vector"));
+////            }
 
-                item->setText(2, (quantity->dependence().present() && !QString::fromStdString(quantity->dependence().get()).isEmpty()) ?
-                                  QString::fromStdString(quantity->dependence().get()) : "");
-            }
-        }
-    }
+////            // essential form
+////            for (int i = 0; i < bnd->essential_form().size(); i++)
+////            {
+////                XMLModule::essential_form *form = &bnd->essential_form().at(i);
 
-    // surface weakforms
-    for (int i = 0; i < moduleDialog->module()->surface().weakforms_surface().weakform_surface().size(); i++)
-    {
-        XMLModule::weakform_surface *wf = &moduleDialog->module()->surface().weakforms_surface().weakform_surface().at(i);
+////                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
 
-        QTreeWidgetItem *analysis = new QTreeWidgetItem(treeSurfaceWeakforms);
-        analysis->setExpanded(true);
-        analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
+////                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::essential_form *>(form));
+////                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+////                item->setData(2, Qt::UserRole, "essential");
+////                item->setData(3, Qt::UserRole, "surface");
+////                item->setText(0, tr("Essential form"));
+////                item->setText(1, QString::number(form->i()));
+////                item->setText(2, "");
+////                item->setText(3, QString::fromStdString(form->id()));
+////                item->setIcon(0, icon("form-essential"));
+////            }
+//        }
+//    }
 
-        for (int i = 0; i < wf->boundary().size(); i++)
-        {
-            XMLModule::boundary *bnd = &wf->boundary().at(i);
+//    // materials and boundaries
+//    treeMaterials->clear();
+//    treeBoundaries->clear();
+//    for (int i = 0; i < moduleDialog->module()->preprocessor().gui().size(); i++)
+//    {
+//        XMLModule::gui *ui = &moduleDialog->module()->preprocessor().gui().at(i);
 
-            QTreeWidgetItem *boundary = new QTreeWidgetItem(analysis);
-            boundary->setExpanded(true);
-            boundary->setText(0, QString::fromStdString(bnd->name()));
+//        for (int i = 0; i < ui->group().size(); i++)
+//        {
+//            XMLModule::group *grp = &ui->group().at(i);
 
-            assert(0);
-//            // matrix form
-//            for (int i = 0; i < bnd->matrix_form().size(); i++)
+//            QTreeWidgetItem *group = NULL;
+//            if (ui->type() == "volume")
+//                group = new QTreeWidgetItem(treeMaterials);
+//            else
+//                group = new QTreeWidgetItem(treeBoundaries);
+
+//            group->setExpanded(true);
+
+//            // group name
+//            group->setText(0, (grp->name().present()) ? QString::fromStdString(grp->name().get()) : "unnamed");
+
+//            for (int i = 0; i < grp->quantity().size(); i++)
 //            {
-//                XMLModule::matrix_form *form = &bnd->matrix_form().at(i);
+//                XMLModule::quantity *quant = &grp->quantity().at(i);
 
-//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+//                QTreeWidgetItem *item = new QTreeWidgetItem(group);
 
-//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
-//                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-//                item->setData(2, Qt::UserRole, "matrix");
-//                item->setData(3, Qt::UserRole, "surface");
-//                item->setText(0, tr("Matrix form"));
-//                item->setText(1, QString::number(form->i().get()));
-//                item->setText(2, QString::number(form->j().get()));
-//                item->setText(3, QString::fromStdString(form->id()));
-//                item->setIcon(0, icon("form-matrix"));
+//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quant));
+//                item->setText(0, QString::fromStdString((quant->name().present()) ? quant->name().get() : ""));
+//                item->setText(1, QString::fromStdString((quant->shortname().present()) ? quant->shortname().get() : ""));
+//                item->setText(2, QString::fromStdString((quant->unit().present()) ? quant->unit().get() : ""));
 //            }
+//        }
+//    }
 
-//            // vector form
-//            for (int i = 0; i < bnd->vector_form().size(); i++)
-//            {
-//                XMLModule::vector_form *form = &bnd->vector_form().at(i);
+//    // local values
+//    treeLocalVariables->clear();
+//    for (int i = 0; i < moduleDialog->module()->postprocessor().localvariables().localvariable().size(); i++)
+//    {
+//        XMLModule::localvariable *lv = &moduleDialog->module()->postprocessor().localvariables().localvariable().at(i);
 
-//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeLocalVariables);
 
-//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
-//                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-//                item->setData(2, Qt::UserRole, "vector");
-//                item->setData(3, Qt::UserRole, "surface");
-//                item->setText(0, tr("Vector form"));
-//                item->setText(1, QString::number(form->i().get()));
-//                item->setText(2, QString::number(form->j().get()));
-//                item->setText(3, QString::fromStdString(form->id()));
-//                item->setIcon(0, icon("form-vector"));
-//            }
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::localvariable *>(lv));
+//        item->setText(0, QString::fromStdString(lv->name()));
+//        item->setText(1, QString::fromStdString(lv->shortname()));
+//        item->setText(2, QString::fromStdString(lv->unit()));
+//        item->setText(3, QString::fromStdString(lv->type()));
 
-//            // essential form
-//            for (int i = 0; i < bnd->essential_form().size(); i++)
-//            {
-//                XMLModule::essential_form *form = &bnd->essential_form().at(i);
+//        QString analyses;
+//        for (int j = 0; j < lv->expression().size(); j++)
+//        {
+//            XMLModule::expression expr = lv->expression().at(j);
+//            analyses += QString("%1, ").arg(QString::fromStdString(expr.analysistype()));
+//        }
+//        if (analyses.length() > 0)
+//            analyses = analyses.left(analyses.length() - 2);
+//        item->setText(4, analyses);
+//    }
 
-//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+//    // view defaults
+//    treeViewDefaults->clear();
+//    QTreeWidgetItem *scalarView = new QTreeWidgetItem(treeViewDefaults);
+//    scalarView->setExpanded(true);
+//    scalarView->setText(0, tr("Scalar view"));
 
-//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::essential_form *>(form));
-//                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-//                item->setData(2, Qt::UserRole, "essential");
-//                item->setData(3, Qt::UserRole, "surface");
-//                item->setText(0, tr("Essential form"));
-//                item->setText(1, QString::number(form->i()));
-//                item->setText(2, "");
-//                item->setText(3, QString::fromStdString(form->id()));
-//                item->setIcon(0, icon("form-essential"));
-//            }
-        }
-    }
+//    XMLModule::scalar_view *sv = &moduleDialog->module()->postprocessor().view().scalar_view();
 
-    // materials and boundaries
-    treeMaterials->clear();
-    treeBoundaries->clear();
-    for (int i = 0; i < moduleDialog->module()->preprocessor().gui().size(); i++)
-    {
-        XMLModule::gui *ui = &moduleDialog->module()->preprocessor().gui().at(i);
+//    for (int i = 0; i < sv->default_().size(); i++)
+//    {
+//        QTreeWidgetItem *item = new QTreeWidgetItem(scalarView);
 
-        for (int i = 0; i < ui->group().size(); i++)
-        {
-            XMLModule::group *grp = &ui->group().at(i);
+//        XMLModule::default_ *def = &sv->default_().at(i);
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::default_ *>(def));
+//        item->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(def->analysistype()))));
+//        item->setText(1, QString::fromStdString(def->id()));
+//    }
 
-            QTreeWidgetItem *group = NULL;
-            if (ui->type() == "volume")
-                group = new QTreeWidgetItem(treeMaterials);
-            else
-                group = new QTreeWidgetItem(treeBoundaries);
+//    QTreeWidgetItem *vectorView = new QTreeWidgetItem(treeViewDefaults);
+//    vectorView->setExpanded(true);
+//    vectorView->setText(0, tr("Vector view"));
 
-            group->setExpanded(true);
+//    XMLModule::vector_view *vv = &moduleDialog->module()->postprocessor().view().vector_view();
 
-            // group name
-            group->setText(0, (grp->name().present()) ? QString::fromStdString(grp->name().get()) : "unnamed");
+//    for (int i = 0; i < vv->default_().size(); i++)
+//    {
+//        QTreeWidgetItem *item = new QTreeWidgetItem(vectorView);
 
-            for (int i = 0; i < grp->quantity().size(); i++)
-            {
-                XMLModule::quantity *quant = &grp->quantity().at(i);
+//        XMLModule::default_ *def = &vv->default_().at(i);
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::default_ *>(def));
+//        item->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(def->analysistype()))));
+//        item->setText(1, QString::fromStdString(def->id()));
+//    }
 
-                QTreeWidgetItem *item = new QTreeWidgetItem(group);
+//    // surface integrals
+//    treeSurfaceIntegrals->clear();
+//    for (int i = 0; i < moduleDialog->module()->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
+//    {
+//        XMLModule::surfaceintegral *sur = &moduleDialog->module()->postprocessor().surfaceintegrals().surfaceintegral().at(i);
 
-                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::quantity *>(quant));
-                item->setText(0, QString::fromStdString((quant->name().present()) ? quant->name().get() : ""));
-                item->setText(1, QString::fromStdString((quant->shortname().present()) ? quant->shortname().get() : ""));
-                item->setText(2, QString::fromStdString((quant->unit().present()) ? quant->unit().get() : ""));
-            }
-        }
-    }
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeSurfaceIntegrals);
 
-    // local values
-    treeLocalVariables->clear();
-    for (int i = 0; i < moduleDialog->module()->postprocessor().localvariables().localvariable().size(); i++)
-    {
-        XMLModule::localvariable *lv = &moduleDialog->module()->postprocessor().localvariables().localvariable().at(i);
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::surfaceintegral *>(sur));
+//        item->setText(0, QString::fromStdString(sur->name()));
+//        item->setText(1, QString::fromStdString(sur->shortname()));
+//        item->setText(2, QString::fromStdString(sur->unit()));
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeLocalVariables);
+//        QString analyses;
+//        for (int j = 0; j < sur->expression().size(); j++)
+//        {
+//            XMLModule::expression expr = sur->expression().at(j);
+//            analyses += QString("%1, ").arg(QString::fromStdString(expr.analysistype()));
+//        }
+//        if (analyses.length() > 0)
+//            analyses = analyses.left(analyses.length() - 2);
+//        item->setText(3, analyses);
+//    }
 
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::localvariable *>(lv));
-        item->setText(0, QString::fromStdString(lv->name()));
-        item->setText(1, QString::fromStdString(lv->shortname()));
-        item->setText(2, QString::fromStdString(lv->unit()));
-        item->setText(3, QString::fromStdString(lv->type()));
+//    // volume integrals
+//    treeVolumeIntegrals->clear();
+//    for (int i = 0; i < moduleDialog->module()->postprocessor().volumeintegrals().volumeintegral().size(); i++)
+//    {
+//        XMLModule::volumeintegral *vol = &moduleDialog->module()->postprocessor().volumeintegrals().volumeintegral().at(i);
 
-        QString analyses;
-        for (int j = 0; j < lv->expression().size(); j++)
-        {
-            XMLModule::expression expr = lv->expression().at(j);
-            analyses += QString("%1, ").arg(QString::fromStdString(expr.analysistype()));
-        }
-        if (analyses.length() > 0)
-            analyses = analyses.left(analyses.length() - 2);
-        item->setText(4, analyses);
-    }
+//        QTreeWidgetItem *item = new QTreeWidgetItem(treeVolumeIntegrals);
 
-    // view defaults
-    treeViewDefaults->clear();
-    QTreeWidgetItem *scalarView = new QTreeWidgetItem(treeViewDefaults);
-    scalarView->setExpanded(true);
-    scalarView->setText(0, tr("Scalar view"));
+//        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::volumeintegral *>(vol));
+//        item->setText(0, QString::fromStdString(vol->name()));
+//        item->setText(1, QString::fromStdString(vol->shortname()));
+//        item->setText(2, QString::fromStdString(vol->unit()));
 
-    XMLModule::scalar_view *sv = &moduleDialog->module()->postprocessor().view().scalar_view();
-
-    for (int i = 0; i < sv->default_().size(); i++)
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem(scalarView);
-
-        XMLModule::default_ *def = &sv->default_().at(i);
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::default_ *>(def));
-        item->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(def->analysistype()))));
-        item->setText(1, QString::fromStdString(def->id()));
-    }
-
-    QTreeWidgetItem *vectorView = new QTreeWidgetItem(treeViewDefaults);
-    vectorView->setExpanded(true);
-    vectorView->setText(0, tr("Vector view"));
-
-    XMLModule::vector_view *vv = &moduleDialog->module()->postprocessor().view().vector_view();
-
-    for (int i = 0; i < vv->default_().size(); i++)
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem(vectorView);
-
-        XMLModule::default_ *def = &vv->default_().at(i);
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::default_ *>(def));
-        item->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(def->analysistype()))));
-        item->setText(1, QString::fromStdString(def->id()));
-    }
-
-    // surface integrals
-    treeSurfaceIntegrals->clear();
-    for (int i = 0; i < moduleDialog->module()->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
-    {
-        XMLModule::surfaceintegral *sur = &moduleDialog->module()->postprocessor().surfaceintegrals().surfaceintegral().at(i);
-
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeSurfaceIntegrals);
-
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::surfaceintegral *>(sur));
-        item->setText(0, QString::fromStdString(sur->name()));
-        item->setText(1, QString::fromStdString(sur->shortname()));
-        item->setText(2, QString::fromStdString(sur->unit()));
-
-        QString analyses;
-        for (int j = 0; j < sur->expression().size(); j++)
-        {
-            XMLModule::expression expr = sur->expression().at(j);
-            analyses += QString("%1, ").arg(QString::fromStdString(expr.analysistype()));
-        }
-        if (analyses.length() > 0)
-            analyses = analyses.left(analyses.length() - 2);
-        item->setText(3, analyses);
-    }
-
-    // volume integrals
-    treeVolumeIntegrals->clear();
-    for (int i = 0; i < moduleDialog->module()->postprocessor().volumeintegrals().volumeintegral().size(); i++)
-    {
-        XMLModule::volumeintegral *vol = &moduleDialog->module()->postprocessor().volumeintegrals().volumeintegral().at(i);
-
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeVolumeIntegrals);
-
-        item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::volumeintegral *>(vol));
-        item->setText(0, QString::fromStdString(vol->name()));
-        item->setText(1, QString::fromStdString(vol->shortname()));
-        item->setText(2, QString::fromStdString(vol->unit()));
-
-        QString analyses;
-        for (int j = 0; j < vol->expression().size(); j++)
-        {
-            XMLModule::expression expr = vol->expression().at(j);
-            analyses += QString("%1, ").arg(QString::fromStdString(expr.analysistype()));
-        }
-        if (analyses.length() > 0)
-            analyses = analyses.left(analyses.length() - 2);
-        item->setText(3, analyses);
-    }
+//        QString analyses;
+//        for (int j = 0; j < vol->expression().size(); j++)
+//        {
+//            XMLModule::expression expr = vol->expression().at(j);
+//            analyses += QString("%1, ").arg(QString::fromStdString(expr.analysistype()));
+//        }
+//        if (analyses.length() > 0)
+//            analyses = analyses.left(analyses.length() - 2);
+//        item->setText(3, analyses);
+//    }
 }
 
 void ModuleDialog::save()
 {
-    XMLModule::module *module = m_module_xsd.get();
+//    XMLModule::field *module = m_module_xsd.get();
 
-    // main
-    module->general_field().get().name(txtName->text().toStdString());
-    module->general_field().get().description(txtDescription->toPlainText().toStdString());
+//    // main
+//    module->general_field().name(txtName->text().toStdString());
+//    module->general_field().description(txtDescription->toPlainText().toStdString());
 
-    try
-    {
-        std::string mesh_schema_location("");
-        mesh_schema_location.append("../xsd/module_xml.xsd");
-        ::xml_schema::namespace_info namespace_info_mesh("XMLModule", mesh_schema_location);
+//    try
+//    {
+//        std::string mesh_schema_location("");
+//        mesh_schema_location.append("../xsd/module_xml.xsd");
+//        ::xml_schema::namespace_info namespace_info_mesh("XMLModule", mesh_schema_location);
 
-        ::xml_schema::namespace_infomap namespace_info_map;
-        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("module", namespace_info_mesh));
+//        ::xml_schema::namespace_infomap namespace_info_map;
+//        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("module", namespace_info_mesh));
 
-        XMLModule::module *module = m_module_xsd.get();
-        std::ofstream out(compatibleFilename(datadir() + MODULEROOT + "/" + m_fieldId + ".xml").toStdString().c_str());
-        XMLModule::module_(out, *module, namespace_info_map);
-    }
-    catch (const xml_schema::exception& e)
-    {
-        std::cerr << e << std::endl;
-    }
+//        XMLModule::field *module = m_module_xsd.get();
+//        std::ofstream out(compatibleFilename(datadir() + MODULEROOT + "/" + m_fieldId + ".xml").toStdString().c_str());
+//        //XMLModule::module_(out, *module, namespace_info_map);
+//    }
+//    catch (const xml_schema::exception& e)
+//    {
+//        std::cerr << e << std::endl;
+//    }
 }
 
 void ModuleDialog::createControls()
@@ -2005,14 +2005,14 @@ QWidget *ModuleDialog::createPostprocessor()
 
 int ModuleDialog::numberOfSolutions(std::string analysisType)
 {
-    for (int i = 0; i < module()->general_field().get().analyses().analysis().size(); i++)
-    {
-        XMLModule::analysis analysis = module()->general_field().get().analyses().analysis().at(i);
-        if (analysis.id() == analysisType)
-            return analysis.solutions();
-    }
+//    for (int i = 0; i < module()->general_field().analyses().analysis().size(); i++)
+//    {
+//        XMLModule::analysis analysis = module()->general_field().analyses().analysis().at(i);
+//        if (analysis.id() == analysisType)
+//            return analysis.solutions();
+//    }
 
-    return -1;
+//    return -1;
 }
 
 void ModuleDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
@@ -2036,7 +2036,7 @@ void ModuleDialog::buildPlugin()
     save();
 
     SystemOutputWidget *output = new SystemOutputWidget();
-    output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(QString::fromStdString(module()->general_field().get().id())));
+    //output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(QString::fromStdString(module()->general_field().id())));
 }
 
 void ModuleDialog::showXML()
@@ -2199,16 +2199,16 @@ void ModuleDialog::localItemDoubleClicked(QTreeWidgetItem *item, int role)
 
 void ModuleDialog::viewDefaultsItemDoubleClicked(QTreeWidgetItem *item, int role)
 {
-    XMLModule::default_ *def = item->data(0, Qt::UserRole).value<XMLModule::default_ *>();
-    if (def)
-    {
-        ModuleDialog *moduleDialog = this;
-        XMLModule::localvariables *lv = &module()->postprocessor().localvariables();
+//    XMLModule::default_ *def = item->data(0, Qt::UserRole).value<XMLModule::default_ *>();
+//    if (def)
+//    {
+//        ModuleDialog *moduleDialog = this;
+//        //XMLModule::localvariables *lv = &module()->postprocessor().localvariables();
 
-        ModuleItemViewDefaultsDialog dialog(this, def, lv, this);
-        if (dialog.exec())
-            item->setText(1, QString::fromStdString(def->id()));
-    }
+//        ModuleItemViewDefaultsDialog dialog(this, def, lv, this);
+//        if (dialog.exec())
+//            item->setText(1, QString::fromStdString(def->id()));
+//    }
 }
 
 void ModuleDialog::surfaceIntegralDoubleClicked(QTreeWidgetItem *item, int role)

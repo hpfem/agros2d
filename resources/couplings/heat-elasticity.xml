@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
+<module:coupling>
     <module:general_coupling id="heat-elasticity" name="Thermoelasticity">
         <module:description>Heat plus elasticity</module:description>
         <module:modules>
@@ -83,4 +84,5 @@
 
         </module:weakforms_volume>
     </module:volume>
+</module:coupling>
 </module:module>

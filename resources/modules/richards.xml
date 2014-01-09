@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
+<module:field>
 
   <module:general_field id="richards" name="Richard's equation">
     <module:description>The Richards equation represents the movement of water in unsaturated soils.</module:description>
@@ -321,4 +322,5 @@
   <module:cpp>
   </module:cpp>
 
+</module:field>
 </module:module>

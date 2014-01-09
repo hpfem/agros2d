@@ -37,7 +37,7 @@ static XMLModule::module *module_coupling = NULL;
                                                                                    xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
         module_coupling = coupling_xsd.release();
     }
-    m_coupling = module_coupling;
+    m_coupling = &module_coupling->coupling().get();
 }
 
 {{CLASS}}Interface::~{{CLASS}}Interface()

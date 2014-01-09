@@ -2,19 +2,24 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="XMLModule"
         xmlns:module="XMLModule">
 
+    <element name="module">
+        <complexType>
+            <choice>
+                <element ref="module:field" />
+                <element ref="module:coupling" />
+            </choice>
+        </complexType>
+    </element>
+
 <!--_________________________________________________________________________________________________-->
 
-<!--general structure-->
+<!-- field specific-->
 <!--_________________________________________________________________________________________________-->
 
-    <element name="field">
+         <element name="field">
         <complexType>
             <sequence>
-                <choice minOccurs="1" maxOccurs="1">
-                    <element ref="module:general_field" maxOccurs="1" />
-                    <element ref="module:general_coupling" maxOccurs="1" />
-                </choice>
-
+                <element ref="module:general_field" maxOccurs="1" />
                 <element ref="module:constants" maxOccurs="1" />
                 <element ref="module:spaces" maxOccurs="1" />
                 <element ref="module:volume" maxOccurs="1" />
@@ -26,11 +31,6 @@
             </sequence>
         </complexType>
     </element>
-
-<!--_________________________________________________________________________________________________-->
-
-<!--header specific for field-->
-<!--_________________________________________________________________________________________________-->
 
         <element name="general_field">
                 <complexType>
@@ -81,8 +81,18 @@
 
 <!--_________________________________________________________________________________________________-->
 
-<!--header specific for coupling-->
+<!-- coupling specific-->
 <!--_________________________________________________________________________________________________-->
+
+    <element name="coupling">
+        <complexType>
+            <sequence>
+                <element ref="module:general_coupling" maxOccurs="1" />
+                <element ref="module:constants" maxOccurs="1" />
+                <element ref="module:volume" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
 
     <element name="general_coupling">
                 <complexType>
@@ -373,7 +383,7 @@
         <element name="volume">
                 <complexType>
                         <sequence>
-                                <element maxOccurs="unbounded" ref="module:quantity" />
+                                <element minOccurs="0" maxOccurs="unbounded" ref="module:quantity" />
                                 <element minOccurs="0" maxOccurs="unbounded" ref="module:function" />
                                 <choice maxOccurs="unbounded">
                                         <element ref="module:matrix_form" />

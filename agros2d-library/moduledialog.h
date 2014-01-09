@@ -414,7 +414,7 @@ public:
     ModuleDialog(const QString &fieldId, QWidget *parent);
     ~ModuleDialog();
 
-    inline XMLModule::field *module() { return m_module_xsd.get(); }
+    inline XMLModule::module *module() { return m_module_xsd.get(); }
     int numberOfSolutions(std::string analysisType);
 
 private slots:
@@ -443,7 +443,7 @@ private slots:
 
 private:
     QString m_fieldId;
-    std::auto_ptr<XMLModule::field> m_module_xsd;
+    std::auto_ptr<XMLModule::module> m_module_xsd;
 
     QListWidget *lstView;
     QStackedWidget *pages;

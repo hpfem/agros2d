@@ -40,7 +40,6 @@ IF(WIN32)
   endforeach()
 
   SET(SOURCES_XML ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
-    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/coupling_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/structure_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/material_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/problem_a2d_31_xml.cpp

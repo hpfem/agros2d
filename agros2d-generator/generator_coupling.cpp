@@ -39,17 +39,22 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId) : 
     root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(iD));
 
     coupling_xsd = XMLModule::module_(compatibleFilename(datadir() + COUPLINGROOT + "/" + couplingId + ".xml").toStdString(), xml_schema::flags::dont_validate);
-    m_coupling = coupling_xsd.get();
-    assert(m_coupling->general_coupling().present());
+    XMLModule::module *mod = coupling_xsd.get();
+    assert(mod->coupling().present());
+    m_coupling = &mod->coupling().get();
 
-    QString sourceModuleId = QString::fromStdString(m_coupling->general_coupling().get().modules().source().id().c_str());
-    QString targetModuleId = QString::fromStdString(m_coupling->general_coupling().get().modules().target().id().c_str());
+    QString sourceModuleId = QString::fromStdString(m_coupling->general_coupling().modules().source().id().c_str());
+    QString targetModuleId = QString::fromStdString(m_coupling->general_coupling().modules().target().id().c_str());
 
     m_source_module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + sourceModuleId + ".xml").toStdString(), xml_schema::flags::dont_validate);
-    m_sourceModule = m_source_module_xsd.get();
+    mod = m_source_module_xsd.get();
+    assert(mod->field().present());
+    m_sourceModule = &mod->field().get();
 
     m_target_module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + targetModuleId + ".xml").toStdString(), xml_schema::flags::dont_validate);
-    m_targetModule = m_target_module_xsd.get();
+    mod = m_target_module_xsd.get();
+    assert(mod->field().present());
+    m_targetModule = &mod->field().get();
 
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + iD);
 
@@ -73,7 +78,7 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId) : 
 
 void Agros2DGeneratorCoupling::generatePluginProjectFile()
 {
-    QString id = (QString::fromStdString(m_coupling->general_coupling().get().id().c_str()));
+    QString id = (QString::fromStdString(m_coupling->general_coupling().id().c_str()));
 
     Hermes::Mixins::Loggable::Static::info(QString("generating project file").toLatin1());
 
@@ -95,7 +100,7 @@ void Agros2DGeneratorCoupling::generatePluginProjectFile()
 
 void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
 {
-    QString id = QString::fromStdString(m_coupling->general_coupling().get().id());
+    QString id = QString::fromStdString(m_coupling->general_coupling().id());
 
     Hermes::Mixins::Loggable::Static::info(QString("generating interface file").toLatin1());
 
@@ -140,7 +145,7 @@ void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormFiles()
 {
-    Hermes::Mixins::Loggable::Static::warn(QString("Coupling: %1.").arg(QString::fromStdString(m_coupling->general_coupling().get().id())).toLatin1());
+    Hermes::Mixins::Loggable::Static::warn(QString("Coupling: %1.").arg(QString::fromStdString(m_coupling->general_coupling().id())).toLatin1());
 
     generatePluginWeakFormSourceFiles();
     generatePluginWeakFormHeaderFiles();
@@ -148,7 +153,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 {
-    QString id = QString::fromStdString(m_coupling->general_coupling().get().id());
+    QString id = QString::fromStdString(m_coupling->general_coupling().id());
 
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
 
@@ -181,8 +186,8 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
 {
-    QString id = QString::fromStdString(m_coupling->general_coupling().get().id());
-    QStringList modules = QString::fromStdString(m_coupling->general_coupling().get().id()).split("-");
+    QString id = QString::fromStdString(m_coupling->general_coupling().id());
+    QStringList modules = QString::fromStdString(m_coupling->general_coupling().id()).split("-");
 
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
 
@@ -267,8 +272,8 @@ QString Agros2DGeneratorCoupling::nonlinearExpression(const QString &variable, A
 
 QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr)
 {
-    int numOfSol = Agros2DGenerator::numberOfSolutions(m_sourceModule->general_field().get().analyses(), sourceAnalysisType) +
-            Agros2DGenerator::numberOfSolutions(m_targetModule->general_field().get().analyses(), targetAnalysisType);
+    int numOfSol = Agros2DGenerator::numberOfSolutions(m_sourceModule->general_field().analyses(), sourceAnalysisType) +
+            Agros2DGenerator::numberOfSolutions(m_targetModule->general_field().analyses(), targetAnalysisType);
 
     LexicalAnalyser lex;
 
@@ -489,7 +494,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
     }
     catch (ParserException e)
     {
-        Hermes::Mixins::Loggable::Static::error(QString("%1 in coupling %2").arg(e.toString()).arg(QString::fromStdString(m_coupling->general_coupling().get().id())).toLatin1());
+        Hermes::Mixins::Loggable::Static::error(QString("%1 in coupling %2").arg(e.toString()).arg(QString::fromStdString(m_coupling->general_coupling().id())).toLatin1());
 
         return "";
     }
@@ -506,7 +511,7 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
             ctemplate::TemplateDictionary *field;
             field = output.AddSectionDictionary(weakFormType.toStdString() + "_SOURCE");
 
-            QString id = (QString::fromStdString(m_coupling->general_coupling().get().id().c_str())).replace("-", "_");
+            QString id = (QString::fromStdString(m_coupling->general_coupling().id().c_str())).replace("-", "_");
 
             // source files
             QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
@@ -601,7 +606,7 @@ void Agros2DGeneratorCoupling::generateWeakForms(ctemplate::TemplateDictionary &
             LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
 
             // generate individual forms
-            QList<FormInfo> matrixForms = CouplingInfo::wfMatrixVolumeSeparated(m_coupling, sourceAnalysis, targetAnalysis, couplingType, linearityType);
+            QList<FormInfo> matrixForms = CouplingInfo::wfMatrixVolumeSeparated(&m_coupling->volume(), sourceAnalysis, targetAnalysis, couplingType, linearityType);
             // genrate also complete forms
             //matrixForms.append(WeakFormAgros<double>::wfMatrixVolumeComplete(m_module, analysisType, linearityType));
             foreach(FormInfo formInfo, matrixForms)
@@ -610,7 +615,7 @@ void Agros2DGeneratorCoupling::generateWeakForms(ctemplate::TemplateDictionary &
             }
 
             // generate individual forms
-            QList<FormInfo> vectorForms = CouplingInfo::wfVectorVolumeSeparated(m_coupling, sourceAnalysis, targetAnalysis, couplingType, linearityType);
+            QList<FormInfo> vectorForms = CouplingInfo::wfVectorVolumeSeparated(&m_coupling->volume(), sourceAnalysis, targetAnalysis, couplingType, linearityType);
             // genrate also complete forms
             //vectorForms.append(WeakFormAgros<double>::wfVectorVolumeComplete(m_module, analysisType, linearityType));
             foreach(FormInfo formInfo, vectorForms)
@@ -658,8 +663,8 @@ void Agros2DGeneratorCoupling::prepareWeakFormsOutput()
     assert(! m_output);
     m_output = new ctemplate::TemplateDictionary("output");
 
-    QString id = QString::fromStdString(m_coupling->general_coupling().get().id());
-    QStringList modules = QString::fromStdString(m_coupling->general_coupling().get().id()).split("-");
+    QString id = QString::fromStdString(m_coupling->general_coupling().id());
+    QStringList modules = QString::fromStdString(m_coupling->general_coupling().id()).split("-");
     m_output->SetValue("ID", id.toStdString());
     m_output->SetValue("CLASS", (modules[0].left(1).toUpper() + modules[0].right(modules[0].length() - 1) +
                               modules[1].left(1).toUpper() + modules[1].right(modules[1].length() - 1)).toStdString());

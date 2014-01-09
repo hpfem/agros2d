@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
-
+<module:field>
   <module:general_field deformed_shape="1" id="elasticity" name="Structural analysis">
     <module:description>Structural analysis is the determination of the effects of loads on physical structures and their components.
     </module:description>
@@ -258,4 +258,5 @@
     <module:force/>
   </module:postprocessor>
 
+</module:field>
 </module:module>

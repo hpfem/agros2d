@@ -47,7 +47,7 @@ static XMLModule::module *module_module = NULL;
                                                                          xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
         module_module = module_xsd.release();
     }
-    m_module = module_module;
+    m_module = &module_module->field().get();
 }
 
 {{CLASS}}Interface::~{{CLASS}}Interface()

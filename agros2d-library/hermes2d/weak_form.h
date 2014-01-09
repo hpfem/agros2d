@@ -14,7 +14,7 @@ class CouplingInfo;
 
 namespace XMLModule
 {
-class module;
+class field;
 class quantity;
 class boundary;
 class surface;
@@ -27,7 +27,7 @@ class calculator;
 class linearity_option;
 }
 
-void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType);
+void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::field *module, AnalysisType analysisType, LinearityType linearityType);
 
 QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> templates, QList<FormInfo> templatesForResidual = QList<FormInfo>());
 
@@ -47,8 +47,8 @@ public:
     inline BDF2Table* bdf2Table() { return m_bdf2Table; }
 
     // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
-    static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings

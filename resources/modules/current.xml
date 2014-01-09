@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
+<module:field>
 
   <module:general_field id="current" name="Current field">
     <module:description>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.
@@ -250,4 +251,5 @@
     </module:force>
   </module:postprocessor>
 
+</module:field>
 </module:module>

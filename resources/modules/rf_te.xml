@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
+<module:field>
 
   <module:general_field id="rf_te" name="TE waves">
     <module:description>Solving TE waves in RF field.</module:description>
@@ -284,4 +285,5 @@
     <module:force/>
   </module:postprocessor>
 
+</module:field>
 </module:module>

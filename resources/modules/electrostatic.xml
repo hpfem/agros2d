@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
+<module:field>
 
   <module:general_field id="electrostatic" name="Electrostatic field">
     <module:description>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</module:description>
@@ -179,4 +180,5 @@
     </module:force>
   </module:postprocessor>
 
+</module:field>
 </module:module>
