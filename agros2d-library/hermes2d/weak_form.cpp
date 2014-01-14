@@ -1,3 +1,7 @@
+#include "util/global.h"
+#include "problem.h"
+#include "field.h"
+#include "block.h"
 #include "weak_form.h"
 
 void checkDuplicities(QList<FormInfo> list)
@@ -93,3 +97,78 @@ QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> temp
     return listResult;
 }
 
+PositionInfo::PositionInfo() :
+    formsOffset(INVALID_POSITION_INFO_VALUE),
+    quantAndSpecOffset(INVALID_POSITION_INFO_VALUE),
+    numQuantAndSpecFun(0),
+    previousSolutionsOffset(INVALID_POSITION_INFO_VALUE),
+    numPreviousSolutions(0),
+    isSource(false)
+{
+
+}
+
+template <typename Scalar>
+Offset WeakFormAgros<Scalar>::offsetInfo(const Marker *sourceMarker, const Marker *targetMarker) const
+{
+    if(targetMarker)
+        return offsetInfo(sourceMarker->fieldInfo(), targetMarker->fieldInfo());
+    else
+        return offsetInfo(sourceMarker->fieldInfo(), nullptr);
+}
+
+template <typename Scalar>
+Offset WeakFormAgros<Scalar>::offsetInfo(const FieldInfo *sourceFieldInfo, const FieldInfo *targetFieldInfo) const
+{
+    Offset offset;
+    if(targetFieldInfo == nullptr)
+    {
+        const int fieldID = sourceFieldInfo->numberId();
+        offset.forms = positionInfo(fieldID)->formsOffset;
+        offset.prevSol = positionInfo(fieldID)->previousSolutionsOffset;
+        offset.quant = positionInfo(fieldID)->quantAndSpecOffset;
+    }
+    else
+    {
+        assert(sourceFieldInfo);
+        // todo: change to target!
+        const int fieldIDSource = sourceFieldInfo->numberId();
+        offset.sourceForms = positionInfo(fieldIDSource)->formsOffset;
+        offset.sourcePrevSol = positionInfo(fieldIDSource)->previousSolutionsOffset;
+        offset.sourceQuant = positionInfo(fieldIDSource)->quantAndSpecOffset;
+
+        const int fieldID = targetFieldInfo->numberId();
+        offset.forms = positionInfo(fieldID)->formsOffset;
+        offset.prevSol = positionInfo(fieldID)->previousSolutionsOffset;
+        offset.quant = positionInfo(fieldID)->quantAndSpecOffset;
+    }
+
+    return offset;
+}
+
+template <typename Scalar>
+void WeakFormAgros<Scalar>::outputPositionInfos()
+{
+    qDebug() << "*************Block************************";
+    qDebug() << "weak coupling sources:";
+    foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
+    {
+        int id = fieldInfo->numberId();
+        qDebug() << "fieldInfo " << fieldInfo->fieldId() << ", " << id;
+        qDebug() << "field offset " << m_positionInfos[id].formsOffset << ", is source " << m_positionInfos[id].isSource;
+        qDebug() << "quantities num " << m_positionInfos[id].numQuantAndSpecFun << ", offset " << m_positionInfos[id].quantAndSpecOffset;
+        qDebug() << "previous solutions num " << m_positionInfos[id].numPreviousSolutions << ", offset " << m_positionInfos[id].previousSolutionsOffset;
+    }
+    qDebug() << "block members:";
+    foreach(FieldInfo* fieldInfo, m_block->fieldInfos())
+    {
+        int id = fieldInfo->numberId();
+        qDebug() << "fieldInfo " << fieldInfo->fieldId() << ", " << id;
+        qDebug() << "field offset " << m_positionInfos[id].formsOffset << ", is source " << m_positionInfos[id].isSource;
+        qDebug() << "quantities num " << m_positionInfos[id].numQuantAndSpecFun << ", offset " << m_positionInfos[id].quantAndSpecOffset;
+        qDebug() << "previous solutions num " << m_positionInfos[id].numPreviousSolutions << ", offset " << m_positionInfos[id].previousSolutionsOffset;
+    }
+    qDebug() << "**************End*************************";
+}
+
+template class WeakFormAgros<double>;

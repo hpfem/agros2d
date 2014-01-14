@@ -54,17 +54,17 @@ static XMLModule::module *module_module = NULL;
 {
 }
 
-AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI)
+AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, const WeakFormAgros<double>* wfAgros)
 {
     {{#EXT_FUNCTION}}
     if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
-        return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
+        return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), wfAgros);
     {{/EXT_FUNCTION}}
     {{#VALUE_FUNCTION_SOURCE}}
     if((id == "{{VALUE_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
     {
         assert(derivative == false);
-        AgrosExtFunction* extFunction = new {{VALUE_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
+        AgrosExtFunction* extFunction = new {{VALUE_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), wfAgros);
         return extFunction;
     }
     {{/VALUE_FUNCTION_SOURCE}}
@@ -72,7 +72,7 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
     if((id == "{{SPECIAL_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
     {
         assert(derivative == false);
-        AgrosExtFunction* extFunction = new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
+        AgrosExtFunction* extFunction = new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), wfAgros);
         return extFunction;
     }
     {{/SPECIAL_FUNCTION_SOURCE}}
@@ -81,47 +81,47 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
 }
 
 
-MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt)
+MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
 {
        {{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
             (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}))
         if ({{EXPRESSION_CHECK}})
-            return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ, offsetPreviousTimeExt);
+            return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/VOLUME_MATRIX_SOURCE}}
 
     return NULL;
 }
 
-VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt, int *offsetCouplingExt)
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
 {
     {{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}})))
         if ({{EXPRESSION_CHECK}})
-            return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ, offsetPreviousTimeExt, offsetCouplingExt);
+            return new {{FUNCTION_NAME}}<double>(form->i - 1 , form->j - 1, wfAgros);
     {{/VOLUME_VECTOR_SOURCE}}
 
     return NULL;
 }
 
-MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary)
+MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary)
 {
     {{#SURFACE_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
-        return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
+        return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/SURFACE_MATRIX_SOURCE}}
 
     return NULL;
 }
 
-VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary)
+VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary)
 {
     {{#SURFACE_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
-        return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
+        return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/SURFACE_VECTOR_SOURCE}}
 
     return NULL;
@@ -196,7 +196,7 @@ QString {{CLASS}}Interface::localeDescription()
 // ***********************************************************************************************************************************
 
 {{#VALUE_FUNCTION_SOURCE}}
-{{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
 {
 {{#PARAMETERS_LINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
 {{/PARAMETERS_LINEAR}}
@@ -219,6 +219,9 @@ double {{VALUE_FUNCTION_FULL_NAME}}::getValue(int hermesMarker, double h) const
 
 void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 {
+    const int fieldID = this->m_fieldInfo->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_fieldInfo, nullptr);
+
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
 
 {{#PARAMETERS_LINEAR}}    const Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex];
@@ -244,7 +247,7 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>*
 // ***********************************************************************************************************************************
 
 {{#SPECIAL_FUNCTION_SOURCE}}
-{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosSpecialExtFunction(fieldInfo, wfAgros, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
 {
     m_boundLow = {{FROM}};
     m_boundHi = {{TO}};
@@ -283,6 +286,9 @@ double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, doub
 
 void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *e) const
 {
+    const int fieldID = this->m_fieldInfo->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_fieldInfo, nullptr);
+
     for(int i = 0; i < n; i++)
     {
         result->val[i] = getValue(e->elem_marker, {{DEPENDENCE}});

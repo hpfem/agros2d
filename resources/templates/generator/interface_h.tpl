@@ -44,14 +44,14 @@ public:
     inline virtual QString fieldId() { return "{{ID}}"; }
 
     // weakforms
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt);
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt, int *offsetCouplingExt);
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary);
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary);
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh);
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI);
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, const WeakFormAgros<double>* wfAgros);
 
     // postprocessor
     // filter
@@ -92,12 +92,12 @@ public:
 class {{VALUE_FUNCTION_FULL_NAME}} : public AgrosExtFunction
 {
 public:
-    {{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI);
+    {{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
     virtual double getValue(int hermesMarker, double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
     Hermes::Hermes2D::Function<double>* clone() const
     {
-        return new {{VALUE_FUNCTION_FULL_NAME}}(this->m_fieldInfo, this->m_offsetI);
+        return new {{VALUE_FUNCTION_FULL_NAME}}(this->m_fieldInfo, this->m_wfAgros);
     }
 private:
 {{#PARAMETERS_LINEAR}}    const Value **{{PARAMETER_NAME}}_pointers;
@@ -114,7 +114,7 @@ private:
 class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
 {
 public:
-    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI);
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
     ~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}();
     virtual double calculateValue(int hermesMarker, double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;

@@ -387,7 +387,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
             if (repl == QString("uval")) { exprCpp += QString("u->val[i]"); isReplaced = true; }
             if (repl == QString("vval")) { exprCpp += QString("v->val[i]"); isReplaced = true; }
             if (repl == QString("upval")) { exprCpp += QString("u_ext[this->j]->val[i]"); isReplaced = true; }
-            if (repl == QString("uptval")) { exprCpp += QString("ext[this->i]->val[i]"); isReplaced = true; }
+            if (repl == QString("uptval")) { exprCpp += QString("ext[dfsfdsthis->i]->val[i]"); isReplaced = true; }
 
             if (coordinateType == CoordinateType_Planar)
             {
@@ -411,22 +411,22 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
 
             for (int i = 1; i < numOfSol + 1; i++)
             {
-                if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->m_offsetI /*todo: jinak, I i J*/]->val[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->val[i]").arg(i-1); isReplaced = true; }
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    if (repl == QString("dx%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->m_offsetI /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
-                    if (repl == QString("dy%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->m_offsetI /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dx%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dy%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
                 }
                 else
                 {
-                    if (repl == QString("dr%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->m_offsetI /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
-                    if (repl == QString("dz%1").arg(i)) { exprCpp += QString("u_ext[%1 + this->m_offsetI /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dr%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dz%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
                 }
-                if (repl == QString("source%1").arg(i)) { exprCpp += QString("ext[*this->m_offsetCouplingExt + %1]->val[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dx").arg(i)) { exprCpp += QString("ext[*this->m_offsetCouplingExt + %1]->dx[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dy").arg(i)) { exprCpp += QString("ext[*this->m_offsetCouplingExt + %1]->dy[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dr").arg(i)) { exprCpp += QString("ext[*this->m_offsetCouplingExt + %1]->dx[i]").arg(i-1); isReplaced = true; }
-                if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext[*this->m_offsetCouplingExt + %1]->dy[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->val[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dx").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dy").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dr").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1); isReplaced = true; }
+                if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1); isReplaced = true; }
             }
 
             foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
@@ -465,7 +465,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                         if (nonlinearExpr.isEmpty())
                         {
                             // linear material
-                            exprCpp += QString("ext[%1]->val[i]").arg(quantityOrdering[QString::fromStdString(quantity.id())]);
+                            exprCpp += QString("ext[%1 + offset.quant]->val[i]").arg(quantityOrdering[QString::fromStdString(quantity.id())]);
                         }
                         else
                         {

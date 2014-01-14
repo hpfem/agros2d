@@ -8,9 +8,10 @@ class Block;
 class Field;
 class Marker;
 class Boundary;
+class Material;
 class SceneMaterial;
 class CouplingInfo;
-
+class FieldInfo;
 
 namespace XMLModule
 {
@@ -23,14 +24,65 @@ class localvariable;
 class gui;
 class space;
 class calculator;
-
 class linearity_option;
 }
+
+struct PositionInfo
+{
+    PositionInfo();
+    int formsOffset;
+    int quantAndSpecOffset;
+    int numQuantAndSpecFun;
+    int previousSolutionsOffset;
+    int numPreviousSolutions;
+    bool isSource;
+};
+
+struct Offset
+{
+    int forms;
+    int quant;
+    int prevSol;
+
+    int sourceForms;
+    int sourceQuant;
+    int sourcePrevSol;
+};
+
+
+
+struct ProblemID
+{
+    ProblemID() :
+        sourceFieldId(""), targetFieldId(""),
+        analysisTypeSource(AnalysisType_Undefined), analysisTypeTarget(AnalysisType_Undefined),
+        coordinateType(CoordinateType_Undefined), linearityType(LinearityType_Undefined),
+        couplingType(CouplingType_Undefined) {}
+
+    // TODO: set/get methods
+    QString sourceFieldId;
+    QString targetFieldId;
+    AnalysisType analysisTypeSource;
+    AnalysisType analysisTypeTarget;
+    CoordinateType coordinateType;
+    LinearityType linearityType;
+    CouplingType couplingType;
+
+    QString toString()
+    {
+        // TODO: implement toString() method
+        return "TODO";
+    }
+};
+
+
+const int INVALID_POSITION_INFO_VALUE = -223344;
+// maximal number of existing modules
+const int MAX_FIELDS = 10;
 
 void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::field *module, AnalysisType analysisType, LinearityType linearityType);
 
 QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> templates, QList<FormInfo> templatesForResidual = QList<FormInfo>());
-
 
 template <typename SectionWithTemplates>
 QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section);
@@ -50,12 +102,22 @@ public:
     static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
     static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
 
+    inline const PositionInfo* positionInfo(int index) const {return &m_positionInfos[index]; }
+    void outputPositionInfos();
+
+    Offset offsetInfo(const FieldInfo *sourceFieldInfo, const FieldInfo *targetFieldInfo) const;
+    Offset offsetInfo(const Marker *sourceMarker, const Marker *targetMarker) const;
+
 private:
+    Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
+                                                const QString &area, FormInfo *form,
+                                                Marker* markerSource, Material *markerTarget);
+
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker *marker);
+    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, Marker *marker);
 
     // offsetCouplingExt defines position in Ext field where coupling solutions start
-    void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ, SceneMaterial *materialSource,
+    void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
@@ -65,14 +127,13 @@ private:
 
     BDF2Table* m_bdf2Table;
 
-    // index in EXT field, where start solutions from previous time levels. ( == number of Value ext functions)
-    int m_offsetPreviousTimeExt;
-
-    // index in EXT field, where start solutions from weakly coupled fields ( == number of Value ext functions + time components)
-    // we have to pass pointer to individual forms, since it may change during the calculation (the order of the BDF method may vary)
-    int m_offsetCouplingExt;
+    PositionInfo m_positionInfos[MAX_FIELDS];
 
     int m_numberOfForms;
+
+    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo) const;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > sourceCouplingSolutions(const FieldInfo* fieldInfo) const;
 };
 
 #endif // WEAK_FORM_H

@@ -181,6 +181,7 @@ SET(SOURCES value.cpp
     hermes2d/module.h
     hermes2d/problem.h
     hermes2d/problem_config.h
+    hermes2d/weak_form.h
     mainwindow.h
     scenebasic.h
     scenemarker.h

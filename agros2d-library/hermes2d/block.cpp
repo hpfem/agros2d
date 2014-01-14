@@ -76,6 +76,27 @@ Block::~Block()
     m_wf = NULL;
 }
 
+QList<FieldInfo* > Block::sourceFieldInfosCoupling() const
+{
+    QList<FieldInfo* > result;
+    foreach(Field* field, m_fields)
+    {
+        foreach(CouplingInfo* couplingInfo, field->couplingInfos())
+        {
+            assert(couplingInfo->targetField() == field->fieldInfo());
+            assert(couplingInfo->couplingType() == CouplingType_Weak);
+            if(! result.contains(couplingInfo->sourceField()))
+                result.push_back(couplingInfo->sourceField());
+        }
+    }
+
+    foreach(CouplingInfo* couplingInfo, couplings())
+        if(couplingInfo->couplingType() == CouplingType_Weak)
+            assert(result.contains(couplingInfo->sourceField()));
+
+    return result;
+}
+
 void Block::createBoundaryConditions()
 {
     // todo: memory leak? boundary conditions are probably released in space, but really?
@@ -623,6 +644,15 @@ Field* Block::field(const FieldInfo *fieldInfo) const
     }
 
     return NULL;
+}
+
+QList<FieldInfo*> Block::fieldInfos() const
+{
+    QList<FieldInfo*> result;
+    foreach(Field* field, m_fields)
+        result.push_back(field->fieldInfo());
+
+    return result;
 }
 
 Hermes::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const

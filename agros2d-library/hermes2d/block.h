@@ -120,7 +120,11 @@ public:
     Field* field(const FieldInfo* fieldInfo) const;
 
     inline QList<Field*> fields() const { return m_fields; }
+    QList<FieldInfo*> fieldInfos() const;
     inline QList<CouplingInfo*> couplings() const { return m_couplings; }
+
+    // all fields, that are sources for weak coupling of either of fields of the block
+    QList<FieldInfo*> sourceFieldInfosCoupling() const;
 
     inline Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs() const { return m_bcs; }
 

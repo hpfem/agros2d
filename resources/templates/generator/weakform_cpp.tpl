@@ -36,7 +36,7 @@
 {{/QUANTITY_INFO}}
 
 {{#EXT_FUNCTION}}
-{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
 {
     {{QUANTITY_SHORTNAME}} = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
 }
@@ -45,6 +45,7 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, 
 {
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
     const Value* value = {{QUANTITY_SHORTNAME}}[labelIndex];
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_fieldInfo, nullptr);
 
     for(int i = 0; i < n; i++)
     {
@@ -55,8 +56,8 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, 
 
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int* offsetPreviousTimeExt)
-    : MatrixFormVolAgros<Scalar>(i, j, offsetI, offsetJ, offsetPreviousTimeExt)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
+    : MatrixFormVolAgros<Scalar>(i, j, wfAgros)
 {       
 }
 
@@ -66,6 +67,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
                                           Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
     Scalar result = 0;
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -77,7 +79,8 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                                              Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    Hermes::Ord result(0);    
+    Hermes::Ord result(0);
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
@@ -98,8 +101,8 @@ template <typename Scalar>
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int* offsetPreviousTimeExt, int* offsetCouplingExt)
-    : VectorFormVolAgros<Scalar>(i, offsetI, offsetJ, offsetPreviousTimeExt, offsetCouplingExt), j(j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
+    : VectorFormVolAgros<Scalar>(i, wfAgros), j(j)
 {
 }
 
@@ -108,7 +111,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
                                           Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
     Scalar result = 0;
-
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -120,7 +123,8 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    Hermes::Ord result(0);    
+    Hermes::Ord result(0);
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
@@ -142,8 +146,8 @@ template <typename Scalar>
 {{#SURFACE_MATRIX_SOURCE}}
 
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
-    : MatrixFormSurfAgros<Scalar>(i, j, offsetI, offsetJ)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
+    : MatrixFormSurfAgros<Scalar>(i, j, wfAgros)
 {
 }
 
@@ -152,6 +156,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
     Scalar result = 0;
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -163,7 +168,8 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u, Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                               Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    Hermes::Ord result(0);    
+    Hermes::Ord result(0);
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
@@ -182,7 +188,7 @@ template <typename Scalar>
 template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
-    FormAgrosInterface::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -193,9 +199,9 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 
 {{#SURFACE_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
 
-    : VectorFormSurfAgros<Scalar>(i, offsetI, offsetJ), j(j)
+    : VectorFormSurfAgros<Scalar>(i, wfAgros), j(j)
 {
 }
 
@@ -204,6 +210,7 @@ Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Fun
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
     Scalar result = 0;
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -215,7 +222,8 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                               Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    Hermes::Ord result(0);    
+    Hermes::Ord result(0);
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
@@ -234,7 +242,7 @@ template <typename Scalar>
 template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
-    FormAgrosInterface::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -266,7 +274,7 @@ void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Sca
 template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
-    FormAgrosInterface::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}

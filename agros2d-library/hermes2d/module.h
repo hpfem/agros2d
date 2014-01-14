@@ -62,31 +62,6 @@ public:
     }
 };
 
-
-struct ProblemID
-{
-    ProblemID() :
-        sourceFieldId(""), targetFieldId(""),
-        analysisTypeSource(AnalysisType_Undefined), analysisTypeTarget(AnalysisType_Undefined),
-        coordinateType(CoordinateType_Undefined), linearityType(LinearityType_Undefined),
-        couplingType(CouplingType_Undefined) {}
-
-    // TODO: set/get methods
-    QString sourceFieldId;
-    QString targetFieldId;
-    AnalysisType analysisTypeSource;
-    AnalysisType analysisTypeTarget;
-    CoordinateType coordinateType;
-    LinearityType linearityType;
-    CouplingType couplingType;
-
-    QString toString()
-    {
-        // TODO: implement toString() method
-        return "TODO";
-    }
-};
-
 extern double actualTime;
 
 namespace XMLModule

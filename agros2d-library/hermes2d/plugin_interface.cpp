@@ -2,11 +2,34 @@
 #include "field.h"
 #include "util/global.h"
 
+template<typename Scalar>
+FormAgrosInterface<Scalar>::FormAgrosInterface(const WeakFormAgros<Scalar>* weakFormAgros) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_wfAgros(weakFormAgros), m_markerVolume(0.0)
+{
+}
+
+template<typename Scalar>
+void FormAgrosInterface<Scalar>::setMarkerSource(const Marker *marker)
+{
+    m_markerSource = marker;
+}
+
+template<typename Scalar>
+void FormAgrosInterface<Scalar>::setMarkerTarget(const Marker *marker)
+{
+    m_markerTarget = marker;
+}
+
+AgrosExtFunction::AgrosExtFunction(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : UExtFunction(), m_fieldInfo(fieldInfo), m_wfAgros(wfAgros)
+{
+//    const int fieldID = this->m_fieldInfo->numberId();
+//    m_formsOffset = this->m_wfAgros->positionInfo(fieldID)->formsOffset;
+}
+
 AgrosExtFunction::~AgrosExtFunction()
 {
 }
 
-AgrosSpecialExtFunction::AgrosSpecialExtFunction(const FieldInfo *fieldInfo, int offsetI, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, offsetI), m_type(type), m_count(count)
+AgrosSpecialExtFunction::AgrosSpecialExtFunction(const FieldInfo *fieldInfo,  const WeakFormAgros<double>* wfAgros, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, wfAgros), m_type(type), m_count(count)
 {
     if((type == SpecialFunctionType_Constant) || (count > 0))
         m_useTable = true;
@@ -87,3 +110,5 @@ double AgrosSpecialExtFunction::getValue(int hermesMarker, double h) const
     else
         return calculateValue(hermesMarker, h);
 }
+
+template class FormAgrosInterface<double>;

@@ -33,14 +33,17 @@
 #include "hermes2d/module.h"
 #include "hermes2d/marker.h"
 #include "hermes2d/field.h"
+#include "hermes2d/weak_form.h"
 
 #include "../../resources_source/classes/module_xml.h"
+
+class PositionInfo;
 
 //template <typename Scalar>
 class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
 {
 public:
-    AgrosExtFunction(const FieldInfo* fieldInfo, int offsetI) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(offsetI) {}
+    AgrosExtFunction(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
     ~AgrosExtFunction();
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
@@ -55,7 +58,9 @@ public:
 
 protected:
     const FieldInfo* m_fieldInfo;
-    int m_offsetI;
+    const WeakFormAgros<double>* m_wfAgros;
+   // int m_formsOffset;
+
 };
 
 
@@ -96,7 +101,7 @@ protected:
 class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
 {
 public:
-    AgrosSpecialExtFunction(const FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count = 0);
+    AgrosSpecialExtFunction(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros, SpecialFunctionType type, int count = 0);
     ~AgrosSpecialExtFunction() {}
     virtual void init();
     double getValue(int hermesMarker, double h) const;
@@ -188,17 +193,18 @@ protected:
 
 const int OFFSET_NON_DEF = -100;
 
+template<typename Scalar>
 class FormAgrosInterface
 {
 public:
-    FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ), m_markerVolume(0.0) {}
+    FormAgrosInterface(const WeakFormAgros<Scalar>* weakFormAgros);
 
     // source or single marker
-    virtual void setMarkerSource(const Marker *marker) { m_markerSource = marker; }
+    virtual void setMarkerSource(const Marker *marker);
     inline const Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
 
     // target marker
-    virtual void setMarkerTarget(const Marker *marker) { m_markerTarget = marker; }
+    virtual void setMarkerTarget(const Marker *marker);
     inline const Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
     // time discretisation table
@@ -216,60 +222,59 @@ protected:
     // time discretisation table
     BDF2Table **m_table;
 
-    // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
-    // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
-    // before the shift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
-    // and the original position
-    int m_offsetI;
-    int m_offsetJ;
+//    // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
+//    // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
+//    // before the shift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
+//    // and the original position
+//    int m_offsetI;
+//    int m_offsetJ;
+
+    const WeakFormAgros<Scalar> *m_wfAgros;
 
     double m_markerVolume;
 };
 
 // weakforms
 template<typename Scalar>
-class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
+class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
-    MatrixFormVolAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ, int *offsetPreviousTimeExt)
-        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ), m_offsetPreviousTimeExt(offsetPreviousTimeExt) {}
+    MatrixFormVolAgros(unsigned int i, unsigned int j,  const WeakFormAgros<Scalar>* wfAgros)
+        : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface<Scalar>(wfAgros) {}
 protected:
-    int *m_offsetPreviousTimeExt;
 };
 
 template<typename Scalar>
-class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
+class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
-    VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int *offsetPreviousTimeExt, int *offsetCouplingExt)
-        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface(offsetI, offsetJ), m_offsetPreviousTimeExt(offsetPreviousTimeExt), m_offsetCouplingExt(offsetCouplingExt) {}
+    VectorFormVolAgros(unsigned int i, const WeakFormAgros<Scalar>* wfAgros)
+        : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface<Scalar>(wfAgros) {}
 protected:
-    int *m_offsetPreviousTimeExt;
-    int *m_offsetCouplingExt;
 };
 
 template<typename Scalar>
-class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
+class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
-    MatrixFormSurfAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
-        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ) {}
+    MatrixFormSurfAgros(unsigned int i, unsigned int j, const WeakFormAgros<Scalar>* wfAgros)
+        : Hermes::Hermes2D::MatrixFormSurf<Scalar>(i, j), FormAgrosInterface<Scalar>(wfAgros) {}
 };
 
 template<typename Scalar>
-class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
+class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
-    VectorFormSurfAgros(unsigned int i, int offsetI, int offsetJ)
-        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i), FormAgrosInterface(offsetI, offsetJ) {}
+    VectorFormSurfAgros(unsigned int i, const WeakFormAgros<Scalar>* wfAgros)
+        : Hermes::Hermes2D::VectorFormSurf<Scalar>(i), FormAgrosInterface<Scalar>(wfAgros) {}
 };
 
 template<typename Scalar>
-class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
+class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
     ExactSolutionScalarAgros(Hermes::Hermes2D::MeshSharedPtr mesh)
-        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), FormAgrosInterface(OFFSET_NON_DEF, OFFSET_NON_DEF) {}
+        : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), FormAgrosInterface<Scalar>(nullptr) {}
 };
 
 
@@ -286,15 +291,15 @@ public:
     inline XMLModule::coupling *coupling() const { assert(m_coupling); return m_coupling; }
 
     // weak forms
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt) = 0;
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt, int *offsetCouplingExt) = 0;
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
+    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material) = 0;
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material) = 0;
+    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary) = 0;
+    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary) = 0;
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh) = 0;
 
     // offsetI .. for hard coupling
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI) = 0;
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, const WeakFormAgros<double>* wfAgros) = 0;
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,

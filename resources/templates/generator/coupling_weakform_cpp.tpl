@@ -37,8 +37,8 @@
 
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int* offsetPreviousTimeExt)
-    : MatrixFormVolAgros<Scalar>(i, j, offsetI, offsetJ, offsetPreviousTimeExt)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
+    : MatrixFormVolAgros<Scalar>(i, j, wfAgros)
 {       
 }
 
@@ -47,6 +47,8 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                           Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
+    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     Scalar result = 0;
     for (int i = 0; i < n; i++)
     {
@@ -59,7 +61,9 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                                              Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    Hermes::Ord result(0);    
+    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
+    Hermes::Ord result(0);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
@@ -77,7 +81,7 @@ template <typename Scalar>
 template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
-    FormAgrosInterface::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
@@ -88,8 +92,8 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int* offsetPreviousTimeExt, int* offsetCouplingExt)
-    : VectorFormVolAgros<Scalar>(i, offsetI, offsetJ, offsetPreviousTimeExt, offsetCouplingExt), j(j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
+    : VectorFormVolAgros<Scalar>(i, wfAgros), j(j)
 {
 }
 
@@ -97,6 +101,8 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                           Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
+    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     Scalar result = 0;
 
     for (int i = 0; i < n; i++)
@@ -110,7 +116,9 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    Hermes::Ord result(0);    
+    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
+    Hermes::Ord result(0);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
@@ -128,7 +136,7 @@ template <typename Scalar>
 template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
-    FormAgrosInterface::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}");{{/VARIABLE_SOURCE}}

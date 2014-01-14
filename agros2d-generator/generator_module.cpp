@@ -1797,7 +1797,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["upcurl"] = "u_ext[this->j]->curl[i]";
 
         dict["timedermat"] = "(*this->m_table)->matrixFormCoefficient()";
-        dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), *this->m_offsetPreviousTimeExt, i)";
+        dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), offset.prevSol, i)";
 
         if (coordinateType == CoordinateType_Planar)
         {
@@ -1840,18 +1840,18 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             }
             else
             {
-                dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
-                dict[QString("timedervec%1").arg(i)] = QString("(*this->m_table)->vectorFormCoefficient(ext, %1, this->m_markerSource->fieldInfo()->numberOfSolutions(), *this->m_offsetPreviousTimeExt, i)").arg(i-1);
+                dict[QString("value%1").arg(i)] = QString("u_ext[%1 + offset.forms]->val[i]").arg(i-1);
+                dict[QString("timedervec%1").arg(i)] = QString("(*this->m_table)->vectorFormCoefficient(ext, %1, this->m_markerSource->fieldInfo()->numberOfSolutions(), offset.prevSol, i)").arg(i-1);
 
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
-                    dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                    dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + offset.forms]->dx[i]").arg(i-1);
+                    dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + offset.forms]->dy[i]").arg(i-1);
                 }
                 else
                 {
-                    dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
-                    dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                    dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + offset.forms]->dx[i]").arg(i-1);
+                    dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + offset.forms]->dy[i]").arg(i-1);
                 }
             }
         }
@@ -1913,11 +1913,11 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     }
                     else{
                         // in weak forms, values replaced by ext functions
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1]->val[i]").
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + offset.quant]->val[i]").
                                 arg(quantityOrdering[QString::fromStdString(quantity.id())]);
                         if(quantityIsNonlinear[QString::fromStdString(quantity.id())])
                         {
-                            dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1]->val[i]").
+                            dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + offset.quant]->val[i]").
                                     arg(quantityOrdering[QString::fromStdString(quantity.id())] + 1);
 
                         }
@@ -1933,7 +1933,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                 }
                 else{
                     // in weak forms, functions replaced by ext functions
-                    dict[QString::fromStdString(function.shortname())] = QString("ext[%1]->val[i]").
+                    dict[QString::fromStdString(function.shortname())] = QString("ext[%1 + offset.quant]->val[i]").
                             arg(functionOrdering[QString::fromStdString(function.id())]);
                 }
             }

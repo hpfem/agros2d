@@ -47,9 +47,11 @@ bool Field::solveInitVariables()
     return true;
 }
 
-FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
+int FieldInfo::numberIdNext = 0;
+
+FieldInfo::FieldInfo(QString fieldId)
     : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr), m_labelAreas(nullptr)
-{
+{    
     assert(!fieldId.isEmpty());
     m_fieldId = fieldId;
 
@@ -74,12 +76,15 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     // default analysis
     setAnalysisType(analyses().begin().key());
 
+    m_numberId = numberIdNext++;
+    qDebug() << "created FieldInfo " << m_fieldId << ", " << m_numberId;
 }
 
 FieldInfo::~FieldInfo()
 {
     delete m_plugin;
     deleteValuePointerTable();
+    numberIdNext--;
 }
 
 void FieldInfo::deleteValuePointerTable()

@@ -46,7 +46,7 @@ class AGROS_LIBRARY_API FieldInfo : public QObject
     Q_OBJECT
 
 public:
-    FieldInfo(QString fieldId, const AnalysisType analysisType = AnalysisType_Undefined);
+    FieldInfo(QString fieldId);
     ~FieldInfo();
 
     void clear();
@@ -54,6 +54,7 @@ public:
     inline PluginInterface *plugin() const { assert(m_plugin); return m_plugin; }
 
     QString fieldId() const { return m_fieldId; }
+    inline int numberId() const { return m_numberId; }
 
     inline Hermes::Hermes2D::MeshSharedPtr initialMesh() const { return m_initialMesh; }
     inline void clearInitialMesh() { m_initialMesh = Hermes::Hermes2D::MeshSharedPtr();}
@@ -286,7 +287,9 @@ private:
     double* m_labelAreas;
     double m_frequency;
 
-    // help functions extracting parts of xml
+    // used to assign numbers to individual fields;
+    static int numberIdNext;
+    int m_numberId;
 };
 
 XMLModule::linearity_option findLinearityOption(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
