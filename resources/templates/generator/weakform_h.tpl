@@ -37,7 +37,7 @@ public:
         return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_wfAgros);
     }
 protected:
-    const Value** {{QUANTITY_SHORTNAME}};
+    QList<QWeakPointer<Value> > {{QUANTITY_SHORTNAME}};
 };
 {{/EXT_FUNCTION}}
 

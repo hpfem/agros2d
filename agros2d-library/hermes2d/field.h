@@ -41,6 +41,8 @@ class LocalForceValue;
 class PluginInterface;
 class Value;
 
+const int LABEL_OUTSIDE_FIELD = -10000;
+
 class AGROS_LIBRARY_API FieldInfo : public QObject
 {
     Q_OBJECT
@@ -232,7 +234,7 @@ public:
     void createValuePointerTable();
     void deleteValuePointerTable();
 
-    const Value** valuePointerTable(QString id) const;
+    QList<QWeakPointer<Value> > valuePointerTable(QString id) const;
     int hermesMarkerToAgrosLabel(int hermesMarker) const;
     double labelArea(int agrosLabel) const;
     inline double frequency() const { return m_frequency; }
@@ -282,7 +284,7 @@ private:
     void setStringKeys();
 
     // for speed optimisations
-    QMap<QString, const Value**> m_valuePointersTable;
+    QMap<QString, QList<QWeakPointer<Value> > > m_valuePointersTable;
     int* m_hermesMarkerToAgrosLabelConversion;
     double* m_labelAreas;
     double m_frequency;

@@ -99,10 +99,6 @@ void FieldInfo::deleteValuePointerTable()
 
     m_labelAreas = nullptr;
 
-    foreach(const Value** pointers, m_valuePointersTable)
-        if(pointers)
-            delete[] pointers;
-
     m_valuePointersTable.clear();
 }
 
@@ -118,8 +114,8 @@ void FieldInfo::createValuePointerTable()
 
     for(int i = 0; i < num+1; i++)
     {
-        m_hermesMarkerToAgrosLabelConversion[i] = -10000;
-        m_labelAreas[i] = -10000;
+        m_hermesMarkerToAgrosLabelConversion[i] = LABEL_OUTSIDE_FIELD;
+        m_labelAreas[i] = LABEL_OUTSIDE_FIELD;
     }
 
     for(int labelIndex = 0; labelIndex < num; labelIndex++)
@@ -129,7 +125,7 @@ void FieldInfo::createValuePointerTable()
             Hermes::Hermes2D::Mesh::MarkersConversion::IntValid intValid = initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
             assert(intValid.valid);
             assert(intValid.marker <= num);
-            assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == -10000);
+            assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == LABEL_OUTSIDE_FIELD);
             m_hermesMarkerToAgrosLabelConversion[intValid.marker] = labelIndex;           
             m_labelAreas[labelIndex] = initialMesh()->get_marker_area(intValid.marker);
         }
@@ -148,13 +144,13 @@ void FieldInfo::createValuePointerTable()
             {
                 if(! m_valuePointersTable.contains(variable.id()))
                 {
-                    m_valuePointersTable[variable.id()] = new const Value*[labelsSize];
+                    m_valuePointersTable[variable.id()] = QList<QWeakPointer<Value> >();
                     for(int i = 0; i < labelsSize; i++)
-                        m_valuePointersTable[variable.id()][i] = nullptr;
+                        m_valuePointersTable[variable.id()].push_back(QWeakPointer<Value>());
                 }
 
                 assert(m_valuePointersTable[variable.id()][labelNum] == nullptr);
-                m_valuePointersTable[variable.id()][labelNum] = material->valueNakedPtr(variable.id());
+                m_valuePointersTable[variable.id()][labelNum] = material->value(variable.id());
             }
         }
     }
@@ -163,7 +159,7 @@ void FieldInfo::createValuePointerTable()
     m_frequency = Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble();
 }
 
-const Value **FieldInfo::valuePointerTable(QString id) const
+QList<QWeakPointer<Value> > FieldInfo::valuePointerTable(QString id) const
 {
     assert(!m_valuePointersTable.isEmpty());
 
