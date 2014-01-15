@@ -104,7 +104,7 @@ QString Parser::parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, 
             {
                 if (quantity.shortname().present())
                 {
-                    QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), parserModuleInfo);
+                    QString nonlinearExpr = nonlinearExpressionVolume(QString::fromStdString(quantity.id()), parserModuleInfo);
 
                     if (nonlinearExpr.isEmpty())
                         // linear material
@@ -276,8 +276,8 @@ QString Parser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const
                 {
                     if(errorCalculation)
                     {
-                        QString dep = dependence(QString::fromStdString(quantity.id()), parserModuleInfo);
-                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), parserModuleInfo);
+                        QString dep = dependenceVolume(QString::fromStdString(quantity.id()), parserModuleInfo);
+                        QString nonlinearExpr = nonlinearExpressionVolume(QString::fromStdString(quantity.id()), parserModuleInfo);
 
                         if (parserModuleInfo.m_linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
                         {
@@ -354,7 +354,7 @@ QString Parser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const
             {
                 if (quantity.shortname().present())
                 {
-                    QString dep = dependence(QString::fromStdString(quantity.id()), parserModuleInfo);
+                    QString dep = dependenceSurface(QString::fromStdString(quantity.id()), parserModuleInfo);
 
                     if (dep.isEmpty())
                     {
@@ -416,8 +416,8 @@ QString Parser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, 
         {
             if (quantity.shortname().present())
             {
-                QString dep = dependence(QString::fromStdString(quantity.id()), parserModuleInfo);
-                QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), parserModuleInfo);
+                QString dep = dependenceVolume(QString::fromStdString(quantity.id()), parserModuleInfo);
+                QString nonlinearExpr = nonlinearExpressionVolume(QString::fromStdString(quantity.id()), parserModuleInfo);
 
                 if (parserModuleInfo.m_linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
                 {
@@ -456,7 +456,7 @@ QString Parser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, 
         {
             if (quantity.shortname().present())
             {
-                QString dep = dependence(QString::fromStdString(quantity.id()), parserModuleInfo);
+                QString dep = dependenceSurface(QString::fromStdString(quantity.id()), parserModuleInfo);
 
                 if (dep.isEmpty())
                 {
@@ -501,10 +501,8 @@ QString Parser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, 
     }
 }
 
-QString Parser::nonlinearExpression(const QString &variable, ParserModuleInfo parserModuleInfo)
+QString Parser::nonlinearExpressionVolume(const QString &variable, ParserModuleInfo parserModuleInfo)
 {
-    // todo: this is slow !!!!
-    // volume
     foreach (XMLModule::weakform_volume wf, parserModuleInfo.m_volume.weakforms_volume().weakform_volume())
     {
         if (wf.analysistype() == analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString())
@@ -528,16 +526,22 @@ QString Parser::nonlinearExpression(const QString &variable, ParserModuleInfo pa
         }
     }
 
-    // surface
+    return "";
+}
+
+QString Parser::nonlinearExpressionSurface(const QString &variable, ParserModuleInfo parserModuleInfo)
+{
+    std::string analysisString = analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString();
+    std::string variableString = variable.toStdString();
     foreach (XMLModule::weakform_surface wf, parserModuleInfo.m_surface.weakforms_surface().weakform_surface())
     {
-        if (wf.analysistype() == analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString())
+        if (wf.analysistype() == analysisString)
         {
             foreach (XMLModule::boundary boundary, wf.boundary())
             {
                 foreach (XMLModule::quantity quantityAnalysis, boundary.quantity())
                 {
-                    if (quantityAnalysis.id() == variable.toStdString())
+                    if (quantityAnalysis.id() == variableString)
                     {
                         if (parserModuleInfo.m_coordinateType == CoordinateType_Planar)
                         {
@@ -560,13 +564,15 @@ QString Parser::nonlinearExpression(const QString &variable, ParserModuleInfo pa
 
 QString Parser::specialFunctionNonlinearExpression(const QString &variable, ParserModuleInfo parserModuleInfo)
 {
+    std::string analysisString = analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString();
+    std::string variableString = variable.toStdString();
     foreach (XMLModule::weakform_volume wf, parserModuleInfo.m_volume.weakforms_volume().weakform_volume())
     {
-        if (wf.analysistype() == analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString())
+        if (wf.analysistype() == analysisString)
         {
             foreach (XMLModule::function_use functionUse, wf.function_use())
             {
-                if (functionUse.id() == variable.toStdString())
+                if (functionUse.id() == variableString)
                 {
                     if (parserModuleInfo.m_coordinateType == CoordinateType_Planar)
                     {
@@ -586,18 +592,17 @@ QString Parser::specialFunctionNonlinearExpression(const QString &variable, Pars
     return "0";
 }
 
-QString Parser::dependence(const QString &variable, ParserModuleInfo parserModuleInfo)
+QString Parser::dependenceVolume(const QString &variable, ParserModuleInfo parserModuleInfo)
 {
-    // todo: this is slow !!!!
-
-    // volume
+    std::string analysisString = analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString();
+    std::string variableString = variable.toStdString();
     foreach (XMLModule::weakform_volume wf, parserModuleInfo.m_volume.weakforms_volume().weakform_volume())
     {
-        if (wf.analysistype() == analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString())
+        if (wf.analysistype() == analysisString)
         {
             foreach (XMLModule::quantity quantityAnalysis, wf.quantity())
             {
-                if (quantityAnalysis.id() == variable.toStdString())
+                if (quantityAnalysis.id() == variableString)
                 {
                     if (quantityAnalysis.dependence().present())
                         return QString::fromStdString(quantityAnalysis.dependence().get());
@@ -606,16 +611,22 @@ QString Parser::dependence(const QString &variable, ParserModuleInfo parserModul
         }
     }
 
-    // surface
+    return "";
+}
+
+QString Parser::dependenceSurface(const QString &variable, ParserModuleInfo parserModuleInfo)
+{
+    std::string analysisString = analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString();
+    std::string variableString = variable.toStdString();
     foreach (XMLModule::weakform_surface wf, parserModuleInfo.m_surface.weakforms_surface().weakform_surface())
     {
-        if (wf.analysistype() == analysisTypeToStringKey(parserModuleInfo.m_analysisType).toStdString())
+        if (wf.analysistype() == analysisString)
         {
             foreach (XMLModule::boundary boundary, wf.boundary())
             {
                 foreach (XMLModule::quantity quantityAnalysis, boundary.quantity())
                 {
-                    if (quantityAnalysis.id() == variable.toStdString())
+                    if (quantityAnalysis.id() == variableString)
                     {
                         if (quantityAnalysis.dependence().present())
                             return QString::fromStdString(quantityAnalysis.dependence().get());

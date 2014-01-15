@@ -29,9 +29,11 @@ class Parser
 {
 public:
 
-    QString nonlinearExpression(const QString &variable, ParserModuleInfo parserModuleInfo);
+    QString nonlinearExpressionVolume(const QString &variable, ParserModuleInfo parserModuleInfo);
+    QString nonlinearExpressionSurface(const QString &variable, ParserModuleInfo parserModuleInfo);
     QString specialFunctionNonlinearExpression(const QString &variable, ParserModuleInfo parserModuleInfo);
-    QString dependence(const QString &variable, ParserModuleInfo parserModuleInfo);
+    QString dependenceVolume(const QString &variable, ParserModuleInfo parserModuleInfo);
+    QString dependenceSurface(const QString &variable, ParserModuleInfo parserModuleInfo);
     QString parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool includeVariables, bool forFilter = false);
 
     LexicalAnalyser *weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo);
