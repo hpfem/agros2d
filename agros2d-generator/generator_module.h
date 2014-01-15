@@ -21,6 +21,8 @@
 #define GENERATOR_MODULE_H
 
 #include "generator.h"
+
+class Parser;
 struct FormInfo;
 
 class Agros2DGeneratorModule : public Agros2DGeneratorBase
@@ -53,6 +55,8 @@ private:
     QHash<QString, QString> m_volumeVariables;
     QHash<QString, QString> m_surfaceVariables;
 
+    QSharedPointer<Parser> m_parser;
+
     void getNames(const QString &moduleId);
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
@@ -69,19 +73,10 @@ private:
     void generateValueExtFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output);
     void generateSpecialFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output);
 
-    QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
-    QString specialFunctionNonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
-    QString dependence(const QString &variable, AnalysisType analysisType);
-    LexicalAnalyser *postprocessorLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
-    QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr, bool includeVariables, bool forFilter = false);
-
     void createFilterExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, PhysicFieldVariableComp physicFieldVariableComp, const QString &expr);
     void createLocalValueExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &exprScalar, const QString &exprVectorX, const QString &exprVectorY);
     void createIntegralExpression(ctemplate::TemplateDictionary &output, const QString &section, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr, int pos);
 
-    LexicalAnalyser *weakFormLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
-    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true, bool errorCalculation = false);
-    QString parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr);
     QString generateDocWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
     QString underline(QString text, char symbol);
     QString capitalize(QString text);
