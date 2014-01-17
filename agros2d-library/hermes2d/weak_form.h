@@ -131,7 +131,7 @@ private:
 
     int m_numberOfForms;
 
-    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo) const;
+    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const;
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const;
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > sourceCouplingSolutions(const FieldInfo* fieldInfo) const;
 };

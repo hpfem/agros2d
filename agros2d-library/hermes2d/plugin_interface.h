@@ -299,7 +299,7 @@ public:
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh) = 0;
 
     // offsetI .. for hard coupling
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, const WeakFormAgros<double>* wfAgros) = 0;
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros) = 0;
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,

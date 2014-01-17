@@ -51,7 +51,7 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh);
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, const WeakFormAgros<double>* wfAgros);
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
 
     // postprocessor
     // filter

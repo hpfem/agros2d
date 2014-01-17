@@ -423,7 +423,7 @@ void WeakFormAgros<Scalar>::registerForms()
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo) const
+Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const
 {
     Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > result;
 
@@ -469,7 +469,7 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
 
         Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
-            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, this));
+            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, linearize, this));
         else
             extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
@@ -479,10 +479,10 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
         if(quantityIsNonlin[quantityID])
         {
             extFunction = NULL;
-            if(containedInAnalysis)
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, this));
+            if(containedInAnalysis && !linearize)
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, false, this));
             else
-                // pass an empty functions if the quantity is not contained in the given analysis
+                // pass an empty functions if the quantity is not contained in the given analysis or should be linearized
                 // the reason is that we can use uniform indexing ext[n] in the weak forms (the same n for all analysis)
                 // as a result we can generate only one variant of each form (although there are more variants of ext functions because of different dependencies of nonlinear and time dependent terms)
                 extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
@@ -512,7 +512,7 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
         Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
         {
-            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, this);
+            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, false, this);
             assert(extFunctionPtr);
             extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
         }
@@ -580,7 +580,9 @@ void WeakFormAgros<Scalar>::updateExtField()
     // first push external functions related to source fields (source fields weakly coupled to some of the field in the block)
     foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
     {
-        fieldUExt = quantitiesAndSpecialFunctions(fieldInfo);
+        // quantities have to be linearized (field that they depend on has allready been solved, now we are solving different
+        // field and thus 1. u_ext does not contain the source field and 2. it would be unnecessary anyway)
+        fieldUExt = quantitiesAndSpecialFunctions(fieldInfo, true);
 
         m_positionInfos[fieldInfo->numberId()].numQuantAndSpecFun = fieldUExt.size();
         m_positionInfos[fieldInfo->numberId()].quantAndSpecOffset = externalUSlns.size();
@@ -594,7 +596,8 @@ void WeakFormAgros<Scalar>::updateExtField()
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
-        fieldUExt = quantitiesAndSpecialFunctions(fieldInfo);
+        // inside the block use nonlinear quantities
+        fieldUExt = quantitiesAndSpecialFunctions(fieldInfo, false);
 
         m_positionInfos[fieldInfo->numberId()].numQuantAndSpecFun = fieldUExt.size();
         m_positionInfos[fieldInfo->numberId()].quantAndSpecOffset = externalUSlns.size();
@@ -611,6 +614,8 @@ void WeakFormAgros<Scalar>::updateExtField()
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > fieldExt;
 
     // push external solutions for previous time levels
+    // for each field, we add all field components of previous time level, than all components of time level -2, than all
+    // components of level -3, etc, depending of order of BDF used.
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();

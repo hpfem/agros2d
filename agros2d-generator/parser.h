@@ -44,6 +44,7 @@ protected:
     void addBasicWeakformTokens();
     void addPreviousSolWeakform();
     void addPreviousSolErroCalculation();
+    void addPreviousSolLinearizeDependence();
     void addVolumeVariablesWeakform();
     void addVolumeVariablesErrorCalculation();
     void addSurfaceVariables();
@@ -67,6 +68,12 @@ public:
     ParserErrorExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
 };
 
+class ParserLinearizeDependence : public ParserInstance
+{
+public:
+    ParserLinearizeDependence(ParserModuleInfo pmi, ModuleParser *moduleParser);
+};
+
 class ModuleParser
 {
 public:
@@ -74,6 +81,7 @@ public:
 
     QString parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
     QString parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
+    QString parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr);
 
     QString parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool includeVariables, bool forFilter = false);
     QString parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr);

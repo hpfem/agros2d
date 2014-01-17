@@ -54,10 +54,10 @@ static XMLModule::module *module_module = NULL;
 {
 }
 
-AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, const WeakFormAgros<double>* wfAgros)
+AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {
     {{#EXT_FUNCTION}}
-    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
+    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}) && (linearized == {{IS_LINEARIZED}}))
         return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), wfAgros);
     {{/EXT_FUNCTION}}
     {{#VALUE_FUNCTION_SOURCE}}

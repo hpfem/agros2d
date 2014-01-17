@@ -60,9 +60,15 @@ void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary 
             LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(linearityOption.type().c_str()));
             foreach(XMLModule::quantity quantity, weakform.quantity())
             {
-                generateExtFunction(quantity, analysisType, linearityType, false, output);
+                generateExtFunction(quantity, analysisType, linearityType, false, false, output);
                 if(quantityIsNonlinear[QString::fromStdString(quantity.id())])
-                    generateExtFunction(quantity, analysisType, linearityType, true, output);
+                {
+                    // generate derivative
+                    generateExtFunction(quantity, analysisType, linearityType, true, false, output);
+
+                    // generate linearized version
+                    generateExtFunction(quantity, analysisType, linearityType, false, true, output);
+                }
             }
        }
     }
@@ -160,13 +166,25 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
 }
 
 
-void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, LinearityType linearityType, bool derivative, ctemplate::TemplateDictionary &output)
+void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, LinearityType linearityType, bool derivative, bool linearize, ctemplate::TemplateDictionary &output)
 {
     foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
     {
-        QString type("value");
+        QString type;
         if(derivative)
-            type = "derivative";
+        {
+            if(linearize)
+                assert(0);
+            else
+                type = "derivative";
+        }
+        else
+        {
+            if(linearize)
+                type = "value_linearized";
+            else
+                type = "value";
+        }
 
         QString functionName = QString("ext_function_%1_%2_%3_%4_%5_%6").
                 arg(QString::fromStdString(m_module->general_field().id())).
@@ -188,7 +206,12 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
                 dependence = QString::fromStdString(quantity.nonlinearity_axi().get());
 
             ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
-            dependence = m_parser->parseWeakFormExpression(pmi, dependence);
+
+            // if linearized, we use dependence on allready calculated values form previous time level or weakly coupled source field
+            if(linearize)
+                dependence = m_parser->parseLinearizeDependence(pmi, dependence);
+            else
+                dependence = m_parser->parseWeakFormExpression(pmi, dependence);
         }
 
         // nonlinear or constant (in which case numberFromTable returns just a constant number)
@@ -236,6 +259,10 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
             field->SetValue("IS_DERIVATIVE", "true");
         else
             field->SetValue("IS_DERIVATIVE", "false");
+        if(linearize)
+            field->SetValue("IS_LINEARIZED", "true");
+        else
+            field->SetValue("IS_LINEARIZED", "false");
     }
 }
 

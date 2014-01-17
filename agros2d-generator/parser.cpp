@@ -158,6 +158,12 @@ QString ModuleParser::parseErrorExpression(ParserModuleInfo parserModuleInfo, co
     return parser.parse(expr);
 }
 
+QString ModuleParser::parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr)
+{
+    ParserLinearizeDependence parser(parserModuleInfo, this);
+    return parser.parse(expr);
+}
+
 QString ParserInstance::parse(QString expr)
 {
     try
