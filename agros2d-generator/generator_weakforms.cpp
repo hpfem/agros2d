@@ -188,7 +188,7 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
                 dependence = QString::fromStdString(quantity.nonlinearity_axi().get());
 
             ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
-            dependence = m_parser->parseWeakFormExpression(pmi, dependence, false, false);
+            dependence = m_parser->parseWeakFormExpression(pmi, dependence);
         }
 
         // nonlinear or constant (in which case numberFromTable returns just a constant number)
@@ -352,9 +352,9 @@ void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function functi
     ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
     QString dependence("0");
     if(linearityType != LinearityType_Linear)
-        dependence = m_parser->specialFunctionNonlinearExpression(QString::fromStdString(function.id()), pmi);
+        dependence = pmi.specialFunctionNonlinearExpression(QString::fromStdString(function.id()));
 
-    dependence = m_parser->parseWeakFormExpression(pmi, dependence, false, false);
+    dependence = m_parser->parseWeakFormExpression(pmi, dependence);
 
     functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
 
@@ -432,9 +432,9 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function functio
     ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
     QString dependence("0");
     if(linearityType != LinearityType_Linear)
-        dependence = m_parser->specialFunctionNonlinearExpression(QString::fromStdString(function.id()), pmi);
+        dependence = pmi.specialFunctionNonlinearExpression(QString::fromStdString(function.id()));
 
-    dependence = m_parser->parseWeakFormExpression(pmi, dependence, false, false);
+    dependence = m_parser->parseWeakFormExpression(pmi, dependence);
 
     functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
     functionTemplate->SetValue("INTERPOLATION_COUNT", function.interpolation_count().present() ? function.interpolation_count().get() : "0");

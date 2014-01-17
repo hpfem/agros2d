@@ -23,33 +23,75 @@ struct ParserModuleInfo
     AnalysisType m_analysisType;
     CoordinateType m_coordinateType;
     LinearityType m_linearityType;
+
+    QString nonlinearExpressionVolume(const QString &variable) const;
+    QString nonlinearExpressionSurface(const QString &variable) const;
+    QString specialFunctionNonlinearExpression(const QString &variable) const;
+    QString dependenceVolume(const QString &variable) const;
+    QString dependenceSurface(const QString &variable) const;
+
 };
 
-class Parser
+class ModuleParser;
+
+class ParserInstance
 {
 public:
+    QString parse(QString expr);
+    ParserInstance(ParserModuleInfo pmi, ModuleParser *moduleParser);
 
-    QString nonlinearExpressionVolume(const QString &variable, ParserModuleInfo parserModuleInfo);
-    QString nonlinearExpressionSurface(const QString &variable, ParserModuleInfo parserModuleInfo);
-    QString specialFunctionNonlinearExpression(const QString &variable, ParserModuleInfo parserModuleInfo);
-    QString dependenceVolume(const QString &variable, ParserModuleInfo parserModuleInfo);
-    QString dependenceSurface(const QString &variable, ParserModuleInfo parserModuleInfo);
+protected:
+    void addBasicWeakformTokens();
+    void addPreviousSolWeakform();
+    void addPreviousSolErroCalculation();
+    void addVolumeVariablesWeakform();
+    void addVolumeVariablesErrorCalculation();
+    void addSurfaceVariables();
+    void addWeakformCheckTokens();
+
+    ParserModuleInfo m_parserModuleInfo;
+    QMap<QString, QString> m_dict;
+    QSharedPointer<LexicalAnalyser> m_lex;
+    ModuleParser* m_moduleParser;
+};
+
+class ParserWeakForm : public ParserInstance
+{
+public:
+    ParserWeakForm(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+};
+
+class ParserErrorExpression : public ParserInstance
+{
+public:
+    ParserErrorExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+};
+
+class ModuleParser
+{
+public:
+    ModuleParser(XMLModule::field * field);
+
+    QString parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
+    QString parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
+
     QString parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool includeVariables, bool forFilter = false);
-
-    LexicalAnalyser *weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo);
-    LexicalAnalyser *postprocessorLexicalAnalyser(ParserModuleInfo parserModuleInfo);
-
-    QString parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool includeVariables = true, bool errorCalculation = false);
     QString parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr);
 
-    // todo: do it some better way
-    static QMap<QString, int> quantityOrdering;
-    static QMap<QString, bool> quantityIsNonlinear;
-    static QMap<QString, int> functionOrdering;
+    // todo: move to ParserModuleInfo?
+    QSharedPointer<LexicalAnalyser> weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo) const;
+    QSharedPointer<LexicalAnalyser> postprocessorLexicalAnalyser(ParserModuleInfo parserModuleInfo) const;
+
+    QMap<QString, int> quantityOrdering() const { return m_quantityOrdering; }
+    QMap<QString, bool> quantityIsNonlinear() const { return m_quantityIsNonlinear; }
+    QMap<QString, int> functionOrdering() const { return m_functionOrdering; }
 
 private:
-    void commonLexicalAnalyser(LexicalAnalyser *lex, ParserModuleInfo parserModuleInfo);
+    void commonLexicalAnalyser(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo) const;
 
+    QMap<QString, int> m_quantityOrdering;
+    QMap<QString, bool> m_quantityIsNonlinear;
+    QMap<QString, int> m_functionOrdering;
 };
 
 #endif // PARSER_H
