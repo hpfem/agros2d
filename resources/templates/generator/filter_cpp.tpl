@@ -42,9 +42,9 @@
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
     {{/SPECIAL_FUNCTION_SOURCE}}
 
-    value = new double*[this->num];
-    dudx = new double*[this->num];
-    dudy = new double*[this->num];
+    value = new const double*[this->num];
+    dudx = new const double*[this->num];
+    dudy = new const double*[this->num];
 
     m_coordinateType = Agros2D::problem()->config()->coordinateType();
     m_labels = Agros2D::scene()->labels;
@@ -66,8 +66,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 {
     Hermes::Hermes2D::Quad2D* quad = this->quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());
-    Hermes::Hermes2D::Function<double>::Node* node = this->new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
-
+    
     for (int k = 0; k < this->num; k++)
     {
         this->sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_DEFAULT);
@@ -96,16 +95,8 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
             && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
         for (int i = 0; i < np; i++)
-            node->values[0][0][i] = {{EXPRESSION}};
+            this->cur_node.values[0][0][i] = {{EXPRESSION}};
     {{/VARIABLE_SOURCE}}
-
-    if(this->nodes->present(order))
-    {
-      assert(this->nodes->get(order) == this->cur_node);
-      ::free(this->nodes->get(order));
-    }
-    this->nodes->add(node, order);
-    this->cur_node = node;
 }
 
 {{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone() const
