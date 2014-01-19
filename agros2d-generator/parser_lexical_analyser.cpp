@@ -259,6 +259,185 @@ void ParserInstance::addSurfaceVariables()
     }
 }
 
+void ParserInstance::addWeakformCheckTokens()
+{
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            QString dep = m_parserModuleInfo.dependenceVolume(QString::fromStdString(quantity.id()));
+            QString nonlinearExpr = m_parserModuleInfo.nonlinearExpressionVolume(QString::fromStdString(quantity.id()));
+
+            if (m_parserModuleInfo.m_linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+            {
+                if (dep.isEmpty())
+                {
+                    // linear material
+                    m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material->value(\"%1\")->number()").
+                            arg(QString::fromStdString(quantity.id()));
+                }
+                else
+                {
+                    m_dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                }
+            }
+            else
+            {
+                // nonlinear material
+                m_dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                m_dict["d" + QString::fromStdString(quantity.shortname().get())] = "1";
+            }
+        }
+    }
+
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_surface.quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            QString dep = m_parserModuleInfo.dependenceSurface(QString::fromStdString(quantity.id()));
+
+            if (dep.isEmpty())
+            {
+                // linear boundary condition
+                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("boundary->value(\"%1\").number()").
+                        arg(QString::fromStdString(quantity.id()));
+            }
+            else
+            {
+                m_dict[QString::fromStdString(quantity.shortname().get())] = "1";
+            }
+        }
+    }
+
+}
+
+void ParserInstance::addPostprocessorBasic()
+{
+    // coordinates
+    if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    {
+        m_dict["x"] = "x[i]";
+        m_dict["y"] = "y[i]";
+        // surface integral
+        m_dict["tanx"] = "e->tx[i]";
+        m_dict["tany"] = "e->ty[i]";
+        // velocity (force calculation)
+        m_dict["velx"] = "velocity.x";
+        m_dict["vely"] = "velocity.y";
+        m_dict["velz"] = "velocity.z";
+    }
+    else
+    {
+        m_dict["r"] = "x[i]";
+        m_dict["z"] = "y[i]";
+        // surface integral
+        m_dict["tanr"] = "e->tx[i]";
+        m_dict["tanz"] = "e->ty[i]";
+        // velocity (force calculation)
+        m_dict["velr"] = "velocity.x";
+        m_dict["velz"] = "velocity.y";
+        m_dict["velphi"] = "velocity.z";
+    }
+
+    // constants
+    m_dict["PI"] = "M_PI";
+    m_dict["f"] = "m_fieldInfo->frequency()";
+    foreach (XMLModule::constant cnst, m_parserModuleInfo.m_constants.constant())
+        m_dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
+
+    // functions
+    for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
+    {
+        m_dict[QString("value%1").arg(i)] = QString("value[%1][i]").arg(i-1);
+        if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        {
+            m_dict[QString("dx%1").arg(i)] = QString("dudx[%1][i]").arg(i-1);
+            m_dict[QString("dy%1").arg(i)] = QString("dudy[%1][i]").arg(i-1);
+        }
+        else
+        {
+            m_dict[QString("dr%1").arg(i)] = QString("dudx[%1][i]").arg(i-1);
+            m_dict[QString("dz%1").arg(i)] = QString("dudy[%1][i]").arg(i-1);
+        }
+    }
+    // eggshell
+    if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    {
+        m_dict["dxegg"] = "dudx[source_functions.size() - 1][i]";
+        m_dict["dyegg"] = "dudy[source_functions.size() - 1][i]";
+    }
+    else
+    {
+        m_dict["dregg"] = "dudx[source_functions.size() - 1][i]";
+        m_dict["dzegg"] = "dudy[source_functions.size() - 1][i]";
+    }
+
+}
+
+void ParserInstance::addPostprocessorVariables()
+{
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            QString nonlinearExpr = m_parserModuleInfo.nonlinearExpressionVolume(QString::fromStdString(quantity.id()));
+
+            if (nonlinearExpr.isEmpty())
+                // linear material
+                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1->number()").arg(QString::fromStdString(quantity.id()));
+            else
+                // nonlinear material
+                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1->numberFromTable(%2)").
+                        arg(QString::fromStdString(quantity.id())).
+                        arg(m_moduleParser->parsePostprocessorExpression(m_parserModuleInfo, nonlinearExpr, false));
+        }
+    }
+
+    foreach (XMLModule::function function, m_parserModuleInfo.m_volume.function())
+    {
+        QString parameter("0");
+        // todo: so far used only in Richards, where is OK
+        if(QString::fromStdString(function.type()) == "function_1d")
+            parameter = "value[0]";
+
+        m_dict[QString::fromStdString(function.shortname())] = QString("%1->getValue(elementMarker, %2)").
+                arg(QString::fromStdString(function.shortname())).arg(parameter);
+    }
+
+}
+
+void ParserInstance::addFilterVariables()
+{
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            QString nonlinearExpr = m_parserModuleInfo.nonlinearExpressionVolume(QString::fromStdString(quantity.id()));
+
+            if (nonlinearExpr.isEmpty())
+                // linear material
+                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1->number()").arg(QString::fromStdString(quantity.id()));
+            else
+                // nonlinear material
+                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1->numberFromTable(%2)").
+                        arg(QString::fromStdString(quantity.id())).
+                        arg(m_moduleParser->parseFilterExpression(m_parserModuleInfo, nonlinearExpr, false));
+        }
+    }
+
+    foreach (XMLModule::function function, m_parserModuleInfo.m_volume.function())
+    {
+        QString parameter("0");
+        // todo: so far used only in Richards, where is OK
+        if(QString::fromStdString(function.type()) == "function_1d")
+            parameter = "value[0][i]";
+
+        m_dict[QString::fromStdString(function.shortname())] = QString("%1->getValue(elementMarker, %2)").
+                arg(QString::fromStdString(function.shortname())).arg(parameter);
+    }
+
+}
+
 ParserInstance::ParserInstance(ParserModuleInfo pmi, ModuleParser *moduleParser) : m_parserModuleInfo(pmi), m_moduleParser(moduleParser)
 {
 
@@ -290,6 +469,29 @@ ParserLinearizeDependence::ParserLinearizeDependence(ParserModuleInfo pmi, Modul
 {
     addBasicWeakformTokens();
     addPreviousSolLinearizeDependence();
+}
+
+ParserWeakformCheck::ParserWeakformCheck(ParserModuleInfo pmi, ModuleParser *moduleParser) : ParserInstance(pmi, moduleParser)
+{
+    addWeakformCheckTokens();
+}
+
+ParserPostprocessorExpression::ParserPostprocessorExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+{
+    addPostprocessorBasic();
+    if(withVariables)
+    {
+        addPostprocessorVariables();
+    }
+}
+
+ParserFilterExpression::ParserFilterExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+{
+    addPostprocessorBasic();
+    if(withVariables)
+    {
+        addFilterVariables();
+    }
 }
 
 QSharedPointer<LexicalAnalyser> ModuleParser::postprocessorLexicalAnalyser(ParserModuleInfo parserModuleInfo) const

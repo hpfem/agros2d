@@ -183,16 +183,16 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
             ParserModuleInfo pmi(*m_module, analysisType, coordinateType, LinearityType_Linear);
             if (coordinateType == CoordinateType_Planar)
             {
-                expression->SetValue("EXPRESSION_X", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.planar_x().get()), true).replace("[i]", "").toStdString());
-                expression->SetValue("EXPRESSION_Y", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.planar_y().get()), true).replace("[i]", "").toStdString());
-                expression->SetValue("EXPRESSION_Z", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.planar_z().get()), true).replace("[i]", "").toStdString());
+                expression->SetValue("EXPRESSION_X", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.planar_x().get())).replace("[i]", "").toStdString());
+                expression->SetValue("EXPRESSION_Y", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.planar_y().get())).replace("[i]", "").toStdString());
+                expression->SetValue("EXPRESSION_Z", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.planar_z().get())).replace("[i]", "").toStdString());
             }
             else
             {
                 {
-                    expression->SetValue("EXPRESSION_X", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.axi_r().get()), true).replace("[i]", "").toStdString());
-                    expression->SetValue("EXPRESSION_Y", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.axi_z().get()), true).replace("[i]", "").toStdString());
-                    expression->SetValue("EXPRESSION_Z", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.axi_phi().get()), true).replace("[i]", "").toStdString());
+                    expression->SetValue("EXPRESSION_X", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.axi_r().get())).replace("[i]", "").toStdString());
+                    expression->SetValue("EXPRESSION_Y", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.axi_z().get())).replace("[i]", "").toStdString());
+                    expression->SetValue("EXPRESSION_Z", m_parser->parsePostprocessorExpression(pmi, QString::fromStdString(expr.axi_phi().get())).replace("[i]", "").toStdString());
                 }
             }
         }
@@ -528,7 +528,7 @@ void Agros2DGeneratorModule::createFilterExpression(ctemplate::TemplateDictionar
         expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         expression->SetValue("PHYSICFIELDVARIABLECOMP_TYPE", Agros2DGenerator::physicFieldVariableCompStringEnum(physicFieldVariableComp).toStdString());
         ParserModuleInfo pmi(*m_module, analysisType, coordinateType, LinearityType_Linear);
-        expression->SetValue("EXPRESSION", m_parser->parsePostprocessorExpression(pmi, expr, true, true).toStdString());
+        expression->SetValue("EXPRESSION", m_parser->parseFilterExpression(pmi, expr).toStdString());
     }
 }
 
@@ -546,9 +546,9 @@ void Agros2DGeneratorModule::createLocalValueExpression(ctemplate::TemplateDicti
     expression->SetValue("VARIABLE", variable.toStdString());
     expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
     expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-    expression->SetValue("EXPRESSION_SCALAR", exprScalar.isEmpty() ? "0" : m_parser->parsePostprocessorExpression(pmi, exprScalar, true).replace("[i]", "").toStdString());
-    expression->SetValue("EXPRESSION_VECTORX", exprVectorX.isEmpty() ? "0" : m_parser->parsePostprocessorExpression(pmi, exprVectorX, true).replace("[i]", "").toStdString());
-    expression->SetValue("EXPRESSION_VECTORY", exprVectorY.isEmpty() ? "0" : m_parser->parsePostprocessorExpression(pmi, exprVectorY, true).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_SCALAR", exprScalar.isEmpty() ? "0" : m_parser->parsePostprocessorExpression(pmi, exprScalar).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_VECTORX", exprVectorX.isEmpty() ? "0" : m_parser->parsePostprocessorExpression(pmi, exprVectorX).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_VECTORY", exprVectorY.isEmpty() ? "0" : m_parser->parsePostprocessorExpression(pmi, exprVectorY).replace("[i]", "").toStdString());
 }
 
 void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDictionary &output,
@@ -567,7 +567,7 @@ void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDiction
         expression->SetValue("VARIABLE", variable.toStdString());
         expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-        expression->SetValue("EXPRESSION", m_parser->parsePostprocessorExpression(pmi, expr, true).toStdString());
+        expression->SetValue("EXPRESSION", m_parser->parsePostprocessorExpression(pmi, expr).toStdString());
         expression->SetValue("POSITION", QString::number(pos).toStdString());
     }
 }

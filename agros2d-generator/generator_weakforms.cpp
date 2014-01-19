@@ -349,6 +349,8 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
             QString exprCppCheck = m_parser->parseWeakFormExpressionCheck(pmi, formInfo.condition);
+            if(exprCppCheck == "")
+                exprCppCheck = "true";
             field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
 
             // add weakform

@@ -32,6 +32,8 @@ struct ParserModuleInfo
 
 };
 
+bool operator<(const ParserModuleInfo &sid1, const ParserModuleInfo &sid2);
+
 class ModuleParser;
 
 class ParserInstance
@@ -49,6 +51,10 @@ protected:
     void addVolumeVariablesErrorCalculation();
     void addSurfaceVariables();
     void addWeakformCheckTokens();
+
+    void addPostprocessorBasic();
+    void addPostprocessorVariables();
+    void addFilterVariables();
 
     ParserModuleInfo m_parserModuleInfo;
     QMap<QString, QString> m_dict;
@@ -74,6 +80,24 @@ public:
     ParserLinearizeDependence(ParserModuleInfo pmi, ModuleParser *moduleParser);
 };
 
+class ParserWeakformCheck : public ParserInstance
+{
+public:
+    ParserWeakformCheck(ParserModuleInfo pmi, ModuleParser *moduleParser);
+};
+
+class ParserPostprocessorExpression : public ParserInstance
+{
+public:
+    ParserPostprocessorExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+};
+
+class ParserFilterExpression : public ParserInstance
+{
+public:
+    ParserFilterExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+};
+
 class ModuleParser
 {
 public:
@@ -82,9 +106,10 @@ public:
     QString parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
     QString parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
     QString parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr);
-
-    QString parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool includeVariables, bool forFilter = false);
     QString parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr);
+
+    QString parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
+    QString parseFilterExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
 
     // todo: move to ParserModuleInfo?
     QSharedPointer<LexicalAnalyser> weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo) const;
@@ -100,6 +125,9 @@ private:
     QMap<QString, int> m_quantityOrdering;
     QMap<QString, bool> m_quantityIsNonlinear;
     QMap<QString, int> m_functionOrdering;
+
+    QMap<ParserModuleInfo, QSharedPointer<ParserWeakForm> > m_parserWeakFormCache;
+    QMap<ParserModuleInfo, QSharedPointer<ParserWeakformCheck> > m_parserWeakFormCheckCache;
 };
 
 #endif // PARSER_H
