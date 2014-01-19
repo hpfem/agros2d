@@ -111,7 +111,7 @@ public:
 private:
     Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                                 const QString &area, FormInfo *form,
-                                                Marker* markerSource, Material *markerTarget);
+                                                Material *markerSource, Marker *markerTarget);
 
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
     void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, Marker *marker);

@@ -114,8 +114,8 @@ void Block::createBoundaryConditions()
 
         ProblemID problemId;
 
-        problemId.sourceFieldId = fieldInfo->fieldId();
-        problemId.analysisTypeSource = fieldInfo->analysisType();
+        problemId.targetFieldId = fieldInfo->fieldId();
+        problemId.analysisTypeTarget = fieldInfo->analysisType();
         problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
         problemId.linearityType = fieldInfo->linearityType();
 
@@ -132,7 +132,7 @@ void Block::createBoundaryConditions()
                 {
                     // exact solution - Dirichlet BC
                     Hermes::Hermes2D::MeshFunctionSharedPtr<double> function = Hermes::Hermes2D::MeshFunctionSharedPtr<double>(fieldInfo->plugin()->exactSolution(problemId, &form, fieldInfo->initialMesh()));
-                    static_cast<ExactSolutionScalarAgros<double> *>(function.get())->setMarkerSource(boundary);
+                    static_cast<ExactSolutionScalarAgros<double> *>(function.get())->setMarkerTarget(boundary);
 
                     // save function - boundary pairs, so thay can be easily updated in each time step;
                     m_exactSolutionFunctions[function] = boundary;
@@ -153,7 +153,7 @@ void Block::updateExactSolutionFunctions()
     foreach(Hermes::Hermes2D::MeshFunctionSharedPtr<double> function, m_exactSolutionFunctions.keys())
     {
         SceneBoundary* boundary = m_exactSolutionFunctions[function];
-        static_cast<ExactSolutionScalarAgros<double> *>(function.get())->setMarkerSource(boundary);
+        static_cast<ExactSolutionScalarAgros<double> *>(function.get())->setMarkerTarget(boundary);
     }
 }
 

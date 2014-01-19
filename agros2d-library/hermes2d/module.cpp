@@ -158,15 +158,19 @@ WeakFormAgros<Scalar>::~WeakFormAgros()
 
 template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind type, const ProblemID problemId,
-                                        const QString &area, FormInfo *form, Marker* markerSource, Material *markerTarget)
+                                        const QString &area, FormInfo *form, Material* markerSource, Marker *markerTarget)
 {
-    QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
-                problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
+    assert(problemId.targetFieldId != "");
+    assert(problemId.analysisTypeTarget != AnalysisType_Undefined);
+    assert(markerTarget != nullptr);
+
+    QString fieldId = (problemId.analysisTypeSource == AnalysisType_Undefined) ?
+                problemId.targetFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
     PluginInterface *plugin = NULL;
     try
     {
-        if (markerTarget)
+        if (markerSource)
             plugin = Agros2D::problem()->couplingInfo(markerSource->fieldId(), markerTarget->fieldId())->plugin();
         else
             plugin = Agros2D::problem()->fieldInfo(fieldId)->plugin();
@@ -182,11 +186,15 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
 
     if (type == WeakForm_MatVol)
     {
-        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, this, static_cast<Material *>(markerSource));
-        if (!weakFormAgros) return NULL;
+        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, this, static_cast<Material *>(markerTarget));
+        if (!weakFormAgros)
+        {
+            qDebug() << form->id << " not found";
+            return NULL;
+        }
 
         // volume
-        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
 
@@ -201,21 +209,21 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
     }
     else if (type == WeakForm_MatSurf)
     {
-        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form, this, static_cast<Boundary *>(markerSource));
+        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form, this, static_cast<Boundary *>(markerTarget));
         if (!weakFormAgros) return NULL;
 
         // source marker
-        weakFormAgros->setMarkerSource(markerSource);
+        weakFormAgros->setMarkerTarget(markerTarget);
 
         weakForm = weakFormAgros;
     }
     else if (type == WeakForm_VecVol)
     {
-        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, this, static_cast<Material *>(markerSource));
+        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, this, static_cast<Material *>(markerTarget));
         if (!weakFormAgros) return NULL;
 
         // volume
-        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
 
@@ -228,11 +236,11 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
     }
     else if (type == WeakForm_VecSurf)
     {
-        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form, this, static_cast<Boundary *>(markerSource));
+        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form, this, static_cast<Boundary *>(markerTarget));
         if (!weakFormAgros) return NULL;
 
         // source marker
-        weakFormAgros->setMarkerSource(markerSource);
+        weakFormAgros->setMarkerTarget(markerTarget);
 
         weakForm = weakFormAgros;
     }
@@ -270,13 +278,13 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 {
     ProblemID problemId;
 
-    problemId.sourceFieldId = field->fieldInfo()->fieldId();
-    problemId.analysisTypeSource = field->fieldInfo()->analysisType();
+    problemId.targetFieldId = field->fieldInfo()->fieldId();
+    problemId.analysisTypeTarget = field->fieldInfo()->analysisType();
     problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, marker, NULL);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, NULL, marker);
 
     // weakform with zero coefficients
     if (!custom_form) return;
@@ -429,8 +437,8 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
 
     XMLModule::field* module = fieldInfo->plugin()->module();
     ProblemID problemId;
-    problemId.sourceFieldId = fieldInfo->fieldId();
-    problemId.analysisTypeSource = fieldInfo->analysisType();
+    problemId.targetFieldId = fieldInfo->fieldId();
+    problemId.analysisTypeTarget = fieldInfo->analysisType();
     problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
     problemId.linearityType = fieldInfo->linearityType();
 

@@ -31,7 +31,7 @@ void ParserInstance::addBasicWeakformTokens()
 
     // constants
     m_dict["PI"] = "M_PI";
-    m_dict["f"] = "this->m_markerSource->fieldInfo()->frequency()";
+    m_dict["f"] = "this->m_markerTarget->fieldInfo()->frequency()";
     foreach (XMLModule::constant cnst, m_parserModuleInfo.m_constants.constant())
         m_dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -57,7 +57,7 @@ void ParserInstance::addBasicWeakformTokens()
     m_dict["upcurl"] = "u_ext[this->j]->curl[i]";
 
     m_dict["timedermat"] = "(*this->m_table)->matrixFormCoefficient()";
-    m_dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), offset.prevSol, i)";
+    m_dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerTarget->fieldInfo()->numberOfSolutions(), offset.prevSol, i)";
 
     if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
     {
@@ -86,7 +86,7 @@ void ParserInstance::addPreviousSolWeakform()
     for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
     {
         m_dict[QString("value%1").arg(i)] = QString("u_ext[%1 + offset.forms]->val[i]").arg(i-1);
-        m_dict[QString("timedervec%1").arg(i)] = QString("(*this->m_table)->vectorFormCoefficient(ext, %1, this->m_markerSource->fieldInfo()->numberOfSolutions(), offset.prevSol, i)").arg(i-1);
+        m_dict[QString("timedervec%1").arg(i)] = QString("(*this->m_table)->vectorFormCoefficient(ext, %1, this->m_markerTarget->fieldInfo()->numberOfSolutions(), offset.prevSol, i)").arg(i-1);
 
         if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
         {

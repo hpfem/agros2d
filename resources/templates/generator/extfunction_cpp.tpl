@@ -51,7 +51,7 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext
     }
     assert((labelIndex >= 0) && (labelIndex < {{QUANTITY_SHORTNAME}}.size()));
     const Value* value = {{QUANTITY_SHORTNAME}}[labelIndex].data();
-    Offset offset = this->m_wfAgros->offsetInfo(this->m_fieldInfo, nullptr);
+    Offset offset = this->m_wfAgros->offsetInfo(nullptr, this->m_fieldInfo);
 
     for(int i = 0; i < n; i++)
     {

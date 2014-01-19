@@ -76,7 +76,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(const Marker *marker);
+    virtual void setMarkerTarget(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}
@@ -97,7 +97,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(const Marker *marker);
+    virtual void setMarkerTarget(const Marker *marker);
 
 private:
     unsigned int j;
@@ -122,7 +122,7 @@ public:
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
 
-    virtual void setMarkerSource(const Marker *marker);
+    virtual void setMarkerTarget(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}

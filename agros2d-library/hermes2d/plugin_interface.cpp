@@ -16,6 +16,7 @@ void FormAgrosInterface<Scalar>::setMarkerSource(const Marker *marker)
 template<typename Scalar>
 void FormAgrosInterface<Scalar>::setMarkerTarget(const Marker *marker)
 {
+    assert(marker != nullptr);
     m_markerTarget = marker;
 }
 

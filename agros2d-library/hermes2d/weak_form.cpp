@@ -111,36 +111,31 @@ PositionInfo::PositionInfo() :
 template <typename Scalar>
 Offset WeakFormAgros<Scalar>::offsetInfo(const Marker *sourceMarker, const Marker *targetMarker) const
 {
-    if(targetMarker)
+    assert(targetMarker);
+
+    if(sourceMarker)
         return offsetInfo(sourceMarker->fieldInfo(), targetMarker->fieldInfo());
     else
-        return offsetInfo(sourceMarker->fieldInfo(), nullptr);
+        return offsetInfo(nullptr, targetMarker->fieldInfo());
 }
 
 template <typename Scalar>
 Offset WeakFormAgros<Scalar>::offsetInfo(const FieldInfo *sourceFieldInfo, const FieldInfo *targetFieldInfo) const
 {
     Offset offset;
-    if(targetFieldInfo == nullptr)
+    assert(targetFieldInfo != nullptr);
+
+    const int fieldID = targetFieldInfo->numberId();
+    offset.forms = positionInfo(fieldID)->formsOffset;
+    offset.prevSol = positionInfo(fieldID)->previousSolutionsOffset;
+    offset.quant = positionInfo(fieldID)->quantAndSpecOffset;
+
+    if(sourceFieldInfo)
     {
-        const int fieldID = sourceFieldInfo->numberId();
-        offset.forms = positionInfo(fieldID)->formsOffset;
-        offset.prevSol = positionInfo(fieldID)->previousSolutionsOffset;
-        offset.quant = positionInfo(fieldID)->quantAndSpecOffset;
-    }
-    else
-    {
-        assert(sourceFieldInfo);
-        // todo: change to target!
         const int fieldIDSource = sourceFieldInfo->numberId();
         offset.sourceForms = positionInfo(fieldIDSource)->formsOffset;
         offset.sourcePrevSol = positionInfo(fieldIDSource)->previousSolutionsOffset;
         offset.sourceQuant = positionInfo(fieldIDSource)->quantAndSpecOffset;
-
-        const int fieldID = targetFieldInfo->numberId();
-        offset.forms = positionInfo(fieldID)->formsOffset;
-        offset.prevSol = positionInfo(fieldID)->previousSolutionsOffset;
-        offset.quant = positionInfo(fieldID)->quantAndSpecOffset;
     }
 
     return offset;

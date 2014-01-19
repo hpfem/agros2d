@@ -169,12 +169,12 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(const Marker *marker)
 {
-    FormAgrosInterface<Scalar>::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerTarget(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -223,12 +223,12 @@ template <typename Scalar>
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(const Marker *marker)
 {
-    FormAgrosInterface<Scalar>::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerTarget(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -255,12 +255,12 @@ void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Sca
 }
 
 template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
+void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(const Marker *marker)
 {
-    FormAgrosInterface<Scalar>::setMarkerSource(marker);
+    FormAgrosInterface<Scalar>::setMarkerTarget(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = this->m_markerTarget->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/EXACT_SOURCE}}
 
