@@ -21,6 +21,7 @@
 
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
+#include "{{ID}}_extfunction.h"
 #include "{{ID}}_filter.h"
 #include "{{ID}}_force.h"
 #include "{{ID}}_localvalue.h"

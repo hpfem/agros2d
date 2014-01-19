@@ -17,17 +17,29 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
-    std::string text;
+    std::string textWeakform;
 
     ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                   ctemplate::DO_NOT_STRIP, m_output, &text);
+                   ctemplate::DO_NOT_STRIP, m_output, &textWeakform);
 
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_weakform.cpp").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
-                       QString::fromStdString(text));
+                       QString::fromStdString(textWeakform));
+
+    std::string textExtFunction;
+
+    ExpandTemplate(compatibleFilename(QString("%1/%2/extfunction_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                   ctemplate::DO_NOT_STRIP, m_output, &textExtFunction);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_extfunction.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(textExtFunction));
 }
 
 void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
@@ -35,18 +47,32 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
+    std::string textWeakform;
 
     // header - expand template
     std::string text;
     ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                              ctemplate::DO_NOT_STRIP, m_output, &text);
+                              ctemplate::DO_NOT_STRIP, m_output, &textWeakform);
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_weakform.h").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
-                       QString::fromStdString(text));
+                       QString::fromStdString(textWeakform));
+
+    std::string textExtFunction;
+
+    // header - expand ext functions
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/extfunction_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                              ctemplate::DO_NOT_STRIP, m_output, &textExtFunction);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_extfunction.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(textExtFunction));
 }
 
 

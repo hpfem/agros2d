@@ -26,21 +26,6 @@
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"
 
-{{#EXT_FUNCTION}}
-class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
-{
-public:
-    virtual void value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const;
-    {{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
-    Hermes::Hermes2D::Function<double>* clone() const
-    {
-        return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_wfAgros);
-    }
-protected:
-    QList<QWeakPointer<Value> > {{QUANTITY_SHORTNAME}};
-};
-{{/EXT_FUNCTION}}
-
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>

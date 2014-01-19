@@ -18,6 +18,8 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "{{ID}}_weakform.h"
+#include "{{ID}}_extfunction.h"
+
 
 #include "util.h"
 #include "util/global.h"
@@ -34,35 +36,6 @@
 // quantities in volume weak forms:
 {{#QUANTITY_INFO}}//{{QUANT_ID}} = ext[{{INDEX}}]
 {{/QUANTITY_INFO}}
-
-{{#EXT_FUNCTION}}
-{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
-{
-    {{QUANTITY_SHORTNAME}} = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
-}
-
-void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
-{
-    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
-    if(labelIndex == LABEL_OUTSIDE_FIELD)
-    {
-        for(int i = 0; i < n; i++)
-        {
-            result->val[i] = 0;
-        }
-
-        return;
-    }
-    assert((labelIndex >= 0) && (labelIndex < {{QUANTITY_SHORTNAME}}.size()));
-    const Value* value = {{QUANTITY_SHORTNAME}}[labelIndex].data();
-    Offset offset = this->m_wfAgros->offsetInfo(this->m_fieldInfo, nullptr);
-
-    for(int i = 0; i < n; i++)
-    {
-        result->val[i] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
-    }
-}
-{{/EXT_FUNCTION}}
 
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
