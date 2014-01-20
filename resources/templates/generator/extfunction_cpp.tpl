@@ -46,7 +46,6 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext
         {
             result->val[i] = 0;
         }
-
         return;
     }
     assert((labelIndex >= 0) && (labelIndex < {{QUANTITY_SHORTNAME}}.size()));
@@ -59,3 +58,121 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext
     }
 }
 {{/EXT_FUNCTION}}
+
+// ***********************************************************************************************************************************
+
+{{#VALUE_FUNCTION_SOURCE}}
+{{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
+{
+{{#PARAMETERS_LINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
+{{/PARAMETERS_NONLINEAR}}
+}
+
+double {{VALUE_FUNCTION_FULL_NAME}}::getValue(int hermesMarker, double h) const
+{
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker);
+    if(labelIndex == LABEL_OUTSIDE_FIELD)
+    {
+        return 0.;
+    }
+
+{{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex].data()->numberFromTable(h);
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[labelIndex].data()->numberFromTable(h);
+{{/PARAMETERS_NONLINEAR}}
+    double area = m_fieldInfo->labelArea(labelIndex);
+
+    return {{EXPR}};
+}
+
+void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
+{
+    const int fieldID = this->m_fieldInfo->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(nullptr, this->m_fieldInfo);
+
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
+    if(labelIndex == LABEL_OUTSIDE_FIELD)
+    {
+        for(int i = 0; i < n; i++)
+        {
+            result->val[i] = 0;
+        }
+        return;
+    }
+
+{{#PARAMETERS_LINEAR}}    const Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex].data();
+
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    const Value* {{PARAMETER_NAME}}_value = {{PARAMETER_NAME}}_pointers[labelIndex].data();
+{{/PARAMETERS_NONLINEAR}}
+{{#PARAMETERS_LINEAR}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->number();
+{{/PARAMETERS_LINEAR}}
+    double area = m_fieldInfo->labelArea(labelIndex);
+
+    for(int i = 0; i < n; i++)
+    {
+        double h = {{DEPENDENCE}};
+
+{{#PARAMETERS_NONLINEAR}}        double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_value->numberFromTable(h);
+{{/PARAMETERS_NONLINEAR}}
+        result->val[i] = {{EXPR}};
+    }
+}
+{{/VALUE_FUNCTION_SOURCE}}
+
+// ***********************************************************************************************************************************
+
+
+{{#SPECIAL_FUNCTION_SOURCE}}
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosSpecialExtFunction(fieldInfo, wfAgros, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
+{
+    m_boundLow = {{FROM}};
+    m_boundHi = {{TO}};
+    m_variant = "{{SELECTED_VARIANT}}";
+
+{{#PARAMETERS}}    {{PARAMETER_NAME}}_pointers = m_fieldInfo->valuePointerTable("{{PARAMETER_ID}}");
+{{/PARAMETERS}}
+    init();
+}
+
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}()
+{
+}
+
+double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, double h) const
+{
+    int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker);
+
+{{#PARAMETERS}}    double {{PARAMETER_NAME}} = {{PARAMETER_NAME}}_pointers[m_fieldInfo->hermesMarkerToAgrosLabel(hermesMarker)].data()->numberFromTable(h);
+{{/PARAMETERS}}
+    double area = m_fieldInfo->labelArea(labelIndex);
+    if(m_useTable)
+    {
+        if(h < m_boundLow)
+            return {{EXTRAPOLATE_LOW}};
+        if(h > m_boundHi)
+            return {{EXTRAPOLATE_HI}};
+    }
+
+    //if(0)
+    //{}
+    //{{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
+        return {{EXPR}};{{/VARIANT}}
+    assert(0);
+}
+
+void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *e) const
+{
+    const int fieldID = this->m_fieldInfo->numberId();
+    Offset offset = this->m_wfAgros->offsetInfo(nullptr, this->m_fieldInfo);
+
+    for(int i = 0; i < n; i++)
+    {
+        result->val[i] = getValue(e->elem_marker, {{DEPENDENCE}});
+    }
+}
+
+{{/SPECIAL_FUNCTION_SOURCE}}
+

@@ -41,4 +41,44 @@ protected:
 };
 {{/EXT_FUNCTION}}
 
+// ***********************************************************************************************************************************
+// ext functions with more quantities and expression (merge with previous!)
+
+
+{{#VALUE_FUNCTION_SOURCE}}
+class {{VALUE_FUNCTION_FULL_NAME}} : public AgrosExtFunction
+{
+public:
+    {{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
+    virtual double getValue(int hermesMarker, double h) const;
+    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+    Hermes::Hermes2D::Function<double>* clone() const
+    {
+        return new {{VALUE_FUNCTION_FULL_NAME}}(this->m_fieldInfo, this->m_wfAgros);
+    }
+private:
+{{#PARAMETERS_LINEAR}}    QList<QWeakPointer<Value> > {{PARAMETER_NAME}}_pointers;
+{{/PARAMETERS_LINEAR}}
+{{#PARAMETERS_NONLINEAR}}    QList<QWeakPointer<Value> > {{PARAMETER_NAME}}_pointers;
+{{/PARAMETERS_NONLINEAR}}
+};
+{{/VALUE_FUNCTION_SOURCE}}
+
+// ***********************************************************************************************************************************
+// Special functions
+
+{{#SPECIAL_FUNCTION_SOURCE}}
+class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
+{
+public:
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
+    ~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}();
+    virtual double calculateValue(int hermesMarker, double h) const;
+    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+    private:
+{{#PARAMETERS}}    QList<QWeakPointer<Value> > {{PARAMETER_NAME}}_pointers;
+{{/PARAMETERS}}
+};
+{{/SPECIAL_FUNCTION_SOURCE}}
+
 #endif // {{CLASS}}_EXTFUNCTION_H
