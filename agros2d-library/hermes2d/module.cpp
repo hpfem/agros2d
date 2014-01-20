@@ -189,7 +189,6 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
         MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, this, static_cast<Material *>(markerTarget));
         if (!weakFormAgros)
         {
-            qDebug() << form->id << " not found";
             return NULL;
         }
 
@@ -343,6 +342,7 @@ void WeakFormAgros<Scalar>::registerForms()
         FieldInfo* fieldInfo = field->fieldInfo();
 
         fieldInfo->createValuePointerTable();
+        m_positionInfos[fieldInfo->numberId()].formsOffset = m_block->offset(field);
 
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Agros2D::scene()->edges->count(); edgeNum++)
@@ -353,10 +353,18 @@ void WeakFormAgros<Scalar>::registerForms()
                 Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
 
                 foreach (FormInfo expression, boundaryType.wfMatrixSurface())
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
                     registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression, boundary);
+                }
 
                 foreach (FormInfo expression, boundaryType.wfVectorSurface())
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
                     registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression, boundary);
+                }
             }
         }
 
@@ -370,11 +378,19 @@ void WeakFormAgros<Scalar>::registerForms()
             if (material != Agros2D::scene()->materials->getNone(fieldInfo))
             {
                 foreach (FormInfo expression, wfMatrixVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression, material);
+                }
 
 
                 foreach (FormInfo expression, wfVectorVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression, material);
+                }
 
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->couplingInfos())
@@ -390,6 +406,8 @@ void WeakFormAgros<Scalar>::registerForms()
 
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
+                            expression.i += m_block->offset(field);
+                            expression.j += m_block->offset(field);
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression, materialSource, material, couplingInfo);
                         }
                     }
@@ -417,11 +435,22 @@ void WeakFormAgros<Scalar>::registerForms()
 
                     qDebug() << "hard coupling form on marker " << labelNum;
 
-                    foreach (FormInfo pars, couplingInfo->wfMatrixVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
-                        registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars, sourceMaterial, targetMaterial, couplingInfo);
+                    qDebug() << "stav: offset source " << m_block->offset(sourceField) << ", target " << m_block->offset(targetField) << ", ns" << sourceField->fieldInfo()->numberOfSolutions();
+                    foreach (FormInfo expression, couplingInfo->wfMatrixVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
+                    {
+                        expression.i += m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions();
+                        expression.j += m_block->offset(sourceField);
+                        qDebug() << "(i, j) = " << expression.i << ", " << expression.j;
+                        registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), expression, sourceMaterial, targetMaterial, couplingInfo);
+                    }
 
-                    foreach (FormInfo pars, couplingInfo->wfVectorVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
-                        registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars, sourceMaterial, targetMaterial, couplingInfo);
+                    foreach (FormInfo expression, couplingInfo->wfVectorVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
+                    {
+                        expression.i += m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions();
+                        expression.j += m_block->offset(sourceField);
+                        qDebug() << "(i, j) = " << expression.i << ", " << expression.j;
+                        registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression, sourceMaterial, targetMaterial, couplingInfo);
+                    }
 
                 }
             }
@@ -582,10 +611,10 @@ Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<S
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField()
 {
-    // implicit values
+    // implicit values. Values have to be renewed each step, since e.g.number of previous time solutions may vary due to changing BDF order
     for(int i = 0; i < MAX_FIELDS; i++)
         m_positionInfos[i] = PositionInfo();
-    
+
     // register two types of external functions. Quantities and special functions of all fields go to externalUSlns
     Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
     Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > fieldUExt;
@@ -612,10 +641,10 @@ void WeakFormAgros<Scalar>::updateExtField()
         // inside the block use nonlinear quantities
         fieldUExt = quantitiesAndSpecialFunctions(fieldInfo, false);
 
+        m_positionInfos[fieldInfo->numberId()].formsOffset = m_block->offset(field);
         m_positionInfos[fieldInfo->numberId()].numQuantAndSpecFun = fieldUExt.size();
         m_positionInfos[fieldInfo->numberId()].quantAndSpecOffset = externalUSlns.size();
         m_positionInfos[fieldInfo->numberId()].isSource = false;
-        m_positionInfos[fieldInfo->numberId()].formsOffset = m_block->offset(field);
 
         externalUSlns.insert(externalUSlns.end(), fieldUExt.begin(), fieldUExt.end());
     }
