@@ -47,7 +47,6 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                           Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
-    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
     Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     Scalar result = 0;
     for (int i = 0; i < n; i++)
@@ -61,13 +60,12 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *u,
                                              Hermes::Hermes2D::Func<Hermes::Ord> *v, Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
     Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     Hermes::Ord result(0);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
-    }	
+    }
     return result;
 }
 
@@ -82,9 +80,6 @@ template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface<Scalar>::setMarkerSource(marker);
-
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -101,7 +96,6 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                           Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
-    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
     Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     Scalar result = 0;
 
@@ -116,13 +110,12 @@ template <typename Scalar>
 Hermes::Ord {{FUNCTION_NAME}}<Scalar>::ord(int n, double *wt, Hermes::Hermes2D::Func<Hermes::Ord> *u_ext[], Hermes::Hermes2D::Func<Hermes::Ord> *v,
                                              Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const
 {
-    const int sourceFieldID = this->m_markerSource->fieldInfo()->numberId();
     Offset offset = this->m_wfAgros->offsetInfo(this->m_markerSource, this->m_markerTarget);
     Hermes::Ord result(0);
     for (int i = 0; i < n; i++)
     {
        result += wt[i] * ({{EXPRESSION}});
-    }	
+    }
     return result;
 }
 
@@ -137,9 +130,6 @@ template <typename Scalar>
 void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(const Marker *marker)
 {
     FormAgrosInterface<Scalar>::setMarkerSource(marker);
-
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->valueNakedPtr("{{VARIABLE}}");{{/VARIABLE_SOURCE}}
 }
 {{/VOLUME_VECTOR_SOURCE}}
 

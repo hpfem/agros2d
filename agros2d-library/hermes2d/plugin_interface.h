@@ -74,6 +74,7 @@ public:
     AgrosEmptyExtFunction() : AgrosExtFunction(NULL, 0) {}
     virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
     {
+        result->val[0] = 123456;
         // result values are not initialized, but they should never be used.
         // this is not very safe, but done from efficiency reasons
     }

@@ -47,6 +47,8 @@ struct Offset
     int sourceForms;
     int sourceQuant;
     int sourcePrevSol;
+
+    void print() { qDebug() << forms << ", " << quant << ", " << prevSol << ", " << sourceForms << ", " << sourceQuant << ", " << sourcePrevSol;}
 };
 
 

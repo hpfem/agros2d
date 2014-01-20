@@ -477,9 +477,14 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
 
         Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
-            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, linearize, this));
+        {
+            bool linearizeThis = quantityIsNonlin[quantityID] && linearize;
+            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, linearizeThis, this));
+        }
         else
+        {
             extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
+        }
 
         result.push_back(extFunction);
 

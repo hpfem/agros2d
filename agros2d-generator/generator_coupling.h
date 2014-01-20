@@ -78,6 +78,10 @@ private:
     QMap<QString, bool> quantityIsNonlinear;
     QMap<QString, int> functionOrdering;
 
+    QMap<QString, int> sourceQuantityOrdering;
+    QMap<QString, bool> sourceQuantityIsNonlinear;
+    QMap<QString, int> sourceFunctionOrdering;
+
     ctemplate::TemplateDictionary* m_output;
 
 };
