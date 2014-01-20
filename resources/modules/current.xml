@@ -40,6 +40,11 @@
           <module:matrix_form id="steady_laplace" />
         </module:linearity_option>
 
+        <module:linearity_option type="newton">
+            <module:matrix_form id="steady_laplace" />
+            <module:vector_form id="steady_laplace" variant="residual"/>
+        </module:linearity_option>
+
       </module:weakform_volume>
       <!--
       <module:weakform_volume analysistype="harmonic" equation="-\, \div \left( \left( \sigma + \mj \omega \varepsilon \right) \,\, \grad \varphi \right) = 0">
@@ -67,11 +72,19 @@
           <module:linearity_option type="linear">
             <module:essential_form id="essential"/>
           </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential"/>
+          </module:linearity_option>
         </module:boundary>
 
         <module:boundary equation="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0" id="current_inward_current_flow" name="Current density">
           <module:quantity id="current_inward_current_flow"/>
           <module:linearity_option type="linear">
+            <module:vector_form id="neumann"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
             <module:vector_form id="neumann"/>
           </module:linearity_option>
         </module:boundary>

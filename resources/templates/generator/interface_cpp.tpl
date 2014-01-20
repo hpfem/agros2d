@@ -86,7 +86,7 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
 {
        {{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-            (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}))
+            (form->id == "{{WEAKFORM_ID}}"))
         if ({{EXPRESSION_CHECK}})
             return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/VOLUME_MATRIX_SOURCE}}
@@ -97,8 +97,8 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
 VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
 {
     {{#VOLUME_VECTOR_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}})))
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
+         (form->id == "{{WEAKFORM_ID}}"))
         if ({{EXPRESSION_CHECK}})
             return new {{FUNCTION_NAME}}<double>(form->i - 1 , form->j - 1, wfAgros);
     {{/VOLUME_VECTOR_SOURCE}}
@@ -109,8 +109,8 @@ VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID pr
 MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary)
 {
     {{#SURFACE_MATRIX_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
+         (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
         return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/SURFACE_MATRIX_SOURCE}}
 
@@ -120,8 +120,8 @@ MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID 
 VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary)
 {
     {{#SURFACE_VECTOR_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}) && (boundary->type() == "{{BOUNDARY_TYPE}}")))
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
+         (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
         return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/SURFACE_VECTOR_SOURCE}}
 
@@ -131,8 +131,8 @@ VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID 
 ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh)
 {
     {{#EXACT_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}})))
+    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
+         (form->id == "{{WEAKFORM_ID}}"))
         return new {{FUNCTION_NAME}}<double>(mesh);
     {{/EXACT_SOURCE}}
 

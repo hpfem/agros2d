@@ -329,6 +329,9 @@ XMLModule::linearity_option findLinearityOption(XMLModule::volume *volume, Analy
             }
         }
     }
+
+    // todo: osetrit, napr pro silne sdruzeni current-heat neexistuje linearni forma
+    assert(0);
 }
 
 // todo: copied!
