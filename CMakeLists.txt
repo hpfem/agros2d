@@ -287,8 +287,6 @@ set(info resources/modules/acoustic.xml
          resources/templates/generator/weakform_h.tpl
          resources/templates/generator/extfunction_cpp.tpl
          resources/templates/generator/extfunction_h.tpl
-         resources/templates/generator/coupling_weakform_cpp.tpl
-         resources/templates/generator/coupling_weakform_h.tpl
          resources/templates/generator/plugins_CMakeLists_txt.tpl
          resources/templates/generator/interface_cpp.tpl
          resources/templates/generator/doc_index.tpl

@@ -67,9 +67,6 @@ private:
     template <typename WeakForm>
     void generateForm(FormInfo formInfo, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType);
 
-    //template <typename Form>
-    //QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
-    QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 
     QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);    
     QString generateDocWeakFormExpression(QString symbol);

@@ -121,18 +121,6 @@ void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
     // source - expand template
     text.clear();
 
-//    foreach(XMLModule::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
-//    {
-//        foreach(XMLModule::matrix_form form, weakform.matrix_form())
-//        {
-//            generateForm(form, weakform, output, "VOLUME_MATRIX");
-//        }
-
-//        foreach(XMLModule::vector_form form, weakform.vector_form())
-//        {
-//            generateForm(form, weakform, output, "VOLUME_VECTOR");
-//        }
-//    }
 
     ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/coupling_interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, m_output, &text);
@@ -158,22 +146,9 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
 
-//    foreach(XMLModule::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
-//    {
-//        foreach(XMLModule::matrix_form form, weakform.matrix_form())
-//        {
-//            generateForm(form, weakform, output, "VOLUME_MATRIX");
-//        }
-
-//        foreach(XMLModule::vector_form form, weakform.vector_form())
-//        {
-//            generateForm(form, weakform, output, "VOLUME_VECTOR");
-//        }
-//    }
-
     // header - expand template
     std::string text;
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/coupling_weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, m_output, &text);
 
     // header - save to file
@@ -182,6 +157,13 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
                        QString::fromStdString(text));
+
+    // generate empty extfunction header file
+    writeStringContent(QString("%1/%2/%3/%3_extfunction.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(""));
 }
 
 
@@ -192,21 +174,8 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
 
     Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
 
-//    foreach(XMLModule::weakform_volume weakform, m_coupling->volume().weakforms_volume().weakform_volume())
-//    {
-//        foreach(XMLModule::matrix_form form, weakform.matrix_form())
-//        {
-//            generateForm(form, weakform, output, "VOLUME_MATRIX");
-//        }
-
-//        foreach(XMLModule::vector_form form, weakform.vector_form())
-//        {
-//            generateForm(form, weakform, output, "VOLUME_VECTOR");
-//        }
-//    }
-
     std::string text;
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/coupling_weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, m_output, &text);
 
     // source - save to file
@@ -217,59 +186,6 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
                        QString::fromStdString(text));
 }
 
-
-
-QString Agros2DGeneratorCoupling::nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType)
-{
-    foreach (XMLModule::weakform_volume wf, m_targetModule->volume().weakforms_volume().weakform_volume())
-    {
-        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
-        {
-            foreach (XMLModule::quantity quantityAnalysis, wf.quantity())
-            {
-                if (quantityAnalysis.id() == variable.toStdString())
-                {
-                    if (coordinateType == CoordinateType_Planar)
-                    {
-                        if (quantityAnalysis.nonlinearity_planar().present())
-                            return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
-                    }
-                    else
-                    {
-                        if (quantityAnalysis.nonlinearity_axi().present())
-                            return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
-                    }
-                }
-            }
-        }
-    }
-
-    foreach (XMLModule::weakform_volume wf, m_sourceModule->volume().weakforms_volume().weakform_volume())
-    {
-        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
-        {
-            foreach (XMLModule::quantity quantityAnalysis, wf.quantity())
-            {
-                if (quantityAnalysis.id() == variable.toStdString())
-                {
-                    if (coordinateType == CoordinateType_Planar)
-                    {
-                        if (quantityAnalysis.nonlinearity_planar().present())
-                            return QString::fromStdString(quantityAnalysis.nonlinearity_planar().get());
-                    }
-                    else
-                    {
-                        if (quantityAnalysis.nonlinearity_axi().present())
-                            return QString::fromStdString(quantityAnalysis.nonlinearity_axi().get());
-                    }
-                }
-            }
-        }
-    }
-
-
-    return "";
-}
 
 QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr)
 {
@@ -430,31 +346,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                 if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1); isReplaced = true; }
             }
 
-//            foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
-//            {
-//                if (quantity.shortname().present())
-//                    if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
-//                    {
-//                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
-//                        if (nonlinearExpr.isEmpty())
-//                            // linear material
-//                            exprCpp += QString("%1->number()").arg(QString::fromStdString(quantity.shortname().get()));
-//                        else
-//                        {
-//                            // nonlinear material
-//                            if (repl == QString::fromStdString(quantity.shortname().get()))
-//                                exprCpp += QString("%1->value(%2)").
-//                                        arg(QString::fromStdString(quantity.shortname().get())).
-//                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
-//                            if (repl == QString::fromStdString("d" + quantity.shortname().get()))
-//                                exprCpp += QString("%1->derivative(%2)").
-//                                        arg(QString::fromStdString(quantity.shortname().get())).
-//                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
-//                        }
 
-//                        isReplaced = true;
-//                    }
-//            }
 
             foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
             {
@@ -462,7 +354,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                 {
                     if (repl == QString::fromStdString(quantity.shortname().get()))
                     {
-                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
+                        QString nonlinearExpr;// = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
                         if (nonlinearExpr.isEmpty())
                         {
                             // linear material
@@ -490,7 +382,7 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                 {
                     if (repl == QString::fromStdString(quantity.shortname().get()))
                     {
-                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), targetAnalysisType, coordinateType);
+                        QString nonlinearExpr;// = nonlinearExpression(QString::fromStdString(quantity.id()), targetAnalysisType, coordinateType);
                         if (nonlinearExpr.isEmpty())
                         {
                             // linear material
@@ -543,7 +435,7 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
             QString id = (QString::fromStdString(m_coupling->general_coupling().id().c_str())).replace("-", "_");
 
             // source files
-            QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9").
+            QString functionName = QString("%1_%2_%3_%4_%5_%6_%7_%8_%9_%10").
                     arg(weakFormType.toLower()).
                     arg(id).
                     arg(QString::fromStdString(weakform.sourceanalysis().get())).
@@ -552,51 +444,10 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
                     arg(linearityTypeToStringKey(linearityType)).
                     arg(formInfo.id).
                     arg(QString::fromStdString(weakform.couplingtype().get())).
-                    arg(QString::number(formInfo.i));
+                    arg(QString::number(formInfo.i)).
+                    arg(QString::number(formInfo.j));
 
-            if (formInfo.j != 0)
-            {
-                field->SetValue("COLUMN_INDEX", QString::number(formInfo.j).toStdString());
-                functionName += "_" + QString::number(formInfo.j);
-            }
-            else
-            {
-                field->SetValue("COLUMN_INDEX", "0");
-                functionName += "_0";
-            }
-
-//            if (boundary != 0)
-//            {
-//                assert(0);
-//            }
-//            else
-            {
-                foreach(XMLModule::quantity quantity, m_sourceModule->volume().quantity())
-                {
-                    ctemplate::TemplateDictionary *subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-                    subField->SetValue("VARIABLE", quantity.id().c_str());
-                    subField->SetValue("VARIABLE_SHORT", m_sourceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-                }
-
-                foreach(XMLModule::quantity quantity, m_targetModule->volume().quantity())
-                {
-                    ctemplate::TemplateDictionary *subField = field->AddSectionDictionary("VARIABLE_TARGET");
-                    subField->SetValue("VARIABLE", quantity.id().c_str());
-                    subField->SetValue("VARIABLE_SHORT", m_targetVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-                }
-            }
-
-//            foreach(XMLModule::function_use functionUse, weakform.function_use())
-//            {
-//                foreach(XMLModule::function functionDefinition, m_module->volume().function())
-//                {
-//                    if(functionUse.id() == functionDefinition.id())
-//                    {
-//                        generateSpecialFunction(functionDefinition, analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), linearityType, coordinateType, *field);
-//                    }
-//                }
-//            }
-
+            field->SetValue("COLUMN_INDEX", QString::number(formInfo.j).toStdString());
             field->SetValue("FUNCTION_NAME", functionName.toStdString());
             field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
             field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
@@ -654,35 +505,6 @@ void Agros2DGeneratorCoupling::generateWeakForms(ctemplate::TemplateDictionary &
         }
     }
 
-//    foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
-//    {
-//        AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
-//        foreach(XMLModule::boundary boundary, weakform.boundary())
-//        {
-//            foreach(XMLModule::linearity_option option, boundary.linearity_option())
-//            {
-//                LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
-
-//                QList<FormInfo> matrixForms = Module::BoundaryType::wfMatrixSurface(&m_module->surface(), &boundary, analysisType, linearityType);
-//                QList<FormInfo> vectorForms = Module::BoundaryType::wfVectorSurface(&m_module->surface(), &boundary, analysisType, linearityType);
-//                QList<FormInfo> essentialForms = Module::BoundaryType::essential(&m_module->surface(), &boundary, analysisType, linearityType);
-//                foreach(FormInfo formInfo, matrixForms)
-//                {
-//                    generateForm(formInfo, linearityType, output, weakform, "SURFACE_MATRIX", &boundary);
-//                }
-
-//                foreach(FormInfo formInfo, vectorForms)
-//                {
-//                    generateForm(formInfo, linearityType, output, weakform, "SURFACE_VECTOR", &boundary);
-//                }
-
-//                foreach(FormInfo formInfo, essentialForms)
-//                {
-//                    generateForm(formInfo, linearityType, output, weakform, "EXACT", &boundary);
-//                }
-//            }
-//        }
-//    }
 }
 
 
