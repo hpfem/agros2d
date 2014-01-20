@@ -64,9 +64,9 @@ private:
     {{#SPECIAL_FUNCTION_SOURCE}}
     QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
 
-    const double **value;
-    const double **dudx;
-    const double **dudy;    
+    double **value;
+    double **dudx;
+    double **dudy;    
 };
 
 #endif // {{ID}}_FILTER_H

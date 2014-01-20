@@ -42,9 +42,9 @@
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
     {{/SPECIAL_FUNCTION_SOURCE}}
 
-    value = new const double*[this->num];
-    dudx = new const double*[this->num];
-    dudy = new const double*[this->num];
+    value = new double*[this->num];
+    dudx = new double*[this->num];
+    dudy = new double*[this->num];
 
     m_coordinateType = Agros2D::problem()->config()->coordinateType();
     m_labels = Agros2D::scene()->labels;
@@ -70,9 +70,10 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     for (int k = 0; k < this->num; k++)
     {
         this->sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_DEFAULT);
-        dudx[k] = this->sln[k]->get_dx_values();
-        dudy[k] = this->sln[k]->get_dy_values();
-        value[k] = this->sln[k]->get_fn_values();
+        /// \todo Find out why Qt & OpenGL renders the outputs color-less if dudx, dudy, valus are 'const double*'.
+        dudx[k] = const_cast<double*>(this->sln[k]->get_dx_values());
+        dudy[k] = const_cast<double*>(this->sln[k]->get_dy_values());
+        value[k] = const_cast<double*>(this->sln[k]->get_fn_values());
     }
 
     this->update_refmap();
