@@ -2,8 +2,8 @@ import agros2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-class TestCoupledProblemsManyDomains(Agros2DTestCase):
-    def setUp(self):         
+class TestCoupledProblemsManyDomainsGeneral(Agros2DTestCase):
+    def setUpGeneral(self, curr_heat, heat_elast):   
         # problem
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "planar"
@@ -21,7 +21,6 @@ class TestCoupledProblemsManyDomains(Agros2DTestCase):
         self.current.number_of_refinements = 1
         self.current.polynomial_order = 2
         self.current.adaptivity_type = "disabled"
-        self.current.solver = "linear"        
         
         # boundaries
         self.current.add_boundary("Source", "current_potential", {"current_potential" : 10})
@@ -31,7 +30,33 @@ class TestCoupledProblemsManyDomains(Agros2DTestCase):
         # materials
         self.current.add_material("Cond 1", {"current_conductivity" : 3.3e+07})
         self.current.add_material("Cond 2", {"current_conductivity" : 5.7e+07})
+
+        if (curr_heat == "hard"):
+            self.current.solver = "newton"
+        else:
+            self.current.solver = "linear"
+                
+        # heat
+        self.heat = agros2d.field("heat")
+        self.heat.analysis_type = "steadystate"
+        self.heat.matrix_solver = "mumps"
+        self.heat.number_of_refinements = 1
+        self.heat.polynomial_order = 2
+        self.heat.adaptivity_type = "disabled"
+                
+        # boundaries
+        self.heat.add_boundary("zero flux", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 5, "heat_convection_external_temperature" : 20, "heat_radiation_emissivity" : 0, "heat_radiation_ambient_temperature" : 20})
+        self.heat.add_boundary("t=0", "heat_temperature", {"heat_temperature" : 0})        
         
+        # materials
+        self.heat.add_material("heat", {"heat_conductivity" : 385, "heat_volume_heat" : 0, "heat_velocity_x" : 0, "heat_velocity_y" : 0, "heat_velocity_angular" : 0, "heat_density" : 0, "heat_specific_heat" : 0})
+        self.heat.add_material("heat2", {"heat_conductivity" : 38500, "heat_volume_heat" : 0, "heat_velocity_x" : 0, "heat_velocity_y" : 0, "heat_velocity_angular" : 0, "heat_density" : 0, "heat_specific_heat" : 0})
+        
+        if (curr_heat == "hard"):
+            self.heat.solver = "newton"
+        else:
+            self.heat.solver = "linear"
+            
         # elasticity
         self.elasticity = agros2d.field("elasticity")
         self.elasticity.analysis_type = "steadystate"
@@ -39,7 +64,6 @@ class TestCoupledProblemsManyDomains(Agros2DTestCase):
         self.elasticity.number_of_refinements = 0
         self.elasticity.polynomial_order = 3
         self.elasticity.adaptivity_type = "disabled"
-        self.elasticity.solver = "linear"        
         
         # boundaries
         self.elasticity.add_boundary("fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
@@ -48,6 +72,11 @@ class TestCoupledProblemsManyDomains(Agros2DTestCase):
         # materials
         self.elasticity.add_material("structural", {"elasticity_young_modulus" : 1e+11, "elasticity_poisson_ratio" : 0.3, "elasticity_volume_force_x" : 0, "elasticity_volume_force_y" : 0, "elasticity_alpha" : 1e-05, "elasticity_temperature_difference" : 0, "elasticity_temperature_reference" : 0})
         
+        if ((heat_elast == "hard") and (self.heat.solver == "newton")):
+            self.elasticity.solver = "newton"
+        else:
+            self.elasticity.solver = "linear"
+
         # electrostatic
         self.electrostatic = agros2d.field("electrostatic")
         self.electrostatic.analysis_type = "steadystate"
@@ -65,23 +94,10 @@ class TestCoupledProblemsManyDomains(Agros2DTestCase):
         # materials
         self.electrostatic.add_material("electrostatic", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 0})
         
-        # heat
-        self.heat = agros2d.field("heat")
-        self.heat.analysis_type = "steadystate"
-        self.heat.matrix_solver = "mumps"
-        self.heat.number_of_refinements = 1
-        self.heat.polynomial_order = 2
-        self.heat.adaptivity_type = "disabled"
-        self.heat.solver = "linear"
-                
-        # boundaries
-        self.heat.add_boundary("zero flux", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 5, "heat_convection_external_temperature" : 20, "heat_radiation_emissivity" : 0, "heat_radiation_ambient_temperature" : 20})
-        self.heat.add_boundary("t=0", "heat_temperature", {"heat_temperature" : 0})        
-        
-        # materials
-        self.heat.add_material("heat", {"heat_conductivity" : 385, "heat_volume_heat" : 0, "heat_velocity_x" : 0, "heat_velocity_y" : 0, "heat_velocity_angular" : 0, "heat_density" : 0, "heat_specific_heat" : 0})
-        self.heat.add_material("heat2", {"heat_conductivity" : 38500, "heat_volume_heat" : 0, "heat_velocity_x" : 0, "heat_velocity_y" : 0, "heat_velocity_angular" : 0, "heat_density" : 0, "heat_specific_heat" : 0})
-        
+        # coupling
+        problem.set_coupling_type("current", "heat", curr_heat)
+        problem.set_coupling_type("heat", "elasticity", heat_elast)        
+
         # geometry
         geometry = agros2d.geometry
         geometry.add_edge(0, 0.1, 0, 0, boundaries = {"current" : "Source"})
@@ -235,6 +251,25 @@ class TestCoupledProblemsManyDomains(Agros2DTestCase):
         
         point1_electrostatic = self.electrostatic.local_values(1.169e-01, 2.757e-02)
         self.value_test("Electric field", point1_electrostatic["E"], 1.785e+04)        
+
+
+class TestCoupledProblemsManyDomainsWeakWeak(TestCoupledProblemsManyDomainsGeneral):
+    def setUp(self):  
+        self.setUpGeneral("weak", "weak")
+
+class TestCoupledProblemsManyDomainsHardWeak(TestCoupledProblemsManyDomainsGeneral):
+    def setUp(self):  
+        self.setUpGeneral("hard", "weak")
+
+class TestCoupledProblemsManyDomainsWeakHard(TestCoupledProblemsManyDomainsGeneral):
+    def setUp(self):  
+        self.setUpGeneral("weak", "hard")
+
+class TestCoupledProblemsManyDomainsHardHard(TestCoupledProblemsManyDomainsGeneral):
+    def setUp(self):  
+        self.setUpGeneral("hard", "hard")
+
+
         
         
 if __name__ == '__main__':        
@@ -242,5 +277,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsManyDomains))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsManyDomainsWeakWeak))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsManyDomainsWeakHard))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsManyDomainsHardWeak))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestCoupledProblemsManyDomainsHardHard))
     suite.run(result)
