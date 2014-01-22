@@ -111,13 +111,11 @@ void DataTable::checkTable()
 {
     if (m_points.size() > m_values.size())
     {
-        clear();
         throw AgrosException(QObject::tr("Size doesn't match (%1 > %2).").arg(m_points.size()).arg(m_values.size()));
     }
 
     if (m_points.size() < m_values.size())
     {
-        clear();
         throw AgrosException(QObject::tr("Size doesn't match (%1 < %2).").arg(m_points.size()).arg(m_values.size()));
     }
 
@@ -125,7 +123,6 @@ void DataTable::checkTable()
     {
         if (m_points[i] < m_points[i-1])
         {
-            clear();
             throw AgrosException(QObject::tr("Points must be in ascending order (%1 < %2).").arg(m_points[i]).arg(m_points[i-1]));
         }
     }
@@ -171,15 +168,6 @@ void DataTable::setImplicit()
 
 double DataTable::value(double x) const
 {
-//    // todo: get rid of this, make value const function !
-//    if (!m_valid)
-//    {
-//#pragma omp critical (validation)
-//        {
-//            if (!m_valid)
-//                validate();
-//        }
-//    }
     assert(m_valid);
 
     if (m_type == DataTableType_PiecewiseLinear)
@@ -200,15 +188,6 @@ double DataTable::value(double x) const
 
 double DataTable::derivative(double x) const
 {    
-//    // todo: get rid of this, make derivative const function !
-//    if (!m_valid)
-//    {
-//#pragma omp critical (validation)
-//        {
-//            if (!m_valid)
-//                validate();
-//        }
-//    }
     assert(m_valid);
 
     if (m_type == DataTableType_PiecewiseLinear)
