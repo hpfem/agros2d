@@ -806,7 +806,11 @@ void SceneViewPostInterface::paletteCreate()
     glGenTextures(1, &m_textureScalar);
 
     glBindTexture(GL_TEXTURE_1D, m_textureScalar);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) // This somehow does not work for Qt 4.8
+#ifdef Q_WS_WIN
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) // This somehow does not work for Qt 4.8 in Windows.
+    glTexParameteri(GL_TEXTURE_1D, GL_GENERATE_MIPMAP, GL_TRUE);
+#endif
+#else
     glTexParameteri(GL_TEXTURE_1D, GL_GENERATE_MIPMAP, GL_TRUE);
 #endif
     if (Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool())
