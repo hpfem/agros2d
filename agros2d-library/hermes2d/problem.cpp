@@ -620,11 +620,11 @@ void Problem::solve(bool commandLine)
     // clear solution
     clearSolution();
 
-    if (numTransientFields() > 1)
-    {
-        Agros2D::log()->printError(tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
-        return;
-    }
+//    if (numTransientFields() > 1)
+//    {
+//        Agros2D::log()->printError(tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
+//        return;
+//    }
 
     if ((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
     {

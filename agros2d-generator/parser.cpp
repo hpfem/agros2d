@@ -21,24 +21,24 @@ bool operator<(const ParserModuleInfo &pmi1, const ParserModuleInfo &pmi2)
 }
 
 
-ModuleParser::ModuleParser(XMLModule::field * field)
+FieldParser::FieldParser(XMLModule::field * field)
 {
     Module::volumeQuantityProperties(field, m_quantityOrdering, m_quantityIsNonlinear, m_functionOrdering);
 }
 
-QString ModuleParser::parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString FieldParser::parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
     ParserPostprocessorExpression parser(parserModuleInfo, this, withVariables);
     return parser.parse(expr);
 }
 
-QString ModuleParser::parseFilterExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString FieldParser::parseFilterExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
     ParserFilterExpression parser(parserModuleInfo, this, withVariables);
     return parser.parse(expr);
 }
 
-QString ModuleParser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString FieldParser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
     QSharedPointer<ParserWeakForm> parser;
     if(m_parserWeakFormCache.contains(parserModuleInfo) && withVariables)
@@ -53,19 +53,19 @@ QString ModuleParser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo,
     return parser->parse(expr);
 }
 
-QString ModuleParser::parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString FieldParser::parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
     ParserErrorExpression parser(parserModuleInfo, this, withVariables);
     return parser.parse(expr);
 }
 
-QString ModuleParser::parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr)
+QString FieldParser::parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr)
 {
     ParserLinearizeDependence parser(parserModuleInfo, this);
     return parser.parse(expr);
 }
 
-QString ModuleParser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr)
+QString FieldParser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr)
 {
     QSharedPointer<ParserWeakformCheck> parser;
     if(m_parserWeakFormCheckCache.contains(parserModuleInfo))
@@ -84,7 +84,7 @@ QString ParserInstance::parse(QString expr)
 {
     try
     {
-        QSharedPointer<LexicalAnalyser> lex = m_moduleParser->weakFormLexicalAnalyser(m_parserModuleInfo);
+        QSharedPointer<LexicalAnalyser> lex = m_fieldParser->weakFormLexicalAnalyser(m_parserModuleInfo);
         lex->setExpression(expr);
         QString exprCpp = lex->replaceVariables(m_dict);
 
@@ -246,4 +246,62 @@ QString ParserModuleInfo::dependenceSurface(const QString &variable) const
     }
 
     return "";
+}
+
+ParserWeakForm::ParserWeakForm(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+{
+    addBasicWeakformTokens();
+    addPreviousSolWeakform();
+    if(withVariables)
+    {
+        addVolumeVariablesWeakform();
+        addSurfaceVariables();
+    }
+}
+
+ParserErrorExpression::ParserErrorExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+{
+    addBasicWeakformTokens();
+    addPreviousSolErroCalculation();
+    if(withVariables)
+    {
+        addVolumeVariablesErrorCalculation();
+        addSurfaceVariables();
+    }
+}
+
+ParserLinearizeDependence::ParserLinearizeDependence(ParserModuleInfo pmi, FieldParser *moduleParser) : ParserInstance(pmi, moduleParser)
+{
+    addBasicWeakformTokens();
+    addPreviousSolLinearizeDependence();
+}
+
+ParserWeakformCheck::ParserWeakformCheck(ParserModuleInfo pmi, FieldParser *moduleParser) : ParserInstance(pmi, moduleParser)
+{
+    addWeakformCheckTokens();
+}
+
+ParserPostprocessorExpression::ParserPostprocessorExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+{
+    addPostprocessorBasic();
+    if(withVariables)
+    {
+        addPostprocessorVariables();
+    }
+}
+
+ParserFilterExpression::ParserFilterExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+{
+    addPostprocessorBasic();
+    if(withVariables)
+    {
+        addFilterVariables();
+    }
+}
+
+ParserCouplingWeakForm::ParserCouplingWeakForm(ParserModuleInfo pmiCoupling, ParserModuleInfo pmiSource, ParserModuleInfo pmiTarget,
+                                               CouplingParser *couplingParser, FieldParser *sourceParser, FieldParser *targetParser)
+    :ParserInstance(pmiCoupling, couplingParser)
+{
+    ParserInstance sourceQuantityParser(pmiSource, sourceParser);
 }

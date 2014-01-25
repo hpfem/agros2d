@@ -384,7 +384,6 @@ void WeakFormAgros<Scalar>::registerForms()
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression, material);
                 }
 
-
                 foreach (FormInfo expression, wfVectorVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
                 {
                     expression.i += m_block->offset(field);
@@ -409,6 +408,24 @@ void WeakFormAgros<Scalar>::registerForms()
                             expression.i += m_block->offset(field);
                             expression.j += m_block->offset(field);
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression, materialSource, material, couplingInfo);
+                        }
+                    }
+
+                    // todo remove code repetition
+                    foreach (FormInfo expression, couplingInfo->wfMatrixVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(),
+                                                                                        couplingInfo->sourceField()->analysisType(),
+                                                                                        couplingInfo->targetField()->analysisType(),
+                                                                                        couplingInfo->couplingType(),
+                                                                                        couplingInfo->linearityType()))
+                    {
+                        SceneMaterial* materialSource = Agros2D::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
+                        assert(materialSource);
+
+                        if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
+                        {
+                            expression.i += m_block->offset(field);
+                            expression.j += m_block->offset(field);
+                            registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), expression, materialSource, material, couplingInfo);
                         }
                     }
                 }

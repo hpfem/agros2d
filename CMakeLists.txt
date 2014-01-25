@@ -264,6 +264,7 @@ set(info resources/modules/acoustic.xml
          resources/couplings/current-heat.xml
          resources/couplings/heat-elasticity.xml
          resources/couplings/magnetic-heat.xml
+         resources/couplings/flow-heat.xml
          resources/python/functions_agros2d.py
          resources/python/functions_pythonlab.py
          resources/templates/generator/coupling_CMakeLists_txt.tpl

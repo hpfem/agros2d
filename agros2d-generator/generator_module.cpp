@@ -63,7 +63,7 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId) : m_outp
 
     Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlinear, functionOrdering);
 
-    m_parser = QSharedPointer<ModuleParser>(new ModuleParser(m_module));
+    m_parser = QSharedPointer<FieldParser>(new FieldParser(m_module));
 }
 
 Agros2DGeneratorModule::~Agros2DGeneratorModule()

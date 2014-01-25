@@ -463,6 +463,12 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
                                                       analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
                                                       coordinateType,
                                                       expression);
+
+            // todo: provizorne
+            // todo: nevim, proc to parser nenahradi
+            // todo: kazdopadne je potreba prepsat s vyuzitim noveho parseru a sloucit s generovanim modulu
+            exprCpp.replace("udx", "u->dx[i]");
+            exprCpp.replace("udy", "u->dy[i]");
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
             // add weakform

@@ -34,13 +34,14 @@ struct ParserModuleInfo
 
 bool operator<(const ParserModuleInfo &sid1, const ParserModuleInfo &sid2);
 
-class ModuleParser;
+class FieldParser;
+class CouplingParser;
 
 class ParserInstance
 {
 public:
     QString parse(QString expr);
-    ParserInstance(ParserModuleInfo pmi, ModuleParser *moduleParser);
+    ParserInstance(ParserModuleInfo pmi, FieldParser *moduleParser);
 
 protected:
     void addBasicWeakformTokens();
@@ -58,50 +59,57 @@ protected:
 
     ParserModuleInfo m_parserModuleInfo;
     QMap<QString, QString> m_dict;
-    QSharedPointer<LexicalAnalyser> m_lex;
-    ModuleParser* m_moduleParser;
+    FieldParser* m_fieldParser;
 };
 
 class ParserWeakForm : public ParserInstance
 {
 public:
-    ParserWeakForm(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+    ParserWeakForm(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables);
 };
 
 class ParserErrorExpression : public ParserInstance
 {
 public:
-    ParserErrorExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+    ParserErrorExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables);
 };
 
 class ParserLinearizeDependence : public ParserInstance
 {
 public:
-    ParserLinearizeDependence(ParserModuleInfo pmi, ModuleParser *moduleParser);
+    ParserLinearizeDependence(ParserModuleInfo pmi, FieldParser *moduleParser);
 };
 
 class ParserWeakformCheck : public ParserInstance
 {
 public:
-    ParserWeakformCheck(ParserModuleInfo pmi, ModuleParser *moduleParser);
+    ParserWeakformCheck(ParserModuleInfo pmi, FieldParser *moduleParser);
 };
 
 class ParserPostprocessorExpression : public ParserInstance
 {
 public:
-    ParserPostprocessorExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+    ParserPostprocessorExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables);
 };
 
 class ParserFilterExpression : public ParserInstance
 {
 public:
-    ParserFilterExpression(ParserModuleInfo pmi, ModuleParser *moduleParser, bool withVariables);
+    ParserFilterExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables);
 };
 
-class ModuleParser
+class ParserCouplingWeakForm : public ParserInstance
 {
 public:
-    ModuleParser(XMLModule::field * field);
+    ParserCouplingWeakForm(ParserModuleInfo pmiCoupling, ParserModuleInfo pmiSource, ParserModuleInfo pmiTarget,
+                           CouplingParser* couplingParser, FieldParser* sourceParser, FieldParser* targetParser);
+};
+
+class FieldParser
+{
+public:
+    FieldParser(XMLModule::field* field);
+    FieldParser() {}
 
     QString parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
     QString parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables = true);
@@ -128,6 +136,12 @@ private:
 
     QMap<ParserModuleInfo, QSharedPointer<ParserWeakForm> > m_parserWeakFormCache;
     QMap<ParserModuleInfo, QSharedPointer<ParserWeakformCheck> > m_parserWeakFormCheckCache;
+};
+
+class CouplingParser : public FieldParser
+{
+public:
+    CouplingParser(XMLModule::coupling* coupling);
 };
 
 #endif // PARSER_H

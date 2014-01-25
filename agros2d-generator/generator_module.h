@@ -22,7 +22,7 @@
 
 #include "generator.h"
 
-class ModuleParser;
+class FieldParser;
 struct FormInfo;
 
 class Agros2DGeneratorModule : public Agros2DGeneratorBase
@@ -55,7 +55,7 @@ private:
     QHash<QString, QString> m_volumeVariables;
     QHash<QString, QString> m_surfaceVariables;
 
-    QSharedPointer<ModuleParser> m_parser;
+    QSharedPointer<FieldParser> m_parser;
 
     void getNames(const QString &moduleId);
     void generatePluginWeakFormSourceFiles();
