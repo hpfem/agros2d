@@ -41,7 +41,9 @@ void PyProblem::clearSolution()
 
     Agros2D::problem()->clearSolution();
     Agros2D::scene()->invalidate();
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 }
 
 void PyProblem::refresh()

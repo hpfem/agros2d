@@ -130,20 +130,6 @@ coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4,
 coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomains,
-# script
-script.problem.TestProblem,
-script.problem.TestProblemTime,
-script.problem.TestProblemSolution,
-script.field.TestField,
-script.field.TestFieldBoundaries,
-script.field.TestFieldMaterials,
-script.field.TestFieldNewtonSolver,
-script.field.TestFieldMatrixSolver,
-script.field.TestFieldAdaptivity,
-script.field.TestFieldLocalValues,
-script.field.TestFieldIntegrals,
-script.geometry.TestGeometry,
-script.geometry.TestGeometryTransformations,
 # internal
 internal.matrix_solvers.TestInternalMatrixSolvers
-]
+] + test_script
