@@ -133,7 +133,6 @@ void FieldInfo::createValuePointerTable()
 
 
     // values tables
-    if(m_valuePointersTable.empty());
     int labelsSize = Agros2D::scene()->labels->length();
     for(int labelNum = 0; labelNum < labelsSize; labelNum++)
     {

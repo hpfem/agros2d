@@ -48,6 +48,7 @@ public:
     static QList<CouplingType> couplingFormTypeList();
     static QString couplingTypeStringEnum(CouplingType couplingType);
     static QString couplingTypeToString(QString couplingType);
+    static CouplingType couplingTypeFromString(QString couplingType);
 
     static QList<LinearityType> linearityTypeList();
     static QString linearityTypeStringEnum(LinearityType linearityType);

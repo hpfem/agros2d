@@ -68,7 +68,7 @@ private:
     void generateForm(FormInfo formInfo, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType);
 
 
-    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);    
+    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, CouplingType couplingType, const QString &expr);
     QString generateDocWeakFormExpression(QString symbol);
 
     QMap<QString, int> quantityOrdering;

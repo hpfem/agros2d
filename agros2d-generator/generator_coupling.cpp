@@ -187,10 +187,11 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
 }
 
 
-QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr)
+QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, CouplingType couplingType, const QString &expr)
 {
-    int numOfSol = Agros2DGenerator::numberOfSolutions(m_sourceModule->general_field().analyses(), sourceAnalysisType) +
-            Agros2DGenerator::numberOfSolutions(m_targetModule->general_field().analyses(), targetAnalysisType);
+    int numOfSolSource = Agros2DGenerator::numberOfSolutions(m_sourceModule->general_field().analyses(), sourceAnalysisType);
+    int numOfSolTarget = Agros2DGenerator::numberOfSolutions(m_targetModule->general_field().analyses(), targetAnalysisType);
+    int numOfSol = numOfSolSource + numOfSolTarget;
 
     LexicalAnalyser lex;
 
@@ -328,16 +329,43 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
 
             for (int i = 1; i < numOfSol + 1; i++)
             {
-                if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->val[i]").arg(i-1); isReplaced = true; }
+                QString uExtArgument;
+                if(couplingType == CouplingType_Weak)
+                {
+                    if(i <= numOfSolTarget)
+                    {
+                        uExtArgument = QString("%1 + offset.forms").arg(i-1);
+                    }
+                    else
+                    {
+                        uExtArgument = "index out of range";
+                    }
+                }
+                else if (couplingType == CouplingType_Hard)
+                {
+                    if(i <= numOfSolSource)
+                    {
+                        uExtArgument = QString("%1 + offset.sourceForms").arg(i-1);
+                    }
+                    else
+                    {
+                        uExtArgument = QString("%1 - %2 + offset.forms").arg(i-1).arg(numOfSolSource);
+                    }
+                }
+                else
+                    assert(0);
+
+
+                if (repl == QString("value%1").arg(i)) { exprCpp += QString("u_ext[%1]->val[i]").arg(uExtArgument); isReplaced = true; }
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    if (repl == QString("dx%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
-                    if (repl == QString("dy%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dx%1").arg(i)) { exprCpp += QString("u_ext[%1]->dx[i]").arg(uExtArgument); isReplaced = true; }
+                    if (repl == QString("dy%1").arg(i)) { exprCpp += QString("u_ext[%1]->dy[i]").arg(uExtArgument); isReplaced = true; }
                 }
                 else
                 {
-                    if (repl == QString("dr%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dx[i]").arg(i-1); isReplaced = true; }
-                    if (repl == QString("dz%1").arg(i)) { exprCpp += QString("u_ext[%1 + offset.forms /*todo: jinak, I i J*/]->dy[i]").arg(i-1); isReplaced = true; }
+                    if (repl == QString("dr%1").arg(i)) { exprCpp += QString("u_ext[%1]->dx[i]").arg(uExtArgument); isReplaced = true; }
+                    if (repl == QString("dz%1").arg(i)) { exprCpp += QString("u_ext[%1]->dy[i]").arg(uExtArgument); isReplaced = true; }
                 }
                 if (repl == QString("source%1").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->val[i]").arg(i-1); isReplaced = true; }
                 if (repl == QString("source%1dx").arg(i)) { exprCpp += QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1); isReplaced = true; }
@@ -447,6 +475,8 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
                     arg(QString::number(formInfo.i)).
                     arg(QString::number(formInfo.j));
 
+            CouplingType couplingType = Agros2DGenerator::couplingTypeFromString(QString::fromStdString(weakform.couplingtype().get()));
+
             field->SetValue("COLUMN_INDEX", QString::number(formInfo.j).toStdString());
             field->SetValue("FUNCTION_NAME", functionName.toStdString());
             field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
@@ -462,6 +492,7 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
             QString exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis().get())),
                                                       analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
                                                       coordinateType,
+                                                      couplingType,
                                                       expression);
 
             // todo: provizorne

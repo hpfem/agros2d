@@ -107,6 +107,18 @@ QString Agros2DGenerator::couplingTypeToString(QString couplingType)
         return ("CouplingType_Undefined");
 }
 
+CouplingType Agros2DGenerator::couplingTypeFromString(QString couplingType)
+{
+    if(couplingType == "hard")
+        return CouplingType_Hard;
+    if(couplingType == "weak")
+        return CouplingType_Weak;
+    if(couplingType == "none")
+        return CouplingType_None;
+    if(couplingType == "undefined")
+        return CouplingType_Undefined;
+}
+
 QList<LinearityType> Agros2DGenerator::linearityTypeList()
 {
     QList<LinearityType> list;
