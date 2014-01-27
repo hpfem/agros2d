@@ -46,7 +46,7 @@ public:
     // for consants should be 0, for nonlinearities more. Hom much?
     // todo:
     // todo:
-    virtual void ord(Hermes::Hermes2D::Func<Hermes::Ord>** u_ext, Hermes::Hermes2D::Func<Hermes::Ord>* result) const
+    virtual void ord(Hermes::Hermes2D::Func<Hermes::Ord>** ext, Hermes::Hermes2D::Func<Hermes::Ord>** u_ext, Hermes::Hermes2D::Func<Hermes::Ord>* result) const
     {
         result->val[0] = Hermes::Ord(1);
     }
@@ -58,6 +58,7 @@ protected:
     int m_offsetI;
 };
 
+
 // used for quantities, that are not present in a given particular analysis
 // something has to be pushed to weakform, since the individual forms expect ext[i] with indices i
 // taken from general list of quantities in volume, not from lists in particular analysis
@@ -66,7 +67,7 @@ class AGROS_LIBRARY_API AgrosEmptyExtFunction : public AgrosExtFunction
 {
 public:
     AgrosEmptyExtFunction() : AgrosExtFunction(NULL, 0) {}
-    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
+    virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
     {
         // result values are not initialized, but they should never be used.
         // this is not very safe, but done from efficiency reasons

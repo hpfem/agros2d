@@ -65,7 +65,7 @@ private:
     QString m_currentFieldName;
     AnalysisType m_currentAnalysisType;
 
-private slots:
+public slots:
     void doFieldInfo(int index);
     void doTimeStep(int index);
     void doAdaptivityStep(int index);

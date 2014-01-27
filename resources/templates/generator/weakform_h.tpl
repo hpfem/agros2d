@@ -30,7 +30,7 @@
 class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
 public:
-    virtual void value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const;
+    virtual void value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const;
     {{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, int offsetI);
     Hermes::Hermes2D::Function<double>* clone() const
     {

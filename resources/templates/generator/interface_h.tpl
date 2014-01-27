@@ -94,7 +94,7 @@ class {{VALUE_FUNCTION_FULL_NAME}} : public AgrosExtFunction
 public:
     {{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI);
     virtual double getValue(int hermesMarker, double h) const;
-    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+    virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
     Hermes::Hermes2D::Function<double>* clone() const
     {
         return new {{VALUE_FUNCTION_FULL_NAME}}(this->m_fieldInfo, this->m_offsetI);
@@ -117,7 +117,7 @@ public:
     {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, int offsetI);
     ~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}();
     virtual double calculateValue(int hermesMarker, double h) const;
-    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+    virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
     private:
 {{#PARAMETERS}}    const Value **{{PARAMETER_NAME}}_pointers;
 {{/PARAMETERS}}
