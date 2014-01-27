@@ -96,7 +96,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
             && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
         for (int i = 0; i < np; i++)
-            this->cur_node.values[0][0][i] = {{EXPRESSION}};
+            this->values[0][0][i] = {{EXPRESSION}};
     {{/VARIABLE_SOURCE}}
 }
 
