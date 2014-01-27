@@ -530,25 +530,27 @@ QString createPythonFromModel()
             {
                 QSharedPointer<Value> value = values[variable.id()];
 
-                if (value->hasTable())
+                if (value->hasTable() && !value->isNumber())
                 {
-                    if (!value->isNumber())
-                        variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
-                                arg(variable.id()).
-                                arg(value->text()).
-                                arg(value->table().toStringX()).
-                                arg(value->table().toStringY());
-                    else
-                        variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4], \"interpolation\" : \"%5\", \"extrapolation\" : \"%6\", \"derivative_at_endpoints\" : \"%7\" }, ").
-                                arg(variable.id()).
-                                arg(value->number()).
-                                arg(value->table().toStringX()).
-                                arg(value->table().toStringY()).
-                                arg(dataTableTypeToStringKey(value->table().type())).
-                                arg(value->table().extrapolateConstant() == true ? "constant" : "linear").
-                                arg(value->table().splineFirstDerivatives() == true ? "first" : "second");
+                    variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
+                            arg(variable.id()).
+                            arg(value->text()).
+                            arg(value->table().toStringX()).
+                            arg(value->table().toStringY());
+
                 }
-                if (value->isTimeDependent() || value->isCoordinateDependent() || (value->hasTable() && (fieldInfo->linearityType() != LinearityType_Linear)))
+                else if (value->hasTable() && value->isNumber())
+                {
+                    variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4], \"interpolation\" : \"%5\", \"extrapolation\" : \"%6\", \"derivative_at_endpoints\" : \"%7\" }, ").
+                            arg(variable.id()).
+                            arg(value->number()).
+                            arg(value->table().toStringX()).
+                            arg(value->table().toStringY()).
+                            arg(dataTableTypeToStringKey(value->table().type())).
+                            arg(value->table().extrapolateConstant() == true ? "constant" : "linear").
+                            arg(value->table().splineFirstDerivatives() == true ? "first" : "second");
+                }
+                else if (value->isTimeDependent() || value->isCoordinateDependent())
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
@@ -561,6 +563,7 @@ QString createPythonFromModel()
                             arg(value->toString());
                 }
             }
+
             variables = (variables.endsWith(", ") ? variables.left(variables.length() - 2) : variables) + "}";
 
             str += QString("%1.add_material(\"%2\", %3)\n").
