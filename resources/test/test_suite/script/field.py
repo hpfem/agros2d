@@ -722,51 +722,50 @@ class TestFieldAdaptivityInfoTransient(Agros2DTestCase):
                 self.assertNotEqual(len(dofs), 1)
 
 class TestFieldSolverInfo(Agros2DTestCase):
-    @classmethod
-    def setUpClass(cls):
-        problem = a2d.problem(clear = True)
-        problem.coordinate_type = "planar"
-        problem.mesh_type = "triangle"
-        problem.time_step_method = "fixed"
-        problem.time_method_order = 1
-        problem.time_total = 5
-        problem.time_steps = 5
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.problem.coordinate_type = "planar"
+        self.problem.mesh_type = "triangle"
+        self.problem.time_step_method = "fixed"
+        self.problem.time_method_order = 1
+        self.problem.time_total = 5
+        self.problem.time_steps = 5
 
-        field = a2d.field("heat")
-        field.analysis_type = "transient"
-        field.matrix_solver = "mumps"
-        field.transient_initial_condition = 293.15
-        field.number_of_refinements = 0
-        field.polynomial_order = 1
-        field.adaptivity_type = "hp-adaptivity"
-        field.adaptivity_parameters['steps'] = 5
-        field.adaptivity_parameters['tolerance'] = 10
-        field.adaptivity_parameters['threshold'] = 0.6
-        field.adaptivity_parameters['stopping_criterion'] = "singleelement"
-        field.adaptivity_parameters['error_calculator'] = "h1"
-        field.adaptivity_parameters['anisotropic_refinement'] = False
-        field.adaptivity_parameters['finer_reference_solution'] = False
-        field.adaptivity_parameters['space_refinement'] = True
-        field.adaptivity_parameters['order_increase'] = 1
-        field.adaptivity_parameters['transient_back_steps'] = 3
-        field.adaptivity_parameters['transient_redone_steps'] = 5
-        field.solver = "picard"
-        field.solver_parameters['residual'] = 0.001
-        field.solver_parameters['relative_change_of_solutions'] = 0.5
-        field.solver_parameters['damping'] = "automatic"
-        field.solver_parameters['damping_factor'] = 0.8
-        field.solver_parameters['damping_factor_increase_steps'] = 1
-        field.solver_parameters['damping_factor_decrease_ratio'] = 1.2
-        field.solver_parameters['anderson_acceleration'] = False
+        self.field = a2d.field("heat")
+        self.field.analysis_type = "transient"
+        self.field.matrix_solver = "mumps"
+        self.field.transient_initial_condition = 293.15
+        self.field.number_of_refinements = 0
+        self.field.polynomial_order = 1
+        self.field.adaptivity_type = "hp-adaptivity"
+        self.field.adaptivity_parameters['steps'] = 5
+        self.field.adaptivity_parameters['tolerance'] = 10
+        self.field.adaptivity_parameters['threshold'] = 0.6
+        self.field.adaptivity_parameters['stopping_criterion'] = "singleelement"
+        self.field.adaptivity_parameters['error_calculator'] = "h1"
+        self.field.adaptivity_parameters['anisotropic_refinement'] = False
+        self.field.adaptivity_parameters['finer_reference_solution'] = False
+        self.field.adaptivity_parameters['space_refinement'] = True
+        self.field.adaptivity_parameters['order_increase'] = 1
+        self.field.adaptivity_parameters['transient_back_steps'] = 3
+        self.field.adaptivity_parameters['transient_redone_steps'] = 5
+        self.field.solver = "picard"
+        self.field.solver_parameters['residual'] = 0.001
+        self.field.solver_parameters['relative_change_of_solutions'] = 0.5
+        self.field.solver_parameters['damping'] = "automatic"
+        self.field.solver_parameters['damping_factor'] = 0.8
+        self.field.solver_parameters['damping_factor_increase_steps'] = 1
+        self.field.solver_parameters['damping_factor_decrease_ratio'] = 1.2
+        self.field.solver_parameters['anderson_acceleration'] = False
         
-        field.add_boundary("Dirichlet", "heat_temperature", {"heat_temperature" : { "expression" : "293.15+1e3*(exp(-1/2*time) - exp(-10*time))" }})
-        field.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0,
+        self.field.add_boundary("Dirichlet", "heat_temperature", {"heat_temperature" : { "expression" : "293.15+1e3*(exp(-1/2*time) - exp(-10*time))" }})
+        self.field.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0,
                                                          "heat_convection_heat_transfer_coefficient" : 1,
                                                          "heat_convection_external_temperature" : 293.15,
                                                          "heat_radiation_emissivity" : 0.1,
                                                          "heat_radiation_ambient_temperature" : 293.15})
         
-        field.add_material("Material", {"heat_conductivity" : { "value" : 385,
+        self.field.add_material("Material", {"heat_conductivity" : { "value" : 385,
                                                                 "x" : [0,10.2764,20.5528,30.8291,41.1055,51.3819,61.6583,71.9347,82.2111,92.4874,102.764,113.04,123.317,133.593,143.869,154.146,164.422,174.698,184.975,195.251,205.528,215.804,226.08,236.357,246.633,256.91,267.186,277.462,287.739,298.015,308.291,318.568,328.844,339.121,349.397,359.673,369.95,380.226,390.503,400.779,411.055,421.332,431.608,441.884,452.161,462.437,472.714,482.99,493.266,503.543,513.819,524.095,534.372,544.648,554.925,565.201,575.477,585.754,596.03,606.307,616.583,626.859,637.136,647.412,657.688,667.965,678.241,688.518,698.794,709.07,719.347,729.623,739.899,750.176,760.452,770.729,781.005,791.281,801.558,811.834,822.111,832.387,842.663,852.94,863.216,873.492,883.769,894.045,904.322,914.598,924.874,935.151,945.427,955.704,965.98,976.256,986.533,996.809,1007.09,1017.36,1027.64,1037.91,1048.19,1058.47,1068.74,1079.02,1089.3,1099.57,1109.85,1120.13,1130.4,1140.68,1150.95,1161.23,1171.51,1181.78,1192.06,1202.34,1212.61,1222.89,1233.17,1243.44,1253.72,1263.99,1274.27,1284.55,1294.82,1305.1,1315.38,1325.65,1335.93,1346.21,1356.48,1366.76,1377.04,1387.31,1397.59,1407.86,1418.14,1428.42,1438.69,1448.97,1459.25,1469.52,1479.8,1490.08,1500.35,1510.63,1520.9,1531.18,1541.46,1551.73,1562.01,1572.29,1582.56,1592.84,1603.12,1613.39,1623.67,1633.94,1644.22,1654.5,1664.77,1675.05,1685.33,1695.6,1705.88,1716.16,1726.43,1736.71,1746.98,1757.26,1767.54,1777.81,1788.09,1798.37,1808.64,1818.92,1829.2,1839.47,1849.75,1860.03,1870.3,1880.58,1890.85,1901.13,1911.41,1921.68,1931.96,1942.24,1952.51,1962.79,1973.07,1983.34,1993.62,2003.89,2014.17,2024.45,2034.72,2045],
                                                                 "y" : [2.09699e-08,1221.98,474.48,202.952,137.155,106.398,92.888,85.2292,80.5891,78.6785,77.2066,76.1895,75.392,74.7574,74.2412,73.8093,73.4374,73.109,72.814,72.5478,72.3097,72.1012,71.925,71.7836,71.6776,71.6047,71.5582,71.5255,71.559,71.542,71.5294,71.5213,71.5175,71.518,71.5228,71.5318,71.545,71.5623,71.5838,71.6093,71.6389,71.6725,71.71,71.7514,71.7967,71.8459,71.8988,71.9555,72.0159,72.0799,72.1476,72.2189,72.2938,72.3722,72.454,72.5393,72.6279,72.72,72.8153,72.9139,73.0157,73.1208,73.229,73.3403,73.4547,73.5721,73.6925,73.8158,73.9421,74.0713,74.2033,74.338,74.4756,74.6158,74.7588,74.9043,75.0525,75.2032,75.3564,75.5121,75.6703,75.8308,75.9937,76.1589,76.3264,76.4961,76.668,76.842,77.0182,77.1965,77.3768,77.5591,77.7433,77.9295,78.1175,78.3074,78.4991,78.6925,78.8877,79.0844,79.283,79.4829,79.6846,79.8878,80.0922,80.2983,80.5059,80.7145,80.9247,81.1362,81.3487,81.5626,81.7774,81.9936,82.2108,82.4289,82.6482,82.8684,83.0894,83.3114,83.5343,83.7578,83.9822,84.2071,84.433,84.6594,84.8863,85.1139,85.3421,85.5705,85.7995,86.029,86.2586,86.4887,86.7191,86.9496,87.1804,87.4112,87.6423,87.8735,88.1046,88.3358,88.567,88.7979,89.0289,89.2598,89.4902,89.7206,89.9505,90.1803,90.4097,90.6385,90.8671,91.0953,91.3226,91.5497,91.7761,92.0017,92.2268,92.451,92.6746,92.8975,93.1193,93.3404,93.5606,93.7796,93.9978,94.215,94.4309,94.6459,94.8596,95.0722,95.2836,95.4935,95.7023,95.9098,96.1156,96.3202,96.5233,96.7248,96.9248,97.1232,97.3199,97.515,97.7082,97.8999,98.0897,98.2775,98.4637,98.6479,98.83,99.0102,99.1885,99.3644,99.5384,99.7101,99.8798,100.047,100.212,100.375],
                                                                 "interpolation" : "piecewise_linear",
@@ -809,12 +808,8 @@ class TestFieldSolverInfo(Agros2DTestCase):
         geometry.add_label(0, 0, materials = {"heat" : "none"})
         geometry.add_label(0.075, 0, materials = {"heat" : "Material"})
 
-        problem.solve()
-
-    def setUp(self):
-        self.field = a2d.field('heat')
-
     def test_solver_info_with_wrong_parameters(self):
+        self.problem.solve()
         with self.assertRaises(IndexError):
             self.field.solver_info(time_step=99)
 
@@ -845,7 +840,6 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    """
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMaterials))
@@ -856,7 +850,6 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldIntegrals))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfo))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfoTransient))
-    """
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldSolverInfo))
     suite.run(result)
 
