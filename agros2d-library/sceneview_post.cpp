@@ -358,8 +358,8 @@ void PostHermes::processRangeVector()
 
         try
         {
-            m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
-            // m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
+            // m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
+            m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
             m_vecVectorView->process_solution(slns, items);
         }
         catch (Hermes::Exceptions::Exception &e)
