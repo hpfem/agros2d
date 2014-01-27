@@ -74,15 +74,33 @@ protected:
     int m_jacobianCalculations;
 };
 
-class AgrosExternalSolverOctave : public ExternalSolver<double>
+class AgrosExternalSolverExternal : public ExternalSolver<double>
 {
 public:
-    AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+    AgrosExternalSolverExternal(CSCMatrix<double> *m, SimpleVector<double> *rhs);
     void solve();
     void solve(double* initial_guess);
 
-private:
+    virtual void runSolver() = 0;
+
+protected:
     QProcess *m_process;
+
+    QString fileCommand;
+    QString fileMatrix;
+    QString fileRHS;
+    QString fileInitial;
+    QString fileSln;
+
+    double *initialGuess;
+};
+
+class AgrosExternalSolverOctave : public AgrosExternalSolverExternal
+{
+public:
+    AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+
+    virtual void runSolver();
 };
 
 struct TimeStepInfo
