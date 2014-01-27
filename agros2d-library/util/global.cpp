@@ -83,7 +83,7 @@ bool AgrosApplication::notify(QObject *receiver, QEvent *event)
     }
     catch (Hermes::Exceptions::Exception& e)
     {
-        qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.info().c_str());
+        qCritical() << "Hermes exception thrown: " << e.what();
         throw;
     }
     catch (std::exception& e)

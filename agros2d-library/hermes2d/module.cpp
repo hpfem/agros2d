@@ -1135,7 +1135,7 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(cons
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
-        qDebug() << e.info().c_str();
+        qDebug() << e.what();
         throw;
     }
 

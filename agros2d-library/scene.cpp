@@ -2370,7 +2370,7 @@ void Scene::readSolutionFromFile(const QString &fileName)
             catch (Hermes::Exceptions::Exception& e)
             {
                 Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh"), tr("Initial mesh is corrupted (%1)").arg(e.info().c_str()));
+                Agros2D::log()->printError(tr("Mesh"), tr("Initial mesh is corrupted (%1)").arg(e.what()));
             }
         }
 
