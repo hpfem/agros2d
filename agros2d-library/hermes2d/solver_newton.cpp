@@ -130,7 +130,7 @@ void NewtonSolverAgros<Scalar>::setError()
     }
     else if (m_phase == Phase_DFDetermined)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1 (res. norm: %3, rel. change of sol.: %4 %, Jacobian recalculated, damping : %2)")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1 (res. norm: %3, rel. change of sol.: %4 %, Jacobian recalculated, damping: %2)")
                                      .arg(iteration)
                                      .arg(previous_damping_factor)
                                      .arg(m_residualNorms.last())
