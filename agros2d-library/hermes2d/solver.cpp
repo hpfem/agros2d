@@ -55,7 +55,7 @@ void SolverAgros::clearSteps()
 
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
-    return new AgrosExternalSolverOctave(m, rhs);
+    return new AgrosExternalSolverUMFPack(m, rhs);
 }
 
 AgrosExternalSolverExternal::AgrosExternalSolverExternal(CSCMatrix<double> *m, SimpleVector<double> *rhs)
@@ -112,7 +112,11 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
                                      (char *) "initial",
                                      EXPORT_FORMAT_MATLAB_MATIO,
                                      (char *) "%lf");
+        initialVector.free();
     }
+
+    this->m->free();
+    this->rhs->free();
 
     // restore state
     this->output_matrixOn = matrixOn;
@@ -120,8 +124,10 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
 
     // exec octave
     m_process = new QProcess();
-    m_process->setStandardOutputFile(tempProblemFileName() + ".solver.out");
-    m_process->setStandardErrorFile(tempProblemFileName() + ".solver.err");
+    m_process->setStandardOutputFile(tempProblemDir() + "/solver.out");
+    m_process->setStandardErrorFile(tempProblemDir() + "/solver.err");
+    connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
+    connect(m_process, SIGNAL(finished(int)), this, SLOT(processFinished(int)));
 
     runSolver();
 
@@ -145,18 +151,43 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
     this->sln = new double[slnVector.get_size()];
     memcpy(this->sln, slnVector.v, slnVector.get_size() * sizeof(double));
 
-    if (initialGuess)
-    {
-        QString str = readFileContent(QString("%1/solver_info.txt").arg(cacheProblemDir()));
-        qDebug() << str;
-    }
-
     QFile::remove(fileCommand);
     if (initialGuess)
         QFile::remove(fileInitial);
     // QFile::remove(fileMatrix);
     // QFile::remove(fileRHS);
-    // QFile::remove(fileSln);
+    QFile::remove(fileSln);
+
+    QFile::remove(tempProblemDir() + "/solver.out");
+    QFile::remove(tempProblemDir() + "/solver.err");
+}
+
+void AgrosExternalSolverExternal::processError(QProcess::ProcessError error)
+{
+    Agros2D::log()->printError(tr("Solver"), tr("Could not start MUMPS solver"));
+    m_process->kill();
+}
+
+void AgrosExternalSolverExternal::processFinished(int exitCode)
+{
+    if (get_verbose_output())
+    {
+        QString solverOutputMessage = readFileContent(tempProblemDir() + "/solver.out");
+        solverOutputMessage.insert(0, "\n");
+        solverOutputMessage.append("\n");
+        Agros2D::log()->printError(tr("External solver"), solverOutputMessage);
+    }
+
+    if (exitCode == 0)
+    {
+    }
+    else
+    {
+        QString errorMessage = readFileContent(tempProblemDir() + "/solver.err");
+        errorMessage.insert(0, "\n");
+        errorMessage.append("\n");
+        Agros2D::log()->printError(tr("External solver"), errorMessage);
+    }
 }
 
 AgrosExternalSolverOctave::AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs)
@@ -185,6 +216,54 @@ void AgrosExternalSolverOctave::runSolver()
         str += QString("fclose(file_id);\n");
     }
     str += QString("save -mat \"%1\" sln;").arg(fileSln); // -ascii
+
+    writeStringContent(fileCommand, str);
+
+    /*
+    if (initialGuess)
+    {
+        QString str = readFileContent(QString("%1/solver_info.txt").arg(cacheProblemDir()));
+        qDebug() << str;
+    }
+    */
+}
+
+AgrosExternalSolverMUMPS::AgrosExternalSolverMUMPS(CSCMatrix<double> *m, SimpleVector<double> *rhs)
+    : AgrosExternalSolverExternal(m, rhs)
+{
+}
+
+void AgrosExternalSolverMUMPS::runSolver()
+{
+    qDebug() << "EXTERNAL - MUMPS";
+
+    QString str = QString("%1/solver_external -o mumps -m %2 -r %3 -s %4").
+            arg(QApplication::applicationDirPath()).
+            arg(fileMatrix).
+            arg(fileRHS).
+            arg(fileSln);
+    // if (initialGuess)
+    //    str += QString("load(\"%1\", \"initial\");\n").arg(fileInitial);
+
+    writeStringContent(fileCommand, str);
+}
+
+AgrosExternalSolverUMFPack::AgrosExternalSolverUMFPack(CSCMatrix<double> *m, SimpleVector<double> *rhs)
+    : AgrosExternalSolverExternal(m, rhs)
+{
+}
+
+void AgrosExternalSolverUMFPack::runSolver()
+{
+    qDebug() << "EXTERNAL - UMFPack";
+
+    QString str = QString("%1/solver_external -o umfpack -m %2 -r %3 -s %4").
+            arg(QApplication::applicationDirPath()).
+            arg(fileMatrix).
+            arg(fileRHS).
+            arg(fileSln);
+    // if (initialGuess)
+    //    str += QString("load(\"%1\", \"initial\");\n").arg(fileInitial);
 
     writeStringContent(fileCommand, str);
 }

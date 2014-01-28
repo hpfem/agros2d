@@ -29,11 +29,13 @@ int main(int argc, char *argv[])
         // command line info
         TCLAP::CmdLine cmd("Solver MUMPS", ' ');
 
+        TCLAP::ValueArg<std::string> solverArg("o", "solver", "Solver", true, "", "string");
         TCLAP::ValueArg<std::string> matrixArg("m", "matrix", "Matrix", true, "", "string");
         TCLAP::ValueArg<std::string> rhsArg("r", "rhs", "RHS", true, "", "string");
         TCLAP::ValueArg<std::string> solutionArg("s", "solution", "Solution", true, "", "string");
         TCLAP::ValueArg<std::string> initialArg("i", "initial", "Initial vector", false, "", "string");
 
+        cmd.add(solverArg);
         cmd.add(matrixArg);
         cmd.add(rhsArg);
         cmd.add(solutionArg);
@@ -42,27 +44,37 @@ int main(int argc, char *argv[])
         // parse the argv array.
         cmd.parse(argc, argv);
 
-        MumpsMatrix<double> *matrix = new MumpsMatrix<double>();
+        CSCMatrix<double> *matrix = NULL;
         SimpleVector<double> *rhs = new SimpleVector<double>();
+        LinearMatrixSolver<double> *solver;
+
+        if (solverArg.getValue() == "umfpack")
+        {
+            matrix = new CSCMatrix<double>();
+            solver = new UMFPackLinearMatrixSolver<double>(matrix, rhs);
+        }
+        else if (solverArg.getValue() == "mumps")
+        {
+            matrix = new MumpsMatrix<double>();
+            solver = new MumpsSolver<double>(static_cast<MumpsMatrix<double> *>(matrix), rhs);
+        }
 
         matrix->import_from_file(matrixArg.getValue().c_str(), "matrix", EXPORT_FORMAT_MATLAB_MATIO);
         rhs->import_from_file(rhsArg.getValue().c_str(), "rhs", EXPORT_FORMAT_MATLAB_MATIO);
 
-        MumpsSolver<double> *solver = new MumpsSolver<double>(matrix, rhs);
-
         // solve
+        // solver->set_verbose_output(true);
         solver->solve();
 
         // sln vector
-        double *sln = solver->get_sln_vector();
         SimpleVector<double> *solution = new SimpleVector<double>(rhs->get_size());
-        solution->set_vector(sln);
+        solution->alloc(rhs->get_size());
+        solution->set_vector(solver->get_sln_vector());
         solution->export_to_file(solutionArg.getValue(), "sln", EXPORT_FORMAT_MATLAB_MATIO);
 
         delete matrix;
         delete rhs;
         delete solution;
-        delete sln;
     }
     catch (TCLAP::ArgException &e)
     {

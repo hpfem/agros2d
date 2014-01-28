@@ -74,8 +74,10 @@ protected:
     int m_jacobianCalculations;
 };
 
-class AgrosExternalSolverExternal : public ExternalSolver<double>
+class AgrosExternalSolverExternal : public QObject, public ExternalSolver<double>
 {
+    Q_OBJECT
+
 public:
     AgrosExternalSolverExternal(CSCMatrix<double> *m, SimpleVector<double> *rhs);
     void solve();
@@ -93,12 +95,32 @@ protected:
     QString fileSln;
 
     double *initialGuess;
+
+protected slots:
+    void processError(QProcess::ProcessError error);
+    void processFinished(int exitCode);
 };
 
 class AgrosExternalSolverOctave : public AgrosExternalSolverExternal
 {
 public:
     AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+
+    virtual void runSolver();
+};
+
+class AgrosExternalSolverMUMPS : public AgrosExternalSolverExternal
+{
+public:
+    AgrosExternalSolverMUMPS(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+
+    virtual void runSolver();
+};
+
+class AgrosExternalSolverUMFPack : public AgrosExternalSolverExternal
+{
+public:
+    AgrosExternalSolverUMFPack(CSCMatrix<double> *m, SimpleVector<double> *rhs);
 
     virtual void runSolver();
 };

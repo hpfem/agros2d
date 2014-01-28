@@ -36,9 +36,7 @@ private slots:
 public:
     MeshGeneratorTriangle();
 
-    virtual bool mesh();
-
-
+    virtual bool mesh();    
 };
 
 #endif //MESHGENERATOR_TRIANGLE_H
