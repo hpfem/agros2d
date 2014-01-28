@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonlab/pythonengine_agros.h"
-#include "pythonlab/python_unittests.h"
+#include "pythonengine_agros.h"
+#include "python_unittests.h"
 #include "util/constants.h"
 #include "gui/common.h"
 #include "logview.h"
@@ -577,7 +577,7 @@ void UnitTestsWidget::readTestsFromSuite()
 }
 
 void UnitTestsWidget::readScenariosFromSuite()
-{    
+{
     QMenu *menu = new QMenu();
     connect(menu, SIGNAL(triggered(QAction *)), this, SLOT(readTestsSettingsFromScenario(QAction *)));
 
@@ -629,7 +629,7 @@ void UnitTestsWidget::setEnabledControls(bool state)
 }
 
 void UnitTestsWidget::doAccept()
-{    
+{
     saveTestsSettings();
     accept();
 }
