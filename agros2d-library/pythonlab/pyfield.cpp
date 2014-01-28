@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonlab/pyfield.h"
-#include "pythonlab/pythonengine_agros.h"
+#include "pyfield.h"
+#include "pythonengine_agros.h"
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"

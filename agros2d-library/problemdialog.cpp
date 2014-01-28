@@ -528,7 +528,7 @@ void FieldWidget::fillComboBox()
 #endif
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_ITERATIVE), Hermes::SOLVER_PARALUTION_ITERATIVE);
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_AMG), Hermes::SOLVER_PARALUTION_AMG);
-    // cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_EXTERNAL), Hermes::SOLVER_EXTERNAL);
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_EXTERNAL), Hermes::SOLVER_EXTERNAL);
 
     foreach(Module::ErrorCalculator calc, m_fieldInfo->errorCalculators())
         cmbAdaptivityErrorCalculator->addItem(calc.name(), calc.id());

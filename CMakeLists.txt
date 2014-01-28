@@ -79,6 +79,8 @@ SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
 SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 SET(MATIO_LIBRARY agros2d_3dparty_matio)
 
+SET(AGROS_SOLVER_EXTERNAL solver_external)
+
 # Hermes and Hermes common
 IF(MSVC)
   IF(WIN64)
@@ -200,6 +202,7 @@ ADD_SUBDIRECTORY(agros2d-binary)
 ADD_SUBDIRECTORY(agros2d-solver)
 ADD_SUBDIRECTORY(agros2d-generator)
 ADD_SUBDIRECTORY(agros2d-remote)
+ADD_SUBDIRECTORY(solver-external)
 #ADD_SUBDIRECTORY(agros2d-forms)
 
 message("\nAgros2D Configuration results")

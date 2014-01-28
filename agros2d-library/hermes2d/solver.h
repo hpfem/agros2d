@@ -74,15 +74,55 @@ protected:
     int m_jacobianCalculations;
 };
 
-class AgrosExternalSolverOctave : public ExternalSolver<double>
+class AgrosExternalSolverExternal : public QObject, public ExternalSolver<double>
 {
+    Q_OBJECT
+
 public:
-    AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+    AgrosExternalSolverExternal(CSCMatrix<double> *m, SimpleVector<double> *rhs);
     void solve();
     void solve(double* initial_guess);
 
-private:
+    virtual void runSolver() = 0;
+
+protected:
     QProcess *m_process;
+
+    QString fileCommand;
+    QString fileMatrix;
+    QString fileRHS;
+    QString fileInitial;
+    QString fileSln;
+
+    double *initialGuess;
+
+protected slots:
+    void processError(QProcess::ProcessError error);
+    void processFinished(int exitCode);
+};
+
+class AgrosExternalSolverOctave : public AgrosExternalSolverExternal
+{
+public:
+    AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+
+    virtual void runSolver();
+};
+
+class AgrosExternalSolverMUMPS : public AgrosExternalSolverExternal
+{
+public:
+    AgrosExternalSolverMUMPS(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+
+    virtual void runSolver();
+};
+
+class AgrosExternalSolverUMFPack : public AgrosExternalSolverExternal
+{
+public:
+    AgrosExternalSolverUMFPack(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+
+    virtual void runSolver();
 };
 
 struct TimeStepInfo

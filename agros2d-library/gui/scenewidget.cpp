@@ -17,6 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "scenewidget.h"
 #include "sceneview_common.h"
 #include "sceneview_data.h"
 #include "scene.h"

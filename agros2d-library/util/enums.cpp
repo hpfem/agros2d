@@ -646,7 +646,7 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     case Hermes::SOLVER_AZTECOO:
         return QObject::tr("Trilinos/AztecOO");
     case Hermes::SOLVER_EXTERNAL:
-        return QObject::tr("External (out of core)");
+        return QObject::tr("UMFPACK (out of core)");
     default:
         std::cerr << "Matrix solver type '" + QString::number(matrixSolverType).toStdString() + "' is not implemented. matrixSolverTypeString(MatrixSolverType matrixSolverType)" << endl;
         throw;

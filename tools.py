@@ -3,7 +3,7 @@
 import argparse, shutil, os
 from multiprocessing import cpu_count
 from subprocess import call
-from glob import glob
+#from glob import glob
 
 VERSION = 3.2
 CORES = cpu_count()
@@ -15,14 +15,19 @@ LOC_DIR = './resources/lang'
 PLUGINS_DIR = './plugins'
 TEMP_DIR = './tmp'
 
-LOC_SOURCE_FILES = ['agros2d-library/*.cpp', 'agros2d-library/*.h',
-                    'pythonlab-library/*.cpp', 'pythonlab-library/*.h']
-LOC_TARGET_FILES = ['en_US.ts', 'cs_CZ.ts', 'pl_PL.ts',
-                    'ru_RU.ts', 'fr_FR.ts']
+LOC_SOURCE_FILES = ['agros2d-binary/', 'agros2d-library/',
+                    'pythonlab-binary/', 'pythonlab-library/',
+                    'agros2d-solver/', 'util/']
+LOC_TARGET_FILES = ['resources_source/lang/en_US.ts', 'resources_source/lang/cs_CZ.ts',
+                    'resources_source/lang/pl_PL.ts', 'resources_source/lang/ru_RU.ts',
+                    'resources_source/lang/fr_FR.ts']
 
-LOC_PLUGINS_SOURCE_FILES = ['plugins/*.cpp', 'plugins/*.h']
-LOC_PLUGINS_TARGET_FILES = ['plugin_en_US.ts', 'plugin_cs_CZ.ts', 'plugin_pl_PL.ts',
-                            'plugin_ru_RU.ts', 'plugin_fr_FR.ts']
+LOC_PLUGINS_SOURCE_FILES = ['plugins/']
+LOC_PLUGINS_TARGET_FILES = ['resources_source/lang/plugin_en_US.ts',
+                            'resources_source/lang/plugin_cs_CZ.ts', 
+                            'resources_source/lang/plugin_pl_PL.ts',
+                            'resources_source/lang/plugin_ru_RU.ts', 
+                            'resources_source/lang/plugin_fr_FR.ts']
 
 def documentation(format):
     call(['make', format, '-C', DOC_SOURCE_DIR])
@@ -57,16 +62,25 @@ def release_localization():
 
         shutil.copy2('{0}/{1}'.format(LOC_SOURCE_DIR, file), LOC_DIR)
 
+def files_for_localization(source):
+    sources = list()
+    for root, dirs, files in os.walk(source):
+        for file in files:
+            if (file.endswith('.cpp') or file.endswith('.h')) and (not file.startswith('moc_')):
+                sources.append(os.path.join(root, file))
+
+    return sources
+
 def update_localization():
     sources = list()
     for source in LOC_SOURCE_FILES:
-        sources += glob(source)
+      sources += files_for_localization(source)
 
     call(['lupdate'] + sources + ['-ts'] + LOC_TARGET_FILES)
 
     sources = list()
     for source in LOC_PLUGINS_SOURCE_FILES:
-        sources += glob(source)
+      sources += files_for_localization(source)
 
     call(['lupdate'] + sources + ['-ts'] + LOC_PLUGINS_TARGET_FILES)
 
@@ -125,7 +139,7 @@ if __name__ == "__main__":
 
     # localization
     loc = subparsers.add_parser('loc', help='release or update localization')
-    loc.add_argument('-r', '--release', default=True, action='store_true', required=False)
+    loc.add_argument('-r', '--release', default=False, action='store_true', required=False)
     loc.add_argument('-u', '--update', default=False, action='store_true', required=False)
 
     # build
@@ -154,7 +168,7 @@ if __name__ == "__main__":
     # equations
     eqs = subparsers.add_parser('eqs', help='generate equations from modules')
 	
-	# callgrind
+	  # callgrind
     cgrind = subparsers.add_parser('callgrind', help='call callgrind')
 	    
     args = parser.parse_args()
