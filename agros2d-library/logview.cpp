@@ -43,7 +43,7 @@ Log::Log()
 
 LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
     m_printCounter(0)
-{    
+{
     plainLog = new QPlainTextEdit(this);
     plainLog->setReadOnly(true);
     plainLog->setMaximumBlockCount(500);
@@ -529,7 +529,7 @@ void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector
 }
 
 void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep)
-{   
+{
     if (!m_adaptivityErrorGraph)
         return;
 
@@ -608,7 +608,7 @@ void LogDialog::addIcon(const QIcon &icn, const QString &label)
 void LogDialog::tryClose()
 {
     if (Agros2D::problem()->isSolving())
-        Agros2D::log()->printError(tr("Solver"), tr("Problem is being aborted."));
+        Agros2D::log()->printError(tr("Solver"), tr("Solution is being aborted."));
     else
         close();
 }

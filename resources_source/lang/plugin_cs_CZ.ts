@@ -36,12 +36,12 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="428"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="431"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="434"/>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="461"/>
         <source>Local acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrychlení</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="464"/>
@@ -162,12 +162,12 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="194"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="197"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="200"/>
@@ -273,12 +273,12 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="227"/>
         <source>Current density - conductive - real - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - vodivá - reál. složka - x</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="230"/>
         <source>Current density - conductive - real - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - vodivá - reál. složka - y</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="233"/>
@@ -336,12 +336,12 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="636"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="639"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="642"/>
@@ -366,7 +366,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="654"/>
         <source>Temperature coefficient</source>
-        <translation type="unfinished">Koeficient teplotní roztažnosti</translation>
+        <translation>Koeficient teplotní roztažnosti</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="657"/>
@@ -468,12 +468,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="210"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="213"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="219"/>
@@ -523,17 +523,17 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="243"/>
         <source>Maxwell torque</source>
-        <translation type="unfinished"></translation>
+        <translation>Moment (Maxwellova síla)</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="246"/>
         <source>Maxwell force - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Maxwellova síla - x</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="249"/>
         <source>Maxwell force - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Maxwellova síla - y</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="252"/>
@@ -571,7 +571,7 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1352"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1355"/>
@@ -596,12 +596,12 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1367"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1370"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1373"/>
@@ -708,12 +708,12 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="1027"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="1030"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="1033"/>
@@ -841,12 +841,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2290"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2293"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2299"/>
@@ -881,17 +881,17 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2317"/>
         <source>Total current prescribed</source>
-        <translation type="unfinished"></translation>
+        <translation>Předepsaný celkový proud</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2320"/>
         <source>Total current - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Celkový proud - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2323"/>
         <source>Total current - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Celkový proud - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2326"/>
@@ -1066,7 +1066,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2428"/>
         <source>Lorentz torque</source>
-        <translation type="unfinished"></translation>
+        <translation>Moment (Lorentzova síla)</translation>
     </message>
     <message>
         <source>Lorentz force - real</source>
@@ -1109,7 +1109,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2449"/>
         <source>Current - velocity - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. - ind. pohybem - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2452"/>
@@ -1148,17 +1148,17 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2467"/>
         <source>Maxwell torque</source>
-        <translation type="unfinished"></translation>
+        <translation>Moment (Maxwellova síla)</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2470"/>
         <source>Maxwell force - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Maxwellova síla - x</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2473"/>
         <source>Maxwell force - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Maxwellova síla - y</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="2476"/>
@@ -1359,12 +1359,12 @@
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="342"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="345"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="348"/>
@@ -1399,7 +1399,7 @@
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="366"/>
         <source>Time derivative electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Časová derivace intenzity el. pole</translation>
     </message>
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="369"/>
@@ -1474,7 +1474,7 @@
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="411"/>
         <source>Poynting vector</source>
-        <translation type="unfinished">Poytingův vektor</translation>
+        <translation>Poytingův vektor</translation>
     </message>
     <message>
         <source>Poyting vector</source>
@@ -1541,12 +1541,12 @@
     <message>
         <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="320"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="323"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="326"/>
@@ -1685,17 +1685,17 @@
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="695"/>
         <source>Richard&apos;s equation</source>
-        <translation type="unfinished"></translation>
+        <translation>Richardsova rovnice</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="701"/>
         <source>Steady state</source>
-        <translation type="unfinished">Ustálený stav</translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="704"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="707"/>
@@ -1710,12 +1710,12 @@
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="713"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="716"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 norma</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="719"/>
@@ -1765,27 +1765,27 @@
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="746"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="749"/>
         <source>Cross section</source>
-        <translation type="unfinished">Průřez</translation>
+        <translation>Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="752"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="755"/>
         <source>Surface</source>
-        <translation type="unfinished">Plocha</translation>
+        <translation>Plocha</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="762"/>
         <source>The Richards equation represents the movement of water in unsaturated soils.</source>
-        <translation type="unfinished"></translation>
+        <translation>Richardsova rovnice popisuje proudění vody v nenasycené půdě.</translation>
     </message>
 </context>
 </TS>

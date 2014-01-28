@@ -367,7 +367,7 @@ QWidget *FieldWidget::createAdaptivityWidget()
     txtAdaptivityOrderIncrease = new QSpinBox(this);
     txtAdaptivityOrderIncrease->setMinimum(1);
     txtAdaptivityOrderIncrease->setMaximum(10);
-    chkAdaptivitySpaceRefinement = new QCheckBox(tr("Space refinement for hp adaptivity"));
+    chkAdaptivitySpaceRefinement = new QCheckBox(tr("Use space refinement for error estimation"));
     txtAdaptivityBackSteps = new QSpinBox(this);
     txtAdaptivityBackSteps->setMinimum(0);
     txtAdaptivityBackSteps->setMaximum(100);

@@ -845,7 +845,7 @@ Stacktrace:
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="370"/>
-        <source>Space refinement for hp adaptivity</source>
+        <source>Use space refinement for error estimation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1726,7 +1726,7 @@ Stacktrace:
     </message>
     <message>
         <location filename="../../agros2d-library/logview.cpp" line="611"/>
-        <source>Problem is being aborted.</source>
+        <source>Solution is being aborted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5041,7 +5041,7 @@ Voulez-vous enregistrer vos modifications ?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver_newton.cpp" line="133"/>
-        <source>Iteration: %1 (res. norm: %3, rel. change of sol.: %4 %, Jacobian recalculated, damping : %2)</source>
+        <source>Iteration: %1 (res. norm: %3, rel. change of sol.: %4 %, Jacobian recalculated, damping: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
