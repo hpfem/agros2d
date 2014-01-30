@@ -23,9 +23,9 @@ def get_test(file):
     return test
 
 tests = list()
-data_dirs = [pythonlab.datadir('/resources/test/test_suite/internal/data_files/0/'),
-             pythonlab.datadir('/resources/test/test_suite/internal/data_files/21/'),
-             pythonlab.datadir('/resources/test/test_suite/internal/data_files/30/')]
+data_dirs = [pythonlab.datadir('/resources/test/test_suite/core/data_files/0/'),
+             pythonlab.datadir('/resources/test/test_suite/core/data_files/21/'),
+             pythonlab.datadir('/resources/test/test_suite/core/data_files/30/')]
 
 for dir in data_dirs:
     for (path, dirs, files) in os.walk(dir):

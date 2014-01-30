@@ -1,4 +1,4 @@
-__all__ = ["scenario", "adaptivity", "coupled_problems", "fields", "internal", "particle_tracing", "script"]
+__all__ = ["scenario", "adaptivity", "coupled_problems", "fields", "core", "particle_tracing", "script"]
 
 import scenario
 import inspect
@@ -7,7 +7,7 @@ import adaptivity
 import coupled_problems
 import examples
 import fields
-import internal
+import core
 import particle_tracing
 import script
 
@@ -61,14 +61,14 @@ test_script = get_tests([script.problem, script.field, script.geometry,
 """ examples """
 test_examples = examples.examples.tests
 
-""" internal """
-test_internal = get_tests(internal.matrix_solvers)
-test_internal += get_tests(internal.generator)
-test_internal += internal.xslt.tests
+""" core """
+test_core = get_tests(core.matrix_solvers)
+test_core += get_tests(core.generator)
+test_core += core.xslt.tests
 
 """ complete """
 test_complete = test_fields + test_coupled + test_adaptivity + test_tracing +\
-                test_script + test_examples + test_internal
+                test_script + test_examples + test_core
 
 #print(len(test_complete))
 
@@ -130,6 +130,6 @@ coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3,
 coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4,
 coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomains,
-# internal
-internal.matrix_solvers.TestInternalMatrixSolvers
+# core
+core.matrix_solvers.TestInternalMatrixSolvers
 ] + test_script

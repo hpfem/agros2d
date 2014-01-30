@@ -19,8 +19,8 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         agros2d.options.dump_format = "matlab_mat"
         
         # read reference matrix and rhs from file
-        self.reference_mat, self.reference_rhs = self.read_matrix_and_rhs(pythonlab.datadir("/resources/test/test_suite/internal/matrix_solvers_matrix.mat"), 
-                                                                          pythonlab.datadir("/resources/test/test_suite/internal/matrix_solvers_rhs.mat"))
+        self.reference_mat, self.reference_rhs = self.read_matrix_and_rhs(pythonlab.datadir("/resources/test/test_suite/core/matrix_solvers_matrix.mat"), 
+                                                                          pythonlab.datadir("/resources/test/test_suite/core/matrix_solvers_rhs.mat"))
 
     @classmethod
     def tearDownClass(self):
