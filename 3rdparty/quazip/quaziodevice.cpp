@@ -1,8 +1,33 @@
+/*
+Copyright (C) 2005-2014 Sergey A. Tachenov
+
+This file is part of QuaZIP.
+
+QuaZIP is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+QuaZIP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
+
+See COPYING file for the full LGPL text.
+
+Original ZIP package is copyrighted by Gilles Vollant and contributors,
+see quazip/(un)zip.h files for details. Basically it's the zlib license.
+*/
+
 #include "quaziodevice.h"
 
 #define QUAZIO_INBUFSIZE 4096
 #define QUAZIO_OUTBUFSIZE 4096
 
+/// \cond internal
 class QuaZIODevicePrivate {
     friend class QuaZIODevice;
     QuaZIODevicePrivate(QIODevice *io);
@@ -82,6 +107,8 @@ int QuaZIODevicePrivate::doFlush(QString &error)
   return flushed;
 }
 
+/// \endcond
+
 // #define QUAZIP_ZIODEVICE_DEBUG_OUTPUT
 // #define QUAZIP_ZIODEVICE_DEBUG_INPUT
 #ifdef QUAZIP_ZIODEVICE_DEBUG_OUTPUT
@@ -114,6 +141,16 @@ QIODevice *QuaZIODevice::getIoDevice() const
 
 bool QuaZIODevice::open(QIODevice::OpenMode mode)
 {
+    if ((mode & QIODevice::Append) != 0) {
+        setErrorString(trUtf8("QIODevice::Append is not supported for"
+                    " QuaZIODevice"));
+        return false;
+    }
+    if ((mode & QIODevice::ReadWrite) == QIODevice::ReadWrite) {
+        setErrorString(trUtf8("QIODevice::ReadWrite is not supported for"
+                    " QuaZIODevice"));
+        return false;
+    }
     if ((mode & QIODevice::ReadOnly) != 0) {
         if (inflateInit(&d->zins) != Z_OK) {
             setErrorString(d->zins.msg);

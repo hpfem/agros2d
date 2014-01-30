@@ -2,21 +2,22 @@
 #define QUA_ZIPNEWINFO_H
 
 /*
-Copyright (C) 2005-2011 Sergey A. Tachenov
+Copyright (C) 2005-2014 Sergey A. Tachenov
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation; either version 2 of the License, or (at
-your option) any later version.
+This file is part of QuaZIP.
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
-General Public License for more details.
+QuaZIP is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+QuaZIP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with this program; if not, write to the Free Software Foundation,
-Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
 
 See COPYING file for the full LGPL text.
 
@@ -25,6 +26,7 @@ quazip/(un)zip.h files for details, basically it's zlib license.
  **/
 
 #include <QDateTime>
+#include <QFile>
 #include <QString>
 
 #include "quazip_global.h"
@@ -34,6 +36,14 @@ quazip/(un)zip.h files for details, basically it's zlib license.
  * ZIP archive. At least name should be set to something correct before
  * passing this structure to
  * QuaZipFile::open(OpenMode,const QuaZipNewInfo&,int,int,bool).
+ *
+ * Zip64 support of this structure is slightly limited: in the raw mode (when
+ * a pre-compressed file is written into a ZIP file as-is), it is necessary
+ * to specify the uncompressed file size and the appropriate field is 32 bit.
+ * Since the raw mode is used extremely rare, there is no real need to have
+ * a separate QuaZipNewInfo64 structure like QuaZipFileInfo64. It may be added
+ * in the future though, if there is a demand for the raw mode with zip64
+ * archives.
  **/
 struct QUAZIP_EXPORT QuaZipNewInfo {
   /// File name.
@@ -51,6 +61,11 @@ struct QUAZIP_EXPORT QuaZipNewInfo {
   /// File internal attributes.
   quint16 internalAttr;
   /// File external attributes.
+  /**
+    The highest 16 bits contain Unix file permissions and type (dir or
+    file). The constructor QuaZipNewInfo(const QString&, const QString&)
+    takes permissions from the provided file.
+    */
   quint32 externalAttr;
   /// File comment.
   /** Will be encoded using QuaZip::getCommentCodec().
@@ -72,10 +87,10 @@ struct QUAZIP_EXPORT QuaZipNewInfo {
    **/
   QuaZipNewInfo(const QString& name);
   /// Constructs QuaZipNewInfo instance.
-  /** Initializes name with \a name and dateTime with timestamp of the
-   * file named \a file. If the \a file does not exists or its timestamp
+  /** Initializes name with \a name. Timestamp and permissions are taken
+   * from the specified file. If the \a file does not exists or its timestamp
    * is inaccessible (e. g. you do not have read permission for the
-   * directory file in), uses current date and time. Attributes are
+   * directory file in), uses current time and zero permissions. Other attributes are
    * initialized with zeros, comment and extra field with null values.
    * 
    * \sa setFileDateTime()
@@ -97,6 +112,20 @@ struct QUAZIP_EXPORT QuaZipNewInfo {
    * file is inaccessible).
    **/
   void setFileDateTime(const QString& file);
+  /// Sets the file permissions from the existing file.
+  /**
+    Takes permissions from the file and sets the high 16 bits of
+    external attributes. Uses QFileInfo to get permissions on all
+    platforms.
+    */
+  void setFilePermissions(const QString &file);
+  /// Sets the file permissions.
+  /**
+    Modifies the highest 16 bits of external attributes. The type part
+    is set to dir if the name ends with a slash, and to regular file
+    otherwise.
+    */
+  void setPermissions(QFile::Permissions permissions);
 };
 
 #endif

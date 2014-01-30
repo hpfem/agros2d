@@ -10,6 +10,7 @@ SET(SOURCES JlCompress.cpp
     quazipdir.cpp 
     quazipfile.cpp 
     quazipnewinfo.cpp 
+    quazipfileinfo.cpp
     unzip.c 
     zip.c
   )
