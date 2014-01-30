@@ -91,7 +91,7 @@ void PostHermes::processInitialMesh()
         // init linearizer for initial mesh
         try
         {
-            m_linInitialMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
+            m_linInitialMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(0));
             m_linInitialMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -121,7 +121,7 @@ void PostHermes::processSolutionMesh()
 
         try
         {
-            m_linSolutionMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
+            m_linSolutionMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(0));
             m_linSolutionMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -219,8 +219,8 @@ void PostHermes::processRangeContour()
         // process solution.
         try
         {
-            // m_linContourView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
-            m_linContourView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
+            m_linContourView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
+            // m_linContourView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
             m_linContourView->process_solution(slnContourView, Hermes::Hermes2D::H2D_FN_VAL_0);
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -284,9 +284,28 @@ void PostHermes::processRangeScalar()
         // process solution
         try
         {
-            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH));
-            // m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2)); // 13x times slower
+            /*
+            QTime time;
+
+            time.start();
+            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
             m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
+            qDebug() << "LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH)" << time.elapsed();
+
+            time.start();
+            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH));
+            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
+            qDebug() << "LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH)" << time.elapsed();
+
+            time.start();
+            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
+            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
+            qDebug() << "LinearizerCriterionFixed(2)" << time.elapsed();
+            */
+            // time.start();
+            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
+            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
+            // qDebug() << "LinearizerCriterionFixed(1)" << time.elapsed();
 
             if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
