@@ -3,9 +3,6 @@ import numpy as np
 import pythonlab
 from scipy import interpolate
 
-pl.rc('text', usetex=True)
-pl.rc('font', family='serif')
-
 data = np.loadtxt(pythonlab.datadir('resources/examples/PythonLab/Polynomial regression.csv'), delimiter=",")
 x = data[:, 0]
 y = data[:, 1]
