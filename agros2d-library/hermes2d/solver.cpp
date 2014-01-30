@@ -74,7 +74,6 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
 {
     initialGuess = initial_guess;
 
-    fileCommand = QString("%1/solver_command").arg(cacheProblemDir());
     fileMatrix = QString("%1/solver_matrix").arg(cacheProblemDir());
     fileRHS = QString("%1/solver_rhs").arg(cacheProblemDir());
     fileInitial = QString("%1/solver_initial").arg(cacheProblemDir());
@@ -131,12 +130,8 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
     connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
     connect(m_process, SIGNAL(finished(int)), this, SLOT(processFinished(int)));
 
-    runSolver();
-
-    QFile script(fileCommand);
-    script.setPermissions(QFile::ReadUser | QFile::ExeUser);
-
-    m_process->start(fileCommand);
+    setSolverCommand();
+    m_process->start(command);
 
     // execute an event loop to process the request (nearly-synchronous)
     QEventLoop eventLoop;
@@ -153,7 +148,7 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
     this->sln = new double[slnVector.get_size()];
     memcpy(this->sln, slnVector.v, slnVector.get_size() * sizeof(double));
 
-    QFile::remove(fileCommand);
+    QFile::remove(command);
     if (initialGuess)
         QFile::remove(fileInitial);
     QFile::remove(fileMatrix);
@@ -192,58 +187,20 @@ void AgrosExternalSolverExternal::processFinished(int exitCode)
     }
 }
 
-AgrosExternalSolverOctave::AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs)
-    : AgrosExternalSolverExternal(m, rhs)
-{
-}
-
-void AgrosExternalSolverOctave::runSolver()
-{
-    QString str = "#! /usr/bin/octave -qf\n";
-    if (initialGuess)
-        str += QString("load(\"%1\", \"initial\");\n").arg(fileInitial);
-    str += QString("load(\"%1\", \"matrix\");\n").arg(fileMatrix);
-    str += QString("load(\"%1\", \"rhs\");\n").arg(fileRHS);
-    if (!initialGuess)
-        // direct solver
-        str += QString("sln = matrix \\ rhs;\n");
-    else
-    {
-        // iterative solver
-        str += QString("[sln, flag, relres, iter] = gmres(matrix, rhs, [], 1e-3, [], [], [], initial);\n");
-        str += QString("file_id = fopen('%1', 'w');\n").arg(QString("%1/solver_info.txt").arg(cacheProblemDir()));
-        str += QString("fprintf(file_id, 'iter = %i\\n', iter(2));\n");
-        str += QString("fclose(file_id);\n");
-    }
-    str += QString("save -mat \"%1\" sln;").arg(fileSln); // -ascii
-
-    writeStringContent(fileCommand, str);
-
-    /*
-    if (initialGuess)
-    {
-        QString str = readFileContent(QString("%1/solver_info.txt").arg(cacheProblemDir()));
-        qDebug() << str;
-    }
-    */
-}
-
 AgrosExternalSolverMUMPS::AgrosExternalSolverMUMPS(CSCMatrix<double> *m, SimpleVector<double> *rhs)
     : AgrosExternalSolverExternal(m, rhs)
 {
 }
 
-void AgrosExternalSolverMUMPS::runSolver()
+void AgrosExternalSolverMUMPS::setSolverCommand()
 {
-    QString str = QString("%1/solver_external -o mumps -m %2 -r %3 -s %4").
+    command = QString("\"%1/solver_external\" -o mumps -m \"%2\" -r \"%3\" -s \"%4\"").
             arg(QApplication::applicationDirPath()).
             arg(fileMatrix).
             arg(fileRHS).
             arg(fileSln);
     // if (initialGuess)
     //    str += QString("load(\"%1\", \"initial\");\n").arg(fileInitial);
-
-    writeStringContent(fileCommand, str);
 }
 
 AgrosExternalSolverUMFPack::AgrosExternalSolverUMFPack(CSCMatrix<double> *m, SimpleVector<double> *rhs)
@@ -251,17 +208,15 @@ AgrosExternalSolverUMFPack::AgrosExternalSolverUMFPack(CSCMatrix<double> *m, Sim
 {
 }
 
-void AgrosExternalSolverUMFPack::runSolver()
+void AgrosExternalSolverUMFPack::setSolverCommand()
 {
-    QString str = QString("%1/solver_external -o umfpack -m %2 -r %3 -s %4").
+    command = QString("\"%1/solver_external\" -o umfpack -m \"%2\" -r \"%3\" -s \"%4\"").
             arg(QApplication::applicationDirPath()).
             arg(fileMatrix).
             arg(fileRHS).
             arg(fileSln);
     // if (initialGuess)
     //    str += QString("load(\"%1\", \"initial\");\n").arg(fileInitial);
-
-    writeStringContent(fileCommand, str);
 }
 
 template <typename Scalar>

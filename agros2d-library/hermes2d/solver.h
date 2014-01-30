@@ -83,12 +83,13 @@ public:
     void solve();
     void solve(double* initial_guess);
 
-    virtual void runSolver() = 0;
+    virtual void setSolverCommand() = 0;
 
 protected:
     QProcess *m_process;
 
-    QString fileCommand;
+    QString command;
+
     QString fileMatrix;
     QString fileRHS;
     QString fileInitial;
@@ -101,20 +102,12 @@ protected slots:
     void processFinished(int exitCode);
 };
 
-class AgrosExternalSolverOctave : public AgrosExternalSolverExternal
-{
-public:
-    AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
-
-    virtual void runSolver();
-};
-
 class AgrosExternalSolverMUMPS : public AgrosExternalSolverExternal
 {
 public:
     AgrosExternalSolverMUMPS(CSCMatrix<double> *m, SimpleVector<double> *rhs);
 
-    virtual void runSolver();
+    virtual void setSolverCommand();
 };
 
 class AgrosExternalSolverUMFPack : public AgrosExternalSolverExternal
@@ -122,7 +115,7 @@ class AgrosExternalSolverUMFPack : public AgrosExternalSolverExternal
 public:
     AgrosExternalSolverUMFPack(CSCMatrix<double> *m, SimpleVector<double> *rhs);
 
-    virtual void runSolver();
+    virtual void setSolverCommand();
 };
 
 struct TimeStepInfo
