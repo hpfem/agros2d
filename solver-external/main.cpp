@@ -59,8 +59,8 @@ int main(int argc, char *argv[])
             solver = new MumpsSolver<double>(static_cast<MumpsMatrix<double> *>(matrix), rhs);
         }
 
-        matrix->import_from_file(matrixArg.getValue().c_str(), "matrix", EXPORT_FORMAT_MATLAB_MATIO);
-        rhs->import_from_file(rhsArg.getValue().c_str(), "rhs", EXPORT_FORMAT_MATLAB_MATIO);
+        matrix->import_from_file(matrixArg.getValue().c_str(), "matrix", EXPORT_FORMAT_BSON);
+        rhs->import_from_file(rhsArg.getValue().c_str(), "rhs", EXPORT_FORMAT_BSON);
 
         // solve
         // solver->set_verbose_output(true);
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         SimpleVector<double> *solution = new SimpleVector<double>(rhs->get_size());
         solution->alloc(rhs->get_size());
         solution->set_vector(solver->get_sln_vector());
-        solution->export_to_file(solutionArg.getValue(), "sln", EXPORT_FORMAT_MATLAB_MATIO);
+        solution->export_to_file(solutionArg.getValue(), "sln", EXPORT_FORMAT_BSON);
 
         delete matrix;
         delete rhs;

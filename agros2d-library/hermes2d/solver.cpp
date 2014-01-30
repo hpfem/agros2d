@@ -79,11 +79,11 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
     fileInitial = QString("%1/solver_initial").arg(cacheProblemDir());
     fileSln = QString("%1/solver_sln").arg(cacheProblemDir());
 
-    this->set_matrix_export_format(EXPORT_FORMAT_MATLAB_MATIO);
+    this->set_matrix_export_format(EXPORT_FORMAT_BSON);
     this->set_matrix_filename(fileMatrix.toStdString());
     this->set_matrix_varname("matrix");
     this->set_matrix_number_format((char *) "%g");
-    this->set_rhs_export_format(EXPORT_FORMAT_MATLAB_MATIO);
+    this->set_rhs_export_format(EXPORT_FORMAT_BSON);
     this->set_rhs_filename(fileRHS.toStdString());
     this->set_rhs_varname("rhs");
     this->set_rhs_number_format((char *) "%g");
@@ -111,7 +111,7 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
         initialVector.set_vector(initialGuess);
         initialVector.export_to_file(fileInitial.toStdString().c_str(),
                                      (char *) "initial",
-                                     EXPORT_FORMAT_MATLAB_MATIO,
+                                     EXPORT_FORMAT_BSON,
                                      (char *) "%lf");
         initialVector.free();
     }
@@ -141,7 +141,7 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
 
     SimpleVector<double> slnVector;
     // time.start();
-    slnVector.import_from_file((char*) fileSln.toStdString().c_str(), "sln", EXPORT_FORMAT_MATLAB_MATIO);
+    slnVector.import_from_file((char*) fileSln.toStdString().c_str(), "sln", EXPORT_FORMAT_BSON);
     // qDebug() << "slnVector import_from_file" << time.elapsed();
 
     delete [] this->sln;
