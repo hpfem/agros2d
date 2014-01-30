@@ -36,6 +36,7 @@ Source: libs\*.dll; DestDir: {app}/libs
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: agros2d_solver.exe; DestDir: {app}; DestName: Solver.exe
 ;Source: agros2d_remote.exe; DestDir: {app}; DestName: Remote.exe
+Source: solver_external.exe; DestDir: {app}; DestName: Solver_External.exe
 Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: resources\*; DestDir: {app}/resources; Flags: recursesubdirs
 Source: ..\agros2d-win32\*; DestDir: {app}; Flags: recursesubdirs
