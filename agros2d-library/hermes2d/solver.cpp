@@ -116,7 +116,8 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
         initialVector.free();
     }
 
-    this->m->free();
+    if (!Agros2D::problem()->isTransient())
+        this->m->free();
     this->rhs->free();
 
     // restore state
