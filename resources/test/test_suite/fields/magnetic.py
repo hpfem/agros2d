@@ -3,13 +3,13 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 # abstract test suite class
-class TestMagneticPlanarGeneralTestSuite(Agros2DTestCase):
-    def setUpGeneral(self, totalCurrent):  
+class TestMagneticPlanar(Agros2DTestCase):
+    def setUp(self):  
         # model
-        problem = agros2d.problem(clear = True)
-        problem.coordinate_type = "planar"
-        problem.mesh_type = "triangle"
-        problem.frequency = 100
+        self.problem = agros2d.problem(clear = True)
+        self.problem.coordinate_type = "planar"
+        self.problem.mesh_type = "triangle"
+        self.problem.frequency = 100
         
         # disable view
         agros2d.view.mesh.disable()
@@ -24,57 +24,49 @@ class TestMagneticPlanarGeneralTestSuite(Agros2DTestCase):
         
         self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
         
-        if totalCurrent:
-            self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_total_current_prescribed" : 1, "magnetic_total_current_real" : 1e6*1.225e-2})
-        else:
-            self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6})
-
         self.magnetic.add_material("Fe", {"magnetic_permeability" : 500}) 
         self.magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
         self.magnetic.add_material("Magnet", {"magnetic_permeability" : 1.11, "magnetic_remanence" : 0.1, "magnetic_remanence_angle" : -30}) 
         self.magnetic.add_material("Velocity", {"magnetic_permeability" : 1, "magnetic_conductivity" : 1e7, "magnetic_velocity_x" : 2})
         
         # geometry
-        geometry = agros2d.geometry
+        self.geometry = agros2d.geometry
         
         # edges
-        geometry.add_edge(-0.5, 1, 0.5, 1, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.5, -1, -0.5, -1, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(-0.2, 0.6, 0, 0.6)
-        geometry.add_edge(0, 0.3, 0, 0.6)
-        geometry.add_edge(-0.2, 0.3, 0, 0.3)
-        geometry.add_edge(-0.2, 0.6, -0.2, 0.3)
-        geometry.add_edge(-0.035, 0.135, 0.035, 0.135)
-        geometry.add_edge(0.035, 0.135, 0.035, -0.04)
-        geometry.add_edge(0.035, -0.04, -0.035, -0.04)
-        geometry.add_edge(-0.035, 0.135, -0.035, -0.04)
-        geometry.add_edge(0, -0.5, 0.3, -0.5)
-        geometry.add_edge(0.3, -0.5, 0.3, -0.32)
-        geometry.add_edge(0.3, -0.32, 0, -0.32)
-        geometry.add_edge(0, -0.32, 0, -0.5)
-        geometry.add_edge(-0.5, 1, -0.5, -0.15, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(-0.5, -0.15, -0.5, -0.2, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(-0.5, -0.2, -0.5, -1, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.5, 1, 0.5, -0.15, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.5, -0.15, 0.5, -0.2, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.5, -0.2, 0.5, -1, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.5, -0.2, -0.5, -0.2)
-        geometry.add_edge(0.5, -0.15, -0.5, -0.15)
+        self.geometry.add_edge(-0.5, 1, 0.5, 1, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.5, -1, -0.5, -1, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(-0.2, 0.6, 0, 0.6)
+        self.geometry.add_edge(0, 0.3, 0, 0.6)
+        self.geometry.add_edge(-0.2, 0.3, 0, 0.3)
+        self.geometry.add_edge(-0.2, 0.6, -0.2, 0.3)
+        self.geometry.add_edge(-0.035, 0.135, 0.035, 0.135)
+        self.geometry.add_edge(0.035, 0.135, 0.035, -0.04)
+        self.geometry.add_edge(0.035, -0.04, -0.035, -0.04)
+        self.geometry.add_edge(-0.035, 0.135, -0.035, -0.04)
+        self.geometry.add_edge(0, -0.5, 0.3, -0.5)
+        self.geometry.add_edge(0.3, -0.5, 0.3, -0.32)
+        self.geometry.add_edge(0.3, -0.32, 0, -0.32)
+        self.geometry.add_edge(0, -0.32, 0, -0.5)
+        self.geometry.add_edge(-0.5, 1, -0.5, -0.15, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(-0.5, -0.15, -0.5, -0.2, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(-0.5, -0.2, -0.5, -1, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.5, 1, 0.5, -0.15, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.5, -0.15, 0.5, -0.2, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.5, -0.2, 0.5, -1, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.5, -0.2, -0.5, -0.2)
+        self.geometry.add_edge(0.5, -0.15, -0.5, -0.15)
         
         # labels
-        geometry.add_label(-0.0959509, 0.445344, area = 0.0002, materials = {"magnetic" : "Fe"})
-        geometry.add_label(0.00301448, 0.0404858, area = 0.005, materials = {"magnetic" : "Cu"})
-        geometry.add_label(-0.145434, -0.706253, area = 0.01, materials = {"magnetic" : "Air"})
-        geometry.add_label(0.143596, -0.364811, materials = {"magnetic" : "Magnet"})
-        geometry.add_label(0.310203, 0.631164, materials = {"magnetic" : "Air"})
-        geometry.add_label(-0.295858, -0.182894, materials = {"magnetic" : "Velocity"})
+        self.geometry.add_label(-0.0959509, 0.445344, area = 0.0002, materials = {"magnetic" : "Fe"})
+        self.geometry.add_label(-0.145434, -0.706253, area = 0.01, materials = {"magnetic" : "Air"})
+        self.geometry.add_label(0.143596, -0.364811, materials = {"magnetic" : "Magnet"})
+        self.geometry.add_label(0.310203, 0.631164, materials = {"magnetic" : "Air"})
+        self.geometry.add_label(-0.295858, -0.182894, materials = {"magnetic" : "Velocity"})
         
         agros2d.view.zoom_best_fit()
         
-        # solve problem
-        problem.solve()
 
-    def test_values(self):                  
+    def general_test_values(self):                  
         # point value
         point = self.magnetic.local_values(0.018895, -0.173495)
         self.value_test("Magnetic potential", point["Ar"], 0.002978)
@@ -92,7 +84,7 @@ class TestMagneticPlanarGeneralTestSuite(Agros2DTestCase):
         self.value_test("Lorentz force - y", point["Fly"], -1671.99571)
         
         # volume integral
-        volume = self.magnetic.volume_integrals([5])
+        volume = self.magnetic.volume_integrals([4])
         self.value_test("Energy", volume["Wm"], 3.088946)
         self.value_test("Losses", volume["Pj"], 220.022114)
         self.value_test("Lorentz force - x", volume["Flx"], -110.011057)
@@ -105,15 +97,19 @@ class TestMagneticPlanarGeneralTestSuite(Agros2DTestCase):
         # surface integral
         surface = self.magnetic.surface_integrals([2, 3, 4, 5])
         self.value_test("Surface Maxwell force - x", surface["Ftx"], 2.66, 0.15)
-        self.value_test("Surface Maxwell force - y", surface["Fty"], -11.87, 0.15)            
-
-class TestMagneticPlanar(TestMagneticPlanarGeneralTestSuite):
-    def setUp(self):  
-        self.setUpGeneral(False)
+        self.value_test("Surface Maxwell force - y", surface["Fty"], -11.87, 0.15)        
         
-class TestMagneticPlanarTotalCurrent(TestMagneticPlanarGeneralTestSuite):
-    def setUp(self):  
-        self.setUpGeneral(True)
+    def test_values_total_current(self):
+        self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_total_current_prescribed" : 1, "magnetic_total_current_real" : 1e6*1.225e-2})
+        self.geometry.add_label(0.00301448, 0.0404858, area = 0.005, materials = {"magnetic" : "Cu"})
+        self.problem.solve()
+        self.general_test_values()
+
+    def test_values_current_density(self):
+        self.magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 1e6})
+        self.geometry.add_label(0.00301448, 0.0404858, area = 0.005, materials = {"magnetic" : "Cu"})
+        self.problem.solve()
+        self.general_test_values()
             
 # abstract test suite class            
 class TestMagneticAxisymmetricGeneralTestSuite(Agros2DTestCase):
@@ -1195,7 +1191,6 @@ if __name__ == '__main__':
     suite = ut.TestSuite()
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticPlanarTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticAxisymmetricTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticNonlinPlanar))

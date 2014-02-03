@@ -88,7 +88,6 @@ class TestSaveAdaptiveSolution(Agros2DTestCase):
         self.problem.solve()
         self.assertTrue(save_solution_test())
     
-    # temporary disabled
     def test_transient(self):
         self.problem.time_step_method = "fixed"
         self.problem.time_total = 3
