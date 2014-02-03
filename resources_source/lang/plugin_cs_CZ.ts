@@ -1700,12 +1700,12 @@
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="707"/>
         <source>Pressure head</source>
-        <translation type="unfinished"></translation>
+        <translation>Tlaková výška</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="710"/>
         <source>Darcy velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Darcyho rychlost</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="713"/>
@@ -1720,47 +1720,47 @@
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="719"/>
         <source>Saturated hydraulic conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Saturovaná hydraulická vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="722"/>
         <source>Van Genuchten&apos;s parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Van Genuchtenův parametr</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="725"/>
         <source>Storativity</source>
-        <translation type="unfinished"></translation>
+        <translation>Storativita</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="728"/>
         <source>Saturated water content</source>
-        <translation type="unfinished"></translation>
+        <translation>Množství saturované vody</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="731"/>
         <source>Residual water content</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbytkové množství saturované vody</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="734"/>
         <source>Constitutive relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstitutivní vztahy</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="737"/>
         <source>van Genuchten</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="740"/>
         <source>Hydraulic conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Hydraulická vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="743"/>
         <source>Specific moisture capacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Objemová vlhkost</translation>
     </message>
     <message>
         <location filename="../../plugins/richards/richards_interface.cpp" line="746"/>
