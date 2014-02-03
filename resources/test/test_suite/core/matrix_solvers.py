@@ -111,7 +111,7 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         rhs = rhs_object["rhs"]
         
         return matrix, rhs
-        
+
     def test_mumps(self):
         # MUMPS
         filename_mumps_matrix, filename_mumps_rhs = self.model("mumps")
@@ -150,7 +150,17 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
                         "PARALUTION AMG matrix failed.")
         self.assertTrue(np.allclose(self.reference_rhs, paralution_amg_rhs, rtol=1e-15, atol=1e-10), 
                         "PARALUTION AMG rhs failed.")
+
+    def test_external(self):
+        # external
+        filename_external_matrix, filename_external_rhs = self.model("external")
+        external_mat, external_rhs = self.read_matrix_and_rhs(filename_external_matrix, filename_external_rhs)
         
+        self.assertTrue(np.allclose(self.reference_mat.todense(), external_mat.todense(), rtol=1e-15, atol=1e-15), 
+                        "EXTERNAL matrix failed.")
+        self.assertTrue(np.allclose(self.reference_rhs, external_rhs, rtol=1e-15, atol=1e-10), 
+                        "EXTERNAL rhs failed.")        
+
 if __name__ == '__main__':        
     import unittest as ut
     
