@@ -97,7 +97,6 @@ fields.heat.TestHeatTransientAxisymmetric,
 # magnetic field
 fields.magnetic.TestMagneticPlanar,
 fields.magnetic.TestMagneticAxisymmetric,
-fields.magnetic.TestMagneticAxisymmetricTotalCurrent,
 fields.magnetic.TestMagneticHarmonicPlanar,
 fields.magnetic.TestMagneticHarmonicAxisymmetric,
 fields.magnetic.TestMagneticHarmonicPlanarTotalCurrent,
