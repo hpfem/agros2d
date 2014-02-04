@@ -250,10 +250,17 @@ LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent),
 
     createControls();
 
-    setMinimumSize(550, 250);
+    int w = 2.0/3.0 * QApplication::desktop()->screenGeometry().width();
+    int h = 2.0/3.0 * QApplication::desktop()->screenGeometry().height();
 
-    QSettings settings;
-    restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
+    setMinimumSize(w, h);
+    setMaximumSize(w, h);
+
+    move(QApplication::activeWindow()->pos().x() + (QApplication::activeWindow()->width() - width()) / 2.0,
+         QApplication::activeWindow()->pos().y() + (QApplication::activeWindow()->height() - height()) / 2.0);
+
+    // QSettings settings;
+    // restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
 }
 
 void LogDialog::closeEvent(QCloseEvent *e)
@@ -272,8 +279,8 @@ void LogDialog::reject()
 
 LogDialog::~LogDialog()
 {
-    QSettings settings;
-    settings.setValue("LogDialog/Geometry", saveGeometry());
+    // QSettings settings;
+    // settings.setValue("LogDialog/Geometry", saveGeometry());
 }
 
 void LogDialog::createControls()
