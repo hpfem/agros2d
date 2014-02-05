@@ -55,9 +55,8 @@ void SolverAgros::clearSteps()
 
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
-    // return new AgrosExternalSolverMUMPS(m, rhs);
-    return new AgrosExternalSolverUMFPack(m, rhs);
-    // return new AgrosExternalSolverOctave(m, rhs);
+    return new AgrosExternalSolverMUMPS(m, rhs);
+    // return new AgrosExternalSolverUMFPack(m, rhs);
 }
 
 AgrosExternalSolverExternal::AgrosExternalSolverExternal(CSCMatrix<double> *m, SimpleVector<double> *rhs)
