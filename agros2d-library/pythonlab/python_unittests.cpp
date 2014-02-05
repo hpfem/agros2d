@@ -447,7 +447,7 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
             dataTimeSteps += "]";
 
             // chart time step vs. steps
-            QString testChart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_test\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { mode: 'time', timeformat: '%d/%m/%y', axisLabel: 'Date' } ], yaxes: [ { axisLabel: 'Elapsed time (ms)' } ] });});</script>").
+            QString testChart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_test\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: false }, points: { show: false }, bars: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { mode: 'time', timeformat: '%d/%m/%y', axisLabel: 'Date' } ], yaxes: [ { axisLabel: 'Elapsed time (ms)' } ] });});</script>").
                     arg(dataTimeSteps);
 
             testsTemplate.ShowSection("TEST_CHART_JS");
