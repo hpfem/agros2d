@@ -411,9 +411,9 @@ void FormScript::showWidget()
 void FormScript::designer()
 {
     QString designerBinary = "designer";
-    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "designer.exe"))
-        designerBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "designer.exe\"";
-    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "designer"))
+    if (QFile::exists(QApplication::applicationDirPath() + "/Designer.exe"))
+        designerBinary = "\"" + QApplication::applicationDirPath() + "/designer.exe\"";
+    else if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "designer"))
         designerBinary = QApplication::applicationDirPath() + QDir::separator() + "designer";
 
     process->start(QString("%1 \"%2\"").arg(designerBinary).arg(m_fileName));
