@@ -159,10 +159,7 @@ void SceneViewCommon::setupViewport(int w, int h)
 
 void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 {
-    glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossRed).toInt() / 255.0 * 2.0/3.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossGreen).toInt() / 255.0 * 2.0/3.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossBlue).toInt() / 255.0 * 2.0/3.0);
-
+    glColor3d(COLORCROSS[0] * 2.0/3.0, COLORCROSS[1] * 2.0/3.0, COLORCROSS[2] * 2.0/3.0);
     glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
     printAt(penX, penY, text, m_charDataRulers);
 }

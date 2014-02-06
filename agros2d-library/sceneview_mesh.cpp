@@ -159,9 +159,7 @@ void SceneViewMesh::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0, 0);
+    glClearColor(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2], 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
@@ -213,10 +211,8 @@ void SceneViewMesh::paintGeometry()
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
-        glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
+        glColor3d(COLOREDGE[0], COLOREDGE[1], COLOREDGE[2]);
+        glLineWidth(EDGEWIDTH);
 
         if (fabs(edge->angle()) < EPS_ZERO)
         {
@@ -263,9 +259,7 @@ void SceneViewMesh::paintInitialMesh()
         loadProjection2d(true);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshBlue).toInt() / 255.0);
+        glColor3d(COLORINITIALMESH[0], COLORINITIALMESH[1], COLORINITIALMESH[2]);
         glLineWidth(1.3);
 
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -303,9 +297,7 @@ void SceneViewMesh::paintSolutionMesh()
         loadProjection2d(true);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshBlue).toInt() / 255.0);
+        glColor3d(COLORSOLUTIONMESH[0], COLORSOLUTIONMESH[1], COLORSOLUTIONMESH[2]);
         glLineWidth(1.3);
 
         glEnableClientState(GL_VERTEX_ARRAY);

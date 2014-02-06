@@ -63,10 +63,7 @@ void SettingsWidget::load()
     chkShowAxes->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool());
     chkShowRulers->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool());
 
-    chkZoomToMouse->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ZoomToMouse).toBool());
-    txtGeometryNodeSize->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt());
-    txtGeometryEdgeWidth->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
-    txtGeometryLabelSize->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt());    
+    chkZoomToMouse->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ZoomToMouse).toBool()); 
 
     // 3d
     chkView3DLighting->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool());
@@ -79,45 +76,7 @@ void SettingsWidget::load()
     // deform shape
     chkDeformContour->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool());
     chkDeformScalar->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool());
-    chkDeformVector->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool());
-
-    // colors
-    colorBackground->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt(),
-                                     Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt(),
-                                     Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt()));
-    colorGrid->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridRed).toInt(),
-                               Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridGreen).toInt(),
-                               Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridBlue).toInt()));
-    colorCross->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossRed).toInt(),
-                                Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossGreen).toInt(),
-                                Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossBlue).toInt()));
-    colorNodes->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorNodesRed).toInt(),
-                                Agros2D::problem()->setting()->value(ProblemSetting::View_ColorNodesGreen).toInt(),
-                                Agros2D::problem()->setting()->value(ProblemSetting::View_ColorNodesBlue).toInt()));
-    colorEdges->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt(),
-                                Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt(),
-                                Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt()));
-    colorLabels->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorLabelsRed).toInt(),
-                                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorLabelsGreen).toInt(),
-                                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorLabelsBlue).toInt()));
-    colorContours->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursRed).toInt(),
-                                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursGreen).toInt(),
-                                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursBlue).toInt()));
-    colorVectors->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorVectorsRed).toInt(),
-                                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorVectorsGreen).toInt(),
-                                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorVectorsBlue).toInt()));
-    colorInitialMesh->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshRed).toInt(),
-                                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshGreen).toInt(),
-                                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshBlue).toInt()));
-    colorSolutionMesh->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshRed).toInt(),
-                                       Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshGreen).toInt(),
-                                       Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshBlue).toInt()));
-    colorHighlighted->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt(),
-                                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt(),
-                                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt()));
-    colorSelected->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt(),
-                                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt(),
-                                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt()));
+    chkDeformVector->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool());    
 }
 
 void SettingsWidget::save()
@@ -135,10 +94,6 @@ void SettingsWidget::save()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, chkShowAxes->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, chkShowRulers->isChecked());
 
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_NodeSize, txtGeometryNodeSize->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_EdgeWidth, txtGeometryEdgeWidth->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_LabelSize, txtGeometryLabelSize->value());
-
     // 3d
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DLighting, chkView3DLighting->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DAngle, txtView3DAngle->value());
@@ -150,72 +105,17 @@ void SettingsWidget::save()
     // deform shape
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformScalar, chkDeformScalar->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformContour, chkDeformContour->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformVector, chkDeformVector->isChecked());
-
-    // color
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorBackgroundRed, colorBackground->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorBackgroundGreen, colorBackground->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorBackgroundBlue, colorBackground->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorGridRed, colorGrid->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorGridGreen, colorGrid->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorGridBlue, colorGrid->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorCrossRed, colorCross->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorCrossGreen, colorCross->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorCrossBlue, colorCross->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorNodesRed, colorNodes->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorNodesGreen, colorNodes->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorNodesBlue, colorNodes->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorEdgesRed, colorEdges->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorEdgesGreen, colorEdges->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorEdgesBlue, colorEdges->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorLabelsRed, colorLabels->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorLabelsGreen, colorLabels->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorLabelsBlue, colorLabels->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorContoursRed, colorContours->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorContoursGreen, colorContours->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorContoursBlue, colorContours->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorVectorsRed, colorVectors->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorVectorsGreen, colorVectors->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorVectorsBlue, colorVectors->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorInitialMeshRed, colorInitialMesh->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorInitialMeshGreen, colorInitialMesh->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorInitialMeshBlue, colorInitialMesh->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSolutionMeshRed, colorSolutionMesh->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSolutionMeshGreen, colorSolutionMesh->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSolutionMeshBlue, colorSolutionMesh->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorHighlightedRed, colorHighlighted->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorHighlightedGreen, colorHighlighted->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorHighlightedBlue, colorHighlighted->color().blue());
-
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSelectedRed, colorSelected->color().red());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSelectedGreen, colorSelected->color().green());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSelectedBlue, colorSelected->color().blue());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformVector, chkDeformVector->isChecked());    
 }
 
 void SettingsWidget::createControls()
 {
     QWidget *workspace = controlsWorkspace();
-    QWidget *colors = controlsColors();
-
-    // tab widget
-    QToolBox *tbxWorkspace = new QToolBox();
-    tbxWorkspace->addItem(workspace, icon(""), tr("Workspace"));
-    tbxWorkspace->addItem(colors, icon(""), tr("Colors"));
 
     // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(tbxWorkspace);
+    layout->addWidget(workspace);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -279,29 +179,6 @@ QWidget *SettingsWidget::controlsWorkspace()
     QGroupBox *grpFont = new QGroupBox(tr("Fonts"));
     grpFont->setLayout(layoutFont);
 
-    // geometry
-    txtGeometryNodeSize = new QSpinBox();
-    txtGeometryNodeSize->setMinimum(1);
-    txtGeometryNodeSize->setMaximum(20);
-    txtGeometryEdgeWidth = new QSpinBox();
-    txtGeometryEdgeWidth->setMinimum(1);
-    txtGeometryEdgeWidth->setMaximum(20);
-    txtGeometryLabelSize = new QSpinBox();
-    txtGeometryLabelSize->setMinimum(1);
-    txtGeometryLabelSize->setMaximum(20);
-
-    QGridLayout *layoutGeometry = new QGridLayout();
-    layoutGeometry->setColumnStretch(1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
-    layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
-    layoutGeometry->addWidget(txtGeometryEdgeWidth, 1, 1);
-    layoutGeometry->addWidget(new QLabel(tr("Label size:")), 2, 0);
-    layoutGeometry->addWidget(txtGeometryLabelSize, 2, 1);
-
-    QGroupBox *grpGeometry = new QGroupBox(tr("Geometry"));
-    grpGeometry->setLayout(layoutGeometry);
-
     // layout 3d
     chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
     txtView3DAngle = new QDoubleSpinBox(this);
@@ -351,7 +228,6 @@ QWidget *SettingsWidget::controlsWorkspace()
     QVBoxLayout *layoutWorkspace = new QVBoxLayout();
     layoutWorkspace->addWidget(grpGrid);
     layoutWorkspace->addWidget(grpFont);
-    layoutWorkspace->addWidget(grpGeometry);
     layoutWorkspace->addWidget(grp3D);
     layoutWorkspace->addWidget(grpDeformShape);
     layoutWorkspace->addStretch();
@@ -361,71 +237,6 @@ QWidget *SettingsWidget::controlsWorkspace()
     workspaceWidget->setLayout(layoutWorkspace);
 
     return workspaceWidget;
-}
-
-QWidget *SettingsWidget::controlsColors()
-{
-    QWidget *colorsWidget = new QWidget(this);
-
-    // colors
-    colorBackground = new ColorButton(this);
-    colorGrid = new ColorButton(this);
-    colorCross = new ColorButton(this);
-
-    colorNodes = new ColorButton(this);
-    colorEdges = new ColorButton(this);
-    colorLabels = new ColorButton(this);
-    colorContours = new ColorButton(this);
-    colorVectors = new ColorButton(this);
-    colorInitialMesh = new ColorButton(this);
-    colorSolutionMesh = new ColorButton(this);
-
-    colorHighlighted = new ColorButton(this);
-    colorSelected = new ColorButton(this);
-
-    QGridLayout *layoutColors = new QGridLayout();
-    layoutColors->setColumnStretch(1, 1);
-    layoutColors->addWidget(new QLabel(tr("Background:")), 0, 0);
-    layoutColors->addWidget(new QLabel(tr("Grid:")), 1, 0);
-    layoutColors->addWidget(new QLabel(tr("Cross:")), 2, 0);
-    layoutColors->addWidget(new QLabel(tr("Nodes:")), 3, 0);
-    layoutColors->addWidget(new QLabel(tr("Edges:")), 4, 0);
-    layoutColors->addWidget(new QLabel(tr("Labels:")), 5, 0);
-    layoutColors->addWidget(new QLabel(tr("Contours:")), 6, 0);
-    layoutColors->addWidget(new QLabel(tr("Vectors:")), 7, 0);
-    layoutColors->addWidget(new QLabel(tr("Initial mesh:")), 8, 0);
-    layoutColors->addWidget(new QLabel(tr("Solution mesh:")), 9, 0);
-    layoutColors->addWidget(new QLabel(tr("Highlighted elements:")), 10, 0);
-    layoutColors->addWidget(new QLabel(tr("Selected elements:")), 11, 0);
-
-    layoutColors->addWidget(colorBackground, 0, 1);
-    layoutColors->addWidget(colorGrid, 1, 1);
-    layoutColors->addWidget(colorCross, 2, 1);
-    layoutColors->addWidget(colorNodes, 3, 1);
-    layoutColors->addWidget(colorEdges, 4, 1);
-    layoutColors->addWidget(colorLabels, 5, 1);
-    layoutColors->addWidget(colorContours, 6, 1);
-    layoutColors->addWidget(colorVectors, 7, 1);
-    layoutColors->addWidget(colorInitialMesh, 8, 1);
-    layoutColors->addWidget(colorSolutionMesh, 9, 1);
-    layoutColors->addWidget(colorHighlighted, 10, 1);
-    layoutColors->addWidget(colorSelected, 11, 1);
-
-    // default
-    QPushButton *btnDefault = new QPushButton(tr("Default"));
-    connect(btnDefault, SIGNAL(clicked()), this, SLOT(doColorsDefault()));
-
-    QGroupBox *grpColor = new QGroupBox(tr("Colors"));
-    grpColor->setLayout(layoutColors);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpColor);
-    layout->addStretch();
-    layout->addWidget(btnDefault, 0, Qt::AlignLeft);
-
-    colorsWidget->setLayout(layout);
-
-    return colorsWidget;
 }
 
 void SettingsWidget::setControls()
@@ -463,9 +274,6 @@ void SettingsWidget::doWorkspaceDefault()
     chkShowRulers->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ShowRulers).toBool());
 
     chkZoomToMouse->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ZoomToMouse).toBool());
-    txtGeometryNodeSize->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_NodeSize).toInt());
-    txtGeometryEdgeWidth->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_EdgeWidth).toInt());
-    txtGeometryLabelSize->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_LabelSize).toInt());
 
     chkView3DLighting->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarView3DLighting).toBool());
     txtView3DAngle->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarView3DAngle).toDouble());
@@ -475,46 +283,6 @@ void SettingsWidget::doWorkspaceDefault()
     chkDeformScalar->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformScalar).toBool());
     chkDeformContour->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformContour).toBool());
     chkDeformVector->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformVector).toBool());
-}
-
-void SettingsWidget::doColorsDefault()
-{
-    colorBackground->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorBackgroundRed).toInt(),
-                                     Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorBackgroundGreen).toInt(),
-                                     Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorBackgroundBlue).toInt()));
-    colorGrid->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorGridRed).toInt(),
-                               Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorGridGreen).toInt(),
-                               Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorGridBlue).toInt()));
-    colorCross->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorCrossRed).toInt(),
-                                Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorCrossGreen).toInt(),
-                                Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorCrossBlue).toInt()));
-    colorNodes->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorNodesRed).toInt(),
-                                Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorNodesGreen).toInt(),
-                                Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorNodesBlue).toInt()));
-    colorEdges->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorEdgesRed).toInt(),
-                                Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorEdgesGreen).toInt(),
-                                Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorEdgesBlue).toInt()));
-    colorLabels->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorLabelsRed).toInt(),
-                                 Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorLabelsGreen).toInt(),
-                                 Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorLabelsBlue).toInt()));
-    colorContours->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorContoursRed).toInt(),
-                                   Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorContoursGreen).toInt(),
-                                   Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorContoursBlue).toInt()));
-    colorVectors->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorVectorsRed).toInt(),
-                                  Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorVectorsGreen).toInt(),
-                                  Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorVectorsBlue).toInt()));
-    colorInitialMesh->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorInitialMeshRed).toInt(),
-                                      Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorInitialMeshGreen).toInt(),
-                                      Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorInitialMeshBlue).toInt()));
-    colorSolutionMesh->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSolutionMeshRed).toInt(),
-                                       Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSolutionMeshGreen).toInt(),
-                                       Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSolutionMeshBlue).toInt()));
-    colorHighlighted->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorHighlightedRed).toInt(),
-                                      Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorHighlightedGreen).toInt(),
-                                      Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorHighlightedBlue).toInt()));
-    colorSelected->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedRed).toInt(),
-                                   Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedGreen).toInt(),
-                                   Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedBlue).toInt()));
 }
 
 // *******************************************************************************************************

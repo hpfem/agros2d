@@ -125,9 +125,8 @@ void SceneViewCommon3D::paintBackground()
     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBackground).toBool())
         glColor3d(0.99, 0.99, 0.99);
     else
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0);
+        glColor3d(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2]);
+
     glVertex3d(-1.0, -1.0, 0.0);
     glVertex3d(1.0, -1.0, 0.0);
     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBackground).toBool())

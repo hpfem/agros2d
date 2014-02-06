@@ -22,6 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 #include "util/loops.h"
+#include "util/constants.h"
 #include "logview.h"
 
 #include "scene.h"
@@ -93,9 +94,7 @@ void SceneViewPreprocessorChart::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0, 0);
+    glClearColor(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2], 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // geometry
@@ -110,9 +109,7 @@ void SceneViewPreprocessorChart::paintGeometry()
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
+        glColor3d(COLOREDGE[0], COLOREDGE[1], COLOREDGE[2]);
         glLineWidth(1.0);
 
         if (edge->isStraight())

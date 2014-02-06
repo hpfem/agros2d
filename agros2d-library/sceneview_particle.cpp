@@ -446,9 +446,7 @@ void SceneViewParticleTracing::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0, 0);
+    glClearColor(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2], 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // gradient background
@@ -901,7 +899,7 @@ void SceneViewParticleTracing::paintParticleTracing()
                 // points
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool())
                 {
-                    glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() * 3.0/5.0);
+                    glPointSize(EDGEWIDTH * 3.0/5.0);
                     glBegin(GL_POINTS);
                     for (int i = 0; i < m_positionsList[k].length(); i++)
                     {
@@ -944,7 +942,7 @@ void SceneViewParticleTracing::paintParticleTracing()
                     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool())
                     {
                         glBegin(GL_POINTS);
-                        glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() * 3.0/5.0);
+                        glPointSize(EDGEWIDTH * 3.0/5.0);
                         for (int i = 0; i < m_positionsList[k].length(); i++)
                         {
                             glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI),

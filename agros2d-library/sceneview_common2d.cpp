@@ -123,13 +123,9 @@ void SceneViewCommon2D::paintGrid()
         for (int i = cornerMin.x/Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() - 1; i < cornerMax.x/Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() + 1; i++)
         {
             if (i % heavyLine == 0)
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossRed).toInt() / 255.0 * 2.0/3.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossGreen).toInt() / 255.0 * 2.0/3.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossBlue).toInt() / 255.0 * 2.0/3.0);
+                glColor3d(COLORCROSS[0] * 2.0/3.0, COLORCROSS[1] * 2.0/3.0, COLORCROSS[2] * 2.0/3.0);
             else
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridBlue).toInt() / 255.0);
+                glColor3d(COLORGRID[0], COLORGRID[1], COLORGRID[2]);
 
             glVertex2d(i*Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble(), cornerMin.y);
             glVertex2d(i*Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble(), cornerMax.y);
@@ -139,13 +135,10 @@ void SceneViewCommon2D::paintGrid()
         for (int i = cornerMax.y/Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() - 1; i < cornerMin.y/Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() + 1; i++)
         {
             if (i % heavyLine == 0)
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossRed).toInt() / 255.0 * 2.0/3.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossGreen).toInt() / 255.0 * 2.0/3.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossBlue).toInt() / 255.0 * 2.0/3.0);
+                glColor3d(COLORCROSS[0] * 2.0/3.0, COLORCROSS[1] * 2.0/3.0, COLORCROSS[2] * 2.0/3.0);
             else
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridBlue).toInt() / 255.0);
+                glColor3d(COLORGRID[0], COLORGRID[1], COLORGRID[2]);
+
             glVertex2d(cornerMin.x, i*Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble());
             glVertex2d(cornerMax.x, i*Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble());
         }
@@ -157,9 +150,7 @@ void SceneViewCommon2D::paintGrid()
     {
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridBlue).toInt() / 255.0,
+                  COLORGRID[0], COLORGRID[1], COLORGRID[2],
                   0.25);
     }
 
@@ -184,13 +175,11 @@ void SceneViewCommon2D::paintAxes()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossRed).toInt() / 255.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossGreen).toInt() / 255.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossBlue).toInt() / 255.0);
+    glColor3d(COLORCROSS[0], COLORCROSS[1], COLORCROSS[2]);
 
     Point rulersArea = rulersAreaSize();
     Point border = (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
-                                                                  : Point(10.0, 10.0);
+                                                                                                    : Point(10.0, 10.0);
 
     // x-axis
     glBegin(GL_QUADS);
@@ -325,9 +314,7 @@ void SceneViewCommon2D::paintRulers()
         glEnd();
 
         // zero axes
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorGridBlue).toInt() / 255.0);
+        glColor3d(COLORGRID[0], COLORGRID[1], COLORGRID[2]);
 
         glLineWidth(1.5);
         glBegin(GL_LINES);
@@ -430,9 +417,7 @@ void SceneViewCommon2D::paintZoomRegion()
         Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         drawBlend(posStart, posEnd,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
+                  COLORHIGHLIGHTED[0], COLORHIGHLIGHTED[1], COLORHIGHLIGHTED[2]);
     }
 }
 

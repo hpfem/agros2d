@@ -48,11 +48,8 @@ private:
 
     // general view
     QCheckBox *chkZoomToMouse;
-    QSpinBox *txtGeometryNodeSize;
-    QSpinBox *txtGeometryEdgeWidth;
-    QSpinBox *txtGeometryLabelSize;
 
-    // scene font   
+    // scene font
     QComboBox *cmbRulersFont;
     QSpinBox *txtRulersFontSizes;
     QComboBox *cmbPostFont;
@@ -73,27 +70,12 @@ private:
     QCheckBox *chkView3DBoundingBox;
     QCheckBox *chkView3DSolidGeometry;
 
-    // colors
-    ColorButton *colorBackground;
-    ColorButton *colorGrid;
-    ColorButton *colorCross;
-    ColorButton *colorNodes;
-    ColorButton *colorEdges;
-    ColorButton *colorLabels;
-    ColorButton *colorContours;
-    ColorButton *colorVectors;
-    ColorButton *colorInitialMesh;
-    ColorButton *colorSolutionMesh;
-    ColorButton *colorHighlighted;
-    ColorButton *colorSelected;
-
     QPushButton *btnOK;
 
     void createActions();
 
     void createControls();
     QWidget *controlsWorkspace();
-    QWidget *controlsColors();
 
     void load();
     void save();
@@ -107,7 +89,6 @@ public slots:
 
 private slots:
     void doWorkspaceDefault();
-    void doColorsDefault();    
 };
 
 // *************************************************************************

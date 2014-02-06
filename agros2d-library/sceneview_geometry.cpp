@@ -922,9 +922,7 @@ void SceneViewPreprocessor::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0, 0);
+    glClearColor(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2], 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
@@ -971,31 +969,23 @@ void SceneViewPreprocessor::paintGeometry()
             }
         }
 
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
-        glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
+        glColor3d(COLOREDGE[0], COLOREDGE[1], COLOREDGE[2]);
+        glLineWidth(EDGEWIDTH);
 
         if (edge->hasLyingNode() || edge->isOutsideArea() || Agros2D::scene()->crossings().contains(edge))
         {
-            glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedGreen).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedBlue).toInt() / 255.0);
-            glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
+            glColor3d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2]);
+            glLineWidth(EDGEWIDTH);
         }
         if (edge->isHighlighted())
         {
-            glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
-            glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt() + 2.0);
+            glColor3d(COLORHIGHLIGHTED[0], COLORHIGHLIGHTED[1], COLORHIGHLIGHTED[2]);
+            glLineWidth(EDGEWIDTH + 2.0);
         }
         if (edge->isSelected())
         {
-            glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0);
-            glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt() + 2.0);
+            glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
+            glLineWidth(EDGEWIDTH + 2.0);
         }
 
         if (fabs(edge->angle()) < 5) // if (edge->isStraight())
@@ -1022,19 +1012,15 @@ void SceneViewPreprocessor::paintGeometry()
     // nodes
     foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorNodesRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorNodesGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorNodesBlue).toInt() / 255.0);
-        glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt());
+        glColor3d(COLORNODE[0], COLORNODE[1], COLORNODE[2]);
+        glPointSize(NODESIZE);
 
         glBegin(GL_POINTS);
         glVertex2d(node->point().x, node->point().y);
         glEnd();
 
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0);
-        glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+        glColor3d(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2]);
+        glPointSize(NODESIZE - 2.0);
 
         glBegin(GL_POINTS);
         glVertex2d(node->point().x, node->point().y);
@@ -1045,26 +1031,20 @@ void SceneViewPreprocessor::paintGeometry()
         {
             if (isError)
             {
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedBlue).toInt() / 255.0);
-                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() + 2.0);
+                glColor3d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2]);
+                glPointSize(EDGEWIDTH + 2.0);
             }
 
             if (node->isHighlighted())
             {
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
-                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+                glColor3d(COLORHIGHLIGHTED[0], COLORHIGHLIGHTED[1], COLORHIGHLIGHTED[2]);
+                glPointSize(EDGEWIDTH - 2.0);
             }
 
             if (node->isSelected())
             {
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0);
-                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+                glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
+                glPointSize(EDGEWIDTH - 2.0);
             }
 
             glBegin(GL_POINTS);
@@ -1076,18 +1056,14 @@ void SceneViewPreprocessor::paintGeometry()
     // labels
     foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorLabelsRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorLabelsGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorLabelsBlue).toInt() / 255.0);
-        glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt());
+        glColor3d(COLORLABEL[0], COLORLABEL[1], COLORLABEL[2]);
+        glPointSize(LABELSIZE);
         glBegin(GL_POINTS);
         glVertex2d(label->point().x, label->point().y);
         glEnd();
 
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0);
-        glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt() - 2.0);
+        glColor3d(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2]);
+        glPointSize(LABELSIZE - 2.0);
         glBegin(GL_POINTS);
         glVertex2d(label->point().x, label->point().y);
         glEnd();
@@ -1095,15 +1071,11 @@ void SceneViewPreprocessor::paintGeometry()
         if ((label->isSelected()) || (label->isHighlighted()))
         {
             if (label->isHighlighted())
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
+                glColor3d(COLORHIGHLIGHTED[0], COLORHIGHLIGHTED[1], COLORHIGHLIGHTED[2]);
             if (label->isSelected())
-                glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
-                          Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0);
+                glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
 
-            glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt() - 2.0);
+            glPointSize(LABELSIZE - 2.0);
             glBegin(GL_POINTS);
             glVertex2d(label->point().x, label->point().y);
             glEnd();
@@ -1246,10 +1218,8 @@ void SceneViewPreprocessor::paintSnapToGrid()
         snapPoint.x = floor(p.x / Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() + 0.5) * Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble();
         snapPoint.y = floor(p.y / Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() + 0.5) * Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble();
 
-        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
-        glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 1.0);
+        glColor3d(COLORHIGHLIGHTED[0], COLORHIGHLIGHTED[1], COLORHIGHLIGHTED[2]);
+        glPointSize(EDGEWIDTH - 1.0);
         glBegin(GL_POINTS);
         glVertex2d(snapPoint.x, snapPoint.y);
         glEnd();
@@ -1266,9 +1236,7 @@ void SceneViewPreprocessor::paintEdgeLine()
 
             Point p = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
-            glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt() / 255.0,
-                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
+            glColor3d(COLOREDGE[0], COLOREDGE[1], COLOREDGE[2]);
 
             // check for crossing
             foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
@@ -1294,7 +1262,7 @@ void SceneViewPreprocessor::paintEdgeLine()
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1, 0x8FFF);
 
-            glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
+            glLineWidth(EDGEWIDTH);
 
             glBegin(GL_LINES);
             glVertex2d(m_nodeLast->point().x, m_nodeLast->point().y);
@@ -1318,9 +1286,7 @@ void SceneViewPreprocessor::paintSelectRegion()
         Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 
         drawBlend(posStart, posEnd,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
-                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
+                  COLORHIGHLIGHTED[0], COLORHIGHLIGHTED[1], COLORHIGHLIGHTED[2]);
     }
 }
 

@@ -35,9 +35,6 @@ const QString MODULEROOT = QString("%1resources%1modules").arg(QDir::separator()
 const QString COUPLINGROOT = QString("%1resources%1couplings").arg(QDir::separator());
 const QString TEMPLATEROOT = QString("%1resources%1templates").arg(QDir::separator());
 
-const QColor COLORCROSSED = QColor::fromRgb(255, 0, 0);
-const QColor COLORNOTCONNECTED = QColor::fromRgb(255, 0, 0);
-
 // discrete saving
 const bool SAVEMATRIXANDRHS = false;
 const QString DISCRETEDIRECTORY = "discrete";
@@ -70,6 +67,26 @@ const bool USER_SOLVER_CACHE = false;
 const int NOT_FOUND_SO_FAR = -999;
 
 const int GLYPH_M = 77;
+
+const double COLORBACKGROUND[3] = { 255 / 255.0, 255 / 255.0, 255 / 255.0 };
+const double COLORGRID[3] = { 200 / 255.0, 200 / 255.0, 200 / 255.0 };
+const double COLORCROSS[3] = { 150 / 255.0, 150 / 255.0, 150 / 255.0 };
+const double COLORNODE[3] = { 150 / 255.0, 0 / 255.0, 0 / 255.0 };
+const double COLOREDGE[3] = { 0 / 255.0, 0 / 255.0, 150 / 255.0 };
+const double COLORLABEL[3] = { 0 / 255.0, 150 / 255.0, 0 / 255.0 };
+const double COLORSELECTED[3] = { 0 / 255.0, 0 / 255.0, 0 / 255.0 };
+const double COLORHIGHLIGHTED[3] = { 250 / 255.0, 150 / 255.0, 0 / 255.0 };
+const double COLORCROSSED[3] = { 255 / 255.0, 0 / 255.0, 0 / 255.0 };
+const double COLORNOTCONNECTED[3] = { 255 / 255.0, 0 / 255.0, 0 / 255.0 };
+
+const double COLORCONTOURS[3] = { 0 / 255.0, 0 / 255.0, 0 / 255.0 };
+const double COLORVECTORS[3] = { 0 / 255.0, 0 / 255.0, 0 / 255.0 };
+const double COLORINITIALMESH[3] = { 250 / 255.0, 202 / 255.0, 119 / 255.0 };
+const double COLORSOLUTIONMESH[3] = { 150 / 255.0, 70 / 255.0, 0 / 255.0 };
+
+const int LABELSIZE = 6;
+const int EDGEWIDTH = 2;
+const int NODESIZE = 6;
 
 #endif // UTIL_CONSTANTS_H
 
