@@ -131,10 +131,12 @@ void PostprocessorWidget::loadAdvanced()
     chkPaletteFilter->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool());
     doPaletteFilter(chkPaletteFilter->checkState());
     txtPaletteSteps->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
+    chkScalarDeform->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool());
 
     // contours
     txtContoursCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt());
     txtContourWidth->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursWidth).toDouble());
+    chkContourDeform->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool());
 
     // vector field
     chkVectorProportional->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool());
@@ -144,6 +146,7 @@ void PostprocessorWidget::loadAdvanced()
     txtVectorScale->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble());
     cmbVectorType->setCurrentIndex(cmbVectorType->findData((VectorType) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorType).toInt()));
     cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData((VectorCenter) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCenter).toInt()));
+    chkVectorDeform->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool());
 
     // order view
     chkShowOrderColorbar->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool());
@@ -178,6 +181,13 @@ void PostprocessorWidget::loadAdvanced()
             lstSolidMaterials->addItem(item);
         }
     }
+
+    chkView3DLighting->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool());
+    txtView3DAngle->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DAngle).toDouble());
+    chkView3DBackground->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBackground).toBool());
+    txtView3DHeight->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DHeight).toDouble());
+    chkView3DBoundingBox->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBoundingBox).toBool());
+    chkView3DSolidGeometry->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DSolidGeometry).toBool());
 }
 
 void PostprocessorWidget::saveBasic()
@@ -218,10 +228,12 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteType, (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteFilter, chkPaletteFilter->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteSteps, txtPaletteSteps->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformScalar, chkScalarDeform->isChecked());
 
     // contours
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContoursCount, txtContoursCount->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContoursWidth, txtContourWidth->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformContour, chkContourDeform->isChecked());
 
     // vector field
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorProportional, chkVectorProportional->isChecked());
@@ -230,6 +242,7 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorScale, txtVectorScale->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorType, (VectorType) cmbVectorType->itemData(cmbVectorType->currentIndex()).toInt());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCenter, (VectorCenter) cmbVectorCenter->itemData(cmbVectorCenter->currentIndex()).toInt());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_DeformVector, chkVectorDeform->isChecked());
 
     // order view
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderColorBar, chkShowOrderColorbar->isChecked());
@@ -252,6 +265,13 @@ void PostprocessorWidget::saveAdvanced()
         }
     }
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_SolidViewHide, hideList);
+
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DLighting, chkView3DLighting->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DAngle, txtView3DAngle->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DBackground, chkView3DBackground->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DHeight, txtView3DHeight->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DBoundingBox, chkView3DBoundingBox->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DSolidGeometry, chkView3DSolidGeometry->isChecked());
 }
 
 void PostprocessorWidget::createControls()
@@ -275,6 +295,7 @@ void PostprocessorWidget::createControls()
     groupPostContourAdvanced->setVisible(false);
     groupPostVectorAdvanced->setVisible(false);
     groupPostSolidAdvanced->setVisible(false);
+    groupPost3DAdvanced->setVisible(false);
 
     setLayout(layoutMain);
 }
@@ -449,6 +470,22 @@ CollapsableGroupBoxButton *PostprocessorWidget::postSolidWidget()
     return grpSolidView;
 }
 
+CollapsableGroupBoxButton *PostprocessorWidget::postPost3DWidget()
+{
+    // solid view
+    groupPost3DAdvanced = postPost3DAdvancedWidget();
+
+    QVBoxLayout *layoutSolid = new QVBoxLayout();
+    layoutSolid->addWidget(groupPost3DAdvanced);
+
+    CollapsableGroupBoxButton *grp3DView = new CollapsableGroupBoxButton(tr("Settings"));
+    connect(grp3DView, SIGNAL(collapseEvent(bool)), this, SLOT(doPost3DExpandCollapse(bool)));
+    grp3DView->setCollapsed(true);
+    grp3DView->setLayout(layoutSolid);
+
+    return grp3DView;
+}
+
 QWidget *PostprocessorWidget::post3DWidget()
 {
     // layout post3d
@@ -515,6 +552,7 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     groupPostContour = postContourWidget();
     groupPostVector = postVectorWidget();
     groupPostSolid = postSolidWidget();
+    groupPost3D = postPost3DWidget();
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->addWidget(groupMeshOrder);
@@ -522,6 +560,7 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     layoutArea->addWidget(groupPostContour);
     layoutArea->addWidget(groupPostVector);
     layoutArea->addWidget(groupPostSolid);
+    layoutArea->addWidget(groupPost3D);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -617,10 +656,19 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     QGroupBox *grpScalarFieldColorbar = new QGroupBox(tr("Colorbar"));
     grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
 
+    chkScalarDeform = new QCheckBox(tr("Deform shape"), this);
+
+    QGridLayout *layoutDeformShape = new QGridLayout();
+    layoutDeformShape->addWidget(chkScalarDeform, 0, 0);
+
+    QGroupBox *grpScalarDeformShape = new QGroupBox(tr("Displacement"));
+    grpScalarDeformShape->setLayout(layoutDeformShape);
+
     QVBoxLayout *layoutScalarFieldAdvanced = new QVBoxLayout();
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldPalette);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldColorbar);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldRange);
+    layoutScalarFieldAdvanced->addWidget(grpScalarDeformShape);
 
     QWidget *scalarWidget = new QWidget();
     scalarWidget->setLayout(layoutScalarFieldAdvanced);
@@ -639,6 +687,14 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     txtContourWidth->setMaximum(CONTOURSWIDTHMAX);
     txtContourWidth->setSingleStep(0.1);
 
+    chkContourDeform = new QCheckBox(tr("Deform shape"), this);
+
+    QGridLayout *layoutDeformShape = new QGridLayout();
+    layoutDeformShape->addWidget(chkContourDeform, 0, 0);
+
+    QGroupBox *grpContourDeformShape = new QGroupBox(tr("Displacement"));
+    grpContourDeformShape->setLayout(layoutDeformShape);
+
     QGridLayout *gridLayoutContours = new QGridLayout();
     gridLayoutContours->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutContours->setColumnStretch(1, 1);
@@ -646,6 +702,7 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Contour width:")), 1, 0);
     gridLayoutContours->addWidget(txtContourWidth, 1, 1);
+    gridLayoutContours->addWidget(grpContourDeformShape, 2, 0, 1, 2);
 
     QWidget *contourWidget = new QWidget();
     contourWidget->setLayout(gridLayoutContours);
@@ -673,6 +730,14 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     foreach (QString key, vectorCenterStringKeys())
         cmbVectorCenter->addItem(vectorCenterString(vectorCenterFromStringKey(key)), vectorCenterFromStringKey(key));
 
+    chkVectorDeform = new QCheckBox(tr("Deform shape"), this);
+
+    QGridLayout *layoutDeformShape = new QGridLayout();
+    layoutDeformShape->addWidget(chkVectorDeform, 0, 0);
+
+    QGroupBox *grpVectorDeformShape = new QGroupBox(tr("Displacement"));
+    grpVectorDeformShape->setLayout(layoutDeformShape);
+
     QGridLayout *gridLayoutVectors = new QGridLayout();
     gridLayoutVectors->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutVectors->setColumnStretch(1, 1);
@@ -686,6 +751,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     gridLayoutVectors->addWidget(cmbVectorType, 2, 1, 1, 2);
     gridLayoutVectors->addWidget(new QLabel(tr("Center:")), 3, 0);
     gridLayoutVectors->addWidget(cmbVectorCenter, 3, 1, 1, 2);
+    gridLayoutVectors->addWidget(grpVectorDeformShape, 4, 0, 1, 2);
 
     QWidget *vectorWidget = new QWidget();
     vectorWidget->setLayout(gridLayoutVectors);
@@ -706,6 +772,41 @@ QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
     solidWidget->setLayout(gridLayoutSolid);
 
     return solidWidget;
+}
+
+QWidget *PostprocessorWidget::postPost3DAdvancedWidget()
+{
+    // layout 3d
+    chkView3DLighting = new QCheckBox(tr("Ligthing"), this);
+    txtView3DAngle = new QDoubleSpinBox(this);
+    txtView3DAngle->setDecimals(1);
+    txtView3DAngle->setSingleStep(1);
+    txtView3DAngle->setMinimum(30);
+    txtView3DAngle->setMaximum(360);
+    chkView3DBackground = new QCheckBox(tr("Gradient back."), this);
+    txtView3DHeight = new QDoubleSpinBox(this);
+    txtView3DHeight->setDecimals(1);
+    txtView3DHeight->setSingleStep(0.1);
+    txtView3DHeight->setMinimum(0.2);
+    txtView3DHeight->setMaximum(10.0);
+    chkView3DBoundingBox = new QCheckBox(tr("Bounding box"), this);
+    chkView3DSolidGeometry = new QCheckBox(tr("Show edges"), this);
+
+    QGridLayout *layout3D = new QGridLayout();
+    layout3D->setColumnMinimumWidth(0, columnMinimumWidth());
+    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 0);
+    layout3D->addWidget(txtView3DAngle, 0, 1);
+    layout3D->addWidget(new QLabel(tr("Height:")), 1, 0);
+    layout3D->addWidget(txtView3DHeight, 1, 1);
+    layout3D->addWidget(chkView3DLighting, 2, 0, 1, 2);
+    layout3D->addWidget(chkView3DBackground, 3, 0, 1, 2);
+    layout3D->addWidget(chkView3DBoundingBox, 4, 0, 1, 2);
+    layout3D->addWidget(chkView3DSolidGeometry, 5, 0, 1, 2);
+
+    QWidget *viewWidget = new QWidget();
+    viewWidget->setLayout(layout3D);
+
+    return viewWidget;
 }
 
 void PostprocessorWidget::doField()
@@ -808,6 +909,9 @@ void PostprocessorWidget::refresh()
         // solid
         groupPostSolid->setVisible(false);
         groupPostSolidAdvanced->setVisible(false);
+        // 3d
+        groupPost3D->setVisible(false);
+        groupPost3DAdvanced->setVisible(false);
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -836,6 +940,10 @@ void PostprocessorWidget::refresh()
         // solid
         groupPostSolid->setVisible(false);
         groupPostSolidAdvanced->setVisible(false);
+
+        // 3d
+        groupPost3D->setVisible(false);
+        groupPost3DAdvanced->setVisible(false);
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
@@ -872,6 +980,10 @@ void PostprocessorWidget::refresh()
         groupPostSolidAdvanced->setVisible(((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
                                             || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()))
                                            && !groupPostSolid->isCollapsed());
+
+        // 3d
+        groupPost3D->setVisible(true);
+        groupPost3DAdvanced->setVisible(!groupPost3D->isCollapsed());
     }
 
     // scalar view
@@ -957,6 +1069,11 @@ void PostprocessorWidget::doSolidExpandCollapse(bool collapsed)
     groupPostSolidAdvanced->setVisible(!collapsed);
 }
 
+void PostprocessorWidget::doPost3DExpandCollapse(bool collapsed)
+{
+    groupPost3DAdvanced->setVisible(!collapsed);
+}
+
 void PostprocessorWidget::doScalarFieldDefault()
 {
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteType).toInt()));
@@ -966,17 +1083,21 @@ void PostprocessorWidget::doScalarFieldDefault()
     chkScalarFieldRangeLog->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeLog).toBool());
     txtScalarFieldRangeBase->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeBase).toInt());
     txtScalarDecimalPlace->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarDecimalPlace).toInt());
+    chkScalarDeform->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformScalar).toBool());
 }
 
 void PostprocessorWidget::doContoursVectorsDefault()
 {
     txtContoursCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ContoursCount).toInt());
+    chkContourDeform->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformContour).toBool());
+
     chkVectorProportional->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorProportional).toBool());
     chkVectorColor->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorColor).toBool());
     txtVectorCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorCount).toInt());
     txtVectorScale->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorScale).toDouble());
     cmbVectorType->setCurrentIndex(cmbVectorType->findData((VectorType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorType).toInt()));
     cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData((VectorCenter) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorCenter).toInt()));
+    chkVectorDeform->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformVector).toBool());
 }
 
 void PostprocessorWidget::doOrderDefault()

@@ -60,15 +60,7 @@ private:
     QCheckBox *chkShowRulers;
 
     // advanced
-    QCheckBox *chkView3DLighting;
-    QDoubleSpinBox *txtView3DAngle;
-    QCheckBox *chkView3DBackground;
-    QDoubleSpinBox *txtView3DHeight;
-    QCheckBox *chkDeformScalar;
-    QCheckBox *chkDeformContour;
-    QCheckBox *chkDeformVector;
-    QCheckBox *chkView3DBoundingBox;
-    QCheckBox *chkView3DSolidGeometry;
+
 
     QPushButton *btnOK;
 

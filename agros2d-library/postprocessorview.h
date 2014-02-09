@@ -75,6 +75,12 @@ private:
     QRadioButton *radPost3DScalarField3D;
     QRadioButton *radPost3DScalarField3DSolid;
     QRadioButton *radPost3DModel;
+    QCheckBox *chkView3DLighting;
+    QDoubleSpinBox *txtView3DAngle;
+    QCheckBox *chkView3DBackground;
+    QDoubleSpinBox *txtView3DHeight;
+    QCheckBox *chkView3DBoundingBox;
+    QCheckBox *chkView3DSolidGeometry;
 
     // scalar field
     QComboBox *cmbPostScalarFieldVariable;
@@ -86,6 +92,7 @@ private:
     LineEditDouble *txtScalarFieldRangeMax;
     QLabel *lblScalarFieldRangeMinError;
     QLabel *lblScalarFieldRangeMaxError;
+    QCheckBox *chkScalarDeform;
 
     // vector field
     QComboBox *cmbPost2DVectorFieldVariable;
@@ -103,6 +110,7 @@ private:
     QComboBox *cmbPost2DContourVariable;
     QSpinBox *txtContoursCount;
     QDoubleSpinBox *txtContourWidth;
+    QCheckBox *chkContourDeform;
 
     // vector field
     QCheckBox *chkVectorProportional;
@@ -111,6 +119,7 @@ private:
     QDoubleSpinBox *txtVectorScale;
     QComboBox *cmbVectorType;
     QComboBox *cmbVectorCenter;
+    QCheckBox *chkVectorDeform;
 
     // polynomial order
     QCheckBox *chkShowOrderColorbar;
@@ -148,6 +157,8 @@ private:
     QWidget *groupPostVectorAdvanced;
     CollapsableGroupBoxButton *groupPostSolid;
     QWidget *groupPostSolidAdvanced;
+    CollapsableGroupBoxButton *groupPost3D;
+    QWidget *groupPost3DAdvanced;
 
     QWidget *meshWidget();
     QWidget *post2DWidget();
@@ -162,6 +173,8 @@ private:
     QWidget *postVectorAdvancedWidget();
     CollapsableGroupBoxButton *postSolidWidget();
     QWidget *postPostSolidAdvancedWidget();
+    CollapsableGroupBoxButton *postPost3DWidget();
+    QWidget *postPost3DAdvancedWidget();
 
 signals:
     void apply();
@@ -188,6 +201,7 @@ private slots:
     void doContourFieldExpandCollapse(bool collapsed);
     void doVectorFieldExpandCollapse(bool collapsed);
     void doSolidExpandCollapse(bool collapsed);
+    void doPost3DExpandCollapse(bool collapsed);
 };
 
 #endif // SCENEVIEWDIALOG_H
