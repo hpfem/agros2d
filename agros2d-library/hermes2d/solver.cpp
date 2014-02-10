@@ -222,16 +222,16 @@ void AgrosExternalSolverUMFPack::setSolverCommand()
 template <typename Scalar>
 void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
 {
-    if(Agros2D::configComputer()->saveMatrixRHS)
+    if (Agros2D::configComputer()->value(Config::Config_LinearSystemSave).toBool())
     {
         solver->output_matrix(true);
         solver->output_rhs(true);
         QString name = QString("%1/%2_%3_%4").arg(cacheProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
-        solver->set_matrix_export_format(Agros2D::configComputer()->dumpFormat);
+        solver->set_matrix_export_format((Hermes::Algebra::MatrixExportFormat) Agros2D::configComputer()->value(Config::Config_LinearSystemFormat).toInt());
         solver->set_matrix_filename(QString("%1_Matrix").arg(name).toStdString());
         solver->set_matrix_varname("matrix");
         solver->set_matrix_number_format((char *) "%g");
-        solver->set_rhs_export_format(Agros2D::configComputer()->dumpFormat);
+        solver->set_rhs_export_format((Hermes::Algebra::MatrixExportFormat) Agros2D::configComputer()->value(Config::Config_LinearSystemFormat).toInt());
         solver->set_rhs_filename(QString("%1_RHS").arg(name).toStdString());
         solver->set_rhs_number_format((char *) "%g");
         solver->set_rhs_varname("rhs");

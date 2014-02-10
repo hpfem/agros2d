@@ -121,28 +121,28 @@ void SceneViewCommon::messageLogged(QOpenGLDebugMessage message)
 void SceneViewCommon::createFontTexture()
 {
     // rulers font
-    if (m_textureLabelRulersName != Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString()
-            || m_textureLabelRulersSize != Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontPointSize).toInt())
+    if (m_textureLabelRulersName != Agros2D::configComputer()->value(Config::Config_RulersFontFamily).toString()
+            || m_textureLabelRulersSize != Agros2D::configComputer()->value(Config::Config_RulersFontPointSize).toInt())
     {
         makeCurrent();
         if (glIsTexture(m_textureLabelRulers))
             glDeleteTextures(1, &m_textureLabelRulers);
         glGenTextures(1, &m_textureLabelRulers);
-        m_textureLabelRulersName = Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString();
-        m_textureLabelRulersSize = Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontPointSize).toInt();
+        m_textureLabelRulersName = Agros2D::configComputer()->value(Config::Config_RulersFontFamily).toString();
+        m_textureLabelRulersSize = Agros2D::configComputer()->value(Config::Config_RulersFontPointSize).toInt();        
         initFont(m_textureLabelRulers, m_charDataRulers, m_textureLabelRulersName, m_textureLabelRulersSize);
     }
 
     // rulers font
-    if (m_textureLabelPostName != Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontFamily).toString()
-            || m_textureLabelPostSize != Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontPointSize).toInt())
+    if (m_textureLabelPostName != Agros2D::configComputer()->value(Config::Config_PostFontFamily).toString()
+            || m_textureLabelPostSize != Agros2D::configComputer()->value(Config::Config_PostFontPointSize).toInt())
     {
         makeCurrent();
         if (glIsTexture(m_textureLabelPost))
             glDeleteTextures(1, &m_textureLabelPost);
         glGenTextures(1, &m_textureLabelPost);
-        m_textureLabelPostName = Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontFamily).toString();
-        m_textureLabelPostSize = Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontPointSize).toInt();
+        m_textureLabelPostName = Agros2D::configComputer()->value(Config::Config_PostFontFamily).toString();
+        m_textureLabelPostSize = Agros2D::configComputer()->value(Config::Config_PostFontPointSize).toInt();
         initFont(m_textureLabelPost, m_charDataPost, m_textureLabelPostName, m_textureLabelPostSize);
     }
 }

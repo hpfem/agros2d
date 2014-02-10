@@ -151,7 +151,7 @@ void SceneViewCommon2D::paintGrid()
         drawBlend(cornerMin,
                   Point(0, cornerMax.y),
                   COLORGRID[0], COLORGRID[1], COLORGRID[2],
-                  0.25);
+                0.25);
     }
 
     glLineWidth(1.5);
@@ -178,7 +178,7 @@ void SceneViewCommon2D::paintAxes()
     glColor3d(COLORCROSS[0], COLORCROSS[1], COLORCROSS[2]);
 
     Point rulersArea = rulersAreaSize();
-    Point border = (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
+    Point border = (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? Point(rulersArea.x + 10.0, rulersArea.y + 10.0)
                                                                                                     : Point(10.0, 10.0);
 
     // x-axis
@@ -546,8 +546,8 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
     double sceneWidth = end.x - start.x;
     double sceneHeight = end.y - start.y;
 
-    double w = (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? width() - rulersAreaScreen.x : width();
-    double h = (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? height() - rulersAreaScreen.y : height();
+    double w = (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? width() - rulersAreaScreen.x : width();
+    double h = (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? height() - rulersAreaScreen.y : height();
     double maxScene = ((w / h) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
 
     if (maxScene > 0.0)
@@ -556,8 +556,8 @@ void SceneViewCommon2D::doZoomRegion(const Point &start, const Point &end)
     Point rulersArea(2.0/width()*rulersAreaScreen.x/m_scale2d*aspect(),
                      2.0/height()*rulersAreaScreen.y/m_scale2d);
 
-    m_offset2d.x = ((Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? start.x + end.x - rulersArea.x : start.x + end.x) / 2.0;
-    m_offset2d.y = ((Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? start.y + end.y - rulersArea.y : start.y + end.y) / 2.0;
+    m_offset2d.x = ((Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? start.x + end.x - rulersArea.x : start.x + end.x) / 2.0;
+    m_offset2d.y = ((Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? start.y + end.y - rulersArea.y : start.y + end.y) / 2.0;
 
     setZoom(0);
 }
@@ -658,34 +658,27 @@ void SceneViewCommon2D::mouseMoveEvent(QMouseEvent *event)
 
     emit mouseMoved(p);
 
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool())
+    if (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool())
         updateGL();
 }
 
 void SceneViewCommon2D::wheelEvent(QWheelEvent *event)
 {
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ZoomToMouse).toBool())
-    {
-        Point posMouse;
-        posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),
-                         -(2.0/height()*(event->pos().y() - height()/2.0))/m_scale2d);
+    Point posMouse;
+    posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),
+                     -(2.0/height()*(event->pos().y() - height()/2.0))/m_scale2d);
 
-        m_offset2d.x += posMouse.x;
-        m_offset2d.y += posMouse.y;
+    m_offset2d.x += posMouse.x;
+    m_offset2d.y += posMouse.y;
 
-        m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
+    m_scale2d = m_scale2d * pow(1.2, event->delta()/150.0);
 
-        posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),
-                         -(2.0/height()*(event->pos().y() - height()/2.0))/m_scale2d);
+    posMouse = Point((2.0/width()*(event->pos().x() - width()/2.0))/m_scale2d*aspect(),
+                     -(2.0/height()*(event->pos().y() - height()/2.0))/m_scale2d);
 
-        m_offset2d.x -= posMouse.x;
-        m_offset2d.y -= posMouse.y;
+    m_offset2d.x -= posMouse.x;
+    m_offset2d.y -= posMouse.y;
 
-        updateGL();
-    }
-    else
-    {
-        setZoom(event->delta()/150.0);
-    }
+    updateGL();
 }
 

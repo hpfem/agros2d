@@ -105,62 +105,6 @@ bool AgrosApplication::notify(QObject *receiver, QEvent *event)
     return false;
 }
 
-void AgrosApplication::setLocale()
-{
-    QSettings settings;
-
-    // language
-    QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
-    setLanguage(locale);
-}
-
-void AgrosApplication::setStyle()
-{
-    QSettings settings;
-
-    // first run
-    if (settings.value("General/GUIStyle").value<QString>().isEmpty())
-    {
-        QString styleName = "";
-        QStringList styles = QStyleFactory::keys();
-
-#ifdef Q_WS_X11        
-        // kde 4
-        if (getenv("KDE_SESSION_VERSION") != NULL)
-        {
-            if (styles.contains("Oxygen"))
-                styleName = "Oxygen";
-            else
-                styleName = "Plastique";
-        }
-        // gtk+
-        if (styleName == "")
-            styleName = "GTK+";
-#endif
-
-#ifdef Q_WS_WIN
-        if (styles.contains("WindowsVista"))
-            styleName = "WindowsVista";
-        else if (styles.contains("WindowsXP"))
-            styleName = "WindowsXP";
-        else
-            styleName = "Windows";
-#endif
-
-#ifdef Q_WS_MAC
-        styleName = "Aqua";
-#endif
-
-        settings.setValue("General/GUIStyle", styleName);
-    }
-
-    // setting gui style
-    setGUIStyle(settings.value("General/GUIStyle").value<QString>());
-
-    // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)
-    Indicator::init();
-}
-
 // *******************************************************************************************
 
 void clearAgros2DCache()

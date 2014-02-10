@@ -931,20 +931,20 @@ void SceneViewPreprocessor::paintGL()
     paintBackgroundPixmap();
 
     // grid
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool()) paintGrid();
+    if (Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool()) paintGrid();
 
     // geometry
     paintGeometry();
 
-    // rulers
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool())
+    // rulers    
+    if (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool())
     {
         paintRulers();
         paintRulersHintsEdges();
     }
 
     // axes
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
+    if (Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool()) paintAxes();
 
     paintSelectRegion();
     paintZoomRegion();

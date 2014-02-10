@@ -36,7 +36,6 @@
 #include "sceneview_particle.h"
 #include "logview.h"
 #include "infowidget.h"
-#include "settings.h"
 #include "preprocessorview.h"
 #include "postprocessorview.h"
 #include "chartdialog.h"
@@ -67,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // log stdout
     logStdOut = NULL;
-    if (Agros2D::configComputer()->showLogStdOut)
+    if (Agros2D::configComputer()->value(Config::Config_LogStdOut).toBool())
         logStdOut = new LogStdOut();
 
     createPythonEngine(new PythonEngineAgros());
@@ -112,8 +111,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // chart
     chartWidget = new ChartWidget(sceneViewChart, this);
 
-    // settings
-    settingsWidget = new SettingsWidget(this);
     // problem
     problemWidget = new ProblemWidget(this);
 
@@ -133,8 +130,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 
     // post hermes
-    connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
+    connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));    
     connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     currentPythonEngineAgros()->setPostHermes(postHermes);
 
@@ -155,7 +151,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // preprocessor
     connect(problemWidget, SIGNAL(changed()), sceneViewPreprocessor, SLOT(refresh()));
-    connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), preprocessorWidget, SLOT(loadTooltip(SceneGeometryMode)));
     connect(currentPythonEngine(), SIGNAL(executedScript()), Agros2D::scene(), SLOT(doInvalidated()));
     connect(currentPythonEngine(), SIGNAL(executedScript()), Agros2D::scene()->loopsInfo(), SLOT(processPolygonTriangles()));
@@ -385,7 +380,6 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
     actSceneModeGroup->addAction(sceneViewChart->actSceneModeChart);
     actSceneModeGroup->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
-    actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
     actHideControlPanel->setShortcut(tr("Alt+0"));
@@ -474,7 +468,6 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuView->addAction(sceneViewChart->actSceneModeChart);
     mnuView->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
-    mnuView->addAction(settingsWidget->actSettings);
     mnuView->addSeparator();
     mnuView->addAction(actHideControlPanel);
     mnuView->addSeparator();
@@ -657,7 +650,6 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(postprocessorWidget);
     tabControlsLayout->addWidget(particleTracingWidget);
     tabControlsLayout->addWidget(chartWidget);
-    tabControlsLayout->addWidget(settingsWidget);
 
     viewControls = new QWidget();
     viewControls->setLayout(tabControlsLayout);
@@ -695,8 +687,6 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
     tlbLeftBar->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     tlbLeftBar->addAction(sceneViewChart->actSceneModeChart);
-    tlbLeftBar->addSeparator();
-    tlbLeftBar->addAction(settingsWidget->actSettings);
     tlbLeftBar->addWidget(spacing);
     tlbLeftBar->addAction(Agros2D::problem()->actionMesh());
     tlbLeftBar->addAction(Agros2D::problem()->actionSolve());
@@ -868,7 +858,6 @@ void MainWindow::doDocumentNew()
             sceneViewPost2D->doZoomBestFit();
             sceneViewPost3D->doZoomBestFit();
             sceneViewParticleTracing->doZoomBestFit();
-            settingsWidget->updateControls();
         }
         catch (AgrosPluginException& e)
         {
@@ -1241,7 +1230,8 @@ void MainWindow::doOptions()
     ConfigComputerDialog configDialog(this);
     if (configDialog.exec())
     {
-        // postHermes->refresh();
+        postHermes->refresh();
+        sceneViewPreprocessor->refresh();
         // setControls();
     }
 }
@@ -1494,12 +1484,6 @@ void MainWindow::setControls()
     {
         tabViewLayout->setCurrentWidget(sceneViewChartWidget);
         tabControlsLayout->setCurrentWidget(chartWidget);
-    }
-
-    if (settingsWidget->actSettings->isChecked())
-    {
-        tabViewLayout->setCurrentWidget(sceneViewBlankWidget);
-        tabControlsLayout->setCurrentWidget(settingsWidget);
     }
 
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());

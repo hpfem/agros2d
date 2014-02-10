@@ -469,7 +469,7 @@ void SceneViewParticleTracing::paintGL()
 
     emit labelCenter(tr("Particle tracing"));
 
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
+    if (Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool()) paintAxes();
 }
 
 void SceneViewParticleTracing::resizeGL(int w, int h)
@@ -981,7 +981,7 @@ void SceneViewParticleTracing::paintParticleTracingColorBar(double min, double m
     int textWidth = (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) * (QString::number(-1.0, 'e', Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt()).length() + 1);
     int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 

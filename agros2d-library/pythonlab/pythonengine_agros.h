@@ -130,18 +130,18 @@ void memoryUsage(std::vector<int> &time, std::vector<int> &usage);
 struct PyOptions
 {
     // number of threads
-    inline int getNumberOfThreads() const { return Agros2D::configComputer()->numberOfThreads; }
+    inline int getNumberOfThreads() const { return Agros2D::configComputer()->value(Config::Config_NumberOfThreads).toInt(); }
     void setNumberOfThreads(int threads);
 
     // cache size
-    inline int getCacheSize() const { return Agros2D::configComputer()->cacheSize; }
+    inline int getCacheSize() const { return Agros2D::configComputer()->value(Config::Config_CacheSize).toInt(); }
     void setCacheSize(int size);
 
     // save matrix and rhs
-    inline bool getSaveMatrixRHS() const { return Agros2D::configComputer()->saveMatrixRHS; }
-    inline void setSaveMatrixRHS(bool save) { Agros2D::configComputer()->saveMatrixRHS = save; }
+    inline bool getSaveMatrixRHS() const { return Agros2D::configComputer()->value(Config::Config_LinearSystemSave).toBool(); }
+    inline void setSaveMatrixRHS(bool save) { Agros2D::configComputer()->setValue(Config::Config_LinearSystemSave, save); }
 
-    inline std::string getDumpFormat() const { return dumpFormatToStringKey(Agros2D::configComputer()->dumpFormat).toStdString(); }
+    inline std::string getDumpFormat() const { return dumpFormatToStringKey((Hermes::Algebra::MatrixExportFormat) Agros2D::configComputer()->value(Config::Config_LinearSystemFormat).toInt()).toStdString(); }
     void setDumpFormat(std::string format);
 };
 

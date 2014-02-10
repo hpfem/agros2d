@@ -72,19 +72,19 @@ struct PyViewConfig : PyViewClass
     }
 
     // fonts
-    void setFontFamily(ProblemSetting::Type type, const std::string &family);
+    void setFontFamily(Config::Type type, const std::string &family);
     void setFontPointSize(ProblemSetting::Type type, int size);
 
-    void setPostFontFamily(const std::string &family) { setFontFamily(ProblemSetting::View_PostFontFamily, family); }
+    void setPostFontFamily(const std::string &family) { setFontFamily(Config::Config_PostFontFamily, family); }
     inline std::string getPostFontFamily() const
     {
-        return Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontFamily).toString().toStdString();
+        return Agros2D::configComputer()->value(Config::Config_PostFontFamily).toString().toStdString();
     }
 
-    void setRulersFontFamily(const std::string &family) { setFontFamily(ProblemSetting::View_RulersFontFamily, family); }
+    void setRulersFontFamily(const std::string &family) { setFontFamily(Config::Config_RulersFontFamily, family); }
     inline std::string getRulersFontFamily() const
     {
-        return Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString().toStdString();
+        return Agros2D::configComputer()->value(Config::Config_RulersFontFamily).toString().toStdString();
     }
 };
 

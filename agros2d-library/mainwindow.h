@@ -218,7 +218,6 @@ private:
     PostprocessorWidget *postprocessorWidget;
     ChartWidget *chartWidget;
     ParticleTracingWidget *particleTracingWidget;
-    SettingsWidget *settingsWidget;
 
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;

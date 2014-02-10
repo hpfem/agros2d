@@ -880,7 +880,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
             * (QString::number(-1.0, 'e', Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt()).length() + 1);
     int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 

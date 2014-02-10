@@ -77,7 +77,7 @@ void PyView::zoomRegion(double x1, double y1, double x2, double y2)
 
 // ************************************************************************************
 
-void PyViewConfig::setFontFamily(ProblemSetting::Type type, const std::string &family)
+void PyViewConfig::setFontFamily(Config::Type type, const std::string &family)
 {
     if (silentMode())
         return;
@@ -93,7 +93,7 @@ void PyViewConfig::setFontFamily(ProblemSetting::Type type, const std::string &f
     {
         if (fileName.toStdString() == family)
         {
-            Agros2D::problem()->setting()->setValue(type, QString::fromStdString(family));
+            Agros2D::configComputer()->setValue(type, QString::fromStdString(family));
             return;
         }
 

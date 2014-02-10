@@ -67,6 +67,19 @@ private:
     // threads
     QSpinBox *txtNumOfThreads;
 
+    // grid
+    QCheckBox *chkShowGrid;
+
+    // scene font
+    QComboBox *cmbRulersFont;
+    QSpinBox *txtRulersFontSizes;
+    QComboBox *cmbPostFont;
+    QSpinBox *txtPostFontSizes;
+
+    // workspace other
+    QCheckBox *chkShowAxes;
+    QCheckBox *chkShowRulers;
+
     void load();
     void save();
 

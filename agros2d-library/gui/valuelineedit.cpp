@@ -246,7 +246,7 @@ bool ValueLineEdit::evaluate(bool quiet)
                     valueChanged = (evaluatedNumber != m_number);
                     m_number = evaluatedNumber;
                     setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                                  Agros2D::configComputer()->lineEditValueShowResult);
+                                  Agros2D::configComputer()->value(Config::Config_ShowResults).toBool());
                     isOk = true;
                 }
             }

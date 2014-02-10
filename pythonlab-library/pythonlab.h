@@ -29,9 +29,6 @@ class AGROS_PYTHONLAB_API PythonLabApplication : public QtSingleApplication
 {
 public:
     PythonLabApplication(int& argc, char ** argv);
-
-    void setLocale();
-    void setStyle();
 };
 
 class PythonLab : public QMainWindow

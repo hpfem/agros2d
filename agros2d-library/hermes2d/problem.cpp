@@ -643,12 +643,12 @@ void Problem::solve(bool commandLine)
         return;
     }
 
-    if (Agros2D::configComputer()->saveMatrixRHS)
+    if (Agros2D::configComputer()->value(Config::Config_LinearSystemSave).toBool())
         Agros2D::log()->printWarning(tr("Solver"), tr("Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings."));
 
     try
     {
-        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, Agros2D::configComputer()->numberOfThreads);
+        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, Agros2D::configComputer()->value(Config::Config_NumberOfThreads).toInt());
 
         m_lastTimeElapsed = QTime();
         QTime timeCounter = QTime();

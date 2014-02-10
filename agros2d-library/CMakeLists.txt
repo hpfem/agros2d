@@ -133,7 +133,6 @@ SET(SOURCES value.cpp
     hermes2d/solutiontypes.cpp
     preprocessorview.cpp
     infowidget.cpp
-    settings.cpp
     hermes2d/solutionstore.cpp
     moduledialog.cpp
     parser/lex.cpp
@@ -225,7 +224,6 @@ SET(SOURCES value.cpp
     hermes2d/solutiontypes.h
     preprocessorview.h
     infowidget.h
-    settings.h
     hermes2d/field.h
     hermes2d/block.h
     hermes2d/solutionstore.h

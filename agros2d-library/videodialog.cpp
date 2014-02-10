@@ -45,9 +45,9 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
     // store adaptive step
     m_adaptiveStepStore = m_postHermes->activeAdaptivityStep();
 
-    m_showRulersStore = Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool();
-    m_showGridStore = Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool();
-    m_showAxesStore = Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool();
+    m_showRulersStore = Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool();
+    m_showGridStore = Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool();
+    m_showAxesStore = Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool();
 
     // timer create images
     timer = new QTimer(this);
@@ -67,9 +67,9 @@ VideoDialog::~VideoDialog()
     m_postHermes->setActiveTimeStep(m_timeStepStore);
     m_postHermes->setActiveAdaptivityStep(m_adaptiveStepStore);
 
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, m_showRulersStore);
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, m_showGridStore);
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, m_showAxesStore);
+    Agros2D::configComputer()->setValue(Config::Config_ShowRulers, m_showRulersStore);
+    Agros2D::configComputer()->setValue(Config::Config_ShowGrid, m_showGridStore);
+    Agros2D::configComputer()->setValue(Config::Config_ShowAxes, m_showAxesStore);
 
     m_postHermes->refresh();
 
@@ -158,11 +158,11 @@ void VideoDialog::createControls()
     chkSaveImages->setChecked(settings.value("VideoDialog/SaveImages", true).toBool());
 
     chkFigureShowGrid = new QCheckBox(tr("Show grid"));
-    chkFigureShowGrid->setChecked(settings.value("VideoDialog/ShowGrid", Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool()).toBool());
+    chkFigureShowGrid->setChecked(settings.value("VideoDialog/ShowGrid", Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool()).toBool());
     chkFigureShowRulers = new QCheckBox(tr("Show rulers"));
-    chkFigureShowRulers->setChecked(settings.value("VideoDialog/ShowRulers", Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()).toBool());
+    chkFigureShowRulers->setChecked(settings.value("VideoDialog/ShowRulers", Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()).toBool());
     chkFigureShowAxes = new QCheckBox(tr("Show axes"));
-    chkFigureShowAxes->setChecked(settings.value("VideoDialog/ShowAxes", Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()).toBool());
+    chkFigureShowAxes->setChecked(settings.value("VideoDialog/ShowAxes", Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool()).toBool());
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
@@ -263,9 +263,9 @@ void VideoDialog::transientAnimateNextStep()
 
 void VideoDialog::setTransientStep(int transientStep)
 {
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, chkFigureShowRulers->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, chkFigureShowGrid->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, chkFigureShowAxes->isChecked());
+    Agros2D::configComputer()->setValue(Config::Config_ShowRulers, chkFigureShowRulers->isChecked());
+    Agros2D::configComputer()->setValue(Config::Config_ShowGrid, chkFigureShowGrid->isChecked());
+    Agros2D::configComputer()->setValue(Config::Config_ShowAxes, chkFigureShowAxes->isChecked());
 
     m_postHermes->setActiveTimeStep(transientStep);
     m_postHermes->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(m_postHermes->activeViewField(), SolutionMode_Normal, transientStep));
@@ -313,9 +313,9 @@ void VideoDialog::adaptiveAnimateNextStep()
 
 void VideoDialog::setAdaptiveStep(int adaptiveStep)
 {
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, chkFigureShowRulers->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, chkFigureShowGrid->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, chkFigureShowAxes->isChecked());
+    Agros2D::configComputer()->setValue(Config::Config_ShowRulers, chkFigureShowRulers->isChecked());
+    Agros2D::configComputer()->setValue(Config::Config_ShowGrid, chkFigureShowGrid->isChecked());
+    Agros2D::configComputer()->setValue(Config::Config_ShowAxes, chkFigureShowAxes->isChecked());
 
     m_postHermes->setActiveAdaptivityStep(adaptiveStep - 1);
     m_postHermes->refresh();

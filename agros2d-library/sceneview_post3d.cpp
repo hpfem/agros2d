@@ -146,7 +146,7 @@ void SceneViewPost3D::paintGL()
         emit labelCenter(tr("Postprocessor 3D"));
     }
 
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
+    if (Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool()) paintAxes();
 }
 
 void SceneViewPost3D::resizeGL(int w, int h)

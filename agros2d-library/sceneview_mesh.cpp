@@ -165,7 +165,7 @@ void SceneViewMesh::paintGL()
     glDisable(GL_DEPTH_TEST);
 
     // grid
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool()) paintGrid();
+    if (Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool()) paintGrid();
 
     QTime time;
 
@@ -192,14 +192,14 @@ void SceneViewMesh::paintGL()
     }
 
     // rulers
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool())
+    if (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool())
     {
         paintRulers();
         paintRulersHints();
     }
 
     // axes
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
+    if (Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool()) paintAxes();
 
     paintZoomRegion();
 }
@@ -424,7 +424,7 @@ void SceneViewMesh::paintOrderColorBar()
     int textWidth = 6 * (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0);
     int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
     Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (20 + textWidth));
 
     // blended rectangle

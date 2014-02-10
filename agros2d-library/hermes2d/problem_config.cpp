@@ -187,16 +187,8 @@ void ProblemSetting::clear()
 void ProblemSetting::setStringKeys()
 {
     m_settingKey[Problem_StartupScript] = "Problem_StartupScript";
-    m_settingKey[View_RulersFontFamily] = "View_RulersFontFamily";
-    m_settingKey[View_RulersFontPointSize] = "View_RulersFontPointSize";
-    m_settingKey[View_PostFontFamily] = "View_PostFontFamily";
-    m_settingKey[View_PostFontPointSize] = "View_PostFontPointSize";
-    m_settingKey[View_ZoomToMouse] = "View_ZoomToMouse";
-    m_settingKey[View_ShowGrid] = "View_ShowGrid";
     m_settingKey[View_GridStep] = "View_GridStep";
-    m_settingKey[View_ShowRulers] = "View_ShowRulers";
     m_settingKey[View_SnapToGrid] = "View_SnapToGrid";
-    m_settingKey[View_ShowAxes] = "View_ShowAxes";
     m_settingKey[View_ScalarView3DMode] = "View_ScalarView3DMode";
     m_settingKey[View_ScalarView3DLighting] = "View_ScalarView3DLighting";
     m_settingKey[View_ScalarView3DAngle] = "View_ScalarView3DAngle";
@@ -282,16 +274,8 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault.clear();
 
     m_settingDefault[Problem_StartupScript] = QString();
-    m_settingDefault[View_RulersFontFamily] = QString("Droid");
-    m_settingDefault[View_RulersFontPointSize] = 12;
-    m_settingDefault[View_PostFontFamily] = QString("Droid");
-    m_settingDefault[View_PostFontPointSize] = 16;
-    m_settingDefault[View_ZoomToMouse] = true;
-    m_settingDefault[View_ShowGrid] = true;
-    m_settingDefault[View_GridStep] = 0.05;
-    m_settingDefault[View_ShowRulers] = true;
     m_settingDefault[View_SnapToGrid] = true;
-    m_settingDefault[View_ShowAxes] = true;
+    m_settingDefault[View_GridStep] = 0.05;
     m_settingDefault[View_ScalarView3DMode] = SceneViewPost3DMode_None;
     m_settingDefault[View_ScalarView3DLighting] = true;
     m_settingDefault[View_ScalarView3DAngle] = 240.0;

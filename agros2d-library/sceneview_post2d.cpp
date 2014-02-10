@@ -201,7 +201,7 @@ void SceneViewPost2D::paintGL()
     glDisable(GL_DEPTH_TEST);
 
     // grid
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool()) paintGrid();
+    if (Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool()) paintGrid();
 
     // view
     if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
@@ -228,14 +228,14 @@ void SceneViewPost2D::paintGL()
     }
 
     // rulers
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool())
+    if (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool())
     {
         paintRulers();
         paintRulersHints();
     }
 
     // axes
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
+    if (Agros2D::configComputer()->value(Config::Config_ShowAxes).toBool()) paintAxes();
 
     paintZoomRegion();
 

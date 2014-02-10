@@ -31,26 +31,49 @@ public:
     Config();
     ~Config();
 
-    // general
-    QString guiStyle;
-    QString language;
+    enum Type
+    {
+        Unknown,
+        Config_LogStdOut,
+        Config_GUIStyle,
+        Config_Locale,
+        Config_ShowResults,
+        Config_LinearSystemFormat,
+        Config_LinearSystemSave,
+        Config_CacheSize,
+        Config_NumberOfThreads,
+        Config_RulersFontFamily,
+        Config_RulersFontPointSize,
+        Config_PostFontFamily,
+        Config_PostFontPointSize,
+        Config_ShowGrid,
+        Config_ShowRulers,
+        Config_ShowAxes
+    };
 
-    bool showLogStdOut;
+    inline QVariant value(Type type) {  return m_setting[type]; }
+    inline void setValue(Type type, int value) {  m_setting[type] = value; }
+    inline void setValue(Type type, double value) {  m_setting[type] = value; }
+    inline void setValue(Type type, bool value) {  m_setting[type] = value; }
+    inline void setValue(Type type, const QString &value) { m_setting[type] = value; }
+    inline void setValue(Type type, const QStringList &value) { m_setting[type] = value; }
 
-    bool lineEditValueShowResult;
+    inline QVariant defaultValue(Type type) const { return m_settingDefault[type]; }
 
-    // development
-    bool saveMatrixRHS;
-    Hermes::Algebra::MatrixExportFormat dumpFormat;
-
-    // cache
-    int cacheSize;
-
-    // number of threads
-    int numberOfThreads;
+    inline QString keyString(Type type) const { return m_settingKey[type]; }
 
     void load();
     void save();
+
+    void clear();
+
+private:
+    QMap<Type, QVariant> m_setting;
+    QMap<Type, QVariant> m_settingDefault;
+    QMap<Type, QString> m_settingKey;
+
+    void setDefaultValues();
+    void setStringKeys();
 };
 
 #endif // CONFIG_H

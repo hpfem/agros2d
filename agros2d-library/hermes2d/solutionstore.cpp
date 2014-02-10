@@ -587,7 +587,7 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     if (!m_multiSolutionCache.contains(solutionID))
     {
         // flush cache
-        if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
+        if (m_multiSolutionCache.count() > Agros2D::configComputer()->value(Config::Config_CacheSize).toInt())
         {
             assert(! m_multiSolutionCacheIDOrder.empty());
             FieldSolutionID idRemove = m_multiSolutionCacheIDOrder[0];

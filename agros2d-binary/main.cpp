@@ -20,6 +20,7 @@
 #include <QApplication>
 
 #include "util.h"
+#include "util/conf.h"
 #include "util/global.h"
 #include "util/system_utils.h"
 #include "mainwindow.h"
@@ -46,9 +47,14 @@ int main(int argc, char *argv[])
 
         CleanExit cleanExit;
         AgrosApplication a(argc, argv);
-        a.setStyle();
-        a.setLocale();
+        // setting gui style
+        setGUIStyle(Agros2D::configComputer()->value(Config::Config_GUIStyle).toString());
+        // language
+        setLocale(Agros2D::configComputer()->value(Config::Config_Locale).toString());
         a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+
+        // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)
+        Indicator::init();
 
         MainWindow w;
 

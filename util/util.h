@@ -121,14 +121,16 @@ AGROS_UTIL_API QString stringListToString(const QStringList &list);
 // show page
 AGROS_UTIL_API void showPage(const QString &str = "");
 
+// get available languages
+AGROS_UTIL_API QStringList availableLanguages();
+
 // set gui style
+AGROS_UTIL_API QString defaultGUIStyle();
 AGROS_UTIL_API void setGUIStyle(const QString &styleName);
 
 // set language
-AGROS_UTIL_API void setLanguage(const QString &locale);
-
-// get available languages
-AGROS_UTIL_API QStringList availableLanguages();
+AGROS_UTIL_API void setLocale(const QString &locale);
+AGROS_UTIL_API QString defaultLocale();
 
 // get icon with respect to actual theme
 AGROS_UTIL_API QIcon icon(const QString &name);

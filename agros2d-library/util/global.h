@@ -41,8 +41,6 @@ public:
     virtual bool notify(QObject *receiver, QEvent *event);
 
     void runRemoteServer();
-    void setLocale();
-    void setStyle();
 
 private:
     ScriptEngineRemote *m_scriptEngineRemote;

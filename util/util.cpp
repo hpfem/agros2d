@@ -102,6 +102,76 @@ double fastcos(double angle)
     return fastsin(M_PI_2 - angle);
 }
 
+QStringList availableLanguages()
+{
+    QDir dir;
+    dir.setPath(datadir() + LANGUAGEROOT);
+
+    // add all translations
+    QStringList filters;
+    filters << "*.qm";
+    dir.setNameFilters(filters);
+    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+
+    // remove extension
+    QStringList list = dir.entryList();
+    list.replaceInStrings(".qm", "");
+
+    // remove system translations
+    foreach (QString str, list)
+    {
+        if (str.startsWith("qt_"))
+            list.removeOne(str);
+        if (str.startsWith("plugin_"))
+            list.removeOne(str);
+    }
+
+    return list;
+}
+
+QString defaultGUIStyle()
+{
+    QString styleName = "";
+    QStringList styles = QStyleFactory::keys();
+
+#ifdef Q_WS_X11
+    // kde 4
+    if (getenv("KDE_SESSION_VERSION") != NULL)
+    {
+        if (styles.contains("Oxygen"))
+            styleName = "Oxygen";
+        else
+            styleName = "Plastique";
+    }
+    // gtk+
+    if (styleName.isEmpty())
+        styleName = "GTK+";
+#endif
+
+#ifdef Q_WS_WIN
+    if (styles.contains("WindowsVista"))
+        styleName = "WindowsVista";
+    else if (styles.contains("WindowsXP"))
+        styleName = "WindowsXP";
+    else
+        styleName = "Windows";
+#endif
+
+#ifdef Q_WS_MAC
+    styleName = "Aqua";
+#endif
+
+    return styleName;
+}
+
+QString defaultLocale()
+{
+    if (QLocale::system().name() == "C")
+        return "en_US";
+    else
+        return QLocale::system().name();
+}
+
 void setGUIStyle(const QString &styleName)
 {
     // standard style
@@ -114,7 +184,7 @@ void setGUIStyle(const QString &styleName)
     }
 }
 
-void setLanguage(const QString &locale)
+void setLocale(const QString &locale)
 {
     // non latin-1 chars
 #if QT_VERSION < 0x050000
@@ -150,33 +220,6 @@ void setLanguage(const QString &locale)
     QApplication::installTranslator(qtTranslator);
     QApplication::installTranslator(appTranslator);
     QApplication::installTranslator(pluginTranslator);
-}
-
-QStringList availableLanguages()
-{
-    QDir dir;
-    dir.setPath(datadir() + LANGUAGEROOT);
-
-    // add all translations
-    QStringList filters;
-    filters << "*.qm";
-    dir.setNameFilters(filters);
-    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-
-    // remove extension
-    QStringList list = dir.entryList();
-    list.replaceInStrings(".qm", "");
-
-    // remove system translations
-    foreach (QString str, list)
-    {
-        if (str.startsWith("qt_"))
-            list.removeOne(str);
-        if (str.startsWith("plugin_"))
-            list.removeOne(str);
-    }
-
-    return list;
 }
 
 QIcon icon(const QString &name)
