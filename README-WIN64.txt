@@ -56,7 +56,7 @@
 
 1.7) Ifconsol.lib
   - https://nees.org/tools/openfresco/export/327/trunk/WIN32/lib/IFCONSOL.LIB
-  - Save to \...\dependencies-64/bin
+  - Save to \...\dependencies-64\bin
 
 
 2.0) Before build
@@ -69,4 +69,6 @@
 
 2.1) Build
   - CMake: cmake -G "Visual Studio 11 Win64" .
-  - Open in Visual Studio and build.
+  - Open in Visual Studio
+  - [TEMPORARY WORKAROUND] Go to agros2d_library project properties -> VC++ Directories -> Library Directories and add the directory where you saved Ifconsol.lib (should be \...\dependencies-64\bin). 
+  - build.
