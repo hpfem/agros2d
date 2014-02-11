@@ -1230,8 +1230,8 @@ void MainWindow::doOptions()
     ConfigComputerDialog configDialog(this);
     if (configDialog.exec())
     {
-        postHermes->refresh();
         sceneViewPreprocessor->refresh();
+        postHermes->refresh();
         // setControls();
     }
 }

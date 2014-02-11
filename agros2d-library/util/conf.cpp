@@ -58,36 +58,27 @@ void Config::load()
 
     QSettings settings;
 
-    // std log
-    m_setting[Config_LogStdOut] = settings.value(m_settingKey[Config_LogStdOut], m_settingDefault[Config_LogStdOut]).toBool();
-
-    // general
-    m_setting[Config_GUIStyle] = settings.value(m_settingKey[Config_GUIStyle], m_settingDefault[Config_GUIStyle]).toString();
-    m_setting[Config_Locale] = settings.value(m_settingKey[Config_Locale], m_settingDefault[Config_Locale]).toString();
-
-    m_setting[Config_ShowResults] = settings.value(m_settingKey[Config_ShowResults], m_settingDefault[Config_ShowResults]).toBool();
-
-    // development
-    m_setting[Config_LinearSystemSave] = settings.value(m_settingKey[Config_LinearSystemSave], m_settingDefault[Config_LinearSystemSave]).toBool();
-    m_setting[Config_LinearSystemFormat] = (Hermes::Algebra::MatrixExportFormat) settings.value(m_settingKey[Config_LinearSystemFormat], m_settingDefault[Config_LinearSystemFormat]).toInt();
-
-    // cache size
-    m_setting[Config_CacheSize] = settings.value(m_settingKey[Config_CacheSize], m_settingDefault[Config_CacheSize]).toInt();
+    foreach (Type key, m_settingKey.keys())
+    {
+        if (m_settingDefault.keys().contains(key))
+        {
+            if (m_settingDefault[key].type() == QVariant::Double)
+                m_setting[key] = settings.value(m_settingKey[key], m_settingDefault[key]).toDouble();
+            else if (m_settingDefault[key].type() == QVariant::Int)
+                m_setting[key] = settings.value(m_settingKey[key], m_settingDefault[key]).toInt();
+            else if (m_settingDefault[key].type() == QVariant::Bool)
+                m_setting[key] = settings.value(m_settingKey[key], m_settingDefault[key]).toBool();
+            else if (m_settingDefault[key].type() == QVariant::String)
+                m_setting[key] = settings.value(m_settingKey[key], m_settingDefault[key]).toString();
+            else
+                qDebug() << "Unknown datatype not found" << m_settingKey.value(key);
+        }
+    }
 
     // number of threads
-    m_setting[Config_NumberOfThreads] = settings.value(m_settingKey[Config_NumberOfThreads], m_settingDefault[Config_NumberOfThreads]).toInt();
     if (m_setting[Config_NumberOfThreads].toInt() > omp_get_max_threads())
         m_setting[Config_NumberOfThreads] = omp_get_max_threads();
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, m_settingKey[Config_NumberOfThreads].toInt());
-
-    m_setting[Config_ShowGrid] = settings.value(m_settingKey[Config_ShowGrid], m_settingDefault[Config_ShowGrid]).toBool();
-    m_setting[Config_ShowRulers] = settings.value(m_settingKey[Config_ShowRulers], m_settingDefault[Config_ShowRulers]).toBool();
-    m_setting[Config_ShowAxes] = settings.value(m_settingKey[Config_ShowAxes], m_settingDefault[Config_ShowAxes]).toBool();
-
-    m_setting[Config_RulersFontFamily] = settings.value(m_settingKey[Config_RulersFontFamily], m_settingDefault[Config_RulersFontFamily]).toString();
-    m_setting[Config_RulersFontPointSize] = settings.value(m_settingKey[Config_RulersFontPointSize], m_settingDefault[Config_RulersFontPointSize]).toInt();
-    m_setting[Config_PostFontFamily] = settings.value(m_settingKey[Config_PostFontFamily], m_settingDefault[Config_PostFontFamily]).toString();
-    m_setting[Config_PostFontPointSize] = settings.value(m_settingKey[Config_PostFontPointSize], m_settingDefault[Config_PostFontPointSize]).toInt();
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, m_setting[Config_NumberOfThreads].toInt());
 }
 
 void Config::save()
@@ -98,7 +89,7 @@ void Config::save()
         settings.setValue(m_settingKey[key], m_setting[key]);
 
     // number of threads
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, m_settingKey[Config_NumberOfThreads].toInt());
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, m_setting[Config_NumberOfThreads].toInt());
 }
 
 void Config::setStringKeys()
