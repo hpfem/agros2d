@@ -479,8 +479,9 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::
     // linear solver statistics
     if (LoopSolver<Scalar> *iterLinearSolver = dynamic_cast<LoopSolver<Scalar> *>(linearSolver))
         Agros2D::log()->printDebug(QObject::tr("Solver"),
-                                   QObject::tr("Iterative solver statistics: %1 iterations")
-                                   .arg(iterLinearSolver->get_num_iters()));
+                                   QObject::tr("Iterative solver statistics: %1 iterations, residual %2")
+                                   .arg(iterLinearSolver->get_num_iters())
+                                   .arg(iterLinearSolver->get_residual_norm()));
 
     return m_hermesSolverContainer->slnVector();
 }
