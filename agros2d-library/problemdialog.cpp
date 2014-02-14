@@ -257,7 +257,7 @@ QWidget *FieldWidget::createSolverWidget()
     layoutSolverConvergence->addWidget(chkNonlinearResidual, 1, 1);
     layoutSolverConvergence->addWidget(txtNonlinearResidual, 1, 2);
 
-    QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
+    QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence (all selected conditions have to be satisfied)"));
     grpSolverConvergence->setLayout(layoutSolverConvergence);
 
     cmbNonlinearDampingType = new QComboBox();
