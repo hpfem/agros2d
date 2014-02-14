@@ -26,8 +26,8 @@ QString transformXML(const QString &fileName, const QString &stylesheetFileName)
     QString out;
 
     QXmlQuery query(QXmlQuery::XSLT20);
-    query.setFocus(QUrl(fileName));
-    query.setQuery(QUrl(stylesheetFileName));
+    query.setFocus(QUrl::fromLocalFile(fileName));
+    query.setQuery(QUrl::fromLocalFile(stylesheetFileName));
     query.evaluateTo(&out);
 
     return out;
