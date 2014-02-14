@@ -523,7 +523,6 @@ void SceneViewPost2D::paintContoursTri(Hermes::Hermes2D::Views::ScalarLinearizer
     double val = triangle[idx[0]][2];
 
     double y = ceil(val / step);
-    if (y < val / step) y + 1.0;
     val = y * step;
 
     int l1 = 0, l2 = 1;
