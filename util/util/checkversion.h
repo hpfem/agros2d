@@ -26,18 +26,19 @@
 #include <QtNetwork>
 
 // check for new version
-AGROS_UTIL_API void checkForNewVersion(bool quiet = false);
+AGROS_UTIL_API void checkForNewVersion(bool quiet = false, bool isSolver = false);
 
 class AGROS_UTIL_API CheckVersion : public QObject
 {
     Q_OBJECT
 public:
-    CheckVersion(QUrl url);
+    CheckVersion(QUrl url, bool isSolver = false);
     ~CheckVersion();
     void run(bool quiet);
 
 private:
     bool m_quiet;
+    bool m_solver;
     QUrl m_url;
     QNetworkAccessManager *m_manager;
     QNetworkReply *m_networkReply;

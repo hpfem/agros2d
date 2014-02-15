@@ -20,6 +20,7 @@
 #include "agros_solver.h"
 
 #include "util/global.h"
+#include "util/checkversion.h"
 
 #include "scenenode.h"
 #include "logview.h"
@@ -31,6 +32,8 @@ AgrosSolver::AgrosSolver(int &argc, char **argv)
     : AgrosApplication(argc, argv), m_log(NULL), m_enableLog(false)
 {    
     createPythonEngine(new PythonEngineAgros());
+
+    checkForNewVersion(true, true);
 }
 
 AgrosSolver::~AgrosSolver()

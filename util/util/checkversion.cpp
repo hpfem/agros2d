@@ -33,18 +33,18 @@ QString esc(const QString &str)
 }
 
 static CheckVersion *checkVersion = NULL;
-void checkForNewVersion(bool quiet)
+void checkForNewVersion(bool quiet, bool isSolver)
 {
     // download version
     QUrl url("http://www.agros2d.org/version/log/version.php");
 
     if (checkVersion == NULL)
-        checkVersion = new CheckVersion(url);
+        checkVersion = new CheckVersion(url, isSolver);
 
     checkVersion->run(quiet);
 }
 
-CheckVersion::CheckVersion(QUrl url) : QObject(), m_url(url)
+CheckVersion::CheckVersion(QUrl url, bool isSolver) : QObject(), m_url(url), m_solver(isSolver)
 {
     m_manager = new QNetworkAccessManager(this);
     connect(m_manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(downloadFinished(QNetworkReply *)));
@@ -60,15 +60,16 @@ void CheckVersion::run(bool quiet)
     m_quiet = quiet;
 
     QByteArray postData;
-    postData.append("OS=" +  esc(SystemUtils::operatingSystem()) + "&");    
-    postData.append("PROCESSOR=" +  esc(SystemUtils::cpuType()) + "&");
-    postData.append("THREADS=" +  QString::number(SystemUtils::numberOfThreads()) + "&");
-    postData.append("MEMORY=" +  QString::number(SystemUtils::totalMemorySize()) + "&");
-    postData.append("RESOLUTION=" +  esc(QString("%1 x %2").
-                                         arg(QApplication::desktop()->screenGeometry().width()).
-                                         arg(QApplication::desktop()->screenGeometry().height())) + "&");
-    postData.append("AGROS2D_VERSION=" +  esc(QApplication::applicationVersion()) + "&");
-    postData.append("AGROS2D_ARCH=" +  esc(version64bit() ? "64 bit" : "32 bit") + "&");
+    postData.append(QString("OS=%1&").arg(esc(SystemUtils::operatingSystem())));
+    postData.append(QString("PROCESSOR=%1&").arg(esc(SystemUtils::cpuType())));
+    postData.append(QString("THREADS=%1&").arg(QString::number(SystemUtils::numberOfThreads())));
+    postData.append(QString("MEMORY=%1&").arg(QString::number(SystemUtils::totalMemorySize())));
+    postData.append(QString("RESOLUTION=%1 x %2&").
+                    arg(QApplication::desktop()->screenGeometry().width()).
+                    arg(QApplication::desktop()->screenGeometry().height()));
+    postData.append(QString("AGROS2D_VERSION=%1&").arg(esc(QApplication::applicationVersion())));
+    postData.append(QString("AGROS2D_ARCH=%1&").arg(esc(version64bit() ? "64 bit" : "32 bit")));
+    postData.append(QString("AGROS2D_SOLVER=%1&").arg(m_solver ? "1" : "0"));
 
     QNetworkRequest req(m_url);
     req.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/x-www-form-urlencoded"));
