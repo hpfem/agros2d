@@ -398,7 +398,7 @@ void MaterialEditDialog::deleteProperty()
     if (lstProperties->currentItem())
     {
         if (QMessageBox::question(this, tr("Delete property"),
-                                  tr("Property '%1' will be pernamently deleted. Are you sure?").arg(txtPropertyName->text()),
+                                  tr("Property '%1' will be permanently deleted. Are you sure?").arg(txtPropertyName->text()),
                                   tr("&Yes"), tr("&No")) == 0)
         {
             int row = lstProperties->row(lstProperties->currentItem());
