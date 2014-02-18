@@ -130,7 +130,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 
     // post hermes
-    connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));    
+    connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
     currentPythonEngineAgros()->setPostHermes(postHermes);
 
@@ -1151,10 +1151,7 @@ void MainWindow::doDocumentSaveGeometry()
     if (!fileName.isEmpty())
     {
         QFileInfo fileInfo(fileName);
-        if (selected == "SVG files (*.svg)")
-        {
-            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
-        }
+        if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
 
         sceneViewPreprocessor->saveGeometryToSvg(fileName);
 
@@ -1202,7 +1199,7 @@ void MainWindow::doCreateVideo()
 }
 
 void MainWindow::doSolveFinished()
-{   
+{
     if (Agros2D::problem()->isMeshed() && !currentPythonEngine()->isScriptRunning())
     {
         sceneViewMesh->actSceneModeMesh->trigger();
