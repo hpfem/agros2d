@@ -1018,7 +1018,8 @@ void PythonEditorDialog::doFileSave()
     if (!scriptEditorWidget()->fileName().isEmpty())
     {
         QFileInfo fileInfo(scriptEditorWidget()->fileName());
-        if (fileInfo.suffix() != "py") scriptEditorWidget()->fileName() += ".py";
+        if (fileInfo.suffix() != "py")
+            scriptEditorWidget()->setFileName(scriptEditorWidget()->fileName() + ".py");
 
         QFile fileName(scriptEditorWidget()->fileName());
         if (fileName.open(QFile::WriteOnly | QFile::Text))
@@ -1051,7 +1052,8 @@ void PythonEditorDialog::doFileSaveAs()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
     if (!fileName.isEmpty())
     {
-        if (QFileInfo(fileName).suffix() != "py") fileName += ".py";
+        if (QFileInfo(fileName).suffix() != "py")
+            fileName += ".py";
 
         scriptEditorWidget()->setFileName(fileName);
         doFileSave();

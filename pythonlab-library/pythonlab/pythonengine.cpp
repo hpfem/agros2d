@@ -105,8 +105,16 @@ static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
     QDir(tempDir).mkdir(tempDir);
 
     QString tempName = QUuid::createUuid().toString().remove("{").remove("}");
+    QString fn = QFileInfo(tempDir + tempName).absoluteFilePath();
 
-    return PyString_FromString(compatibleFilename(QFileInfo(tempDir + tempName).absolutePath()).toLatin1().data());
+    char *str = NULL;
+    if (PyArg_ParseTuple(pArgs, "|s", &str))
+    {
+        if (!QString(str).trimmed().isEmpty())
+            fn = fn + "." + str;
+    }
+
+    return PyString_FromString(compatibleFilename(fn).toLatin1().data());
 }
 
 static PyMethodDef pythonEngineFuntions[] =
