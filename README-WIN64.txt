@@ -59,16 +59,27 @@
   - Save to \...\dependencies-64\bin
 
 
-2.0) Before build
-  - PATH:
-  -- C:\Python27;C:\Python27\Scripts
-  -- c:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\bin\
-  -- <PATH TO AGROS REPOSITORY>\libs\
-  -- \...\dependencies-64\bin
-  - Wipe all the x86 outputs from the repository
+2) Before build
 
-2.1) Build
-  - CMake: cmake -G "Visual Studio 11 Win64" .
-  - Open in Visual Studio
-  - [TEMPORARY WORKAROUND] Go to agros2d_library project properties -> VC++ Directories -> Library Directories and add the directory where you saved Ifconsol.lib (should be \...\dependencies-64\bin). 
+2.1) PATH:
+  - C:\Python27;C:\Python27\Scripts
+  - c:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\bin\
+  - <PATH TO AGROS REPOSITORY>\libs\
+  - \...\dependencies-64\bin
+
+2.2) Wipe all the x86 outputs from the repository
+
+2.3) CMake.vars  
+  - SET(WITH_QT5 YES)
+  - set(DEPENDENCIES_ROOT "/.../dependencies-64")
+  - SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.2.1\\5.2.1\\msvc2012_64_opengl\\")
+  - SET(ZLIB_ROOT "/.../dependencies-64"")
+
+3) Build
+
+3.1) CMake: cmake -G "Visual Studio 11 Win64" .
+
+3.2) Open in Visual Studio
+
+3.3) [TEMPORARY WORKAROUND] Go to agros2d_library project properties -> VC++ Directories -> Library Directories and add the directory where you saved Ifconsol.lib (should be \...\dependencies-64\bin). 
   - build.
