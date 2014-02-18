@@ -104,6 +104,10 @@ void {{CLASS}}SurfaceIntegral::calculate()
     m_values.clear();
 
     FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+    // check existence
+    if (!Agros2D::solutionStore()->contains(fsid))
+        return;
+
     MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
 
     if (Agros2D::problem()->isSolved())
