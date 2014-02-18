@@ -56,7 +56,7 @@ void SolverAgros::clearSteps()
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
     return new AgrosExternalSolverMUMPS(m, rhs);
-    // return new AgrosExternalSolverUMFPack(m, rhs);
+    //return new AgrosExternalSolverUMFPack(m, rhs);
 }
 
 AgrosExternalSolverExternal::AgrosExternalSolverExternal(CSCMatrix<double> *m, SimpleVector<double> *rhs)
@@ -115,7 +115,7 @@ void AgrosExternalSolverExternal::solve(double* initial_guess)
         initialVector.free();
     }
 
-    if (!Agros2D::problem()->isTransient() || !Agros2D::problem()->isNonlinear())
+    if (!(Agros2D::problem()->isTransient() || Agros2D::problem()->isNonlinear()))
         this->m->free();
     this->rhs->free();
 
