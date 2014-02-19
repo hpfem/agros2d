@@ -683,7 +683,7 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="1009"/>
         <source>Heat transfer</source>
-        <translation>Teplotní přenos</translation>
+        <translation>Přenos tepla</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="1015"/>

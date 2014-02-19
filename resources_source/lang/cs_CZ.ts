@@ -190,43 +190,43 @@
 <context>
     <name>AgrosSolver</name>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="86"/>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="102"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="89"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="105"/>
         <source>Problem</source>
         <translation>Problém</translation>
     </message>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="86"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="89"/>
         <source>Problem &apos;%1&apos; successfuly loaded</source>
         <translation>Problem &apos;%1&apos; byl správně načten</translation>
     </message>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="93"/>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="132"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="96"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="135"/>
         <source>Solver</source>
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="93"/>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="132"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="96"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="135"/>
         <source>Problem was solved in %1</source>
         <translation>Problem byl vyřešen v čase %1</translation>
     </message>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="115"/>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="141"/>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="175"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="118"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="144"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="178"/>
         <source>Scripting Engine</source>
         <translation>Interpret skriptu</translation>
     </message>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="115"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="118"/>
         <source>Python script &apos;%1&apos; not found</source>
         <translation>Python skript &apos;%1&apos; nebyl nalezen</translation>
     </message>
     <message>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="141"/>
-        <location filename="../../agros2d-solver/agros_solver.cpp" line="175"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="144"/>
+        <location filename="../../agros2d-solver/agros_solver.cpp" line="178"/>
         <source>%1
 Line: %2
 Stacktrace:
@@ -397,13 +397,13 @@ Výstup:
         <translation type="obsolete">&lt;b&gt;Nová verze aplikace.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Aktuální verze: %1&lt;br/&gt;Nová verze: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../../util/util/checkversion.cpp" line="97"/>
+        <location filename="../../util/util/checkversion.cpp" line="98"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;http://www.agros2d.org/down/&quot;&gt;http://www.agros2d.org/down/&lt;/a&gt;</source>
         <translation>&lt;b&gt;Je dostupná nová verze.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Aktuální verze: %1&lt;br/&gt;Nová verze: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;http://www.agros2d.org/down/&quot;&gt;http://www.agros2d.org/down/&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../../util/util/checkversion.cpp" line="104"/>
-        <location filename="../../util/util/checkversion.cpp" line="108"/>
+        <location filename="../../util/util/checkversion.cpp" line="105"/>
+        <location filename="../../util/util/checkversion.cpp" line="109"/>
         <source>New version</source>
         <translation>Nová verze</translation>
     </message>
@@ -412,7 +412,7 @@ Výstup:
         <translation type="obsolete">Soubor je poškozen nebo není připojena síť.</translation>
     </message>
     <message>
-        <location filename="../../util/util/checkversion.cpp" line="108"/>
+        <location filename="../../util/util/checkversion.cpp" line="109"/>
         <source>You are using actual version.</source>
         <translation>Používáte aktuální verzi aplikace.</translation>
     </message>
@@ -961,6 +961,11 @@ Výstup:
         <translation>Residual:</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="260"/>
+        <source>Convergence (all selected conditions have to be satisfied)</source>
+        <translation>Konvergence (všechmy vybrané podmínky musí být splněny)</translation>
+    </message>
+    <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="278"/>
         <source>Min. residual ratio for factor decrease:</source>
         <translation>Min. poměr residuálů pro snížení faktoru:</translation>
@@ -1057,9 +1062,8 @@ Výstup:
         <translation type="obsolete">Max. počet kroků</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="260"/>
         <source>Convergence</source>
-        <translation>Konvergence</translation>
+        <translation type="obsolete">Konvergence</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="283"/>
@@ -1897,13 +1901,13 @@ step</source>
 krok</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1280"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1277"/>
         <source>Run script: %1
 </source>
         <translation>Spustit skript: %1</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1529"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1526"/>
         <source>Export mesh file</source>
         <translation>Exportovat soubor se sítí</translation>
     </message>
@@ -1945,7 +1949,7 @@ krok</translation>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="277"/>
         <source>Export VTK geometry...</source>
-        <translation>Export geometrie do VTK</translation>
+        <translation>Export geometrie do VTK...</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/mainwindow.cpp" line="287"/>
@@ -2098,22 +2102,22 @@ krok</translation>
         <translation>SVG soubory (*.svg)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1558"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1555"/>
         <source>Export VTK file</source>
         <translation>Export VTK souboru</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1558"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1555"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK soubory (*.vtk)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1613"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1610"/>
         <source>Script</source>
         <translation>Skript</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1614"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1611"/>
         <source>Cannot close main window. Script is still running.</source>
         <translation>Není možné zavřít hlavní okno. Vykonávání skriptu ještě nezkončilo.</translation>
     </message>
@@ -2130,12 +2134,12 @@ krok</translation>
         <translation type="obsolete">Adaptivní krok</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1529"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1526"/>
         <source>Mesh files (*.msh)</source>
         <translation>Soubory sítí (*.msh)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1548"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1545"/>
         <source>The problem is not meshed</source>
         <translation>Problém není diskretizován</translation>
     </message>
@@ -2148,7 +2152,7 @@ krok</translation>
         <location filename="../../agros2d-library/mainwindow.cpp" line="947"/>
         <location filename="../../agros2d-library/mainwindow.cpp" line="990"/>
         <location filename="../../agros2d-library/mainwindow.cpp" line="1044"/>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1548"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1545"/>
         <source>Problem</source>
         <translation>Problém</translation>
     </message>
@@ -2197,7 +2201,7 @@ krok</translation>
         <translation>Soubory Agros2D (*.a2d *.py);;Datové soubory Agros2D (*.a2d);;Python scripty (*.py)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1271"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1268"/>
         <source>Python script (*.py)</source>
         <translation>Python scripty (*.py)</translation>
     </message>
@@ -2292,12 +2296,12 @@ oblasti</translation>
         <translation>Soubor &apos;%1&apos; nebyl nalezen.</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1303"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1300"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Soubor &apos;%1&apos; neexistuje.</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1303"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1300"/>
         <source>File open</source>
         <translation>Soubor otevřen</translation>
     </message>
@@ -2348,7 +2352,7 @@ oblasti</translation>
         <translation>Soubory PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/mainwindow.cpp" line="1271"/>
+        <location filename="../../agros2d-library/mainwindow.cpp" line="1268"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
@@ -2564,6 +2568,11 @@ oblasti</translation>
         <translation>Přidat vlastnost</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="401"/>
+        <source>Property &apos;%1&apos; will be permanently deleted. Are you sure?</source>
+        <translation>Vlastnost &apos;%1&apos; bude trvale odstraněna. Jste si jisti?</translation>
+    </message>
+    <message>
         <source>Value:</source>
         <translation type="obsolete">Hodnota:</translation>
     </message>
@@ -2640,9 +2649,8 @@ oblasti</translation>
         <translation>Smazat vlastnost</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="401"/>
         <source>Property &apos;%1&apos; will be pernamently deleted. Are you sure?</source>
-        <translation>Vlastnost &apos;%1&apos; bude trvale odstraněna. Jste si jistý(á)?</translation>
+        <translation type="obsolete">Vlastnost &apos;%1&apos; bude trvale odstraněna. Jste si jistý(á)?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="402"/>
@@ -4171,9 +4179,8 @@ oblasti</translation>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/problem.cpp" line="389"/>
         <source>An unknown exception occured and has been ignored</source>
-        <translation>Nastala neznámá vyjímka, která byla ignorována</translation>
+        <translation type="obsolete">Nastala neznámá vyjímka, která byla ignorována</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="551"/>
@@ -4227,9 +4234,8 @@ oblasti</translation>
         <translation type="obsolete">Matice a RHS budou uloženy na disk a to velmi zpomalí výpočet (ukládání můžete zakázat v nastavení aplikace)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/problem.cpp" line="750"/>
         <source>An unknown exception occured in solver and has been ignored</source>
-        <translation>Nastala neznámá vyjímka, která byla ignorována</translation>
+        <translation type="obsolete">Nastala neznámá vyjímka, která byla ignorována</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="777"/>
@@ -4264,6 +4270,11 @@ oblasti</translation>
         <translation></translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/hermes2d/problem.cpp" line="389"/>
+        <source>An unknown exception occurred and has been ignored</source>
+        <translation>Nastala neznámá vyjímka, která byla ignorována</translation>
+    </message>
+    <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="430"/>
         <source>Mesh generator
 %1</source>
@@ -4282,8 +4293,17 @@ oblasti</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="647"/>
-        <source>Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings.</source>
+        <source>Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in application settings.</source>
         <translation>Matice a RHS budou uloženy na disk a to velmi zpomalí výpočet (ukládání můžete zakázat v nastavení aplikace).</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/hermes2d/problem.cpp" line="750"/>
+        <source>An unknown exception occurred in solver and has been ignored</source>
+        <translation>Nastala neznámá vyjímka, která byla ignorována</translation>
+    </message>
+    <message>
+        <source>Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings.</source>
+        <translation type="obsolete">Matice a RHS budou uloženy na disk a to velmi zpomalí výpočet (ukládání můžete zakázat v nastavení aplikace).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="958"/>
@@ -4383,6 +4403,11 @@ oblasti</translation>
         <translation>Počáteční časový krok:</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1444"/>
+        <source>Approx. number of steps:</source>
+        <translation>Předpokládaný počet kroků:</translation>
+    </message>
+    <message>
         <source>Total time (s):</source>
         <translation type="obsolete">Celkový čas (s):</translation>
     </message>
@@ -4417,9 +4442,8 @@ oblasti</translation>
         <translation>Počet kroků:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1444"/>
         <source>Aprox. number of steps:</source>
-        <translation>Předpokládaný počet kroků:</translation>
+        <translation type="obsolete">Předpokládaný počet kroků:</translation>
     </message>
 </context>
 <context>
@@ -4815,9 +4839,9 @@ Skript bude ukončen.</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="941"/>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1164"/>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1239"/>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1260"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1166"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1241"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1262"/>
         <source>Untitled</source>
         <translation>Nepojmenovaný</translation>
     </message>
@@ -4829,7 +4853,7 @@ Skript bude ukončen.</translation>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="954"/>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1015"/>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1051"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1052"/>
         <source>Python scripts (*.py)</source>
         <translation>Python scripty (*.py)</translation>
     </message>
@@ -4845,45 +4869,45 @@ Skript bude ukončen.</translation>
     </message>
     <message>
         <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1015"/>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1051"/>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1070"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1052"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1072"/>
         <source>Save file</source>
         <translation>Uložit soubor</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1038"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1039"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
         <translation>Soubor &apos;%1&apos; nelze uložit.</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1070"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1072"/>
         <source>Html files (*.html)</source>
         <translation>HTML soubory (*.html)</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1098"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1100"/>
         <source>Print Document</source>
         <translation>Vytisknout dokument</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1174"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1176"/>
         <source>Application</source>
         <translation>Aplikace</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1174"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1176"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
         <translation>Soubor &apos;%1&apos; byl změněn.
 Chcete tyto změny uložit?</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1245"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1247"/>
         <source>PythonLab - %1</source>
         <translation>PythonLab - %1</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1253"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1255"/>
         <source>Line: %1, Col: %2</source>
         <translation>Řádek: %1, Sloupec: %2</translation>
     </message>
@@ -4917,7 +4941,7 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>PythonEngine</name>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythonengine.cpp" line="440"/>
+        <location filename="../../pythonlab-library/pythonlab/pythonengine.cpp" line="441"/>
         <source>Type &apos;%1&apos; is not supported.</source>
         <translation>Typ &apos;%1&apos; není podporován.</translation>
     </message>
@@ -5564,9 +5588,9 @@ Chcete tyto změny uložit?</translation>
         <translation>Vstup skriptu</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="180"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="176"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="680"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="180"/>
         <source>Problem is not meshed.</source>
         <translation>Problém nebyl diskretizován.</translation>
     </message>
@@ -5682,7 +5706,9 @@ Chcete tyto změny uložit?</translation>
         <translation>Neplatné id pole. Platné id: %1</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/pythonlab/pythonengine_agros.cpp" line="798"/>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="60"/>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="68"/>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="84"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="102"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="158"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="211"/>
@@ -5696,6 +5722,7 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="419"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="430"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="460"/>
+        <location filename="../../agros2d-library/pythonlab/pythonengine_agros.cpp" line="798"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="70"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="96"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="104"/>
@@ -5707,9 +5734,6 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="185"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="765"/>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="186"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="60"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="68"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="84"/>
         <source>Invalid argument. Valid keys: %1</source>
         <translation>Neplatný argument. Platné hodnoty: %1</translation>
     </message>
@@ -5859,9 +5883,9 @@ Chcete tyto změny uložit?</translation>
         <translation>Soubor s uloženým vektorem pravých stra neexistuje.</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="198"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="248"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="289"/>
-        <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="198"/>
         <source>Boundary condition &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Okrajová podmínka &apos;%1&apos; neexistuje.</translation>
     </message>
@@ -5902,9 +5926,9 @@ Chcete tyto změny uložit?</translation>
         <translation>Nesprávný parameter &apos;%1&apos;. Správné parametry jsou &apos;first&apos; a &apos;second&apos;.</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="306"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="411"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="502"/>
-        <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="306"/>
         <source>Material &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Materiál &apos;%1&apos; neexistuje.</translation>
     </message>
@@ -5922,10 +5946,10 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Adaptivní krok je mimo rozsah (0 - %2).</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="570"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="147"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="383"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="459"/>
+        <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="570"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
         <translation>Index hrany musí být v rozsahu 0 až &apos;%1&apos;.</translation>
     </message>
@@ -5935,10 +5959,10 @@ Chcete tyto změny uložit?</translation>
         <translation>Popisek s indexem&apos;%1&apos; je &apos;none&apos;.</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="636"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="266"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="408"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="484"/>
+        <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="636"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
         <translation>Index značky oblasti musí být v rozsahu 0 až &apos;%1&apos;.</translation>
     </message>
@@ -5967,6 +5991,10 @@ Chcete tyto změny uložit?</translation>
         <translation>Úhel &apos;%1&apos; je mimo rozsah.</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="40"/>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="189"/>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="195"/>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="208"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="110"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="134"/>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="155"/>
@@ -5980,10 +6008,6 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="718"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="743"/>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="27"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="40"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="189"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="195"/>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="208"/>
         <source>Problem is not solved.</source>
         <translation>Problém nebyl vyřešen.</translation>
     </message>
@@ -5993,14 +6017,14 @@ Chcete tyto změny uložit?</translation>
         <translation>Zpráva</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="549"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="550"/>
         <source>Solver failed: %1</source>
         <translation>Řešič selhal: %1</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="501"/>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="781"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="502"/>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="782"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="783"/>
         <source>DOF is zero</source>
         <translation>Počet stupňů volnosti je nulový</translation>
     </message>
@@ -6050,27 +6074,31 @@ Chcete tyto změny uložit?</translation>
         <translation>Lineární řešič: %1</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="482"/>
         <source>Iterative solver statistics: %1 iterations</source>
-        <translation>Iterační řešič: %1 iterací</translation>
+        <translation type="obsolete">Iterační řešič: %1 iterací</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="504"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="482"/>
+        <source>Iterative solver statistics: %1 iterations, residual %2</source>
+        <translation>Iterační řešič: %1 iterací, residual %2</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="505"/>
         <source>Number of DOFs: %1</source>
         <translation>Počet st. volnosti: %1</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="664"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="665"/>
         <source>Problem is not meshed</source>
         <translation>Problém nebyl diskretizován</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="921"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="922"/>
         <source>Adaptivity step: %1 (error: %2, DOFs: %3/%4)</source>
         <translation>Krok adaptivity: %1 (chyba: %2, st. volnosti: %3/%4)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="943"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="944"/>
         <source>Adaptive process failed: %1</source>
         <translation>Adaptivní proces selhal: %1</translation>
     </message>
@@ -6079,13 +6107,13 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Krok adaptivity (chyba = %1, počet st. volnosti  = %2/%3)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="957"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="958"/>
         <source>Initial time step</source>
         <translation>Počáteční časový krok</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/gui/common.cpp" line="171"/>
         <location filename="../../agros2d-library/hermes2d/solver_picard.cpp" line="83"/>
+        <location filename="../../agros2d-library/gui/common.cpp" line="171"/>
         <source>Initial step</source>
         <translation>Počáteční krok</translation>
     </message>
@@ -6124,6 +6152,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Není možné načíst soubor sdružení %1: %2</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="481"/>
         <location filename="../../agros2d-library/hermes2d/solutionstore.cpp" line="152"/>
         <location filename="../../agros2d-library/hermes2d/coupling.cpp" line="191"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="543"/>
@@ -6132,7 +6161,6 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="723"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="735"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="741"/>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="481"/>
         <source>Solver</source>
         <translation>Řešič</translation>
     </message>
@@ -6201,8 +6229,17 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="711"/>
-        <source>An error occured in Newton solver.</source>
+        <source>An error occurred in Newton solver.</source>
         <translation>Nastala chyba v Newton řešiči.</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/hermes2d/problem.cpp" line="1013"/>
+        <source>Mesh reader (%1): boundary edges &apos;%2&apos; do not have a boundary condition</source>
+        <translation>Načítání sítě (%1): okrajová hranice&apos;%2&apos; nemá přiřazenu okrajovou podmínku</translation>
+    </message>
+    <message>
+        <source>An error occured in Newton solver.</source>
+        <translation type="obsolete">Nastala chyba v Newton řešiči.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="715"/>
@@ -6239,12 +6276,12 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Řešení problému</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="254"/>
+        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="341"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="911"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="919"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="931"/>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="933"/>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="254"/>
-        <location filename="../../agros2d-library/hermes2d/solver.cpp" line="341"/>
         <source>Solver (%1)</source>
         <translation>Řešič (%1)</translation>
     </message>
@@ -6267,9 +6304,8 @@ Chcete tyto změny uložit?</translation>
         <translation>Řešení (sdružená analýza)</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/hermes2d/problem.cpp" line="1013"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
-        <translation>Načítání sítě (%1): okrajová hranice&apos;%2&apos; nemá přiřazenu okrajovou podmínku</translation>
+        <translation type="obsolete">Načítání sítě (%1): okrajová hranice&apos;%2&apos; nemá přiřazenu okrajovou podmínku</translation>
     </message>
     <message>
         <source>Number of particles must be bigger then 1.</source>
@@ -6379,9 +6415,8 @@ Chcete tyto změny uložit?</translation>
         <translation>Frekvence musí být kladná.</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="92"/>
         <source>Number of time method order must be greater then 1.</source>
-        <translation>Řád časové metody musí být větší než 1.</translation>
+        <translation type="obsolete">Řád časové metody musí být větší než 1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="100"/>
@@ -6394,8 +6429,17 @@ Chcete tyto změny uložit?</translation>
         <translation>Počáteční časový krok musí být kladný.</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="116"/>
         <source>Number of time steps must be greater then 1.</source>
+        <translation type="obsolete">Počet časových kroků musí být větší než 1.</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="92"/>
+        <source>Number of time method order must be greater than 1.</source>
+        <translation>Řád časové metody musí být větší než 1.</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="116"/>
+        <source>Number of time steps must be greater than 1.</source>
         <translation>Počet časových kroků musí být větší než 1.</translation>
     </message>
     <message>
@@ -7529,9 +7573,9 @@ Tracing</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/sceneview_particle.h" line="105"/>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1184"/>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1190"/>
-        <location filename="../../agros2d-library/sceneview_particle.h" line="105"/>
         <source>Particle Tracing</source>
         <translation>Trasování částic</translation>
     </message>
@@ -7591,8 +7635,8 @@ Tracing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/sceneview_post2d.h" line="62"/>
         <location filename="../../agros2d-library/sceneview_post2d.cpp" line="255"/>
+        <location filename="../../agros2d-library/sceneview_post2d.h" line="62"/>
         <source>Postprocessor 2D</source>
         <translation>Postprocesor 2D</translation>
     </message>
@@ -7637,12 +7681,12 @@ Tracing</source>
         <translation>Export kontur do VTK</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/sceneview_post2d.cpp" line="1176"/>
+        <location filename="../../agros2d-library/sceneview_post2d.cpp" line="1175"/>
         <source>Export VTK file</source>
         <translation>Eportovat VTK soubor</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/sceneview_post2d.cpp" line="1176"/>
+        <location filename="../../agros2d-library/sceneview_post2d.cpp" line="1175"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK soubory (*.vtk)</translation>
     </message>
@@ -7660,8 +7704,8 @@ Tracing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/sceneview_post3d.cpp" line="146"/>
         <location filename="../../agros2d-library/sceneview_post3d.h" line="43"/>
+        <location filename="../../agros2d-library/sceneview_post3d.cpp" line="146"/>
         <source>Postprocessor 3D</source>
         <translation>Postprocesor 3D</translation>
     </message>
@@ -7751,6 +7795,10 @@ Tracing</source>
     </message>
     <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="547"/>
+        <source>Radial component must be greater than or equal to zero.</source>
+        <translation>Radiální složka musí být větší nebo rovna nule.</translation>
+    </message>
+    <message>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="593"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation>Radiální složka musí být větší nebo rovna nule.</translation>
@@ -7772,12 +7820,12 @@ Tracing</source>
 <context>
     <name>ScriptEditor</name>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1620"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1622"/>
         <source>Goto line</source>
         <translation>Jdi na řádek</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1620"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1622"/>
         <source>Line number:</source>
         <translation>Řádek:</translation>
     </message>
@@ -7852,27 +7900,27 @@ Tracing</source>
 <context>
     <name>SearchWidget</name>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1800"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1802"/>
         <source>Search for:</source>
         <translation>Vyhledat:</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1801"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1803"/>
         <source>Replace with:</source>
         <translation>Nahradit:</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1808"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1810"/>
         <source>Find</source>
         <translation>Najít</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1812"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1814"/>
         <source>Replace all</source>
         <translation>Nahradit vše</translation>
     </message>
     <message>
-        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1815"/>
+        <location filename="../../pythonlab-library/pythonlab/pythoneditor.cpp" line="1817"/>
         <source>Hide</source>
         <translation>Skrýt</translation>
     </message>
