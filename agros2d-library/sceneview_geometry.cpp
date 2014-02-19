@@ -540,11 +540,11 @@ void SceneViewPreprocessor::mousePressEvent(QMouseEvent *event)
                 pointNode = p;
             }
 
-            // coordinates must be greater then or equal to 0 (axisymmetric case)
+            // coordinates must be greater than or equal to 0 (axisymmetric case)
             if ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
                     (pointNode.x < 0))
             {
-                QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater then or equal to zero."));
+                QMessageBox::warning(this, tr("Node"), tr("Radial component must be greater than or equal to zero."));
 
             }
             else

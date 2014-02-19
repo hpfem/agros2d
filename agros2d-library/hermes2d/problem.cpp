@@ -386,8 +386,8 @@ bool Problem::mesh(bool emitMeshed)
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
         m_isMeshing = false;
-        Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured and has been ignored"));
-        qDebug() << "Mesh: An unknown exception occured and has been ignored";
+        Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occurred and has been ignored"));
+        qDebug() << "Mesh: An unknown exception occurred and has been ignored";
         return false;
     }
 
@@ -644,7 +644,7 @@ void Problem::solve(bool commandLine)
     }
 
     if (Agros2D::configComputer()->value(Config::Config_LinearSystemSave).toBool())
-        Agros2D::log()->printWarning(tr("Solver"), tr("Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings."));
+        Agros2D::log()->printWarning(tr("Solver"), tr("Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in application settings."));
 
     try
     {
@@ -708,7 +708,7 @@ void Problem::solve(bool commandLine)
         }
         case Hermes::Solvers::Error:
         {
-            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("An error occured in Newton solver."));
+            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("An error occurred in Newton solver."));
             break;
         }
         default:
@@ -747,8 +747,8 @@ void Problem::solve(bool commandLine)
         // todo: dangerous
         // catching all other exceptions. This is not save at all
         m_isSolving = false;
-        Agros2D::log()->printError(tr("Solver"), tr("An unknown exception occured in solver and has been ignored"));
-        qDebug() << "Solver: An unknown exception occured and has been ignored";
+        Agros2D::log()->printError(tr("Solver"), tr("An unknown exception occurred in solver and has been ignored"));
+        qDebug() << "Solver: An unknown exception occurred and has been ignored";
         return;
     }
 }
@@ -1010,7 +1010,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
                 markers += QString::number(marker) + ", ";
             markers = markers.left(markers.length() - 2);
 
-            throw AgrosException(QObject::tr("Mesh reader (%1): boundary edges '%2' does not have a boundary condition").
+            throw AgrosException(QObject::tr("Mesh reader (%1): boundary edges '%2' do not have a boundary condition").
                                  arg(fieldInfo->fieldId()).
                                  arg(markers));
 

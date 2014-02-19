@@ -1441,7 +1441,7 @@ void ProblemWidget::transientChanged()
     if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
         lblTransientSteps->setText(tr("Number of steps:"));
     else
-        lblTransientSteps->setText(tr("Aprox. number of steps:"));
+        lblTransientSteps->setText(tr("Approx. number of steps:"));
 }
 
 void ProblemWidget::startupScriptCollapse(bool collapsed)

@@ -2693,7 +2693,6 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/materialbrowserdialog.cpp" line="401"/>
         <source>Property &apos;%1&apos; will be pernamently deleted. Are you sure?</source>
-        <translatorcomment>!err</translatorcomment>
         <translation>La propriété &apos;%1&apos; sera pernamently supprimé. Etes-vous sûr?</translation>
     </message>
     <message>
@@ -4149,7 +4148,6 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="389"/>
         <source>An unknown exception occured and has been ignored</source>
-        <translatorcomment>!err</translatorcomment>
         <translation>Une exception inconnue s&apos;est produite et a été ignorée</translation>
     </message>
     <message>
@@ -4233,7 +4231,6 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="750"/>
         <source>An unknown exception occured in solver and has been ignored</source>
-        <translatorcomment>!err</translatorcomment>
         <translation>Une exception inconnue s&apos;est produite dans solveur et a été ignorée</translation>
     </message>
     <message>
@@ -4256,7 +4253,6 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="647"/>
         <source>Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings.</source>
-        <translatorcomment>!err application</translatorcomment>
         <translation>Matrix et RHS seront sauvegardés sur le disque et cela va ralentir le calcul. Vous pouvez le désactiver dans les paramètres de appllication.</translation>
     </message>
     <message>
@@ -4393,7 +4389,6 @@ d&apos;adaptivité</translation>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="1444"/>
         <source>Aprox. number of steps:</source>
-        <translatorcomment>!err</translatorcomment>
         <translation>Nombre approx de pas :</translation>
     </message>
 </context>
@@ -5092,7 +5087,6 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="711"/>
         <source>An error occured in Newton solver.</source>
-        <translatorcomment>!err occurred</translatorcomment>
         <translation>Une erreur s&apos;est produite dans le solveur Newton.</translation>
     </message>
     <message>
@@ -5160,7 +5154,6 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="1013"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
-        <translatorcomment>!err do</translatorcomment>
         <translation>Lecteur de maillage (%1) : arêtes &apos;%2&apos; n&apos;ont pas une condition aux limites</translation>
     </message>
     <message>
@@ -5691,7 +5684,6 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="92"/>
         <source>Number of time method order must be greater then 1.</source>
-        <translatorcomment>!err than</translatorcomment>
         <translation>Nombre d&apos;ordre de méthode de temps doit être supérieur à 1.</translation>
     </message>
     <message>
@@ -5707,7 +5699,6 @@ Voulez-vous enregistrer vos modifications ?</translation>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="116"/>
         <source>Number of time steps must be greater then 1.</source>
-        <translatorcomment>!err than</translatorcomment>
         <translation>Nombre de pas de temps doit être supérieur à 1.</translation>
     </message>
     <message>
@@ -7645,7 +7636,6 @@ de particules</translation>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="547"/>
         <location filename="../../agros2d-library/sceneview_geometry.cpp" line="593"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translatorcomment>!err then</translatorcomment>
         <translation>Composante radiale doit être supérieure ou égale à zéro.</translation>
     </message>
     <message>
@@ -7928,7 +7918,6 @@ de particules</translation>
     <message>
         <location filename="../../agros2d-library/settings.cpp" line="306"/>
         <source>Ligthing</source>
-        <translatorcomment>!err</translatorcomment>
         <translation>Éclairage</translation>
     </message>
     <message>
