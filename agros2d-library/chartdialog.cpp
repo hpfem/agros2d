@@ -689,39 +689,43 @@ void ChartWidget::doExportData()
     }
     else if (tbxAnalysisType->currentWidget() == widTime)
     {
-        /*
         Point point(txtTimeX->value(), txtTimeY->value());
         foreach (double timeLevel, Agros2D::solutionStore()->timeLevels(fieldWidget->selectedField()))
         {
             int timeStep = Agros2D::solutionStore()->timeLevelIndex(fieldWidget->selectedField(), timeLevel);
-            QMap<QString, double> data = getData(point, timeStep);
+            QMap<QString, double> data = getData(point,
+                                                 timeStep,
+                                                 Agros2D::solutionStore()->lastAdaptiveStep(fieldWidget->selectedField(), SolutionMode_Normal, timeStep),
+                                                 SolutionMode_Normal);
             foreach (QString key, data.keys())
             {
                 QList<double> *values = &table.operator [](key);
                 values->append(data.value(key));
             }
         }
-        */
     }
 
-    // csv
-    // headers
-    foreach(QString key, table.keys())
-        out << key << ";";
-    out << "\n";
-
-    // values
-    for (int i = 0; i < table.values().first().size(); i++)
+    if (table.values().size() > 0)
     {
+        // csv
+        // headers
         foreach(QString key, table.keys())
-            out << QString::number(table.value(key).at(i)) << ";";
-        out << endl;
+            out << key << ";";
+        out << "\n";
+
+        // values
+        for (int i = 0; i < table.values().first().size(); i++)
+        {
+            foreach(QString key, table.keys())
+                out << QString::number(table.value(key).at(i)) << ";";
+            out << endl;
+        }
+
+        if (fileInfo.absoluteDir() != tempProblemDir())
+            settings.setValue("General/LastDataDir", fileInfo.absolutePath());
+
+        file.close();
     }
-
-    if (fileInfo.absoluteDir() != tempProblemDir())
-        settings.setValue("General/LastDataDir", fileInfo.absolutePath());
-
-    file.close();
 }
 
 void ChartWidget::doSaveImage()
