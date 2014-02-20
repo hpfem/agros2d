@@ -120,17 +120,15 @@ void LoopsInfo::LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, dou
 
 void LoopsInfo::LoopsGraph::print()
 {
-    /*
-    for (int i = 0; i < data.size(); i++)
-    {
-        cout << "node " << i << "\n";
-        foreach(LoopsNodeEdgeData ned, data[i].data)
-        {
-            cout << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited << "\n";
-        }
-    }
-    cout << "\n";
-    */
+//    for (int i = 0; i < data.size(); i++)
+//    {
+//        qDebug() << "node " << i;
+//        foreach(LoopsNodeEdgeData ned, data[i].data)
+//        {
+//            qDebug() << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited;
+//        }
+//    }
+//    qDebug() << "\n";
 }
 
 bool LoopsInfo::isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
@@ -506,6 +504,9 @@ void LoopsInfo::addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, boo
 
 void LoopsInfo::processLoops()
 {
+    if(!m_scene->crossings().empty())
+        throw AgrosGeometryException(tr("There are some edges crossed."));
+
     // find loops
     LoopsGraph graph(m_scene->nodes->length());
     for (int i = 0; i < m_scene->edges->length(); i++)
