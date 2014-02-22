@@ -173,17 +173,18 @@ PythonEditorAgrosDialog::PythonEditorAgrosDialog(PythonEngine *pythonEngine, QSt
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
     connect(actCreateFromModel, SIGNAL(triggered()), this, SLOT(doCreatePythonFromModel()));
 
-    mnuTools->addSeparator();
-    mnuTools->addAction(actCreateFromModel);
-
-    tlbTools->addSeparator();
-    tlbTools->addAction(actCreateFromModel);
-
     // console output
     actConsoleOutput = new QAction(tr("Console output"), this);
     actConsoleOutput->setCheckable(true);
     actConsoleOutput->setChecked(settings.value("PythonEditorDialog/ConsoleOutput", true).toBool());
 
+    mnuTools->addSeparator();
+    mnuTools->addAction(actCreateFromModel);
+
+    tlbTools->addSeparator();
+    tlbTools->addAction(actCreateFromModel);    
+
+    mnuOptions->addSeparator();
     mnuOptions->addAction(actConsoleOutput);
 }
 
@@ -220,33 +221,6 @@ void PythonEditorAgrosDialog::scriptFinish()
         disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString)), this, SLOT(printWarning(QString, QString)));
         disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString)), this, SLOT(printDebug(QString, QString)));
     }
-}
-
-void PythonEditorAgrosDialog::printHeading(const QString &message)
-{
-    consoleView->console()->consoleMessage(QString("%1\n").arg(message), Qt::darkGray);
-}
-
-void PythonEditorAgrosDialog::printMessage(const QString &module, const QString &message)
-{
-    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::gray);
-}
-
-void PythonEditorAgrosDialog::printError(const QString &module, const QString &message)
-{
-    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::red);
-}
-
-void PythonEditorAgrosDialog::printWarning(const QString &module, const QString &message)
-{
-    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::green);
-}
-
-void PythonEditorAgrosDialog::printDebug(const QString &module, const QString &message)
-{
-#ifndef QT_NO_DEBUG_OUTPUT
-    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::lightGray);
-#endif
 }
 
 // *****************************************************************************

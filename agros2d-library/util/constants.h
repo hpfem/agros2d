@@ -24,8 +24,6 @@
 #include <QApplication>
 #include <QFont>
 
-#include "enums.h"
-
 const double SPEEDOFLIGHT = 299792458;
 
 // constants

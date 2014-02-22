@@ -70,11 +70,11 @@ def python_engine_pyflakes_check(filename):
         return [warning.__str__() for warning in w.messages]
 
 # chart
-def chart(x, y, xlabel = "", ylabel = ""):
+def chart(x, y, xlabel = "", ylabel = "", marker='o'):
     import pylab as pl
 
     fig = pl.figure()
-    pl.plot(x, y)
+    pl.plot(x, y, marker)
     pl.grid(True)
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)

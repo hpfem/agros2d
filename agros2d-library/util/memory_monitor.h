@@ -21,7 +21,6 @@
 #define MEMORY_MONITOR_H
 
 #include "util.h"
-#include "util/enums.h"
 
 class AGROS_LIBRARY_API MemoryMonitor : public QObject
 {

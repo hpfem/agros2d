@@ -45,7 +45,7 @@ SystemOutputWidget::SystemOutputWidget(QWidget *parent) : QDialog(parent)
     palette.setColor(QPalette::Active, QPalette::Base, QColor(50, 50, 50));
     m_output->setPalette(palette);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Abort | QDialogButtonBox::Ok);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Abort | QDialogButtonBox::Ok);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(close()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(breakProcess()));
 
@@ -77,7 +77,6 @@ void SystemOutputWidget::execute(const QString &command)
 
     m_proc->start(command);
     m_proc->waitForStarted();
-
     m_proc->waitForFinished();
 }
 
@@ -89,8 +88,15 @@ void SystemOutputWidget::updateError()
 
 void SystemOutputWidget::updateText()
 {
-    m_output->append(m_proc->readAllStandardOutput().trimmed().replace("‘", "'").replace("’", "'"));
-    QApplication::processEvents();
+    QString txt = m_proc->readAllStandardOutput().trimmed();
+    txt = txt.replace("[0m", "");
+    txt = txt.replace("[33m", "");
+    txt = txt.replace("[30m[1m", "");
+    txt = txt.replace("‘", "'");
+    txt = txt.replace("’", "'");
+
+    m_output->append(txt);
+    m_output->update();
 }
 
 void SystemOutputWidget::finished(int exit)
@@ -103,4 +109,7 @@ void SystemOutputWidget::finished(int exit)
     {
         m_output->append("<b>Error</b>");
     }
+
+    QApplication::processEvents();
+    buttonBox->button(QDialogButtonBox::Ok)->setFocus();
 }

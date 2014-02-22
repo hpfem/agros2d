@@ -1308,6 +1308,33 @@ bool PythonEditorDialog::isScriptModified()
     return txtEditor->document()->isModified();
 }
 
+void PythonEditorDialog::printHeading(const QString &message)
+{
+    consoleView->console()->consoleMessage(QString("%1\n").arg(message), Qt::darkGray);
+}
+
+void PythonEditorDialog::printMessage(const QString &module, const QString &message)
+{
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::gray);
+}
+
+void PythonEditorDialog::printError(const QString &module, const QString &message)
+{
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::red);
+}
+
+void PythonEditorDialog::printWarning(const QString &module, const QString &message)
+{
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::green);
+}
+
+void PythonEditorDialog::printDebug(const QString &module, const QString &message)
+{
+#ifndef QT_NO_DEBUG_OUTPUT
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::lightGray);
+#endif
+}
+
 // ********************************************************************************
 
 ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)

@@ -109,15 +109,22 @@ void AgrosSolver::solveProblem()
 
 void AgrosSolver::runScript()
 {
-    // log stdout
-    if (m_enableLog)
-         m_log = new LogStdOut();
-
     if (!QFile::exists(m_fileName))
     {
         Agros2D::log()->printMessage(tr("Scripting Engine"), tr("Python script '%1' not found").arg(m_fileName));
         QApplication::exit(-1);
     }
+
+    m_command = readFileContent(m_fileName);
+
+    runCommand();
+}
+
+void AgrosSolver::runCommand()
+{
+    // log stdout
+    if (m_enableLog)
+         m_log = new LogStdOut();
 
     QTime time;
     time.start();
@@ -128,7 +135,7 @@ void AgrosSolver::runScript()
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
 
-    bool successfulRun= currentPythonEngineAgros()->runScript(readFileContent(m_fileName), m_fileName);
+    bool successfulRun= currentPythonEngineAgros()->runScript(m_command, m_fileName);
 
     if (successfulRun)
     {

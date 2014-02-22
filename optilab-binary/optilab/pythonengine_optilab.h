@@ -17,31 +17,40 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef GUI_SYSTEMOUTPUT_H
-#define GUI_SYSTEMOUTPUT_H
+#ifndef PYTHONENGINEAGROS_H
+#define PYTHONENGINEAGROS_H
 
-#include "../util.h"
+#include "pythonlab/pythonconsole.h"
+#include "pythonlab/pythonengine.h"
+#include "pythonlab/pythoneditor.h"
 
-class AGROS_UTIL_API SystemOutputWidget : public QDialog
+#include "util.h"
+
+class AGROS_LIBRARY_API PythonEngineOptilab : public PythonEngine
 {
     Q_OBJECT
 public:
-    SystemOutputWidget(QWidget *parent = 0);
-    ~SystemOutputWidget();
+    PythonEngineOptilab() : PythonEngine() {}
 
-    void execute(const QString &command);
-
-private slots:
-    void updateError();
-    void updateText();
-    void finished(int exit);
-    void breakProcess();
+protected:
+    virtual void addCustomExtensions();
+    virtual void addCustomFunctions();
+    virtual void runPythonHeader();
 
 private:
-    QProcess *m_proc;
-
-    QDialogButtonBox *buttonBox;
-    QTextEdit *m_output;
 };
 
-#endif // GUI_SYSTEMOUTPUT_H
+class AGROS_LIBRARY_API PythonEditorOptilabDialog : public PythonEditorDialog
+{
+    Q_OBJECT
+public:
+    PythonEditorOptilabDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent);
+    ~PythonEditorOptilabDialog();
+
+private:
+};
+
+// current python engine agros
+AGROS_LIBRARY_API PythonEngineOptilab *currentPythonEngineOptilab();
+
+#endif // PYTHONENGINEAGROS_H

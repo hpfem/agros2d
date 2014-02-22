@@ -186,7 +186,7 @@ protected:
     QAction *actRunPython;
     QAction *actStopPython;
     QAction *actReplaceTabsWithSpaces;
-    QAction *actCheckPyLint;
+    QAction *actCheckPyLint;    
 
     QAction *actOptionsEnablePyLint;
     QAction *actOptionsEnablePyFlakes;
@@ -227,6 +227,12 @@ private slots:
 
     void doStartedScript();
     void doExecutedScript();
+
+    void printHeading(const QString &message);
+    void printMessage(const QString &module, const QString &message);
+    void printError(const QString &module, const QString &message);
+    void printWarning(const QString &module, const QString &message);
+    void printDebug(const QString &module, const QString &message);
 };
 
 class AGROS_PYTHONLAB_API ScriptEditor : public PlainTextEditParenthesis
