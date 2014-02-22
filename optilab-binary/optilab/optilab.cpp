@@ -734,10 +734,19 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
     double x = chart->xAxis->pixelToCoord(event->pos().x());
     double y = chart->yAxis->pixelToCoord(event->pos().y());
 
+    int index = -1;
     QMap<double, QCPData>::const_iterator pointX = chart->graph(0)->data()->lowerBound(x);
+    for (QMap<double, QCPData>::const_iterator i = chart->graph(0)->data()->constBegin(); i != chart->graph(0)->data()->constEnd(); ++i)
+    {
+         if (pointX == i)
+             break;
 
-    int index = chart->graph(0)->data()->keys().indexOf(pointX.value().key);
+         index++;
+    }
 
-    qDebug() << outputVariables.fileNames().at(index) << x << y;
-    variantInfo(outputVariables.fileNames().at(index));
+    if (index != -1)
+    {
+        qDebug() << outputVariables.fileNames().at(index) << x << y << index;
+        variantInfo(outputVariables.fileNames().at(index));
+    }
 }
