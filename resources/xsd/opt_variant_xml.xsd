@@ -3,37 +3,61 @@
   <element name="variant">
     <complexType>      
         <all>
-	    <element name="input">
-	        <complexType>
-	            <sequence>
-	            <element minOccurs="0" maxOccurs="unbounded" name="parameter">
-	              <complexType>
-			          <attribute name="param" type="string" use="required" />
-	    		      <attribute name="param_value" type="float" use="required" />
-	    		      <!-- <attribute name="param_unit" type="string" use="required" />	-->
-			      </complexType>
-	    	    </element>
-	          </sequence>
-	        </complexType>
-	    </element>        
-	    <element name="output">
-	        <complexType>
-	            <sequence>
-	            <element minOccurs="0" maxOccurs="unbounded" name="variable">
-	              <complexType>
-			          <attribute name="var" type="string" use="required" />
-	    		      <attribute name="var_value" type="string" use="required" />
-	    		      <!-- <attribute name="var_unit" type="string" use="required" /> -->
-			      </complexType>
-	    	    </element>
-	          </sequence>
-	        </complexType>
-	    </element>   
-		<element minOccurs="1" maxOccurs="1" name="solution">
+		<element minOccurs="1" maxOccurs="1" name="problem">
             <complexType>
-  	            <attribute name="solved" type="int" use="required" />
+	            <sequence>
+					<element minOccurs="0" maxOccurs="unbounded" name="input_parameter">
+					  <complexType>
+						<attribute name="input_param" type="string" use="required" />
+		  			    <attribute name="input_unit" type="string" use="required" />	
+		  			  </complexType>
+		  			</element>
+	  		    </sequence>					
 		   </complexType>
-        </element>	         
+        </element>	   	        
+            <element name="results" minOccurs="1" maxOccurs="1" >
+        <complexType>
+           <sequence>
+			    <element name="result" minOccurs="0" maxOccurs="unbounded" >
+			    <complexType>      
+        		<all>    
+					<element name="input">
+						<complexType>
+						  <sequence>
+							<element minOccurs="0" maxOccurs="unbounded" name="parameter">
+							  <complexType>
+								  <attribute name="param" type="string" use="required" />
+								  <attribute name="param_value" type="float" use="required" />
+								  <!-- <attribute name="param_unit" type="string" use="required" />	-->
+							  </complexType>
+							</element>
+						  </sequence>
+						</complexType>
+					</element>        
+					<element name="output">
+						<complexType>
+						  <sequence>
+							<element minOccurs="0" maxOccurs="unbounded" name="variable">
+							  <complexType>
+								  <attribute name="var" type="string" use="required" />
+								  <attribute name="var_value" type="string" use="required" />
+								  <!-- <attribute name="var_unit" type="string" use="required" /> -->
+							  </complexType>
+							</element>
+						  </sequence>
+						</complexType>
+					</element>   
+					<element minOccurs="1" maxOccurs="1" name="solution">
+						<complexType>
+			  	            <attribute name="solved" type="int" use="required" />
+					   </complexType>
+					</element>	    
+				</all>
+				</complexType>
+			    </element>  		              					
+	        </sequence>
+        </complexType>
+        </element> 
         </all>
     </complexType>
   </element>

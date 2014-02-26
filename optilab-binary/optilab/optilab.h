@@ -23,6 +23,8 @@
 #include "util.h"
 #include "qcustomplot/qcustomplot.h"
 
+#include "../resources_source/classes/opt_variant_xml.h"
+
 #include "pythonengine_optilab.h"
 
 class SystemOutputWidget;
@@ -85,20 +87,14 @@ private:
 class OutputVariablesAnalysis
 {
 public:
-    inline void append(const QString &fileName, const QList<OutputVariable> &variables)
+    inline void append(int index, const QList<OutputVariable> &variables)
     {
-        m_variables[fileName] = variables;
+        m_variables[index] = variables;
     }
     inline int size() const { return m_variables.size(); }
-    inline void clear()
-    {
-        for (int i = 0; i < size(); i++)
-            m_variables.values().clear();
-        m_variables.clear();
-    }
-    inline QHash<QString, QList<OutputVariable> > variables() const { return m_variables; }
+    inline void clear() { m_variables.clear(); }
 
-    QStringList fileNames() { return m_variables.keys(); }
+    inline QMap<int, QList<OutputVariable> > variables() const { return m_variables; }
 
     QVector<double> values(const QString &name) const
     {
@@ -118,27 +114,8 @@ public:
         return vals;
     }
 
-    QStringList variableNames(bool onlyNumbers = false) const
-    {
-        QStringList vars;
-
-        // TODO: ensure that all variables have same name
-        if (size() > 0)
-        {
-            for (int j = 0; j < m_variables.values().at(0).size(); j++)
-            {
-                if (onlyNumbers && !m_variables.values().at(0).at(j).isNumber())
-                    continue;
-
-                vars.append(m_variables.values().at(0).at(j).name());
-            }
-        }
-
-        return vars;
-    }
-
 private:
-    QHash<QString, QList<OutputVariable> > m_variables;
+    QMap<int, QList<OutputVariable> > m_variables;
 };
 
 class OptilabWindow : public QMainWindow
@@ -147,8 +124,6 @@ class OptilabWindow : public QMainWindow
 public:
     OptilabWindow();
     ~OptilabWindow();
-
-    inline QString selectedFilename() { return m_selectedFilename; }
 
 private slots:
     void openInAgros2D();
@@ -159,9 +134,7 @@ private slots:
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
-    void pathChangeDir();
     void readVariants();
-    void readVariantsThread();
 
     void linkClicked(const QUrl &url);
 
@@ -179,10 +152,11 @@ private:
     QWebView *webView;
     QString m_cascadeStyleSheet;
 
-    QLabel *lblPath;
     QTreeWidget *lstProblems;
     QLabel *lblProblems;
-    QString m_selectedFilename;
+
+    QString m_fileName;
+    std::auto_ptr<XMLOptVariant::variant> variant_xsd;
 
     QComboBox *cmbX;
     QComboBox *cmbY;
@@ -202,13 +176,14 @@ private:
 
     QCustomPlot *chart;
 
-    void variantInfo(const QString &fileName);
-    bool variantOutputCache(const QString &fileName);
+    void variantInfo(int index);
 
     void createActions();
     void createMenus();
     void createToolBars();
     void createMain();
+
+    XMLOptVariant::result *variantResult(int index);
 };
 
 #endif // OPTILABDIALOG_H
