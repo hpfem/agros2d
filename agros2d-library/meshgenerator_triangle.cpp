@@ -157,8 +157,8 @@ bool MeshGeneratorTriangle::writeToTriangle()
     }
 
     // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     QDir dir;
     dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
@@ -306,7 +306,7 @@ bool MeshGeneratorTriangle::writeToTriangle()
     file.close();
 
     // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // setlocale(LC_NUMERIC, plocale);
 
     return true;
 }
