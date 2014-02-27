@@ -164,7 +164,7 @@ protected:
     bool prepare();
 
     bool m_isError;
-    QProcess *m_process;
+    QSharedPointer<QProcess> m_process;
 
     std::auto_ptr<XMLSubdomains::domain> m_xmldomain;
 };

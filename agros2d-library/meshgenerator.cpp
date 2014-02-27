@@ -36,14 +36,12 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-MeshGenerator::MeshGenerator() : QObject(), m_process(NULL), m_xmldomain(NULL)
+MeshGenerator::MeshGenerator() : QObject(), m_xmldomain(NULL)
 {
 }
 
 MeshGenerator::~MeshGenerator()
 {
-    if (m_process)
-        delete m_process;
 }
 
 bool MeshGenerator::writeToHermes()

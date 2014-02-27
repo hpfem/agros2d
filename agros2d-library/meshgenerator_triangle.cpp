@@ -65,11 +65,11 @@ bool MeshGeneratorTriangle::mesh()
     if (writeToTriangle())
     {
         // exec triangle
-        m_process = new QProcess();
-        m_process->setStandardOutputFile(tempProblemFileName() + ".triangle.out");
-        m_process->setStandardErrorFile(tempProblemFileName() + ".triangle.err");
-        connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(meshTriangleError(QProcess::ProcessError)));
-        connect(m_process, SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
+        m_process = QSharedPointer<QProcess>(new QProcess());
+        m_process.data()->setStandardOutputFile(tempProblemFileName() + ".triangle.out");
+        m_process.data()->setStandardErrorFile(tempProblemFileName() + ".triangle.err");
+        connect(m_process.data(), SIGNAL(error(QProcess::ProcessError)), this, SLOT(meshTriangleError(QProcess::ProcessError)));
+        connect(m_process.data(), SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
 
         QString triangleBinary = "triangle";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle.exe"))
@@ -78,14 +78,14 @@ bool MeshGeneratorTriangle::mesh()
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
         QString triangleCommand = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
-        m_process->start(triangleCommand.
-                         arg(triangleBinary).
-                         arg(tempProblemFileName()));
+        m_process.data()->start(triangleCommand.
+                                arg(triangleBinary).
+                                arg(tempProblemFileName()), QIODevice::ReadOnly);
 
         // execute an event loop to process the request (nearly-synchronous)
         QEventLoop eventLoop;
-        connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
-        connect(m_process, SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
+        connect(m_process.data(), SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+        connect(m_process.data(), SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
         eventLoop.exec();
     }
     else
@@ -100,7 +100,8 @@ void MeshGeneratorTriangle::meshTriangleError(QProcess::ProcessError error)
 {
     m_isError = true;
     Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start Triangle"));
-    m_process->kill();
+    m_process.data()->kill();
+    m_process.data()->close();
 }
 
 void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
@@ -137,6 +138,8 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
         errorMessage.append("\n");
         Agros2D::log()->printError(tr("Mesh generator"), errorMessage);
     }
+
+    m_process.data()->close();
 }
 
 bool MeshGeneratorTriangle::writeToTriangle()
