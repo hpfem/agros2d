@@ -1030,8 +1030,8 @@ void Scene::exportVTKGeometry(const QString &fileName)
     }
 
     // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -1056,7 +1056,7 @@ void Scene::exportVTKGeometry(const QString &fileName)
     file.close();
 
     // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // setlocale(LC_NUMERIC, plocale);
 }
 
 void Scene::writeToDxf(const QString &fileName)
@@ -1159,8 +1159,8 @@ void Scene::readFromFile21(const QString &fileName)
         throw AgrosException(tr("File '%1' cannot be opened (%2).").arg(fileName).arg(file.errorString()));
 
     // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     clear();
 

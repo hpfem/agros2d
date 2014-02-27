@@ -312,8 +312,8 @@ void DxfInterfaceDXFRW::writeEntities()
 void readFromDXF(const QString &fileName)
 {
     // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     Agros2D::scene()->blockSignals(true);
     Agros2D::scene()->stopInvalidating(true);
@@ -326,7 +326,7 @@ void readFromDXF(const QString &fileName)
     Agros2D::scene()->invalidate();
 
     // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // setlocale(LC_NUMERIC, plocale);
 }
 
 void writeToDXF(const QString &fileName)

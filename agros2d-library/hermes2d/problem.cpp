@@ -959,8 +959,8 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
 
         // read from file
         // save locale
-        char *plocale = setlocale (LC_NUMERIC, "");
-        setlocale (LC_NUMERIC, "C");
+        // char *plocale = setlocale (LC_NUMERIC, "");
+        // setlocale (LC_NUMERIC, "C");
 
         // load mesh from file
         QString fileName = QFileInfo(cacheProblemDir() + "/initial.msh").absoluteFilePath();
@@ -968,7 +968,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
         meshloader.load(fileName.toStdString().c_str(), meshesVector);
 
         // set system locale
-        setlocale(LC_NUMERIC, plocale);
+        // setlocale(LC_NUMERIC, plocale);
     }
     else
     {

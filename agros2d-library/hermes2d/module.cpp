@@ -1116,8 +1116,8 @@ AGROS_LIBRARY_API void Module::updateTimeFunctions(double time)
 Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
 {
     // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     Hermes::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
@@ -1140,7 +1140,7 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(cons
     }
 
     // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // setlocale(LC_NUMERIC, plocale);
 
     return meshes;
 }
@@ -1177,15 +1177,15 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(con
 void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
     // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 
     // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // setlocale(LC_NUMERIC, plocale);
 }
 
 void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)

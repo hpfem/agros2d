@@ -51,12 +51,12 @@ bool MeshGeneratorGMSH::mesh()
     // create gmsh files
     if (writeToGmsh())
     {
-        // exec triangle
-        m_process = new QProcess();
-        m_process->setStandardOutputFile(tempProblemFileName() + ".gmsh.out");
-        m_process->setStandardErrorFile(tempProblemFileName() + ".gmsh.err");
-        connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(meshGmshError(QProcess::ProcessError)));
-        connect(m_process, SIGNAL(finished(int)), this, SLOT(meshGmshCreated(int)));
+        // exec GMSH
+        m_process = QSharedPointer<QProcess>(new QProcess());
+        m_process.data()->setStandardOutputFile(tempProblemFileName() + ".gmsh.out");
+        m_process.data()->setStandardErrorFile(tempProblemFileName() + ".gmsh.err");
+        connect(m_process.data(), SIGNAL(error(QProcess::ProcessError)), this, SLOT(meshGmshError(QProcess::ProcessError)));
+        connect(m_process.data(), SIGNAL(finished(int)), this, SLOT(meshGmshCreated(int)));
 
         QString gmshBinary = "gmsh";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh.exe"))
@@ -65,14 +65,14 @@ bool MeshGeneratorGMSH::mesh()
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
         QString triangleGMSH = "%1 -2 \"%2.geo\"";
-        m_process->start(triangleGMSH.
-                         arg(gmshBinary).
-                         arg(tempProblemFileName()));
+        m_process.data()->start(triangleGMSH.
+                                arg(gmshBinary).
+                                arg(tempProblemFileName()), QIODevice::ReadOnly);
 
         // execute an event loop to process the request (nearly-synchronous)
         QEventLoop eventLoop;
-        connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
-        connect(m_process, SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
+        connect(m_process.data(), SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+        connect(m_process.data(), SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
         eventLoop.exec();
     }
     else
@@ -87,7 +87,8 @@ void MeshGeneratorGMSH::meshGmshError(QProcess::ProcessError error)
 {
     m_isError = true;
     Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH"));
-    m_process->kill();
+    m_process.data()->kill();
+    m_process.data()->close();
 }
 
 
@@ -121,6 +122,8 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
         errorMessage.append("\n");
         Agros2D::log()->printError(tr("Mesh generator"), errorMessage);
     }
+
+    m_process.data()->close();
 }
 
 bool MeshGeneratorGMSH::writeToGmsh()
@@ -138,8 +141,8 @@ bool MeshGeneratorGMSH::writeToGmsh()
     }
 
     // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    // char *plocale = setlocale (LC_NUMERIC, "");
+    // setlocale (LC_NUMERIC, "C");
 
     QDir dir;
     dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
@@ -364,7 +367,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
     file.close();
 
     // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    // setlocale(LC_NUMERIC, plocale);
 
     return true;
 }
