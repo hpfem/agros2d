@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<p1:variant xmlns:p1="XMLOptVariant" xmlns:structure="XMLStructure" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLStructure /home/karban/Projects/agros2d/resources/xsd/opt_variant_xml.xsd">
+
+  <problem/>
+
+  <results>
+    <result>
+      <input>
+        <parameter name="R4" value="0.06"/>
+        <parameter name="R3" value="0.05"/>
+        <parameter name="L" value="0.01"/>
+        <parameter name="R2" value="0.03"/>
+        <parameter name="R1" value="0.01"/>
+      </input>
+      <output>
+        <variable name="C" value="1.58494756188e-12"/>
+      </output>
+      <solution solved="1"/>
+    </result>
+    <result>
+      <input>
+        <parameter name="R4" value="0.06"/>
+        <parameter name="R3" value="0.05"/>
+        <parameter name="R1" value="0.01"/>
+        <parameter name="R2" value="0.03"/>
+        <parameter name="L" value="0.0175"/>
+      </input>
+      <output>
+        <variable name="C" value="2.43435270111e-12"/>
+      </output>
+      <solution solved="1"/>
+    </result>
+    <result>
+      <input>
+        <parameter name="R4" value="0.06"/>
+        <parameter name="R3" value="0.05"/>
+        <parameter name="L" value="0.025"/>
+        <parameter name="R2" value="0.03"/>
+        <parameter name="R1" value="0.01"/>
+      </input>
+      <output>
+        <variable name="C" value="3.28125699399e-12"/>
+      </output>
+      <solution solved="1"/>
+    </result>
+    <result>
+      <input>
+        <parameter name="R4" value="0.06"/>
+        <parameter name="R3" value="0.05"/>
+        <parameter name="L" value="0.0325"/>
+        <parameter name="R2" value="0.03"/>
+        <parameter name="R1" value="0.01"/>
+      </input>
+      <output>
+        <variable name="C" value="4.12730527289e-12"/>
+      </output>
+      <solution solved="1"/>
+    </result>
+    <result>
+      <input>
+        <parameter name="R4" value="0.06"/>
+        <parameter name="R3" value="0.05"/>
+        <parameter name="L" value="0.04"/>
+        <parameter name="R2" value="0.03"/>
+        <parameter name="R1" value="0.01"/>
+      </input>
+      <output>
+        <variable name="C" value="4.97287665535e-12"/>
+      </output>
+      <solution solved="1"/>
+    </result>
+  </results>
+
+</p1:variant>

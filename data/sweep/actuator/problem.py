@@ -10,15 +10,15 @@ class Model(model.ModelBase):
         
         AH = 0.12
         AR = 0.01
-        AR1 = self._parameters["AR1"]
+        AR1 = self.parameters["AR1"]
         AH1 = -0*AH/5
-        AR2 = self._parameters["AR2"]
+        AR2 = self.parameters["AR2"]
         AH2 = -1*AH/5
-        AR3 = self._parameters["AR3"]
+        AR3 = self.parameters["AR3"]
         AH3 = -2*AH/5
-        AR4 = self._parameters["AR4"]
+        AR4 = self.parameters["AR4"]
         AH4 = -3*AH/5
-        AR5 = self._parameters["AR5"]
+        AR5 = self.parameters["AR5"]
         AH5 = -4*AH/5
         
         SH = 0.12

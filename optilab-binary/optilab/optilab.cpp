@@ -31,11 +31,9 @@
 
 #include <QXmlSimpleReader>
 
-OptilabWindow::OptilabWindow() : QMainWindow()
+OptilabWindow::OptilabWindow() : QMainWindow(), m_fileName("")
 {
     setWindowTitle(tr("Optilab"));
-
-    m_fileName = "/home/karban/Projects/agros2d/data/sweep/actuator/problem.xml";
 
     createPythonEngine(new PythonEngineOptilab());
     scriptEditorDialog = new PythonEditorOptilabDialog(currentPythonEngine(), QStringList(), NULL);
@@ -48,7 +46,7 @@ OptilabWindow::OptilabWindow() : QMainWindow()
     QSettings settings;
     restoreGeometry(settings.value("OptilabWindow/Geometry", saveGeometry()).toByteArray());
 
-    readVariants();
+    refreshVariants();
 
     /*
     try
@@ -200,7 +198,7 @@ void OptilabWindow::processSolveFinished(int exitCode)
     if (exitCode == 0)
     {
         QApplication::processEvents();
-        readVariants();
+        refreshVariants();
     }
     else
     {
@@ -231,8 +229,15 @@ void OptilabWindow::createActions()
     actScriptEditor->setShortcut(Qt::Key_F9);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
-    actReadVariants = new QAction(icon("edit-find"), tr("Refresh"), this);
-    connect(actReadVariants, SIGNAL(triggered()), this, SLOT(readVariants()));
+    actDocumentOpen = new QAction(icon("document-open"), tr("&Open..."), this);
+    actDocumentOpen->setShortcuts(QKeySequence::Open);
+    connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(documentOpen()));
+
+    actReadVariants = new QAction(icon("reload"), tr("Refresh"), this);
+    connect(actReadVariants, SIGNAL(triggered()), this, SLOT(refreshVariants()));
+
+    actAddVariants = new QAction(icon("directory-add"), tr("Refresh solutions from directory"), this);
+    connect(actAddVariants, SIGNAL(triggered()), this, SLOT(addVariants()));
 
     actOpenInAgros2D = new QAction(icon("agros2d"), tr("Open in Agros2D"), this);
     actOpenInAgros2D->setEnabled(false);
@@ -249,6 +254,9 @@ void OptilabWindow::createMenus()
 
     QMenu *mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentOpen);
+    mnuFile->addAction(actReadVariants);
+    mnuFile->addAction(actAddVariants);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
@@ -282,7 +290,10 @@ void OptilabWindow::createToolBars()
     tlbFile->setFixedHeight(iconHeight);
     tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
+    tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actReadVariants);
+    tlbFile->addSeparator();
+    tlbFile->addAction(actAddVariants);
 
     QToolBar *tlbTools = addToolBar(tr("Tools"));
     tlbTools->setObjectName("Tools");
@@ -421,7 +432,85 @@ void OptilabWindow::linkClicked(const QUrl &url)
     }
 }
 
-void OptilabWindow::readVariants()
+void OptilabWindow::addVariants()
+{
+    // very simple and fast xml reader
+    QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_fileName).absolutePath()));
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+
+    try
+    {
+        XMLOptVariant::problem problem;
+        XMLOptVariant::results results;
+
+        QFileInfoList listVariants = dir.entryInfoList();
+        for (int i = 0; i < listVariants.size(); ++i)
+        {
+            QFileInfo fileInfo = listVariants.at(i);
+            if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
+                continue;
+
+            if (fileInfo.suffix() == "rst")
+            {
+                std::auto_ptr<XMLOptVariant::variant> variant_solution_xsd
+                        = XMLOptVariant::variant_(compatibleFilename(fileInfo.absoluteFilePath()).toStdString(), xml_schema::flags::dont_validate);
+                XMLOptVariant::variant *var_solution = variant_solution_xsd.get();
+
+                XMLOptVariant::result result = var_solution->results().result().at(0);
+                results.result().push_back(result);
+            }
+        }
+
+        XMLOptVariant::variant var(problem, results);
+
+        std::string mesh_schema_location("");
+
+        mesh_schema_location.append(QString("%1/opt_variant_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
+        ::xml_schema::namespace_info namespace_info_mesh("XMLStructure", mesh_schema_location);
+
+        ::xml_schema::namespace_infomap namespace_info_map;
+        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("structure", namespace_info_mesh));
+
+        std::ofstream out(compatibleFilename(QString("%1/problem.opt").arg(QFileInfo(m_fileName).absolutePath())).toStdString().c_str());
+        XMLOptVariant::variant_(out, var, namespace_info_map);
+    }
+    catch (const xml_schema::exception& e)
+    {
+        std::cerr << e << std::endl;
+    }
+
+    refreshVariants();
+}
+
+void OptilabWindow::documentOpen(const QString &fileName)
+{
+    QSettings settings;
+    QString fileNameDocument;
+
+    if (fileName.isEmpty())
+    {
+        QString dir = settings.value("General/LastProblemDir", "data").toString();
+        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (*.opt)"));
+    }
+    else
+    {
+        fileNameDocument = fileName;
+    }
+
+    if (fileNameDocument.isEmpty() || !QFile::exists(fileNameDocument))
+        return;
+
+    QFileInfo fileInfo(fileNameDocument);
+    if (fileInfo.suffix() == "opt")
+    {
+        m_fileName = QFileInfo(fileNameDocument).absoluteFilePath();
+
+        settings.setValue("General/LastProblemDir", QFileInfo(fileNameDocument).absolutePath());
+        refreshVariants();
+    }
+}
+
+void OptilabWindow::refreshVariants()
 {
     // save current item
     int selectedItem;

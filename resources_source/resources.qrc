@@ -120,6 +120,8 @@
         <file alias="form-matrix.png">images/form-matrix.png</file>
         <file alias="form-vector.png">images/form-vector.png</file>
         <file alias="form-essential.png">images/form-essential.png</file>
+        <file alias="directory-add.png">images/directory-add.png</file>
+        <file alias="reload.png">images/reload.png</file>
         <file alias="fields/empty.png">images/fields/empty.png</file>
         <file alias="fields/acoustic.png">images/fields/acoustic.png</file>
         <file alias="fields/current.png">images/fields/current.png</file>

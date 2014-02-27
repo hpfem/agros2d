@@ -25,7 +25,7 @@ class Solver:
 
     def solve_problem(self, file):
         str = "import sys; sys.path.insert(0, '{0}/..'); import problem; model = problem.Model(); model.load('{1}'); model.create(); model.solve(); model.process(); model.save('{1}');".format(os.path.dirname(os.path.abspath(file)), file)
-            
+
         command = '"{0}" -l -c "{1}"'.format(self.solver, str)
         os.system(command)
 

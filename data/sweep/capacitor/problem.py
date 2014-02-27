@@ -5,11 +5,11 @@ class Model(model.ModelBase):
         import agros2d as a2d
 
         # startup script
-        R1 = self._parameters["R1"]
-        R2 = self._parameters["R2"]
-        R3 = self._parameters["R3"]
-        R4 = self._parameters["R4"]
-        L = self._parameters["L"]
+        R1 = self.parameters["R1"]
+        R2 = self.parameters["R2"]
+        R3 = self.parameters["R3"]
+        R4 = self.parameters["R4"]
+        L = self.parameters["L"]
         RB = 3.0*R4
         
         self.U = 10

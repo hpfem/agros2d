@@ -134,7 +134,9 @@ private slots:
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
-    void readVariants();
+    void documentOpen(const QString &fileName = "");
+    void refreshVariants();
+    void addVariants();
 
     void linkClicked(const QUrl &url);
 
@@ -165,7 +167,9 @@ private:
     QAction *actExit;
     QAction *actAbout;
     QAction *actAboutQt;
+    QAction *actDocumentOpen;
     QAction *actReadVariants;
+    QAction *actAddVariants;
     QAction *actOpenInAgros2D;
     QAction *actSolverInSolver;
 
