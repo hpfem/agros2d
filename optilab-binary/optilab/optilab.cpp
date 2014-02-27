@@ -112,7 +112,7 @@ void OptilabWindow::openInAgros2D()
         for (unsigned int i = 0; i < result->input().parameter().size(); i++)
         {
             XMLOptVariant::parameter parameter = result->input().parameter().at(i);
-            str += QString("p.parameters['%1'] = %2\n").arg(QString::fromStdString(parameter.param())).arg(parameter.param_value());
+            str += QString("p.parameters['%1'] = %2\n").arg(QString::fromStdString(parameter.name())).arg(parameter.value());
         }
         str += "p.create()\n";
 
@@ -173,7 +173,7 @@ void OptilabWindow::solveInSolver()
         for (unsigned int i = 0; i < result->input().parameter().size(); i++)
         {
             XMLOptVariant::parameter parameter = result->input().parameter().at(i);
-            str += QString("p.parameters['%1'] = %2\n").arg(QString::fromStdString(parameter.param())).arg(parameter.param_value());
+            str += QString("p.parameters['%1'] = %2\n").arg(QString::fromStdString(parameter.name())).arg(parameter.value());
         }
         str += "p.create()\n";
         str += "p.solve()\n";
@@ -465,8 +465,8 @@ void OptilabWindow::readVariants()
                 for (unsigned int j = 0; j < result.output().variable().size(); j++)
                 {
                     XMLOptVariant::variable var = result.output().variable().at(j);
-                    variables.append(OutputVariable(QString::fromStdString(var.var()),
-                                                    QString::fromStdString(var.var_value())));
+                    variables.append(OutputVariable(QString::fromStdString(var.name()),
+                                                    QString::fromStdString(var.value())));
                 }
 
                 outputVariables.append(i, variables);
@@ -516,7 +516,7 @@ void OptilabWindow::setPythonVariables()
             {
                 XMLOptVariant::variable var = result.output().variable().at(j);
 
-                QVector<double> values = outputVariables.values(QString::fromStdString(var.var()));
+                QVector<double> values = outputVariables.values(QString::fromStdString(var.name()));
 
                 QString lst;
                 lst = "[";
@@ -525,7 +525,7 @@ void OptilabWindow::setPythonVariables()
                 lst += "]";
 
                 QString str = QString("%1 = %2").
-                        arg(QString::fromStdString(var.var())).
+                        arg(QString::fromStdString(var.name())).
                         arg(lst);
 
                 currentPythonEngineOptilab()->runExpression(str);
@@ -558,8 +558,8 @@ void OptilabWindow::setChart()
                     {
                         XMLOptVariant::variable variable = result.output().variable().at(j);
 
-                        cmbX->addItem(QString::fromStdString(variable.var()));
-                        cmbY->addItem(QString::fromStdString(variable.var()));
+                        cmbX->addItem(QString::fromStdString(variable.name()));
+                        cmbY->addItem(QString::fromStdString(variable.name()));
                     }
 
                     break;
@@ -614,8 +614,8 @@ void OptilabWindow::variantInfo(int index)
 
                 XMLOptVariant::parameter parameter = result->input().parameter().at(i);
 
-                paramSection->SetValue("PARAM_LABEL", parameter.param());
-                paramSection->SetValue("PARAM_VALUE", QString::number(parameter.param_value()).toStdString());
+                paramSection->SetValue("PARAM_LABEL", parameter.name());
+                paramSection->SetValue("PARAM_VALUE", QString::number(parameter.value()).toStdString());
                 // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
             }
 
@@ -625,8 +625,8 @@ void OptilabWindow::variantInfo(int index)
             {
                 XMLOptVariant::variable variable = result->output().variable().at(i);
 
-                OutputVariable result(QString::fromStdString(variable.var()),
-                                      QString::fromStdString(variable.var_value()));
+                OutputVariable result(QString::fromStdString(variable.name()),
+                                      QString::fromStdString(variable.value()));
 
                 if (result.isNumber())
                 {
@@ -650,7 +650,7 @@ void OptilabWindow::variantInfo(int index)
                     QString chart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'N' } ], yaxes: [ { axisLabel: '%3' } ] });});</script>").
                             arg(i).
                             arg(chartData).
-                            arg(QString::fromStdString(variable.var()));
+                            arg(QString::fromStdString(variable.name()));
 
                     varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
                     varSection->SetValue("VAR_CHART", chart.toStdString());

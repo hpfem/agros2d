@@ -8,14 +8,14 @@
 	            <sequence>
 					<element minOccurs="0" maxOccurs="unbounded" name="input_parameter">
 					  <complexType>
-						<attribute name="input_param" type="string" use="required" />
-		  			    <attribute name="input_unit" type="string" use="required" />	
+						<attribute name="name" type="string" use="required" />
+		  			    <attribute name="unit" type="string" use="required" />	
 		  			  </complexType>
 		  			</element>
 	  		    </sequence>					
 		   </complexType>
         </element>	   	        
-            <element name="results" minOccurs="1" maxOccurs="1" >
+        <element name="results" minOccurs="1" maxOccurs="1" >
         <complexType>
            <sequence>
 			    <element name="result" minOccurs="0" maxOccurs="unbounded" >
@@ -26,9 +26,8 @@
 						  <sequence>
 							<element minOccurs="0" maxOccurs="unbounded" name="parameter">
 							  <complexType>
-								  <attribute name="param" type="string" use="required" />
-								  <attribute name="param_value" type="float" use="required" />
-								  <!-- <attribute name="param_unit" type="string" use="required" />	-->
+								  <attribute name="name" type="string" use="required" />
+								  <attribute name="value" type="float" use="required" />
 							  </complexType>
 							</element>
 						  </sequence>
@@ -39,9 +38,8 @@
 						  <sequence>
 							<element minOccurs="0" maxOccurs="unbounded" name="variable">
 							  <complexType>
-								  <attribute name="var" type="string" use="required" />
-								  <attribute name="var_value" type="string" use="required" />
-								  <!-- <attribute name="var_unit" type="string" use="required" /> -->
+								  <attribute name="name" type="string" use="required" />
+								  <attribute name="value" type="string" use="required" />
 							  </complexType>
 							</element>
 						  </sequence>
