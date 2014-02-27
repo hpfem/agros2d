@@ -40,6 +40,8 @@
 
 AgrosApplication::AgrosApplication(int& argc, char ** argv) : QApplication(argc, argv), m_scriptEngineRemote(NULL)
 {
+    setlocale (LC_NUMERIC, "C");
+
     setWindowIcon(icon("agros2d"));
     setApplicationVersion(versionString());
     setOrganizationName("hpfem.org");
