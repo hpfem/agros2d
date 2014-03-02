@@ -23,7 +23,12 @@
 #include "util.h"
 #include "meshgenerator.h"
 
-class MeshGeneratorTriangle : public MeshGenerator
+extern "C"
+{
+#include "../3rdparty/triangle/triangle.h"
+}
+
+class MeshGeneratorTriangleExternal : public MeshGenerator
 {
     Q_OBJECT
 
@@ -34,9 +39,27 @@ private slots:
     bool readTriangleMeshFormat();
 
 public:
+    MeshGeneratorTriangleExternal();
+
+    virtual bool mesh();
+};
+
+class MeshGeneratorTriangle : public MeshGenerator
+{
+    Q_OBJECT
+
+private slots:
+    bool writeToTriangle();
+    bool readTriangleMeshFormat();
+
+public:
     MeshGeneratorTriangle();
 
-    virtual bool mesh();    
+    virtual bool mesh();
+
+private:
+    struct triangulateio triOut;
 };
+
 
 #endif //MESHGENERATOR_TRIANGLE_H
