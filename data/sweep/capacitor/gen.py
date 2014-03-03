@@ -13,5 +13,5 @@ for i in range(len(L)):
     model.parameters["R4"] = 0.06
     model.parameters["L"] = L[i]
     
-    fn = "solutions/solution_{0:0{1}d}.rst".format(i, 5)
+    fn = "/home/pkus/sources/agros2d/data/sweep/capacitor/solutions/solution_{0:0{1}d}.rst".format(i, 5)
     model.save(fn)    
