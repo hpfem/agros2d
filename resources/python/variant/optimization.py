@@ -103,8 +103,8 @@ class DiscreteParameter(OptimizationParameter):
         
 
 class OptimizationMethod:
-    def __init__(self):
-        pass
+    def __init__(self, parameters):
+        self.parameters = parameters
         
     @property
     def parameters(self):
@@ -114,6 +114,17 @@ class OptimizationMethod:
     @parameters.setter
     def parameters(self, value):
         self._parameters = value
+        
+    @property
+    def directory(self):
+        """Working directory"""
+        return self._directory
+
+    @directory.setter
+    def directory(self, value):
+        self._directory = value
+        
+
         
 def directionToSigns(direction):
     if direction == "min-min":
