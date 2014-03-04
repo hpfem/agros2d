@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 class ModelBase:
     def __init__(self):
         self._parameters = dict()
@@ -29,7 +31,7 @@ class ModelBase:
 
     @solved.setter
     def solved(self, solv):
-        self._solved = solv        
+        self._solved = solv  
         
     def create(self):
         pass
@@ -98,7 +100,10 @@ class ModelDict:
             # input
             input = result.findall('input')[0]            
             for par in input.findall('parameter'):
-                model.parameters[par.attrib["name"]] = float(par.attrib["value"])
+                try:
+                    model.parameters[par.attrib["name"]] = float(par.attrib["value"])
+                except ValueError:
+                    model.parameters[par.attrib["name"]] = literal_eval(par.attrib["value"])
                 
             # output
             output = result.findall('output')[0]
@@ -107,7 +112,7 @@ class ModelDict:
                     try:
                         model.variables[var.attrib["name"]] = float(var.attrib["value"])
                     except ValueError:
-                        model.variables[var.attrib["name"]] = var.attrib["value"]
+                        model.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
                     
                 
             self.models.append(model)
