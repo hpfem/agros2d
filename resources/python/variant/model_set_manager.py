@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import numpy as np
 from model import ModelBase
 import os
 
@@ -48,20 +49,29 @@ class ModelSetManager:
         return files
 
     def solveProblem(self, file):
+        print "solve file: ", file
+        print "directory: ", os.path.dirname(os.path.abspath(file))
         str = "import sys; sys.path.insert(0, '{0}/..'); import problem; model = problem.Model(); model.load('{1}'); model.create(); model.solve(); model.process(); model.save('{1}');".format(os.path.dirname(os.path.abspath(file)), file)
 
         command = '"{0}" -l -c "{1}"'.format(self.solver, str)
         os.system(command)
 
     def solveAll(self, solveSolvedAgain = False):
-        models = self.loadAll()
-        for model in models:
+        files = self.findFiles()
+        models = []
+        for file in files:
+            model = ModelBase()
+            model.load(file)
             solveProblem = solveSolvedAgain or not model.solved
             if solveProblem:
                 print("Solve problem: {0}".format(model.parameters)) 
                 self.solveProblem(file)
             else:
                 print("Problem: {0} allready solved".format(model.parameters)) 
+           
+            models.append(model)
+             
+        return models
 
     def loadAll(self):
         files = self.findFiles()
@@ -69,7 +79,6 @@ class ModelSetManager:
         for file in files:
             model = ModelBase()
             model.load(file)
-            model.fileName = file
             models.append(model)
             
         return models
@@ -77,22 +86,43 @@ class ModelSetManager:
     def saveAll(self, models):
         for model in models:
             try:
-                fileName = model.filename
+                fileName = model.fileName
             except:
                 fileName = self.generateFileName()
             
             model.save(fileName)
-                
+            
+    def deleteAll(self):
+        files = self.findFiles()
+        for file in files:
+            os.remove(file)
+        
+        
+def generateTestFiles():
+    L = np.linspace(0.01, 0.04, 5)
+    for i in range(len(L)):
+        model = ModelBase()
+    
+        model.parameters["R1"] = 0.01
+        model.parameters["R2"] = 0.03
+        model.parameters["R3"] = 0.05
+        model.parameters["R4"] = 0.06
+        model.parameters["L"] = L[i]
+    
+        fn = "/home/pkus/sources/agros2d/resources/python/variant/test_set_manager/solutions/solution_{0:0{1}d}.rst".format(i, 5)
+        model.save(fn)    
+
 if __name__ == '__main__':
+
     solver = ModelSetManager()
     solver.solver = '/home/pkus/sources/agros2d/agros2d_solver'
-    solver.directory = '/home/pkus/sources/agros2d/data/sweep/capacitor/solutions'
-    solver.solveAll()
+    solver.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_set_manager/solutions/'
+    solver.deleteAll()
+    generateTestFiles()
+    solver.solveAll(True)
     
     models = solver.loadAll()
     for model in models:
-        print model.parameters
-
-    solver.generateFileName()
+        print model.parameters, model.variables, model.solved
     
     solver.saveAll(models)
