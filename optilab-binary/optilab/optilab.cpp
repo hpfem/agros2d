@@ -434,14 +434,16 @@ void OptilabWindow::linkClicked(const QUrl &url)
 
 void OptilabWindow::addVariants()
 {
-    // very simple and fast xml reader
-    QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_fileName).absolutePath()));
-    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    // QTime time;
+    // time.start();
 
     try
     {
         XMLOptVariant::problem problem;
         XMLOptVariant::results results;
+
+        QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_fileName).absolutePath()));
+        dir.setFilter(QDir::Files | QDir::NoSymLinks);
 
         QFileInfoList listVariants = dir.entryInfoList();
         for (int i = 0; i < listVariants.size(); ++i)
@@ -452,11 +454,55 @@ void OptilabWindow::addVariants()
 
             if (fileInfo.suffix() == "rst")
             {
+                XMLOptVariant::input input;
+                XMLOptVariant::output output;
+                XMLOptVariant::solution solution(false);
+
+                // much faster then xsdcxx
+                // QXmlStreamReader (7776 files): 0.872 sec
+                // xsdcxx (7776 files): 20.733 sec
+                QFile file(fileInfo.absoluteFilePath());
+                if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+                    continue;
+
+                QXmlStreamReader xml(&file);
+                while(!xml.atEnd() &&  !xml.hasError())
+                {
+                    QXmlStreamReader::TokenType token = xml.readNext();
+
+                    if (token == QXmlStreamReader::StartElement)
+                    {
+                        if (xml.name() == "solution")
+                        {
+                            QXmlStreamAttributes attributes = xml.attributes();
+                            solution.solved(attributes.value("solved").toString() == "1");
+                        }
+                        else if (xml.name() == "parameter")
+                        {
+                            QXmlStreamAttributes attributes = xml.attributes();
+                            input.parameter().push_back(XMLOptVariant::parameter(attributes.value("name").toString().toStdString(),
+                                                                                 attributes.value("value").toString().toDouble()));
+
+                        }
+                        else if (xml.name() == "variable")
+                        {
+                            QXmlStreamAttributes attributes = xml.attributes();
+                            output.variable().push_back(XMLOptVariant::variable(attributes.value("name").toString().toStdString(),
+                                                                                attributes.value("value").toString().toStdString()));
+                        }
+                    }
+                }
+
+                file.close();
+
+                XMLOptVariant::result result(input, output, solution);
+                /*
                 std::auto_ptr<XMLOptVariant::variant> variant_solution_xsd
                         = XMLOptVariant::variant_(compatibleFilename(fileInfo.absoluteFilePath()).toStdString(), xml_schema::flags::dont_validate);
                 XMLOptVariant::variant *var_solution = variant_solution_xsd.get();
 
                 XMLOptVariant::result result = var_solution->results().result().at(0);
+                */
                 results.result().push_back(result);
             }
         }
@@ -478,6 +524,8 @@ void OptilabWindow::addVariants()
     {
         std::cerr << e << std::endl;
     }
+
+    // qDebug() << time.elapsed();
 
     refreshVariants();
 }
