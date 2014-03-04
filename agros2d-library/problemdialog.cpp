@@ -1289,6 +1289,10 @@ void ProblemWidget::fillComboBox()
     cmbMeshType->addItem(meshTypeString(MeshType_Triangle_QuadFineDivision), MeshType_Triangle_QuadFineDivision);
     cmbMeshType->addItem(meshTypeString(MeshType_Triangle_QuadRoughDivision), MeshType_Triangle_QuadRoughDivision);
     cmbMeshType->addItem(meshTypeString(MeshType_Triangle_QuadJoin), MeshType_Triangle_QuadJoin);
+    // cmbMeshType->addItem(meshTypeString(MeshType_TriangleExternal), MeshType_TriangleExternal);
+    // cmbMeshType->addItem(meshTypeString(MeshType_TriangleExternal_QuadFineDivision), MeshType_TriangleExternal_QuadFineDivision);
+    // cmbMeshType->addItem(meshTypeString(MeshType_TriangleExternal_QuadRoughDivision), MeshType_TriangleExternal_QuadRoughDivision);
+    // cmbMeshType->addItem(meshTypeString(MeshType_TriangleExternal_QuadJoin), MeshType_TriangleExternal_QuadJoin);
     cmbMeshType->addItem(meshTypeString(MeshType_GMSH_Triangle), MeshType_GMSH_Triangle);
     cmbMeshType->addItem(meshTypeString(MeshType_GMSH_Quad), MeshType_GMSH_Quad);
     cmbMeshType->addItem(meshTypeString(MeshType_GMSH_QuadDelaunay_Experimental), MeshType_GMSH_QuadDelaunay_Experimental);

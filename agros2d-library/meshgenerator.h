@@ -139,14 +139,21 @@ protected:
         int neigh[3];
     };
 
-    /*
     struct MeshNode
     {
+        MeshNode()
+        {
+            this->n = -1;
+            this->x = -1;
+            this->y = -1;
+            this->marker = -1;
+        }
+
         MeshNode(int n, double x, double y, int marker)
         {
             this->n = n;
-            this.x = x;
-            this.y = n;
+            this->x = x;
+            this->y = y;
             this->marker = marker;
         }
 
@@ -154,7 +161,33 @@ protected:
         double x, y;
         int marker;
     };
-    */
+
+    struct MeshLabel
+    {
+        MeshLabel()
+        {
+            this->n = -1;
+            this->x = -1;
+            this->y = -1;
+            this->marker = -1;
+            this->area = -1;
+        }
+
+        MeshLabel(int n, double x, double y, int marker, double area)
+        {
+            this->n = n;
+            this->x = x;
+            this->y = y;
+            this->marker = marker;
+            this->area = area;
+        }
+
+        int n;
+        double x, y;
+        int marker;
+        double area;
+    };
+
 
     QList<Point> nodeList;
     QList<MeshEdge> edgeList;
