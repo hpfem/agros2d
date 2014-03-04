@@ -23,6 +23,35 @@ class ModelBase:
     @variables.setter
     def variables(self, values):
         self._variables = values
+        
+    @property
+    def populationFrom(self):
+        """From which population present in the case of genetic algorithms"""
+        try:
+            return self.variables["population_from"]
+        except KeyError:
+            return -1
+
+    @populationFrom.setter
+    def populationFrom(self, values):
+        self.variables["population_from"] = values
+
+    @property
+    def populationTo(self):
+        """To which population present in the case of genetic algorithms"""
+        try:
+            return self.variables["population_to"]
+        except KeyError:
+            return -1
+
+    @populationTo.setter
+    def populationTo(self, values):
+        self.variables["population_to"] = values
+
+    def functional(self):
+        """ Overload this function to return optimization functional or 
+            list of two functionals for multi-criteria """
+        pass
 
     @property
     def solved(self):
@@ -49,6 +78,7 @@ class ModelBase:
         self.parameters = model_dict.models[0].parameters
         self.variables = model_dict.models[0].variables
         self.solved = model_dict.models[0].solved        
+        self.fileName = filename
 
     def save(self, filename):
         model_dict = ModelDict()         

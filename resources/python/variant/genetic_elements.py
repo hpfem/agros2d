@@ -13,6 +13,10 @@ class InitialPopulationCreator:
         
     def create(self, number):
         pass
+        
+    def markInitialMember(self, member):
+        member.populationFrom = 0
+        member.populationTo = 0   
     
 class ImplicitInitialPopulationCreator(InitialPopulationCreator):
     """
@@ -31,6 +35,7 @@ class ImplicitInitialPopulationCreator(InitialPopulationCreator):
                 parameters[bound.name] = bound.randomValue()        
             
             member.parameters = parameters
+            self.markInitialMember(member)
             population.append(member)
             
         return population                    
@@ -51,6 +56,7 @@ class SurvivorsSelector:
 
     @recomendedPopulationSize.setter
     def recomendedPopulationSize(self, value):
+        print "setting ", value
         self._recomendedPopulationSize = value
 
     @property
@@ -71,6 +77,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
     """
     
     def select(self, population):
+        print "in selector: ", self.recomendedPopulationSize
         signF = directionToSigns(self.direction)    
     
         survivorsNum = min(len(population), int(0.3*self.recomendedPopulationSize))
@@ -83,22 +90,25 @@ class SingleCriteriaSelector(SurvivorsSelector):
         else:
             scores.sort(reverse = True)
                     
-        priorityTresholds = [scores[survivorsNum],
-                             scores[int(survivorsNum*0.8)],
-                             scores[int(survivorsNum*0.5)]]
+        priorityTresholds = [scores[survivorsNum-1],
+                             scores[int(survivorsNum*0.8)-1],
+                             scores[int(survivorsNum*0.5)-1]]
         
         survivors = []
         
         for member in population:
+            newMember = deepcopy(member)
             score = member.functional()
             priority = 0
-            for prior in range(1, 4):
+            for prior in range(3):
+                print score, ", ", priorityTresholds[prior]
                 if signF * score < signF * priorityTresholds[prior]:
-                    priority = prior
+                    priority = prior + 1
             
             if priority > 0:                    
-                member.priority = priority
-                survivors.append(member)
+                newMember.priority = priority
+                newMember.populationTo += 1
+                survivors.append(newMember)
         
         return survivors
 
