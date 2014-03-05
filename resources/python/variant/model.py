@@ -28,30 +28,43 @@ class ModelBase:
     def populationFrom(self):
         """From which population present in the case of genetic algorithms"""
         try:
-            return self.variables["population_from"]
+            return self.variables["_population_from"]
         except KeyError:
             return -1
 
+    # setter does not work
     @populationFrom.setter
-    def populationFrom(self, values):
-        self.variables["population_from"] = values
+    def populationFrom(self, value):
+        self.variables["_population_from"] = value
 
+    def setPopulationFrom(self, value):
+        self.variables["_population_from"] = value
+        
     @property
     def populationTo(self):
         """To which population present in the case of genetic algorithms"""
         try:
-            return self.variables["population_to"]
+            return self.variables["_population_to"]
         except KeyError:
             return -1
 
+    # setter does not work
     @populationTo.setter
-    def populationTo(self, values):
-        self.variables["population_to"] = values
-
+    def populationTo(self, value):
+        print "setting population to ", value
+        self.variables["_population_to"] = value
+        
+    def setPopulationTo(self, value):
+        self.variables["_population_to"] = value
+        
+    @property
     def functional(self):
-        """ Overload this function to return optimization functional or 
-            list of two functionals for multi-criteria """
-        pass
+        """ Functional """
+        return self.variables["_functional"]
+
+    @functional.setter
+    def functional(self, value):
+        self.variables["_functional"] = value
 
     @property
     def solved(self):
@@ -137,12 +150,14 @@ class ModelDict:
                 
             # output
             output = result.findall('output')[0]
-            if (model.solved):
-                for var in output.findall('variable'):
-                    try:
-                        model.variables[var.attrib["name"]] = float(var.attrib["value"])
-                    except ValueError:
-                        model.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
+            
+            # todo: create some other field - info
+            #if (model.solved):
+            for var in output.findall('variable'):
+                try:
+                    model.variables[var.attrib["name"]] = float(var.attrib["value"])
+                except ValueError:
+                    model.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
                     
                 
             self.models.append(model)
@@ -173,13 +188,15 @@ class ModelDict:
                 parameter.set("name", key)
                 parameter.set("value", str(value))
             
+            # todo: create some other field - info
+            
             # output
             output = ET.SubElement(result, "output")
-            if (model.solved):
-                for key, value in model.variables.items():
-                    variable = ET.SubElement(output, "variable")
-                    variable.set("name", key)
-                    variable.set("value", str(value))        
+            #if (model.solved):
+            for key, value in model.variables.items():
+                variable = ET.SubElement(output, "variable")
+                variable.set("name", key)
+                variable.set("value", str(value))        
                 
             # solution
             solution = ET.SubElement(result, "solution")
