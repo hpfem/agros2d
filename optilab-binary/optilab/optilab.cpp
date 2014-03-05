@@ -31,7 +31,7 @@
 
 #include <QXmlSimpleReader>
 
-OptilabWindow::OptilabWindow() : QMainWindow(), m_fileName("")
+OptilabWindow::OptilabWindow() : QMainWindow(), m_problemFileName("")
 {
     setWindowTitle(tr("Optilab"));
 
@@ -97,21 +97,17 @@ OptilabWindow::~OptilabWindow()
 void OptilabWindow::openInAgros2D()
 {    
     XMLOptVariant::result *result = variantResult(lstProblems->currentItem()->data(0, Qt::UserRole).toInt());
+    QString fileName = lstProblems->currentItem()->data(1, Qt::UserRole).toString();
 
     if (result)
     {
         // TODO: template?
         QString str;
         str += "from variant import model\n";
-        str += QString("import sys; sys.path.insert(0, '%1');\n").arg(QFileInfo(m_fileName).absolutePath());
+        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_problemFileName).absolutePath());
         str += "import problem\n";
         str += "p = problem.Model()\n";
-        // parameters
-        for (unsigned int i = 0; i < result->input().parameter().size(); i++)
-        {
-            XMLOptVariant::parameter parameter = result->input().parameter().at(i);
-            str += QString("p.parameters['%1'] = %2\n").arg(QString::fromStdString(parameter.name())).arg(parameter.value());
-        }
+        str += QString("p.load('%1/solutions/%2')\n").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName);
         str += "p.create()\n";
 
         QString id = QUuid::createUuid().toString().remove("{").remove("}");
@@ -157,6 +153,8 @@ void OptilabWindow::processOpenFinished(int exitCode)
 void OptilabWindow::solveInSolver()
 {
     int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
+    QString fileName = lstProblems->currentItem()->data(1, Qt::UserRole).toString();
+
     XMLOptVariant::result *result = variantResult(index);
 
     if (result)
@@ -164,19 +162,14 @@ void OptilabWindow::solveInSolver()
         // TODO: template?
         QString str;
         str += "from variant import model\n";
-        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_fileName).absolutePath());
+        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_problemFileName).absolutePath());
         str += "import problem\n";
         str += "p = problem.Model()\n";
-        // parameters
-        for (unsigned int i = 0; i < result->input().parameter().size(); i++)
-        {
-            XMLOptVariant::parameter parameter = result->input().parameter().at(i);
-            str += QString("p.parameters['%1'] = %2\n").arg(QString::fromStdString(parameter.name())).arg(parameter.value());
-        }
+        str += QString("p.load('%1/solutions/%2')\n").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName);
         str += "p.create()\n";
         str += "p.solve()\n";
         str += "p.process()\n";
-        str += QString("models = model.ModelDict(); models.load('%1'); models.models[%2] = p; models.save('%1'); ").arg(QFileInfo(m_fileName).absoluteFilePath()).arg(index);
+        str += QString("p.save('%1/solutions/%2')\n").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName);
 
         QString command = QString("\"%1/agros2d_solver\" -l -c \"%2\"").
                 arg(QApplication::applicationDirPath()).
@@ -198,7 +191,7 @@ void OptilabWindow::processSolveFinished(int exitCode)
     if (exitCode == 0)
     {
         QApplication::processEvents();
-        refreshVariants();
+        addVariants();
     }
     else
     {
@@ -442,7 +435,7 @@ void OptilabWindow::addVariants()
         XMLOptVariant::problem problem;
         XMLOptVariant::results results;
 
-        QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_fileName).absolutePath()));
+        QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_problemFileName).absolutePath()));
         dir.setFilter(QDir::Files | QDir::NoSymLinks);
 
         QFileInfoList listVariants = dir.entryInfoList();
@@ -495,6 +488,10 @@ void OptilabWindow::addVariants()
 
                 file.close();
 
+                // filename short filename
+                solution.filename().set(fileInfo.fileName().toStdString());
+
+                // save result
                 XMLOptVariant::result result(input, output, solution);
                 /*
                 std::auto_ptr<XMLOptVariant::variant> variant_solution_xsd
@@ -503,6 +500,8 @@ void OptilabWindow::addVariants()
 
                 XMLOptVariant::result result = var_solution->results().result().at(0);
                 */
+
+                // add result to the dictionary
                 results.result().push_back(result);
             }
         }
@@ -517,7 +516,7 @@ void OptilabWindow::addVariants()
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("structure", namespace_info_mesh));
 
-        std::ofstream out(compatibleFilename(QString("%1/problem.opt").arg(QFileInfo(m_fileName).absolutePath())).toStdString().c_str());
+        std::ofstream out(compatibleFilename(QString("%1/problem.opt").arg(QFileInfo(m_problemFileName).absolutePath())).toStdString().c_str());
         XMLOptVariant::variant_(out, var, namespace_info_map);
     }
     catch (const xml_schema::exception& e)
@@ -551,7 +550,7 @@ void OptilabWindow::documentOpen(const QString &fileName)
     QFileInfo fileInfo(fileNameDocument);
     if (fileInfo.suffix() == "opt")
     {
-        m_fileName = QFileInfo(fileNameDocument).absoluteFilePath();
+        m_problemFileName = QFileInfo(fileNameDocument).absoluteFilePath();
 
         settings.setValue("General/LastProblemDir", QFileInfo(fileNameDocument).absolutePath());
         refreshVariants();
@@ -579,7 +578,7 @@ void OptilabWindow::refreshVariants()
 
     try
     {
-        variant_xsd = XMLOptVariant::variant_(compatibleFilename(m_fileName).toStdString(), xml_schema::flags::dont_validate);
+        variant_xsd = XMLOptVariant::variant_(compatibleFilename(m_problemFileName).toStdString(), xml_schema::flags::dont_validate);
         XMLOptVariant::variant *var = variant_xsd.get();
 
         for (unsigned int i = 0; i < var->results().result().size(); i++)
@@ -594,6 +593,7 @@ void OptilabWindow::refreshVariants()
             variantItem->setText(0, QString::number(i));
             // variantItem->setText(1, fileInfo.lastModified().toString("yyyy-MM-dd hh:mm:ss"));
             variantItem->setData(0, Qt::UserRole, i);
+            variantItem->setData(1, Qt::UserRole, QString::fromStdString(result.solution().filename().get()));
 
             if (result.solution().solved())
             {

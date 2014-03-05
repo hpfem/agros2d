@@ -149,7 +149,7 @@ class ModelDict:
 
     def save(self, filename):
         import xml.etree.cElementTree as ET
-        
+
         variant = ET.Element("variant:variant")        
         variant.set("xmlns:variant", "XMLOptVariant")
         variant.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
@@ -183,7 +183,7 @@ class ModelDict:
                 
             # solution
             solution = ET.SubElement(result, "solution")
-            solution.set("solved", "1" if model.solved else "0")                      
+            solution.set("solved", "1" if model.solved else "0")  
                         
         tree = ET.ElementTree(variant)
         tree.write(filename, xml_declaration = True, encoding='UTF-8')

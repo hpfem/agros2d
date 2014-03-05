@@ -157,7 +157,7 @@ private:
     QTreeWidget *lstProblems;
     QLabel *lblProblems;
 
-    QString m_fileName;
+    QString m_problemFileName;
     std::auto_ptr<XMLOptVariant::variant> variant_xsd;
 
     QComboBox *cmbX;
