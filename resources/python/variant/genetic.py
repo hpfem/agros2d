@@ -53,6 +53,7 @@ class GeneticOptimization(OptimizationMethod):
             # no previous population found, create initial one
             self.lastPopulation = self.initialPopulationCreator.create(self.populationSize)
             self.modelSetManager.saveAll(self.lastPopulation)
+            lastPopulationIdx = 0
         else:
             self.LastPopulation = []
             for solution in solutionsWithPopulNum:
@@ -62,16 +63,21 @@ class GeneticOptimization(OptimizationMethod):
         return lastPopulationIdx
         
     def oneStep(self):
-        models = self.modelSetManager.solveAll()
+        solved = self.modelSetManager.solveAll()
+        models = self.modelSetManager.loadAll()        
         lastPopulation = []
         for model in models:
+            print model.populationTo, ", ", self.populationIdx
             assert model.populationTo < self.populationIdx
             if model.populationTo == self.populationIdx - 1:
-                #print model.variables
                 lastPopulation.append(model)
               
         self.selector.recomendedPopulationSize = self.populationSize
         population = self.selector.select(lastPopulation)
+        
+        print "solved {0}, transfered to new population {1}".format(solved, len(population))
+            
+        self.modelSetManager.saveAll(population)
                 
     def run(self, maxIters, resume = True):
         self.modelSetManager.directory = self.directory
@@ -91,5 +97,5 @@ if __name__ == '__main__':
     optimization = GeneticOptimization(parameters, "min")
     optimization.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_genetic/solutions/'
     optimization.modelSetManager.solver = '/home/pkus/sources/agros2d/agros2d_solver'
-    optimization.populationSize = 5
-    optimization.run(20, False)                
+    optimization.populationSize = 8
+    optimization.run(3, False)                

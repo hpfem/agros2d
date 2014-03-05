@@ -15,8 +15,8 @@ class InitialPopulationCreator:
         pass
         
     def markInitialMember(self, member):
-        member.populationFrom = 0
-        member.populationTo = 0   
+        member.setPopulationFrom(0)
+        member.setPopulationTo(0)   
     
 class ImplicitInitialPopulationCreator(InitialPopulationCreator):
     """
@@ -77,31 +77,33 @@ class SingleCriteriaSelector(SurvivorsSelector):
     """
     
     def select(self, population):
-        print "in selector: ", self.recomendedPopulationSize
         signF = directionToSigns(self.direction)    
     
         survivorsNum = min(len(population), int(0.3*self.recomendedPopulationSize))
         scores = []
         for member in population:
-            scores.append(member.functional())
+            scores.append(member.functional)
         
         if signF == 1:
             scores.sort()        
         else:
             scores.sort(reverse = True)
-                    
+             
+                
+        print "Scores ", len(scores), ", ", survivorsNum-1, ", ", int(survivorsNum*0.8)-1, ", ", int(survivorsNum*0.5)-1
         priorityTresholds = [scores[survivorsNum-1],
                              scores[int(survivorsNum*0.8)-1],
                              scores[int(survivorsNum*0.5)-1]]
+
+        print "Tresholds: ", priorityTresholds       
         
         survivors = []
         
         for member in population:
             newMember = deepcopy(member)
-            score = member.functional()
+            score = member.functional
             priority = 0
             for prior in range(3):
-                print score, ", ", priorityTresholds[prior]
                 if signF * score < signF * priorityTresholds[prior]:
                     priority = prior + 1
             

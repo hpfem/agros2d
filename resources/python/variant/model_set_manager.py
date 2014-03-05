@@ -49,8 +49,6 @@ class ModelSetManager:
         return files
 
     def solveProblem(self, file):
-        print "solve file: ", file
-        print "directory: ", os.path.dirname(os.path.abspath(file))
         str = "import sys; sys.path.insert(0, '{0}/..'); import problem; model = problem.Model(); model.load('{1}'); model.create(); model.solve(); model.process(); model.save('{1}');".format(os.path.dirname(os.path.abspath(file)), file)
 
         command = '"{0}" -l -c "{1}"'.format(self.solver, str)
@@ -58,20 +56,17 @@ class ModelSetManager:
 
     def solveAll(self, solveSolvedAgain = False):
         files = self.findFiles()
-        models = []
+        totalSolved = 0
         for file in files:
             model = ModelBase()
             model.load(file)
             solveProblem = solveSolvedAgain or not model.solved
             if solveProblem:
-                print("Solve problem: {0}".format(model.parameters)) 
                 self.solveProblem(file)
-            else:
-                print("Problem: {0} allready solved".format(model.parameters)) 
-           
-            models.append(model)
-             
-        return models
+                totalSolved += 1
+                
+        return totalSolved
+                        
 
     def loadAll(self):
         files = self.findFiles()
