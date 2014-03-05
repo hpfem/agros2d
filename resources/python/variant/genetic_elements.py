@@ -79,7 +79,8 @@ class SingleCriteriaSelector(SurvivorsSelector):
     def select(self, population):
         signF = directionToSigns(self.direction)    
     
-        survivorsNum = min(len(population), int(0.3*self.recomendedPopulationSize))
+        print "len poulation ", len(population), ", 0.3*rec ", int(0.35*self.recomendedPopulationSize)
+        survivorsNum = min(len(population), int(0.35*self.recomendedPopulationSize))
         scores = []
         for member in population:
             scores.append(member.functional)
@@ -90,12 +91,12 @@ class SingleCriteriaSelector(SurvivorsSelector):
             scores.sort(reverse = True)
              
                 
-        print "Scores ", len(scores), ", ", survivorsNum-1, ", ", int(survivorsNum*0.8)-1, ", ", int(survivorsNum*0.5)-1
+        #print "Scores ", len(scores), ", ", survivorsNum-1, ", ", int(survivorsNum*0.8)-1, ", ", int(survivorsNum*0.5)-1
         priorityTresholds = [scores[survivorsNum-1],
                              scores[int(survivorsNum*0.8)-1],
                              scores[int(survivorsNum*0.5)-1]]
 
-        print "Tresholds: ", priorityTresholds       
+        #print "Tresholds: ", priorityTresholds       
         
         survivors = []
         
@@ -109,7 +110,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
             
             if priority > 0:                    
                 newMember.priority = priority
-                newMember.populationTo += 1
+                newMember.setPopulationTo(newMember.getPopulationTo() + 1)
                 survivors.append(newMember)
         
         return survivors
@@ -137,7 +138,8 @@ class GeneralMutation(MutationCreator):
         self.mutationStrength = mutationStrength
 
     def mutate(self, original):
-        mutant = deepcopy(original)
+        mutant = ModelBase()
+        mutant.parameters = deepcopy(original.parameters)
         genomSize = len(self.bounds)
         
         # random indices of genes to be changed

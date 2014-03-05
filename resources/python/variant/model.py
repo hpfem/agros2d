@@ -13,7 +13,7 @@ class ModelBase:
 
     @parameters.setter
     def parameters(self, values):
-        self._parameters = values
+        self._pameters = values
 
     @property
     def variables(self):
@@ -23,39 +23,6 @@ class ModelBase:
     @variables.setter
     def variables(self, values):
         self._variables = values
-        
-    @property
-    def populationFrom(self):
-        """From which population present in the case of genetic algorithms"""
-        try:
-            return self.variables["_population_from"]
-        except KeyError:
-            return -1
-
-    # setter does not work
-    @populationFrom.setter
-    def populationFrom(self, value):
-        self.variables["_population_from"] = value
-
-    def setPopulationFrom(self, value):
-        self.variables["_population_from"] = value
-        
-    @property
-    def populationTo(self):
-        """To which population present in the case of genetic algorithms"""
-        try:
-            return self.variables["_population_to"]
-        except KeyError:
-            return -1
-
-    # setter does not work
-    @populationTo.setter
-    def populationTo(self, value):
-        print "setting population to ", value
-        self.variables["_population_to"] = value
-        
-    def setPopulationTo(self, value):
-        self.variables["_population_to"] = value
         
     @property
     def functional(self):
@@ -70,7 +37,7 @@ class ModelBase:
     def solved(self):
         """Problem is solved"""
         return self._solved
-
+        
     @solved.setter
     def solved(self, solv):
         self._solved = solv  
@@ -98,8 +65,80 @@ class ModelBase:
 
         model_dict.models.append(self)
         model_dict.save(filename)
-       
+
+    def getPopulationFrom(self):
+        """From which population present in the case of genetic algorithms"""
+        try:
+            return self.variables["_population_from"]
+        except KeyError:
+            return -1
+
+    def setPopulationFrom(self, value):
+        self.variables["_population_from"] = value
         
+    def getPopulationTo(self):
+        """To which population present in the case of genetic algorithms"""
+        try:
+            return self.variables["_population_to"]
+        except KeyError:
+            return -1
+
+    def setPopulationTo(self, value):
+        self.variables["_population_to"] = value
+       
+#class ModelGenetic(ModelBase):
+
+#    def __init__(self):
+#        ModelBase.__init__(self)
+
+#    @property
+#    def populationFrom(self):
+#        """From which population present in the case of genetic algorithms"""
+#        try:
+#            return self.variables["_population_from"]
+#        except KeyError:
+#            return -1
+
+    # setter does not work
+#    @populationFrom.setter
+#    def populationFrom(self, value):
+#        self.variables["_population_from"] = value
+
+#    @property
+#    def populationTo(self):
+#        """To which population present in the case of genetic algorithms"""
+#        try:
+#            return self.variables["_population_to"]
+#        except KeyError:
+#            return -1
+
+#    # setter does not work
+#    @populationTo.setter
+#    def populationTo(self, value):
+#        print "setting population to ", value
+#        self.variables["_population_to"] = value
+
+#    def getPopulationFrom(self):
+#        """From which population present in the case of genetic algorithms"""
+#        try:
+#            return self.variables["_population_from"]
+#        except KeyError:
+#            return -1
+
+ #   def setPopulationFrom(self, value):
+#        self.variables["_population_from"] = value
+        
+#    def getPopulationTo(self):
+#        """To which population present in the case of genetic algorithms"""
+#        try:
+#            return self.variables["_population_to"]
+#        except KeyError:
+#            return -1
+
+#    def setPopulationTo(self, value):
+#        self.variables["_population_to"] = value
+        
+                
 class ModelDict:
     def __init__(self):
         self._models = []

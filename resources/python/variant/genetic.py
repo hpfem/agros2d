@@ -14,6 +14,7 @@ class GeneticOptimization(OptimizationMethod):
         self.crossover = RandomCrossover()
         self.direction = direction
         self.selector.direction = direction
+        self.mutation = ImplicitMutation(self.parameters)
 
     @property
     def populationSize(self):
@@ -30,6 +31,7 @@ class GeneticOptimization(OptimizationMethod):
                 
     
     def initialStep(self, resume):
+        print "initial step"
         # if not resume previous optimization, delete all solution files in the directory
         if not resume:
             self.modelSetManager.deleteAll()
@@ -41,7 +43,7 @@ class GeneticOptimization(OptimizationMethod):
         lastPopulationIdx = -1
         solutionsWithPopulNum = []
         for solution in solutions:
-            popul = solution.populationTo
+            popul = solution.getPopulationTo()
             if popul >= 0:
                 solutionsWithPopulNum.append(solution)
             else:
@@ -51,43 +53,77 @@ class GeneticOptimization(OptimizationMethod):
             
         if lastPopulationIdx == -1:                    
             # no previous population found, create initial one
+            print "no previous population found, create initial one"
             self.lastPopulation = self.initialPopulationCreator.create(self.populationSize)
             self.modelSetManager.saveAll(self.lastPopulation)
             lastPopulationIdx = 0
         else:
             self.LastPopulation = []
             for solution in solutionsWithPopulNum:
-                if solution.populationTo == lastPopulationIdx:
+                if solution.getPopulationTo() == lastPopulationIdx:
                     self.LastPopulation.append(solution)
         
         return lastPopulationIdx
         
     def oneStep(self):
-        solved = self.modelSetManager.solveAll()
+        print "starting step ", self.populationIdx
         models = self.modelSetManager.loadAll()        
         lastPopulation = []
         for model in models:
-            print model.populationTo, ", ", self.populationIdx
-            assert model.populationTo < self.populationIdx
-            if model.populationTo == self.populationIdx - 1:
+            assert model.getPopulationTo() < self.populationIdx
+            if model.getPopulationTo() == self.populationIdx - 1:
                 lastPopulation.append(model)
-              
+                print "pop before select: ", model.getPopulationFrom(), ", ", model.getPopulationTo(), ", ", model.functional
+ 
         self.selector.recomendedPopulationSize = self.populationSize
         population = self.selector.select(lastPopulation)
         
-        print "solved {0}, transfered to new population {1}".format(solved, len(population))
+        for model in population:
+            print "pop after select: ", model.getPopulationFrom(), ", ", model.getPopulationTo(), ", ", model.functional
+        
+        # Mutations
+        numMutations = (self.populationSize - len(population)) / 2
+        mutations = []
+        for i in range(numMutations):
+            originalIdx = rnd.randrange(len(population))
+            mutation = self.mutation.mutate(population[originalIdx])
+            mutation.setPopulationFrom(self.populationIdx)
+            mutation.setPopulationTo(self.populationIdx)
+            mutations.append(mutation)
             
+        # Crossovers
+        numCrossovers = self.populationSize - len(population) - len(mutations)
+        crossovers = []
+        for i in range(numCrossovers):
+            fatherIdx = rnd.randrange(len(population))
+            motherIdx = rnd.randrange(len(population))
+            crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
+            crossover.setPopulationFrom(self.populationIdx)
+            crossover.setPopulationTo(self.populationIdx)
+            crossovers.append(crossover)
+            
+        population.extend(mutations)
+        population.extend(crossovers)
+            
+                
+        for model in population:
+            print "pop after mutations: ", model.getPopulationFrom(), ", ", model.getPopulationTo()#, ", ", model.functional        
+
         self.modelSetManager.saveAll(population)
                 
     def run(self, maxIters, resume = True):
         self.modelSetManager.directory = self.directory
 
-        lastPopulationIdx = self.initialStep(resume)        
+        lastPopulationIdx = self.initialStep(resume)  
+        self.modelSetManager.solveAll()      
                 
         for self.populationIdx in range(lastPopulationIdx + 1, maxIters):
             self.oneStep()
+            solved = self.modelSetManager.solveAll()
+            print "solved {0} from population of {1}".format(solved, self.populationSize)
 
 if __name__ == '__main__':
+    print "fdfdf"
     parameters = [ContinuousParameter('a', 0,10),
                   ContinuousParameter('b', 0,10),
                   ContinuousParameter('c', 0,10),
@@ -97,5 +133,5 @@ if __name__ == '__main__':
     optimization = GeneticOptimization(parameters, "min")
     optimization.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_genetic/solutions/'
     optimization.modelSetManager.solver = '/home/pkus/sources/agros2d/agros2d_solver'
-    optimization.populationSize = 8
+    optimization.populationSize = 5
     optimization.run(3, False)                
