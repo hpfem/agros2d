@@ -3,6 +3,23 @@ from optimization import ContinuousParameter, DiscreteParameter
 import random as rnd
 from copy import deepcopy
 
+class GeneticInfo:
+    @staticmethod
+    def populationFrom(member):
+        return member.variables["_population_from"]
+
+    @staticmethod
+    def setPopulationFrom(member, value):
+        member.variables["_population_from"] = value
+
+    @staticmethod
+    def populationTo(member):
+        return member.variables["_population_to"]
+
+    @staticmethod
+    def setPopulationTo(member, value):
+        member.variables["_population_to"] = value
+
 class InitialPopulationCreator:
     """
         General class for initial population creation
@@ -15,8 +32,8 @@ class InitialPopulationCreator:
         pass
         
     def markInitialMember(self, member):
-        member.setPopulationFrom(0)
-        member.setPopulationTo(0)   
+        GeneticInfo.setPopulationFrom(member, 0)
+        GeneticInfo.setPopulationTo(member, 0)   
     
 class ImplicitInitialPopulationCreator(InitialPopulationCreator):
     """
@@ -111,7 +128,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
             
             if priority > 0:                    
                 newMember.priority = priority
-                newMember.setPopulationTo(newMember.getPopulationTo() + 1)
+                GeneticInfo.setPopulationTo(newMember, GeneticInfo.populationTo(newMember) + 1)
                 survivors.append(newMember)
         
         return survivors

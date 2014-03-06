@@ -1,7 +1,7 @@
 from optimization import OptimizationMethod, ContinuousParameter
 from model_set_manager import ModelSetManager
 from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, ImplicitMutation,\
-        RandomCrossover
+        RandomCrossover, GeneticInfo
 import random as rnd
 
 
@@ -52,7 +52,7 @@ class GeneticOptimization(OptimizationMethod):
         lastPopulationIdx = -1
         solutionsWithPopulNum = []
         for solution in solutions:
-            popul = solution.getPopulationTo()
+            popul = GeneticInfo.populationTo(solution)
             if popul >= 0:
                 solutionsWithPopulNum.append(solution)
             else:
@@ -69,7 +69,7 @@ class GeneticOptimization(OptimizationMethod):
         else:
             self.LastPopulation = []
             for solution in solutionsWithPopulNum:
-                if solution.getPopulationTo() == lastPopulationIdx:
+                if GeneticInfo.populationTo(solution) == lastPopulationIdx:
                     self.LastPopulation.append(solution)
         
         return lastPopulationIdx
@@ -79,16 +79,16 @@ class GeneticOptimization(OptimizationMethod):
         models = self.modelSetManager.loadAll()        
         lastPopulation = []
         for model in models:
-            assert model.getPopulationTo() < self.populationIdx
-            if model.getPopulationTo() == self.populationIdx - 1:
+            assert GeneticInfo.populationTo(model) < self.populationIdx
+            if GeneticInfo.populationTo(model) == self.populationIdx - 1:
                 lastPopulation.append(model)
-                print "pop before select: ", model.getPopulationFrom(), ", ", model.getPopulationTo(), ", ", model.functional
+                print "pop before select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", model.functional
  
         self.selector.recomendedPopulationSize = self.populationSize
         population = self.selector.select(lastPopulation)
         
         for model in population:
-            print "pop after select: ", model.getPopulationFrom(), ", ", model.getPopulationTo(), ", ", model.functional
+            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", model.functional
 
 
         print "best member of the population: ", self.findBest(population)
@@ -99,8 +99,8 @@ class GeneticOptimization(OptimizationMethod):
         for i in range(numMutations):
             originalIdx = rnd.randrange(len(population))
             mutation = self.mutation.mutate(population[originalIdx])
-            mutation.setPopulationFrom(self.populationIdx)
-            mutation.setPopulationTo(self.populationIdx)
+            GeneticInfo.setPopulationFrom(mutation, self.populationIdx)
+            GeneticInfo.setPopulationTo(mutation, self.populationIdx)
             mutations.append(mutation)
             
         # Crossovers
@@ -110,8 +110,8 @@ class GeneticOptimization(OptimizationMethod):
             fatherIdx = rnd.randrange(len(population))
             motherIdx = rnd.randrange(len(population))
             crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
-            crossover.setPopulationFrom(self.populationIdx)
-            crossover.setPopulationTo(self.populationIdx)
+            GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
+            GeneticInfo.setPopulationTo(crossover, self.populationIdx)
             crossovers.append(crossover)
             
         population.extend(mutations)
@@ -119,7 +119,7 @@ class GeneticOptimization(OptimizationMethod):
             
                 
         for model in population:
-            print "pop after mutations: ", model.getPopulationFrom(), ", ", model.getPopulationTo()#, ", ", model.functional        
+            print "pop after mutations: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model)#, ", ", model.functional        
 
         self.modelSetManager.saveAll(population)
                 
