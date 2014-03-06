@@ -95,7 +95,7 @@ OptilabWindow::~OptilabWindow()
 }
 
 void OptilabWindow::openInAgros2D()
-{    
+{
     XMLOptVariant::result *result = variantResult(lstProblems->currentItem()->data(0, Qt::UserRole).toInt());
 
     if (result)
@@ -456,6 +456,7 @@ void OptilabWindow::addVariants()
             {
                 XMLOptVariant::input input;
                 XMLOptVariant::output output;
+                XMLOptVariant::info info;
                 XMLOptVariant::solution solution(false);
 
                 // much faster then xsdcxx
@@ -490,12 +491,18 @@ void OptilabWindow::addVariants()
                             output.variable().push_back(XMLOptVariant::variable(attributes.value("name").toString().toStdString(),
                                                                                 attributes.value("value").toString().toStdString()));
                         }
+                        else if (xml.name() == "info")
+                        {
+                            QXmlStreamAttributes attributes = xml.attributes();
+                            info.item().push_back(XMLOptVariant::item(attributes.value("name").toString().toStdString(),
+                                                                      attributes.value("value").toString().toStdString()));
+                        }
                     }
                 }
 
                 file.close();
 
-                XMLOptVariant::result result(input, output, solution);
+                XMLOptVariant::result result(input, output, info, solution);
                 /*
                 std::auto_ptr<XMLOptVariant::variant> variant_solution_xsd
                         = XMLOptVariant::variant_(compatibleFilename(fileInfo.absoluteFilePath()).toStdString(), xml_schema::flags::dont_validate);
@@ -792,6 +799,18 @@ void OptilabWindow::variantInfo(int index)
                     varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
                     varSection->SetValue("VAR_CHART", chart.toStdString());
                 }
+            }
+
+            // info
+            variantInfo.SetValue("INFO_LABEL", tr("Variant info").toStdString());
+            for (unsigned int i = 0; i < result->info().item().size(); i++)
+            {
+                ctemplate::TemplateDictionary *infoSection = variantInfo.AddSectionDictionary("INFO_SECTION");
+
+                XMLOptVariant::item item = result->info().item().at(i);
+
+                infoSection->SetValue("INFO_LABEL", item.name());
+                infoSection->SetValue("INFO_VALUE", item.value());
             }
         }
         catch (const xml_schema::exception& e)
