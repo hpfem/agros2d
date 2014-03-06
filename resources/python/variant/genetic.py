@@ -70,7 +70,7 @@ class GeneticOptimization(OptimizationMethod):
                 if GeneticInfo.populationTo(solution) == lastPopulationIdx:
                     self.LastPopulation.append(solution)
         
-        return lastPopulationIdx
+        return int(lastPopulationIdx)
         
     def oneStep(self):
         print "starting step ", self.populationIdx
@@ -139,10 +139,10 @@ if __name__ == '__main__':
                   ContinuousParameter('d', 0,10),
                   ContinuousParameter('e', 0,10)]
 
-    functionals = Functionals([Functional("Func1", "min")])
+    functionals = Functionals([Functional("Func1", "max")])
     
     optimization = GeneticOptimization(parameters, functionals)
     optimization.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_genetic/solutions/'
     optimization.modelSetManager.solver = '/home/pkus/sources/agros2d/agros2d_solver'
     optimization.populationSize = 25
-    optimization.run(20, False)                
+    optimization.run(25, True)                
