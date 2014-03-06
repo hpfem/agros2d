@@ -1,19 +1,18 @@
-from optimization import OptimizationMethod, ContinuousParameter
+from optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
 from model_set_manager import ModelSetManager
 from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, ImplicitMutation,\
-        RandomCrossover
+        RandomCrossover, GeneticInfo
 import random as rnd
 
 
 class GeneticOptimization(OptimizationMethod):
-    def __init__(self, parameters, direction):
-        OptimizationMethod.__init__(self, parameters)
+    def __init__(self, parameters, functionals):
+        OptimizationMethod.__init__(self, parameters, functionals)
         self.modelSetManager = ModelSetManager()
         self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        self.selector = SingleCriteriaSelector(self.parameters)
+        self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
         self.crossover = RandomCrossover()
-        self.direction = direction
-        self.selector.direction = direction
+        self.mutation = ImplicitMutation(self.parameters)
 
     @property
     def populationSize(self):
@@ -21,15 +20,25 @@ class GeneticOptimization(OptimizationMethod):
         return self._populationSize
         
     @populationSize.setter
-    def parameters(self, value):
-        print "triyng to set ", value
+    def populationSize(self, value):
         self._populationSize = value
         
         # why does not work from here? Has to be set again in oneStep()
         self.selector.recomendedPopulationSize = value
+    
+    def findBest(self, population):
+        signF = self.functionals.functional().directionSign()
+        optimum = signF * 1e50
+        for member in population:
+            if signF * self.functionals.evaluate(member) < signF * optimum:
+                optimum = self.functionals.evaluate(member)
+                optimalParameters = member.parameters
                 
+        return [optimum, optimalParameters]
+            
     
     def initialStep(self, resume):
+        print "initial step"
         # if not resume previous optimization, delete all solution files in the directory
         if not resume:
             self.modelSetManager.deleteAll()
@@ -41,7 +50,7 @@ class GeneticOptimization(OptimizationMethod):
         lastPopulationIdx = -1
         solutionsWithPopulNum = []
         for solution in solutions:
-            popul = solution.populationTo
+            popul = GeneticInfo.populationTo(solution)
             if popul >= 0:
                 solutionsWithPopulNum.append(solution)
             else:
@@ -51,41 +60,77 @@ class GeneticOptimization(OptimizationMethod):
             
         if lastPopulationIdx == -1:                    
             # no previous population found, create initial one
+            print "no previous population found, create initial one"
             self.lastPopulation = self.initialPopulationCreator.create(self.populationSize)
             self.modelSetManager.saveAll(self.lastPopulation)
             lastPopulationIdx = 0
         else:
             self.LastPopulation = []
             for solution in solutionsWithPopulNum:
-                if solution.populationTo == lastPopulationIdx:
+                if GeneticInfo.populationTo(solution) == lastPopulationIdx:
                     self.LastPopulation.append(solution)
         
-        return lastPopulationIdx
+        return int(lastPopulationIdx)
         
     def oneStep(self):
-        solved = self.modelSetManager.solveAll()
+        print "starting step ", self.populationIdx
         models = self.modelSetManager.loadAll()        
         lastPopulation = []
         for model in models:
-            print model.populationTo, ", ", self.populationIdx
-            assert model.populationTo < self.populationIdx
-            if model.populationTo == self.populationIdx - 1:
+            assert GeneticInfo.populationTo(model) < self.populationIdx
+            if GeneticInfo.populationTo(model) == self.populationIdx - 1:
                 lastPopulation.append(model)
-              
+                print "pop before select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
+ 
         self.selector.recomendedPopulationSize = self.populationSize
         population = self.selector.select(lastPopulation)
         
-        print "solved {0}, transfered to new population {1}".format(solved, len(population))
+        for model in population:
+            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
+
+
+        print "best member of the population: ", self.findBest(population)
+                        
+        # Mutations
+        numMutations = (self.populationSize - len(population)) / 2
+        mutations = []
+        for i in range(numMutations):
+            originalIdx = rnd.randrange(len(population))
+            mutation = self.mutation.mutate(population[originalIdx])
+            GeneticInfo.setPopulationFrom(mutation, self.populationIdx)
+            GeneticInfo.setPopulationTo(mutation, self.populationIdx)
+            mutations.append(mutation)
             
+        # Crossovers
+        numCrossovers = self.populationSize - len(population) - len(mutations)
+        crossovers = []
+        for i in range(numCrossovers):
+            fatherIdx = rnd.randrange(len(population))
+            motherIdx = rnd.randrange(len(population))
+            crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
+            GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
+            GeneticInfo.setPopulationTo(crossover, self.populationIdx)
+            crossovers.append(crossover)
+            
+        population.extend(mutations)
+        population.extend(crossovers)
+            
+                
+        for model in population:
+            print "pop after mutations: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model)#, ", ", model.functional        
+
         self.modelSetManager.saveAll(population)
                 
     def run(self, maxIters, resume = True):
         self.modelSetManager.directory = self.directory
 
-        lastPopulationIdx = self.initialStep(resume)        
+        lastPopulationIdx = self.initialStep(resume)  
+        self.modelSetManager.solveAll()      
                 
         for self.populationIdx in range(lastPopulationIdx + 1, maxIters):
             self.oneStep()
+            solved = self.modelSetManager.solveAll()
+            print "solved {0} from population of {1}".format(solved, self.populationSize)
 
 if __name__ == '__main__':
     parameters = [ContinuousParameter('a', 0,10),
@@ -93,9 +138,11 @@ if __name__ == '__main__':
                   ContinuousParameter('c', 0,10),
                   ContinuousParameter('d', 0,10),
                   ContinuousParameter('e', 0,10)]
+
+    functionals = Functionals([Functional("Func1", "max")])
     
-    optimization = GeneticOptimization(parameters, "min")
+    optimization = GeneticOptimization(parameters, functionals)
     optimization.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_genetic/solutions/'
     optimization.modelSetManager.solver = '/home/pkus/sources/agros2d/agros2d_solver'
-    optimization.populationSize = 8
-    optimization.run(3, False)                
+    optimization.populationSize = 25
+    optimization.run(25, True)                

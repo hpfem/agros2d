@@ -16,8 +16,3 @@ class Model(model.ModelBase):
     def process(self):
         print "process"
         self.variables["Func1"] = self.a + self.b + self.c + self.d + self.e
-        
-        # why does the setter not work?
-        #self.functional = self.variables["Func1"]
-        
-        self.variables["_functional"] = self.variables["Func1"]

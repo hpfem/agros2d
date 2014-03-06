@@ -1,7 +1,24 @@
 from model import ModelBase
-from optimization import directionToSigns, ContinuousParameter, DiscreteParameter
+from optimization import ContinuousParameter, DiscreteParameter
 import random as rnd
 from copy import deepcopy
+
+class GeneticInfo:
+    @staticmethod
+    def populationFrom(member):
+        return member.variables["_population_from"]
+
+    @staticmethod
+    def setPopulationFrom(member, value):
+        member.variables["_population_from"] = value
+
+    @staticmethod
+    def populationTo(member):
+        return member.variables["_population_to"]
+
+    @staticmethod
+    def setPopulationTo(member, value):
+        member.variables["_population_to"] = value
 
 class InitialPopulationCreator:
     """
@@ -15,8 +32,8 @@ class InitialPopulationCreator:
         pass
         
     def markInitialMember(self, member):
-        member.setPopulationFrom(0)
-        member.setPopulationTo(0)   
+        GeneticInfo.setPopulationFrom(member, 0)
+        GeneticInfo.setPopulationTo(member, 0)   
     
 class ImplicitInitialPopulationCreator(InitialPopulationCreator):
     """
@@ -46,9 +63,10 @@ class SurvivorsSelector:
         General class for selection of genoms that should be kept into the new population
     """
 
-    def __init__(self, bounds):
+    def __init__(self, bounds, functionals):
         self.bounds = bounds
-        
+        self.functionals = functionals
+                
     @property
     def recomendedPopulationSize(self):
         """Recomended population size. Actual population size may differ, but should be close to this"""
@@ -77,12 +95,13 @@ class SingleCriteriaSelector(SurvivorsSelector):
     """
     
     def select(self, population):
-        signF = directionToSigns(self.direction)    
+        signF = self.functionals.functional().directionSign()
     
-        survivorsNum = min(len(population), int(0.3*self.recomendedPopulationSize))
+        print "len poulation ", len(population), ", 0.3*rec ", int(0.35*self.recomendedPopulationSize)
+        survivorsNum = min(len(population), int(0.35*self.recomendedPopulationSize))
         scores = []
         for member in population:
-            scores.append(member.functional)
+            scores.append(self.functionals.evaluate(member))
         
         if signF == 1:
             scores.sort()        
@@ -90,26 +109,26 @@ class SingleCriteriaSelector(SurvivorsSelector):
             scores.sort(reverse = True)
              
                 
-        print "Scores ", len(scores), ", ", survivorsNum-1, ", ", int(survivorsNum*0.8)-1, ", ", int(survivorsNum*0.5)-1
+        #print "Scores ", len(scores), ", ", survivorsNum-1, ", ", int(survivorsNum*0.8)-1, ", ", int(survivorsNum*0.5)-1
         priorityTresholds = [scores[survivorsNum-1],
                              scores[int(survivorsNum*0.8)-1],
                              scores[int(survivorsNum*0.5)-1]]
 
-        print "Tresholds: ", priorityTresholds       
+        #print "Tresholds: ", priorityTresholds       
         
         survivors = []
         
         for member in population:
             newMember = deepcopy(member)
-            score = member.functional
+            score = self.functionals.evaluate(member)
             priority = 0
             for prior in range(3):
-                if signF * score < signF * priorityTresholds[prior]:
+                if signF * score <= signF * priorityTresholds[prior]:
                     priority = prior + 1
             
             if priority > 0:                    
                 newMember.priority = priority
-                newMember.populationTo += 1
+                GeneticInfo.setPopulationTo(newMember, GeneticInfo.populationTo(newMember) + 1)
                 survivors.append(newMember)
         
         return survivors
@@ -137,7 +156,8 @@ class GeneralMutation(MutationCreator):
         self.mutationStrength = mutationStrength
 
     def mutate(self, original):
-        mutant = deepcopy(original)
+        mutant = ModelBase()
+        mutant.parameters = deepcopy(original.parameters)
         genomSize = len(self.bounds)
         
         # random indices of genes to be changed

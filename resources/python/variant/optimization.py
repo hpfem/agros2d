@@ -100,11 +100,60 @@ class DiscreteParameter(OptimizationParameter):
             newIndex = rnd.randrange(minIndex, maxIndex + 1)
         
         return self.options[newIndex]
+
         
+class Functional:
+    def __init__(self, name, direction):
+        self._name = name
+        self._direction = direction
+        
+    @property
+    def name(self):
+        """Name"""
+        return self._name
+                                                    
+    @property
+    def direction(self):
+        """Direction"""
+        return self._direction
+        
+    def directionSign(self):
+        if self.direction == "min":
+            return 1
+        elif self.direction == "max":
+            return -1
+        else:
+            assert False
+            
+class Functionals:
+    def __init__(self, functionals):
+        self.functionals = functionals
+
+    def functional(self, index = 0):
+        """ Functional, for multicriteria optimization can be called with index 0 or 1 """
+        return self.functionals[index]
+        
+    def isMulticriterial(self):
+        if len(self.functionals) == 1:
+            return False
+        elif len(self.functionals) == 2:
+            return True
+        else:
+            assert False
+        
+    def evaluate(self, model):
+        """ for one criteria returns value of functional, for multicriteria list [func1, func2] for given instance of model """
+        if self.isMulticriterial():
+            return [model.variables[self.functionals[0].name], model.variables[self.functionals[1].name] ]
+        else:
+            return model.variables[self.functionals[0].name]
+        
+                                                    
 
 class OptimizationMethod:
-    def __init__(self, parameters):
-        self.parameters = parameters
+    def __init__(self, parameters, functionals):
+        self._parameters = parameters
+        self._functionals = functionals
         
     @property
     def parameters(self):
@@ -123,24 +172,14 @@ class OptimizationMethod:
     @directory.setter
     def directory(self, value):
         self._directory = value
-        
+                    
+    @property
+    def functionals(self):
+        """Functionals"""
+        return self._functionals
 
         
-def directionToSigns(direction):
-    if direction == "min-min":
-        return [1.0, 1.0]
-    elif direction == "min-max":
-        return [1.0, -1.0]
-    elif direction == "max-min":
-        return [-1.0, 1.0]
-    elif direction == "max-max":
-        return [-1.0, -1.0]
-    elif direction == "min":
-        return 1.0
-    elif direction == "max":
-        return -1.0
-    else:
-        assert 0    
+
         
 if __name__ == '__main__':
     cp = ContinuousParameter("cont1", 2, 5.2)
