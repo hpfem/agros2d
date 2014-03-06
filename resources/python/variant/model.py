@@ -23,15 +23,6 @@ class ModelBase:
     @variables.setter
     def variables(self, values):
         self._variables = values
-        
-    @property
-    def functional(self):
-        """ Functional """
-        return self.variables["_functional"]
-
-    @functional.setter
-    def functional(self, value):
-        self.variables["_functional"] = value
 
     @property
     def solved(self):

@@ -63,9 +63,9 @@ class SurvivorsSelector:
         General class for selection of genoms that should be kept into the new population
     """
 
-    def __init__(self, bounds, directionSigns):
+    def __init__(self, bounds, functionals):
         self.bounds = bounds
-        self.directionSigns = directionSigns
+        self.functionals = functionals
                 
     @property
     def recomendedPopulationSize(self):
@@ -95,13 +95,13 @@ class SingleCriteriaSelector(SurvivorsSelector):
     """
     
     def select(self, population):
-        signF = self.directionSigns
+        signF = self.functionals.functional().directionSign()
     
         print "len poulation ", len(population), ", 0.3*rec ", int(0.35*self.recomendedPopulationSize)
         survivorsNum = min(len(population), int(0.35*self.recomendedPopulationSize))
         scores = []
         for member in population:
-            scores.append(member.functional)
+            scores.append(self.functionals.evaluate(member))
         
         if signF == 1:
             scores.sort()        
@@ -120,7 +120,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
         
         for member in population:
             newMember = deepcopy(member)
-            score = member.functional
+            score = self.functionals.evaluate(member)
             priority = 0
             for prior in range(3):
                 if signF * score <= signF * priorityTresholds[prior]:

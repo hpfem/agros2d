@@ -1,4 +1,4 @@
-from optimization import OptimizationMethod, ContinuousParameter
+from optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
 from model_set_manager import ModelSetManager
 from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, ImplicitMutation,\
         RandomCrossover, GeneticInfo
@@ -6,13 +6,12 @@ import random as rnd
 
 
 class GeneticOptimization(OptimizationMethod):
-    def __init__(self, parameters, direction):
-        OptimizationMethod.__init__(self, parameters, direction)
+    def __init__(self, parameters, functionals):
+        OptimizationMethod.__init__(self, parameters, functionals)
         self.modelSetManager = ModelSetManager()
         self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        self.selector = SingleCriteriaSelector(self.parameters, self.directionToSigns())
+        self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
         self.crossover = RandomCrossover()
-        self.selector.direction = direction
         self.mutation = ImplicitMutation(self.parameters)
 
     @property
@@ -21,19 +20,18 @@ class GeneticOptimization(OptimizationMethod):
         return self._populationSize
         
     @populationSize.setter
-    def parameters(self, value):
-        print "triyng to set ", value
+    def populationSize(self, value):
         self._populationSize = value
         
         # why does not work from here? Has to be set again in oneStep()
         self.selector.recomendedPopulationSize = value
     
     def findBest(self, population):
-        signF = self.directionToSigns()    
+        signF = self.functionals.functional().directionSign()
         optimum = signF * 1e50
         for member in population:
-            if signF * member.functional < signF * optimum:
-                optimum = member.functional
+            if signF * self.functionals.evaluate(member) < signF * optimum:
+                optimum = self.functionals.evaluate(member)
                 optimalParameters = member.parameters
                 
         return [optimum, optimalParameters]
@@ -82,13 +80,13 @@ class GeneticOptimization(OptimizationMethod):
             assert GeneticInfo.populationTo(model) < self.populationIdx
             if GeneticInfo.populationTo(model) == self.populationIdx - 1:
                 lastPopulation.append(model)
-                print "pop before select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", model.functional
+                print "pop before select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
  
         self.selector.recomendedPopulationSize = self.populationSize
         population = self.selector.select(lastPopulation)
         
         for model in population:
-            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", model.functional
+            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
 
 
         print "best member of the population: ", self.findBest(population)
@@ -135,14 +133,15 @@ class GeneticOptimization(OptimizationMethod):
             print "solved {0} from population of {1}".format(solved, self.populationSize)
 
 if __name__ == '__main__':
-    print "fdfdf"
     parameters = [ContinuousParameter('a', 0,10),
                   ContinuousParameter('b', 0,10),
                   ContinuousParameter('c', 0,10),
                   ContinuousParameter('d', 0,10),
                   ContinuousParameter('e', 0,10)]
+
+    functionals = Functionals([Functional("Func1", "min")])
     
-    optimization = GeneticOptimization(parameters, "max")
+    optimization = GeneticOptimization(parameters, functionals)
     optimization.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_genetic/solutions/'
     optimization.modelSetManager.solver = '/home/pkus/sources/agros2d/agros2d_solver'
     optimization.populationSize = 25
