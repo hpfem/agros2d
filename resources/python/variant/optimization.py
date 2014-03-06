@@ -103,8 +103,9 @@ class DiscreteParameter(OptimizationParameter):
         
 
 class OptimizationMethod:
-    def __init__(self, parameters):
+    def __init__(self, parameters, direction):
         self.parameters = parameters
+        self.direction = direction
         
     @property
     def parameters(self):
@@ -124,23 +125,23 @@ class OptimizationMethod:
     def directory(self, value):
         self._directory = value
         
-
+    def directionToSigns(self):
+        if self.direction == "min-min":
+            return [1.0, 1.0]
+        elif self.direction == "min-max":
+            return [1.0, -1.0]
+        elif self.direction == "max-min":
+            return [-1.0, 1.0]
+        elif self.direction == "max-max":
+            return [-1.0, -1.0]
+        elif self.direction == "min":
+            return 1.0
+        elif self.direction == "max":
+            return -1.0
+        else:
+            assert 0    
         
-def directionToSigns(direction):
-    if direction == "min-min":
-        return [1.0, 1.0]
-    elif direction == "min-max":
-        return [1.0, -1.0]
-    elif direction == "max-min":
-        return [-1.0, 1.0]
-    elif direction == "max-max":
-        return [-1.0, -1.0]
-    elif direction == "min":
-        return 1.0
-    elif direction == "max":
-        return -1.0
-    else:
-        assert 0    
+
         
 if __name__ == '__main__':
     cp = ContinuousParameter("cont1", 2, 5.2)

@@ -7,12 +7,11 @@ import random as rnd
 
 class GeneticOptimization(OptimizationMethod):
     def __init__(self, parameters, direction):
-        OptimizationMethod.__init__(self, parameters)
+        OptimizationMethod.__init__(self, parameters, direction)
         self.modelSetManager = ModelSetManager()
         self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        self.selector = SingleCriteriaSelector(self.parameters)
+        self.selector = SingleCriteriaSelector(self.parameters, self.directionToSigns())
         self.crossover = RandomCrossover()
-        self.direction = direction
         self.selector.direction = direction
         self.mutation = ImplicitMutation(self.parameters)
 
@@ -28,7 +27,17 @@ class GeneticOptimization(OptimizationMethod):
         
         # why does not work from here? Has to be set again in oneStep()
         self.selector.recomendedPopulationSize = value
+    
+    def findBest(self, population):
+        signF = self.directionToSigns()    
+        optimum = signF * 1e50
+        for member in population:
+            if signF * member.functional < signF * optimum:
+                optimum = member.functional
+                optimalParameters = member.parameters
                 
+        return [optimum, optimalParameters]
+            
     
     def initialStep(self, resume):
         print "initial step"
@@ -80,7 +89,10 @@ class GeneticOptimization(OptimizationMethod):
         
         for model in population:
             print "pop after select: ", model.getPopulationFrom(), ", ", model.getPopulationTo(), ", ", model.functional
-        
+
+
+        print "best member of the population: ", self.findBest(population)
+                        
         # Mutations
         numMutations = (self.populationSize - len(population)) / 2
         mutations = []
@@ -130,8 +142,8 @@ if __name__ == '__main__':
                   ContinuousParameter('d', 0,10),
                   ContinuousParameter('e', 0,10)]
     
-    optimization = GeneticOptimization(parameters, "min")
+    optimization = GeneticOptimization(parameters, "max")
     optimization.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_genetic/solutions/'
     optimization.modelSetManager.solver = '/home/pkus/sources/agros2d/agros2d_solver'
-    optimization.populationSize = 5
-    optimization.run(3, False)                
+    optimization.populationSize = 25
+    optimization.run(20, False)                

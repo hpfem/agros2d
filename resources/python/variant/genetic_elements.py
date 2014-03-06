@@ -1,5 +1,5 @@
 from model import ModelBase
-from optimization import directionToSigns, ContinuousParameter, DiscreteParameter
+from optimization import ContinuousParameter, DiscreteParameter
 import random as rnd
 from copy import deepcopy
 
@@ -46,9 +46,10 @@ class SurvivorsSelector:
         General class for selection of genoms that should be kept into the new population
     """
 
-    def __init__(self, bounds):
+    def __init__(self, bounds, directionSigns):
         self.bounds = bounds
-        
+        self.directionSigns = directionSigns
+                
     @property
     def recomendedPopulationSize(self):
         """Recomended population size. Actual population size may differ, but should be close to this"""
@@ -77,7 +78,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
     """
     
     def select(self, population):
-        signF = directionToSigns(self.direction)    
+        signF = self.directionSigns
     
         print "len poulation ", len(population), ", 0.3*rec ", int(0.35*self.recomendedPopulationSize)
         survivorsNum = min(len(population), int(0.35*self.recomendedPopulationSize))
@@ -105,7 +106,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
             score = member.functional
             priority = 0
             for prior in range(3):
-                if signF * score < signF * priorityTresholds[prior]:
+                if signF * score <= signF * priorityTresholds[prior]:
                     priority = prior + 1
             
             if priority > 0:                    
