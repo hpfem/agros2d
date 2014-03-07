@@ -107,21 +107,19 @@ class SingleCriteriaSelector(SurvivorsSelector):
             scores.sort()
         else:
             scores.sort(reverse = True)
-
-
         #print "Scores ", len(scores), ", ", survivorsNum-1, ", ", int(survivorsNum*0.8)-1, ", ", int(survivorsNum*0.5)-1
         priorityTresholds = [scores[survivorsNum-1],
                              scores[int(survivorsNum*0.8)-1],
                              scores[int(survivorsNum*0.5)-1]]
 
-        #print "Tresholds: ", priorityTresholds
-
+        #print "Tresholds: ", priorityTresholds       
         survivors = []
 
         for member in population:
             newMember = deepcopy(member)
             score = self.functionals.evaluate(member)
             priority = 0
+            print "score: ", score
             for prior in range(3):
                 if signF * score <= signF * priorityTresholds[prior]:
                     priority = prior + 1
