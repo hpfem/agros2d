@@ -1,6 +1,5 @@
-import sys; sys.path.insert(0, '/home/pkus/sources/agros2d/resources/python/variant/')
-from optimization import ContinuousParameter, Functionals, Functional
-from genetic import GeneticOptimization
+from variant.optimization import ContinuousParameter, Functionals, Functional
+from variant.genetic import GeneticOptimization
 import pythonlab
 
 parameters = [ContinuousParameter('left', 0, 0.02),
