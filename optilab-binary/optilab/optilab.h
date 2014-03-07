@@ -92,16 +92,40 @@ public:
         m_variables[index] = variables;
     }
     inline int size() const { return m_variables.size(); }
-    inline void clear() { m_variables.clear(); }
+    void clear()
+    {
+        foreach (QList<OutputVariable> varList, m_variables.values())
+            varList.clear();
+
+        m_variables.clear();
+    }
 
     inline QMap<int, QList<OutputVariable> > variables() const { return m_variables; }
+
+    QStringList names() const
+    {
+        QStringList nms;
+
+        // TODO: do it better
+        // get variable names from first variable
+        if (m_variables.size() > 0)
+        {
+            for (int j = 0; j < m_variables.values().at(0).size(); j++)
+            {
+                const OutputVariable *variable = &m_variables.values().at(0).at(j);
+                nms.append(variable->name());
+            }
+        }
+
+        return nms;
+    }
 
     QVector<double> values(const QString &name) const
     {
         QVector<double> vals;
 
         for (int i = 0; i < size(); i++)
-        {            
+        {
             for (int j = 0; j < m_variables.values().at(i).size(); j++)
             {
                 const OutputVariable *variable = &m_variables.values().at(i).at(j);
@@ -134,6 +158,7 @@ private slots:
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
+    void documentNew();
     void documentOpen(const QString &fileName = "");
     void refreshVariants();
     void addVariants();
@@ -158,7 +183,9 @@ private:
     QLabel *lblProblems;
 
     QString m_problemFileName;
-    std::auto_ptr<XMLOptVariant::variant> variant_xsd;
+
+    // xml doc
+    QDomDocument docXML;
 
     QComboBox *cmbX;
     QComboBox *cmbY;
@@ -167,6 +194,7 @@ private:
     QAction *actExit;
     QAction *actAbout;
     QAction *actAboutQt;
+    QAction *actDocumentNew;
     QAction *actDocumentOpen;
     QAction *actReadVariants;
     QAction *actAddVariants;
@@ -186,8 +214,6 @@ private:
     void createMenus();
     void createToolBars();
     void createMain();
-
-    XMLOptVariant::result *variantResult(int index);
 };
 
 #endif // OPTILABDIALOG_H

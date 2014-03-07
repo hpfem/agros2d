@@ -95,11 +95,11 @@ OptilabWindow::~OptilabWindow()
 }
 
 void OptilabWindow::openInAgros2D()
-{    
-    XMLOptVariant::result *result = variantResult(lstProblems->currentItem()->data(0, Qt::UserRole).toInt());
-    QString fileName = lstProblems->currentItem()->data(1, Qt::UserRole).toString();
+{
+    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).
+            arg(lstProblems->currentItem()->data(1, Qt::UserRole).toString());
 
-    if (result)
+    if (QFile::exists(fileName))
     {
         // TODO: template?
         QString str;
@@ -107,7 +107,7 @@ void OptilabWindow::openInAgros2D()
         str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_problemFileName).absolutePath());
         str += "import problem\n";
         str += "p = problem.Model()\n";
-        str += QString("p.load('%1/solutions/%2')\n").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName);
+        str += QString("p.load('%1')\n").arg(fileName);
         str += "p.create()\n";
 
         QString id = QUuid::createUuid().toString().remove("{").remove("}");
@@ -152,12 +152,10 @@ void OptilabWindow::processOpenFinished(int exitCode)
 
 void OptilabWindow::solveInSolver()
 {
-    int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
-    QString fileName = lstProblems->currentItem()->data(1, Qt::UserRole).toString();
+    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).
+            arg(lstProblems->currentItem()->data(1, Qt::UserRole).toString());
 
-    XMLOptVariant::result *result = variantResult(index);
-
-    if (result)
+    if (QFile::exists(fileName))
     {
         // TODO: template?
         QString str;
@@ -165,11 +163,11 @@ void OptilabWindow::solveInSolver()
         str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_problemFileName).absolutePath());
         str += "import problem\n";
         str += "p = problem.Model()\n";
-        str += QString("p.load('%1/solutions/%2')\n").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName);
+        str += QString("p.load('%1')\n").arg(fileName);
         str += "p.create()\n";
         str += "p.solve()\n";
         str += "p.process()\n";
-        str += QString("p.save('%1/solutions/%2')\n").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName);
+        str += QString("p.save('%1')\n").arg(fileName);
 
         QString command = QString("\"%1/agros2d_solver\" -l -c \"%2\"").
                 arg(QApplication::applicationDirPath()).
@@ -222,6 +220,10 @@ void OptilabWindow::createActions()
     actScriptEditor->setShortcut(Qt::Key_F9);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
+    actDocumentNew = new QAction(icon("document-new"), tr("&New..."), this);
+    actDocumentNew->setShortcuts(QKeySequence::New);
+    connect(actDocumentNew, SIGNAL(triggered()), this, SLOT(documentNew()));
+
     actDocumentOpen = new QAction(icon("document-open"), tr("&Open..."), this);
     actDocumentOpen->setShortcuts(QKeySequence::Open);
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(documentOpen()));
@@ -247,6 +249,7 @@ void OptilabWindow::createMenus()
 
     QMenu *mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addAction(actReadVariants);
     mnuFile->addAction(actAddVariants);
@@ -283,6 +286,7 @@ void OptilabWindow::createToolBars()
     tlbFile->setFixedHeight(iconHeight);
     tlbFile->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
+    tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
     tlbFile->addAction(actReadVariants);
     tlbFile->addSeparator();
@@ -425,108 +429,17 @@ void OptilabWindow::linkClicked(const QUrl &url)
     }
 }
 
-void OptilabWindow::addVariants()
+void OptilabWindow::documentNew()
 {
-    // QTime time;
-    // time.start();
+    QSettings settings;
 
-    try
+    QString dir = settings.value("General/LastProblemDir", "data").toString();
+    QString fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (*.opt)"));
+
+    if (!fileNameDocument.isEmpty())
     {
-        XMLOptVariant::problem problem;
-        XMLOptVariant::results results;
 
-        QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_problemFileName).absolutePath()));
-        dir.setFilter(QDir::Files | QDir::NoSymLinks);
-
-        QFileInfoList listVariants = dir.entryInfoList();
-        for (int i = 0; i < listVariants.size(); ++i)
-        {
-            QFileInfo fileInfo = listVariants.at(i);
-            if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
-                continue;
-
-            if (fileInfo.suffix() == "rst")
-            {
-                XMLOptVariant::input input;
-                XMLOptVariant::output output;
-                XMLOptVariant::solution solution(false);
-
-                // much faster then xsdcxx
-                // QXmlStreamReader (7776 files): 0.872 sec
-                // xsdcxx (7776 files): 20.733 sec
-                QFile file(fileInfo.absoluteFilePath());
-                if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-                    continue;
-
-                QXmlStreamReader xml(&file);
-                while(!xml.atEnd() &&  !xml.hasError())
-                {
-                    QXmlStreamReader::TokenType token = xml.readNext();
-
-                    if (token == QXmlStreamReader::StartElement)
-                    {
-                        if (xml.name() == "solution")
-                        {
-                            QXmlStreamAttributes attributes = xml.attributes();
-                            solution.solved(attributes.value("solved").toString() == "1");
-                        }
-                        else if (xml.name() == "parameter")
-                        {
-                            QXmlStreamAttributes attributes = xml.attributes();
-                            input.parameter().push_back(XMLOptVariant::parameter(attributes.value("name").toString().toStdString(),
-                                                                                 attributes.value("value").toString().toDouble()));
-
-                        }
-                        else if (xml.name() == "variable")
-                        {
-                            QXmlStreamAttributes attributes = xml.attributes();
-                            output.variable().push_back(XMLOptVariant::variable(attributes.value("name").toString().toStdString(),
-                                                                                attributes.value("value").toString().toStdString()));
-                        }
-                    }
-                }
-
-                file.close();
-
-                // filename short filename
-                solution.filename().set(fileInfo.fileName().toStdString());
-
-                // save result
-                XMLOptVariant::result result(input, output, solution);
-                /*
-                std::auto_ptr<XMLOptVariant::variant> variant_solution_xsd
-                        = XMLOptVariant::variant_(compatibleFilename(fileInfo.absoluteFilePath()).toStdString(), xml_schema::flags::dont_validate);
-                XMLOptVariant::variant *var_solution = variant_solution_xsd.get();
-
-                XMLOptVariant::result result = var_solution->results().result().at(0);
-                */
-
-                // add result to the dictionary
-                results.result().push_back(result);
-            }
-        }
-
-        XMLOptVariant::variant var(problem, results);
-
-        std::string mesh_schema_location("");
-
-        mesh_schema_location.append(QString("%1/opt_variant_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
-        ::xml_schema::namespace_info namespace_info_mesh("XMLStructure", mesh_schema_location);
-
-        ::xml_schema::namespace_infomap namespace_info_map;
-        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("structure", namespace_info_mesh));
-
-        std::ofstream out(compatibleFilename(QString("%1/problem.opt").arg(QFileInfo(m_problemFileName).absolutePath())).toStdString().c_str());
-        XMLOptVariant::variant_(out, var, namespace_info_map);
     }
-    catch (const xml_schema::exception& e)
-    {
-        std::cerr << e << std::endl;
-    }
-
-    // qDebug() << time.elapsed();
-
-    refreshVariants();
 }
 
 void OptilabWindow::documentOpen(const QString &fileName)
@@ -551,8 +464,38 @@ void OptilabWindow::documentOpen(const QString &fileName)
     if (fileInfo.suffix() == "opt")
     {
         m_problemFileName = QFileInfo(fileNameDocument).absoluteFilePath();
-
         settings.setValue("General/LastProblemDir", QFileInfo(fileNameDocument).absolutePath());
+
+        QFile docFile(m_problemFileName);
+        if (!docFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            qDebug() << tr("Cannot open OPT file");
+            return;
+        }
+
+        /*
+            QXmlSchema schema;
+            schema.load(QUrl::fromLocalFile(QString("%1/resources/xsd/opt_variant_xml.xsd").arg(datadir())));
+
+            QXmlSchemaValidator validator(schema);
+            if (validator.validate(&docFile))
+            {
+                qDebug() << "xml" << m_problemFileName << "is valid";
+            }
+            else
+            {
+                qDebug() << "xml" << m_problemFileName << "is invalid";
+            }
+            */
+
+        QTime tm;
+        tm.start();
+        docXML = QDomDocument();
+        docXML.setContent(&docFile);
+        // qDebug() << "setContent" << tm.elapsed();
+
+        docFile.close();
+
         refreshVariants();
     }
 }
@@ -564,71 +507,70 @@ void OptilabWindow::refreshVariants()
     if (lstProblems->currentItem())
         selectedItem = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
 
-    // QTime time;
-    // time.start();
+    QTime time;
+    time.start();
 
     // clear listview
-    lstProblems->clear();
     lstProblems->setUpdatesEnabled(false);
+    lstProblems->clear();
     // clear cache
     outputVariables.clear();
 
     int count = 0;
     int countSolved = 0;
 
-    try
+    QDomNodeList resultNodes = docXML.elementsByTagName("results").at(0).childNodes();
+    for (int i = 0; i < resultNodes.count(); i++)
     {
-        variant_xsd = XMLOptVariant::variant_(compatibleFilename(m_problemFileName).toStdString(), xml_schema::flags::dont_validate);
-        XMLOptVariant::variant *var = variant_xsd.get();
+        QDomNode nodeResult = resultNodes.at(i);
 
-        for (unsigned int i = 0; i < var->results().result().size(); i++)
+        QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
+        QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
+        QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
+
+        bool isSolved = (nodeSolution.toElement().attribute("solved").toInt() == 1);
+
+        QTreeWidgetItem *variantItem = new QTreeWidgetItem(lstProblems->invisibleRootItem());
+        if (isSolved)
+            variantItem->setIcon(0, icon("browser-other"));
+        else
+            variantItem->setIcon(0, icon("browser-class"));
+        variantItem->setText(0, QString::number(count));
+        // variantItem->setText(1, fileInfo.lastModified().toString("yyyy-MM-dd hh:mm:ss"));
+        variantItem->setData(0, Qt::UserRole, count);
+        variantItem->setData(1, Qt::UserRole, nodeSolution.toElement().attribute("filename"));
+
+        if (isSolved)
         {
-            XMLOptVariant::result result = var->results().result().at(i);
+            QList<OutputVariable> variables;
 
-            QTreeWidgetItem *variantItem = new QTreeWidgetItem(lstProblems->invisibleRootItem());
-            if (result.solution().solved() == 1)
-                variantItem->setIcon(0, icon("browser-other"));
-            else
-                variantItem->setIcon(0, icon("browser-class"));
-            variantItem->setText(0, QString::number(i));
-            // variantItem->setText(1, fileInfo.lastModified().toString("yyyy-MM-dd hh:mm:ss"));
-            variantItem->setData(0, Qt::UserRole, i);
-            variantItem->setData(1, Qt::UserRole, QString::fromStdString(result.solution().filename().get()));
+            QDomNodeList nodeVariables = nodeOutput.toElement().elementsByTagName("variable");
 
-            if (result.solution().solved())
+            for (int j = 0; j < nodeVariables.count(); j++)
             {
-                QList<OutputVariable> variables;
+                QDomElement eleVariable = nodeVariables.at(j).toElement();
 
-                for (unsigned int j = 0; j < result.output().variable().size(); j++)
-                {
-                    XMLOptVariant::variable var = result.output().variable().at(j);
-                    variables.append(OutputVariable(QString::fromStdString(var.name()),
-                                                    QString::fromStdString(var.value())));
-                }
-
-                outputVariables.append(i, variables);
+                variables.append(OutputVariable(eleVariable.attribute("name"),
+                                                eleVariable.attribute("value")));
             }
 
-            if (i == selectedItem)
-            {
-                variantItem->setSelected(true);
-                lstProblems->setCurrentItem(variantItem);
-            }
-
-            // increase counter
-            count++;
-            if (result.solution().solved() == 1)
-                countSolved++;
+            outputVariables.append(i, variables);
         }
-    }
-    catch (const xml_schema::exception& e)
-    {
-        std::cerr << e << std::endl;
-    }
 
+        if (count == selectedItem)
+        {
+            variantItem->setSelected(true);
+            lstProblems->setCurrentItem(variantItem);
+        }
+
+        // increase counter
+        count++;
+        if (isSolved)
+            countSolved++;
+    }
 
     lstProblems->setUpdatesEnabled(true);
-    // qDebug() << time.elapsed();
+    // qDebug() << "refresh" << time.elapsed();
 
     lblProblems->setText(tr("Solutions: %1/%2").arg(countSolved).arg(count));
 
@@ -641,177 +583,203 @@ void OptilabWindow::refreshVariants()
 
 void OptilabWindow::setPythonVariables()
 {
-    XMLOptVariant::variant *variant = variant_xsd.get();
-
-    if (variant)
+    foreach (QString name, outputVariables.names())
     {
-        for (int i = 0; i < variant->results().result().size(); i++)
-        {
-            XMLOptVariant::result result = variant->results().result().at(i);
+        QVector<double> values = outputVariables.values(name);
 
-            for (int j = 0; j < result.output().variable().size(); j++)
-            {
-                XMLOptVariant::variable var = result.output().variable().at(j);
+        QString lst;
+        lst = "[";
+        for (int j = 0; j < values.size(); j++)
+            lst += QString::number(values[j]) + ", ";
+        lst += "]";
 
-                QVector<double> values = outputVariables.values(QString::fromStdString(var.name()));
+        QString str = QString("%1 = %2").arg(name).arg(lst);
 
-                QString lst;
-                lst = "[";
-                for (int j = 0; j < values.size(); j++)
-                    lst += QString::number(values[j]) + ", ";
-                lst += "]";
-
-                QString str = QString("%1 = %2").
-                        arg(QString::fromStdString(var.name())).
-                        arg(lst);
-
-                currentPythonEngineOptilab()->runExpression(str);
-            }
-        }
+        currentPythonEngineOptilab()->runExpression(str);
     }
 }
 
 void OptilabWindow::setChart()
 {
-    XMLOptVariant::variant *var = variant_xsd.get();
+    QString selectedX = cmbX->currentText();
+    QString selectedY = cmbY->currentText();
 
-    if (var)
+    cmbX->clear();
+    cmbY->clear();
+
+    foreach (QString name, outputVariables.names())
     {
-        QString selectedX = cmbX->currentText();
-        QString selectedY = cmbY->currentText();
-
-        cmbX->clear();
-        cmbY->clear();
-
-        if (var->results().result().size() > 0)
-        {
-            for (unsigned int i = 0; i < var->results().result().size(); i++)
-            {
-                XMLOptVariant::result result = var->results().result().at(i);
-                if (result.solution().solved() == 1)
-                {
-
-                    for (unsigned int j = 0; j < result.output().variable().size(); j++)
-                    {
-                        XMLOptVariant::variable variable = result.output().variable().at(j);
-
-                        cmbX->addItem(QString::fromStdString(variable.name()));
-                        cmbY->addItem(QString::fromStdString(variable.name()));
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        if (!selectedX.isEmpty())
-            cmbX->setCurrentIndex(cmbX->findText(selectedX));
-        if (!selectedY.isEmpty())
-            cmbY->setCurrentIndex(cmbY->findText(selectedY));
-
-        chart->xAxis->setLabel(cmbX->currentText());
-        chart->yAxis->setLabel(cmbY->currentText());
-
-        chart->graph(0)->setData(outputVariables.values(cmbX->currentText()),
-                                 outputVariables.values(cmbY->currentText()));
-        chart->rescaleAxes();
-        chart->replot();
+        cmbX->addItem(name);
+        cmbY->addItem(name);
     }
+
+    if (!selectedX.isEmpty())
+        cmbX->setCurrentIndex(cmbX->findText(selectedX));
+    if (!selectedY.isEmpty())
+        cmbY->setCurrentIndex(cmbY->findText(selectedY));
+
+    chart->xAxis->setLabel(cmbX->currentText());
+    chart->yAxis->setLabel(cmbY->currentText());
+
+    chart->graph(0)->setData(outputVariables.values(cmbX->currentText()),
+                             outputVariables.values(cmbY->currentText()));
+    chart->rescaleAxes();
+    chart->replot();
+}
+
+void OptilabWindow::addVariants()
+{
+    QTime time;
+    time.start();
+
+    // clear results
+    QDomNode results = docXML.elementsByTagName("results").at(0);
+    docXML.documentElement().removeChild(results);
+    docXML.documentElement().appendChild(docXML.createElement("results"));
+    results = docXML.elementsByTagName("results").at(0);
+
+    // read solutions
+    QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_problemFileName).absolutePath()));
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+
+    QFileInfoList listVariants = dir.entryInfoList();
+    for (int i = 0; i < listVariants.size(); ++i)
+    {
+        QFileInfo fileInfo = listVariants.at(i);
+        if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
+            continue;
+
+        if (fileInfo.suffix() == "rst")
+        {
+            QFile fileResult(fileInfo.absoluteFilePath());
+            if (!fileResult.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                qDebug() << tr("Cannot open OPT file");
+                continue;
+            }
+
+            QDomDocument docXMLResult;
+            docXMLResult.setContent(&fileResult);
+
+            QDomNode nodeResult = docXMLResult.elementsByTagName("results").at(0).childNodes().at(0);
+            QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
+            nodeSolution.toElement().setAttribute("filename", fileInfo.fileName());
+
+            results.appendChild(nodeResult);
+
+            fileResult.close();
+        }
+    }
+
+    // save file
+    QFile docFile(m_problemFileName);
+    if (!docFile.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        qDebug() << tr("Cannot open OPT file");
+        return;
+    }
+
+    QTextStream out(&docFile);
+    docXML.save(out, 4);
+
+    docFile.close();
+
+    qDebug() << time.elapsed();
+
+    refreshVariants();
 }
 
 void OptilabWindow::variantInfo(int index)
 {
-    XMLOptVariant::result *result = variantResult(index);
+    if (index == -1)
+        return;
 
-    if (result)
+    QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
+
+    QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
+    QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
+    QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
+
+    // template
+    std::string info;
+    ctemplate::TemplateDictionary variantInfo("info");
+
+    // problem info
+    variantInfo.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+
+    variantInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+    variantInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+    variantInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
+
+    variantInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
+    variantInfo.SetValue("NAME", QString::number(index).toStdString());
+
+
+    variantInfo.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
+
+    // input
+    variantInfo.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
+    for (unsigned int i = 0; i < nodeInput.childNodes().count(); i++)
     {
-        // template
-        std::string info;
-        ctemplate::TemplateDictionary variantInfo("info");
+        ctemplate::TemplateDictionary *paramSection = variantInfo.AddSectionDictionary("PARAM_SECTION");
 
-        // problem info
-        variantInfo.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+        QDomElement eleParameter = nodeInput.childNodes().at(i).toElement();
 
-        variantInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-        variantInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-        variantInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
-
-        variantInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-        variantInfo.SetValue("NAME", QString::number(index).toStdString());
-
-        try
-        {
-            variantInfo.SetValue("SOLVED", result->solution().solved() == 1 ? "YES" : "NO");
-
-            // input
-            variantInfo.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
-            for (unsigned int i = 0; i < result->input().parameter().size(); i++)
-            {
-                ctemplate::TemplateDictionary *paramSection = variantInfo.AddSectionDictionary("PARAM_SECTION");
-
-                XMLOptVariant::parameter parameter = result->input().parameter().at(i);
-
-                paramSection->SetValue("PARAM_LABEL", parameter.name());
-                paramSection->SetValue("PARAM_VALUE", QString::number(parameter.value()).toStdString());
-                // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
-            }
-
-            // output
-            variantInfo.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
-            for (unsigned int i = 0; i < result->output().variable().size(); i++)
-            {
-                XMLOptVariant::variable variable = result->output().variable().at(i);
-
-                OutputVariable result(QString::fromStdString(variable.name()),
-                                      QString::fromStdString(variable.value()));
-
-                if (result.isNumber())
-                {
-                    ctemplate::TemplateDictionary *varSection = variantInfo.AddSectionDictionary("VAR_VALUE_SECTION");
-
-                    // double value
-                    varSection->SetValue("VAR_LABEL", result.name().toStdString());
-                    varSection->SetValue("VAR_VALUE", QString::number(result.number()).toStdString());
-                    // varSection->SetValue("VAR_UNIT", variable.var_unit());
-                }
-                else
-                {
-                    ctemplate::TemplateDictionary *varSection = variantInfo.AddSectionDictionary("VAR_CHART_SECTION");
-
-                    QString chartData = "[";
-                    for (int j = 0; j < result.size(); j++)
-                        chartData += QString("[%1, %2], ").arg(result.x().at(j)).arg(result.y().at(j));
-                    chartData += "]";
-
-                    // chart time step vs. steps
-                    QString chart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'N' } ], yaxes: [ { axisLabel: '%3' } ] });});</script>").
-                            arg(i).
-                            arg(chartData).
-                            arg(QString::fromStdString(variable.name()));
-
-                    varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
-                    varSection->SetValue("VAR_CHART", chart.toStdString());
-                }
-            }
-        }
-        catch (const xml_schema::exception& e)
-        {
-            std::cerr << e << std::endl;
-        }
-
-        QString templateName = "variant.tpl";
-        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &variantInfo, &info);
-
-        // setHtml(...) doesn't work
-        // webView->setHtml(QString::fromStdString(info));
-
-        // load(...) works
-        writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(info));
-        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
-
-        actOpenInAgros2D->setEnabled(true);
-        actSolverInSolver->setEnabled(true);
+        paramSection->SetValue("PARAM_LABEL", eleParameter.attribute("name").toStdString());
+        paramSection->SetValue("PARAM_VALUE", eleParameter.attribute("value").toStdString());
+        // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
     }
+
+    // output
+    variantInfo.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
+    for (unsigned int i = 0; i < nodeOutput.childNodes().count(); i++)
+    {
+        QDomElement eleVariable = nodeOutput.childNodes().at(i).toElement();
+
+        OutputVariable result(eleVariable.attribute("name"),
+                              eleVariable.attribute("value"));
+
+        if (result.isNumber())
+        {
+            ctemplate::TemplateDictionary *varSection = variantInfo.AddSectionDictionary("VAR_VALUE_SECTION");
+
+            // double value
+            varSection->SetValue("VAR_LABEL", result.name().toStdString());
+            varSection->SetValue("VAR_VALUE", QString::number(result.number()).toStdString());
+            // varSection->SetValue("VAR_UNIT", variable.var_unit());
+        }
+        else
+        {
+            ctemplate::TemplateDictionary *varSection = variantInfo.AddSectionDictionary("VAR_CHART_SECTION");
+
+            QString chartData = "[";
+            for (int j = 0; j < result.size(); j++)
+                chartData += QString("[%1, %2], ").arg(result.x().at(j)).arg(result.y().at(j));
+            chartData += "]";
+
+            // chart time step vs. steps
+            QString chart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'N' } ], yaxes: [ { axisLabel: '%3' } ] });});</script>").
+                    arg(i).
+                    arg(chartData).
+                    arg(result.name());
+
+            varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
+            varSection->SetValue("VAR_CHART", chart.toStdString());
+        }
+    }
+
+    QString templateName = "variant.tpl";
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &variantInfo, &info);
+
+    // setHtml(...) doesn't work
+    // webView->setHtml(QString::fromStdString(info));
+
+    // load(...) works
+    writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(info));
+    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
+
+    actOpenInAgros2D->setEnabled(true);
+    actSolverInSolver->setEnabled(true);
 }
 
 void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event)
@@ -834,14 +802,4 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
         // qDebug() << outputVariables.variables().at(index) << x << y << index;
         variantInfo(index);
     }
-}
-
-XMLOptVariant::result *OptilabWindow::variantResult(int variant)
-{
-    XMLOptVariant::variant *var = variant_xsd.get();
-
-    if (var && variant != -1)
-        return &var->results().result().at(variant);
-    else
-        return NULL;
 }
