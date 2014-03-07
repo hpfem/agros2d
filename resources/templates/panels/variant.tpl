@@ -49,6 +49,16 @@
 {{/VAR_CHART_SECTION}}
 </div>
 
+<div class="section">
+<h2>{{INFO_LABEL}}</h2>
+<hr/>
+<table>
+{{#INFO_SECTION}}
+	<tr><td><b>{{INFO_LABEL}}</b></td><td>{{INFO_VALUE}}</td></td>
+{{/INFO_SECTION}}
+</table>
+</div>
+
 <div class="cleaner"></div>
 
 </body>

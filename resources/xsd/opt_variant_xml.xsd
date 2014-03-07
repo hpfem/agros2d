@@ -44,7 +44,19 @@
 							</element>
 						  </sequence>
 						</complexType>
-					</element>   
+					</element>
+					<element name="info">
+						<complexType>
+						  <sequence>
+							<element minOccurs="0" maxOccurs="unbounded" name="item">
+							  <complexType>
+								  <attribute name="name" type="string" use="required" />
+								  <attribute name="value" type="string" use="required" />
+							  </complexType>
+							</element>
+						  </sequence>
+						</complexType>
+					</element>      
 					<element minOccurs="1" maxOccurs="1" name="solution">
 						<complexType>
 			  	            <attribute name="solved" type="int" use="required" />

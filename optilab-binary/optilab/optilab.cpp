@@ -699,6 +699,7 @@ void OptilabWindow::variantInfo(int index)
     QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
     QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
     QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
+    QDomNode nodeInfo = nodeResult.toElement().elementsByTagName("info").at(0);
 
     // template
     std::string info;
@@ -766,6 +767,18 @@ void OptilabWindow::variantInfo(int index)
             varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
             varSection->SetValue("VAR_CHART", chart.toStdString());
         }
+    }
+
+    // info
+    variantInfo.SetValue("INFO_LABEL", tr("Variant info").toStdString());
+    for (unsigned int i = 0; i < nodeInfo.childNodes().count(); i++)
+    {
+        ctemplate::TemplateDictionary *infoSection = variantInfo.AddSectionDictionary("INFO_SECTION");
+
+        QDomElement eleInfo = nodeOutput.childNodes().at(i).toElement();
+
+        infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name"));
+        infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value"));
     }
 
     QString templateName = "variant.tpl";
