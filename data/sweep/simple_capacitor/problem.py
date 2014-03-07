@@ -2,7 +2,6 @@ from variant import model
 
 class Model(model.ModelBase):
     def create(self):
-        print "create"
         import agros2d as a2d
 
         # startup script
@@ -11,8 +10,10 @@ class Model(model.ModelBase):
         bottom = self.parameters["bottom"]
         top = self.parameters["top"]
         
-        U = 10
+        self.U = 10
         eps = self.parameters["eps"]
+
+        print "create ", [left, right, bottom, top, eps]
         
         
         # problem
@@ -32,7 +33,7 @@ class Model(model.ModelBase):
         
         
         # boundaries
-        self.electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : U})
+        self.electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : self.U})
         self.electrostatic.add_boundary("Ground", "electrostatic_potential", {"electrostatic_potential" : 0})
         self.electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
         
