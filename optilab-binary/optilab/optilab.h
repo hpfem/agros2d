@@ -100,7 +100,7 @@ public:
 
     inline QMap<int, QList<OutputVariable> > variables() const { return m_variables; }
 
-    QStringList names() const
+    QStringList names(bool onlyNumbers = false) const
     {
         QStringList nms;
 
@@ -111,7 +111,8 @@ public:
             for (int j = 0; j < m_variables.values().at(0).size(); j++)
             {
                 const OutputVariable *variable = &m_variables.values().at(0).at(j);
-                nms.append(variable->name());
+                if ((onlyNumbers && variable->isNumber()) || !onlyNumbers)
+                    nms.append(variable->name());
             }
         }
 
@@ -188,6 +189,7 @@ private slots:
     void setPythonVariables();
     void refreshChart();
     void refreshChartWithAxes();
+    void refreshChartControls();
 
     void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
 
@@ -222,6 +224,8 @@ private:
     OutputVariablesAnalysis outputVariables;
 
     QCustomPlot *chart;
+    QRadioButton *radChartLine;
+    QRadioButton *radChartXY;
 
     void variantInfo(const QString &fileName);
 
