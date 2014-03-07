@@ -23,8 +23,6 @@
 #include "util.h"
 #include "qcustomplot/qcustomplot.h"
 
-#include "../resources_source/classes/opt_variant_xml.h"
-
 #include "pythonengine_optilab.h"
 
 class SystemOutputWidget;

@@ -24,8 +24,7 @@ SET(SOURCES
     main.cpp
     optilab/optilab.cpp
     optilab/pythonengine_optilab.cpp
-    ../3rdparty/qcustomplot/qcustomplot.cpp
-    ../resources_source/classes/opt_variant_xml.cpp)
+    ../3rdparty/qcustomplot/qcustomplot.cpp)
 SET(HEADERS
     optilab/optilab.h
     optilab/pythonengine_optilab.cpp)
