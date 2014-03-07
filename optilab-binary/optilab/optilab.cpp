@@ -777,8 +777,8 @@ void OptilabWindow::variantInfo(int index)
 
         QDomElement eleInfo = nodeOutput.childNodes().at(i).toElement();
 
-        infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name"));
-        infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value"));
+        infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name").toStdString());
+        infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value").toStdString());
     }
 
     QString templateName = "variant.tpl";
