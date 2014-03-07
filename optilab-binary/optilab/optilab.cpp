@@ -98,8 +98,7 @@ OptilabWindow::~OptilabWindow()
 
 void OptilabWindow::openInAgros2D()
 {
-    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).
-            arg(lstProblems->currentItem()->data(1, Qt::UserRole).toString());
+    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
@@ -154,8 +153,7 @@ void OptilabWindow::processOpenFinished(int exitCode)
 
 void OptilabWindow::solveInSolver()
 {
-    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).
-            arg(lstProblems->currentItem()->data(1, Qt::UserRole).toString());
+    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
@@ -195,20 +193,11 @@ void OptilabWindow::processSolveFinished(int exitCode)
         int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
         QDomNode nodeResultOld = docXML.elementsByTagName("results").at(0).childNodes().at(index);
 
-        QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).
-                arg(lstProblems->currentItem()->data(1, Qt::UserRole).toString());
+        QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->currentItem()->data(0, Qt::UserRole).toString());
 
         QDomNode nodeResultNew = readVariant(fileName);
         nodeResultOld.parentNode().appendChild(nodeResultNew);
-        QDomNode ok = nodeResultOld.parentNode().replaceChild(nodeResultOld, nodeResultNew);
-
-        QDomNode nodeSolution = nodeResultNew.toElement().elementsByTagName("solution").at(0);
-
-
-
-
-
-        qDebug() << index << fileName << nodeSolution.toElement().attribute("filename") << ok.isNull();
+        nodeResultOld.parentNode().replaceChild(nodeResultOld, nodeResultNew);
 
         refreshVariants();
     }
@@ -424,7 +413,7 @@ void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *pre
 
     if (current)
     {
-        variantInfo(current->data(0, Qt::UserRole).toInt());
+        variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(current->data(0, Qt::UserRole).toString()));
         refreshChart();
     }
 }
@@ -532,7 +521,7 @@ void OptilabWindow::refreshVariants()
     // save current item
     QString selectedItem;
     if (lstProblems->currentItem())
-        selectedItem = lstProblems->currentItem()->data(1, Qt::UserRole).toString();
+        selectedItem = lstProblems->currentItem()->data(0, Qt::UserRole).toString();
 
     // qDebug() << "current" << selectedItem;
 
@@ -566,8 +555,7 @@ void OptilabWindow::refreshVariants()
             variantItem->setIcon(0, icon("browser-class"));
         variantItem->setText(0, QString::number(count));
         // variantItem->setText(1, fileInfo.lastModified().toString("yyyy-MM-dd hh:mm:ss"));
-        variantItem->setData(0, Qt::UserRole, count);
-        variantItem->setData(1, Qt::UserRole, fileName);
+        variantItem->setData(0, Qt::UserRole, fileName);
 
         if (isSolved)
         {
@@ -600,7 +588,7 @@ void OptilabWindow::refreshVariants()
         {
             QTreeWidgetItem *item = lstProblems->topLevelItem(i);
 
-            if (selectedItem == item->data(1, Qt::UserRole))
+            if (selectedItem == item->data(0, Qt::UserRole))
             {
                 // qDebug() << "selected" << selectedItem;
 
@@ -651,7 +639,7 @@ void OptilabWindow::refreshChart()
 
     if (lstProblems->currentItem())
     {
-        int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
+        int index = lstProblems->indexOfTopLevelItem(lstProblems->currentItem());
 
         QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
         QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
@@ -753,6 +741,10 @@ void OptilabWindow::addVariants()
         {
             QDomNode node = readVariant(fileInfo.absoluteFilePath());
 
+            // remove geometry (speed improvement)
+            QDomNode nodeSolution = node.toElement().elementsByTagName("solution").at(0);
+            nodeSolution.toElement().setAttribute("geometry", "");
+
             if (!node.isNull())
                 results.appendChild(node);
         }
@@ -771,17 +763,14 @@ void OptilabWindow::addVariants()
 
     docFile.close();
 
-    qDebug() << "add variants" << time.elapsed();
+    // qDebug() << "add variants" << time.elapsed();
 
     refreshVariants();
 }
 
-void OptilabWindow::variantInfo(int index)
+void OptilabWindow::variantInfo(const QString &fileName)
 {
-    if (index == -1)
-        return;
-
-    QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
+    QDomNode nodeResult = readVariant(fileName);
 
     QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
     QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
@@ -789,30 +778,29 @@ void OptilabWindow::variantInfo(int index)
     QDomNode nodeInfo = nodeResult.toElement().elementsByTagName("info").at(0);
 
     // template
-    std::string info;
-    ctemplate::TemplateDictionary variantInfo("info");
+    ctemplate::TemplateDictionary info("info");
 
     // problem info
-    variantInfo.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+    info.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
 
-    variantInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-    variantInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-    variantInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
+    info.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+    info.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+    info.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
-    variantInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    variantInfo.SetValue("NAME", QString::number(index).toStdString());
+    info.SetValue("NAME_LABEL", tr("Name:").toStdString());
+    info.SetValue("NAME", QFileInfo(fileName).fileName().toStdString());
 
     QString geometry = nodeSolution.toElement().attribute("geometry");
     if (!geometry.isEmpty())
-        variantInfo.SetValue("GEOMETRY_SVG", geometry.toStdString());
+        info.SetValue("GEOMETRY_SVG", geometry.toStdString());
 
-    variantInfo.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
+    info.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
 
     // input
-    variantInfo.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
+    info.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
     for (unsigned int i = 0; i < nodeInput.childNodes().count(); i++)
     {
-        ctemplate::TemplateDictionary *paramSection = variantInfo.AddSectionDictionary("PARAM_SECTION");
+        ctemplate::TemplateDictionary *paramSection = info.AddSectionDictionary("PARAM_SECTION");
 
         QDomElement eleParameter = nodeInput.childNodes().at(i).toElement();
 
@@ -822,7 +810,7 @@ void OptilabWindow::variantInfo(int index)
     }
 
     // output
-    variantInfo.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
+    info.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
     for (unsigned int i = 0; i < nodeOutput.childNodes().count(); i++)
     {
         QDomElement eleVariable = nodeOutput.childNodes().at(i).toElement();
@@ -832,7 +820,7 @@ void OptilabWindow::variantInfo(int index)
 
         if (result.isNumber())
         {
-            ctemplate::TemplateDictionary *varSection = variantInfo.AddSectionDictionary("VAR_VALUE_SECTION");
+            ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_VALUE_SECTION");
 
             // double value
             varSection->SetValue("VAR_LABEL", result.name().toStdString());
@@ -841,7 +829,7 @@ void OptilabWindow::variantInfo(int index)
         }
         else
         {
-            ctemplate::TemplateDictionary *varSection = variantInfo.AddSectionDictionary("VAR_CHART_SECTION");
+            ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_CHART_SECTION");
 
             QString chartData = "[";
             for (int j = 0; j < result.size(); j++)
@@ -860,10 +848,10 @@ void OptilabWindow::variantInfo(int index)
     }
 
     // info
-    variantInfo.SetValue("INFO_LABEL", tr("Variant info").toStdString());
+    info.SetValue("INFO_LABEL", tr("Variant info").toStdString());
     for (unsigned int i = 0; i < nodeInfo.childNodes().count(); i++)
     {
-        ctemplate::TemplateDictionary *infoSection = variantInfo.AddSectionDictionary("INFO_SECTION");
+        ctemplate::TemplateDictionary *infoSection = info.AddSectionDictionary("INFO_SECTION");
 
         QDomElement eleInfo = nodeOutput.childNodes().at(i).toElement();
 
@@ -872,13 +860,14 @@ void OptilabWindow::variantInfo(int index)
     }
 
     QString templateName = "variant.tpl";
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &variantInfo, &info);
+    std::string output;
+    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &info, &output);
 
     // setHtml(...) doesn't work
     // webView->setHtml(QString::fromStdString(info));
 
     // load(...) works
-    writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(info));
+    writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(output));
     webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
 
     actOpenInAgros2D->setEnabled(true);
@@ -912,6 +901,7 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
     {
         lstProblems->topLevelItem(index)->setSelected(true);
         lstProblems->setCurrentItem(lstProblems->topLevelItem(index));
-        variantInfo(index);
+
+        variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->topLevelItem(index)->data(0, Qt::UserRole).toString()));
     }
 }

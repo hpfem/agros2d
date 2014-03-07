@@ -225,7 +225,7 @@ private:
 
     QCustomPlot *chart;
 
-    void variantInfo(int index);
+    void variantInfo(const QString &fileName);
 
     void createActions();
     void createMenus();
