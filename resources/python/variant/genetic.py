@@ -96,27 +96,31 @@ class GeneticOptimization(OptimizationMethod):
         # Mutations
         numMutations = (self.populationSize - len(population)) / 2
         mutations = []
-        for i in range(numMutations):
+        while len(mutations) < numMutations:
             originalIdx = rnd.randrange(len(population))
             mutation = self.mutation.mutate(population[originalIdx])
             GeneticInfo.setPopulationFrom(mutation, self.populationIdx)
             GeneticInfo.setPopulationTo(mutation, self.populationIdx)
-            mutations.append(mutation)
-
+            if (not self.isContained(population, mutation)) and (not self.isContained(mutations, mutation)):                
+                mutations.append(mutation)
+            
         # Crossovers
         numCrossovers = self.populationSize - len(population) - len(mutations)
         crossovers = []
-        for i in range(numCrossovers):
+        while len(crossovers) < numCrossovers:
             fatherIdx = rnd.randrange(len(population))
             motherIdx = rnd.randrange(len(population))
             crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
             GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
             GeneticInfo.setPopulationTo(crossover, self.populationIdx)
-            crossovers.append(crossover)
-
+            if (not self.isContained(population, crossover)) and (not self.isContained(mutations, crossover)) and (not self.isContained(crossovers, crossover)):                
+                crossovers.append(crossover)
+        
+            
+        print "in step {0} survived {1}, added {2} mutations and {3} crossovers".format(self.populationIdx, len(population), len(mutations), len(crossovers))
+                
         population.extend(mutations)
         population.extend(crossovers)
-
 
         for model in population:
             print "pop after mutations: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model)#, ", ", model.functional
@@ -132,7 +136,7 @@ class GeneticOptimization(OptimizationMethod):
         for self.populationIdx in range(lastPopulationIdx + 1, maxIters):
             self.oneStep()
             solved = self.modelSetManager.solveAll()
-            print "solved {0} from population of {1}".format(solved, self.populationSize)
+            print "solved {0} ".format(solved)
 
 if __name__ == '__main__':
     parameters = [ContinuousParameter('a', 0,10),
@@ -147,5 +151,5 @@ if __name__ == '__main__':
     optimization.directory = pythonlab.datadir('/resources/python/variant/test_genetic/solutions/')
     optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
     optimization.populationSize = 25
-    optimization.run(25, True)                
+    optimization.run(10, False)                
 

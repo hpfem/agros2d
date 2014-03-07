@@ -176,10 +176,25 @@ class OptimizationMethod:
     @property
     def functionals(self):
         """Functionals"""
-        return self._functionals
-
-        
-
+        return self._functionals      
+                   
+         
+    def isContained(self, population, newModel):
+        """ checks whether newModel is allready contained in population """
+        contained = False
+        for oldModel in population:
+            allSame = True
+            for key in oldModel.parameters.keys():
+                # non equality test should be done differently
+                # but even this should be better than nothing
+                if oldModel.parameters[key] != newModel.parameters[key]:
+                    allSame = False
+                    break
+            if allSame:
+                contained = True
+                break
+                
+        return contained
         
 if __name__ == '__main__':
     cp = ContinuousParameter("cont1", 2, 5.2)
