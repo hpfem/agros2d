@@ -63,88 +63,44 @@ class ModelBase:
         pass
 
     def load(self, filename):
-        model_dict = ModelDict()
-
-        model_dict.load(filename)
-        self.parameters = model_dict.models[0].parameters
-        self.variables = model_dict.models[0].variables
-        self.info = model_dict.models[0].info
-        self.solved = model_dict.models[0].solved
-        self.fileName = filename
-
-    def save(self, filename):
-        model_dict = ModelDict()
-
-        model_dict.models.append(self)
-        model_dict.save(filename)
-
-
-class ModelDict:
-    def __init__(self):
-        self._models = []
-        self._parameters = dict()
-        self._filename = ""
-
-    @property
-    def models(self):
-        return self._models
-
-    @models.setter
-    def models(self, values):
-        self._models = values
-
-    @property
-    def parameters(self):
-        """ Input parameters """
-        return self._parameters
-
-    @parameters.setter
-    def parameters(self, values):
-        self._parameters = values
-
-    def load(self, filename):
         import xml.etree.ElementTree as ET
 
         tree = ET.parse(filename)
         variant = tree.getroot()
+        rr = variant.findall('results')
+        print(len(rr))
 
-        problem = variant.findall('problem')[0]
-        for par in problem.findall('input_param'):
-            self.parameters[par.attrib["name"]] = par.attrib["unit"]
-
+        # TODO: only one result
         results = variant.findall('results')[0]
-        for result in results.findall('result'):
-            model = ModelBase()
+        result = results.findall('result')[0]
 
-            solution = result.findall('solution')[0]
-            model.solved = int(solution.attrib['solved'])
-            model.geometry = solution.attrib['geometry']
+        solution = result.findall('solution')[0]
+        self.solved = int(solution.attrib['solved'])
+        self.geometry = solution.attrib['geometry']
 
-            # input
-            input = result.findall('input')[0]
-            for par in input.findall('parameter'):
-                try:
-                    model.parameters[par.attrib["name"]] = float(par.attrib["value"])
-                except ValueError:
-                    model.parameters[par.attrib["name"]] = literal_eval(par.attrib["value"])
+        # input
+        input = result.findall('input')[0]
+        for par in input.findall('parameter'):
+            try:
+                self.parameters[par.attrib["name"]] = float(par.attrib["value"])
+            except ValueError:
+                self.parameters[par.attrib["name"]] = literal_eval(par.attrib["value"])
 
-            # output
-            output = result.findall('output')[0]
-            for var in output.findall('variable'):
-                try:
-                    model.variables[var.attrib["name"]] = float(var.attrib["value"])
-                except ValueError:
-                    model.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
+        # output
+        output = result.findall('output')[0]
+        for var in output.findall('variable'):
+            try:
+                self.variables[var.attrib["name"]] = float(var.attrib["value"])
+            except ValueError:
+                self.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
 
-            # info
-            info = result.findall('info')[0]
-            for item in info.findall('item'):
-                try:
-                    model.info[item.attrib["name"]] = float(item.attrib["value"])
-                except ValueError:
-                    model.info[item.attrib["name"]] = literal_eval(item.attrib["value"])
-
-            self.models.append(model)
+        # info
+        info = result.findall('info')[0]
+        for item in info.findall('item'):
+            try:
+                self.info[item.attrib["name"]] = float(item.attrib["value"])
+            except ValueError:
+                self.info[item.attrib["name"]] = literal_eval(item.attrib["value"])
 
     def save(self, filename):
         import xml.etree.cElementTree as ET
@@ -153,43 +109,35 @@ class ModelDict:
         variant.set("xmlns:variant", "XMLOptVariant")
         variant.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
 
-        # problem
-        problem = ET.SubElement(variant, "problem")
-        for key, value in self.parameters.items():
-            input_parameter = ET.SubElement(problem, "input_parameter")
-            input_parameter.set("param", key)
-            input_parameter.set("unit", value)
-
         # results
         results = ET.SubElement(variant, "results")
-        for model in self.models:
-            result = ET.SubElement(results, "result")
+        result = ET.SubElement(results, "result")
 
-            # input
-            input = ET.SubElement(result, "input")
-            for key, value in model.parameters.items():
-                parameter = ET.SubElement(input, "parameter")
-                parameter.set("name", key)
-                parameter.set("value", str(value))
+        # input
+        input = ET.SubElement(result, "input")
+        for key, value in self.parameters.items():
+            parameter = ET.SubElement(input, "parameter")
+            parameter.set("name", key)
+            parameter.set("value", str(value))
 
-            # output
-            output = ET.SubElement(result, "output")
-            for key, value in model.variables.items():
-                variable = ET.SubElement(output, "variable")
-                variable.set("name", key)
-                variable.set("value", str(value))
+        # output
+        output = ET.SubElement(result, "output")
+        for key, value in self.variables.items():
+            variable = ET.SubElement(output, "variable")
+            variable.set("name", key)
+            variable.set("value", str(value))
 
-            # info
-            info = ET.SubElement(result, "info")
-            for key, value in model.info.items():
-                item = ET.SubElement(info, "item")
-                item.set("name", key)
-                item.set("value", str(value))
+        # info
+        info = ET.SubElement(result, "info")
+        for key, value in self.info.items():
+            item = ET.SubElement(info, "item")
+            item.set("name", key)
+            item.set("value", str(value))
 
-            # solution
-            solution = ET.SubElement(result, "solution")
-            solution.set("solved", "1" if model.solved else "0")  
-            solution.set("geometry", model.geometry)
-                        
+        # solution
+        solution = ET.SubElement(result, "solution")
+        solution.set("solved", "1" if self.solved else "0")  
+        solution.set("geometry", self.geometry)
+                    
         tree = ET.ElementTree(variant)
         tree.write(filename, xml_declaration = True, encoding='UTF-8')

@@ -554,7 +554,9 @@ void OptilabWindow::refreshVariants()
         else
             variantItem->setIcon(0, icon("browser-class"));
         variantItem->setText(0, QFileInfo(fileName).baseName());
-        variantItem->setText(1, QFileInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(fileName)).lastModified().toString("yyyy-MM-dd hh:mm:ss"));
+        variantItem->setText(1, QFileInfo(QString("%1/solutions/%2").
+                                          arg(QFileInfo(m_problemFileName).absolutePath()).
+                                          arg(fileName)).lastModified().toString("yyyy-MM-dd hh:mm:ss"));
         variantItem->setData(0, Qt::UserRole, fileName);
 
         if (isSolved)

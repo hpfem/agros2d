@@ -38,4 +38,4 @@ class Solver:
 if __name__ == '__main__':
     solver = Solver()
     solver.solver = '/home/karban/Projects/agros2d/agros2d_solver'
-    solver.solve_problems("/home/karban/Projects/agros2d/data/sweep/actuator/solutions")
+    solver.solve_problems("/home/karban/Projects/agros2d/data/sweep/capacitor/solutions")

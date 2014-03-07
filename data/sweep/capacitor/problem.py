@@ -1,8 +1,8 @@
+import agros2d as a2d
 from variant import model
 
 class Model(model.ModelBase):
     def create(self):
-        import agros2d as a2d
 
         # startup script
         R1 = self.parameters["R1"]

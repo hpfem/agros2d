@@ -103,7 +103,7 @@ class Model(model.ModelBase):
         
     def solve(self):
         try:
-            N = 8
+            N = 2
             h = 0.085
             step = h / (N-1)
             

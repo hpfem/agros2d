@@ -11,7 +11,7 @@ models.parameters["AR4"] = "m"
 models.parameters["AR5"] = "m"
 
 i = 0
-R = np.linspace(0.006, 0.01, 7)
+R = np.linspace(0.006, 0.01, 2)
 for i1 in range(len(R)):
     for i2 in range(len(R)):
         for i3 in range(len(R)):

@@ -5,16 +5,66 @@
         <result>
             <input>
                 <parameter value="0.06" name="R4"/>
-                <parameter value="0.05" name="R3"/>
                 <parameter value="0.01" name="L"/>
-                <parameter value="0.03" name="R2"/>
                 <parameter value="0.01" name="R1"/>
+                <parameter value="0.03" name="R2"/>
+                <parameter value="0.05" name="R3"/>
             </input>
-            <output>
-                <variable value="1.58494756188e-12" name="C"/>
-            </output>
+            <output/>
             <info/>
-            <solution solved="1" geometry="&lt;svg width=&quot;180px&quot; height=&quot;180px&quot; viewBox=&quot;0 0 0.18 0.18&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>&#xa;&lt;g stroke=&quot;black&quot; stroke-width=&quot;0.0005&quot; fill=&quot;none&quot;>&#xa;&lt;line x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;0&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.01&quot; y1=&quot;0.17&quot; x2=&quot;0.01&quot; y2=&quot;0.18&quot; />&#xa;&lt;line x1=&quot;0.01&quot; y1=&quot;0.18&quot; x2=&quot;0.03&quot; y2=&quot;0.18&quot; />&#xa;&lt;line x1=&quot;0.03&quot; y1=&quot;0.18&quot; x2=&quot;0.03&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.03&quot; y1=&quot;0.17&quot; x2=&quot;0.05&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.05&quot; y1=&quot;0.18&quot; x2=&quot;0.03&quot; y2=&quot;0.18&quot; />&#xa;&lt;line x1=&quot;0.05&quot; y1=&quot;0.17&quot; x2=&quot;0.05&quot; y2=&quot;0.18&quot; />&#xa;&lt;line x1=&quot;0.06&quot; y1=&quot;0.18&quot; x2=&quot;0.06&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.05&quot; y1=&quot;0.17&quot; x2=&quot;0.06&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.06&quot; y1=&quot;0.18&quot; x2=&quot;0.18&quot; y2=&quot;0.18&quot; />&#xa;&lt;line x1=&quot;0.18&quot; y1=&quot;0.18&quot; x2=&quot;0.179232&quot; y2=&quot;0.163412&quot; />&#xa;&lt;line x1=&quot;0.179232&quot; y1=&quot;0.163412&quot; x2=&quot;0.176931&quot; y2=&quot;0.14693&quot; />&#xa;&lt;line x1=&quot;0.176931&quot; y1=&quot;0.14693&quot; x2=&quot;0.173128&quot; y2=&quot;0.130765&quot; />&#xa;&lt;line x1=&quot;0.173128&quot; y1=&quot;0.130765&quot; x2=&quot;0.167839&quot; y2=&quot;0.114986&quot; />&#xa;&lt;line x1=&quot;0.167839&quot; y1=&quot;0.114986&quot; x2=&quot;0.161131&quot; y2=&quot;0.0997945&quot; />&#xa;&lt;line x1=&quot;0.161131&quot; y1=&quot;0.0997945&quot; x2=&quot;0.153033&quot; y2=&quot;0.0852555&quot; />&#xa;&lt;line x1=&quot;0.153033&quot; y1=&quot;0.0852555&quot; x2=&quot;0.143627&quot; y2=&quot;0.0715262&quot; />&#xa;&lt;line x1=&quot;0.143627&quot; y1=&quot;0.0715262&quot; x2=&quot;0.133018&quot; y2=&quot;0.0587501&quot; />&#xa;&lt;line x1=&quot;0.133018&quot; y1=&quot;0.0587501&quot; x2=&quot;0.12125&quot; y2=&quot;0.0469822&quot; />&#xa;&lt;line x1=&quot;0.12125&quot; y1=&quot;0.0469822&quot; x2=&quot;0.108474&quot; y2=&quot;0.0363726&quot; />&#xa;&lt;line x1=&quot;0.108474&quot; y1=&quot;0.0363726&quot; x2=&quot;0.0947445&quot; y2=&quot;0.0269667&quot; />&#xa;&lt;line x1=&quot;0.0947445&quot; y1=&quot;0.0269667&quot; x2=&quot;0.0802055&quot; y2=&quot;0.0188688&quot; />&#xa;&lt;line x1=&quot;0.0802055&quot; y1=&quot;0.0188688&quot; x2=&quot;0.0650138&quot; y2=&quot;0.0121608&quot; />&#xa;&lt;line x1=&quot;0.0650138&quot; y1=&quot;0.0121608&quot; x2=&quot;0.0492348&quot; y2=&quot;0.00687167&quot; />&#xa;&lt;line x1=&quot;0.0492348&quot; y1=&quot;0.00687167&quot; x2=&quot;0.0330698&quot; y2=&quot;0.00306876&quot; />&#xa;&lt;line x1=&quot;0.0330698&quot; y1=&quot;0.00306876&quot; x2=&quot;0.0165881&quot; y2=&quot;0.000768424&quot; />&#xa;&lt;line x1=&quot;0.0165881&quot; y1=&quot;0.000768424&quot; x2=&quot;0&quot; y2=&quot;2.16875e-10&quot; />&#xa;&lt;line x1=&quot;0.01&quot; y1=&quot;0.17&quot; x2=&quot;0.03&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.01&quot; y1=&quot;0.17&quot; x2=&quot;0&quot; y2=&quot;0.17&quot; />&#xa;&lt;/g>&#xa;&lt;/svg>&#xa;" filename="solution_00000.rst"/>
+            <solution solved="0" geometry="" filename="solution_00000.rst"/>
+        </result>
+        <result>
+            <input>
+                <parameter value="0.06" name="R4"/>
+                <parameter value="0.0175" name="L"/>
+                <parameter value="0.01" name="R1"/>
+                <parameter value="0.03" name="R2"/>
+                <parameter value="0.05" name="R3"/>
+            </input>
+            <output/>
+            <info/>
+            <solution solved="0" geometry="" filename="solution_00001.rst"/>
+        </result>
+        <result>
+            <input>
+                <parameter value="0.06" name="R4"/>
+                <parameter value="0.025" name="L"/>
+                <parameter value="0.01" name="R1"/>
+                <parameter value="0.03" name="R2"/>
+                <parameter value="0.05" name="R3"/>
+            </input>
+            <output/>
+            <info/>
+            <solution solved="0" geometry="" filename="solution_00002.rst"/>
+        </result>
+        <result>
+            <input>
+                <parameter value="0.06" name="R4"/>
+                <parameter value="0.0325" name="L"/>
+                <parameter value="0.01" name="R1"/>
+                <parameter value="0.03" name="R2"/>
+                <parameter value="0.05" name="R3"/>
+            </input>
+            <output/>
+            <info/>
+            <solution solved="0" geometry="" filename="solution_00003.rst"/>
+        </result>
+        <result>
+            <input>
+                <parameter value="0.06" name="R4"/>
+                <parameter value="0.04" name="L"/>
+                <parameter value="0.01" name="R1"/>
+                <parameter value="0.03" name="R2"/>
+                <parameter value="0.05" name="R3"/>
+            </input>
+            <output/>
+            <info/>
+            <solution solved="0" geometry="" filename="solution_00004.rst"/>
+        </result>
+    </results>
+</variant:variant>
+;0.153033&quot; y2=&quot;0.0852555&quot; />&#xa;&lt;line x1=&quot;0.153033&quot; y1=&quot;0.0852555&quot; x2=&quot;0.143627&quot; y2=&quot;0.0715262&quot; />&#xa;&lt;line x1=&quot;0.143627&quot; y1=&quot;0.0715262&quot; x2=&quot;0.133018&quot; y2=&quot;0.0587501&quot; />&#xa;&lt;line x1=&quot;0.133018&quot; y1=&quot;0.0587501&quot; x2=&quot;0.12125&quot; y2=&quot;0.0469822&quot; />&#xa;&lt;line x1=&quot;0.12125&quot; y1=&quot;0.0469822&quot; x2=&quot;0.108474&quot; y2=&quot;0.0363726&quot; />&#xa;&lt;line x1=&quot;0.108474&quot; y1=&quot;0.0363726&quot; x2=&quot;0.0947445&quot; y2=&quot;0.0269667&quot; />&#xa;&lt;line x1=&quot;0.0947445&quot; y1=&quot;0.0269667&quot; x2=&quot;0.0802055&quot; y2=&quot;0.0188688&quot; />&#xa;&lt;line x1=&quot;0.0802055&quot; y1=&quot;0.0188688&quot; x2=&quot;0.0650138&quot; y2=&quot;0.0121608&quot; />&#xa;&lt;line x1=&quot;0.0650138&quot; y1=&quot;0.0121608&quot; x2=&quot;0.0492348&quot; y2=&quot;0.00687167&quot; />&#xa;&lt;line x1=&quot;0.0492348&quot; y1=&quot;0.00687167&quot; x2=&quot;0.0330698&quot; y2=&quot;0.00306876&quot; />&#xa;&lt;line x1=&quot;0.0330698&quot; y1=&quot;0.00306876&quot; x2=&quot;0.0165881&quot; y2=&quot;0.000768424&quot; />&#xa;&lt;line x1=&quot;0.0165881&quot; y1=&quot;0.000768424&quot; x2=&quot;0&quot; y2=&quot;2.16875e-10&quot; />&#xa;&lt;line x1=&quot;0.01&quot; y1=&quot;0.17&quot; x2=&quot;0.03&quot; y2=&quot;0.17&quot; />&#xa;&lt;line x1=&quot;0.01&quot; y1=&quot;0.17&quot; x2=&quot;0&quot; y2=&quot;0.17&quot; />&#xa;&lt;/g>&#xa;&lt;/svg>&#xa;" filename="solution_00000.rst"/>
         </result>
         <result>
             <input>
