@@ -36,6 +36,8 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         void removeSelection()
 
         void exportVTK(string filename)
+        void exportSVG(string filename)
+        string exportSVG()
 
 cdef class __Geometry__:
     cdef PyGeometry *thisptr
@@ -377,5 +379,13 @@ cdef class __Geometry__:
     def export_vtk(self, filename):
         """Export geometry in VTK format."""
         self.thisptr.exportVTK(filename)
+
+    def export_svg(self, filename):
+        """Export geometry in SVG format."""
+        self.thisptr.exportSVG(filename)
+
+    def export_svg_image(self):
+        """Export geometry in SVG format."""
+        return self.thisptr.exportSVG()
 
 geometry = __Geometry__()

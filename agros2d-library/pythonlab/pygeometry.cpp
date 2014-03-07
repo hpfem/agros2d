@@ -588,3 +588,14 @@ void PyGeometry::exportVTK(const std::string &fileName) const
 {
     Agros2D::scene()->exportVTKGeometry(QString::fromStdString(fileName));
 }
+
+void PyGeometry::exportSVG(const std::string &fileName) const
+{
+    QString geometry = generateSvgGeometry(Agros2D::scene()->edges->items());
+    writeStringContent(QString::fromStdString(fileName), geometry);
+}
+
+std::string PyGeometry::exportSVG() const
+{
+    return generateSvgGeometry(Agros2D::scene()->edges->items()).toStdString();
+}

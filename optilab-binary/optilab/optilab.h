@@ -138,6 +138,21 @@ public:
         return vals;
     }
 
+    double value(int index, const QString &name) const
+    {
+        assert(m_variables.contains(index));
+
+        for (int j = 0; j < m_variables[index].size(); j++)
+        {
+            const OutputVariable *variable = &m_variables[index].at(j);
+
+            if (variable->name() == name)
+                return variable->number();
+        }
+
+        assert(0);
+    }
+
 private:
     QMap<int, QList<OutputVariable> > m_variables;
 };
@@ -161,6 +176,8 @@ private slots:
     void documentNew();
     void documentOpen(const QString &fileName = "");
     void refreshVariants();
+
+    QDomNode readVariant(const QString fileName);
     void addVariants();
 
     void linkClicked(const QUrl &url);
@@ -171,7 +188,8 @@ private slots:
     void processSolveFinished(int exitCode);
 
     void setPythonVariables();
-    void setChart();
+    void refreshChart();
+    void refreshChartWithAxes();
 
     void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
 
@@ -196,7 +214,6 @@ private:
     QAction *actAboutQt;
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
-    QAction *actReadVariants;
     QAction *actAddVariants;
     QAction *actOpenInAgros2D;
     QAction *actSolverInSolver;

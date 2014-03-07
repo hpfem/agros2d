@@ -19,7 +19,10 @@
 <h2>State</h2>
 <hr/>
 <table>
-	<tr><td><b>Solved</b></td><td>{{SOLVED}}</td></td>
+	<tr>
+		<td><b>Solved</b></td><td>{{SOLVED}}</td></td>
+		<td colspan="2"><div class="figure">{{GEOMETRY_SVG}}</div></td>
+	</tr>
 </table>
 </div>
 

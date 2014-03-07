@@ -59,10 +59,14 @@ class Model(model.ModelBase):
         geometry.add_label((R1+R2)/2.0, L/2.0, materials = {"electrostatic" : "Dielectric 1"})
         geometry.add_label((R2+R3)/2.0, L/2.0, materials = {"electrostatic" : "Dielectric 2"})
         geometry.add_label(R1, RB-R1, materials = {"electrostatic" : "Air"})
+        
         a2d.view.zoom_best_fit()
 
     def solve(self):
         try:
+            # store geometry
+            self.geometry = a2d.geometry.export_svg_image()
+        
             self.problem.solve()
             self.solved = True
         except:

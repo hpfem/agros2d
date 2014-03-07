@@ -46,6 +46,8 @@ OptilabWindow::OptilabWindow() : QMainWindow(), m_problemFileName("")
     QSettings settings;
     restoreGeometry(settings.value("OptilabWindow/Geometry", saveGeometry()).toByteArray());
 
+    documentOpen("data/sweep/actuator/problem.opt");
+
     refreshVariants();
 
     /*
@@ -189,7 +191,26 @@ void OptilabWindow::processSolveFinished(int exitCode)
     if (exitCode == 0)
     {
         QApplication::processEvents();
-        addVariants();
+
+        int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
+        QDomNode nodeResultOld = docXML.elementsByTagName("results").at(0).childNodes().at(index);
+
+        QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).
+                arg(lstProblems->currentItem()->data(1, Qt::UserRole).toString());
+
+        QDomNode nodeResultNew = readVariant(fileName);
+        nodeResultOld.parentNode().appendChild(nodeResultNew);
+        QDomNode ok = nodeResultOld.parentNode().replaceChild(nodeResultOld, nodeResultNew);
+
+        QDomNode nodeSolution = nodeResultNew.toElement().elementsByTagName("solution").at(0);
+
+
+
+
+
+        qDebug() << index << fileName << nodeSolution.toElement().attribute("filename") << ok.isNull();
+
+        refreshVariants();
     }
     else
     {
@@ -228,9 +249,6 @@ void OptilabWindow::createActions()
     actDocumentOpen->setShortcuts(QKeySequence::Open);
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(documentOpen()));
 
-    actReadVariants = new QAction(icon("reload"), tr("Refresh"), this);
-    connect(actReadVariants, SIGNAL(triggered()), this, SLOT(refreshVariants()));
-
     actAddVariants = new QAction(icon("directory-add"), tr("Refresh solutions from directory"), this);
     connect(actAddVariants, SIGNAL(triggered()), this, SLOT(addVariants()));
 
@@ -251,7 +269,7 @@ void OptilabWindow::createMenus()
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
-    mnuFile->addAction(actReadVariants);
+    mnuFile->addSeparator();
     mnuFile->addAction(actAddVariants);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
@@ -288,7 +306,6 @@ void OptilabWindow::createToolBars()
 #endif
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
-    tlbFile->addAction(actReadVariants);
     tlbFile->addSeparator();
     tlbFile->addAction(actAddVariants);
 
@@ -314,17 +331,24 @@ void OptilabWindow::createMain()
     chart = new QCustomPlot(this);
     chart->setMinimumHeight(300);
     chart->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    // main chart
     chart->addGraph();
     // chart->graph(0)->setLineStyle(QCPGraph::lsLine);
     // chart->graph(0)->setPen(QColor(50, 50, 50, 255));
     chart->graph(0)->setLineStyle(QCPGraph::lsNone);
     chart->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
     connect(chart, SIGNAL(plottableClick(QCPAbstractPlottable*, QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*, QMouseEvent*)));
+    // highlight
+    chart->addGraph();
+    chart->graph(1)->setPen(QColor(255, 50, 50, 255));
+    chart->graph(1)->setLineStyle(QCPGraph::lsNone);
+    chart->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
+
 
     cmbX = new QComboBox(this);
     cmbY = new QComboBox(this);
     QPushButton *btnPlot = new QPushButton(tr("Plot"), this);
-    connect(btnPlot, SIGNAL(clicked()), this, SLOT(setChart()));
+    connect(btnPlot, SIGNAL(clicked()), this, SLOT(refreshChartWithAxes()));
 
     QGridLayout *layoutChart = new QGridLayout();
     layoutChart->addWidget(new QLabel(tr("X:")), 0, 0);
@@ -401,6 +425,7 @@ void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *pre
     if (current)
     {
         variantInfo(current->data(0, Qt::UserRole).toInt());
+        refreshChart();
     }
 }
 
@@ -502,16 +527,19 @@ void OptilabWindow::documentOpen(const QString &fileName)
 
 void OptilabWindow::refreshVariants()
 {
+    lstProblems->setUpdatesEnabled(false);
+
     // save current item
-    int selectedItem;
+    QString selectedItem;
     if (lstProblems->currentItem())
-        selectedItem = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
+        selectedItem = lstProblems->currentItem()->data(1, Qt::UserRole).toString();
+
+    // qDebug() << "current" << selectedItem;
 
     QTime time;
     time.start();
 
     // clear listview
-    lstProblems->setUpdatesEnabled(false);
     lstProblems->clear();
     // clear cache
     outputVariables.clear();
@@ -529,6 +557,7 @@ void OptilabWindow::refreshVariants()
         QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
 
         bool isSolved = (nodeSolution.toElement().attribute("solved").toInt() == 1);
+        QString fileName = nodeSolution.toElement().attribute("filename");
 
         QTreeWidgetItem *variantItem = new QTreeWidgetItem(lstProblems->invisibleRootItem());
         if (isSolved)
@@ -538,7 +567,7 @@ void OptilabWindow::refreshVariants()
         variantItem->setText(0, QString::number(count));
         // variantItem->setText(1, fileInfo.lastModified().toString("yyyy-MM-dd hh:mm:ss"));
         variantItem->setData(0, Qt::UserRole, count);
-        variantItem->setData(1, Qt::UserRole, nodeSolution.toElement().attribute("filename"));
+        variantItem->setData(1, Qt::UserRole, fileName);
 
         if (isSolved)
         {
@@ -557,12 +586,6 @@ void OptilabWindow::refreshVariants()
             outputVariables.append(i, variables);
         }
 
-        if (count == selectedItem)
-        {
-            variantItem->setSelected(true);
-            lstProblems->setCurrentItem(variantItem);
-        }
-
         // increase counter
         count++;
         if (isSolved)
@@ -570,15 +593,34 @@ void OptilabWindow::refreshVariants()
     }
 
     lstProblems->setUpdatesEnabled(true);
-    // qDebug() << "refresh" << time.elapsed();
+
+    if (!selectedItem.isEmpty())
+    {
+        for (int i = 0; i < lstProblems->topLevelItemCount(); i++ )
+        {
+            QTreeWidgetItem *item = lstProblems->topLevelItem(i);
+
+            if (selectedItem == item->data(1, Qt::UserRole))
+            {
+                // qDebug() << "selected" << selectedItem;
+
+                item->setSelected(true);
+                lstProblems->setCurrentItem(item);
+                // ensure visible
+                lstProblems->scrollToItem(item);
+            }
+        }
+    }
 
     lblProblems->setText(tr("Solutions: %1/%2").arg(countSolved).arg(count));
+
+    qDebug() << "refresh" << time.elapsed();
 
     // set Python variables
     setPythonVariables();
 
     // plot chart
-    setChart();
+    refreshChartWithAxes();
 }
 
 void OptilabWindow::setPythonVariables()
@@ -599,8 +641,43 @@ void OptilabWindow::setPythonVariables()
     }
 }
 
-void OptilabWindow::setChart()
+void OptilabWindow::refreshChart()
 {
+    chart->graph(0)->clearData();
+    chart->graph(1)->clearData();
+
+    chart->graph(0)->setData(outputVariables.values(chart->xAxis->label()),
+                             outputVariables.values(chart->yAxis->label()));
+
+    if (lstProblems->currentItem())
+    {
+        int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
+
+        QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
+        QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
+
+        if (nodeSolution.toElement().attribute("solved").toInt() == 1)
+        {
+            double xv = outputVariables.value(index, chart->xAxis->label());
+            double yv = outputVariables.value(index, chart->yAxis->label());
+
+            QVector<double> x(0);
+            x.append(xv);
+            QVector<double> y(0);
+            y.append(yv);
+
+            // qDebug() << x << y;
+
+            chart->graph(1)->setData(x, y);
+        }
+    }
+
+    chart->replot();
+}
+
+void OptilabWindow::refreshChartWithAxes()
+{
+    // set chart variables
     QString selectedX = cmbX->currentText();
     QString selectedY = cmbY->currentText();
 
@@ -621,10 +698,33 @@ void OptilabWindow::setChart()
     chart->xAxis->setLabel(cmbX->currentText());
     chart->yAxis->setLabel(cmbY->currentText());
 
-    chart->graph(0)->setData(outputVariables.values(cmbX->currentText()),
-                             outputVariables.values(cmbY->currentText()));
+    refreshChart();
+
     chart->rescaleAxes();
     chart->replot();
+}
+
+QDomNode OptilabWindow::readVariant(const QString fileName)
+{
+    QFileInfo fileInfo(fileName);
+
+    QFile fileResult(fileInfo.absoluteFilePath());
+    if (!fileResult.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << tr("Cannot open OPT file");
+        return QDomNode();
+    }
+
+    QDomDocument docXMLResult;
+    docXMLResult.setContent(&fileResult);
+
+    fileResult.close();
+
+    QDomNode nodeResult = docXMLResult.elementsByTagName("results").at(0).childNodes().at(0);
+    QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
+    nodeSolution.toElement().setAttribute("filename", fileInfo.fileName());
+
+    return nodeResult;
 }
 
 void OptilabWindow::addVariants()
@@ -651,23 +751,10 @@ void OptilabWindow::addVariants()
 
         if (fileInfo.suffix() == "rst")
         {
-            QFile fileResult(fileInfo.absoluteFilePath());
-            if (!fileResult.open(QIODevice::ReadOnly | QIODevice::Text))
-            {
-                qDebug() << tr("Cannot open OPT file");
-                continue;
-            }
+            QDomNode node = readVariant(fileInfo.absoluteFilePath());
 
-            QDomDocument docXMLResult;
-            docXMLResult.setContent(&fileResult);
-
-            QDomNode nodeResult = docXMLResult.elementsByTagName("results").at(0).childNodes().at(0);
-            QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
-            nodeSolution.toElement().setAttribute("filename", fileInfo.fileName());
-
-            results.appendChild(nodeResult);
-
-            fileResult.close();
+            if (!node.isNull())
+                results.appendChild(node);
         }
     }
 
@@ -684,7 +771,7 @@ void OptilabWindow::addVariants()
 
     docFile.close();
 
-    qDebug() << time.elapsed();
+    qDebug() << "add variants" << time.elapsed();
 
     refreshVariants();
 }
@@ -715,6 +802,9 @@ void OptilabWindow::variantInfo(int index)
     variantInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
     variantInfo.SetValue("NAME", QString::number(index).toStdString());
 
+    QString geometry = nodeSolution.toElement().attribute("geometry");
+    if (!geometry.isEmpty())
+        variantInfo.SetValue("GEOMETRY_SVG", geometry.toStdString());
 
     variantInfo.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
 
@@ -801,18 +891,27 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
     double y = chart->yAxis->pixelToCoord(event->pos().y());
 
     int index = -1;
-    QMap<double, QCPData>::const_iterator pointX = chart->graph(0)->data()->lowerBound(x);
-    for (QMap<double, QCPData>::const_iterator i = chart->graph(0)->data()->constBegin(); i != chart->graph(0)->data()->constEnd(); ++i)
-    {
-        if (pointX == i)
-            break;
 
-        index++;
+    // find closest point
+    QVector<double> xvalues = outputVariables.values(chart->xAxis->label());
+    QVector<double> yvalues = outputVariables.values(chart->yAxis->label());
+
+    double dist = numeric_limits<double>::max();
+    for (int i = 0; i < xvalues.size(); i++)
+    {
+        double mag = Point(xvalues[i] - x,
+                           yvalues[i] - y).magnitudeSquared();
+        if (mag < dist)
+        {
+            dist = mag;
+            index = outputVariables.variables().keys().at(i);
+        }
     }
 
     if (index != -1)
     {
-        // qDebug() << outputVariables.variables().at(index) << x << y << index;
+        lstProblems->topLevelItem(index)->setSelected(true);
+        lstProblems->setCurrentItem(lstProblems->topLevelItem(index));
         variantInfo(index);
     }
 }

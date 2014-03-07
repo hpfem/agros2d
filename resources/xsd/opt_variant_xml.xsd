@@ -60,6 +60,7 @@
 					<element minOccurs="1" maxOccurs="1" name="solution">
 						<complexType>
 			  	            <attribute name="solved" type="int" use="required" />
+			  	            <attribute name="geometry" type="string" use="optional" />
 			  	            <attribute name="filename" type="string" use="optional" />
 					   </complexType>
 					</element>	    

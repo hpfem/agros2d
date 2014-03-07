@@ -100,10 +100,10 @@ class Model(model.ModelBase):
 
     def create(self):
         self.__create_model__(0.0)
-
+        
     def solve(self):
         try:
-            N = 2
+            N = 8
             h = 0.085
             step = h / (N-1)
             
@@ -112,7 +112,11 @@ class Model(model.ModelBase):
             for i in range(N):
                 z = i*step
 
-                self.__create_model__(z)    
+                self.__create_model__(z)  
+                if (i == 0):
+                    # store geometry
+                    self.geometry = a2d.geometry.export_svg_image()        
+                    
                 self.problem.solve()
                 volume_integrals = self.magnetic.volume_integrals([3])
                 

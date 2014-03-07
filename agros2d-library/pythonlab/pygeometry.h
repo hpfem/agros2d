@@ -77,6 +77,8 @@ class PyGeometry
 
         // vtk
         void exportVTK(const std::string &fileName) const;
+        void exportSVG(const std::string &fileName) const;
+        std::string exportSVG() const;
 
 private:
         void testAngle(double angle) const;

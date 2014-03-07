@@ -5,6 +5,7 @@ class ModelBase:
         self._parameters = dict()
         self._variables = dict()
         self._info = dict()
+        self._geometry = ""
         self._solved = False
 
     @property
@@ -33,6 +34,15 @@ class ModelBase:
     @info.setter
     def info(self, values):
         self._info = values
+
+    @property
+    def geometry(self):
+        """ Optional geometry SVG image """
+        return self._geometry
+
+    @geometry.setter
+    def image(self, geometry):
+        self._geometry = geometry
 
     @property
     def solved(self):
@@ -108,6 +118,7 @@ class ModelDict:
 
             solution = result.findall('solution')[0]
             model.solved = int(solution.attrib['solved'])
+            model.geometry = solution.attrib['geometry']
 
             # input
             input = result.findall('input')[0]
@@ -119,8 +130,6 @@ class ModelDict:
 
             # output
             output = result.findall('output')[0]
-
-            #if (model.solved):
             for var in output.findall('variable'):
                 try:
                     model.variables[var.attrib["name"]] = float(var.attrib["value"])
@@ -165,7 +174,6 @@ class ModelDict:
 
             # output
             output = ET.SubElement(result, "output")
-            #if (model.solved):
             for key, value in model.variables.items():
                 variable = ET.SubElement(output, "variable")
                 variable.set("name", key)
@@ -181,6 +189,7 @@ class ModelDict:
             # solution
             solution = ET.SubElement(result, "solution")
             solution.set("solved", "1" if model.solved else "0")  
+            solution.set("geometry", model.geometry)
                         
         tree = ET.ElementTree(variant)
         tree.write(filename, xml_declaration = True, encoding='UTF-8')
