@@ -345,9 +345,34 @@ bool Value::evaluateExpression(const QString &expression, double time, const Poi
 
     // eval expression
     bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &evaluationResult, command);
-    if (!successfulRun)
+
+    // delete reserved variables
+    if (!command.isEmpty())
     {
-        // ErrorResult result = currentPythonEngineAgros()->parseError();
+        QString commandDel;
+
+        if (m_isCoordinateDependent && !m_isTimeDependent)
+        {
+            if (m_problem->config()->coordinateType() == CoordinateType_Planar)
+                commandDel = QString("del x; del y");
+            else
+                commandDel = QString("del r; del z");
+        }
+
+        if (m_isTimeDependent && !m_isCoordinateDependent)
+        {
+            commandDel = QString("del time");
+        }
+
+        if (m_isCoordinateDependent && m_isTimeDependent)
+        {
+            if (m_problem->config()->coordinateType() == CoordinateType_Planar)
+                commandDel = QString("del time; del x; del y");
+            else
+                commandDel = QString("del time; del r; del z");
+        }
+
+        currentPythonEngineAgros()->runExpression(commandDel);
     }
 
     if (!signalBlocked)
