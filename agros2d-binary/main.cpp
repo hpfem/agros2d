@@ -35,12 +35,14 @@ int main(int argc, char *argv[])
         TCLAP::CmdLine cmd("Agros2D", ' ', versionString().toStdString());
 
         TCLAP::SwitchArg remoteArg("r", "remote-server", "Run remote server", false);
-        TCLAP::ValueArg<std::string> problemArg("p", "problem", "Solve problem", false, "", "string");
-        TCLAP::ValueArg<std::string> scriptArg("s", "script", "Solve script", false, "", "string");
+        TCLAP::ValueArg<std::string> problemArg("p", "problem", "Open problem", false, "", "string");
+        TCLAP::ValueArg<std::string> scriptArg("s", "script", "Open script", false, "", "string");
+        TCLAP::SwitchArg executeArg("x", "execute", "Execute problem or script", false);
 
         cmd.add(remoteArg);
         cmd.add(problemArg);
         cmd.add(scriptArg);
+        cmd.add(executeArg);
 
         // parse the argv array.
         cmd.parse(argc, argv);
@@ -72,6 +74,9 @@ int main(int argc, char *argv[])
                 if (info.suffix() == "a2d")
                 {
                     w.setStartupProblemFilename(QString::fromStdString(problemArg.getValue()));
+
+                    if (executeArg.getValue())
+                        w.setStartupExecute(true);
                 }
                 else
                 {
@@ -87,6 +92,9 @@ int main(int argc, char *argv[])
                 if (info.suffix() == "py")
                 {
                     w.setStartupScriptFilename(QString::fromStdString(scriptArg.getValue()));
+
+                    if (executeArg.getValue())
+                        w.setStartupExecute(true);
                 }
                 else
                 {

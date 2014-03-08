@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_startupScriptFilename = "";
     m_startupProblemFilename = "";
+    m_startupExecute = false;
 
     // log stdout
     logStdOut = NULL;
@@ -1591,15 +1592,27 @@ void MainWindow::showEvent(QShowEvent *event)
     // startup
     if (!m_startupProblemFilename.isEmpty())
     {
+        // open problem
         doDocumentOpen(m_startupProblemFilename);
         m_startupProblemFilename = "";
+
+        if (m_startupExecute)
+            Agros2D::problem()->actionSolve()->trigger();
     }
     else if (!m_startupScriptFilename.isEmpty())
     {
-        consoleView->console()->connectStdOut();
-        currentPythonEngineAgros()->runScript(readFileContent(m_startupScriptFilename));
-        consoleView->console()->disconnectStdOut();
+        // consoleView->console()->connectStdOut();
+        // currentPythonEngineAgros()->runScript(readFileContent(m_startupScriptFilename));
+        // consoleView->console()->disconnectStdOut();
+
+        // open script
+        scriptEditorDialog->doFileOpen(m_startupScriptFilename);
+        scriptEditorDialog->showDialog();
+
         m_startupScriptFilename = "";
+
+        if (m_startupExecute)
+            scriptEditorDialog->doRunPython();
     }
 }
 

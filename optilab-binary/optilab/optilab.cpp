@@ -23,6 +23,7 @@
 #include "gui/lineeditdouble.h"
 #include "gui/common.h"
 #include "gui/systemoutput.h"
+#include "gui/about.h"
 
 #include "ctemplate/template.h"
 
@@ -51,41 +52,6 @@ OptilabWindow::OptilabWindow() : QMainWindow(), m_problemFileName("")
     setRecentFiles();
 
     welcomeInfo();
-
-    /*
-    try
-    {
-        string modelFile = "capacitor.py";
-        string model = "Capacitor";
-
-        XMLOptVariant::input input = XMLOptVariant::input();
-        XMLOptVariant::output output = XMLOptVariant::output();
-
-        input.parameter().push_back(XMLOptVariant::parameter("w", 0.02));
-        input.parameter().push_back(XMLOptVariant::parameter("h", 0.05));
-
-        XMLOptVariant::solution solution = XMLOptVariant::solution(0);
-
-        XMLOptVariant::variant variant = XMLOptVariant::variant(input, output, solution, modelFile, model);
-
-        std::string mesh_schema_location("");
-
-        mesh_schema_location.append(QString("%1/opt_variant_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
-        ::xml_schema::namespace_info namespace_info_mesh("XMLOptVariant", mesh_schema_location);
-
-        ::xml_schema::namespace_infomap namespace_info_map;
-        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("variant", namespace_info_mesh));
-
-        QString file = "/home/karban/Projects/agros2d/data/sweep/pokus.rst";
-
-        std::ofstream out(compatibleFilename(file).toStdString().c_str());
-        XMLOptVariant::variant_(out, variant, namespace_info_map);
-    }
-    catch (const xml_schema::exception& e)
-    {
-        std::cerr << e << std::endl;
-    }
-    */
 }
 
 OptilabWindow::~OptilabWindow()
@@ -99,9 +65,9 @@ OptilabWindow::~OptilabWindow()
     delete scriptEditorDialog;
 }
 
-void OptilabWindow::openInAgros2D()
+void OptilabWindow::variantOpenInAgros2D()
 {
-    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->currentItem()->data(0, Qt::UserRole).toString());
+    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
@@ -126,7 +92,7 @@ void OptilabWindow::openInAgros2D()
         connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processOpenError(QProcess::ProcessError)));
         connect(process, SIGNAL(finished(int)), this, SLOT(processOpenFinished(int)));
 
-        QString command = QString("\"%1/agros2d\" -s \"%2\"").
+        QString command = QString("\"%1/agros2d\" -x -s \"%2\"").
                 arg(QApplication::applicationDirPath()).
                 arg(tempFN);
 
@@ -154,9 +120,9 @@ void OptilabWindow::processOpenFinished(int exitCode)
     }
 }
 
-void OptilabWindow::solveInSolver()
+void OptilabWindow::variantSolveInSolver()
 {
-    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->currentItem()->data(0, Qt::UserRole).toString());
+    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
@@ -193,10 +159,10 @@ void OptilabWindow::processSolveFinished(int exitCode)
     {
         QApplication::processEvents();
 
-        int index = lstProblems->currentItem()->data(0, Qt::UserRole).toInt();
+        int index = trvVariants->currentItem()->data(0, Qt::UserRole).toInt();
         QDomNode nodeResultOld = docXML.elementsByTagName("results").at(0).childNodes().at(index);
 
-        QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->currentItem()->data(0, Qt::UserRole).toString());
+        QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
         QDomNode nodeResultNew = readVariant(fileName);
         nodeResultOld.parentNode().appendChild(nodeResultNew);
@@ -218,7 +184,7 @@ void OptilabWindow::createActions()
 {
     actAbout = new QAction(icon("about"), tr("About &Optilab"), this);
     actAbout->setMenuRole(QAction::AboutRole);
-    // connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
+    connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
     actAboutQt = new QAction(icon("help-about"), tr("About &Qt"), this);
     actAboutQt->setMenuRole(QAction::AboutQtRole);
@@ -231,7 +197,7 @@ void OptilabWindow::createActions()
 
     actScriptEditor = new QAction(icon("script-python"), tr("PythonLab"), this);
     actScriptEditor->setShortcut(Qt::Key_F9);
-    connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
+    connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(scriptEditor()));
 
     actDocumentNew = new QAction(icon("document-new"), tr("&New..."), this);
     actDocumentNew->setShortcuts(QKeySequence::New);
@@ -251,13 +217,9 @@ void OptilabWindow::createActions()
     actAddVariants = new QAction(icon("directory-add"), tr("Refresh solutions from directory"), this);
     connect(actAddVariants, SIGNAL(triggered()), this, SLOT(addVariants()));
 
-    actOpenInAgros2D = new QAction(icon("agros2d"), tr("Open in Agros2D"), this);
-    actOpenInAgros2D->setEnabled(false);
-    connect(actOpenInAgros2D, SIGNAL(triggered()), this, SLOT(openInAgros2D()));
-
-    actSolverInSolver = new QAction(icon("run"), tr("Solve"), this);
-    actSolverInSolver->setEnabled(false);
-    connect(actSolverInSolver, SIGNAL(triggered()), this, SLOT(solveInSolver()));
+    actOpenAgros2D = new QAction(icon("agros2d"), tr("Open Agros2D"), this);
+    actOpenAgros2D->setEnabled(false);
+    connect(actOpenAgros2D, SIGNAL(triggered()), this, SLOT(openProblemAgros2D()));
 }
 
 void OptilabWindow::createMenus()
@@ -321,9 +283,8 @@ void OptilabWindow::createToolBars()
     tlbTools->setFixedHeight(iconHeight);
     tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
-    tlbTools->addAction(actOpenInAgros2D);
-    tlbTools->addAction(actSolverInSolver);
     tlbTools->addSeparator();
+    tlbTools->addAction(actOpenAgros2D);
     tlbTools->addAction(actScriptEditor);
 }
 
@@ -404,22 +365,38 @@ void OptilabWindow::createMain()
     ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_common.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);
 
-    lstProblems = new QTreeWidget(this);
-    lstProblems->setMouseTracking(true);
-    lstProblems->setColumnCount(2);
-    lstProblems->setIndentation(15);
-    lstProblems->setIconSize(QSize(16, 16));
-    lstProblems->setHeaderHidden(true);
-    lstProblems->setMinimumWidth(320);
-    lstProblems->setColumnWidth(0, 150);
+    trvVariants = new QTreeWidget(this);
+    trvVariants->setMouseTracking(true);
+    trvVariants->setColumnCount(2);
+    trvVariants->setIndentation(15);
+    trvVariants->setIconSize(QSize(16, 16));
+    trvVariants->setHeaderHidden(true);
+    trvVariants->setMinimumWidth(320);
+    trvVariants->setColumnWidth(0, 150);
 
-    connect(lstProblems, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
-    connect(lstProblems, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+    connect(trvVariants, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
+    connect(trvVariants, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+
+    btnSolveInSolver = new QPushButton(tr("Solve"));
+    btnSolveInSolver->setToolTip(tr("Solve in Solver"));
+    btnSolveInSolver->setEnabled(false);
+    connect(btnSolveInSolver, SIGNAL(clicked()), this, SLOT(variantSolveInSolver()));
+
+    btnOpenInAgros2D = new QPushButton(tr("Open"));
+    btnOpenInAgros2D->setToolTip(tr("Open in Agros2D"));
+    btnOpenInAgros2D->setEnabled(false);
+    connect(btnOpenInAgros2D, SIGNAL(clicked()), this, SLOT(variantOpenInAgros2D()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch();
+    layoutButtons->addWidget(btnSolveInSolver);
+    layoutButtons->addWidget(btnOpenInAgros2D);
 
     lblProblems = new QLabel("");
 
     QVBoxLayout *layoutLeft = new QVBoxLayout();
-    layoutLeft->addWidget(lstProblems);
+    layoutLeft->addWidget(trvVariants);
+    layoutLeft->addLayout(layoutButtons);
     layoutLeft->addWidget(lblProblems);
 
     QVBoxLayout *layoutChartConsole = new QVBoxLayout();
@@ -440,7 +417,22 @@ void OptilabWindow::createMain()
     setCentralWidget(main);
 }
 
-void OptilabWindow::doScriptEditor()
+void OptilabWindow::openProblemAgros2D()
+{
+    QString problem = QString("%1/problem.py").arg(QFileInfo(m_problemFileName).absolutePath());
+    if (QFile::exists(problem))
+    {
+        QProcess process;
+
+        QString command = QString("\"%1/agros2d\" -s \"%2\"").
+                arg(QApplication::applicationDirPath()).
+                arg(problem);
+
+        process.startDetached(command);
+    }
+}
+
+void OptilabWindow::scriptEditor()
 {
     scriptEditorDialog->showDialog();
 }
@@ -449,8 +441,8 @@ void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *pre
 {
     webView->setHtml("");
 
-    actOpenInAgros2D->setEnabled(false);
-    actSolverInSolver->setEnabled(false);
+    btnOpenInAgros2D->setEnabled(false);
+    btnSolveInSolver->setEnabled(false);
 
     if (current)
     {
@@ -462,7 +454,7 @@ void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *pre
 void OptilabWindow::doItemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     if (item)
-        openInAgros2D();
+        variantOpenInAgros2D();
 }
 
 void OptilabWindow::documentNew()
@@ -533,6 +525,7 @@ void OptilabWindow::documentOpen(const QString &fileName)
         docFile.close();
 
         webView->setHtml("");
+        actOpenAgros2D->setEnabled(true);
 
         // set recent files
         setRecentFiles();
@@ -552,11 +545,13 @@ void OptilabWindow::documentClose()
     m_problemFileName = "";
 
     // clear listview
-    lstProblems->clear();
+    trvVariants->clear();
     // clear cache
     outputVariables.clear();
     // clear dom
     docXML.clear();
+
+    actOpenAgros2D->setEnabled(false);
 
     welcomeInfo();
 
@@ -564,14 +559,20 @@ void OptilabWindow::documentClose()
     refreshChartWithAxes();
 }
 
+void OptilabWindow::doAbout()
+{
+    AboutDialog about(this);
+    about.exec();
+}
+
 void OptilabWindow::refreshVariants()
 {
-    lstProblems->setUpdatesEnabled(false);
+    trvVariants->setUpdatesEnabled(false);
 
     // save current item
     QString selectedItem;
-    if (lstProblems->currentItem())
-        selectedItem = lstProblems->currentItem()->data(0, Qt::UserRole).toString();
+    if (trvVariants->currentItem())
+        selectedItem = trvVariants->currentItem()->data(0, Qt::UserRole).toString();
 
     // qDebug() << "current" << selectedItem;
 
@@ -579,7 +580,7 @@ void OptilabWindow::refreshVariants()
     time.start();
 
     // clear listview
-    lstProblems->clear();
+    trvVariants->clear();
     // clear cache
     outputVariables.clear();
 
@@ -598,7 +599,7 @@ void OptilabWindow::refreshVariants()
         bool isSolved = (nodeSolution.toElement().attribute("solved").toInt() == 1);
         QString fileName = nodeSolution.toElement().attribute("filename");
 
-        QTreeWidgetItem *variantItem = new QTreeWidgetItem(lstProblems->invisibleRootItem());
+        QTreeWidgetItem *variantItem = new QTreeWidgetItem(trvVariants->invisibleRootItem());
         if (isSolved)
             variantItem->setIcon(0, icon("browser-other"));
         else
@@ -632,26 +633,26 @@ void OptilabWindow::refreshVariants()
             countSolved++;
     }
 
-    lstProblems->setUpdatesEnabled(true);
+    trvVariants->setUpdatesEnabled(true);
 
     // select first
-    if (selectedItem.isEmpty() && lstProblems->topLevelItemCount() > 0)
-        selectedItem = lstProblems->topLevelItem(0)->data(0, Qt::UserRole).toString();
+    if (selectedItem.isEmpty() && trvVariants->topLevelItemCount() > 0)
+        selectedItem = trvVariants->topLevelItem(0)->data(0, Qt::UserRole).toString();
 
     if (!selectedItem.isEmpty())
     {
-        for (int i = 0; i < lstProblems->topLevelItemCount(); i++ )
+        for (int i = 0; i < trvVariants->topLevelItemCount(); i++ )
         {
-            QTreeWidgetItem *item = lstProblems->topLevelItem(i);
+            QTreeWidgetItem *item = trvVariants->topLevelItem(i);
 
             if (selectedItem == item->data(0, Qt::UserRole).toString())
             {
                 // qDebug() << "selected" << selectedItem;
 
                 item->setSelected(true);
-                lstProblems->setCurrentItem(item);
+                trvVariants->setCurrentItem(item);
                 // ensure visible
-                lstProblems->scrollToItem(item);
+                trvVariants->scrollToItem(item);
             }
         }
     }
@@ -700,9 +701,9 @@ void OptilabWindow::refreshChart()
         chart->graph(0)->setData(valuesX, valuesY);
 
         // select current item
-        if (lstProblems->currentItem())
+        if (trvVariants->currentItem())
         {
-            int index = lstProblems->indexOfTopLevelItem(lstProblems->currentItem());
+            int index = trvVariants->indexOfTopLevelItem(trvVariants->currentItem());
 
             QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
             QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
@@ -733,9 +734,9 @@ void OptilabWindow::refreshChart()
         chart->graph(0)->setData(valuesX, valuesY);
 
         // select current item
-        if (lstProblems->currentItem())
+        if (trvVariants->currentItem())
         {
-            int index = lstProblems->indexOfTopLevelItem(lstProblems->currentItem());
+            int index = trvVariants->indexOfTopLevelItem(trvVariants->currentItem());
 
             QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
             QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
@@ -979,8 +980,8 @@ void OptilabWindow::variantInfo(const QString &fileName)
     writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(output));
     webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
 
-    actOpenInAgros2D->setEnabled(true);
-    actSolverInSolver->setEnabled(true);
+    btnOpenInAgros2D->setEnabled(true);
+    btnSolveInSolver->setEnabled(true);
 }
 
 void OptilabWindow::welcomeInfo()
@@ -1094,9 +1095,9 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
 
     if (index != -1)
     {
-        lstProblems->topLevelItem(index)->setSelected(true);
-        lstProblems->setCurrentItem(lstProblems->topLevelItem(index));
+        trvVariants->topLevelItem(index)->setSelected(true);
+        trvVariants->setCurrentItem(trvVariants->topLevelItem(index));
 
-        variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(lstProblems->topLevelItem(index)->data(0, Qt::UserRole).toString()));
+        variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->topLevelItem(index)->data(0, Qt::UserRole).toString()));
     }
 }

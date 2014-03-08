@@ -119,6 +119,8 @@ public slots:
 
     void doCloseTab(int index);
 
+    void doRunPython();
+
     // message from another app
     void onOtherInstanceMessage(const QString &msg);
 
@@ -211,7 +213,6 @@ protected:
     inline PythonEditorWidget *scriptEditorWidget() { return dynamic_cast<PythonEditorWidget *>(tabWidget->currentWidget()); }
 
 private slots:
-    void doRunPython();
     void doStopScript();
     void doReplaceTabsWithSpaces();
     void doPyLintPython();

@@ -21,140 +21,12 @@
 #define OPTILABDIALOG_H
 
 #include "util.h"
-#include "qcustomplot/qcustomplot.h"
+#include "optilab_data.h"
 
+#include "qcustomplot/qcustomplot.h"
 #include "pythonengine_optilab.h"
 
 class SystemOutputWidget;
-
-class OutputVariable
-{
-public:
-    OutputVariable()
-        : m_number(0.0), m_name(""), m_x(QVector<double>()), m_y(QVector<double>()) {}
-
-    OutputVariable(const QString &valueName, const QString &valueString)
-        : m_number(0.0), m_name(valueName), m_x(QVector<double>()), m_y(QVector<double>())
-    {
-        bool isNum;
-
-        valueString.toDouble(&isNum);
-        if (isNum)
-        {
-            m_number = valueString.toDouble();
-        }
-        else
-        {
-            QString valueTMP = valueString;
-
-            QStringList data = valueTMP.replace("[[", "").replace("]]", "").split("], [");
-            QStringList dataX = data[0].split(",");
-            QStringList dataY = data[1].split(",");
-
-            m_x.clear();
-            m_y.clear();
-            for (int i = 0; i < dataX.size(); i++)
-            {
-                m_x.append(dataX[i].toDouble());
-                m_y.append(dataY[i].toDouble());
-            }
-        }
-    }
-
-    inline QString name() const { return m_name; }
-
-    inline bool isNumber() const { return m_x.size() == 0; }
-    inline double number() const { return m_number; }
-
-    inline QVector<double> x() const { return m_x; }
-    inline QVector<double> y() const { return m_y; }
-    inline int size() const { assert(m_x.size() == m_y.size()); return m_x.size(); }
-
-private:
-    // name
-    QString m_name;
-
-    // number
-    double m_number;
-
-    // table
-    QVector<double> m_x;
-    QVector<double> m_y;
-};
-
-class OutputVariablesAnalysis
-{
-public:
-    inline void append(int index, const QList<OutputVariable> &variables)
-    {
-        m_variables[index] = variables;
-    }
-    inline int size() const { return m_variables.size(); }
-    void clear()
-    {
-        foreach (QList<OutputVariable> varList, m_variables.values())
-            varList.clear();
-
-        m_variables.clear();
-    }
-
-    inline QMap<int, QList<OutputVariable> > variables() const { return m_variables; }
-
-    QStringList names(bool onlyNumbers = false) const
-    {
-        QStringList nms;
-
-        // TODO: do it better
-        // get variable names from first variable
-        if (m_variables.size() > 0)
-        {
-            for (int j = 0; j < m_variables.values().at(0).size(); j++)
-            {
-                const OutputVariable *variable = &m_variables.values().at(0).at(j);
-                if ((onlyNumbers && variable->isNumber()) || !onlyNumbers)
-                    nms.append(variable->name());
-            }
-        }
-
-        return nms;
-    }
-
-    QVector<double> values(const QString &name) const
-    {
-        QVector<double> vals;
-
-        for (int i = 0; i < size(); i++)
-        {
-            for (int j = 0; j < m_variables.values().at(i).size(); j++)
-            {
-                const OutputVariable *variable = &m_variables.values().at(i).at(j);
-
-                if (variable->name() == name)
-                    vals.append(variable->number());
-            }
-        }
-
-        return vals;
-    }
-
-    double value(int index, const QString &name) const
-    {
-        assert(m_variables.contains(index));
-
-        for (int j = 0; j < m_variables[index].size(); j++)
-        {
-            const OutputVariable *variable = &m_variables[index].at(j);
-
-            if (variable->name() == name)
-                return variable->number();
-        }
-
-        assert(0);
-    }
-
-private:
-    QMap<int, QList<OutputVariable> > m_variables;
-};
 
 class OptilabWindow : public QMainWindow
 {
@@ -164,10 +36,10 @@ public:
     ~OptilabWindow();
 
 private slots:
-    void openInAgros2D();
-    void solveInSolver();
+    void openProblemAgros2D();
 
-    void doScriptEditor();
+    // PythonLab
+    void scriptEditor();
 
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
@@ -176,17 +48,21 @@ private slots:
     void documentOpen(const QString &fileName = "");
     void documentClose();
     void documentOpenRecent(QAction *action);
-    void refreshVariants();
+    void doAbout();
 
+    void refreshVariants();
     QDomNode readVariant(const QString fileName);
     void addVariants();
 
-    void linkClicked(const QUrl &url);
+    void variantOpenInAgros2D();
+    void variantSolveInSolver();
 
     void processOpenError(QProcess::ProcessError error);
     void processOpenFinished(int exitCode);
     void processSolveError(QProcess::ProcessError error);
     void processSolveFinished(int exitCode);
+
+    void linkClicked(const QUrl &url);
 
     void setPythonVariables();
     void refreshChart();
@@ -208,7 +84,7 @@ private:
     QWebView *webView;
     QString m_cascadeStyleSheet;
 
-    QTreeWidget *lstProblems;
+    QTreeWidget *trvVariants;
     QLabel *lblProblems;
 
     // chart
@@ -226,8 +102,10 @@ private:
     QAction *actDocumentOpen;
     QAction *actDocumentClose;
     QAction *actAddVariants;
-    QAction *actOpenInAgros2D;
-    QAction *actSolverInSolver;
+    QAction *actOpenAgros2D;
+
+    QPushButton *btnSolveInSolver;
+    QPushButton *btnOpenInAgros2D;
 
     PythonScriptingConsole *console;
     PythonEditorOptilabDialog *scriptEditorDialog;

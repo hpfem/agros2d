@@ -23,10 +23,12 @@ find_package(XERCES REQUIRED)
 SET(SOURCES
     main.cpp
     optilab/optilab.cpp
+    optilab/optilab_data.cpp
     optilab/pythonengine_optilab.cpp
     ../3rdparty/qcustomplot/qcustomplot.cpp)
 SET(HEADERS
     optilab/optilab.h
+    optilab/optilab_data.h
     optilab/pythonengine_optilab.cpp)
 
 SET(RESOURCES ../resources_source/resources.qrc)

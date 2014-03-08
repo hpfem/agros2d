@@ -58,6 +58,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    inline void setStartupExecute(bool execute) { m_startupExecute = execute; }
     inline void setStartupProblemFilename(const QString& fn) { m_startupProblemFilename = fn; }
     inline void setStartupScriptFilename(const QString& fn) { m_startupScriptFilename = fn; }
 
@@ -232,6 +233,7 @@ private:
 
     QString m_startupProblemFilename;
     QString m_startupScriptFilename;
+    bool m_startupExecute;
 
     void setRecentFiles();
 
