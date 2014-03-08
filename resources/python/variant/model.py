@@ -68,7 +68,6 @@ class ModelBase:
         tree = ET.parse(filename)
         variant = tree.getroot()
         rr = variant.findall('results')
-        print(len(rr))
 
         # TODO: only one result
         results = variant.findall('results')[0]

@@ -15,52 +15,74 @@
 <img style="float: right; margin-right: 10px; margin-top: 12px;" src="{{AGROS2D}}" /> 
 <h1>{{NAME}}</h1>
 
-<div class="section">
-<h2>State</h2>
-<hr/>
-<table>
-	<tr>
-		<td><b>Solved</b></td><td>{{SOLVED}}</td></td>
-		<td colspan="2"><div class="figure">{{GEOMETRY_SVG}}</div></td>
-	</tr>
-</table>
-</div>
+<table width="100%">
+<tr>
+	<td>
+	
+	<div class="section">
+	<h2>State</h2>
+	<hr/>
+	<table>
+		<tr>
+		<td><b>Problem solved</b></td><td>{{SOLVED}}</td></td>
+		</tr>
+	</table>
+	</div>
+	
+	<div class="section">
+	<h2>{{PARAMETER_LABEL}}</h2>
+	<hr/>
+	<table>
+	{{#PARAM_SECTION}}
+		<tr><td><b>{{PARAM_LABEL}}</b></td><td>{{PARAM_VALUE}} {{PARAM_UNIT}}</td></td>
+	{{/PARAM_SECTION}}
+	</table>
+	</div>
 
-<div class="section">
-<h2>{{PARAMETER_LABEL}}</h2>
-<hr/>
-<table>
-{{#PARAM_SECTION}}
-	<tr><td><b>{{PARAM_LABEL}}</b></td><td>{{PARAM_VALUE}} {{PARAM_UNIT}}</td></td>
-{{/PARAM_SECTION}}
+	</td>
+	
+	<td rowspan="5">
+	<div class="section">
+	<h2>{{GEOMETRY_LABEL}}</h2>
+	<hr/>
+	<div class="figure">{{GEOMETRY_SVG}}</div>
+	</td>		
+</tr>
 </table>
-</div>
 
-<div class="section">
-<h2>{{VARIABLE_LABEL}}</h2>
-<hr/>
-<table>
-{{#VAR_VALUE_SECTION}}
-	<tr>
-		<td><b>{{VAR_LABEL}}</b></td>
-		<td>{{VAR_VALUE}} {{VAR_UNIT}}</td>
-	</tr>		
-{{/VAR_VALUE_SECTION}}
-</table>
-{{#VAR_CHART_SECTION}}
-<div id="{{VAR_CHART_DIV}}" style="width:95%;height:150px;"></div>{{VAR_CHART}}
-{{/VAR_CHART_SECTION}}
-</div>
+<table width="100%">
+<tr>
+<td>
+	
+	<div class="section">
+	<h2>{{VARIABLE_LABEL}}</h2>
+	<hr/>
+	<table>
+	{{#VAR_VALUE_SECTION}}
+		<tr>
+			<td><b>{{VAR_LABEL}}</b></td>
+			<td>{{VAR_VALUE}} {{VAR_UNIT}}</td>
+		</tr>		
+	{{/VAR_VALUE_SECTION}}
+	</table>
+	{{#VAR_CHART_SECTION}}
+	<div id="{{VAR_CHART_DIV}}" style="width:95%;height:150px;"></div>{{VAR_CHART}}
+	{{/VAR_CHART_SECTION}}
+	</div>
 
-<div class="section">
-<h2>{{INFO_LABEL}}</h2>
-<hr/>
-<table>
-{{#INFO_SECTION}}
-	<tr><td><b>{{INFO_LABEL}}</b></td><td>{{INFO_VALUE}}</td></td>
-{{/INFO_SECTION}}
+	<div class="section">
+	<h2>{{INFO_LABEL}}</h2>
+	<hr/>
+	<table>
+	{{#INFO_SECTION}}
+		<tr><td><b>{{INFO_LABEL}}</b></td><td>{{INFO_VALUE}}</td></td>
+	{{/INFO_SECTION}}
+	</table>
+	</div>	
+	
+</td>	
+</tr>
 </table>
-</div>
 
 <div class="cleaner"></div>
 

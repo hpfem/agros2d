@@ -45,10 +45,12 @@ OptilabWindow::OptilabWindow() : QMainWindow(), m_problemFileName("")
 
     QSettings settings;
     restoreGeometry(settings.value("OptilabWindow/Geometry", saveGeometry()).toByteArray());
+    recentFiles = settings.value("OptilabWindow/RecentFiles").value<QStringList>();
 
-    documentOpen("data/sweep/actuator/problem.opt");
+    // set recent files
+    setRecentFiles();
 
-    refreshVariants();
+    welcomeInfo();
 
     /*
     try
@@ -90,6 +92,7 @@ OptilabWindow::~OptilabWindow()
 {
     QSettings settings;
     settings.setValue("OptilabWindow/Geometry", saveGeometry());
+    settings.setValue("OptilabWindow/RecentFiles", recentFiles);
 
     removeDirectory(tempProblemDir());
 
@@ -238,6 +241,13 @@ void OptilabWindow::createActions()
     actDocumentOpen->setShortcuts(QKeySequence::Open);
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(documentOpen()));
 
+    actDocumentOpenRecentGroup = new QActionGroup(this);
+    connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(documentOpenRecent(QAction *)));
+
+    actDocumentClose = new QAction(tr("&Close"), this);
+    actDocumentClose->setShortcuts(QKeySequence::Close);
+    connect(actDocumentClose, SIGNAL(triggered()), this, SLOT(documentClose()));
+
     actAddVariants = new QAction(icon("directory-add"), tr("Refresh solutions from directory"), this);
     connect(actAddVariants, SIGNAL(triggered()), this, SLOT(addVariants()));
 
@@ -254,10 +264,14 @@ void OptilabWindow::createMenus()
 {
     menuBar()->clear();
 
+    mnuRecentFiles = new QMenu(tr("&Recent files"), this);
+
     QMenu *mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actDocumentOpen);
+    mnuFile->addMenu(mnuRecentFiles);
+    mnuFile->addAction(actDocumentClose);
     mnuFile->addSeparator();
     mnuFile->addAction(actAddVariants);
 #ifndef Q_WS_MAC
@@ -451,25 +465,6 @@ void OptilabWindow::doItemDoubleClicked(QTreeWidgetItem *item, int column)
         openInAgros2D();
 }
 
-void OptilabWindow::linkClicked(const QUrl &url)
-{
-    QString search = "/open?";
-    if (url.toString().contains(search))
-    {
-#if QT_VERSION < 0x050000
-        QString fileName = url.queryItemValue("filename");
-        QString form = url.queryItemValue("form");
-#else
-        QString fileName = QUrlQuery(url).queryItemValue("filename");
-        QString form = QUrlQuery(url).queryItemValue("form");
-#endif
-
-        // m_selectedFilename = QUrl(fileName).toLocalFile();
-
-        // accept();
-    }
-}
-
 void OptilabWindow::documentNew()
 {
     QSettings settings;
@@ -537,8 +532,36 @@ void OptilabWindow::documentOpen(const QString &fileName)
 
         docFile.close();
 
+        webView->setHtml("");
+
+        // set recent files
+        setRecentFiles();
+
         refreshVariants();
     }
+}
+
+void OptilabWindow::documentOpenRecent(QAction *action)
+{
+    QString fileName = action->text();
+    documentOpen(fileName);
+}
+
+void OptilabWindow::documentClose()
+{
+    m_problemFileName = "";
+
+    // clear listview
+    lstProblems->clear();
+    // clear cache
+    outputVariables.clear();
+    // clear dom
+    docXML.clear();
+
+    welcomeInfo();
+
+    refreshVariants();
+    refreshChartWithAxes();
 }
 
 void OptilabWindow::refreshVariants()
@@ -611,13 +634,17 @@ void OptilabWindow::refreshVariants()
 
     lstProblems->setUpdatesEnabled(true);
 
+    // select first
+    if (selectedItem.isEmpty() && lstProblems->topLevelItemCount() > 0)
+        selectedItem = lstProblems->topLevelItem(0)->data(0, Qt::UserRole).toString();
+
     if (!selectedItem.isEmpty())
     {
         for (int i = 0; i < lstProblems->topLevelItemCount(); i++ )
         {
             QTreeWidgetItem *item = lstProblems->topLevelItem(i);
 
-            if (selectedItem == item->data(0, Qt::UserRole))
+            if (selectedItem == item->data(0, Qt::UserRole).toString())
             {
                 // qDebug() << "selected" << selectedItem;
 
@@ -871,6 +898,7 @@ void OptilabWindow::variantInfo(const QString &fileName)
     info.SetValue("NAME_LABEL", tr("Name:").toStdString());
     info.SetValue("NAME", QFileInfo(fileName).fileName().toStdString());
 
+    info.SetValue("GEOMETRY_LABEL", tr("Geometry:").toStdString());
     QString geometry = nodeSolution.toElement().attribute("geometry");
     if (!geometry.isEmpty())
         info.SetValue("GEOMETRY_SVG", geometry.toStdString());
@@ -934,7 +962,7 @@ void OptilabWindow::variantInfo(const QString &fileName)
     {
         ctemplate::TemplateDictionary *infoSection = info.AddSectionDictionary("INFO_SECTION");
 
-        QDomElement eleInfo = nodeOutput.childNodes().at(i).toElement();
+        QDomElement eleInfo = nodeInfo.childNodes().at(i).toElement();
 
         infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name").toStdString());
         infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value").toStdString());
@@ -953,6 +981,81 @@ void OptilabWindow::variantInfo(const QString &fileName)
 
     actOpenInAgros2D->setEnabled(true);
     actSolverInSolver->setEnabled(true);
+}
+
+void OptilabWindow::welcomeInfo()
+{
+    // template
+    std::string info;
+    ctemplate::TemplateDictionary problemInfo("info");
+
+    problemInfo.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+
+    problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+    problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+
+    // recent problem files
+    problemInfo.SetValue("RECENT_PROBLEMS_LABEL", tr("Recent Problems").toStdString());
+    for (int i = 0; i < qMin(10, recentFiles.count()); i++)
+    {
+        ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_PROBLEM_SECTION");
+        recent->SetValue("PROBLEM_FILENAME", QUrl::fromUserInput(recentFiles.at(i)).toString().toStdString());
+        recent->SetValue("PROBLEM_FILENAME_LABEL", QFileInfo(recentFiles.at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
+        recent->SetValue("PROBLEM_BASE", QFileInfo(recentFiles.at(i)).baseName().toStdString());
+    }
+
+    // links
+    problemInfo.SetValue("LINKS_LABEL", tr("Links").toStdString());
+
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/optilab.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &problemInfo, &info);
+
+    // setHtml(...) doesn't work
+    // webView->setHtml(QString::fromStdString(info));
+
+    // load(...) works
+    writeStringContent(tempProblemDir() + "/info.html", QString::fromStdString(info));
+    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/info.html"));
+}
+
+void OptilabWindow::linkClicked(const QUrl &url)
+{
+    QString search = "/open?";
+    if (url.toString().contains(search))
+    {
+#if QT_VERSION < 0x050000
+        QString fileName = url.queryItemValue("filename");
+        QString form = url.queryItemValue("form");
+#else
+        QString fileName = QUrlQuery(url).queryItemValue("filename");
+        QString form = QUrlQuery(url).queryItemValue("form");
+#endif
+
+        if (QFile::exists(QUrl(fileName).toLocalFile()))
+            documentOpen(QUrl(fileName).toLocalFile());
+    }
+}
+
+void OptilabWindow::setRecentFiles()
+{
+    // recent files
+    if (!m_problemFileName.isEmpty())
+    {
+        QFileInfo fileInfo(m_problemFileName);
+        if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
+            recentFiles.insert(0, fileInfo.absoluteFilePath());
+        else
+            recentFiles.move(recentFiles.indexOf(fileInfo.absoluteFilePath()), 0);
+
+        while (recentFiles.count() > 15) recentFiles.removeLast();
+    }
+
+    mnuRecentFiles->clear();
+    for (int i = 0; i<recentFiles.count(); i++)
+    {
+        QAction *actMenuRecentItem = new QAction(recentFiles[i], this);
+        actDocumentOpenRecentGroup->addAction(actMenuRecentItem);
+        mnuRecentFiles->addAction(actMenuRecentItem);
+    }
 }
 
 void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event)

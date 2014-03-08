@@ -103,7 +103,7 @@ class Model(model.ModelBase):
         
     def solve(self):
         try:
-            N = 2
+            N = 10
             h = 0.085
             step = h / (N-1)
             
@@ -153,10 +153,8 @@ if __name__ == '__main__':
     
     model = Model()    
     model.load("tmp.var")
-    print(model.variables)
-    print(model.parameters)
 
     import os
     os.remove("tmp.var")  
     
-    print("Test - actuator: " + str(abs(model.variables['R'] - 55.6279671423) < 1e-20))
+    print("Test - actuator: " + str(abs(model.variables['R'] - 68.8905318562) < 1e-20))

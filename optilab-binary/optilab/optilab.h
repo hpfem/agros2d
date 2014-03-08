@@ -174,6 +174,8 @@ private slots:
 
     void documentNew();
     void documentOpen(const QString &fileName = "");
+    void documentClose();
+    void documentOpenRecent(QAction *action);
     void refreshVariants();
 
     QDomNode readVariant(const QString fileName);
@@ -194,19 +196,27 @@ private slots:
     void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
 
 private:
+    // problem
+    QString m_problemFileName;
+    // xml doc
+    QDomDocument docXML;
+
+    QStringList recentFiles;
+    QMenu *mnuRecentFiles;
+    QActionGroup *actDocumentOpenRecentGroup;
+
     QWebView *webView;
     QString m_cascadeStyleSheet;
 
     QTreeWidget *lstProblems;
     QLabel *lblProblems;
 
-    QString m_problemFileName;
-
-    // xml doc
-    QDomDocument docXML;
-
+    // chart
     QComboBox *cmbX;
     QComboBox *cmbY;
+    QCustomPlot *chart;
+    QRadioButton *radChartLine;
+    QRadioButton *radChartXY;
 
     QAction *actScriptEditor;
     QAction *actExit;
@@ -214,6 +224,7 @@ private:
     QAction *actAboutQt;
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
+    QAction *actDocumentClose;
     QAction *actAddVariants;
     QAction *actOpenInAgros2D;
     QAction *actSolverInSolver;
@@ -223,16 +234,15 @@ private:
 
     OutputVariablesAnalysis outputVariables;
 
-    QCustomPlot *chart;
-    QRadioButton *radChartLine;
-    QRadioButton *radChartXY;
-
     void variantInfo(const QString &fileName);
+    void welcomeInfo();
 
     void createActions();
     void createMenus();
     void createToolBars();
     void createMain();
+
+    void setRecentFiles();
 };
 
 #endif // OPTILABDIALOG_H
