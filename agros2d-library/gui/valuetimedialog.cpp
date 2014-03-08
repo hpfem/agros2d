@@ -155,6 +155,9 @@ void ValueTimeDialog::checkExpression()
         lblInfoError->setText(result.error().trimmed());
         txtLineEdit->setFocus();
     }
+
+    // delete reserved variable
+    currentPythonEngineAgros()->runExpression("del time");
 }
 
 void ValueTimeDialog::plotFunction()
