@@ -1,8 +1,8 @@
 from variant import model
+import agros2d as a2d
 
 class Model(model.ModelBase):
     def create(self):
-        import agros2d as a2d
 
         # startup script
         left = self.parameters["left"]
@@ -13,13 +13,12 @@ class Model(model.ModelBase):
         self.U = 10
         eps = self.parameters["eps"]
 
-        print "create ", [left, right, bottom, top, eps]
         
         
         # problem
-        problem = a2d.problem(clear = True)
-        problem.coordinate_type = "planar"
-        problem.mesh_type = "triangle"
+        self.problem = a2d.problem(clear = True)
+        self.problem.coordinate_type = "planar"
+        self.problem.mesh_type = "triangle"
         
         # fields
         # electrostatic
@@ -55,10 +54,9 @@ class Model(model.ModelBase):
     def solve(self):
 #        import agros2d as a2d
 
-        print "solve"
         try:
             # store geometry
- #           self.geometry = a2d.geometry.export_svg_image()
+            self.geometry = a2d.geometry.export_svg_image()
         
             self.problem.solve()
             self.solved = True
@@ -66,7 +64,6 @@ class Model(model.ModelBase):
             self.solved = False         
 
     def process(self):
-        print "process, solved: ", self.solved 
         volume_integrals = self.electrostatic.volume_integrals()        
         self.variables["C"] = 2.0 * volume_integrals["We"] / (self.U**2)
 
