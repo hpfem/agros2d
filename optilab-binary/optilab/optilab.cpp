@@ -574,10 +574,8 @@ void OptilabWindow::refreshVariants()
     if (trvVariants->currentItem())
         selectedItem = trvVariants->currentItem()->data(0, Qt::UserRole).toString();
 
-    // qDebug() << "current" << selectedItem;
-
-    QTime time;
-    time.start();
+    // QTime time;
+    // time.start();
 
     // clear listview
     trvVariants->clear();
@@ -659,7 +657,7 @@ void OptilabWindow::refreshVariants()
 
     lblProblems->setText(tr("Solutions: %1/%2").arg(countSolved).arg(count));
 
-    qDebug() << "refresh" << time.elapsed();
+    // qDebug() << "refresh" << time.elapsed();
 
     // set Python variables
     setPythonVariables();
