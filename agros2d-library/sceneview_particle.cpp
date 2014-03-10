@@ -1138,6 +1138,8 @@ void SceneViewParticleTracing::processParticleTracing()
 
         QList<Point3> initialPositionsList;
         QList<Point3> initialVelocitiesList;
+        QList<double> particleCharges;
+        QList<double> particleMasses;
 
         try
         {
@@ -1176,11 +1178,16 @@ void SceneViewParticleTracing::processParticleTracing()
 
                 initialPositionsList.append(initialPosition);
                 initialVelocitiesList.append(initialVelocity);
+                particleCharges.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble());
+                particleMasses.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble());
             }
 
             // position and velocity cache
             ParticleTracing particleTracing;
-            particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList);
+            particleTracing.computeTrajectoryParticles(initialPositionsList,
+                                                       initialVelocitiesList,
+                                                       particleCharges,
+                                                       particleMasses);
 
             m_positionsList = particleTracing.positions();
             m_velocitiesList = particleTracing.velocities();

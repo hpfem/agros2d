@@ -44,8 +44,16 @@ void PyParticleTracing::solve()
     QList<Point3> initialVelocitiesList;
     initialVelocitiesList.append(initialVelocity);
 
+    // particle charges
+    QList<double> particleCharges;
+    particleCharges.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble());
+
+    // particle masses
+    QList<double> particleMasses;
+    particleMasses.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble());
+
     ParticleTracing particleTracing;
-    particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList);
+    particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList, particleCharges, particleMasses);
 
     // only one particle
     m_positions = particleTracing.positions().at(0);

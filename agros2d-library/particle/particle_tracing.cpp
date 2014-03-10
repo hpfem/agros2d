@@ -127,7 +127,7 @@ Point3 ParticleTracing::force(int particleIndex,
             {
                 fieldForce = fieldInfo->plugin()->force(fieldInfo, m_solutionIDs[fieldInfo].timeStep, m_solutionIDs[fieldInfo].adaptivityStep, m_solutionIDs[fieldInfo].solutionMode,
                                                         activeElement, material, position, velocity)
-                        * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble();
+                        * m_particleChargesList[particleIndex];
             }
             catch (AgrosException e)
             {
@@ -157,8 +157,7 @@ Point3 ParticleTracing::force(int particleIndex,
                 forceCoulomb = forceCoulomb + Point3((position.x - particlePosition.x) / distance,
                                                      (position.y - particlePosition.y) / distance,
                                                      (position.z - particlePosition.z) / distance)
-                        * (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble()
-                           / (4 * M_PI * EPS0 * distance * distance));
+                        * (m_particleChargesList[particleIndex] * m_particleChargesList[particleIndex] / (4 * M_PI * EPS0 * distance * distance));
             }
         }
     }
@@ -193,7 +192,7 @@ bool ParticleTracing::newtonEquations(int particleIndex,
                                       Point3 *newvelocity)
 {
     // relativistic correction
-    double mass = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble();
+    double mass = m_particleMassesList[particleIndex];
     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool())
     {
         mass = mass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
@@ -224,10 +223,16 @@ bool ParticleTracing::newtonEquations(int particleIndex,
     return true;
 }
 
-void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPositions, const QList<Point3> initialVelocities)
+void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPositions, const QList<Point3> initialVelocities,
+                                                 const QList<double> particleCharges, const QList<double> particleMasses)
 {
     assert(initialPositions.size() == initialVelocities.size());
+    assert(initialPositions.size() == particleCharges.size());
+    assert(initialPositions.size() == particleMasses.size());
     assert(initialPositions.size() == Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt());
+
+    m_particleChargesList = particleCharges;
+    m_particleMassesList = particleMasses;
 
     Hermes::ButcherTable butcher((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt());
 

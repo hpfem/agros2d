@@ -41,7 +41,8 @@ public:
 
     void clear();
 
-    void computeTrajectoryParticles(const QList<Point3> initialPositions, const QList<Point3> initialVelocities);
+    void computeTrajectoryParticles(const QList<Point3> initialPositions, const QList<Point3> initialVelocities,
+                                    const QList<double> particleCharges, const QList<double> particleMasses);
 
     inline QList<QList<Point3> > positions() const { return m_positionsList; }
     inline QList<QList<Point3> > velocities() const { return m_velocitiesList; }
@@ -51,6 +52,11 @@ public:
     inline double velocityMax() const { return m_velocityMax; }
 
 private:
+    // input
+    QList<double> m_particleChargesList;
+    QList<double> m_particleMassesList;
+
+    // output
     QList<QList<Point3> > m_positionsList;
     QList<QList<Point3> > m_velocitiesList;
     QList<QList<double> > m_timesList;
