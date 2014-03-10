@@ -506,6 +506,8 @@ void LoopsInfo::processLoops()
     if(!m_scene->crossings().empty())
         throw AgrosGeometryException(tr("There are some edges crossed."));
 
+    m_scene->checkTwoNodesSameCoordinates();
+
     // find loops
     LoopsGraph graph(m_scene->nodes->length());
     for (int edgeIdx = 0; edgeIdx < m_scene->edges->length(); edgeIdx++)
