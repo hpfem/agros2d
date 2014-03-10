@@ -240,6 +240,8 @@ void {{CLASS}}VolumeIntegral::calculate()
             if (markers.size() > 0 && markersInverted.size() > 0)
             {
                 Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 3);
+                if(eggShellMesh->get_num_active_elements() == 0)
+                  return;
                 Hermes::Hermes2D::MeshFunctionSharedPtr<double> eggShell(new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
 
                 Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
