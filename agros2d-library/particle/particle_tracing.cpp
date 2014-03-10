@@ -147,7 +147,7 @@ Point3 ParticleTracing::force(int particleIndex,
             if (particleIndex == i)
                 continue;
 
-            Point3 particlePosition = m_positionsList.at(i).last();
+            Point3 particlePosition = m_positionsList[i].at(timeToLevel(i, m_timesList[particleIndex].last()));
             double distance = Point3(position.x - particlePosition.x,
                                      position.y - particlePosition.y,
                                      position.z - particlePosition.z).magnitude();
@@ -221,6 +221,20 @@ bool ParticleTracing::newtonEquations(int particleIndex,
     }
 
     return true;
+}
+
+int ParticleTracing::timeToLevel(int particleIndex, double time)
+{
+    if (m_timesList[particleIndex].size() == 1)
+        return 0;
+    else if (time >= m_timesList[particleIndex].last())
+        return m_timesList[particleIndex].size() - 1;
+    else
+        for (int i = 0; i < m_timesList[particleIndex].size() - 1; i++)
+            if ((m_timesList[particleIndex].at(i) <= time) && (time <= m_timesList[particleIndex].at(i+1)))
+                return i;
+
+    assert(0);
 }
 
 void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPositions, const QList<Point3> initialVelocities,

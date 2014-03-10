@@ -77,8 +77,7 @@ private:
                          Point3 *newposition,
                          Point3 *newvelocity);
 
-    int num_lookups;
-    int num_fails;
+    int timeToLevel(int particleIndex, double time);
 };
 
 
