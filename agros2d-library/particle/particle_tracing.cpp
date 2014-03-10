@@ -157,7 +157,7 @@ Point3 ParticleTracing::force(int particleIndex,
                 forceCoulomb = forceCoulomb + Point3((position.x - particlePosition.x) / distance,
                                                      (position.y - particlePosition.y) / distance,
                                                      (position.z - particlePosition.z) / distance)
-                        * (m_particleChargesList[particleIndex] * m_particleChargesList[particleIndex] / (4 * M_PI * EPS0 * distance * distance));
+                        * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
             }
         }
     }
