@@ -257,6 +257,7 @@ void ProblemSetting::setStringKeys()
     m_settingKey[View_ParticleCustomForceX] = "View_ParticleCustomForceX";
     m_settingKey[View_ParticleCustomForceY] = "View_ParticleCustomForceY";
     m_settingKey[View_ParticleCustomForceZ] = "View_ParticleCustomForceZ";
+    m_settingKey[View_ParticleP2PCoulombForce] = "View_ParticleP2PCoulombForce";
     m_settingKey[View_ChartStartX] = "View_ChartStartX";
     m_settingKey[View_ChartStartY] = "View_ChartStartY";
     m_settingKey[View_ChartEndX] = "View_ChartEndX";
@@ -344,6 +345,7 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[View_ParticleCustomForceX] = 0.0;
     m_settingDefault[View_ParticleCustomForceY] = 0.0;
     m_settingDefault[View_ParticleCustomForceZ] = 0.0;
+    m_settingDefault[View_ParticleP2PCoulombForce] = false;
     m_settingDefault[View_ChartStartX] = 0.0;
     m_settingDefault[View_ChartStartY] = 0.0;
     m_settingDefault[View_ChartEndX] = 0.0;

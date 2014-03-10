@@ -79,6 +79,7 @@ private:
     LineEditDouble *txtParticleDragDensity;
     LineEditDouble *txtParticleDragCoefficient;
     LineEditDouble *txtParticleDragReferenceArea;
+    QCheckBox *chkParticleP2PCoulombForce;
 
     void createControls();
 

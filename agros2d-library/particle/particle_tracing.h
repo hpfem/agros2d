@@ -41,19 +41,19 @@ public:
 
     void clear();
 
-    void computeTrajectoryParticle(const Point3 initialPosition, const Point3 initialVelocity);
+    void computeTrajectoryParticles(const QList<Point3> initialPositions, const QList<Point3> initialVelocities);
 
-    inline QList<Point3> positions() const { return m_positionsList; }
-    inline QList<Point3> velocities() const { return m_velocitiesList; }
-    inline QList<double> times() const { return m_timesList; }
+    inline QList<QList<Point3> > positions() const { return m_positionsList; }
+    inline QList<QList<Point3> > velocities() const { return m_velocitiesList; }
+    inline QList<QList<double> > times() const { return m_timesList; }
 
     inline double velocityMin() const { return m_velocityMin; }
     inline double velocityMax() const { return m_velocityMax; }
 
 private:
-    QList<Point3> m_positionsList;
-    QList<Point3> m_velocitiesList;
-    QList<double> m_timesList;
+    QList<QList<Point3> > m_positionsList;
+    QList<QList<Point3> > m_velocitiesList;
+    QList<QList<double> > m_timesList;
 
     double m_velocityMin;
     double m_velocityMax;
@@ -62,9 +62,10 @@ private:
     QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> m_meshes;
     QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
 
-    Point3 force(Point3 position, Point3 velocity);
+    Point3 force(int particleIndex, Point3 position, Point3 velocity);
 
-    bool newtonEquations(double step,
+    bool newtonEquations(int particleIndex,
+                         double step,
                          Point3 position,
                          Point3 velocity,
                          Point3 *newposition,

@@ -32,18 +32,25 @@ void PyParticleTracing::solve()
     initialPosition.y = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartY).toDouble();
     initialPosition.z = 0.0;
 
+    QList<Point3> initialPositionsList;
+    initialPositionsList.append(initialPosition);
+
     // initial velocity
     Point3 initialVelocity;
     initialVelocity.x = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityX).toDouble();
     initialVelocity.y = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityY).toDouble();
     initialVelocity.z = 0.0;
 
-    ParticleTracing particleTracing;
-    particleTracing.computeTrajectoryParticle(initialPosition, initialVelocity);
+    QList<Point3> initialVelocitiesList;
+    initialVelocitiesList.append(initialVelocity);
 
-    m_positions = particleTracing.positions();
-    m_velocities = particleTracing.velocities();
-    m_times = particleTracing.times();
+    ParticleTracing particleTracing;
+    particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList);
+
+    // only one particle
+    m_positions = particleTracing.positions().at(0);
+    m_velocities = particleTracing.velocities().at(0);
+    m_times = particleTracing.times().at(0);
 }
 
 void PyParticleTracing::positions(vector<double> &x,

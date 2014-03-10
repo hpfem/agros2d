@@ -122,6 +122,7 @@ void ParticleTracingWidget::createControls()
     txtParticleDragReferenceArea = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragReferenceArea).toDouble());
     txtParticleDragReferenceArea->setBottom(0.0);
     lblParticleMotionEquations = new QLabel();
+    chkParticleP2PCoulombForce = new QCheckBox(tr("Coulomb force"));
 
     // initial particle position
     QGridLayout *gridLayoutGeneral = new QGridLayout();
@@ -213,12 +214,20 @@ void ParticleTracingWidget::createControls()
     QGroupBox *grpCustomForce = new QGroupBox(tr("Custom force"));
     grpCustomForce->setLayout(gridCustomForce);
 
+    // particle to particle
+    QGridLayout *gridP2PForce = new QGridLayout();
+    gridP2PForce->addWidget(chkParticleP2PCoulombForce, 0, 0);
+
+    QGroupBox *grpP2PForce = new QGroupBox(tr("Particle to particle"));
+    grpP2PForce->setLayout(gridP2PForce);
+
     // forces
     QVBoxLayout *layoutForces = new QVBoxLayout();
     layoutForces->setContentsMargins(5, 5, 0, 0);
     layoutForces->addWidget(grpLorentzForce);
     layoutForces->addWidget(grpDragForce);
     layoutForces->addWidget(grpCustomForce);
+    layoutForces->addWidget(grpP2PForce);
     layoutForces->addStretch(1);
 
     QWidget *widgetForces = new QWidget(this);
@@ -322,6 +331,7 @@ void ParticleTracingWidget::updateControls()
     txtParticleDragDensity->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragDensity).toDouble());
     txtParticleDragReferenceArea->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble());
     txtParticleDragCoefficient->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragCoefficient).toDouble());
+    chkParticleP2PCoulombForce->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PCoulombForce).toBool());
 
     lblParticlePointX->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelX()));
     lblParticlePointY->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelY()));
@@ -365,6 +375,7 @@ void ParticleTracingWidget::doParticleDefault()
     txtParticleDragDensity->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragDensity).toDouble());
     txtParticleDragReferenceArea->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragReferenceArea).toDouble());
     txtParticleDragCoefficient->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragCoefficient).toDouble());
+    chkParticleP2PCoulombForce->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleP2PCoulombForce).toBool());
 }
 
 void ParticleTracingWidget::refresh()
@@ -401,6 +412,7 @@ void ParticleTracingWidget::doApply()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleDragDensity, txtParticleDragDensity->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleDragCoefficient, txtParticleDragCoefficient->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleDragReferenceArea, txtParticleDragReferenceArea->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PCoulombForce, chkParticleP2PCoulombForce->isChecked());
 
     m_sceneViewParticleTracing->processParticleTracing();
 }
@@ -1124,11 +1136,12 @@ void SceneViewParticleTracing::processParticleTracing()
         m_velocityMin =  numeric_limits<double>::max();
         m_velocityMax = -numeric_limits<double>::max();
 
-        for (int k = 0; k < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); k++)
+        QList<Point3> initialPositionsList;
+        QList<Point3> initialVelocitiesList;
+
+        try
         {
-            // position and velocity cache
-            ParticleTracing particleTracing;
-            try
+            for (int k = 0; k < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); k++)
             {
                 // initial position
                 Point3 initialPosition;
@@ -1153,39 +1166,55 @@ void SceneViewParticleTracing::processParticleTracing()
                                              -Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartingRadius).toDouble() / 2,
                                              (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + initialPosition + dp;
                 }
+                // TODO: remove
+                /*
+                if (k == 0)
+                    initialPosition = Point3(-Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartingRadius).toDouble() / 2, 0, 0) + initialPosition;
+                if (k == 1)
+                    initialPosition = Point3( Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartingRadius).toDouble() / 2, 0, 0) + initialPosition;
+                */
 
-                particleTracing.computeTrajectoryParticle(initialPosition, initialVelocity);
-            }
-            catch (AgrosException& e)
-            {
-                Agros2D::log()->printWarning(tr("Particle tracing"), tr("Particle tracing failed (%1)").append(e.what()));
-                m_velocityMin = 0.0;
-                m_velocityMax = 0.0;
-
-                return;
-            }
-            catch (...)
-            {
-                Agros2D::log()->printWarning(tr("Particle tracing"), tr("Catched unknown exception in particle tracing"));
-                m_velocityMin = 0.0;
-                m_velocityMax = 0.0;
-
-                return;
+                initialPositionsList.append(initialPosition);
+                initialVelocitiesList.append(initialVelocity);
             }
 
-            m_positionsList.append(particleTracing.positions());
-            m_velocitiesList.append(particleTracing.velocities());
-            m_timesList.append(particleTracing.times());
+            // position and velocity cache
+            ParticleTracing particleTracing;
+            particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList);
+
+            m_positionsList = particleTracing.positions();
+            m_velocitiesList = particleTracing.velocities();
+            m_timesList = particleTracing.times();
 
             // velocity min and max value
-            if (particleTracing.velocityMin() < m_velocityMin) m_velocityMin = particleTracing.velocityMin();
-            if (particleTracing.velocityMax() > m_velocityMax) m_velocityMax = particleTracing.velocityMax();
-
-            Agros2D::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
-                                         arg(k + 1).
-                                         arg(particleTracing.times().count()).
-                                         arg(particleTracing.times().last()));
+            m_velocityMin = particleTracing.velocityMin();
+            m_velocityMax = particleTracing.velocityMax();
         }
+        catch (AgrosException& e)
+        {
+            Agros2D::log()->printWarning(tr("Particle tracing"), tr("Particle tracing failed (%1)").arg(e.what()));
+            m_velocityMin = 0.0;
+            m_velocityMax = 0.0;
+
+            return;
+        }
+        catch (...)
+        {
+            Agros2D::log()->printWarning(tr("Particle tracing"), tr("Catched unknown exception in particle tracing"));
+            m_velocityMin = 0.0;
+            m_velocityMax = 0.0;
+
+            return;
+        }
+
+
+
+        /*
+        Agros2D::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
+                                     arg(k + 1).
+                                     arg(particleTracing.times().count()).
+                                     arg(particleTracing.times().last()));
+        */
     }
     Agros2D::log()->printDebug(tr("Particle Tracing"), tr("Total cpu time %1 ms").arg(cpuTime.elapsed()));
 
