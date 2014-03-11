@@ -126,6 +126,11 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
                 Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
+                // remove holes selection
+                foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+                    if (label->isHole())
+                        label->setSelected(false);
+
                 emit mousePressed();
             }
 
@@ -133,6 +138,7 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
             if (actPostprocessorModeSurfaceIntegral->isChecked())
             {
                 Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
+
                 emit mousePressed();
             }
 

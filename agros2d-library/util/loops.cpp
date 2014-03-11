@@ -45,7 +45,7 @@ LoopsInfo::LoopsNodeEdgeData::LoopsNodeEdgeData() : node(LOOPS_NON_EXISTING)
 
 bool LoopsInfo::LoopsNode::hasUnvisited()
 {
-    foreach(LoopsNodeEdgeData ned, data)
+    foreach(LoopsNodeEdgeData ned, nodeEdges)
         if(!ned.visited)
             return true;
 
@@ -54,11 +54,11 @@ bool LoopsInfo::LoopsNode::hasUnvisited()
 
 LoopsInfo::LoopsNodeEdgeData LoopsInfo::LoopsNode::startLoop()
 {
-    for (int i = 0; i < data.size(); i++){
-        LoopsNodeEdgeData ned = data.at(i);
+    for (int i = 0; i < nodeEdges.size(); i++){
+        LoopsNodeEdgeData ned = nodeEdges.at(i);
         if(!ned.visited){
-            data[i].visited = true;
-            //cout << "start loop " << i << endl;
+            nodeEdges[i].visited = true;
+            //qDebug() << "start loop " << i << endl;
             return ned;
         }
     }
@@ -70,8 +70,8 @@ LoopsInfo::LoopsNodeEdgeData LoopsInfo::LoopsNode::continueLoop(int previousNode
 {
     LoopsNodeEdgeData previousNED;
     int index;
-    for (int i = 0; i < data.size(); i++){
-        LoopsNodeEdgeData ned = data.at(i);
+    for (int i = 0; i < nodeEdges.size(); i++){
+        LoopsNodeEdgeData ned = nodeEdges.at(i);
         if(ned.node == previousNode){
             previousNED = ned;
             index = i;
@@ -80,24 +80,23 @@ LoopsInfo::LoopsNodeEdgeData LoopsInfo::LoopsNode::continueLoop(int previousNode
     }
 
     assert(previousNED.node != LOOPS_NON_EXISTING);
-
-    int nextIdx = (index + 1) % data.size();
-    //cout << "continue loop " << previousNode << ", " << data[nextIdx].node << endl;
-    // assert(!data.at(nextIdx).visited);
-    if (data.at(nextIdx).visited)
-        throw AgrosGeometryException(QObject::tr("Node %1 already visited.").arg(nextIdx));
-    data[nextIdx].visited = true;
-    return data[nextIdx];
+    int nextIdx = (index + 1) % nodeEdges.size();
+    //qDebug() << "continue loop, next node:" << nodeEdges[nextIdx].node << ", next edge:" << nodeEdges[nextIdx].edge << ", " << nodeEdges.at(nextIdx).visited;
+    //assert(!data.at(nextIdx).visited);
+    if (nodeEdges.at(nextIdx).visited)
+        throw AgrosGeometryException(QObject::tr("Node %1 connected by edge %2 already visited.").arg(nodeEdges[nextIdx].node).arg(nodeEdges[nextIdx].edge));
+    nodeEdges[nextIdx].visited = true;
+    return nodeEdges[nextIdx];
 }
 
 void LoopsInfo::LoopsNode::insertEdge(int endNode, int edgeIdx, bool reverse, double angle)
 {
     int index = 0;
 
-    for (int i = 0; i < data.size(); i++)
-        if(angle < data[i].angle)
+    for (int i = 0; i < nodeEdges.size(); i++)
+        if(angle < nodeEdges[i].angle)
             index = i+1;
-    data.insert(index, LoopsNodeEdgeData(endNode, edgeIdx, reverse, angle));
+    nodeEdges.insert(index, LoopsNodeEdgeData(endNode, edgeIdx, reverse, angle));
 }
 
 // ***********************************************************************
@@ -105,7 +104,7 @@ void LoopsInfo::LoopsNode::insertEdge(int endNode, int edgeIdx, bool reverse, do
 LoopsInfo::LoopsGraph::LoopsGraph(int numNodes)
 {
     for (int i = 0; i < numNodes; i++)
-        data.push_back(LoopsNode());
+        nodes.push_back(LoopsNode());
 }
 
 void LoopsInfo::LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
@@ -114,21 +113,21 @@ void LoopsInfo::LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, dou
     if(angle2 >= 2 * M_PI)
         angle2 -= 2 * M_PI;
 
-    data[startNode].insertEdge(endNode, edgeIdx, false, angle);
-    data[endNode].insertEdge(startNode, edgeIdx, true, angle2);
+    nodes[startNode].insertEdge(endNode, edgeIdx, false, angle);
+    nodes[endNode].insertEdge(startNode, edgeIdx, true, angle2);
 }
 
 void LoopsInfo::LoopsGraph::print()
 {
-//    for (int i = 0; i < data.size(); i++)
-//    {
-//        qDebug() << "node " << i;
-//        foreach(LoopsNodeEdgeData ned, data[i].data)
-//        {
-//            qDebug() << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited;
-//        }
-//    }
-//    qDebug() << "\n";
+    for (int i = 0; i < nodes.size(); i++)
+    {
+        qDebug() << "node " << i;
+        foreach(LoopsNodeEdgeData ned, nodes[i].nodeEdges)
+        {
+            qDebug() << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited;
+        }
+    }
+    qDebug() << "\n";
 }
 
 bool LoopsInfo::isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
@@ -188,10 +187,10 @@ LoopsInfo::Intersection LoopsInfo::intersects(Point point, double tangent, Scene
             int leftInter = 0;
             int rightInter = 0;
 
-            //cout << "circle center " << xC << ", " << yC << ", radius " << edge->radius() << endl;
-            //cout << "xI1 "<< xI1 << ", yI1 "<< yI1 << ", xI2 "<< xI2 << ", yI2 "<< yI2 << endl;
-            //cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle1) << endl;
-            //cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle2) << endl;
+            //qDebug() << "circle center " << xC << ", " << yC << ", radius " << edge->radius() << endl;
+            //qDebug() << "xI1 "<< xI1 << ", yI1 "<< yI1 << ", xI2 "<< xI2 << ", yI2 "<< yI2 << endl;
+            //qDebug() << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle1) << endl;
+            //qDebug() << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle2) << endl;
 
             if (isInsideSeg(angleSegStart, angleSegEnd, angle1))
             {
@@ -212,7 +211,7 @@ LoopsInfo::Intersection LoopsInfo::intersects(Point point, double tangent, Scene
                 intersection.y = yI2;
             }
 
-            //cout << "left " << leftInter << ", right " << rightInter << endl;
+            //qDebug() << "left " << leftInter << ", right " << rightInter << endl;
 
             if(leftInter == 2)
                 return Intersection_No;
@@ -306,7 +305,7 @@ int LoopsInfo::intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
             if(result == Intersection_Uncertain)
             {
                 rejectTangent = true;
-                //cout << "rejected tangent\n";
+                //qDebug() << "rejected tangent\n";
                 break;
             }
             else if(result == Intersection_Left)
@@ -324,7 +323,7 @@ int LoopsInfo::intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
     }
     while (rejectTangent);
 
-    //cout << "intersections left " << left << ", right " << right << endl;
+    //qDebug() << "intersections left " << left << ", right " << right << endl;
     assert(left%2 == right%2);
     return left%2;
 }
@@ -507,34 +506,40 @@ void LoopsInfo::processLoops()
     if(!m_scene->crossings().empty())
         throw AgrosGeometryException(tr("There are some edges crossed."));
 
+    m_scene->checkTwoNodesSameCoordinates();
+
     // find loops
     LoopsGraph graph(m_scene->nodes->length());
-    for (int i = 0; i < m_scene->edges->length(); i++)
+    for (int edgeIdx = 0; edgeIdx < m_scene->edges->length(); edgeIdx++)
     {
-        SceneNode* startNode = m_scene->edges->at(i)->nodeStart();
-        SceneNode* endNode = m_scene->edges->at(i)->nodeEnd();
+        SceneNode* startNode = m_scene->edges->at(edgeIdx)->nodeStart();
+        SceneNode* endNode = m_scene->edges->at(edgeIdx)->nodeEnd();
         int startNodeIdx = m_scene->nodes->items().indexOf(startNode);
         int endNodeIdx = m_scene->nodes->items().indexOf(endNode);
+
+        if (startNodeIdx == endNodeIdx)
+            throw AgrosGeometryException(QObject::tr("Edge %1 begins and ends in the same point %2. Remove the edge.").arg(edgeIdx).arg(startNodeIdx));
 
         double angle = atan2(endNode->point().y - startNode->point().y,
                              endNode->point().x - startNode->point().x);
         if (angle < 0)
             angle += 2 * M_PI;
 
-        graph.addEdge(startNodeIdx, endNodeIdx, i, angle);
+        graph.addEdge(startNodeIdx, endNodeIdx, edgeIdx, angle);
     }
 
-    graph.print();
+    //graph.print();
 
     m_loops.clear();
-    for (int i = 0; i < graph.data.size(); i++)
+    for (int i = 0; i < graph.nodes.size(); i++)
     {
-        //cout << "** starting with node " << i << endl;
-        LoopsNode& node = graph.data[i];
+        //qDebug() << "** starting with node " << i << endl;
+        LoopsNode& node = graph.nodes[i];
         int previousNodeIdx, currentNodeIdx;
         while (node.hasUnvisited())
         {
-            graph.print();
+            //graph.print();
+            //qDebug() <<  "has unvisited";
 
             QList<LoopsNodeEdgeData> loop;
             LoopsNodeEdgeData ned = node.startLoop();
@@ -543,8 +548,8 @@ void LoopsInfo::processLoops()
             do
             {
                 currentNodeIdx = ned.node;
-                LoopsNode& actualNode = graph.data[currentNodeIdx];
-                //cout << "call continue loop with node " << currentNodeIdx << "and previous node " << previousNodeIdx << endl;
+//                qDebug() << "previous " << previousNodeIdx << ", current" << currentNodeIdx;
+                LoopsNode& actualNode = graph.nodes[currentNodeIdx];
                 ned = actualNode.continueLoop(previousNodeIdx);
                 previousNodeIdx = currentNodeIdx;
                 loop.push_back(ned);
@@ -573,7 +578,7 @@ void LoopsInfo::processLoops()
         {
             SceneLabel* label = m_scene->labels->at(labelIdx);
             int wn = windingNumber(label->point(), m_loops[loopIdx]);
-            //cout << "winding number " << wn << endl;
+            //qDebug() << "winding number " << wn << endl;
             assert(wn < 2);
             windingNumbers[QPair<SceneLabel*, int>(label, loopIdx)] = wn;
             int ip = intersectionsParity(label->point(), m_loops[loopIdx]);
