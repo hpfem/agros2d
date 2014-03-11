@@ -21,11 +21,13 @@
 #include "pythonengine_agros.h"
 #include "particle/particle_tracing.h"
 
-void PyParticleTracing::solve(const map<double, double> &initialPositions, const map<double, double> &initialVelocities,
+void PyParticleTracing::solve(const vector<vector<double> > &initialPositions, const vector<vector<double> > &initialVelocities,
                               const vector<double> &particleCharges, const vector<double> &particleMasses)
 {
     if (!Agros2D::problem()->isSolved())
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+
+    int numberOfParticles = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt();
 
     // initial position
     QList<Point3> initialPositionsList;
@@ -34,8 +36,16 @@ void PyParticleTracing::solve(const map<double, double> &initialPositions, const
         Point3 initialPosition(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartX).toDouble(),
                                Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartY).toDouble(), 0.0);
 
-        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+        for (int i = 0; i < numberOfParticles; i++)
             initialPositionsList.append(initialPosition);
+    }
+    else
+    {
+        if (numberOfParticles != initialPositions.size())
+            throw invalid_argument(QObject::tr("Number of initial positions is not equal to number of particles.").toStdString());
+
+        for (int i = 0; i < initialPositions.size(); i++)
+            initialPositionsList.append(Point3(initialPositions.at(i).at(0), initialPositions.at(i).at(1), 0.0));
     }
 
     // initial velocity
@@ -45,24 +55,46 @@ void PyParticleTracing::solve(const map<double, double> &initialPositions, const
         Point3 initialVelocity(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityX).toDouble(),
                                Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityY).toDouble(), 0.0);
 
-        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+        for (int i = 0; i < numberOfParticles; i++)
             initialVelocitiesList.append(initialVelocity);
+    }
+    else
+    {
+        if (numberOfParticles != initialVelocities.size())
+            throw invalid_argument(QObject::tr("Number of initial velocities is not equal to number of particles.").toStdString());
+
+        for (int i = 0; i < initialVelocities.size(); i++)
+            initialVelocitiesList.append(Point3(initialVelocities.at(i).at(0), initialVelocities.at(i).at(1), 0.0));
     }
 
     // particle charges
     QList<double> particleChargesList;
     if (particleCharges.empty())
     {
-        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+        for (int i = 0; i < numberOfParticles; i++)
             particleChargesList.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble());
+    }
+    else
+    {
+        if (numberOfParticles != particleCharges.size())
+            throw invalid_argument(QObject::tr("Number of particle charges is not equal to number of particles.").toStdString());
+
+        particleChargesList = QList<double>::fromVector(QVector<double>::fromStdVector(particleCharges));
     }
 
     // particle masses
     QList<double> particleMassesList;
     if (particleMasses.empty())
     {
-        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+        for (int i = 0; i < numberOfParticles; i++)
             particleMassesList.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble());
+    }
+    else
+    {
+        if (numberOfParticles != particleMasses.size())
+            throw invalid_argument(QObject::tr("Number of partical masses is not equal to number of particles.").toStdString());
+
+        particleMassesList = QList<double>::fromVector(QVector<double>::fromStdVector(particleMasses));
     }
 
     ParticleTracing particleTracing;

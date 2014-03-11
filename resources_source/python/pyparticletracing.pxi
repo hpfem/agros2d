@@ -30,6 +30,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         void getCustomForce(vector[double] &force) except +
         void setCustomForce(vector[double] &force) except +
 
+        bool getElectromagneticInteraction()
+        void setElectromagneticInteraction(bool interaction)
+
         bool getIncludeRelativisticCorrection()
         void setIncludeRelativisticCorrection(bool incl)
 
@@ -58,19 +61,13 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         int getNumShowParticlesAxi()
         void setNumShowParticlesAxi(int particles)  except +
 
-        void solve() except +
+        void solve(vector[vector[double]] &initialPositions,  vector[vector[double]] &initialVelocities,
+                   vector[double] &particleCharges, vector[double] &particleMasses) except +
 
         int length()
         void positions(vector[vector[double]] &x, vector[vector[double]] &y, vector[vector[double]] &z)
         void velocities(vector[vector[double]] &vx, vector[vector[double]] &vy, vector[vector[double]] &vz)
         void times(vector[vector[double]] &t)
-
-cdef vector[double] list_to_double_vector(list):
-    cdef vector[double] vector
-    for item in list:
-        vector.push_back(item)
-
-    return vector
 
 cdef class __ParticleTracing__:
     cdef PyParticleTracing *thisptr
@@ -80,8 +77,21 @@ cdef class __ParticleTracing__:
     def __dealloc__(self):
         del self.thisptr
 
-    def solve(self):
-        self.thisptr.solve()
+    def solve(self, initial_positions = [], initial_velocities = [],
+                    particle_charges = [], particle_masses = []):
+
+        cdef vector[vector[double]] initial_positions_vector, initial_velocities_vector
+
+        for position in initial_positions:
+            initial_positions_vector.push_back(list_to_double_vector(position))
+
+        for velocity in initial_velocities:
+            initial_velocities_vector.push_back(list_to_double_vector(velocity))
+
+        self.thisptr.solve(initial_positions_vector,
+                           initial_velocities_vector,
+                           list_to_double_vector(particle_charges),
+                           list_to_double_vector(particle_masses))
 
     """
     def length(self):
@@ -215,6 +225,12 @@ cdef class __ParticleTracing__:
             return double_vector_to_list(force)
         def __set__(self, force):
             self.thisptr.setCustomForce(list_to_double_vector(force))
+
+    property electromagnetic_interaction:
+        def __get__(self):
+            return self.thisptr.getElectromagneticInteraction()
+        def __set__(self, interaction):
+            self.thisptr.setElectromagneticInteraction(interaction)
 
     property butcher_table_type:
         def __get__(self):

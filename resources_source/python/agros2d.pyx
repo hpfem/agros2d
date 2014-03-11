@@ -70,6 +70,13 @@ cdef vector[int] list_to_int_vector(list):
 
     return int_vector
 
+cdef vector[double] list_to_double_vector(list):
+    cdef vector[double] double_vector
+    for item in list:
+        double_vector.push_back(item)
+
+    return double_vector
+
 cdef object double_vector_to_list(vector[double] vector):
     out = list()
     for i in range(vector.size()):

@@ -70,6 +70,9 @@ public:
     void getCustomForce(vector<double> &force) const;
     void setCustomForce(const vector<double> &force);
 
+    inline bool getElectromagneticInteraction() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectromagneticForce).toBool(); }
+    void setElectromagneticInteraction(bool interaction) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PElectromagneticForce, interaction); }
+
     // butcher table
     std::string getButcherTableType() const
     {
@@ -122,10 +125,8 @@ public:
     void setNumShowParticlesAxi(int particles);
 
     // solve
-    void solve(const map<double, double> &initialPositions = map<double, double>(),
-               const map<double, double> &initialVelocities = map<double, double>(),
-               const vector<double> &particleCharges = vector<double>(),
-               const vector<double> &particleMasses = vector<double>());
+    void solve(const vector<vector<double> > &initialPositions, const vector<vector<double> > &initialVelocities,
+               const vector<double> &particleCharges, const vector<double> &particleMasses);
 
     void positions(vector<vector<double> > &x, vector<vector<double> > &y, vector<vector<double> > &z) const;
     void velocities(vector<vector<double> > &vx, vector<vector<double> > &vy, vector<vector<double> > &vz) const;
