@@ -70,8 +70,8 @@ public:
     void getCustomForce(vector<double> &force) const;
     void setCustomForce(const vector<double> &force);
 
-    inline bool getElectromagneticInteraction() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectromagneticForce).toBool(); }
-    void setElectromagneticInteraction(bool interaction) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PElectromagneticForce, interaction); }
+    inline bool getElectromagneticInteraction() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectricForce).toBool(); }
+    void setElectromagneticInteraction(bool interaction) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PElectricForce, interaction); }
 
     // butcher table
     std::string getButcherTableType() const

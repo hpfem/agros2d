@@ -139,25 +139,46 @@ Point3 ParticleTracing::force(int particleIndex,
     }
 
     // particle to particle force
-    Point3 forceP2PElectromagnetic;
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectromagneticForce).toBool())
+    Point3 forceP2PElectric;
+    Point3 forceP2PMagnetic;
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectricForce).toBool() ||
+            Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PMagneticForce).toBool())
     {
         for (int i = 0; i < m_positionsList.size(); i++)
         {
             if (particleIndex == i)
                 continue;
 
-            Point3 particlePosition = m_positionsList[i].at(timeToLevel(i, m_timesList[particleIndex].last()));
+            int timeLevel = timeToLevel(i, m_timesList[particleIndex].last());
+            Point3 particlePosition = m_positionsList[i].at(timeLevel);
+            Point3 particleVelocity = m_velocitiesList[i].at(timeLevel);
+
             double distance = Point3(position.x - particlePosition.x,
                                      position.y - particlePosition.y,
                                      position.z - particlePosition.z).magnitude();
 
             if (distance > 0)
             {
-                forceP2PElectromagnetic = forceP2PElectromagnetic + Point3((position.x - particlePosition.x) / distance,
-                                                     (position.y - particlePosition.y) / distance,
-                                                     (position.z - particlePosition.z) / distance)
-                        * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
+                if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectricForce).toBool())
+                {
+                    forceP2PElectric = forceP2PElectric + Point3(
+                                (position.x - particlePosition.x) / distance,
+                                (position.y - particlePosition.y) / distance,
+                                (position.z - particlePosition.z) / distance)
+                            * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
+                }
+                if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PMagneticForce).toBool())
+                {
+                    Point3 r0((position.x - particlePosition.x) / distance,
+                              (position.y - particlePosition.y) / distance,
+                              (position.z - particlePosition.z) / distance);
+                    Point3 v0(velocity.x - particleVelocity.x,
+                              velocity.y - particleVelocity.y,
+                              velocity.z - particleVelocity.z);
+
+                    forceP2PMagnetic = forceP2PMagnetic + (v0 % v0 % r0)
+                            * (m_particleChargesList[particleIndex] * m_particleChargesList[i] * MU0 / (4 * M_PI * distance * distance));
+                }
             }
         }
     }
@@ -179,7 +200,7 @@ Point3 ParticleTracing::force(int particleIndex,
                 * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble();
 
     // Total force
-    Point3 totalForce = totalFieldForce + forceDrag + forceCustom + forceP2PElectromagnetic;
+    Point3 totalForce = totalFieldForce + forceDrag + forceCustom + forceP2PElectric + forceP2PMagnetic;
 
     return totalForce;
 }
