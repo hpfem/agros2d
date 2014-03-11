@@ -122,7 +122,7 @@ void ParticleTracingWidget::createControls()
     txtParticleDragReferenceArea = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragReferenceArea).toDouble());
     txtParticleDragReferenceArea->setBottom(0.0);
     lblParticleMotionEquations = new QLabel();
-    chkParticleP2PCoulombForce = new QCheckBox(tr("Coulomb force"));
+    chkParticleP2PElectromagneticForce = new QCheckBox(tr("Electromagnetic interaction"));
 
     // initial particle position
     QGridLayout *gridLayoutGeneral = new QGridLayout();
@@ -216,7 +216,7 @@ void ParticleTracingWidget::createControls()
 
     // particle to particle
     QGridLayout *gridP2PForce = new QGridLayout();
-    gridP2PForce->addWidget(chkParticleP2PCoulombForce, 0, 0);
+    gridP2PForce->addWidget(chkParticleP2PElectromagneticForce, 0, 0);
 
     QGroupBox *grpP2PForce = new QGroupBox(tr("Particle to particle"));
     grpP2PForce->setLayout(gridP2PForce);
@@ -331,7 +331,7 @@ void ParticleTracingWidget::updateControls()
     txtParticleDragDensity->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragDensity).toDouble());
     txtParticleDragReferenceArea->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble());
     txtParticleDragCoefficient->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragCoefficient).toDouble());
-    chkParticleP2PCoulombForce->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PCoulombForce).toBool());
+    chkParticleP2PElectromagneticForce->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectromagneticForce).toBool());
 
     lblParticlePointX->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelX()));
     lblParticlePointY->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelY()));
@@ -375,7 +375,7 @@ void ParticleTracingWidget::doParticleDefault()
     txtParticleDragDensity->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragDensity).toDouble());
     txtParticleDragReferenceArea->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragReferenceArea).toDouble());
     txtParticleDragCoefficient->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleDragCoefficient).toDouble());
-    chkParticleP2PCoulombForce->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleP2PCoulombForce).toBool());
+    chkParticleP2PElectromagneticForce->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleP2PElectromagneticForce).toBool());
 }
 
 void ParticleTracingWidget::refresh()
@@ -412,7 +412,7 @@ void ParticleTracingWidget::doApply()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleDragDensity, txtParticleDragDensity->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleDragCoefficient, txtParticleDragCoefficient->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleDragReferenceArea, txtParticleDragReferenceArea->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PCoulombForce, chkParticleP2PCoulombForce->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PElectromagneticForce, chkParticleP2PElectromagneticForce->isChecked());
 
     m_sceneViewParticleTracing->processParticleTracing();
 }

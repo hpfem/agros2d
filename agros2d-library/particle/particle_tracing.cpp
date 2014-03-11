@@ -138,9 +138,9 @@ Point3 ParticleTracing::force(int particleIndex,
         totalFieldForce = totalFieldForce + fieldForce;
     }
 
-    // Coulomb force
-    Point3 forceCoulomb;
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PCoulombForce).toBool())
+    // particle to particle force
+    Point3 forceP2PElectromagnetic;
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectromagneticForce).toBool())
     {
         for (int i = 0; i < m_positionsList.size(); i++)
         {
@@ -154,7 +154,7 @@ Point3 ParticleTracing::force(int particleIndex,
 
             if (distance > 0)
             {
-                forceCoulomb = forceCoulomb + Point3((position.x - particlePosition.x) / distance,
+                forceP2PElectromagnetic = forceP2PElectromagnetic + Point3((position.x - particlePosition.x) / distance,
                                                      (position.y - particlePosition.y) / distance,
                                                      (position.z - particlePosition.z) / distance)
                         * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
@@ -179,7 +179,7 @@ Point3 ParticleTracing::force(int particleIndex,
                 * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble();
 
     // Total force
-    Point3 totalForce = totalFieldForce + forceDrag + forceCustom + forceCoulomb;
+    Point3 totalForce = totalFieldForce + forceDrag + forceCustom + forceP2PElectromagnetic;
 
     return totalForce;
 }
