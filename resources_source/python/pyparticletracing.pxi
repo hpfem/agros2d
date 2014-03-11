@@ -61,9 +61,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         void solve() except +
 
         int length()
-        void positions(vector[double] &x, vector[double] &y, vector[double] &z)
-        void velocities(vector[double] &x, vector[double] &y, vector[double] &z)
-        void times(vector[double] &times)
+        void positions(vector[vector[double]] &x, vector[vector[double]] &y, vector[vector[double]] &z)
+        void velocities(vector[vector[double]] &vx, vector[vector[double]] &vy, vector[vector[double]] &vz)
+        void times(vector[vector[double]] &t)
 
 cdef vector[double] list_to_double_vector(list):
     cdef vector[double] vector
@@ -89,19 +89,42 @@ cdef class __ParticleTracing__:
     """
 
     def positions(self):
-        cdef vector[double] x, y, z
+        cdef vector[vector[double]] x, y, z
         self.thisptr.positions(x, y, z)
-        return double_vector_to_list(x), double_vector_to_list(y), double_vector_to_list(z)
+
+        assert x.size() == y.size() == z.size()
+
+        out = [[], [], []]
+        for i in range(x.size()):
+            out[0].append(double_vector_to_list(x[i]))
+            out[1].append(double_vector_to_list(y[i]))
+            out[2].append(double_vector_to_list(z[i]))
+
+        return out
 
     def velocities(self):
-        cdef vector[double] vx, vy, vz
+        cdef vector[vector[double]] vx, vy, vz
         self.thisptr.velocities(vx, vy, vz)
-        return double_vector_to_list(vx), double_vector_to_list(vy), double_vector_to_list(vz)
+
+        assert vx.size() == vy.size() == vz.size()
+
+        out = [[], [], []]
+        for i in range(vx.size()):
+            out[0].append(double_vector_to_list(vx[i]))
+            out[1].append(double_vector_to_list(vy[i]))
+            out[2].append(double_vector_to_list(vz[i]))
+
+        return out
 
     def times(self):
-        cdef vector[double] time
-        self.thisptr.times(time)
-        return double_vector_to_list(time)
+        cdef vector[vector[double]] t
+        self.thisptr.times(t)
+
+        out = [[]]
+        for i in range(t.size()):
+            out[0].append(double_vector_to_list(t[i]))
+
+        return out
 
     property number_of_particles:
         def __get__(self):

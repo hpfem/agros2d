@@ -21,77 +21,105 @@
 #include "pythonengine_agros.h"
 #include "particle/particle_tracing.h"
 
-void PyParticleTracing::solve()
+void PyParticleTracing::solve(const map<double, double> &initialPositions, const map<double, double> &initialVelocities,
+                              const vector<double> &particleCharges, const vector<double> &particleMasses)
 {
     if (!Agros2D::problem()->isSolved())
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
     // initial position
-    Point3 initialPosition;
-    initialPosition.x = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartX).toDouble();
-    initialPosition.y = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartY).toDouble();
-    initialPosition.z = 0.0;
-
     QList<Point3> initialPositionsList;
-    initialPositionsList.append(initialPosition);
+    if (initialPositions.empty())
+    {
+        Point3 initialPosition(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartX).toDouble(),
+                               Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartY).toDouble(), 0.0);
+
+        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+            initialPositionsList.append(initialPosition);
+    }
 
     // initial velocity
-    Point3 initialVelocity;
-    initialVelocity.x = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityX).toDouble();
-    initialVelocity.y = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityY).toDouble();
-    initialVelocity.z = 0.0;
-
     QList<Point3> initialVelocitiesList;
-    initialVelocitiesList.append(initialVelocity);
+    if (initialVelocities.empty())
+    {
+        Point3 initialVelocity(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityX).toDouble(),
+                               Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityY).toDouble(), 0.0);
+
+        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+            initialVelocitiesList.append(initialVelocity);
+    }
 
     // particle charges
-    QList<double> particleCharges;
-    particleCharges.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble());
+    QList<double> particleChargesList;
+    if (particleCharges.empty())
+    {
+        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+            particleChargesList.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble());
+    }
 
     // particle masses
-    QList<double> particleMasses;
-    particleMasses.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble());
+    QList<double> particleMassesList;
+    if (particleMasses.empty())
+    {
+        for (int i = 0; i < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); i++)
+            particleMassesList.append(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble());
+    }
 
     ParticleTracing particleTracing;
-    particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList, particleCharges, particleMasses);
+    particleTracing.computeTrajectoryParticles(initialPositionsList, initialVelocitiesList, particleChargesList, particleMassesList);
 
-    // only one particle
-    m_positions = particleTracing.positions().at(0);
-    m_velocities = particleTracing.velocities().at(0);
-    m_times = particleTracing.times().at(0);
+    m_positions = particleTracing.positions();
+    m_velocities = particleTracing.velocities();
+    m_times = particleTracing.times();
 }
 
-void PyParticleTracing::positions(vector<double> &x,
-                                  vector<double> &y,
-                                  vector<double> &z) const
+void PyParticleTracing::positions(vector<vector<double> > &x,
+                                  vector<vector<double> > &y,
+                                  vector<vector<double> > &z) const
 {
-    for (int i = 0; i < length(); i++)
+    for (int i = 0; i < m_positions.length(); i++)
     {
-        x.push_back(m_positions[i].x);
-        y.push_back(m_positions[i].y);
-        z.push_back(m_positions[i].z);
+        vector<double> xi, yi, zi;
+        for (int j = 0; j < m_positions.at(i).length(); j++)
+        {
+            xi.push_back(m_positions.at(i).at(j).x);
+            yi.push_back(m_positions.at(i).at(j).y);
+            zi.push_back(m_positions.at(i).at(j).z);
+        }
+
+        x.push_back(xi);
+        y.push_back(yi);
+        z.push_back(zi);
     }
 }
 
-void PyParticleTracing::velocities(vector<double> &x,
-                                   vector<double> &y,
-                                   vector<double> &z) const
+void PyParticleTracing::velocities(vector<vector<double> > &vx,
+                                   vector<vector<double> > &vy,
+                                   vector<vector<double> > &vz) const
 {
-    for (int i = 0; i < length(); i++)
+    for (int i = 0; i < m_velocities.length(); i++)
     {
-        x.push_back(m_velocities[i].x);
-        y.push_back(m_velocities[i].y);
-        z.push_back(m_velocities[i].z);
+        vector<double> vxi, vyi, vzi;
+        for (int j = 0; j < m_velocities.at(i).length(); j++)
+        {
+            vxi.push_back(m_velocities.at(i).at(j).x);
+            vyi.push_back(m_velocities.at(i).at(j).y);
+            vzi.push_back(m_velocities.at(i).at(j).z);
+        }
+
+        vx.push_back(vxi);
+        vy.push_back(vyi);
+        vz.push_back(vzi);
     }
 }
 
-void PyParticleTracing::times(vector<double> &time) const
+void PyParticleTracing::times(vector<vector<double> > &t) const
 {
     if (m_times.isEmpty())
         throw logic_error(QObject::tr("Trajectories of particles are not solved.").toStdString());
 
-    for (int i = 0; i < length(); i++)
-        time.push_back(m_times[i]);
+    for (int i = 0; i < m_times.length(); i++)
+        t.push_back(m_times.at(i).toVector().toStdVector());
 }
 
 void PyParticleTracing::getInitialPosition(vector<double> &position) const

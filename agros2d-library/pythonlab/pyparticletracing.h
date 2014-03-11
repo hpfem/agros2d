@@ -122,17 +122,20 @@ public:
     void setNumShowParticlesAxi(int particles);
 
     // solve
-    void solve();
-    void positions(vector<double> &x, vector<double> &y, vector<double> &z) const;
-    void velocities(vector<double> &x, vector<double> &y, vector<double> &z) const;
-    void times(vector<double> &time) const;
-    inline int length() const { return m_positions.length(); }
+    void solve(const map<double, double> &initialPositions = map<double, double>(),
+               const map<double, double> &initialVelocities = map<double, double>(),
+               const vector<double> &particleCharges = vector<double>(),
+               const vector<double> &particleMasses = vector<double>());
+
+    void positions(vector<vector<double> > &x, vector<vector<double> > &y, vector<vector<double> > &z) const;
+    void velocities(vector<vector<double> > &vx, vector<vector<double> > &vy, vector<vector<double> > &vz) const;
+    void times(vector<vector<double> > &t) const;
 
 private:
-    // position and velocity
-    QList<Point3> m_positions;
-    QList<Point3> m_velocities;
-    QList<double> m_times;
+    // position, velocity and time
+    QList<QList<Point3> > m_positions;
+    QList<QList<Point3> > m_velocities;
+    QList<QList<double> > m_times;
 };
 
 #endif // PYTHONLABPARTICLETRACING_H
