@@ -2442,8 +2442,24 @@ void Scene::checkNodeConnect(SceneNode *node)
     }
 }
 
+void Scene::checkTwoNodesSameCoordinates()
+{
+    for(int nodeIdx1 = 0; nodeIdx1 < nodes->length(); nodeIdx1++)
+    {
+        SceneNode* node1 = nodes->at(nodeIdx1);
+        for(int nodeIdx2 = 0; nodeIdx2 < nodeIdx1; nodeIdx2++)
+        {
+            SceneNode* node2 = nodes->at(nodeIdx2);
+            if(node1->point() == node2->point())
+                throw AgrosGeometryException(QObject::tr("Point %1 and %2 has the same coordinates.").arg(nodeIdx1).arg(nodeIdx2));
+        }
+    }
+}
+
 void Scene::checkGeometryResult()
 {
+    checkTwoNodesSameCoordinates();
+
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
     {
         // check for nodes with r < 0

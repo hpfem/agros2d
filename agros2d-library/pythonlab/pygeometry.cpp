@@ -39,7 +39,7 @@ int PyGeometry::addNode(double x, double y)
 
     foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {
-        if (node->point().x == x && node->point().y == y)
+        if (node->point() == Point(x, y))
             throw logic_error(QObject::tr("Node already exist.").toStdString());
     }
 
@@ -61,8 +61,10 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
 
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
-        if (edge->nodeStart()->point().x == x1 && edge->nodeEnd()->point().x == x2 &&
-                edge->nodeStart()->point().y == y1 && edge->nodeEnd()->point().y == y2)
+        if (almostEqualRelAndAbs(edge->nodeStart()->point().x, x1, POINT_ABS_ZERO, POINT_REL_ZERO) &&
+                almostEqualRelAndAbs(edge->nodeEnd()->point().x, x2, POINT_ABS_ZERO, POINT_REL_ZERO) &&
+                almostEqualRelAndAbs(edge->nodeStart()->point().y, y1, POINT_ABS_ZERO, POINT_REL_ZERO) &&
+                almostEqualRelAndAbs(edge->nodeEnd()->point().y, y2, POINT_ABS_ZERO, POINT_REL_ZERO))
             throw logic_error(QObject::tr("Edge already exist.").toStdString());
     }
 
@@ -70,8 +72,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     nodeStart = Agros2D::scene()->addNode(nodeStart);
     SceneNode *nodeEnd = new SceneNode(Point(x2, y2));
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
-    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd,
-                                    angle, segments, curvilinear);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, angle, segments, curvilinear);
 
     try
     {
@@ -230,7 +231,7 @@ int PyGeometry::addLabel(double x, double y, double area, const map<std::string,
 
     foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
-        if (label->point().x == x && label->point().y == y)
+        if (label->point() == Point(x, y))
             throw logic_error(QObject::tr("Label already exist.").toStdString());
     }
 

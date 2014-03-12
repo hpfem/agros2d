@@ -43,6 +43,7 @@ public:
         Intersection_No
     };
 
+    // describes conection from the LoopsNode to other nodes
     struct LoopsNodeEdgeData
     {
         LoopsNodeEdgeData();
@@ -54,24 +55,30 @@ public:
         bool visited;
     };
 
+    // describes one node in the graph
+    // has information about each edge going from the node
+    // those edges are sorted depending on the angle
     struct LoopsNode
     {
         void insertEdge(int endNode, int edgeIdx, bool reverse,  double angle);
         bool hasUnvisited();
         LoopsNodeEdgeData startLoop();
         LoopsNodeEdgeData continueLoop(int previousNode);
-        void setVisited(int index) {data[index].visited = true;}
+        void setVisited(int index) {nodeEdges[index].visited = true;}
 
-        QList<LoopsNodeEdgeData> data;
+        QList<LoopsNodeEdgeData> nodeEdges;
     };
 
+    // describes the graph
+    // holds list of LoopsNode, which corresponds to vertices in the geometry
+    // each LoopsNode has information about each edge going from it and nodes connected to it by this edge
     struct LoopsGraph
     {
         LoopsGraph(int numNodes);
         void addEdge(int startNode, int endNode, int edgeIdx, double angle);
         void print();
 
-        QList<LoopsNode> data;
+        QList<LoopsNode> nodes;
     };
 
     struct Triangle

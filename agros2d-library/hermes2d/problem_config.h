@@ -192,6 +192,8 @@ public:
         View_ParticleCustomForceX,
         View_ParticleCustomForceY,
         View_ParticleCustomForceZ,
+        View_ParticleP2PElectricForce,
+        View_ParticleP2PMagneticForce,
         View_ChartStartX,
         View_ChartStartY,
         View_ChartEndX,

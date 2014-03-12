@@ -70,6 +70,9 @@ public:
     void getCustomForce(vector<double> &force) const;
     void setCustomForce(const vector<double> &force);
 
+    inline bool getElectromagneticInteraction() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectricForce).toBool(); }
+    void setElectromagneticInteraction(bool interaction) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleP2PElectricForce, interaction); }
+
     // butcher table
     std::string getButcherTableType() const
     {
@@ -122,17 +125,18 @@ public:
     void setNumShowParticlesAxi(int particles);
 
     // solve
-    void solve();
-    void positions(vector<double> &x, vector<double> &y, vector<double> &z) const;
-    void velocities(vector<double> &x, vector<double> &y, vector<double> &z) const;
-    void times(vector<double> &time) const;
-    inline int length() const { return m_positions.length(); }
+    void solve(const vector<vector<double> > &initialPositions, const vector<vector<double> > &initialVelocities,
+               const vector<double> &particleCharges, const vector<double> &particleMasses);
+
+    void positions(vector<vector<double> > &x, vector<vector<double> > &y, vector<vector<double> > &z) const;
+    void velocities(vector<vector<double> > &vx, vector<vector<double> > &vy, vector<vector<double> > &vz) const;
+    void times(vector<vector<double> > &t) const;
 
 private:
-    // position and velocity
-    QList<Point3> m_positions;
-    QList<Point3> m_velocities;
-    QList<double> m_times;
+    // position, velocity and time
+    QList<QList<Point3> > m_positions;
+    QList<QList<Point3> > m_velocities;
+    QList<QList<double> > m_times;
 };
 
 #endif // PYTHONLABPARTICLETRACING_H
