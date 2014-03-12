@@ -184,7 +184,7 @@ bool SystemUtils::isProcessRunning(int pid)
 #endif
 }
 
-void cpuID(unsigned i, int regs[4]) {
+void cpuID(unsigned i, unsigned int regs[4]) {
 #ifdef _WIN32
     __cpuid((int *)regs, (int)i);
 #else
@@ -194,7 +194,7 @@ void cpuID(unsigned i, int regs[4]) {
 
 QString SystemUtils::cpuType()
 {
-    int CPUInfo[4] = {-1};
+    unsigned int CPUInfo[4];
     unsigned nExIds, i =  0;
     char CPUBrandString[0x40];
     // Get the information associated with each extended ID.
