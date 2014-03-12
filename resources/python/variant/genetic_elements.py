@@ -6,7 +6,7 @@ from copy import deepcopy
 class GeneticInfo:
     @staticmethod
     def populationFrom(member):
-        return member.info["population_from"]
+        return int(member.info["population_from"])
 
     @staticmethod
     def setPopulationFrom(member, value):
@@ -14,7 +14,7 @@ class GeneticInfo:
 
     @staticmethod
     def populationTo(member):
-        return member.info["population_to"]
+        return int(member.info["population_to"])
 
     @staticmethod
     def setPopulationTo(member, value):

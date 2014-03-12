@@ -824,9 +824,6 @@ QDomNode OptilabWindow::readVariant(const QString fileName)
 
 void OptilabWindow::addVariants()
 {
-    QTime time;
-    time.start();
-
     // clear results
     QDomNode results = docXML.elementsByTagName("results").at(0);
     docXML.documentElement().removeChild(results);
@@ -1091,6 +1088,7 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
         index = outputVariables.variables().keys().at(ind);
     }
 
+
     if (index != -1)
     {
         trvVariants->topLevelItem(index)->setSelected(true);
@@ -1098,4 +1096,5 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
 
         variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->topLevelItem(index)->data(0, Qt::UserRole).toString()));
     }
+
 }
