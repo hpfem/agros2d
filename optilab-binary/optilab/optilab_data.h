@@ -52,6 +52,7 @@ private:
 class OutputVariablesAnalysis
 {
 public:
+    OutputVariablesAnalysis() { m_cacheUpToDate = false;}
     inline QMap<int, QList<OutputVariable> > variables() const { return m_variables; }
 
     void append(int index, const QList<OutputVariable> &variables);
@@ -59,11 +60,16 @@ public:
     void clear();
 
     QStringList names(bool onlyNumbers = false) const;
-    QVector<double> values(const QString &name) const;
+    QVector<double> values(const QString &name);
     double value(int index, const QString &name) const;
 
 private:
+
+    void updateCache();
     QMap<int, QList<OutputVariable> > m_variables;
+
+    QMap<QString, QVector<double> > m_variablesCache;
+    bool m_cacheUpToDate;
 };
 
 #endif // OPTILABDATA_H

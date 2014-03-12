@@ -66,6 +66,7 @@ int OutputVariable::size() const
 void OutputVariablesAnalysis::append(int index, const QList<OutputVariable> &variables)
 {
     m_variables[index] = variables;
+    m_cacheUpToDate = false;
 }
 
 void OutputVariablesAnalysis::clear()
@@ -74,6 +75,7 @@ void OutputVariablesAnalysis::clear()
         varList.clear();
 
     m_variables.clear();
+    m_cacheUpToDate = false;
 }
 
 QStringList OutputVariablesAnalysis::names(bool onlyNumbers) const
@@ -95,23 +97,35 @@ QStringList OutputVariablesAnalysis::names(bool onlyNumbers) const
     return nms;
 }
 
-QVector<double> OutputVariablesAnalysis::values(const QString &name) const
+void OutputVariablesAnalysis::updateCache()
 {
-    QVector<double> vals;
+    m_variablesCache.clear();
+    if(variables().size() == 0)
+        return;
 
-    for (int i = 0; i < size(); i++)
+    QList<OutputVariable> variableList = variables().values().at(0);
+    foreach (OutputVariable variable, variableList)
+        m_variablesCache.insert(variable.name(), QVector<double>());
+
+    foreach(QList<OutputVariable> variableList, variables())
     {
-        for (int j = 0; j < m_variables.values().at(i).size(); j++)
+        foreach (OutputVariable variable, variableList)
         {
-            const OutputVariable *variable = &m_variables.values().at(i).at(j);
-
-            if (variable->name() == name)
-                vals.append(variable->number());
+            m_variablesCache[variable.name()].append(variable.number());
         }
     }
 
-    return vals;
+    m_cacheUpToDate = true;
 }
+
+QVector<double> OutputVariablesAnalysis::values(const QString &name)
+{
+    if(!m_cacheUpToDate)
+        updateCache();
+
+    return m_variablesCache[name];
+}
+
 
 double OutputVariablesAnalysis::value(int index, const QString &name) const
 {
@@ -127,3 +141,18 @@ double OutputVariablesAnalysis::value(int index, const QString &name) const
 
     assert(0);
 }
+
+// the following implementation of value would have different meaning in the case that keys in
+// variables are not 0, 1, 2, ... max
+// but now, on the other hand, values(name)[index] != value(name, index)
+// this is probably not good!
+
+//double OutputVariablesAnalysis::value(int index, const QString &name)
+//{
+//    if(!m_cacheUpToDate)
+//        updateCache();
+
+//    assert(m_variables.contains(index));
+
+//    return m_variablesCache[name].at(index);
+//}
