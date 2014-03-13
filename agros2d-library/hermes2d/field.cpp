@@ -166,7 +166,7 @@ QList<QWeakPointer<Value> > FieldInfo::valuePointerTable(QString id) const
     // In such a case, constructed special function should never been actualy used, so null pointer wil not be dereferenced
     // This is not very safe (previously we had assert here), but has been done due to efficiency reasons.
     if(!m_valuePointersTable.contains(id))
-        return nullptr;
+        return QList<QWeakPointer<Value> >();
 
     return m_valuePointersTable[id];
 }
