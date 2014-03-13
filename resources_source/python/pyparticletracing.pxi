@@ -30,8 +30,10 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         void getCustomForce(vector[double] &force) except +
         void setCustomForce(vector[double] &force) except +
 
-        bool getElectromagneticInteraction()
-        void setElectromagneticInteraction(bool interaction)
+        bool getElectrostaticInteraction()
+        void setElectrostaticInteraction(bool interaction)
+        bool getMagneticInteraction()
+        void setMagneticInteraction(bool interaction)
 
         bool getIncludeRelativisticCorrection()
         void setIncludeRelativisticCorrection(bool incl)
@@ -226,11 +228,17 @@ cdef class __ParticleTracing__:
         def __set__(self, force):
             self.thisptr.setCustomForce(list_to_double_vector(force))
 
-    property electromagnetic_interaction:
+    property electrostatic_interaction:
         def __get__(self):
-            return self.thisptr.getElectromagneticInteraction()
+            return self.thisptr.getElectrostaticInteraction()
         def __set__(self, interaction):
-            self.thisptr.setElectromagneticInteraction(interaction)
+            self.thisptr.setElectrostaticInteraction(interaction)
+
+    property magnetic_interaction:
+        def __get__(self):
+            return self.thisptr.getMagneticInteraction()
+        def __set__(self, interaction):
+            self.thisptr.setMagneticInteraction(interaction)
 
     property butcher_table_type:
         def __get__(self):
