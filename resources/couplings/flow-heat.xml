@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd"
+    xmlns:module="XMLModule">
+<module:coupling>
+
+    <module:general_coupling id="flow-heat" name="Thermodynamics">
+        <module:description>Heat transfer in flowing fluids
+        </module:description>
+        <module:modules>
+            <module:source id="flow" />
+            <module:target id="heat" />
+        </module:modules>
+    </module:general_coupling>
+
+    <module:constants />
+
+    <module:volume>
+        <module:matrix_form id="weak" i="1" j="1" planar="he_rho * he_cp * (source1 * udx + source2 * udy) * vval" axi="he_rho * he_cp * (source1 * udr + source2 * udz) * r * vval"/>
+
+<!--todo: lisi se tim, ktery clen (jestli teplotni nebo rychlost) vezmu z predchozi newtonovy iterace
+todo: prvni zpusob nekonverguje, druhy ano. Proc?-->
+<!--        <module:matrix_form id="hard_matrix_1" i="4" j="1" planar="he_rho * he_cp * uval * dx4 * vval" axi="he_rho * he_cp * uval * dr4 * r * vval"/>
+        <module:matrix_form id="hard_matrix_2" i="4" j="2" planar="he_rho * he_cp * uval * dy4 * vval" axi="he_rho * he_cp * uval * dz4 * r * vval"/>-->
+        <module:matrix_form id="hard_matrix_1" i="4" j="4" planar="he_rho * he_cp * value1 * udx * vval" axi="he_rho * he_cp * value1 * udr * r * vval"/>
+        <module:matrix_form id="hard_matrix_2" i="4" j="4" planar="he_rho * he_cp * value2 * udy * vval" axi="he_rho * he_cp * value2 * udz * r * vval"/>
+
+
+        <module:weakforms_volume>
+            <module:weakform_volume couplingtype="weak" sourceanalysis="steadystate" analysistype="steadystate" equation="">
+                <module:linearity_option type="linear">
+                    <module:matrix_form id="weak" />
+                </module:linearity_option>
+            </module:weakform_volume>
+
+            <module:weakform_volume couplingtype="hard" sourceanalysis="steadystate" analysistype="steadystate" equation="">
+                <module:linearity_option type="newton">
+                    <module:matrix_form id="hard_matrix_1"/>
+                    <module:matrix_form id="hard_matrix_2"/>
+                    <module:vector_form id="hard_matrix_1" variant="residual"/>
+                    <module:vector_form id="hard_matrix_2" variant="residual"/>
+                </module:linearity_option>
+            </module:weakform_volume>
+
+            <module:weakform_volume couplingtype="weak" sourceanalysis="transient" analysistype="transient" equation="">
+                <module:linearity_option type="linear">
+                    <module:matrix_form id="weak" />
+                </module:linearity_option>
+            </module:weakform_volume>
+
+        </module:weakforms_volume>
+    </module:volume>
+    </module:coupling>
+</module:module>

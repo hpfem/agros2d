@@ -264,6 +264,7 @@ set(info resources/modules/acoustic.xml
          resources/couplings/current-heat.xml
          resources/couplings/heat-elasticity.xml
          resources/couplings/magnetic-heat.xml
+         resources/couplings/flow-heat.xml
          resources/python/functions_agros2d.py
          resources/python/functions_pythonlab.py
          resources/templates/generator/coupling_CMakeLists_txt.tpl
@@ -285,8 +286,8 @@ set(info resources/modules/acoustic.xml
          resources/templates/generator/module_CMakeLists_txt.tpl
          resources/templates/generator/weakform_cpp.tpl
          resources/templates/generator/weakform_h.tpl
-         resources/templates/generator/coupling_weakform_cpp.tpl
-         resources/templates/generator/coupling_weakform_h.tpl
+         resources/templates/generator/extfunction_cpp.tpl
+         resources/templates/generator/extfunction_h.tpl
          resources/templates/generator/plugins_CMakeLists_txt.tpl
          resources/templates/generator/interface_cpp.tpl
          resources/templates/generator/doc_index.tpl

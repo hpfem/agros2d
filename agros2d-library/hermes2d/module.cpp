@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "module.h"
+#include "weak_form.h"
 #include "field.h"
 #include "block.h"
 #include "problem.h"
@@ -66,7 +67,7 @@ QMap<QString, QString> Module::availableModules()
             try
             {
                 // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
-                bool validateAtTheBeginning = false;
+                bool validateAtTheBeginning = true;
                 ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
                 if(validateAtTheBeginning)
                 {
@@ -76,9 +77,11 @@ QMap<QString, QString> Module::availableModules()
                 std::auto_ptr<XMLModule::module> module_xsd(XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
 
                 XMLModule::module *mod = module_xsd.get();
+                assert(mod->field().present());
+                XMLModule::field *field = &mod->field().get();
 
                 // module name
-                modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
+                modules[filename.left(filename.size() - 4)] = QString::fromStdString(field->general_field().name());
             }
             catch (const xml_schema::expected_element& e)
             {
@@ -135,7 +138,7 @@ QMap<QString, QString> Module::availableModules()
 
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
-    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block), m_offsetCouplingExt(0), m_offsetPreviousTimeExt(0)
+    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)
 {
     m_bdf2Table = new BDF2ATable;
 }
@@ -154,18 +157,20 @@ WeakFormAgros<Scalar>::~WeakFormAgros()
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
-                                            const QString &area, FormInfo *form,
-                                            Marker* markerSource, Material *markerTarget,
-                                            int offsetI, int offsetJ, int *offsetPreviousTimeExt, int *offsetCouplingExt)
+Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind type, const ProblemID problemId,
+                                        const QString &area, FormInfo *form, Material* markerSource, Marker *markerTarget)
 {
-    QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
-                problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
+    assert(problemId.targetFieldId != "");
+    assert(problemId.analysisTypeTarget != AnalysisType_Undefined);
+    assert(markerTarget != nullptr);
+
+    QString fieldId = (problemId.analysisTypeSource == AnalysisType_Undefined) ?
+                problemId.targetFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
     PluginInterface *plugin = NULL;
     try
     {
-        if (markerTarget)
+        if (markerSource)
             plugin = Agros2D::problem()->couplingInfo(markerSource->fieldId(), markerTarget->fieldId())->plugin();
         else
             plugin = Agros2D::problem()->fieldInfo(fieldId)->plugin();
@@ -181,12 +186,14 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 
     if (type == WeakForm_MatVol)
     {
-        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, offsetI, offsetJ,
-                                                                          static_cast<Material *>(markerSource));
-        if (!weakFormAgros) return NULL;
+        MatrixFormVolAgros<double> *weakFormAgros = plugin->matrixFormVol(problemId, form, this, static_cast<Material *>(markerTarget));
+        if (!weakFormAgros)
+        {
+            return NULL;
+        }
 
         // volume
-        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
 
@@ -201,23 +208,21 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_MatSurf)
     {
-        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form, offsetI, offsetJ,
-                                                                            static_cast<Boundary *>(markerSource));
+        MatrixFormSurfAgros<double> *weakFormAgros = plugin->matrixFormSurf(problemId, form, this, static_cast<Boundary *>(markerTarget));
         if (!weakFormAgros) return NULL;
 
         // source marker
-        weakFormAgros->setMarkerSource(markerSource);
+        weakFormAgros->setMarkerTarget(markerTarget);
 
         weakForm = weakFormAgros;
     }
     else if (type == WeakForm_VecVol)
     {
-        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, offsetI, offsetJ,
-                                                                          static_cast<Material *>(markerSource), offsetPreviousTimeExt, offsetCouplingExt);
+        VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, this, static_cast<Material *>(markerTarget));
         if (!weakFormAgros) return NULL;
 
         // volume
-        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
 
@@ -230,12 +235,11 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     }
     else if (type == WeakForm_VecSurf)
     {
-        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form, offsetI, offsetJ,
-                                                                            static_cast<Boundary *>(markerSource));
+        VectorFormSurfAgros<double> *weakFormAgros = plugin->vectorFormSurf(problemId, form, this, static_cast<Boundary *>(markerTarget));
         if (!weakFormAgros) return NULL;
 
         // source marker
-        weakFormAgros->setMarkerSource(markerSource);
+        weakFormAgros->setMarkerTarget(markerTarget);
 
         weakForm = weakFormAgros;
     }
@@ -269,17 +273,17 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker* marker)
+void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, Marker* marker)
 {
     ProblemID problemId;
 
-    problemId.sourceFieldId = field->fieldInfo()->fieldId();
-    problemId.analysisTypeSource = field->fieldInfo()->analysisType();
+    problemId.targetFieldId = field->fieldInfo()->fieldId();
+    problemId.analysisTypeTarget = field->fieldInfo()->analysisType();
     problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, &m_offsetPreviousTimeExt, NULL);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, NULL, marker);
 
     // weakform with zero coefficients
     if (!custom_form) return;
@@ -287,7 +291,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     // set time discretisation table
     if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
     {
-        dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(&m_bdf2Table);
+        dynamic_cast<FormAgrosInterface<Scalar> *>(custom_form)->setTimeDiscretisationTable(&m_bdf2Table);
     }
 
     addForm(type, custom_form);
@@ -295,7 +299,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ,
+void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     ProblemID problemId;
@@ -308,11 +312,16 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     problemId.linearityType = materialTarget->fieldInfo()->linearityType();
     problemId.couplingType = couplingInfo->couplingType();
 
+    qDebug() << "register form coupling " << materialSource->fieldId() << ", " << materialTarget->fieldId();
+
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ, &m_offsetPreviousTimeExt, &m_offsetCouplingExt);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, materialSource, materialTarget);
     // weakform with zero coefficients
-    if (!custom_form) return;
+    if (!custom_form)
+    {
+        qDebug() << "No such coupling form found";
+        return;
+    }
 
     // TODO at the present moment, it is impossible to have more sources !
     //assert(field->m_couplingSources.size() <= 1);
@@ -328,10 +337,16 @@ template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms()
 {
     m_numberOfForms = 0;
+
+    foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
+        fieldInfo->createValuePointerTable();
+
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
+
         fieldInfo->createValuePointerTable();
+        m_positionInfos[fieldInfo->numberId()].formsOffset = m_block->offset(field);
 
         // boundary conditions
         for (int edgeNum = 0; edgeNum<Agros2D::scene()->edges->count(); edgeNum++)
@@ -342,12 +357,18 @@ void WeakFormAgros<Scalar>::registerForms()
                 Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
 
                 foreach (FormInfo expression, boundaryType.wfMatrixSurface())
-                    registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression,
-                                 m_block->offset(field), m_block->offset(field), boundary);
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
+                    registerForm(WeakForm_MatSurf, field, QString::number(edgeNum), expression, boundary);
+                }
 
                 foreach (FormInfo expression, boundaryType.wfVectorSurface())
-                    registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression,
-                                 m_block->offset(field), m_block->offset(field), boundary);
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
+                    registerForm(WeakForm_VecSurf, field, QString::number(edgeNum), expression, boundary);
+                }
             }
         }
 
@@ -361,26 +382,54 @@ void WeakFormAgros<Scalar>::registerForms()
             if (material != Agros2D::scene()->materials->getNone(fieldInfo))
             {
                 foreach (FormInfo expression, wfMatrixVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
-                    registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
-                                 m_block->offset(field), m_block->offset(field), material);
-
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
+                    registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression, material);
+                }
 
                 foreach (FormInfo expression, wfVectorVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
-                    registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
-                                 m_block->offset(field), m_block->offset(field), material);
+                {
+                    expression.i += m_block->offset(field);
+                    expression.j += m_block->offset(field);
+                    registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression, material);
+                }
 
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->couplingInfos())
                 {
-                    foreach (FormInfo expression, couplingInfo->wfVectorVolume())
+                    foreach (FormInfo expression, couplingInfo->wfVectorVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(),
+                                                                                        couplingInfo->sourceField()->analysisType(),
+                                                                                        couplingInfo->targetField()->analysisType(),
+                                                                                        couplingInfo->couplingType(),
+                                                                                        couplingInfo->linearityType()))
                     {
                         SceneMaterial* materialSource = Agros2D::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
                         assert(materialSource);
 
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
-                            registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
+                            expression.i += m_block->offset(field);
+                            expression.j += m_block->offset(field);
+                            registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression, materialSource, material, couplingInfo);
+                        }
+                    }
+
+                    // todo remove code repetition
+                    foreach (FormInfo expression, couplingInfo->wfMatrixVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(),
+                                                                                        couplingInfo->sourceField()->analysisType(),
+                                                                                        couplingInfo->targetField()->analysisType(),
+                                                                                        couplingInfo->couplingType(),
+                                                                                        couplingInfo->linearityType()))
+                    {
+                        SceneMaterial* materialSource = Agros2D::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
+                        assert(materialSource);
+
+                        if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
+                        {
+                            expression.i += m_block->offset(field);
+                            expression.j += m_block->offset(field);
+                            registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), expression, materialSource, material, couplingInfo);
                         }
                     }
                 }
@@ -407,15 +456,22 @@ void WeakFormAgros<Scalar>::registerForms()
 
                     qDebug() << "hard coupling form on marker " << labelNum;
 
-                    foreach (FormInfo pars, couplingInfo->wfMatrixVolume())
-                        registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
-                                             m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo);
+                    qDebug() << "stav: offset source " << m_block->offset(sourceField) << ", target " << m_block->offset(targetField) << ", ns" << sourceField->fieldInfo()->numberOfSolutions();
+                    foreach (FormInfo expression, couplingInfo->wfMatrixVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
+                    {
+                        expression.i += m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions();
+                        expression.j += m_block->offset(sourceField);
+                        qDebug() << "(i, j) = " << expression.i << ", " << expression.j;
+                        registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), expression, sourceMaterial, targetMaterial, couplingInfo);
+                    }
 
-                    foreach (FormInfo pars, couplingInfo->wfVectorVolume())
-                        registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
-                                             m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo);
+                    foreach (FormInfo expression, couplingInfo->wfVectorVolumeSeparated(&couplingInfo->plugin()->coupling()->volume(), sourceField->fieldInfo()->analysisType(), targetField->fieldInfo()->analysisType(), couplingInfo->couplingType(), couplingInfo->linearityType()))
+                    {
+                        expression.i += m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions();
+                        expression.j += m_block->offset(sourceField);
+                        qDebug() << "(i, j) = " << expression.i << ", " << expression.j;
+                        registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression, sourceMaterial, targetMaterial, couplingInfo);
+                    }
 
                 }
             }
@@ -425,187 +481,234 @@ void WeakFormAgros<Scalar>::registerForms()
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::updateExtField()
+Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const
 {
-    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
+    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > result;
 
-    // todo: new values handling is not ready for hard coupling: offsets have to be used
-    assert(m_block->fields().size() == 1);
-    foreach(Field* field, m_block->fields())
+    XMLModule::field* module = fieldInfo->plugin()->module();
+    ProblemID problemId;
+    problemId.targetFieldId = fieldInfo->fieldId();
+    problemId.analysisTypeTarget = fieldInfo->analysisType();
+    problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
+    problemId.linearityType = fieldInfo->linearityType();
+
+    assert(fieldInfo->numberId() < MAX_FIELDS);
+
+    XMLModule::weakform_volume weakform = module->volume().weakforms_volume().weakform_volume().at(0);
+    foreach(XMLModule::weakform_volume weakformTest, module->volume().weakforms_volume().weakform_volume())
     {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        XMLModule::module* module = fieldInfo->plugin()->module();
-        ProblemID problemId;
-        problemId.sourceFieldId = fieldInfo->fieldId();
-        problemId.analysisTypeSource = fieldInfo->analysisType();
-        problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
-        problemId.linearityType = fieldInfo->linearityType();
-        int offsetI = m_block->offset(field);
-
-        XMLModule::weakform_volume weakform = module->volume().weakforms_volume().weakform_volume().at(0);
-        foreach(XMLModule::weakform_volume weakformTest, module->volume().weakforms_volume().weakform_volume())
+        if(analysisTypeFromStringKey(QString::fromStdString(weakformTest.analysistype())) == fieldInfo->analysisType())
         {
-            if(analysisTypeFromStringKey(QString::fromStdString(weakformTest.analysistype())) == fieldInfo->analysisType())
+            weakform = weakformTest;
+            break;
+        }
+    }
+
+    // first register Values
+    QMap<QString, int> quantityOrdering;
+    QMap<QString, bool> quantityIsNonlin;
+    QMap<QString, int> functionOrdering;
+    Module::volumeQuantityProperties(module, quantityOrdering, quantityIsNonlin, functionOrdering);
+    QList<int> numbers = quantityOrdering.values();
+    qSort(numbers);
+    foreach(int index, numbers)
+    {
+        QString quantityID = quantityOrdering.key(index);
+
+        bool containedInAnalysis = false;
+        foreach(XMLModule::quantity quantity, weakform.quantity())
+        {
+            if(QString::fromStdString(quantity.id()) == quantityID)
             {
-                weakform = weakformTest;
+                containedInAnalysis = true;
                 break;
             }
         }
 
-        // first register Values
-        QMap<QString, int> quantityOrdering;
-        QMap<QString, bool> quantityIsNonlin;
-        QMap<QString, int> functionOrdering;
-        Module::volumeQuantityProperties(module, quantityOrdering, quantityIsNonlin, functionOrdering);
-        QList<int> numbers = quantityOrdering.values();
-        qSort(numbers);
-        foreach(int index, numbers)
+        Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
+        if(containedInAnalysis)
         {
-            QString quantityID = quantityOrdering.key(index);
-
-            bool containedInAnalysis = false;
-            foreach(XMLModule::quantity quantity, weakform.quantity())
-            {
-                if(QString::fromStdString(quantity.id()) == quantityID)
-                {
-                    containedInAnalysis = true;
-                    break;
-                }
-            }
-
-            Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
-            if(containedInAnalysis)
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, offsetI));
-            else
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
-
-            assert(externalUSlns.size() == index);
-            externalUSlns.push_back(extFunction);
-
-            // for nonlinear quantities, register derivative as well
-            if(quantityIsNonlin[quantityID])
-            {
-                extFunction = NULL;
-                if(containedInAnalysis)
-                    extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, offsetI));
-                else
-                    // pass an empty functions if the quantity is not contained in the given analysis
-                    // the reason is that we can use uniform indexing ext[n] in the weak forms (the same n for all analysis)
-                    // as a result we can generate only one variant of each form (although there are more variants of ext functions because of different dependencies of nonlinear and time dependent terms)
-                    extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
-
-                assert(extFunction);
-                assert(externalUSlns.size() - 1 == index);
-                externalUSlns.push_back(extFunction);
-            }
+            bool linearizeThis = quantityIsNonlin[quantityID] && linearize;
+            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, linearizeThis, this));
+        }
+        else
+        {
+            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
         }
 
-        // register special ext functions
-        numbers = functionOrdering.values();
-        qSort(numbers);
+        result.push_back(extFunction);
 
-        foreach(int index, numbers)
+        // for nonlinear quantities, register derivative as well
+        if(quantityIsNonlin[quantityID])
         {
-            QString functionID = functionOrdering.key(index);
-
-            bool containedInAnalysis = false;
-            foreach(XMLModule::function_use functionUse, weakform.function_use())
-            {
-                if(QString::fromStdString(functionUse.id()) == functionID)
-                {
-                    containedInAnalysis = true;
-                    break;
-                }
-            }
-            Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
-            if(containedInAnalysis)
-            {
-                Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, offsetI);
-                assert(extFunctionPtr);
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
-            }
+            extFunction = NULL;
+            if(containedInAnalysis && !linearize)
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, false, this));
             else
+                // pass an empty functions if the quantity is not contained in the given analysis or should be linearized
+                // the reason is that we can use uniform indexing ext[n] in the weak forms (the same n for all analysis)
+                // as a result we can generate only one variant of each form (although there are more variants of ext functions because of different dependencies of nonlinear and time dependent terms)
                 extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
-            assert(externalUSlns.size() == index);
-            externalUSlns.push_back(extFunction);
+            assert(extFunction);
+            result.push_back(extFunction);
         }
     }
 
-    this->set_u_ext_fn(externalUSlns);
+    // register special ext functions
+    numbers = functionOrdering.values();
+    qSort(numbers);
 
-    // previous time steps solutions or solutions of coupled fields start after USlns
-    m_offsetPreviousTimeExt = externalUSlns.size();
-    m_offsetCouplingExt = externalUSlns.size();
+    foreach(int index, numbers)
+    {
+        QString functionID = functionOrdering.key(index);
 
-    FieldInfo* transientFieldInfo;
-    CouplingInfo* couplingInfo;
-    int numTransientFields = 0;
-    int numTotalCouplings = 0;
+        bool containedInAnalysis = false;
+        foreach(XMLModule::function_use functionUse, weakform.function_use())
+        {
+            if(QString::fromStdString(functionUse.id()) == functionID)
+            {
+                containedInAnalysis = true;
+                break;
+            }
+        }
+        Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
+        if(containedInAnalysis)
+        {
+            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, false, this);
+            assert(extFunctionPtr);
+            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
+        }
+        else
+            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
+
+        result.push_back(extFunction);
+    }
+
+    return result;
+}
+
+template <typename Scalar>
+Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const
+{
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
+
+    assert(m_bdf2Table);
+
+    //m_offsetCouplingExt = m_offsetPreviousTimeExt + m_bdf2Table->n() * transientFieldInfo->numberOfSolutions() ;
+
+    int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
+
+    for(int backLevel = 0; backLevel < m_bdf2Table->n(); backLevel++)
+    {
+        int timeStep = lastTimeStep - backLevel;
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+        FieldSolutionID solutionID(fieldInfo, timeStep, adaptivityStep, SolutionMode_Reference);
+        if(! Agros2D::solutionStore()->contains(solutionID))
+            solutionID.solutionMode = SolutionMode_Normal;
+        assert(Agros2D::solutionStore()->contains(solutionID));
+
+        for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
+            result.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
+    }
+
+    return result;
+}
+
+template <typename Scalar>
+Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
+{
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
+
+    FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Finer);
+
+    for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
+        result.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
+
+    return result;
+}
+
+
+template <typename Scalar>
+void WeakFormAgros<Scalar>::updateExtField()
+{
+    // implicit values. Values have to be renewed each step, since e.g.number of previous time solutions may vary due to changing BDF order
+    for(int i = 0; i < MAX_FIELDS; i++)
+        m_positionInfos[i] = PositionInfo();
+
+    // register two types of external functions. Quantities and special functions of all fields go to externalUSlns
+    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
+    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > fieldUExt;
+
+    // first push external functions related to source fields (source fields weakly coupled to some of the field in the block)
+    foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
+    {
+        // quantities have to be linearized (field that they depend on has allready been solved, now we are solving different
+        // field and thus 1. u_ext does not contain the source field and 2. it would be unnecessary anyway)
+        fieldUExt = quantitiesAndSpecialFunctions(fieldInfo, true);
+
+        m_positionInfos[fieldInfo->numberId()].numQuantAndSpecFun = fieldUExt.size();
+        m_positionInfos[fieldInfo->numberId()].quantAndSpecOffset = externalUSlns.size();
+        m_positionInfos[fieldInfo->numberId()].isSource = true;
+
+        externalUSlns.insert(externalUSlns.end(), fieldUExt.begin(), fieldUExt.end());
+    }
+
+    // next push external functions related to fields contained in the block (if more, than hard - coupled)
+    foreach(Field* field, m_block->fields())
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+
+        // inside the block use nonlinear quantities
+        fieldUExt = quantitiesAndSpecialFunctions(fieldInfo, false);
+
+        m_positionInfos[fieldInfo->numberId()].formsOffset = m_block->offset(field);
+        m_positionInfos[fieldInfo->numberId()].numQuantAndSpecFun = fieldUExt.size();
+        m_positionInfos[fieldInfo->numberId()].quantAndSpecOffset = externalUSlns.size();
+        m_positionInfos[fieldInfo->numberId()].isSource = false;
+
+        externalUSlns.insert(externalUSlns.end(), fieldUExt.begin(), fieldUExt.end());
+    }
+
+    // register second type of external functions. Weak coupling sources and previous time solutions go to externalSlns
+    // the numbering, however, have to be done together, since in ext field in forms, no difference is made
+    // by Hermes convention, USlns go first, than go Slns
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > fieldExt;
+
+    // push external solutions for previous time levels
+    // for each field, we add all field components of previous time level, than all components of time level -2, than all
+    // components of level -3, etc, depending of order of BDF used.
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            numTransientFields++;
-            transientFieldInfo = fieldInfo;
-        }
+            fieldExt = previousTimeLevelsSolutions(fieldInfo);
 
-        int numCouplings = field->couplingInfos().size();
+            m_positionInfos[fieldInfo->numberId()].numPreviousSolutions = fieldExt.size();
+            m_positionInfos[fieldInfo->numberId()].previousSolutionsOffset = externalUSlns.size() + externalSlns.size();
 
-        // only one coupling for one field so far
-        assert(numCouplings <= 1);
-        if(numCouplings)
-        {
-            couplingInfo = field->couplingInfos().at(0);
-            assert(couplingInfo->isWeak());
+            externalSlns.insert(externalSlns.end(), fieldExt.begin(), fieldExt.end());
         }
-        numTotalCouplings += numCouplings;
     }
 
-    // for more hard-coupled transient field changes in offsetExtTime have to be done
-    assert(numTransientFields <= 1);
-
-    // at the present moment, block can be influenced (weakly coupled with) only one other field. Otherwise changes in offsetExtTime have to be done
-    assert(numTotalCouplings <= 1);
-
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
-
-    // first push previous solutions for transient forms
-    if (numTransientFields >= 1)
+    // push external solution for weak couplings
+    foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
     {
-        assert(m_bdf2Table);
+        fieldExt = sourceCouplingSolutions(fieldInfo) ;
 
-        m_offsetCouplingExt = m_offsetPreviousTimeExt + m_bdf2Table->n() * transientFieldInfo->numberOfSolutions() ;
+        m_positionInfos[fieldInfo->numberId()].numPreviousSolutions = fieldExt.size();
+        m_positionInfos[fieldInfo->numberId()].previousSolutionsOffset = externalUSlns.size() + externalSlns.size();
 
-        int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
-
-        for(int backLevel = 0; backLevel < m_bdf2Table->n(); backLevel++)
-        {
-            int timeStep = lastTimeStep - backLevel;
-            int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(transientFieldInfo, SolutionMode_Normal, timeStep);
-            FieldSolutionID solutionID(transientFieldInfo, timeStep, adaptivityStep, SolutionMode_Reference);
-            if(! Agros2D::solutionStore()->contains(solutionID))
-                solutionID.solutionMode = SolutionMode_Normal;
-            assert(Agros2D::solutionStore()->contains(solutionID));
-
-            for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
-                externalSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
-        }
+        externalSlns.insert(externalSlns.end(), fieldExt.begin(), fieldExt.end());
     }
 
-    // push external solution for weak coupling
-    if(numTotalCouplings >= 1)
-    {
-        assert(externalUSlns.size() + externalSlns.size() == m_offsetCouplingExt);
-
-        FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
-
-        for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
-            externalSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
-    }
-
+    // set both types of external functions
+    this->set_u_ext_fn(externalUSlns);
     this->set_ext(externalSlns);
+
+    outputPositionInfos();
 }
 
 template <typename SectionWithTemplates>
@@ -773,101 +876,9 @@ QList<FormInfo> wfEssentialElements(XMLModule::boundary *boundary, AnalysisType 
     return weakForms;
 }
 
-void checkDuplicities(QList<FormInfo> list)
-{
-    for(int i = 0; i < list.size(); i++)
-    {
-        for(int j = 0; j < list.size(); j++)
-        {
-            if(i != j)
-            {
-                if(list[i].id == list[j].id)
-                    throw AgrosGeneratorException("Duplicities in forms");
-            }
-        }
-    }
-}
-
-FormInfo findFormInfo(QList<FormInfo> list, QString id)
-{
-    foreach(FormInfo form, list)
-    {
-        if(form.id == id)
-            return form;
-    }
-    throw AgrosGeneratorException(QString("Form %1 not found").arg(id));
-}
-
-// todo: implement properly. What if uval is part of some identifier?
-void replaceForVariant(QString& str, WeakFormVariant variant)
-{
-    if(variant == WeakFormVariant_Normal)
-    {
-    }
-    else if(variant == WeakFormVariant_Residual)
-    {
-        str.replace("uval", "upval");
-        str.replace("udx", "updx");
-        str.replace("udy", "updy");
-        str.replace("udr", "updr");
-        str.replace("udz", "updz");
-    }
-    else if(variant == WeakFormVariant_TimeResidual)
-    {
-        str.replace("uval", "uptval");
-        str.replace("udx", "uptdx");
-        str.replace("udy", "uptdy");
-        str.replace("udr", "uptdr");
-        str.replace("udz", "uptdz");
-    }
-    else
-        throw AgrosGeneratorException("Unknown form variant");
-}
-
-QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> templates, QList<FormInfo> templatesForResidual = QList<FormInfo>())
-{
-    checkDuplicities(templates);
-    checkDuplicities(elements);
-    QList<FormInfo> listResult;
-    foreach(FormInfo formElement, elements)
-    {
-        FormInfo formTemplate;
-        try
-        {
-            formTemplate = findFormInfo(templates, formElement.id);
-        }
-        catch(AgrosGeneratorException &err)
-        {
-            if(templatesForResidual.empty())
-                throw;
-            else
-                formTemplate = findFormInfo(templatesForResidual, formElement.id);
-        }
-
-        FormInfo formResult(formTemplate.id, formTemplate.i, formTemplate.j, formTemplate.sym_planar, formTemplate.sym_axi);
-        formResult.condition = formTemplate.condition;
-
-        if (formElement.coefficient != 1.)
-        {
-            formResult.expr_axi = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_axi);
-            formResult.expr_planar = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_planar);
-        }
-        else
-        {
-            formResult.expr_axi = formTemplate.expr_axi;
-            formResult.expr_planar = formTemplate.expr_planar;
-        }
-        replaceForVariant(formResult.expr_axi, formElement.variant);
-        replaceForVariant(formResult.expr_planar, formElement.variant);
-
-        listResult.push_back(formResult);
-    }
-
-    return listResult;
-}
 
 template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
 {
     QList<FormInfo> templates = wfMatrixTemplates(&module->volume());
     QList<FormInfo> elements = wfMatrixElements(&module->volume(), analysisType, linearityType);
@@ -876,7 +887,7 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::module
 }
 
 template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
 {
     QList<FormInfo> templatesVector = wfVectorTemplates(&module->volume());
     QList<FormInfo> templatesMatrix = wfMatrixTemplates(&module->volume());
@@ -1194,7 +1205,7 @@ void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<Hermes:
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 }
 
-void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType)
+void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::field *module, AnalysisType analysisType, LinearityType linearityType)
 
 {
     for (unsigned int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
@@ -1215,7 +1226,7 @@ void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::m
     }
 }
 
-void Module::volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder)
+void Module::volumeQuantityProperties(XMLModule::field *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder)
 {
     int nextIndex = 0;
     foreach(XMLModule::quantity quantity, module->volume().quantity())

@@ -26,27 +26,12 @@
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"
 
-{{#EXT_FUNCTION}}
-class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
-{
-public:
-    virtual void value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const;
-    {{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, int offsetI);
-    Hermes::Hermes2D::Function<double>* clone() const
-    {
-        return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_offsetI);
-    }
-protected:
-    const Value** {{QUANTITY_SHORTNAME}};
-};
-{{/EXT_FUNCTION}}
-
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                          Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const;
@@ -64,7 +49,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public VectorFormVolAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int* offsetPreviousTimeExt, int* offsetCouplingExt);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const;
@@ -83,7 +68,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormSurfAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const;
@@ -91,7 +76,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(const Marker *marker);
+    virtual void setMarkerTarget(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}
@@ -104,7 +89,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public VectorFormSurfAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ);
+    {{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros);
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                          Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const;
@@ -112,7 +97,7 @@ public:
                             Hermes::Hermes2D::Geom<Hermes::Ord> *e, Hermes::Hermes2D::Func<Hermes::Ord> **ext) const;
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(const Marker *marker);
+    virtual void setMarkerTarget(const Marker *marker);
 
 private:
     unsigned int j;
@@ -137,7 +122,7 @@ public:
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }
 
-    virtual void setMarkerSource(const Marker *marker);
+    virtual void setMarkerTarget(const Marker *marker);
 
 private:
     {{#VARIABLE_SOURCE}}

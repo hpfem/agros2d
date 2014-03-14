@@ -47,9 +47,11 @@ bool Field::solveInitVariables()
     return true;
 }
 
-FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
+int FieldInfo::numberIdNext = 0;
+
+FieldInfo::FieldInfo(QString fieldId)
     : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr), m_labelAreas(nullptr)
-{
+{    
     assert(!fieldId.isEmpty());
     m_fieldId = fieldId;
 
@@ -74,12 +76,15 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     // default analysis
     setAnalysisType(analyses().begin().key());
 
+    m_numberId = numberIdNext++;
+    qDebug() << "created FieldInfo " << m_fieldId << ", " << m_numberId;
 }
 
 FieldInfo::~FieldInfo()
 {
     delete m_plugin;
     deleteValuePointerTable();
+    numberIdNext--;
 }
 
 void FieldInfo::deleteValuePointerTable()
@@ -93,10 +98,6 @@ void FieldInfo::deleteValuePointerTable()
         delete[] m_labelAreas;
 
     m_labelAreas = nullptr;
-
-    foreach(const Value** pointers, m_valuePointersTable)
-        if(pointers)
-            delete[] pointers;
 
     m_valuePointersTable.clear();
 }
@@ -113,8 +114,8 @@ void FieldInfo::createValuePointerTable()
 
     for(int i = 0; i < num+1; i++)
     {
-        m_hermesMarkerToAgrosLabelConversion[i] = -10000;
-        m_labelAreas[i] = -10000;
+        m_hermesMarkerToAgrosLabelConversion[i] = LABEL_OUTSIDE_FIELD;
+        m_labelAreas[i] = LABEL_OUTSIDE_FIELD;
     }
 
     for(int labelIndex = 0; labelIndex < num; labelIndex++)
@@ -124,7 +125,7 @@ void FieldInfo::createValuePointerTable()
             Hermes::Hermes2D::Mesh::MarkersConversion::IntValid intValid = initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
             assert(intValid.valid);
             assert(intValid.marker <= num);
-            assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == -10000);
+            assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == LABEL_OUTSIDE_FIELD);
             m_hermesMarkerToAgrosLabelConversion[intValid.marker] = labelIndex;           
             m_labelAreas[labelIndex] = initialMesh()->get_marker_area(intValid.marker);
         }
@@ -132,7 +133,6 @@ void FieldInfo::createValuePointerTable()
 
 
     // values tables
-    if(m_valuePointersTable.empty());
     int labelsSize = Agros2D::scene()->labels->length();
     for(int labelNum = 0; labelNum < labelsSize; labelNum++)
     {
@@ -143,13 +143,13 @@ void FieldInfo::createValuePointerTable()
             {
                 if(! m_valuePointersTable.contains(variable.id()))
                 {
-                    m_valuePointersTable[variable.id()] = new const Value*[labelsSize];
+                    m_valuePointersTable[variable.id()] = QList<QWeakPointer<Value> >();
                     for(int i = 0; i < labelsSize; i++)
-                        m_valuePointersTable[variable.id()][i] = nullptr;
+                        m_valuePointersTable[variable.id()].push_back(QWeakPointer<Value>());
                 }
 
                 assert(m_valuePointersTable[variable.id()][labelNum] == nullptr);
-                m_valuePointersTable[variable.id()][labelNum] = material->valueNakedPtr(variable.id());
+                m_valuePointersTable[variable.id()][labelNum] = material->value(variable.id());
             }
         }
     }
@@ -158,7 +158,7 @@ void FieldInfo::createValuePointerTable()
     m_frequency = Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble();
 }
 
-const Value **FieldInfo::valuePointerTable(QString id) const
+QList<QWeakPointer<Value> > FieldInfo::valuePointerTable(QString id) const
 {
     assert(!m_valuePointersTable.isEmpty());
 
@@ -166,7 +166,7 @@ const Value **FieldInfo::valuePointerTable(QString id) const
     // In such a case, constructed special function should never been actualy used, so null pointer wil not be dereferenced
     // This is not very safe (previously we had assert here), but has been done due to efficiency reasons.
     if(!m_valuePointersTable.contains(id))
-        return nullptr;
+        return QList<QWeakPointer<Value> >();
 
     return m_valuePointersTable[id];
 }
@@ -193,7 +193,7 @@ void FieldInfo::setAnalysisType(AnalysisType at)
 {
     m_analysisType = at;
 
-    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+    foreach (XMLModule::analysis an, m_plugin->module()->general_field().analyses().analysis())
     {
         if (an.type() == analysisTypeToStringKey(at).toStdString())
         {
@@ -337,20 +337,20 @@ void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
 // name
 QString FieldInfo::name() const
 {
-    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general().name()));
+    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general_field().name()));
 }
 
 // description
 QString FieldInfo::description() const
 {
-    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general().description()));
+    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general_field().description()));
 }
 
 // deformable shape
 bool FieldInfo::hasDeformableShape() const
 {
-    if (m_plugin->module()->general().deformed_shape().present())
-        return m_plugin->module()->general().deformed_shape().get();
+    if (m_plugin->module()->general_field().deformed_shape().present())
+        return m_plugin->module()->general_field().deformed_shape().get();
 
     return false;
 }
@@ -395,9 +395,9 @@ QMap<AnalysisType, QString> FieldInfo::analyses() const
 {
     QMap<AnalysisType, QString> analyses;
 
-    for (unsigned int i = 0; i < m_plugin->module()->general().analyses().analysis().size(); i++)
+    for (unsigned int i = 0; i < m_plugin->module()->general_field().analyses().analysis().size(); i++)
     {
-        XMLModule::analysis an = m_plugin->module()->general().analyses().analysis().at(i);
+        XMLModule::analysis an = m_plugin->module()->general_field().analyses().analysis().at(i);
 
         analyses[analysisTypeFromStringKey(QString::fromStdString(an.id()))] = m_plugin->localeName(QString::fromStdString(an.name()));
     }

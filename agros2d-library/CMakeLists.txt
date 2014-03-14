@@ -87,6 +87,7 @@ SET(SOURCES value.cpp
     gui/valuedatatabledialog.cpp
     gui/valuelineedit.cpp
     hermes2d/marker.cpp
+    hermes2d/weak_form.cpp
     hermes2d/module.cpp
     hermes2d/solver.cpp
     hermes2d/solver_linear.cpp
@@ -149,7 +150,6 @@ SET(SOURCES value.cpp
     util/form_interface.cpp
     util/form_script.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
-    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/coupling_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/structure_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/material_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/problem_a2d_31_xml.cpp
@@ -181,6 +181,7 @@ SET(SOURCES value.cpp
     hermes2d/module.h
     hermes2d/problem.h
     hermes2d/problem_config.h
+    hermes2d/weak_form.h
     mainwindow.h
     scenebasic.h
     scenemarker.h

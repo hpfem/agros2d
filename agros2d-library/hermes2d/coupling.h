@@ -30,7 +30,6 @@ class FieldInfo;
 class ProblemConfig;
 class PluginInterface;
 
-
 class AGROS_LIBRARY_API CouplingList
 {
 public:
@@ -99,8 +98,8 @@ public:
     QMap<QString, double> constants();
 
     // weak forms
-    QList<FormInfo> wfMatrixVolume() const;
-    QList<FormInfo> wfVectorVolume() const;
+    static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::volume* volume, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::volume* volume, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType);
 
 private:
     /// plugin

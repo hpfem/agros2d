@@ -33,7 +33,8 @@
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
-#include "module.h"
+#include "weak_form.h"
+//#include "module.h"
 #include "coupling.h"
 #include "solver.h"
 #include "meshgenerator_triangle.h"
@@ -619,11 +620,11 @@ void Problem::solve(bool commandLine)
     // clear solution
     clearSolution();
 
-    if (numTransientFields() > 1)
-    {
-        Agros2D::log()->printError(tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
-        return;
-    }
+//    if (numTransientFields() > 1)
+//    {
+//        Agros2D::log()->printError(tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
+//        return;
+//    }
 
     if ((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
     {
@@ -792,6 +793,7 @@ void Problem::solveAction()
     {
         foreach (Block* block, m_blocks)
         {
+            qDebug() << "solving " << block->fields().at(0)->fieldInfo()->fieldId();
             if (block->isTransient() && (actualTimeStep() == 0))
             {
                 solvers[block]->solveInitialTimeStep();
