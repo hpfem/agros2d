@@ -21,6 +21,8 @@
 #define MESHGENERATOR_H
 
 #include "util.h"
+#include "hermes2d/field.h"
+#include "mesh.h"
 #include "util/loops.h"
 #ifdef Q_WS_X11
 #include <tr1/memory>
@@ -41,165 +43,179 @@ public:
 
     virtual bool mesh() = 0;
 
-    inline std::auto_ptr<XMLSubdomains::domain> xmldomain() { return m_xmldomain; }
+    inline Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes() { return m_meshes; }
 
 protected:
     struct MeshEdge
-    {
-        MeshEdge()
         {
-            this->node[0] = -1;
-            this->node[1] = -1;
-            this->marker = -1;
+            MeshEdge()
+            {
+                this->node[0] = -1;
+                this->node[1] = -1;
+                this->marker = -1;
 
-            this->isActive = true;
-            this->isUsed = true;
+                this->isActive = true;
+                this->isUsed = true;
 
-            this->neighElem[0] = -1;
-            this->neighElem[1] = -1;
-        }
+                this->neighElem[0] = -1;
+                this->neighElem[1] = -1;
+            }
 
-        MeshEdge(int node_1, int node_2, int marker)
+            MeshEdge(int node_1, int node_2, int marker)
+            {
+                this->node[0] = node_1;
+                this->node[1] = node_2;
+                this->marker = marker;
+
+                this->isActive = true;
+                this->isUsed = true;
+
+                this->neighElem[0] = -1;
+                this->neighElem[1] = -1;
+            }
+
+            bool contains(int node)
+            {
+                for(int i = 0; i < 2; i++)
+                    if(this->node[i] == node)
+                        return true;
+                return false;
+            }
+
+            int node[2], marker;
+            bool isActive, isUsed;
+            int neighElem[2];
+        };
+
+        struct MeshElement
         {
-            this->node[0] = node_1;
-            this->node[1] = node_2;
-            this->marker = marker;
+            MeshElement()
+            {
+                this->node[0] = -1;
+                this->node[1] = -1;
+                this->node[2] = -1;
+                this->node[3] = -1;
+                this->marker = -1;
 
-            this->isActive = true;
-            this->isUsed = true;
+                this->isActive = true;
+                this->isUsed = true;
+            }
 
-            this->neighElem[0] = -1;
-            this->neighElem[1] = -1;
-        }
+            MeshElement(int node_1, int node_2, int node_3, int marker)
+            {
+                this->node[0] = node_1;
+                this->node[1] = node_2;
+                this->node[2] = node_3;
+                this->node[3] = -1;
+                this->marker = marker;
 
-        bool contains(int node)
+                this->isActive = true;
+                this->isUsed = true;
+            }
+
+            MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
+            {
+                this->node[0] = node_1;
+                this->node[1] = node_2;
+                this->node[2] = node_3;
+                this->node[3] = node_4;
+                this->marker = marker;
+
+                this->isActive = true;
+                this->isUsed = true;
+            }
+
+            bool contains(int node)
+            {
+                for(int i = 0; i < isTriangle() ? 3 : 4; i++)
+                    if(this->node[i] == node)
+                        return true;
+                return false;
+            }
+
+            inline bool isTriangle() const { return (node[3] == -1); }
+
+            int node[4], marker;
+            bool isActive, isUsed;
+
+            int neigh[3];
+        };
+
+        struct MeshNode
         {
-            for(int i = 0; i < 2; i++)
-                if(this->node[i] == node)
-                    return true;
-            return false;
-        }
+            MeshNode()
+            {
+                this->n = -1;
+                this->x = -1;
+                this->y = -1;
+                this->marker = -1;
+            }
 
-        int node[2], marker;
-        bool isActive, isUsed;
-        int neighElem[2];
-    };
+            MeshNode(int n, double x, double y, int marker)
+            {
+                this->n = n;
+                this->x = x;
+                this->y = y;
+                this->marker = marker;
+            }
 
-    struct MeshElement
-    {
-        MeshElement()
+            int n;
+            double x, y;
+            int marker;
+        };
+
+        struct MeshLabel
         {
-            this->node[0] = -1;
-            this->node[1] = -1;
-            this->node[2] = -1;
-            this->node[3] = -1;
-            this->marker = -1;
+            MeshLabel()
+            {
+                this->n = -1;
+                this->x = -1;
+                this->y = -1;
+                this->marker = -1;
+                this->area = -1;
+            }
 
-            this->isActive = true;
-            this->isUsed = true;
-        }
+            MeshLabel(int n, double x, double y, int marker, double area)
+            {
+                this->n = n;
+                this->x = x;
+                this->y = y;
+                this->marker = marker;
+                this->area = area;
+            }
 
-        MeshElement(int node_1, int node_2, int node_3, int marker)
-        {
-            this->node[0] = node_1;
-            this->node[1] = node_2;
-            this->node[2] = node_3;
-            this->node[3] = -1;
-            this->marker = marker;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
-        {
-            this->node[0] = node_1;
-            this->node[1] = node_2;
-            this->node[2] = node_3;
-            this->node[3] = node_4;
-            this->marker = marker;
-
-            this->isActive = true;
-            this->isUsed = true;
-        }
-
-        bool contains(int node)
-        {
-            for(int i = 0; i < isTriangle() ? 3 : 4; i++)
-                if(this->node[i] == node)
-                    return true;
-            return false;
-        }
-
-        inline bool isTriangle() const { return (node[3] == -1); }
-
-        int node[4], marker;
-        bool isActive, isUsed;
-
-        int neigh[3];
-    };
-
-    struct MeshNode
-    {
-        MeshNode()
-        {
-            this->n = -1;
-            this->x = -1;
-            this->y = -1;
-            this->marker = -1;
-        }
-
-        MeshNode(int n, double x, double y, int marker)
-        {
-            this->n = n;
-            this->x = x;
-            this->y = y;
-            this->marker = marker;
-        }
-
-        int n;
-        double x, y;
-        int marker;
-    };
-
-    struct MeshLabel
-    {
-        MeshLabel()
-        {
-            this->n = -1;
-            this->x = -1;
-            this->y = -1;
-            this->marker = -1;
-            this->area = -1;
-        }
-
-        MeshLabel(int n, double x, double y, int marker, double area)
-        {
-            this->n = n;
-            this->x = x;
-            this->y = y;
-            this->marker = marker;
-            this->area = area;
-        }
-
-        int n;
-        double x, y;
-        int marker;
-        double area;
-    };
-
+            int n;
+            double x, y;
+            int marker;
+            double area;
+        };
 
     QList<Point> nodeList;
     QList<MeshEdge> edgeList;
     QList<MeshElement> elementList;
 
-    bool writeToHermes();
+    /// Complete method translating the internal generator structures into m_meshes.
+    void writeToHermes();
+
+    /// Utility method serving the purpose of (potential) multi-mesh setup.
+    /// Translates the internal structures into the global mesh (of which every other mesh in the system is a submesh of).
+    /// \param[out] global_mesh The global mesh structure being filled by this method.
+    void writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshSharedPtr global_mesh);
+
+    /// Fills MeshEdge::neighElem structures for detecting subdomain boundaries etc.
+    void fillNeighborStructures();
+
+    /// Updates vertex nodes coordinates according to curvature on edges.
+    void moveNodesOnCurvedEdges();
+
+    /// Calculate the counts of elements, edges for a subdomain.
+    void getDataCountsForSingleSubdomain(FieldInfo* fieldInfo, int& element_number_count, int& boundary_edge_number_count, int& inner_edge_number_count);
+
     bool prepare();
 
     bool m_isError;
     QSharedPointer<QProcess> m_process;
-
-    std::auto_ptr<XMLSubdomains::domain> m_xmldomain;
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> m_meshes;
 };
 
 #endif //MESHGENERATOR_H
