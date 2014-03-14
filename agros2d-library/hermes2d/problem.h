@@ -4,6 +4,8 @@
 #include "util.h"
 #include "value.h"
 #include "solutiontypes.h"
+#include "meshgenerator_triangle.h"
+#include "meshgenerator_gmsh.h"
 
 class FieldInfo;
 class CouplingInfo;
@@ -149,7 +151,7 @@ public:
     void refuseLastTimeStepLength();
 
     // read initial meshes and solution
-    void readInitialMeshesFromFile(bool emitMeshed = true, std::auto_ptr<XMLSubdomains::domain> xmldomain = std::auto_ptr<XMLSubdomains::domain>());
+    void readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGenerator> meshGenerator = QSharedPointer<MeshGenerator>(nullptr));
     void readSolutionsFromFile();
 
     QList<QPair<double, bool> > timeStepHistory() const { return m_timeHistory; }
