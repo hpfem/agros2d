@@ -80,8 +80,8 @@ class TestParticleTracingPlanar(Agros2DTestCase):
         tracing.solve()
         x, y, z = tracing.positions()
         
-        self.value_test("Particle position", x[-1], 0.080043)
-        self.value_test("Particle position", y[-1], 0.015374)
+        self.value_test("Particle position", x[0][-1], 0.080043)
+        self.value_test("Particle position", y[0][-1], 0.015374)
 
 class TestParticleTracingAxisymmetric(Agros2DTestCase):
     def setUp(self): 
@@ -176,7 +176,7 @@ class TestParticleTracingAxisymmetric(Agros2DTestCase):
         tracing.solve()
         x, y, z = tracing.positions()
         
-        self.value_test("Particle position", x[-1], 0.004637)        
+        self.value_test("Particle position", x[0][-1], 0.004637)        
 
 if __name__ == '__main__':        
     import unittest as ut
