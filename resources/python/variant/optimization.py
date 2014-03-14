@@ -63,6 +63,9 @@ class ContinuousParameter(OptimizationParameter):
         actMin = max(self.min, original - maxDifference)
         actMax = min(self.max, original + maxDifference)
         return actMin + rnd.random() * (actMax - actMin)
+        
+    def intervalLength(self):
+        return self.max - self.min
 
 class DiscreteParameter(OptimizationParameter):
     def __init__(self, name, options):
