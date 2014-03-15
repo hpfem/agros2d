@@ -490,6 +490,20 @@ void MeshGenerator::writeToHermes()
             if (Hermes::HermesCommonApi.get_integral_param_value(Hermes::checkMeshesOnLoad))
                 m_meshes[subdomains_i]->initial_single_check();
         }
+
+        // save mesh file
+        Hermes::Hermes2D::MeshReaderH2DXML meshloader;
+        meshloader.set_validation(false);
+        try
+        {
+            QString fn = QString("%1/initial.msh").arg(cacheProblemDir());
+            meshloader.save(compatibleFilename(fn).toStdString().c_str(), m_meshes);
+        }
+        catch (Hermes::Exceptions::MeshLoadFailureException& e)
+        {
+            qDebug() << e.what();
+            throw;
+        }
     }
     catch (std::exception& e)
     {
