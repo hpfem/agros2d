@@ -871,6 +871,7 @@ void SceneViewParticleTracing::paintParticleTracing()
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_POINT_SMOOTH);
 
         // particle visualization
         for (int k = 0; k < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); k++)
@@ -887,14 +888,14 @@ void SceneViewParticleTracing::paintParticleTracing()
             glEnd();
             */
 
-            // lines
-            glLineWidth(3.0);
+            glColor3d(rand() / double(RAND_MAX),
+                      rand() / double(RAND_MAX),
+                      rand() / double(RAND_MAX));
 
+            // lines
             if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
             {
-                glColor3d(rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX),
-                          rand() / double(RAND_MAX));
+                glLineWidth(1.5 * EDGEWIDTH);
 
                 glBegin(GL_LINES);
                 for (int i = 0; i < m_positionsList[k].length() - 1; i++)
@@ -916,7 +917,9 @@ void SceneViewParticleTracing::paintParticleTracing()
                 // points
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool())
                 {
-                    glPointSize(EDGEWIDTH * 3.0/5.0);
+                    glColor3d(0.0, 0.0, 0.0);
+                    glPointSize(NODESIZE);
+
                     glBegin(GL_POINTS);
                     for (int i = 0; i < m_positionsList[k].length(); i++)
                     {
@@ -933,9 +936,7 @@ void SceneViewParticleTracing::paintParticleTracing()
 
                 for (int l = 0; l < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumShowParticlesAxi).toInt(); l++)
                 {
-                    glColor3d(rand() / double(RAND_MAX),
-                              rand() / double(RAND_MAX),
-                              rand() / double(RAND_MAX));
+                    glLineWidth(1.5 * EDGEWIDTH);
 
                     glBegin(GL_LINES);
                     for (int i = 0; i < m_positionsList[k].length() - 1; i++)
@@ -958,8 +959,10 @@ void SceneViewParticleTracing::paintParticleTracing()
                     // points
                     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool())
                     {
+                        glColor3d(0.0, 0.0, 0.0);
+                        glPointSize(NODESIZE);
+
                         glBegin(GL_POINTS);
-                        glPointSize(EDGEWIDTH * 3.0/5.0);
                         for (int i = 0; i < m_positionsList[k].length(); i++)
                         {
                             glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI),
@@ -974,6 +977,7 @@ void SceneViewParticleTracing::paintParticleTracing()
 
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_DEPTH_TEST);
+        glDisable(GL_POINT_SMOOTH);
 
         glEndList();
 
