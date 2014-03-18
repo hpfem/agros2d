@@ -166,4 +166,4 @@ void WeakFormAgros<Scalar>::outputPositionInfos()
     qDebug() << "**************End*************************";
 }
 
-template class WeakFormAgros<double>;
+template class AGROS_LIBRARY_API WeakFormAgros<double>;

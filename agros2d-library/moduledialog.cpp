@@ -2005,14 +2005,7 @@ QWidget *ModuleDialog::createPostprocessor()
 
 int ModuleDialog::numberOfSolutions(std::string analysisType)
 {
-//    for (int i = 0; i < module()->general_field().analyses().analysis().size(); i++)
-//    {
-//        XMLModule::analysis analysis = module()->general_field().analyses().analysis().at(i);
-//        if (analysis.id() == analysisType)
-//            return analysis.solutions();
-//    }
-
-//    return -1;
+    return -1;
 }
 
 void ModuleDialog::doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)

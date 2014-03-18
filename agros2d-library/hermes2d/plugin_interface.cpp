@@ -112,4 +112,9 @@ double AgrosSpecialExtFunction::getValue(int hermesMarker, double h) const
         return calculateValue(hermesMarker, h);
 }
 
-template class FormAgrosInterface<double>;
+template class AGROS_LIBRARY_API FormAgrosInterface<double>;
+template class AGROS_LIBRARY_API MatrixFormVolAgros<double>;
+template class AGROS_LIBRARY_API VectorFormVolAgros<double>;
+template class AGROS_LIBRARY_API MatrixFormSurfAgros<double>;
+template class AGROS_LIBRARY_API VectorFormSurfAgros<double>;
+template class AGROS_LIBRARY_API ExactSolutionScalarAgros<double>;
