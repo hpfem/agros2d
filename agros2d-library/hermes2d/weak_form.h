@@ -104,7 +104,22 @@ public:
     static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
     static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
 
-    inline const PositionInfo* positionInfo(int index) const {return &m_positionInfos[index]; }
+    inline const PositionInfo* positionInfo(int index) const { return &m_positionInfos[index]; }
+    inline void positionInfoBasicCheck(int index) const
+    {
+        const PositionInfo* positionInfo = &m_positionInfos[index];
+        if (positionInfo->formsOffset == INVALID_POSITION_INFO_VALUE)
+            throw Hermes::Exceptions::Exception("Unset form offset in positionInfo #%i.", index);
+        if (positionInfo->quantAndSpecOffset == INVALID_POSITION_INFO_VALUE)
+            throw Hermes::Exceptions::Exception("Unset quantAndSpec offset in positionInfo #%i.", index);
+    }
+    inline const PositionInfo* positionInfoSourceFieldInfoCheck(int index) const
+    {
+        const PositionInfo* positionInfo = &m_positionInfos[index];
+        if (positionInfo->previousSolutionsOffset == INVALID_POSITION_INFO_VALUE)
+            throw Hermes::Exceptions::Exception("Unset previous solutions offset in positionInfo #%i.", index);
+    }
+
     void outputPositionInfos();
 
     Offset offsetInfo(const FieldInfo *sourceFieldInfo, const FieldInfo *targetFieldInfo) const;
