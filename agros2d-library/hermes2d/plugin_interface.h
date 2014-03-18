@@ -195,7 +195,7 @@ protected:
 const int OFFSET_NON_DEF = -100;
 
 template<typename Scalar>
-class FormAgrosInterface
+class AGROS_LIBRARY_API FormAgrosInterface
 {
 public:
     FormAgrosInterface(const WeakFormAgros<Scalar>* weakFormAgros);
@@ -237,7 +237,7 @@ protected:
 
 // weakforms
 template<typename Scalar>
-class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface<Scalar>
+class AGROS_LIBRARY_API MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j,  const WeakFormAgros<Scalar>* wfAgros)
@@ -246,7 +246,7 @@ protected:
 };
 
 template<typename Scalar>
-class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface<Scalar>
+class AGROS_LIBRARY_API VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
     VectorFormVolAgros(unsigned int i, const WeakFormAgros<Scalar>* wfAgros)
@@ -255,7 +255,7 @@ protected:
 };
 
 template<typename Scalar>
-class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface<Scalar>
+class AGROS_LIBRARY_API MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
     MatrixFormSurfAgros(unsigned int i, unsigned int j, const WeakFormAgros<Scalar>* wfAgros)
@@ -263,7 +263,7 @@ public:
 };
 
 template<typename Scalar>
-class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface<Scalar>
+class AGROS_LIBRARY_API VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
     VectorFormSurfAgros(unsigned int i, const WeakFormAgros<Scalar>* wfAgros)
@@ -271,7 +271,7 @@ public:
 };
 
 template<typename Scalar>
-class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface<Scalar>
+class AGROS_LIBRARY_API ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface<Scalar>
 {
 public:
     ExactSolutionScalarAgros(Hermes::Hermes2D::MeshSharedPtr mesh)
