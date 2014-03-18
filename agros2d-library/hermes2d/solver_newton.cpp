@@ -176,7 +176,6 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
 {
     m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
     m_newtonSolver->set_verbose_output(false);
-    m_newtonSolver->get_linear_matrix_solver()->set_verbose_output(false);
     m_newtonSolver->clear_tolerances();
     m_newtonSolver->set_tolerance(block->nonlinearResidualNorm(), ResidualNormAbsolute, true);
     m_newtonSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative, true);
