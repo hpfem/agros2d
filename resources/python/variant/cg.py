@@ -107,6 +107,3 @@ class CGOptimization(OptimizationMethod):
                 assert False
                 
         return gradient
-            
-             
-        
