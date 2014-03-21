@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <variant:variant xmlns:variant="XMLOptVariant" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <problem/>
-    <results>
-        <result>
-            <input>
+    <results/>
+</variant:variant>
+         <input>
                 <parameter value="0.06" name="R4"/>
                 <parameter value="0.01" name="L"/>
                 <parameter value="0.01" name="R1"/>

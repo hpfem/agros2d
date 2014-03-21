@@ -877,6 +877,7 @@ void OptilabWindow::variantInfo(const QString &fileName)
     QDomNode nodeResult = readVariant(fileName);
 
     QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
+    QDomNode nodeImages = nodeSolution.toElement().elementsByTagName("images").at(0);
     QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
     QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
     QDomNode nodeInfo = nodeResult.toElement().elementsByTagName("info").at(0);
@@ -894,10 +895,13 @@ void OptilabWindow::variantInfo(const QString &fileName)
     info.SetValue("NAME_LABEL", tr("Name:").toStdString());
     info.SetValue("NAME", QFileInfo(fileName).fileName().toStdString());
 
-    info.SetValue("GEOMETRY_LABEL", tr("Geometry:").toStdString());
-    QString geometry = nodeSolution.toElement().attribute("geometry");
+    info.SetValue("IMAGES_LABEL", tr("Geometry:").toStdString());
+
+    // TODO: more images
+    QDomElement eleGeometry = nodeImages.childNodes().at(0).toElement();
+    QString geometry = eleGeometry.attribute("source");
     if (!geometry.isEmpty())
-        info.SetValue("GEOMETRY_SVG", geometry.toStdString());
+        info.SetValue("IMAGE", geometry.toStdString());
 
     info.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
 

@@ -65,7 +65,7 @@ class Model(model.ModelBase):
     def solve(self):
         try:
             # store geometry
-            self.geometry = a2d.geometry.export_svg_image()
+            self.images.append(a2d.geometry.export_svg_image())
         
             self.problem.solve()
             self.solved = True
@@ -95,8 +95,9 @@ if __name__ == '__main__':
     model.load("tmp.var")
     print(model.variables)
     print(model.parameters)
+    #print(model.images)
     
     import os
-    os.remove("tmp.var")    
+    os.remove("tmp.var")
     
     print("Test - capacitor: " + str(abs(model.variables['C'] - 4.972876655348628e-12) < 1e-20))
