@@ -41,7 +41,7 @@ class ModelBase(object):
         return self._geometry
 
     @geometry.setter
-    def image(self, geometry):
+    def geometry(self, geometry):
         self._geometry = geometry
 
     @property
