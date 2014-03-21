@@ -1,6 +1,6 @@
 from ast import literal_eval
 
-class ModelBase:
+class ModelBase(object):
     def __init__(self):
         self._parameters = dict()
         self._variables = dict()
@@ -15,7 +15,7 @@ class ModelBase:
 
     @parameters.setter
     def parameters(self, values):
-        self._pameters = values
+        self._parameters = values
 
     @property
     def variables(self):
