@@ -28,6 +28,8 @@
 #include <vtkLookupTable.h>
 #include <vtkActor.h>
 #include <vtkScalarBarActor.h>
+#include <vtkCubeAxesActor2D.h>
+#include <vtkLegendScaleActor.h>
 
 template <typename Scalar> class SceneSolution;
 template <typename Scalar> class ViewScalarFilter;
@@ -54,8 +56,11 @@ public:
     void doZoomBestFit();
 
 protected:
+    vtkSmartPointer<vtkCubeAxesActor2D> axesActor();
+    vtkSmartPointer<vtkLegendScaleActor> rulersActor();
 
     vtkSmartPointer<vtkActor> geometryActor();
+
     vtkSmartPointer<vtkActor> contourActor();
     vtkSmartPointer<vtkActor> scalarActor();
     vtkSmartPointer<vtkScalarBarActor> scalarColorBar();

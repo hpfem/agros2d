@@ -384,7 +384,6 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewChart->actSceneModeChart);
     actSceneModeGroup->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     actSceneModeGroup->addAction(sceneViewVTK2D->actSceneModeVTK2D);
-    actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
     actHideControlPanel->setShortcut(tr("Alt+0"));
@@ -867,7 +866,6 @@ void MainWindow::doDocumentNew()
             sceneViewPost3D->doZoomBestFit();
             sceneViewParticleTracing->doZoomBestFit();
             sceneViewVTK2D->doZoomBestFit();
-            settingsWidget->updateControls();
         }
         catch (AgrosPluginException& e)
         {

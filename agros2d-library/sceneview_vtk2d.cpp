@@ -65,6 +65,7 @@
 #include <vtkScalarBarWidget.h>
 #include <vtkContourFilter.h>
 #include <vtkBandedPolyDataContourFilter.h>
+#include <vtkAxisActor2D.h>
 
 // *************************************************************************************************
 
@@ -96,16 +97,14 @@ void SceneViewVTK2D::initVTK()
     m_palette = vtkSmartPointer<vtkLookupTable>::New();
     for (int i = 0; i < PALETTEENTRIES; i++)
         m_palette->SetTableValue(i, paletteDataAgros2D[i][0], paletteDataAgros2D[i][1], paletteDataAgros2D[i][2]);
+    // m_palette->SetNumberOfColors(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
 
     // setup window
     vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
 
     // setup renderer
     m_renderer = vtkSmartPointer<vtkRenderer>::New();
-    m_renderer->SetBackground(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
-                              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
-                              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0);
-
+    m_renderer->SetBackground(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2]);
 
     renderWindow->AddRenderer(m_renderer);
 
@@ -144,25 +143,41 @@ void SceneViewVTK2D::refresh()
 
     clear();
 
-    m_palette->SetRange(m_postHermes->linScalarView().get_min_value(), m_postHermes->linScalarView().get_max_value());
+    m_palette->SetRange(m_postHermes->linScalarView()->get_min_value(), m_postHermes->linScalarView()->get_max_value());
     m_palette->Build();
 
-    vtkSmartPointer<vtkActor> scalar = scalarActor();
-    m_renderer->AddActor(scalar);
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool())
+    {
+        vtkSmartPointer<vtkActor> scalar = scalarActor();
+        m_renderer->AddActor(scalar);
+    }
 
-    vtkSmartPointer<vtkActor> contour = contourActor();
-    m_renderer->AddActor(contour);
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool())
+    {
+        vtkSmartPointer<vtkActor> contour = contourActor();
+        m_renderer->AddActor(contour);
+    }
 
     vtkSmartPointer<vtkActor> geometry = geometryActor();
     m_renderer->AddActor(geometry);
 
-    vtkSmartPointer<vtkScalarBarActor> colorBar = scalarColorBar();
-    m_renderer->AddActor2D(colorBar);
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool())
+    {
+        vtkSmartPointer<vtkScalarBarActor> colorBar = scalarColorBar();
+        m_renderer->AddActor2D(colorBar);
+    }
 
-    double *bounds = scalar->GetBounds();
+    double *bounds = geometry->GetBounds();
     double cx = (bounds[0] + bounds[1]) / 2.0;
     double cy = (bounds[2] + bounds[3]) / 2.0;
     double scale = max(fabs(bounds[0] - cx), max(fabs(bounds[1] - cx), max(fabs(bounds[2] - cy), fabs(bounds[3] - cy))));
+
+    vtkSmartPointer<vtkLegendScaleActor> rulers = rulersActor();
+    m_renderer->AddActor2D(rulers);
+
+    // axes
+    // vtkSmartPointer<vtkCubeAxesActor2D> axes = axesActor();
+    // m_renderer->AddActor2D(axes);
 
     //  camera
     vtkCamera *camera = m_renderer->GetActiveCamera();
@@ -181,33 +196,73 @@ vtkSmartPointer<vtkScalarBarActor> SceneViewVTK2D::scalarColorBar()
             arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.unit());
 
     vtkSmartPointer<vtkScalarBarActor> scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
+    scalarBar->SetMaximumNumberOfColors(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
     scalarBar->SetLookupTable(m_palette);
-    scalarBar->SetWidth(0.15);
+    scalarBar->SetWidth(0.1);
     scalarBar->SetHeight(0.4);
     scalarBar->SetLabelFormat("%+#6.3e");
     scalarBar->SetTitle(str.toStdString().c_str());
     scalarBar->SetNumberOfLabels(11);
 
     scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
-    scalarBar->GetPositionCoordinate()->SetValue(0.83, 0.02);
+    scalarBar->GetPositionCoordinate()->SetValue(0.88, 0.06);
 
-    scalarBar->GetTitleTextProperty()->SetFontFamilyToCourier();
-    scalarBar->GetTitleTextProperty()->SetVerticalJustificationToCentered();
-    scalarBar->GetTitleTextProperty()->BoldOff();
-    scalarBar->GetTitleTextProperty()->ItalicOff();
-    scalarBar->GetTitleTextProperty()->ShadowOff();
-    scalarBar->GetTitleTextProperty()->SetColor(0, 0, 0);
+    vtkSmartPointer<vtkTextProperty> text = vtkSmartPointer<vtkTextProperty>::New();
+    text->ItalicOff();
+    text->BoldOff();
+    text->ShadowOff();
+    text->SetFontFamilyToCourier();
+    text->SetColor(0.0, 0.0, 0.0);
+    text->SetVerticalJustificationToCentered();
 
-    scalarBar->GetLabelTextProperty()->SetFontFamilyToCourier();
-    scalarBar->GetLabelTextProperty()->SetJustificationToRight();
-    scalarBar->GetLabelTextProperty()->SetVerticalJustificationToCentered();
-    scalarBar->GetLabelTextProperty()->SetFontSize(30);
-    scalarBar->GetLabelTextProperty()->BoldOff();
-    scalarBar->GetLabelTextProperty()->ItalicOff();
-    scalarBar->GetLabelTextProperty()->ShadowOff();
-    scalarBar->GetLabelTextProperty()->SetColor(0, 0, 0);
+    scalarBar->SetTitleTextProperty(text);
+    scalarBar->SetLabelTextProperty(text);
 
     return scalarBar;
+}
+
+vtkSmartPointer<vtkLegendScaleActor> SceneViewVTK2D::rulersActor()
+{
+    vtkSmartPointer<vtkTextProperty> text = vtkSmartPointer<vtkTextProperty>::New();
+    text->ItalicOff();
+    text->BoldOff();
+    text->ShadowOff();
+    text->SetFontFamilyToCourier();
+    text->SetColor(0.0, 0.0, 0.0);
+
+    vtkSmartPointer<vtkLegendScaleActor> rulers = vtkSmartPointer<vtkLegendScaleActor>::New();
+    rulers->SetTopAxisVisibility(false);
+    rulers->SetRightAxisVisibility(false);
+    rulers->SetLegendVisibility(false);
+    rulers->SetLeftBorderOffset(80);
+    // rulers->SetBottomBorderOffset(60);
+    rulers->SetCornerOffsetFactor(1);
+    rulers->GetLeftAxis()->GetProperty()->SetColor(0.0, 0.0, 0.0);
+    rulers->GetLeftAxis()->SetLabelTextProperty(text);
+    rulers->GetBottomAxis()->GetProperty()->SetColor(0.0, 0.0, 0.0);
+    rulers->GetBottomAxis()->SetLabelTextProperty(text);
+
+    return rulers;
+}
+
+vtkSmartPointer<vtkCubeAxesActor2D> SceneViewVTK2D::axesActor()
+{
+    vtkSmartPointer<vtkCubeAxesActor2D> axes = vtkSmartPointer<vtkCubeAxesActor2D>::New();
+    // axes->SetInput(_grid)
+    axes->SetCamera(m_renderer->GetActiveCamera());
+    axes->SetLabelFormat("%6.4g");
+    axes->SetFlyModeToOuterEdges();
+    axes->SetFontFactor(0.8);   
+    axes->SetXLabel("x");
+    axes->SetYLabel("y");
+    axes->SetNumberOfLabels(5);
+    axes->GetAxisTitleTextProperty()->BoldOff();
+    axes->GetAxisTitleTextProperty()->ItalicOff();
+    axes->GetAxisTitleTextProperty()->ShadowOff();
+    axes->GetAxisTitleTextProperty()->SetColor(0, 0, 0);
+    axes->GetAxisTitleTextProperty()->SetFontFamilyToCourier();
+
+    return axes;
 }
 
 vtkSmartPointer<vtkActor> SceneViewVTK2D::geometryActor()
@@ -292,35 +347,33 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::geometryActor()
 
 vtkSmartPointer<vtkActor> SceneViewVTK2D::scalarActor()
 {
-    // scalar
-    m_postHermes->linScalarView().lock_data();
-
-    double3* linVert = m_postHermes->linScalarView().get_vertices();
-    int3* linTris = m_postHermes->linScalarView().get_triangles();
-
     vtkSmartPointer<vtkDoubleArray> weights = vtkSmartPointer<vtkDoubleArray>::New();
     weights->SetNumberOfComponents(1);
+    weights->SetName("scalar");
 
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    weights->SetName("scalar");
-    for (int i = 0; i < m_postHermes->linScalarView().get_num_vertices(); i++)
+    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
+         it = m_postHermes->linScalarView()->vertices_begin(); !it.end; ++it)
     {
-        points->InsertNextPoint(linVert[i][0], linVert[i][1], 0.0);
-        weights->InsertNextValue(linVert[i][2]);
+        Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
+
+        points->InsertNextPoint(vertex[0], vertex[1], 0.0);
+        weights->InsertNextValue(vertex[2]);
     }
 
     vtkSmartPointer<vtkCellArray> triangles = vtkSmartPointer<vtkCellArray>::New();
-    for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::triangle_indices_t>
+         it = m_postHermes->linScalarView()->triangle_indices_begin(); !it.end; ++it)
     {
+        Hermes::Hermes2D::Views::triangle_indices_t& triangle_indices = it.get();
+
         vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-        for (int j = 0; j < 3; j++)
-        {
-            triangle->GetPointIds()->SetId(j, linTris[i][j]);
-        }
+        triangle->GetPointIds()->SetId(0, triangle_indices[0]);
+        triangle->GetPointIds()->SetId(1, triangle_indices[1]);
+        triangle->GetPointIds()->SetId(2, triangle_indices[2]);
+
         triangles->InsertNextCell(triangle);
     }
-
-    m_postHermes->linScalarView().unlock_data();
 
     // create a polydata object
     vtkSmartPointer<vtkPolyData> trianglePolyData = vtkSmartPointer<vtkPolyData>::New();
@@ -332,7 +385,7 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::scalarActor()
 
     // create mapper and actor
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetScalarRange(m_postHermes->linScalarView().get_min_value(), m_postHermes->linScalarView().get_max_value());
+    mapper->SetScalarRange(m_postHermes->linScalarView()->get_min_value(), m_postHermes->linScalarView()->get_max_value());
     mapper->SetLookupTable(m_palette);
     mapper->SetInput(trianglePolyData);
 
@@ -344,35 +397,33 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::scalarActor()
 
 vtkSmartPointer<vtkActor> SceneViewVTK2D::contourActor()
 {
-    // scalar
-    m_postHermes->linContourView().lock_data();
-
-    double3* linVert = m_postHermes->linContourView().get_vertices();
-    int3* linTris = m_postHermes->linContourView().get_triangles();
-
     vtkSmartPointer<vtkDoubleArray> weights = vtkSmartPointer<vtkDoubleArray>::New();
     weights->SetNumberOfComponents(1);
+    weights->SetName("contour");
 
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    weights->SetName("scalar");
-    for (int i = 0; i < m_postHermes->linContourView().get_num_vertices(); i++)
+    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
+         it = m_postHermes->linContourView()->vertices_begin(); !it.end; ++it)
     {
-        points->InsertNextPoint(linVert[i][0], linVert[i][1], 0.0);
-        weights->InsertNextValue(linVert[i][2]);
+        Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
+
+        points->InsertNextPoint(vertex[0], vertex[1], 0.0);
+        weights->InsertNextValue(vertex[2]);
     }
 
     vtkSmartPointer<vtkCellArray> triangles = vtkSmartPointer<vtkCellArray>::New();
-    for (int i = 0; i < m_postHermes->linContourView().get_num_triangles(); i++)
+    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::triangle_indices_t>
+         it = m_postHermes->linContourView()->triangle_indices_begin(); !it.end; ++it)
     {
+        Hermes::Hermes2D::Views::triangle_indices_t& triangle_indices = it.get();
+
         vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-        for (int j = 0; j < 3; j++)
-        {
-            triangle->GetPointIds()->SetId(j, linTris[i][j]);
-        }
+        triangle->GetPointIds()->SetId(0, triangle_indices[0]);
+        triangle->GetPointIds()->SetId(1, triangle_indices[1]);
+        triangle->GetPointIds()->SetId(2, triangle_indices[2]);
+
         triangles->InsertNextCell(triangle);
     }
-
-    m_postHermes->linContourView().unlock_data();
 
     // create a polydata object
     vtkSmartPointer<vtkPolyData> trianglePolyData = vtkSmartPointer<vtkPolyData>::New();
@@ -385,20 +436,18 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::contourActor()
     vtkSmartPointer<vtkContourFilter> bf = vtkSmartPointer<vtkContourFilter>::New();
     bf->SetInput(trianglePolyData);
     bf->GenerateValues(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt(),
-                       m_postHermes->linContourView().get_min_value(), m_postHermes->linContourView().get_max_value());
+                       m_postHermes->linContourView()->get_min_value(), m_postHermes->linContourView()->get_max_value());
 
     // create mapper and actor
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetScalarRange(m_postHermes->linContourView().get_min_value(), m_postHermes->linContourView().get_max_value());
+    mapper->SetScalarRange(m_postHermes->linContourView()->get_min_value(), m_postHermes->linContourView()->get_max_value());
     mapper->SetScalarModeToUseCellData();
     mapper->SetLookupTable(m_palette);
     mapper->SetInputConnection(bf->GetOutputPort());
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursRed).toInt() / 255.0,
-                                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursGreen).toInt() / 255.0,
-                                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorContoursBlue).toInt() / 255.0);
+    actor->GetProperty()->SetColor(COLORCONTOURS[0], COLORCONTOURS[1], COLORCONTOURS[2]);
     actor->GetProperty()->SetLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursWidth).toInt());
 
     return actor;
