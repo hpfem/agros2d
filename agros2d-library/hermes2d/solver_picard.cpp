@@ -130,7 +130,6 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
 {
     m_picardSolver = new PicardSolverAgros<Scalar>(block);
     m_picardSolver->set_verbose_output(false);
-    m_picardSolver->get_linear_matrix_solver()->set_verbose_output(false);
     m_picardSolver->clear_tolerances();
     m_picardSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative);
     m_picardSolver->set_max_allowed_iterations(50);

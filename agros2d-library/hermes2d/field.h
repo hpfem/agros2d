@@ -41,12 +41,14 @@ class LocalForceValue;
 class PluginInterface;
 class Value;
 
+const int LABEL_OUTSIDE_FIELD = -10000;
+
 class AGROS_LIBRARY_API FieldInfo : public QObject
 {
     Q_OBJECT
 
 public:
-    FieldInfo(QString fieldId, const AnalysisType analysisType = AnalysisType_Undefined);
+    FieldInfo(QString fieldId);
     ~FieldInfo();
 
     void clear();
@@ -54,6 +56,7 @@ public:
     inline PluginInterface *plugin() const { assert(m_plugin); return m_plugin; }
 
     QString fieldId() const { return m_fieldId; }
+    inline int numberId() const { return m_numberId; }
 
     inline Hermes::Hermes2D::MeshSharedPtr initialMesh() const { return m_initialMesh; }
     inline void clearInitialMesh() { m_initialMesh = Hermes::Hermes2D::MeshSharedPtr();}
@@ -231,7 +234,7 @@ public:
     void createValuePointerTable();
     void deleteValuePointerTable();
 
-    const Value** valuePointerTable(QString id) const;
+    QList<QWeakPointer<Value> > valuePointerTable(QString id) const;
     int hermesMarkerToAgrosLabel(int hermesMarker) const;
     double labelArea(int agrosLabel) const;
     inline double frequency() const { return m_frequency; }
@@ -281,15 +284,17 @@ private:
     void setStringKeys();
 
     // for speed optimisations
-    QMap<QString, const Value**> m_valuePointersTable;
+    QMap<QString, QList<QWeakPointer<Value> > > m_valuePointersTable;
     int* m_hermesMarkerToAgrosLabelConversion;
     double* m_labelAreas;
     double m_frequency;
 
-    // help functions extracting parts of xml
+    // used to assign numbers to individual fields;
+    static int numberIdNext;
+    int m_numberId;
 };
 
-XMLModule::linearity_option findLinearityOption(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+XMLModule::linearity_option findLinearityOption(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
 
 ostream& operator<<(ostream& output, FieldInfo& id);
 

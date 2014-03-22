@@ -84,12 +84,6 @@ void DxfInterfaceDXFRW::addArc(const DRW_Arc& a)
         // end node
         SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle2/180.0*M_PI),
                                                                   a.basePoint.y + a.radious*sin(angle2/180.0*M_PI))));
-        if (fabs(nodeStart->point().x - 960.04) < 0.001)
-        {
-            SceneEdge *e = new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1);
-            qDebug() << "EDGE: " << e->center().x << e->center().y;
-        }
-
         // edge
         m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
     }

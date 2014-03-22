@@ -16,11 +16,17 @@ SET(SOURCES main.cpp
     generator.cpp 
     generator_module.cpp 
     generator_coupling.cpp
+    generator_weakforms.cpp
+    generator_postprocessor.cpp
+    generator_documentation.cpp
+    parser.cpp
+    parser_lexical_analyser.cpp
 )
 
 SET(HEADERS generator.h
     generator_module.h
     generator_coupling.h
+    parser.h
 )
 
 IF(WIN32)
@@ -40,7 +46,6 @@ IF(WIN32)
   endforeach()
 
   SET(SOURCES_XML ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
-    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/coupling_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/structure_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/material_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/problem_a2d_31_xml.cpp

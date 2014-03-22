@@ -25,7 +25,6 @@
 
 #include "ctemplate/template.h"
 #include "../../resources_source/classes/module_xml.h"
-#include "../../resources_source/classes/coupling_xml.h"
 
 const QString GENERATOR_TEMPLATEROOT = "resources/templates/generator";
 const QString GENERATOR_DOCROOT = "resources_source/doc/source/modules";
@@ -49,6 +48,7 @@ public:
     static QList<CouplingType> couplingFormTypeList();
     static QString couplingTypeStringEnum(CouplingType couplingType);
     static QString couplingTypeToString(QString couplingType);
+    static CouplingType couplingTypeFromString(QString couplingType);
 
     static QList<LinearityType> linearityTypeList();
     static QString linearityTypeStringEnum(LinearityType linearityType);
@@ -81,89 +81,6 @@ class Agros2DGeneratorBase : public QObject
     Q_OBJECT
 
 public:
-
-protected:
-    // todo: Why does not the template work (after axi_planar, etc are not required)?
-
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLCoupling::matrix_form form)
-    {
-        QString expression;
-
-        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-        {
-            expression = QString::fromStdString(form.planar_linear());
-        }
-
-        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
-        {
-            expression = QString::fromStdString(form.planar_newton());
-        }
-
-        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-        {
-            expression = QString::fromStdString(form.axi_linear());
-        }
-
-        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
-        {
-            expression = QString::fromStdString(form.axi_newton());
-        }
-
-        return expression;
-    }
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLCoupling::vector_form form)
-    {
-        QString expression;
-
-        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-        {
-            expression = QString::fromStdString(form.planar_linear());
-        }
-
-        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
-        {
-            expression = QString::fromStdString(form.planar_newton());
-        }
-
-        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-        {
-            expression = QString::fromStdString(form.axi_linear());
-        }
-
-        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
-        {
-            expression = QString::fromStdString(form.axi_newton());
-        }
-
-        return expression;
-    }
-//    template <typename Form>
-//    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
-//    {
-//    QString expression;
-
-//    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
-//    {
-//        expression = QString::fromStdString(form.planar_linear().get());
-//    }
-
-//    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
-//    {
-//        expression = QString::fromStdString(form.planar_newton().get());
-//    }
-
-//    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
-//    {
-//        expression = QString::fromStdString(form.axi_linear().get());
-//    }
-
-//    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
-//    {
-//        expression = QString::fromStdString(form.axi_newton().get());
-//    }
-
-//        return expression;
-//    }
 
 private:
 };

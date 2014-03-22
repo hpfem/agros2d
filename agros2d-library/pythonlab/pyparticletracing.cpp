@@ -243,6 +243,9 @@ void PyParticleTracing::setDragForceCoefficient(double coeff)
 
 void PyParticleTracing::setCustomForce(const vector<double> &force)
 {
+    if (force.empty())
+        throw invalid_argument(QObject::tr("Value of force is not defined.").toStdString());
+
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCustomForceX, force[0]);
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCustomForceY, force[1]);
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCustomForceZ, force[2]);

@@ -29,7 +29,7 @@
 #include "block.h"
 #include "problem.h"
 #include "hermes2d/problem_config.h"
-#include "module.h"
+//#include "module.h"
 #include "scene.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
@@ -40,6 +40,7 @@
 #include "logview.h"
 #include "bdf2.h"
 #include "plugin_interface.h"
+#include "weak_form.h"
 
 #include "pythonlab/pythonengine.h"
 

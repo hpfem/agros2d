@@ -21,12 +21,18 @@
 #define GENERATOR_COUPLING_H
 
 #include "generator.h"
+struct FormInfo;
 
 class Agros2DGeneratorCoupling : public Agros2DGeneratorBase
 {
 
 public:
     Agros2DGeneratorCoupling(const QString &couplingId);
+
+    // todo: copied from module
+    void prepareWeakFormsOutput();
+    void deleteWeakFormOutput();
+
 
     void generatePluginProjectFile();
     void generatePluginFilterFiles();
@@ -38,14 +44,17 @@ public:
 
 
 private:
-    std::auto_ptr<XMLCoupling::coupling> coupling_xsd;
-    XMLCoupling::coupling *m_coupling;
+
+    void generateWeakForms(ctemplate::TemplateDictionary &output);
+
+    std::auto_ptr<XMLModule::module> coupling_xsd;
+    XMLModule::coupling *m_coupling;
 
     std::auto_ptr<XMLModule::module> m_source_module_xsd;
-    XMLModule::module *m_sourceModule;
+    XMLModule::field *m_sourceModule;
 
     std::auto_ptr<XMLModule::module> m_target_module_xsd;
-    XMLModule::module *m_targetModule;
+    XMLModule::field *m_targetModule;
 
     // dictionary for variables used in weakforms
     QMap<QString, QString> m_sourceVariables;
@@ -55,19 +64,23 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    template <typename Form>
-    void generateForm(Form form, XMLCoupling::weakform_volume weakform, ctemplate::TemplateDictionary &output, QString weakFormType);
+    template <typename WeakForm>
+    void generateForm(FormInfo formInfo, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType);
 
-    //template <typename Form>
-    //QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form);
-    QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
 
-    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);    
+    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, CouplingType couplingType, const QString &expr);
     QString generateDocWeakFormExpression(QString symbol);
 
     QMap<QString, int> quantityOrdering;
     QMap<QString, bool> quantityIsNonlinear;
     QMap<QString, int> functionOrdering;
+
+    QMap<QString, int> sourceQuantityOrdering;
+    QMap<QString, bool> sourceQuantityIsNonlinear;
+    QMap<QString, int> sourceFunctionOrdering;
+
+    ctemplate::TemplateDictionary* m_output;
+
 };
 
 #endif // GENERATOR_COUPLING_H

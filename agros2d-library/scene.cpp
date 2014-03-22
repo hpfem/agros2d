@@ -2360,7 +2360,7 @@ void Scene::readSolutionFromFile(const QString &fileName)
         {
             try
             {
-                Agros2D::problem()->readInitialMeshesFromFile();
+                Agros2D::problem()->readInitialMeshesFromFile(true);
             }
             catch (AgrosException& e)
             {

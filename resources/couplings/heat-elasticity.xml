@@ -1,95 +1,88 @@
 <?xml version="1.0"?>
-<coupling:coupling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="XMLCoupling ../xsd/coupling_xml.xsd"
-	xmlns:coupling="XMLCoupling">
+<module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd" xmlns:module="XMLModule">
+<module:coupling>
+    <module:general_coupling id="heat-elasticity" name="Thermoelasticity">
+        <module:description>Heat plus elasticity</module:description>
+        <module:modules>
+            <module:source id="heat" />
+            <module:target id="elasticity" />
+        </module:modules>
+    </module:general_coupling>
 
-	<coupling:general id="heat-elasticity" name="Thermoelasticity">
-		<coupling:description>Heat plus elasticity</coupling:description>
-		<coupling:modules>
-			<coupling:source id="heat" />
-			<coupling:target id="elasticity" />
-		</coupling:modules>
-	</coupling:general>
+    <module:constants />
 
-	<coupling:constants />
+    <module:volume>
+        <module:vector_form id="weak_1_1" i="1" j="1" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdx" axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * (vdr + vval / r)"/>
+        <module:vector_form id="weak_2_2" i="2" j="2" planar="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdy" axi="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdz"/>
+        <module:matrix_form id="hard_matrix_2_1" i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdx" axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * (vdr + vval / r)"/>
+        <module:matrix_form id="hard_matrix_3_1" i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdy" axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdz"/>
+        <module:vector_form id="hard_vector_linear_2_1" i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdx" axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * (vdr + vval / r)"/>
+        <module:vector_form id="hard_vector_linear_3_1" i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdy" axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdz"/>
+        <module:vector_form id="hard_vector_newton_2_1" i="2" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx" axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
+        <module:vector_form id="hard_vector_newton_3_1" i="3" j="1" planar="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy" axi="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
 
-	<coupling:volume>
-		<coupling:weakforms_volume>
-			<coupling:weakform_volume couplingtype="weak"
-				sourceanalysis="steadystate" targetanalysis="steadystate">
-                <coupling:vector_form id="coupling" i="1" j="1"
-                    planar_linear="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdx"
-                    axi_linear="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * (vdr + vval / r)"
-                    planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdx"
-                    axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * (vdr + vval / r)" />
-                <coupling:vector_form id="coupling" i="2" j="2"
-                    planar_linear="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdy"
-                    axi_linear="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdz"
-                    planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdy"
-                    axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdz"/>
-			</coupling:weakform_volume>
+        <module:weakforms_volume>
+            <module:weakform_volume couplingtype="weak" sourceanalysis="steadystate" analysistype="steadystate" equation="">
+                <module:linearity_option type="linear">
+                    <module:vector_form id="weak_1_1" />
+                    <module:vector_form id="weak_2_2" />
+                </module:linearity_option>
 
-			<coupling:weakform_volume couplingtype="hard"
-				sourceanalysis="steadystate" targetanalysis="steadystate">
-                <coupling:matrix_form id="coupling" i="2" j="1"
-                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdx"
-                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * (vdr + vval / r)"
-                                        planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdx"
-                                        axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * (vdr + vval / r)" />
-                <coupling:matrix_form id="coupling" i="3" j="1"
-                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdy"
-                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdz"
-                                        planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdy"
-                                        axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdz" />
-                <coupling:vector_form id="coupling" i="2" j="1"
-                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdx"
-                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * (vdr + vval / r)"
-					planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
-					axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
-                <coupling:vector_form id="coupling" i="3" j="1"
-                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdy"
-                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdz"
-					planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
-					axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
-			</coupling:weakform_volume>
+                <module:linearity_option type="newton">
+                    <module:vector_form id="weak_1_1" coefficient="-1"/>
+                    <module:vector_form id="weak_2_2" coefficient="-1"/>
+                </module:linearity_option>
 
-			<coupling:weakform_volume couplingtype="weak"
-				sourceanalysis="transient" targetanalysis="steadystate">
-                <coupling:vector_form id="coupling" i="1" j="1"
-                    planar_linear="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdx"
-                    axi_linear="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * (vdr + vval / r)"
-                    planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdx"
-                    axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * (vdr + vval / r)" />
-                <coupling:vector_form id="coupling" i="2" j="2"
-                                        planar_linear="((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdy"
-                                        axi_linear="r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdz"
-                    planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdy"
-                    axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (source1 - st_Tr)) * vdz" />
-			</coupling:weakform_volume>
+            </module:weakform_volume>
 
-			<coupling:weakform_volume couplingtype="hard"
-				sourceanalysis="transient" targetanalysis="steadystate">
-                                <coupling:matrix_form id="coupling" i="2" j="1"
-                                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdx"
-                                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * (vdr + vval / r)"
-                                                        planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdx"
-                                                        axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * (vdr + vval / r)" />
-                                <coupling:matrix_form id="coupling" i="3" j="1"
-                                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdy"
-                                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdz"
-                                                        planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdy"
-                                                        axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * uval) * vdz" />
-                                <coupling:vector_form id="coupling" i="2" j="1"
-                                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdx"
-                                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * (vdr + vval / r)"
-                                                        planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdx"
-                                                        axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * (vdr + vval / r)" />
-                                <coupling:vector_form id="coupling" i="3" j="1"
-                                                        planar_linear="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdy"
-                                                        axi_linear="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_Tr) * vdz"
-                                                        planar_newton="- ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdy"
-                                                        axi_newton="- r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * (upval - st_Tr)) * vdz" />
-                        </coupling:weakform_volume>
-		</coupling:weakforms_volume>
-	</coupling:volume>
-</coupling:coupling>
+            <module:weakform_volume couplingtype="hard" sourceanalysis="steadystate" analysistype="steadystate" equation="">
+                <module:linearity_option type="linear">
+                    <module:matrix_form id="hard_matrix_2_1" />
+                    <module:matrix_form id="hard_matrix_3_1" />
+                    <module:vector_form id="hard_vector_linear_2_1" />
+                    <module:vector_form id="hard_vector_linear_3_1" />
+                </module:linearity_option>
+
+                <module:linearity_option type="newton">
+                    <module:matrix_form id="hard_matrix_2_1" />
+                    <module:matrix_form id="hard_matrix_3_1" />
+                    <module:vector_form id="hard_vector_newton_2_1" />
+                    <module:vector_form id="hard_vector_newton_3_1" />
+                </module:linearity_option>
+
+            </module:weakform_volume>
+
+            <module:weakform_volume couplingtype="weak" sourceanalysis="transient" analysistype="steadystate" equation="">
+                <module:linearity_option type="linear">
+                    <module:vector_form id="weak_1_1" />
+                    <module:vector_form id="weak_2_2" />
+                </module:linearity_option>
+
+                <module:linearity_option type="newton">
+                    <module:vector_form id="weak_1_1" coefficient="-1"/>
+                    <module:vector_form id="weak_2_2" coefficient="-1"/>
+                </module:linearity_option>
+
+            </module:weakform_volume>
+
+            <module:weakform_volume couplingtype="hard" sourceanalysis="transient" analysistype="steadystate" equation="">
+                <module:linearity_option type="linear">
+                    <module:matrix_form id="hard_matrix_2_1" />
+                    <module:matrix_form id="hard_matrix_3_1" />
+                    <module:vector_form id="hard_vector_linear_2_1" />
+                    <module:vector_form id="hard_vector_linear_3_1" />
+                </module:linearity_option>
+
+                <module:linearity_option type="newton">
+                    <module:matrix_form id="hard_matrix_2_1" />
+                    <module:matrix_form id="hard_matrix_3_1" />
+                    <module:vector_form id="hard_vector_newton_2_1" />
+                    <module:vector_form id="hard_vector_newton_3_1" />
+                </module:linearity_option>
+
+            </module:weakform_volume>
+
+        </module:weakforms_volume>
+    </module:volume>
+</module:coupling>
+</module:module>

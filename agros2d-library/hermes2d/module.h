@@ -20,9 +20,9 @@
 #ifndef HERMES_FIELD_H
 #define HERMES_FIELD_H
 
-#include "util.h"
-#include "util/enums.h"
-#include "hermes2d.h"
+#include "form_info.h"
+
+class BDF2Table;
 
 inline double tern(bool condition, double a, double b)
 {
@@ -62,36 +62,12 @@ public:
     }
 };
 
-
-struct ProblemID
-{
-    ProblemID() :
-        sourceFieldId(""), targetFieldId(""),
-        analysisTypeSource(AnalysisType_Undefined), analysisTypeTarget(AnalysisType_Undefined),
-        coordinateType(CoordinateType_Undefined), linearityType(LinearityType_Undefined),
-        couplingType(CouplingType_Undefined) {}
-
-    // TODO: set/get methods
-    QString sourceFieldId;
-    QString targetFieldId;
-    AnalysisType analysisTypeSource;
-    AnalysisType analysisTypeTarget;
-    CoordinateType coordinateType;
-    LinearityType linearityType;
-    CouplingType couplingType;
-
-    QString toString()
-    {
-        // TODO: implement toString() method
-        return "TODO";
-    }
-};
-
 extern double actualTime;
 
 namespace XMLModule
 {
-class module;
+class field;
+class coupling;
 class quantity;
 class boundary;
 class surface;
@@ -100,10 +76,9 @@ class localvariable;
 class gui;
 class space;
 class calculator;
-
+class volume;
 class linearity_option;
 }
-void findVolumeLinearityOpton(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType);
 
 class Marker;
 
@@ -126,72 +101,6 @@ class ProgressItemSolve;
 class FieldInfo;
 class CouplingInfo;
 
-class BDF2Table;
-
-struct AGROS_LIBRARY_API FormInfo
-{
-    FormInfo() : id(""), i(0), j(0), sym_planar(Hermes::Hermes2D::HERMES_NONSYM), sym_axi(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
-    FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym_planar = Hermes::Hermes2D::HERMES_NONSYM, Hermes::Hermes2D::SymFlag sym_axi = Hermes::Hermes2D::HERMES_NONSYM)
-        : id(id), i(i), j(j), sym_planar(sym_planar), sym_axi(sym_axi), variant(WeakFormVariant_Normal), coefficient(1), condition("") {}
-
-    QString id;
-
-    // position
-    int i;
-    int j;
-
-    // symmetric flag
-    Hermes::Hermes2D::SymFlag sym_planar;
-    Hermes::Hermes2D::SymFlag sym_axi;
-
-    QString expr_planar;
-    QString expr_axi;
-    WeakFormVariant variant;
-    double coefficient;
-    QString condition;
-
-    Hermes::Hermes2D::SymFlag sym(CoordinateType coordinateType) { return (coordinateType == CoordinateType_Axisymmetric) ? sym_axi : sym_planar; }
-};
-
-template <typename Scalar>
-class AGROS_LIBRARY_API WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
-{
-public:
-    WeakFormAgros(Block* block);
-    ~WeakFormAgros();
-
-    void registerForms();
-    void updateExtField();
-    inline BDF2Table* bdf2Table() { return m_bdf2Table; }
-
-    // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
-    static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-
-private:
-    // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker *marker);
-
-    // offsetCouplingExt defines position in Ext field where coupling solutions start
-    void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ, SceneMaterial *materialSource,
-                              SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
-    void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
-
-    virtual Hermes::Hermes2D::WeakForm<Scalar>* clone() const { return new WeakFormAgros<Scalar>(m_block); }
-
-    Block* m_block;
-
-    BDF2Table* m_bdf2Table;
-
-    // index in EXT field, where start solutions from previous time levels. ( == number of Value ext functions)
-    int m_offsetPreviousTimeExt;
-
-    // index in EXT field, where start solutions from weakly coupled fields ( == number of Value ext functions + time components)
-    // we have to pass pointer to individual forms, since it may change during the calculation (the order of the BDF method may vary)
-    int m_offsetCouplingExt;
-
-    int m_numberOfForms;
-};
 
 namespace Module
 {
@@ -576,7 +485,7 @@ AGROS_LIBRARY_API QMap<QString, QString> availableModules();
 // read and write mesh
 
 // index of quantity in the list of quantities at the begining of the volume section of the XML (NOT the reduced list in individual analysis)
-void AGROS_LIBRARY_API volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder);
+void AGROS_LIBRARY_API volumeQuantityProperties(XMLModule::field *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder);
 Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileBSON(const QString &fileName);
 Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileXML(const QString &fileName);
 void writeMeshToFileXML(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes);
