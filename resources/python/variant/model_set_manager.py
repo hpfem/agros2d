@@ -2,6 +2,7 @@
 import numpy as np
 from model import ModelBase
 import os
+import pythonlab
 
 class ModelSetManager:
     def __init__(self):
@@ -104,14 +105,14 @@ def generateTestFiles():
         model.parameters["R4"] = 0.06
         model.parameters["L"] = L[i]
     
-        fn = "/home/pkus/sources/agros2d/resources/python/variant/test_set_manager/solutions/solution_{0:0{1}d}.rst".format(i, 5)
+        fn = pythonlab.datadir('resources/python/variant/test_set_manager/solutions/solution_{0:0{1}d}.rst'.format(i, 5))
         model.save(fn)    
 
 if __name__ == '__main__':
 
     solver = ModelSetManager()
-    solver.solver = '/home/pkus/sources/agros2d/agros2d_solver'
-    solver.directory = '/home/pkus/sources/agros2d/resources/python/variant/test_set_manager/solutions/'
+    solver.solver = pythonlab.datadir('agros2d_solver')
+    solver.directory = pythonlab.datadir('resources/python/variant/test_set_manager/solutions/')
     solver.deleteAll()
     generateTestFiles()
     solver.solveAll(True)

@@ -1,11 +1,11 @@
 from ast import literal_eval
 
-class ModelBase:
+class ModelBase(object):
     def __init__(self):
         self._parameters = dict()
         self._variables = dict()
         self._info = dict()
-        self._geometry = ""
+        self._images = list()
         self._solved = False
 
     @property
@@ -15,7 +15,7 @@ class ModelBase:
 
     @parameters.setter
     def parameters(self, values):
-        self._pameters = values
+        self._parameters = values
 
     @property
     def variables(self):
@@ -36,13 +36,13 @@ class ModelBase:
         self._info = values
 
     @property
-    def geometry(self):
-        """ Optional geometry SVG image """
-        return self._geometry
+    def images(self):
+        """ Optional SVG images """
+        return self._images
 
-    @geometry.setter
-    def image(self, geometry):
-        self._geometry = geometry
+    @images.setter
+    def images(self, image):
+        self._images = image
 
     @property
     def solved(self):
@@ -67,15 +67,19 @@ class ModelBase:
 
         tree = ET.parse(filename)
         variant = tree.getroot()
-        rr = variant.findall('results')
 
         # TODO: only one result
         results = variant.findall('results')[0]
         result = results.findall('result')[0]
 
+        # solution
         solution = result.findall('solution')[0]
         self.solved = int(solution.attrib['solved'])
-        self.geometry = solution.attrib['geometry']
+
+        # images
+        images = solution.findall('images')[0]
+        for image in images.findall('image'):
+            self.images.append(str(image.attrib["source"]))
 
         # input
         input = result.findall('input')[0]
@@ -112,6 +116,16 @@ class ModelBase:
         results = ET.SubElement(variant, "results")
         result = ET.SubElement(results, "result")
 
+        # solution
+        solution = ET.SubElement(result, "solution")
+        solution.set("solved", "1" if self.solved else "0")
+
+        # images
+        images = ET.SubElement(solution, "images")
+        for image in self.images:
+            item = ET.SubElement(images, "image")
+            item.set("source", image)
+
         # input
         input = ET.SubElement(result, "input")
         for key, value in self.parameters.items():
@@ -132,11 +146,6 @@ class ModelBase:
             item = ET.SubElement(info, "item")
             item.set("name", key)
             item.set("value", str(value))
-
-        # solution
-        solution = ET.SubElement(result, "solution")
-        solution.set("solved", "1" if self.solved else "0")  
-        solution.set("geometry", self.geometry)
                     
         tree = ET.ElementTree(variant)
         tree.write(filename, xml_declaration = True, encoding='UTF-8')

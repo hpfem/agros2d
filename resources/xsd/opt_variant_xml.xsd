@@ -1,75 +1,87 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <schema targetNamespace="XMLOptVariant" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:coupling="XMLOptVariant">
   <element name="variant">
-    <complexType>      
+    <complexType>
         <all>
-		<element minOccurs="1" maxOccurs="1" name="problem">
+                <element minOccurs="1" maxOccurs="1" name="problem">
             <complexType>
-	            <sequence>
-					<element minOccurs="0" maxOccurs="unbounded" name="input_parameter">
-					  <complexType>
-						<attribute name="name" type="string" use="required" />
-		  			    <attribute name="unit" type="string" use="required" />	
-		  			  </complexType>
-		  			</element>
-	  		    </sequence>					
-		   </complexType>
-        </element>	   	        
+                    <sequence>
+                                        <element minOccurs="0" maxOccurs="unbounded" name="input_parameter">
+                                          <complexType>
+                                                <attribute name="name" type="string" use="required" />
+                                            <attribute name="unit" type="string" use="required" />
+                                          </complexType>
+                                        </element>
+                            </sequence>
+                   </complexType>
+        </element>
         <element name="results" minOccurs="1" maxOccurs="1" >
         <complexType>
            <sequence>
-			    <element name="result" minOccurs="0" maxOccurs="unbounded" >
-			    <complexType>      
-        		<all>    
-					<element name="input">
-						<complexType>
-						  <sequence>
-							<element minOccurs="0" maxOccurs="unbounded" name="parameter">
-							  <complexType>
-								  <attribute name="name" type="string" use="required" />
-								  <attribute name="value" type="float" use="required" />
-							  </complexType>
-							</element>
-						  </sequence>
-						</complexType>
-					</element>        
-					<element name="output">
-						<complexType>
-						  <sequence>
-							<element minOccurs="0" maxOccurs="unbounded" name="variable">
-							  <complexType>
-								  <attribute name="name" type="string" use="required" />
-								  <attribute name="value" type="string" use="required" />
-							  </complexType>
-							</element>
-						  </sequence>
-						</complexType>
-					</element>
-					<element name="info">
-						<complexType>
-						  <sequence>
-							<element minOccurs="0" maxOccurs="unbounded" name="item">
-							  <complexType>
-								  <attribute name="name" type="string" use="required" />
-								  <attribute name="value" type="string" use="required" />
-							  </complexType>
-							</element>
-						  </sequence>
-						</complexType>
-					</element>      
-					<element minOccurs="1" maxOccurs="1" name="solution">
-						<complexType>
-			  	            <attribute name="solved" type="int" use="required" />
-			  	            <attribute name="geometry" type="string" use="optional" />
-			  	            <attribute name="filename" type="string" use="optional" />
-					   </complexType>
-					</element>	    
-				</all>
-				</complexType>
-			    </element>  		              					
-	        </sequence>
+                            <element name="result" minOccurs="0" maxOccurs="unbounded" >
+                            <complexType>
+                        <all>
+                                        <element name="input">
+                                                <complexType>
+                                                  <sequence>
+                                                        <element minOccurs="0" maxOccurs="unbounded" name="parameter">
+                                                          <complexType>
+                                                                  <attribute name="name" type="string" use="required" />
+                                                                  <attribute name="value" type="float" use="required" />
+                                                          </complexType>
+                                                        </element>
+                                                  </sequence>
+                                                </complexType>
+                                        </element>
+                                        <element name="output">
+                                                <complexType>
+                                                  <sequence>
+                                                        <element minOccurs="0" maxOccurs="unbounded" name="variable">
+                                                          <complexType>
+                                                                  <attribute name="name" type="string" use="required" />
+                                                                  <attribute name="value" type="string" use="required" />
+                                                          </complexType>
+                                                        </element>
+                                                  </sequence>
+                                                </complexType>
+                                        </element>
+                                        <element name="info">
+                                                <complexType>
+                                                  <sequence>
+                                                        <element minOccurs="0" maxOccurs="unbounded" name="item">
+                                                          <complexType>
+                                                                  <attribute name="name" type="string" use="required" />
+                                                                  <attribute name="value" type="string" use="required" />
+                                                          </complexType>
+                                                        </element>
+                                                  </sequence>
+                                                </complexType>
+                                        </element>
+                                        <element minOccurs="1" maxOccurs="1" name="solution">
+                                                <complexType>
+                                                    <sequence>
+                                                        <element name="images">
+                                                                <complexType>
+                                                                  <sequence>
+                                                                        <element minOccurs="0" maxOccurs="unbounded" name="image">
+                                                                          <complexType>
+                                                                                  <attribute name="source" type="string" use="required" />
+                                                                          </complexType>
+                                                                        </element>
+                                                                  </sequence>
+                                                                </complexType>
+                                                        </element>
+                                                    </sequence>
+                                                    <attribute name="solved" type="int" use="required" />
+                                                    <attribute name="filename" type="string" use="optional" />
+                                           </complexType>
+                                        </element>
+                                </all>
+                                </complexType>
+                            </element>
+                </sequence>
         </complexType>
-        </element> 
+        </element>
         </all>
     </complexType>
   </element>

@@ -151,5 +151,4 @@ if __name__ == '__main__':
     optimization.directory = pythonlab.datadir('/resources/python/variant/test_genetic/solutions/')
     optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
     optimization.populationSize = 25
-    optimization.run(10, False)                
-
+    optimization.run(10, False)
