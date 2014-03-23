@@ -569,10 +569,35 @@ void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
         Module::LocalVariable scalarVariable = m_activeViewField->defaultViewScalarVariable();
         Module::LocalVariable vectorVariable = m_activeViewField->defaultViewVectorVariable();
 
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, scalarVariable.id());
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, scalarVariable.id());
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, scalarVariable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude);
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, vectorVariable.id());
+        QString scalarVariableDefault = scalarVariable.id();
+        PhysicFieldVariableComp scalarVariableCompDefault = scalarVariable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+        QString contourVariableDefault = scalarVariable.id();
+        QString vectorVariableDefault = vectorVariable.id();
+
+        foreach (Module::LocalVariable local, m_activeViewField->viewScalarVariables())
+        {
+            if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString() == local.id())
+            {
+                scalarVariableDefault = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString();
+                scalarVariableCompDefault = (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt();
+            }
+            if (Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString() == local.id())
+            {
+                contourVariableDefault = Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString();
+            }
+        }
+        foreach (Module::LocalVariable local, m_activeViewField->viewScalarVariables())
+        {
+            if (Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString() == local.id())
+            {
+                vectorVariableDefault = Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString();
+            }
+        }
+
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, scalarVariableDefault);
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, scalarVariableCompDefault);
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, contourVariableDefault);
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, vectorVariableDefault);
 
         // order component
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderComponent, 1);

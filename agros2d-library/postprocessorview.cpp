@@ -85,41 +85,43 @@ void PostprocessorWidget::loadBasic()
 
     // contour field
     cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()));
-    if (cmbPost2DContourVariable->currentIndex() == -1 && cmbPost2DContourVariable->count() > 0)
-    {
-        // set first variable
-        cmbPost2DContourVariable->setCurrentIndex(0);
-    }
     if (cmbPost2DContourVariable->count() > 0 && cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()) != QVariant::Invalid)
     {
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable,
                                                 cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString());
     }
+    if (cmbPost2DContourVariable->currentIndex() == -1 && cmbPost2DContourVariable->count() > 0)
+    {
+        // set first variable
+        cmbPost2DContourVariable->setCurrentIndex(0);
+    }
 
     // scalar field
     cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
+    if (cmbPostScalarFieldVariable->count() > 0 && cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()) != QVariant::Invalid)
+    {
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
+        doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+
+        cmbPostScalarFieldVariableComp->setCurrentIndex(cmbPostScalarFieldVariableComp->findData((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt()));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt());
+    }
     if (cmbPostScalarFieldVariable->currentIndex() == -1 && cmbPostScalarFieldVariable->count() > 0)
     {
         // set first variable
         cmbPostScalarFieldVariable->setCurrentIndex(0);
     }
-    if (cmbPostScalarFieldVariable->count() > 0)
-    {
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
-        doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt());
-    }
 
     // vector field
+    if (cmbPost2DVectorFieldVariable->count() > 0 && cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()) != QVariant::Invalid)
+    {
+        cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString());
+    }
     if (cmbPost2DVectorFieldVariable->currentIndex() == -1 && cmbPost2DVectorFieldVariable->count() > 0)
     {
         // set first variable
         cmbPost2DVectorFieldVariable->setCurrentIndex(0);
-    }
-    if (cmbPost2DVectorFieldVariable->count() > 0)
-    {
-        cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString());
     }
 }
 
