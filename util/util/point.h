@@ -97,7 +97,7 @@ struct Point3
     inline double operator&(const Point3 &vec) const { return x*vec.x + y*vec.y + z*vec.z; } // dot product
     inline Point3 operator%(const Point3 &vec) const { return Point3(- z*vec.y, z*vec.x, x*vec.y - y*vec.x); } // cross product
 
-    inline double magnitude() const { return sqrt(x * x + y * y); }
+    inline double magnitude() const { return sqrt(x * x + y * y + z * z); }
     inline double anglexy() const { return atan2(y, x); }
     inline double angleyz() const { return atan2(z, y); }
     inline double anglezx() const { return atan2(x, z); }
