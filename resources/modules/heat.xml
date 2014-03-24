@@ -271,6 +271,10 @@
         <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
         <module:expression analysistype="transient" axi="value1" planar="value1"/>
       </module:localvariable>
+     <module:localvariable id="heat_temperature_degrees" name="Temperature (deg.)" shortname="Td" shortname_html="&lt;i>T&lt;/i>" shortname_latex="Td" type="scalar" unit="°C" unit_html="°C" unit_latex="°C">
+        <module:expression analysistype="steadystate" axi="value1-273.15" planar="value1-273.15"/>
+        <module:expression analysistype="transient" axi="value1-273.15" planar="value1-273.15"/>
+      </module:localvariable>
       <module:localvariable format="%5.3e" id="heat_heat_flux" name="Heat flux" shortname="F" shortname_html="&lt;i>F&lt;/i>" shortname_latex="F" type="vector" unit="W/m2" unit_html="W.m&lt;sup>-2&lt;/sup>" unit_latex="W \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi_r="- he_lambda * dr1" axi_z="- he_lambda * dz1" planar_x="- he_lambda * dx1" planar_y="- he_lambda * dy1"/>
         <module:expression analysistype="transient" axi_r="- he_lambda * dr1" axi_z="- he_lambda * dz1" planar_x="- he_lambda * dx1" planar_y="- he_lambda * dy1"/>
@@ -320,6 +324,10 @@
       <module:volumeintegral id="heat_temperature" name="Temperature" shortname="T" shortname_html="&lt;i>T&lt;/i>" shortname_latex="T" unit="K.m3" unit_html=" K.m&lt;sup>3&lt;/sup>" unit_latex="K \cdot m^{3}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * value1" planar="value1"/>
         <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="heat_temperature_degrees" name="Temperature (deg.)" shortname="Td" shortname_html="&lt;i>T&lt;/i>" shortname_latex="Td" unit="°C.m3" unit_html=" °C.m&lt;sup>3&lt;/sup>" unit_latex="°C \cdot m^{3}">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * (value1-273.15)" planar="value1-273.15"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * (value1-273.15)" planar="value1-273.15"/>
       </module:volumeintegral>
     </module:volumeintegrals>
     <module:surfaceintegrals>
