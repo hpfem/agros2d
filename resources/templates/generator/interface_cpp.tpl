@@ -62,7 +62,7 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
         return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);
     {{/EXT_FUNCTION}}
     {{#VALUE_FUNCTION_SOURCE}}
-    if((id == "{{VALUE_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
+    if((id == "{{VALUE_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (linearized == {{IS_LINEARIZED}}))
     {
         assert(derivative == false);
         AgrosExtFunction* extFunction = new {{VALUE_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);

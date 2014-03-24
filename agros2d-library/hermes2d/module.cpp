@@ -575,7 +575,7 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
         Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
         {
-            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, false, this);
+            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, linearize, this);
             assert(extFunctionPtr);
             extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
         }

@@ -127,9 +127,9 @@ Offset WeakFormAgros<Scalar>::offsetInfo(const FieldInfo *sourceFieldInfo, const
 
     const int fieldID = targetFieldInfo->numberId();
 
-#ifdef _DEBUG
-    positionInfoBasicCheck(fieldID);
-#endif
+//#ifdef _DEBUG
+//    positionInfoBasicCheck(fieldID);
+//#endif
     offset.forms = positionInfo(fieldID)->formsOffset;
     offset.prevSol = positionInfo(fieldID)->previousSolutionsOffset;
     offset.quant = positionInfo(fieldID)->quantAndSpecOffset;
@@ -137,9 +137,9 @@ Offset WeakFormAgros<Scalar>::offsetInfo(const FieldInfo *sourceFieldInfo, const
     if(sourceFieldInfo)
     {
         const int fieldIDSource = sourceFieldInfo->numberId();
-#ifdef _DEBUG
-        positionInfoSourceFieldInfoCheck(fieldIDSource);
-#endif
+//#ifdef _DEBUG
+//        positionInfoSourceFieldInfoCheck(fieldIDSource);
+//#endif
         offset.sourceForms = positionInfo(fieldIDSource)->formsOffset;
         offset.sourcePrevSol = positionInfo(fieldIDSource)->previousSolutionsOffset;
         offset.sourceQuant = positionInfo(fieldIDSource)->quantAndSpecOffset;
