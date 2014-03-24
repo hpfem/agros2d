@@ -120,21 +120,23 @@ void ParserInstance::addPreviousSolErroCalculation()
     }
 }
 
+// for linearized variant adding ext with index of allready solved field
+// used for nonlinear source term in the case of weak coupling
 void ParserInstance::addPreviousSolLinearizeDependence()
 {
     for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
     {
-        m_dict[QString("value%1").arg(i)] = QString("0/* todo: change in hermes needed ext[%1 + offset.prevSol]->val[i]*/").arg(i-1);
+        m_dict[QString("value%1").arg(i)] = QString("ext[%1 + offset.prevSol]->val[i]").arg(i-1);
 
         if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
         {
-            m_dict[QString("dx%1").arg(i)] = QString("0/* todo: change in hermes needed ext[%1 + offset.prevSol]->dx[i]*/").arg(i-1);
-            m_dict[QString("dy%1").arg(i)] = QString("0/* todo: change in hermes needed ext[%1 + offset.prevSol]->dy[i]*/").arg(i-1);
+            m_dict[QString("dx%1").arg(i)] = QString("ext[%1 + offset.prevSol]->dx[i]").arg(i-1);
+            m_dict[QString("dy%1").arg(i)] = QString("ext[%1 + offset.prevSol]->dy[i]").arg(i-1);
         }
         else
         {
-            m_dict[QString("dr%1").arg(i)] = QString("0/* todo: change in hermes needed ext[%1 + offset.prevSol]->dx[i]*/").arg(i-1);
-            m_dict[QString("dz%1").arg(i)] = QString("0/* todo: change in hermes needed ext[%1 + offset.prevSol]->dy[i]*/").arg(i-1);
+            m_dict[QString("dr%1").arg(i)] = QString("ext[%1 + offset.prevSol]->dx[i]").arg(i-1);
+            m_dict[QString("dz%1").arg(i)] = QString("ext[%1 + offset.prevSol]->dy[i]").arg(i-1);
         }
     }
 }

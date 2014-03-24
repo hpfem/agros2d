@@ -709,6 +709,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     this->set_ext(externalSlns);
 
     outputPositionInfos();
+    qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
 }
 
 template <typename SectionWithTemplates>
