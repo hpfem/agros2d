@@ -71,9 +71,9 @@ class ModelSetManager(object):
         code = "import sys; sys.path.insert(0, '{0}/..');".format(path)
         code += "import {0}; model = {0}.{1}();".format(self._problem, self._class)
         code += "model.load('{0}');model.create(); model.solve(); model.process(); model.save('{0}');".format(file)
-
-        command = "{0} -l -c {1}".format(self.solver, code)
-        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+        
+        command = ['{0}'.format(self.solver), '-l', '-c', '{0}'.format(code)]
+        process = subprocess.Popen(command, stdout=subprocess.PIPE)
         self._errors.append(process.communicate()[1])
 
     def solveAll(self, solveSolvedAgain = False):
