@@ -54,7 +54,7 @@ class ModelSetManager(object):
             index += 1
             strIndex = str(index)
             strZeros = '0' * (numberLen - len(strIndex))
-            name = self.directory + '/solution_' + strZeros + strIndex + '.rst'
+            name = self.directory + 'solution_' + strZeros + strIndex + '.rst'
 
         return name
 
@@ -62,6 +62,7 @@ class ModelSetManager(object):
         files = list()
         for file_name in glob.glob('{0}/{1}'.format(self.directory, mask)):
           files.append(file_name)
+          
         return files
 
     def solveProblem(self, file):
@@ -104,7 +105,7 @@ class ModelSetManager(object):
                 fileName = model.fileName
             except:
                 fileName = self.generateFileName()
-
+            
             model.save(fileName)
 
     def deleteAll(self):
