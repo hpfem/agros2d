@@ -355,6 +355,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                 {
                     Point3 pos = position;
                     Point3 vel = velocity;
+
                     for (int l = 0; l < butcher.get_size(); l++)
                     {
                         if (l < k)
@@ -394,6 +395,8 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                         newPositionH = newPositionH + kp[k] * butcher.get_B(k);
                         newVelocityH = newVelocityH + kv[k] * butcher.get_B(k);
                     }
+                    // qDebug() << "pos" << position.toString() << newPositionH.toString();
+                    // qDebug() << "vel" << velocity.toString() << newVelocityH.toString();
 
                     // optimal step estimation
                     double absError = abs(newPositionH.magnitude() - newPositionL.magnitude());
@@ -422,7 +425,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     {
                         // increase next step
                         // store current time step
-                        qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
+                        // qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
                         timeStep[particleIndex] = currentTimeStep * 1.1;
                         break;
                     }
@@ -493,6 +496,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                         impact = true;
                 }
 
+                // current step ration
                 if (impact)
                 {
                     newPositionH.x = intersect.x;
@@ -508,11 +512,10 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
 
                     // tangent vector
                     Point tangent;
-                    if (crossingEdge->angle() > 0)
-                        tangent = (Point( (intersect.y - crossingEdge->center().y),
-                                          -(intersect.x - crossingEdge->center().x))).normalizePoint();
-                    else
+                    if (crossingEdge->isStraight())
                         tangent = (crossingEdge->nodeStart()->point() - crossingEdge->nodeEnd()->point()).normalizePoint();
+                    else
+                        tangent = Point((intersect.y - crossingEdge->center().y), -(intersect.x - crossingEdge->center().x)).normalizePoint();
 
                     Point idealReflectedPosition(intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y),
                                                  intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y));
@@ -520,14 +523,16 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     double ratio = (Point(position.x, position.y) - intersect).magnitude()
                             / (Point(newPositionH.x, newPositionH.y) - Point(position.x, position.y)).magnitude();
 
-                    // output point
-                    // newPosition.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
-                    // newPosition.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
-                    newPositionH.x = intersect.x;
-                    newPositionH.y = intersect.y;
-
                     // output vector
                     Point vectout = (idealReflectedPosition - intersect).normalizePoint();
+
+                    // stop computation (impact distance is very very small)
+                    if ((fabs(distance / 100.0 * vectout.x) < EPS_ZERO) && (fabs(distance / 100.0 * vectout.y) < EPS_ZERO))
+                        stopComputation[particleIndex] = true;
+
+                    // output point
+                    newPositionH.x = intersect.x + distance / 100.0 * vectout.x;
+                    newPositionH.y = intersect.y + distance / 100.0 * vectout.y;
 
                     // velocity in the direction of output vector
                     Point3 oldv = newVelocityH;
@@ -535,8 +540,8 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     newVelocityH.y = vectout.y * oldv.magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
 
                     // set new timestep
-                    timeStep[particleIndex] = currentTimeStep * ratio;
-                    // qDebug() << "newVelocity: " << newVelocity.toString() << ratio << dt;
+                    currentTimeStep = currentTimeStep * ratio;
+                    timeStep[particleIndex] = currentTimeStep;
                 }
             }
 
