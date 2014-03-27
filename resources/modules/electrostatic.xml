@@ -28,7 +28,7 @@
                                                  symmetric="1" />
     <module:vector_form id="rhs" i="1" j="1" axi="el_rho * r * vval"
                                              planar="el_rho * vval"
-                                             condition="fabs(el_rho) > 0." />
+                                             condition="fabs(el_rho) > 0.0" />
 
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho">
