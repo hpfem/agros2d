@@ -55,8 +55,18 @@
   -> to \...\dependencies-64/bin
 
 1.7) Ifconsol.lib
-  - https://nees.org/tools/openfresco/export/327/trunk/WIN32/lib/IFCONSOL.LIB
-  - Save to \...\dependencies-64\bin
+  - http://www.gams.com/~svigerske/intel/win64/11.1/
+  - Save the following to \...\dependencies-64\bin
+    - ifconsol.lib
+    - libifcoremd.lib + .dll
+    - libifcoremdd.lib + .dll
+    - libifportmd.lib + .dll
+    - libirc.lib
+    - libmmd.lib + .dll
+    - libmmdd.lib + .dll
+    - svml_disp.lib
+    - svml_dispmd.lib + .dll
+    
 
 
 2) Before build
@@ -74,6 +84,7 @@
   - set(DEPENDENCIES_ROOT "/.../dependencies-64")
   - SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.2.1\\5.2.1\\msvc2012_64_opengl\\")
   - SET(ZLIB_ROOT "/.../dependencies-64"")
+  - SET(OPENGL_LIB_DIR "c:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x64")
 
 3) Build
 
