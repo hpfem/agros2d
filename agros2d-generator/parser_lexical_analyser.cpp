@@ -280,14 +280,14 @@ void ParserInstance::addWeakformCheckTokens()
                 }
                 else
                 {
-                    m_dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                    m_dict[QString::fromStdString(quantity.shortname().get())] = "1.";
                 }
             }
             else
             {
                 // nonlinear material
-                m_dict[QString::fromStdString(quantity.shortname().get())] = "1";
-                m_dict["d" + QString::fromStdString(quantity.shortname().get())] = "1";
+                m_dict[QString::fromStdString(quantity.shortname().get())] = "1.";
+                m_dict["d" + QString::fromStdString(quantity.shortname().get())] = "1.";
             }
         }
     }
@@ -306,7 +306,7 @@ void ParserInstance::addWeakformCheckTokens()
             }
             else
             {
-                m_dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                m_dict[QString::fromStdString(quantity.shortname().get())] = "1.";
             }
         }
     }
