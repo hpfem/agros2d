@@ -28,5 +28,6 @@ ELSE(WITH_QT5)
     SET(QT_USE_QTXMLPATTERNS TRUE)
     FIND_PACKAGE(Qt4 REQUIRED)
     # This has to be here, otherwise CMake will not do the magic and will not link to OpenGL
+    FIND_PACKAGE(OpenGLCustom REQUIRED)
     FIND_PACKAGE(OpenGL REQUIRED)
 ENDIF(WITH_QT5)

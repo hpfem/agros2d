@@ -1,10 +1,14 @@
 # Set project's name
 PROJECT( agros2d )
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # For Win64
 if(${CMAKE_CL_64})
   set(WIN64 YES)
+  set(CMAKE_EXE_LINKER_FLAGS "/machine:X64")
+  SET (CMAKE_SHARED_LINKER_FLAGS "/machine:X64")
+  SET (CMAKE_MODULE_LINKER_FLAGS "/machine:X64")
 else(${CMAKE_CL_64})
   set(WIN64 NO)
 endif(${CMAKE_CL_64})
