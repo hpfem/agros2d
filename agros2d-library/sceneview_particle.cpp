@@ -1177,13 +1177,6 @@ void SceneViewParticleTracing::processParticleTracing()
                                              -Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartingRadius).toDouble() / 2,
                                              (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + initialPosition + dp;
                 }
-                // TODO: remove
-                /*
-                if (k == 0)
-                    initialPosition = Point3(-Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartingRadius).toDouble() / 2, 0, 0) + initialPosition;
-                if (k == 1)
-                    initialPosition = Point3( Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartingRadius).toDouble() / 2, 0, 0) + initialPosition;
-                */
 
                 initialPositionsList.append(initialPosition);
                 initialVelocitiesList.append(initialVelocity);
@@ -1223,14 +1216,11 @@ void SceneViewParticleTracing::processParticleTracing()
             return;
         }
 
-
-
-        /*
-        Agros2D::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
-                                     arg(k + 1).
-                                     arg(particleTracing.times().count()).
-                                     arg(particleTracing.times().last()));
-        */
+        for (int k = 0; k < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); k++)
+                    Agros2D::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
+                                                 arg(k + 1).
+                                                 arg(m_timesList[k].count()).
+                                                 arg(m_timesList[k].last()));
     }
     Agros2D::log()->printDebug(tr("Particle Tracing"), tr("Total cpu time %1 ms").arg(cpuTime.elapsed()));
 

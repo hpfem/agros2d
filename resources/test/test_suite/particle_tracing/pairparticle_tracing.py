@@ -163,7 +163,7 @@ class MultiParticleTest(object):
     save_data(data, self.variant)
 
 def convergence():
-  for step in [1e-2, 1e-3, 1e-4, 1e-5, 1e-6]:
+  for step in [1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 5e-7]:
     variant = 'convergence-{0}'.format(step)
     test = MultiParticleTest(variant = variant)
     test.time_step = step

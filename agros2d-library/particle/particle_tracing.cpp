@@ -367,12 +367,8 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                 syncParticle = particleIndex;
             }
 
-        // qDebug() << "synctime" << syncTime << syncParticle;
-
         for (int particleIndex = 0; particleIndex < numberOfParticles; particleIndex++)
         {
-            // qDebug() << "particle time" << particleIndex << m_timesList[particleIndex].last() << numberOfSteps[particleIndex];
-
             // stop on number of steps
             if (numberOfSteps[particleIndex] > Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumNumberOfSteps).toInt() - 1)
                 stopComputation[particleIndex] = true;
@@ -420,8 +416,6 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
             {
                 bool butcherOK = true;
 
-                Point3 pos = position;
-                Point3 vel = velocity;
                 for (int k = 0; k < butcher.get_size(); k++)
                 {
                     Point3 pos = position;
@@ -469,8 +463,10 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     }
 
                     // optimal step estimation
-                    double absError = abs(newVelocityH.magnitude() - newVelocityL.magnitude());
-                    double relError = abs(absError / newVelocityH.magnitude());
+                    double absErrorPos = fabs(newPositionH.magnitude() - newPositionL.magnitude());
+                    double relErrorPos = fabs(absErrorPos / newPositionH.magnitude());
+                    double absErrorVel = fabs(newVelocityH.magnitude() - newVelocityL.magnitude());
+                    double relErrorVel = fabs(absErrorVel / newVelocityH.magnitude());
                     double currentStepLength = ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
                                                     (position - newPositionH).magnitude() :
                                                     (Point3(position.x * cos(position.z), position.x * sin(position.z), position.y)
@@ -480,27 +476,32 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                                                       (Point3(velocity.x, velocity.y, position.x * velocity.z) - Point3(newVelocityH.x, newVelocityH.y, newPositionH.x * newVelocityH.z)).magnitude());
 
                     // nearly zero step
+                    // qDebug() << "currentTimeStep" << currentTimeStep << "currentStepLength" << currentStepLength << "currentStepVelocity" << currentStepVelocity << "absErrorPos" << absErrorPos << "relErrorPos" << relErrorPos << "absErrorVel" << absErrorVel << "relErrorVel" << relErrorVel;
                     if (currentStepLength < EPS_ZERO && currentStepVelocity < EPS_ZERO)
                     {
                         qDebug() << QString("Particle %1: time step is too short - refused.").arg(particleIndex);
-                        currentTimeStep *= 2.0;
+                        currentTimeStep *= 3.0;
                         continue;
                     }
 
                     // minimum step
-                    if ((currentStepLength > maxStep) || (relError > relErrorMax))
+                    if ((currentStepLength > maxStep) || (relErrorVel > relErrorMax && relErrorPos > relErrorMax))
                     {
                         // decrease step
                         qDebug() << QString("Particle %1: time step is too long or relative error was exceeded - refused.").arg(particleIndex);
-                        currentTimeStep /= 3.0;
+                        currentTimeStep /= 2.0;
                         continue;
                     }
                     // relative tolerance
-                    else if ((relError < relErrorMin || relError < EPS_ZERO))
+                    else if ((relErrorVel < relErrorMin && relErrorPos < relErrorMin))
                     {
                         // increase next step
                         qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
-                        timeStep[particleIndex] = currentTimeStep * 1.1;
+                        double optStep = 5.0 * currentTimeStep * ((relErrorMin / relErrorPos), 0.25);
+                        if (relErrorPos > 0 && optStep > currentTimeStep)
+                            timeStep[particleIndex] = optStep;
+                        else
+                            timeStep[particleIndex] = 1.2 * currentTimeStep;
                         break;
                     }
                     else
@@ -516,7 +517,6 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     {
                         // store current time step
                         timeStep[particleIndex] = currentTimeStep;
-
                         // stop computation
                         break;
                     }
