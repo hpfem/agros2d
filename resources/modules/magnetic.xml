@@ -479,7 +479,7 @@
       <module:group name="Velocity">
         <module:quantity id="magnetic_velocity_x" name="Velocity - x" is_source="1" shortname="vx" shortname_html="&lt;i>v&lt;/i>&lt;sub>x&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
         <module:quantity id="magnetic_velocity_y" name="Velocity - y" is_source="1" shortname="vy" shortname_html="&lt;i>v&lt;/i>&lt;sub>y&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
-        <module:quantity id="magnetic_velocity_angular" name="Velocity - angular" is_source="1" shortname="va" shortname_html="&lt;i>&amp;omega;&lt;/i>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="magnetic_velocity_angular" name="Velocity - angular" is_source="1" shortname="va" shortname_html="&lt;i>&amp;omega;&lt;/i>" unit="rad/s" unit_html="rad.s&lt;sup>-1&lt;/sup>" unit_latex="\mbox{rad} \cdot s^{-1}"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">

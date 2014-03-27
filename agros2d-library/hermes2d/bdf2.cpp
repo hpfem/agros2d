@@ -69,6 +69,7 @@ Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord>
 
     for(int ps = 0; ps < n(); ps++)
     {
+//        qDebug() << "idx: " << offsetPreviousTimeExt + numComponents * ps + component << ", offset: " << offsetPreviousTimeExt << ", comp " << component << ", num comp " << numComponents;
         coef += (-m_alpha[ps + 1]) * ext[offsetPreviousTimeExt + numComponents * ps + component]->val[integrationPoint];
     }
 
