@@ -44,8 +44,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         void setMaximumRelativeError(double tolerance) except +
         int getMaximumNumberOfSteps()
         void setMaximumNumberOfSteps(int steps) except +
-        double getMinimumStep()
-        void setMinimumStep(double step) except +
+        double getMaximumStep()
+        void setMaximumStep(double step) except +
 
         bool getReflectOnDifferentMaterial()
         void setReflectOnDifferentMaterial(bool reflect)
@@ -258,11 +258,11 @@ cdef class __ParticleTracing__:
         def __set__(self, tolerance):
             self.thisptr.setMaximumRelativeError(tolerance)
 
-    property minimum_step:
+    property maximum_step:
         def __get__(self):
-            return self.thisptr.getMinimumStep()
+            return self.thisptr.getMaximumStep()
         def __set__(self, step):
-            self.thisptr.setMinimumStep(step)
+            self.thisptr.setMaximumStep(step)
 
     property collor_by_velocity:
         def __get__(self):

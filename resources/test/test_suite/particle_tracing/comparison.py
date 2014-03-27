@@ -13,8 +13,8 @@ if __name__ == '__main__':
   pl.plot(data[1]['x'], data[1]['y'], '-g')
 
   """ multi-particle tracing """
-  pl.plot(data_a2d[0]['x'], data_a2d[0]['y'], 'or')
-  pl.plot(data_a2d[1]['x'], data_a2d[1]['y'], 'og')
+  pl.plot(data_a2d[0]['x'], data_a2d[0]['y'], '.r')
+  pl.plot(data_a2d[1]['x'], data_a2d[1]['y'], '.g')
 
   pl.xlabel("$x\,\mathrm{(m)}$")
   pl.ylabel("$y\,\mathrm{(m)}$")

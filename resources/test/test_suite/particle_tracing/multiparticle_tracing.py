@@ -20,6 +20,8 @@ class TestMultiParticleTracingPlanar(Agros2DTestCase):
         electrostatic.solver = "linear"
 
         electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 0})
+        electrostatic.add_boundary("Ground", "electrostatic_potential", {"electrostatic_potential" : 0})
+        electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
         electrostatic.add_material("Air", {"electrostatic_permittivity" : 1, "electrostatic_charge_density" : 0})
 
         geometry = a2d.geometry
@@ -27,9 +29,9 @@ class TestMultiParticleTracingPlanar(Agros2DTestCase):
         d = 1
         h = 1
 
-        geometry.add_edge(-d/2.0, 0, d/2.0, 0, boundaries = {"electrostatic" : "Source"})
-        geometry.add_edge(d/2.0, 0, d/2.0, h, boundaries = {"electrostatic" : "Source"})
-        geometry.add_edge(d/2.0, h, -d/2.0, h, boundaries = {"electrostatic" : "Source"})
+        geometry.add_edge(-d/2.0, 0, d/2.0, 0, boundaries = {"electrostatic" : "Neumann"})
+        geometry.add_edge(d/2.0, 0, d/2.0, h, boundaries = {"electrostatic" : "Ground"})
+        geometry.add_edge(d/2.0, h, -d/2.0, h, boundaries = {"electrostatic" : "Neumann"})
         geometry.add_edge(-d/2.0, h, -d/2.0, 0, boundaries = {"electrostatic" : "Source"})
 
         geometry.add_label(0, h/2.0, materials = {"electrostatic" : "Air"})
@@ -62,9 +64,9 @@ class TestMultiParticleTracingPlanar(Agros2DTestCase):
         self.tracing.drag_force_reference_area = pi*2.84e-3/2.0**2
         self.tracing.drag_force_coefficient = 0 #0.47
 
-        self.tracing.butcher_table_type = 'fehlberg' #fehlberg heun-euler
-        self.tracing.maximum_relative_error = 1e-3
-        self.tracing.minimum_step = 1
+        self.tracing.butcher_table_type = 'fehlberg' #heun-euler, bogacki-shampine, fehlberg, cash-karp, dormand-prince
+        self.tracing.maximum_relative_error = 1e-12
+        self.tracing.maximum_step = 0
         self.tracing.maximum_number_of_steps = 1e5
         self.tracing.include_relativistic_correction = False
 

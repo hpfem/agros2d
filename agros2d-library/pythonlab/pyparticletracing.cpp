@@ -282,12 +282,12 @@ void PyParticleTracing::setMaximumNumberOfSteps(int steps)
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMaximumNumberOfSteps, steps);
 }
 
-void PyParticleTracing::setMinimumStep(int step)
+void PyParticleTracing::setMaximumStep(int step)
 {
     if (step < 0.0)
-        throw out_of_range(QObject::tr("Minimum step cannot be negative.").toStdString());
+        throw out_of_range(QObject::tr("Maximum step cannot be negative.").toStdString());
 
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMinimumStep, step);
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMaximumStep, step);
 }
 
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)

@@ -314,12 +314,12 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
 
     RectPoint bound = Agros2D::scene()->boundingBox();
 
-    double minStep = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble() > 0.0)
-            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble() :
+    double maxStep = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumStep).toDouble() > 0.0)
+            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumStep).toDouble() :
               min(bound.width(), bound.height()) / 80.0;
-    double relErrorMin = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() > 0.0)
-            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() / 100 : 1e-6;
-    double relErrorMax = 1e-3;
+    double relErrorMax = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() > 0.0)
+            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() : 1e-6;
+    double relErrorMin = 1e-3;
 
     // given velocity
     QList<bool> stopComputation;
@@ -345,7 +345,6 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
         //                 ? qMax(bound.width(), bound.height()) / initialVelocities[particleIndex].magnitude() / 10 : 1e-11);
         timeStep.append(1e-11);
     }
-    timeStep[0] = 1.5e-9;
 
     bool globalStopComputation = false;
     while (!globalStopComputation)
@@ -470,8 +469,8 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     }
 
                     // optimal step estimation
-                    double absError = abs(newPositionH.magnitude() - newPositionL.magnitude());
-                    double relError = abs(absError / newPositionH.magnitude());
+                    double absError = abs(newVelocityH.magnitude() - newVelocityL.magnitude());
+                    double relError = abs(absError / newVelocityH.magnitude());
                     double currentStepLength = ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
                                                     (position - newPositionH).magnitude() :
                                                     (Point3(position.x * cos(position.z), position.x * sin(position.z), position.y)
@@ -489,7 +488,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     }
 
                     // minimum step
-                    if ((currentStepLength > minStep) || (relError > relErrorMax))
+                    if ((currentStepLength > maxStep) || (relError > relErrorMax))
                     {
                         // decrease step
                         qDebug() << QString("Particle %1: time step is too long or relative error was exceeded - refused.").arg(particleIndex);
@@ -500,8 +499,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     else if ((relError < relErrorMin || relError < EPS_ZERO))
                     {
                         // increase next step
-                        // store current time step
-                        // qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
+                        qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
                         timeStep[particleIndex] = currentTimeStep * 1.1;
                         break;
                     }

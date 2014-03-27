@@ -74,7 +74,7 @@ private:
     QCheckBox *chkParticleShowBlendedFaces;
     QSpinBox *txtParticleNumShowParticleAxi;
     LineEditDouble *txtParticleMaximumRelativeError;
-    LineEditDouble *txtParticleMinimumStep;
+    LineEditDouble *txtParticleMaximumSteps;
     QSpinBox *txtParticleMaximumNumberOfSteps;
     LineEditDouble *txtParticleDragDensity;
     LineEditDouble *txtParticleDragCoefficient;

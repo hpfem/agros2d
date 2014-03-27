@@ -54,21 +54,26 @@ def plot_data(data, variant):
 
 class MultiParticleTest(object):
   def __init__(self, variant = 'test', visualization = False,
-                     gravity_force = True, electrostatic_force = True,
+                     gravity_force = True, electrostatic_force = False,
                      particle2particle_electric_force = True):
 
     scene.visible = visualization
 
     """ test properties """
     self.variant = variant
+
+    self.d = 1
+    self.h = 1
+
     self.x0 = 0.001
     self.y0 = 0.75
     self.v0 = 0.25
+    self.U = 0
 
     self.dx = 0.003
     self.dy = 0.025
     
-    self.time_step = 5e-6
+    self.time_step = 1e-6
     self.rate = 1e6
 
     self.time = [0]
@@ -99,10 +104,11 @@ class MultiParticleTest(object):
   def force(self, particle1, particle2):
     Fg = vector(0, 0, 0)
     Fe = vector(0, 0, 0)
+    Fp2p_e = vector(0, 0, 0)
 
     """ electrostatic force """
     if self.electrostatic_force:
-      pass
+      Fe.x = particle1.charge * self.U/(self.d/2.0 + particle1.pos.x)
     
     distance = sqrt((particle1.pos.x - particle2.pos.x)**2 +
                     (particle1.pos.y - particle2.pos.y)**2 +
@@ -111,17 +117,17 @@ class MultiParticleTest(object):
     """ particle to particle electric force """
     if (self.particle2particle_electric_force and distance > 0):
       F = (particle1.charge * particle2.charge) / (4.0 * pi * 8.854e-12 * distance**3)
-      Fe.x = F * (particle1.pos.x - particle2.pos.x)
-      Fe.y = F * (particle1.pos.y - particle2.pos.y)
-      Fe.z = F * (particle1.pos.z - particle2.pos.z)
+      Fp2p_e.x = F * (particle1.pos.x - particle2.pos.x)
+      Fp2p_e.y = F * (particle1.pos.y - particle2.pos.y)
+      Fp2p_e.z = F * (particle1.pos.z - particle2.pos.z)
 
-    particle1.particle2particle_electric_force.append(sqrt(Fe.x**2 + Fe.y**2 + Fe.z**2))
+    particle1.particle2particle_electric_force.append(sqrt(Fp2p_e.x**2 + Fp2p_e.y**2 + Fp2p_e.z**2))
 
     """ gravity force """
     if self.gravity_force:
       Fg.y = - particle1.mass * 9.823
 
-    F = vector(Fe.x,
+    F = vector(Fp2p_e.x + Fe.x,
                Fg.y + Fe.y,
                Fe.z)
     return F
@@ -156,11 +162,17 @@ class MultiParticleTest(object):
       data.append({'x' : list(particle.track.x)[::N], 'y' : list(particle.track.y)[::N], 'z' : list(particle.track.z)[::N]})
     save_data(data, self.variant)
 
+def convergence():
+  for step in [1e-2, 1e-3, 1e-4, 1e-5, 1e-6]:
+    variant = 'convergence-{0}'.format(step)
+    test = MultiParticleTest(variant = variant)
+    test.time_step = step
+    test.solve()
+
 def free_fall():
-  variant = 'free_fall'
-  test = MultiParticleTest(variant = variant,
-                           particle2particle_electric_force = True)
+  test = MultiParticleTest(variant = 'free_fall')
   test.solve()
 
 if __name__ == '__main__':
-  free_fall()
+  convergence()
+  #free_fall()
