@@ -95,8 +95,8 @@ public:
     void setMaximumNumberOfSteps(int steps);
 
     // minimum step
-    inline int getMinimumStep() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toInt(); }
-    void setMinimumStep(int step);
+    inline int getMaximumStep() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumStep).toInt(); }
+    void setMaximumStep(int step);
 
     // reflection on different material
     inline bool getReflectOnDifferentMaterial() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnDifferentMaterial).toBool(); }

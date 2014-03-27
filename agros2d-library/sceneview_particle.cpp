@@ -98,8 +98,8 @@ void ParticleTracingWidget::createControls()
     txtParticleCustomForceZ = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleCustomForceZ).toDouble());
     txtParticleMaximumRelativeError = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMaximumRelativeError).toDouble());
     txtParticleMaximumRelativeError->setBottom(0.0);
-    txtParticleMinimumStep = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMinimumStep).toDouble());
-    txtParticleMinimumStep->setBottom(0.0);
+    txtParticleMaximumSteps = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMaximumStep).toDouble());
+    txtParticleMaximumSteps->setBottom(0.0);
     chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflection on different material"));
     chkParticleReflectOnBoundary = new QCheckBox(tr("Reflection on boundary"));
     txtParticleCoefficientOfRestitution = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble());
@@ -243,8 +243,8 @@ void ParticleTracingWidget::createControls()
     gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 1, 1);
     gridLayoutSolver->addWidget(new QLabel(tr("Max. relative error (%):")), 2, 0);
     gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 2, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Min. step (m):")), 3, 0);
-    gridLayoutSolver->addWidget(txtParticleMinimumStep, 3, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Max. step (m):")), 3, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumSteps, 3, 1);
     gridLayoutSolver->addWidget(new QLabel(tr("Max. number of steps:")), 4, 0);
     gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 4, 1);
     gridLayoutSolver->addWidget(new QLabel(""), 10, 0);
@@ -323,7 +323,7 @@ void ParticleTracingWidget::updateControls()
     txtParticleCustomForceY->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceY).toDouble());
     txtParticleCustomForceZ->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceZ).toDouble());
     txtParticleMaximumRelativeError->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble());
-    txtParticleMinimumStep->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble());
+    txtParticleMaximumSteps->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumStep).toDouble());
     txtParticleMaximumNumberOfSteps->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumNumberOfSteps).toInt());
     chkParticleColorByVelocity->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleColorByVelocity).toBool());
     chkParticleShowPoints->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool());
@@ -369,7 +369,7 @@ void ParticleTracingWidget::doParticleDefault()
     txtParticleCustomForceY->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleCustomForceY).toDouble());
     txtParticleCustomForceZ->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleCustomForceZ).toDouble());
     txtParticleMaximumRelativeError->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMaximumRelativeError).toDouble());
-    txtParticleMinimumStep->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMinimumStep).toDouble());
+    txtParticleMaximumSteps->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMaximumStep).toDouble());
     txtParticleMaximumNumberOfSteps->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleMaximumNumberOfSteps).toInt());
     chkParticleColorByVelocity->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleColorByVelocity).toBool());
     chkParticleShowPoints->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ParticleShowPoints).toBool());
@@ -407,7 +407,7 @@ void ParticleTracingWidget::doApply()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCustomForceY, txtParticleCustomForceY->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCustomForceZ, txtParticleCustomForceZ->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMaximumRelativeError, txtParticleMaximumRelativeError->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMinimumStep, txtParticleMinimumStep->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMaximumStep, txtParticleMaximumSteps->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMaximumNumberOfSteps, txtParticleMaximumNumberOfSteps->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleColorByVelocity, chkParticleColorByVelocity->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleShowPoints, chkParticleShowPoints->isChecked());
