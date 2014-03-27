@@ -62,8 +62,9 @@ class TestMultiParticleTracingPlanar(Agros2DTestCase):
         self.tracing.drag_force_reference_area = pi*2.84e-3/2.0**2
         self.tracing.drag_force_coefficient = 0 #0.47
 
-        self.tracing.butcher_table_type = 'heun-euler' #fehlberg
-        self.tracing.maximum_relative_error = 1e-6
+        self.tracing.butcher_table_type = 'fehlberg' #fehlberg heun-euler
+        self.tracing.maximum_relative_error = 1e-3
+        self.tracing.minimum_step = 1
         self.tracing.maximum_number_of_steps = 1e5
         self.tracing.include_relativistic_correction = False
 

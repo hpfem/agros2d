@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from visual import *
 from math import pi, sqrt
 import json
@@ -53,7 +55,7 @@ def plot_data(data, variant):
 class MultiParticleTest(object):
   def __init__(self, variant = 'test', visualization = False,
                      gravity_force = True, electrostatic_force = True,
-                     paricle2particle_electric_force = True):
+                     particle2particle_electric_force = True):
 
     scene.visible = visualization
 
@@ -66,14 +68,14 @@ class MultiParticleTest(object):
     self.dx = 0.003
     self.dy = 0.025
     
-    self.time_step = 1e-5
+    self.time_step = 5e-6
     self.rate = 1e6
 
     self.time = [0]
     
     self.gravity_force = gravity_force
     self.electrostatic_force = electrostatic_force
-    self.paricle2particle_electric_force = paricle2particle_electric_force
+    self.particle2particle_electric_force = particle2particle_electric_force
 
     """ particles """
     self.particles = []
@@ -107,11 +109,11 @@ class MultiParticleTest(object):
                     (particle1.pos.z - particle2.pos.z)**2)
     
     """ particle to particle electric force """
-    if (self.paricle2particle_electric_force and distance != 0):
-      F = (particle1.charge * particle2.charge) / (4 * pi * 8.854e-12 * distance**2)
-      Fe.x = F * (particle1.pos.x - particle2.pos.x) / distance
-      Fe.y = F * (particle1.pos.y - particle2.pos.y) / distance
-      Fe.z = F * (particle1.pos.z - particle2.pos.z) / distance
+    if (self.particle2particle_electric_force and distance > 0):
+      F = (particle1.charge * particle2.charge) / (4.0 * pi * 8.854e-12 * distance**3)
+      Fe.x = F * (particle1.pos.x - particle2.pos.x)
+      Fe.y = F * (particle1.pos.y - particle2.pos.y)
+      Fe.z = F * (particle1.pos.z - particle2.pos.z)
 
     particle1.particle2particle_electric_force.append(sqrt(Fe.x**2 + Fe.y**2 + Fe.z**2))
 
@@ -149,14 +151,15 @@ class MultiParticleTest(object):
 
   def save(self):
     data = []
+    N = 50
     for particle in self.particles:
-      data.append({'x' : list(particle.track.x), 'y' : list(particle.track.y), 'z' : list(particle.track.z)})
+      data.append({'x' : list(particle.track.x)[::N], 'y' : list(particle.track.y)[::N], 'z' : list(particle.track.z)[::N]})
     save_data(data, self.variant)
 
 def free_fall():
   variant = 'free_fall'
   test = MultiParticleTest(variant = variant,
-                           paricle2particle_electric_force = True)
+                           particle2particle_electric_force = True)
   test.solve()
 
 if __name__ == '__main__':
