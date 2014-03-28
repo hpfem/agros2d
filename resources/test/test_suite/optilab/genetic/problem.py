@@ -1,8 +1,7 @@
-from variant import model
+from variant import ModelBase
 
-class Model(model.ModelBase):
+class Model(ModelBase):
     def create(self):
-        print "create"
         self.a = self.parameters["a"]
         self.b = self.parameters["b"]
         self.c = self.parameters["c"]
@@ -10,9 +9,7 @@ class Model(model.ModelBase):
         self.e = self.parameters["e"]
 
     def solve(self):
-        print "solve"
         self.solved = True
 
     def process(self):
-        print "process"
         self.variables["Func1"] = self.a + self.b + self.c + self.d + self.e

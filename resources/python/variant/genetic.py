@@ -137,18 +137,3 @@ class GeneticOptimization(OptimizationMethod):
             self.oneStep()
             solved = self.modelSetManager.solve_all()
             print "solved {0} ".format(solved)
-
-if __name__ == '__main__':
-    parameters = [ContinuousParameter('a', 0,10),
-                  ContinuousParameter('b', 0,10),
-                  ContinuousParameter('c', 0,10),
-                  ContinuousParameter('d', 0,10),
-                  ContinuousParameter('e', 0,10)]
-
-    functionals = Functionals([Functional("Func1", "max")])
-
-    optimization = GeneticOptimization(parameters, functionals)
-    optimization.directory = pythonlab.datadir('/resources/python/variant/test_genetic/solutions/')
-    optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
-    optimization.populationSize = 25
-    optimization.run(10, False)

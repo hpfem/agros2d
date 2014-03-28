@@ -1,4 +1,4 @@
-__all__ = ["scenario", "adaptivity", "coupled_problems", "fields", "core", "particle_tracing", "script"]
+__all__ = ["scenario", "adaptivity", "coupled_problems", "fields", "core", "particle_tracing", "script", "optilab"]
 
 import scenario
 import inspect
@@ -10,6 +10,7 @@ import fields
 import core
 import particle_tracing
 import script
+import optilab
 
 def get_tests(object):
     tests = list()
@@ -77,11 +78,12 @@ test_core = get_tests(core.matrix_solvers)
 test_core += get_tests(core.generator)
 test_core += core.xslt.tests
 
+""" optilab """
+test_optilab = get_tests([optilab.model_set_manager, optilab.genetic])
+
 """ complete """
 test_complete = test_fields + test_coupled + test_adaptivity + test_tracing +\
                 test_script + test_examples + test_core
-
-#print(len(test_complete))
 
 """ fast """
 test_fast = [
