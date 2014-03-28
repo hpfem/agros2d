@@ -66,7 +66,7 @@ class TestMultiParticleTracingPlanar(Agros2DTestCase):
         self.tracing.drag_force_coefficient = 0 #0.47
 
         self.tracing.butcher_table_type = 'fehlberg' # heun-euler, bogacki-shampine, fehlberg, cash-karp, dormand-prince
-        self.tracing.maximum_relative_error = 1e-10
+        self.tracing.maximum_relative_error = 1e-9
 
         self.tracing.maximum_step = 0
         self.tracing.maximum_number_of_steps = 1e5

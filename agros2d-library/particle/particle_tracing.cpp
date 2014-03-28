@@ -497,7 +497,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     {
                         // increase next step
                         qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
-                        double optStep = 5.0 * currentTimeStep * ((relErrorMin / relErrorPos), 0.25);
+                        double optStep = 0.8 * currentTimeStep * pow((relErrorMin / relErrorPos), 0.25);
                         if (relErrorPos > 0 && optStep > currentTimeStep)
                             timeStep[particleIndex] = optStep;
                         else
