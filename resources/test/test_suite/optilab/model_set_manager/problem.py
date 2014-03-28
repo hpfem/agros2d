@@ -1,9 +1,8 @@
-from variant import model
+import agros2d as a2d
+from variant import ModelBase
 
-class Model(model.ModelBase):
+class Model(ModelBase):
     def create(self):
-        import agros2d as a2d
-
         # startup script
         R1 = self.parameters["R1"]
         R2 = self.parameters["R2"]
@@ -71,28 +70,3 @@ class Model(model.ModelBase):
     def process(self):
         volume_integrals = self.electrostatic.volume_integrals()        
         self.variables["C"] = 2.0 * volume_integrals["We"] / (self.U**2)
-
-
-if __name__ == '__main__':
-    model = Model()
-    
-    model.parameters["R1"] = 0.01
-    model.parameters["R2"] = 0.03
-    model.parameters["R3"] = 0.05
-    model.parameters["R4"] = 0.06
-    model.parameters["L"] = 0.04
-    
-    model.create()
-    model.solve()
-    model.process()
-    model.save("tmp.var")
-    
-    model = Model()    
-    model.load("tmp.var")
-    print(model.variables)
-    print(model.parameters)
-    
-    import os
-    os.remove("tmp.var")    
-    
-    print("Test - capacitor: " + str(abs(model.variables['C'] - 4.972876655348628e-12) < 1e-20))

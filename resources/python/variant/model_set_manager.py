@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 
-import subprocess
-import glob
-import os
-import pythonlab
-
 from model import ModelBase
+import subprocess, glob, os
 
 class ModelSetManager(object):
     def __init__(self):
         self._solver = "agros2d_solver"
         self._directory = "solutions"
-        self._suffix = ".rst"
-        self._errors = list()
 
-        self._problem = "problem"
-        self._class = "Model"
+        self.problem_module = "problem"
+        self.model_class = "Model"
+
+        self._output = []
 
     @property
     def solver(self):
@@ -33,63 +29,61 @@ class ModelSetManager(object):
 
     @directory.setter
     def directory(self, directory):
+        if not os.path.isdir(directory):
+          os.makedirs(directory)
         self._directory = directory
 
     @property
-    def suffix(self):
-        """ Solution file suffix """
-        return self._suffix
-
-    @suffix.setter
-    def suffix(self, suffix):
-        self._suffix = suffix
+    def output(self):
+        """ Solver output """
+        return self._output
 
     #todo: rethink
-    def generateFileName(self):
+    def generate_file_name(self):
         numberLen = 5
-        files = self.findFiles()
+        files = self.find_files()
         name = ''
         index = -1
         while name == '' or name in files:
             index += 1
             strIndex = str(index)
             strZeros = '0' * (numberLen - len(strIndex))
-            name = self.directory + '/solution_' + strZeros + strIndex + '.rst'
+            name = self.directory + 'solution_' + strZeros + strIndex + '.rst'
 
         return name
 
-    def findFiles(self, mask = '*.rst'):
-        files = list()
+    def find_files(self, mask = '*.rst'):
+        files = []
         for file_name in glob.glob('{0}/{1}'.format(self.directory, mask)):
           files.append(file_name)
         return files
 
-    def solveProblem(self, file):
+    def solve_problem(self, file):
         path = os.path.dirname(os.path.abspath(file))
 
         code = "import sys; sys.path.insert(0, '{0}/..');".format(path)
-        code += "import {0}; model = {0}.{1}();".format(self._problem, self._class)
+        code += "import {0}; model = {0}.{1}();".format(self.problem_module, self.model_class)
         code += "model.load('{0}');model.create(); model.solve(); model.process(); model.save('{0}');".format(file)
+        
+        command = ['{0}'.format(self.solver), '-l', '-c', '{0}'.format(code)]
+        process = subprocess.Popen(command, stdout=subprocess.PIPE)
+        self._output.append(process.communicate())
 
-        command = "{0} -l -c {1}".format(self.solver, code)
-        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-        self._errors.append(process.communicate()[1])
-
-    def solveAll(self, solveSolvedAgain = False):
-        files = self.findFiles()
+    def solve_all(self, solveSolvedAgain = False):
+        files = self.find_files()
         totalSolved = 0
         for file in files:
             model = ModelBase()
             model.load(file)
             solveProblem = solveSolvedAgain or not model.solved
             if solveProblem:
-                self.solveProblem(file)
+                self.solve_problem(file)
                 totalSolved += 1
 
         return totalSolved
 
-    def loadAll(self):
-        files = self.findFiles()
+    def load_all(self):
+        files = self.find_files()
         models = []
         for file in files:
             model = ModelBase()
@@ -98,44 +92,15 @@ class ModelSetManager(object):
 
         return models
 
-    def saveAll(self, models):
+    def save_all(self, models):
         for model in models:
             try:
                 fileName = model.fileName
             except:
-                fileName = self.generateFileName()
-
+                fileName = self.generate_file_name()
             model.save(fileName)
 
-    def deleteAll(self):
-        files = self.findFiles()
+    def delete_all(self):
+        files = self.find_files()
         for file in files:
             os.remove(file)
-
-def generateTestFiles():
-    import numpy as np
-    L = np.linspace(0.01, 0.04, 5)
-    for i in range(len(L)):
-        model = ModelBase()
-
-        model.parameters["R1"] = 0.01
-        model.parameters["R2"] = 0.03
-        model.parameters["R3"] = 0.05
-        model.parameters["R4"] = 0.06
-        model.parameters["L"] = L[i]
-
-        fn = pythonlab.datadir('resources/python/variant/test_set_manager/solutions/solution_{0:0{1}d}.rst'.format(i, 5))
-        model.save(fn)
-
-if __name__ == '__main__':
-    solver = ModelSetManager()
-    solver.solver = pythonlab.datadir('agros2d_solver')
-    solver.directory = pythonlab.datadir('resources/python/variant/test_set_manager/solutions/')
-    solver.deleteAll()
-    generateTestFiles()
-    solver.solveAll(True)
-    models = solver.loadAll()
-    for model in models:
-        print model.parameters, model.variables, model.solved
-
-    solver.saveAll(models)

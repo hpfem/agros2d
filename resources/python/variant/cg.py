@@ -54,7 +54,7 @@ class CGOptimization(OptimizationMethod):
                 
     def gradient(self):
         
-        models = self.modelSetManager.loadAll()
+        models = self.modelSetManager.load_all()
         state = self.findState(models)
 
         if self.gradientOrder == 1:
@@ -78,15 +78,15 @@ class CGOptimization(OptimizationMethod):
         # save and solve all models 
         newModels = models[:]
         newModels.extend(toCalculate)
-        self.modelSetManager.saveAll(newModels)
-        self.modelSetManager.solveAll()
+        self.modelSetManager.save_all(newModels)
+        self.modelSetManager.solve_all()
         
         # load solved models
-        newModels = self.modelSetManager.loadAll()
+        newModels = self.modelSetManager.load_all()
         
         # delete models and save only previously saved (we do not want to store perturbations used for gradient calculation only
-        self.modelSetManager.deleteAll()
-        self.modelSetManager.saveAll(models)
+        self.modelSetManager.delete_all()
+        self.modelSetManager.save_all(models)
         
         perturbations = dict()
         for parameter in self.parameters:
