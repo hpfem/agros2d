@@ -1,11 +1,13 @@
 #!/usr/bin/python
 
-from visual import *
-from math import pi, sqrt
-import json
-
 import pylab as pl
 import matplotlib.cm as cm
+
+import json
+import time
+
+from visual import *
+from math import pi, sqrt
 
 pl.rcParams['figure.figsize'] = 10, 10
 pl.rcParams['font.size'] = 11
@@ -98,6 +100,7 @@ class MultiParticleTest(object):
     
     for particle in self.particles:
       particle.run = True
+      particle.velocity = [[], [], []]
       particle.particle2particle_electric_force = []
       particle.mass = 3.5e-5
 
@@ -133,6 +136,7 @@ class MultiParticleTest(object):
     return F
 
   def solve(self):
+    start_time = time.time()
     run = True
     while(run):
       rate(self.rate)
@@ -144,6 +148,10 @@ class MultiParticleTest(object):
 
         particle.pos = particle.pos + particle.vel * self.time_step
         particle.vel = particle.vel + self.force(particle, self.particles[self.particles.index(particle) - 1]) / particle.mass * self.time_step
+
+        particle.velocity[0].append(particle.vel.x)
+        particle.velocity[1].append(particle.vel.y)
+        particle.velocity[2].append(particle.vel.z)
         particle.track.append(pos = particle.pos)
 
         if (particle.pos.y < 0):
@@ -153,18 +161,22 @@ class MultiParticleTest(object):
             (not particle.run)):
           run = False
 
+    self.elapsed_time = time.time()-start_time
     self.save()
 
   def save(self):
     data = []
-    N = 50
+    N = 1
     for particle in self.particles:
-      data.append({'x' : list(particle.track.x)[::N], 'y' : list(particle.track.y)[::N], 'z' : list(particle.track.z)[::N]})
+      data.append({'x' : list(particle.track.x)[::N], 'y' : list(particle.track.y)[::N], 'z' : list(particle.track.z)[::N],
+                   'vx' : particle.velocity[0][::N], 'vy' : particle.velocity[1][::N], 'vz' : particle.velocity[2][::N]})
+
+    data.append({'te' : self.elapsed_time})
     save_data(data, self.variant)
 
 def convergence():
-  for step in [1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 5e-7]:
-    variant = 'convergence-{0}'.format(step)
+  for step in [1e-7]: #1e-2, 1e-3, 1e-4, 1e-5, 1e-6
+    variant = 'convergence-euler-{0}'.format(step)
     test = MultiParticleTest(variant = variant)
     test.time_step = step
     test.solve()

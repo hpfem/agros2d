@@ -3,6 +3,7 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from pairparticle_tracing import save_data
+import time
 
 class TestMultiParticleTracingPlanar(Agros2DTestCase):
     @classmethod
@@ -66,17 +67,27 @@ class TestMultiParticleTracingPlanar(Agros2DTestCase):
 
         self.tracing.butcher_table_type = 'fehlberg' # heun-euler, bogacki-shampine, fehlberg, cash-karp, dormand-prince
         self.tracing.maximum_relative_error = 1e-10
+
         self.tracing.maximum_step = 0
         self.tracing.maximum_number_of_steps = 1e5
         self.tracing.include_relativistic_correction = False
 
     def test_free_fall_with_electric_interaction(self):
         self.tracing.electrostatic_interaction = True
-        self.tracing.solve(self.initial_positions, self.initial_velocities, self.particle_charges)
-        x, y, z = self.tracing.positions()
 
-        data = [{'x' : x[0], 'y' : y[0], 'z' : z[0]}, {'x' : x[1], 'y' : y[1], 'z' : z[1]}]
-        save_data(data, 'free_fall-a2d')
+        start_time = time.time()
+        self.tracing.solve(self.initial_positions, self.initial_velocities, self.particle_charges)
+        elapsed_time = time.time()-start_time
+
+        x, y, z = self.tracing.positions()
+        vx, vy, vz = self.tracing.positions()
+        t = self.tracing.times()
+
+        data = []
+        for i in range(len(x)):
+            data.append({'x' : x[i], 'y' : y[i], 'z' : z[i], 'vx' : vx[i], 'vy' : vy[i], 'vz' : vz[i], 't' : t[i]})
+        data.append({'te' : elapsed_time})
+        save_data(data, 'convergence-{0}-{1}'.format(self.tracing.butcher_table_type, self.tracing.maximum_relative_error))
 
 if __name__ == '__main__':
     import unittest as ut

@@ -132,9 +132,9 @@ cdef class __ParticleTracing__:
         cdef vector[vector[double]] t
         self.thisptr.times(t)
 
-        out = [[]]
+        out = []
         for i in range(t.size()):
-            out[0].append(double_vector_to_list(t[i]))
+            out.append(double_vector_to_list(t[i]))
 
         return out
 
