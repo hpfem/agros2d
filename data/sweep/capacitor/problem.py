@@ -1,7 +1,7 @@
 import agros2d as a2d
-from variant import model
+from variant import ModelBase
 
-class Model(model.ModelBase):
+class Model(ModelBase):
     def create(self):
 
         # startup script

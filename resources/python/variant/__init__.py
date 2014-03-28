@@ -1,5 +1,7 @@
-__all__ = ["model", "optimization", "genetic"]
+__all__ = ["ModelBase", "ModelSetManager", "optimization", "genetic"]
 
-import model
 import optimization
 import genetic
+
+from model import ModelBase
+from model_set_manager import ModelSetManager
