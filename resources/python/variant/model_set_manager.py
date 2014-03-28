@@ -39,9 +39,9 @@ class ModelSetManager(object):
         return self._output
 
     #todo: rethink
-    def generateFileName(self):
+    def generate_file_name(self):
         numberLen = 5
-        files = self.findFiles()
+        files = self.find_files()
         name = ''
         index = -1
         while name == '' or name in files:
@@ -52,13 +52,13 @@ class ModelSetManager(object):
 
         return name
 
-    def findFiles(self, mask = '*.rst'):
-        files = list()
+    def find_files(self, mask = '*.rst'):
+        files = []
         for file_name in glob.glob('{0}/{1}'.format(self.directory, mask)):
           files.append(file_name)
         return files
 
-    def solveProblem(self, file):
+    def solve_problem(self, file):
         path = os.path.dirname(os.path.abspath(file))
 
         code = "import sys; sys.path.insert(0, '{0}/..');".format(path)
@@ -69,21 +69,21 @@ class ModelSetManager(object):
         process = subprocess.Popen(command, stdout=subprocess.PIPE)
         self._output.append(process.communicate())
 
-    def solveAll(self, solveSolvedAgain = False):
-        files = self.findFiles()
+    def solve_all(self, solveSolvedAgain = False):
+        files = self.find_files()
         totalSolved = 0
         for file in files:
             model = ModelBase()
             model.load(file)
             solveProblem = solveSolvedAgain or not model.solved
             if solveProblem:
-                self.solveProblem(file)
+                self.solve_problem(file)
                 totalSolved += 1
 
         return totalSolved
 
-    def loadAll(self):
-        files = self.findFiles()
+    def load_all(self):
+        files = self.find_files()
         models = []
         for file in files:
             model = ModelBase()
@@ -92,15 +92,15 @@ class ModelSetManager(object):
 
         return models
 
-    def saveAll(self, models):
+    def save_all(self, models):
         for model in models:
             try:
                 fileName = model.fileName
             except:
-                fileName = self.generateFileName()
+                fileName = self.generate_file_name()
             model.save(fileName)
 
-    def deleteAll(self):
-        files = self.findFiles()
+    def delete_all(self):
+        files = self.find_files()
         for file in files:
             os.remove(file)

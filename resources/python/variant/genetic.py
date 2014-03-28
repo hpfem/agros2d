@@ -43,10 +43,10 @@ class GeneticOptimization(OptimizationMethod):
         print "initial step"
         # if not resume previous optimization, delete all solution files in the directory
         if not resume:
-            self.modelSetManager.deleteAll()
+            self.modelSetManager.delete_all()
 
         # read all the solution files in the directory
-        solutions = self.modelSetManager.loadAll()
+        solutions = self.modelSetManager.load_all()
 
         # find what is the latest present population
         lastPopulationIdx = -1
@@ -64,7 +64,7 @@ class GeneticOptimization(OptimizationMethod):
             # no previous population found, create initial one
             print "no previous population found, create initial one"
             self.lastPopulation = self.initialPopulationCreator.create(self.populationSize)
-            self.modelSetManager.saveAll(self.lastPopulation)
+            self.modelSetManager.save_all(self.lastPopulation)
             lastPopulationIdx = 0
         else:
             self.LastPopulation = []
@@ -76,7 +76,7 @@ class GeneticOptimization(OptimizationMethod):
 
     def oneStep(self):
         print "starting step ", self.populationIdx
-        models = self.modelSetManager.loadAll()
+        models = self.modelSetManager.load_all()
         lastPopulation = []
         for model in models:
             assert GeneticInfo.populationTo(model) < self.populationIdx
@@ -125,17 +125,17 @@ class GeneticOptimization(OptimizationMethod):
         for model in population:
             print "pop after mutations: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model)#, ", ", model.functional
 
-        self.modelSetManager.saveAll(population)
+        self.modelSetManager.save_all(population)
 
     def run(self, maxIters, resume = True):
         self.modelSetManager.directory = self.directory
 
         lastPopulationIdx = self.initialStep(resume)
-        self.modelSetManager.solveAll()
+        self.modelSetManager.solve_all()
 
         for self.populationIdx in range(lastPopulationIdx + 1, maxIters):
             self.oneStep()
-            solved = self.modelSetManager.solveAll()
+            solved = self.modelSetManager.solve_all()
             print "solved {0} ".format(solved)
 
 if __name__ == '__main__':
