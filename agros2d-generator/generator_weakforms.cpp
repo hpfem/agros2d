@@ -119,7 +119,10 @@ void Agros2DGeneratorModule::generateSpecialFunctions(ctemplate::TemplateDiction
                             if(function.interpolation_count().present())
                                 generateSpecialFunction(function, analysisType, linearityType, coordinateType, output);
                             else
-                                generateValueExtFunction(function, analysisType, linearityType, coordinateType, output);
+                            {
+                                generateValueExtFunction(function, analysisType, linearityType, coordinateType, false, output);
+                                generateValueExtFunction(function, analysisType, linearityType, coordinateType, true, output);
+                            }
                         }
                     }
                 }
@@ -386,7 +389,7 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
     }
 }
 
-void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output)
+void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, bool linearize, ctemplate::TemplateDictionary &output)
 {
     ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("VALUE_FUNCTION_SOURCE");
     functionTemplate->SetValue("VALUE_FUNCTION_NAME", function.shortname());
@@ -402,14 +405,26 @@ void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function functi
             arg(linearityTypeToStringKey(linearityType)).
             arg(QString::fromStdString(function.shortname()));
 
+    if(linearize)
+        fullName.append("_linearized");
+
     functionTemplate->SetValue("VALUE_FUNCTION_FULL_NAME", fullName.toStdString());
+
+    if(linearize)
+        functionTemplate->SetValue("IS_LINEARIZED", "true");
+    else
+        functionTemplate->SetValue("IS_LINEARIZED", "false");
 
     ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
     QString dependence("0");
     if(linearityType != LinearityType_Linear)
         dependence = pmi.specialFunctionNonlinearExpression(QString::fromStdString(function.id()));
 
-    dependence = m_parser->parseWeakFormExpression(pmi, dependence);
+    // if linearized, we use dependence on allready calculated values form previous time level or weakly coupled source field
+    if(linearize)
+        dependence = m_parser->parseLinearizeDependence(pmi, dependence);
+    else
+        dependence = m_parser->parseWeakFormExpression(pmi, dependence);
 
     functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
 

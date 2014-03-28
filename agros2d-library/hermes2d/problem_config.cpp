@@ -250,7 +250,7 @@ void ProblemSetting::setStringKeys()
     m_settingKey[View_ParticleNumShowParticlesAxi] = "View_ParticleNumShowParticlesAxi";
     m_settingKey[View_ParticleColorByVelocity] = "View_ParticleColorByVelocity";
     m_settingKey[View_ParticleMaximumNumberOfSteps] = "View_ParticleMaximumNumberOfSteps";
-    m_settingKey[View_ParticleMinimumStep] = "View_ParticleMinimumStep";
+    m_settingKey[View_ParticleMaximumStep] = "View_ParticleMinimumStep";
     m_settingKey[View_ParticleDragDensity] = "View_ParticleDragDensity";
     m_settingKey[View_ParticleDragCoefficient] = "View_ParticleDragCoefficient";
     m_settingKey[View_ParticleDragReferenceArea] = "View_ParticleDragReferenceArea";
@@ -339,7 +339,7 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[View_ParticleNumShowParticlesAxi] = 1;
     m_settingDefault[View_ParticleColorByVelocity] = true;
     m_settingDefault[View_ParticleMaximumNumberOfSteps] = 500;
-    m_settingDefault[View_ParticleMinimumStep] = 0.0;
+    m_settingDefault[View_ParticleMaximumStep] = 0.0;
     m_settingDefault[View_ParticleDragDensity] = 1.2041;
     m_settingDefault[View_ParticleDragCoefficient] = 0.0;
     m_settingDefault[View_ParticleDragReferenceArea] = 0.0;

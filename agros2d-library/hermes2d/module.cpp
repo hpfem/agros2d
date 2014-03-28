@@ -67,7 +67,7 @@ QMap<QString, QString> Module::availableModules()
             try
             {
                 // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
-                bool validateAtTheBeginning = true;
+                bool validateAtTheBeginning = false;
                 ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
                 if(validateAtTheBeginning)
                 {
@@ -575,7 +575,7 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
         Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
         {
-            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, false, this);
+            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, linearize, this);
             assert(extFunctionPtr);
             extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
         }
@@ -709,6 +709,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     this->set_ext(externalSlns);
 
     outputPositionInfos();
+    qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
 }
 
 template <typename SectionWithTemplates>

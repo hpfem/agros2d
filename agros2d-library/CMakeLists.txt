@@ -56,10 +56,18 @@ endforeach()
 add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 
 IF(WIN32)
-  ADD_CUSTOM_COMMAND(
+  # In W64 Python, for some reason calling the script (.py) does not work - an error on the cython's side probably
+  IF(WIN64)
+    ADD_CUSTOM_COMMAND(
+        COMMAND C:/Python27/Scripts/cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+  ELSE()
+    ADD_CUSTOM_COMMAND(
         COMMAND C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+  ENDIF()
 ELSE()
   ADD_CUSTOM_COMMAND(
         COMMAND cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx

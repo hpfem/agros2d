@@ -27,6 +27,7 @@
 
 class AGROS_PYTHONLAB_API PythonLabApplication : public QtSingleApplication
 {
+    Q_OBJECT
 public:
     PythonLabApplication(int& argc, char ** argv);
 };

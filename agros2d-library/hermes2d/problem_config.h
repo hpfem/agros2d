@@ -100,7 +100,7 @@ private:
     CoordinateType m_coordinateType;
 
     // mesh type
-    MeshType m_meshType;   
+    MeshType m_meshType;
 
     QMap<Type, QVariant> m_setting;
     QMap<Type, QVariant> m_settingDefault;
@@ -185,7 +185,7 @@ public:
         View_ParticleNumShowParticlesAxi,
         View_ParticleColorByVelocity,
         View_ParticleMaximumNumberOfSteps,
-        View_ParticleMinimumStep,
+        View_ParticleMaximumStep,
         View_ParticleDragDensity,
         View_ParticleDragCoefficient,
         View_ParticleDragReferenceArea,

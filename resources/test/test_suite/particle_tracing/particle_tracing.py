@@ -71,8 +71,7 @@ class TestParticleTracingPlanar(Agros2DTestCase):
         tracing.coefficient_of_restitution = 0
         
         tracing.maximum_number_of_steps = 1e3
-        tracing.maximum_relative_error = 0.0001
-        tracing.minimum_step = 0.0003
+        tracing.maximum_relative_error = 1e-3
         
         tracing.initial_position = (0.01, 0.0)
         tracing.initial_velocity = (8e7, 0)
@@ -167,8 +166,7 @@ class TestParticleTracingAxisymmetric(Agros2DTestCase):
         tracing.coefficient_of_restitution = 0
         
         tracing.maximum_number_of_steps = 1e3
-        tracing.maximum_relative_error = 0.0001
-        tracing.minimum_step = 0.0003
+        tracing.maximum_relative_error = 1e-3
         
         tracing.initial_position = (0.003, 0.03)
         tracing.initial_velocity = (0, 0)

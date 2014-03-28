@@ -82,6 +82,8 @@ void ParticleTracing::clear()
     m_velocityMax = -numeric_limits<double>::max();
 }
 
+// input position, velocity: planar x, y, z, axi r, z, phi
+// ouput x, y, z
 Point3 ParticleTracing::force(int particleIndex,
                               Point3 position,
                               Point3 velocity)
@@ -153,31 +155,60 @@ Point3 ParticleTracing::force(int particleIndex,
             Point3 particlePosition = m_positionsList[i].at(timeLevel);
             Point3 particleVelocity = m_velocitiesList[i].at(timeLevel);
 
-            double distance = Point3(position.x - particlePosition.x,
-                                     position.y - particlePosition.y,
-                                     position.z - particlePosition.z).magnitude();
+            double distance = 0.0;
+            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                distance = Point3(position.x - particlePosition.x,
+                                  position.y - particlePosition.y,
+                                  position.z - particlePosition.z).magnitude();
+            else
+                distance = Point3(position.x * cos(position.z) - particlePosition.x * cos(particlePosition.z),
+                                  position.y - particlePosition.y,
+                                  position.x * sin(position.z) - particlePosition.x * sin(particlePosition.z)).magnitude();
 
             if (distance > 0)
             {
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PElectricForce).toBool())
                 {
-                    forceP2PElectric = forceP2PElectric + Point3(
-                                (position.x - particlePosition.x) / distance,
-                                (position.y - particlePosition.y) / distance,
-                                (position.z - particlePosition.z) / distance)
-                            * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
+                    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                        forceP2PElectric = forceP2PElectric + Point3(
+                                    (position.x - particlePosition.x) / distance,
+                                    (position.y - particlePosition.y) / distance,
+                                    (position.z - particlePosition.z) / distance)
+                                * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
+                    else
+                        forceP2PElectric = forceP2PElectric + Point3(
+                                    (position.x * cos(position.z) - particlePosition.x * cos(particlePosition.z)) / distance,
+                                    (position.y - particlePosition.y) / distance,
+                                    (position.x * sin(position.z) - particlePosition.x * sin(particlePosition.z)) / distance)
+                                * (m_particleChargesList[particleIndex] * m_particleChargesList[i] / (4 * M_PI * EPS0 * distance * distance));
                 }
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleP2PMagneticForce).toBool())
                 {
-                    Point3 r0((position.x - particlePosition.x) / distance,
-                              (position.y - particlePosition.y) / distance,
-                              (position.z - particlePosition.z) / distance);
-                    Point3 v0(velocity.x - particleVelocity.x,
-                              velocity.y - particleVelocity.y,
-                              velocity.z - particleVelocity.z);
+                    Point3 r0, v0;
+                    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                    {
+                        r0 = Point3((position.x - particlePosition.x) / distance,
+                                    (position.y - particlePosition.y) / distance,
+                                    (position.z - particlePosition.z) / distance);
+                        v0 = Point3(velocity.x - particleVelocity.x,
+                                    velocity.y - particleVelocity.y,
+                                    velocity.z - particleVelocity.z);
+                    }
+                    else
+                    {
+                        r0 = Point3((position.x * cos(position.z) - particlePosition.x * cos(particlePosition.z)) / distance,
+                                    (position.y - particlePosition.y) / distance,
+                                    (position.x * sin(position.z) - particlePosition.x * sin(particlePosition.z)) / distance);
+                        // TODO: fix velocity
+                        assert(0);
+                        v0 = Point3(velocity.x * cos(position.z) - particleVelocity.x * cos(particlePosition.z),
+                                    velocity.y - particleVelocity.y,
+                                    velocity.x * sin(position.z) - particleVelocity.x * sin(particlePosition.z));
+                    }
 
                     forceP2PMagnetic = forceP2PMagnetic + (v0 % v0 % r0)
                             * (m_particleChargesList[particleIndex] * m_particleChargesList[i] * MU0 / (4 * M_PI * distance * distance));
+
                 }
             }
         }
@@ -216,7 +247,10 @@ bool ParticleTracing::newtonEquations(int particleIndex,
     double mass = m_particleMassesList[particleIndex];
     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool())
     {
-        mass = mass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
+        Point3 velocityReal = (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
+                    velocity : Point3(velocity.x, velocity.y, position.x * velocity.z);
+
+        mass = mass / (sqrt(1.0 - (velocityReal.magnitude() * velocityReal.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
     }
 
     // Total acceleration
@@ -280,12 +314,12 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
 
     RectPoint bound = Agros2D::scene()->boundingBox();
 
-    double minStep = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble() > 0.0)
-            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble() :
+    double maxStep = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumStep).toDouble() > 0.0)
+            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumStep).toDouble() :
               min(bound.width(), bound.height()) / 80.0;
-    double relErrorMin = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() > 0.0)
-            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() / 100 : 1e-6;
-    double relErrorMax = 1e-3;
+    double relErrorMax = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() > 0.0)
+            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() : 1e-6;
+    double relErrorMin = 1e-3;
 
     // given velocity
     QList<bool> stopComputation;
@@ -307,14 +341,32 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
         stopComputation.append(false);
         numberOfSteps.append(0);
 
-        timeStep.append(initialVelocities[particleIndex].magnitude() > 0
-                        ? qMax(bound.width(), bound.height()) / initialVelocities[particleIndex].magnitude() / 10 : 1e-11);
+        // timeStep.append(initialVelocities[particleIndex].magnitude() > 0
+        //                 ? qMax(bound.width(), bound.height()) / initialVelocities[particleIndex].magnitude() / 10 : 1e-11);
+        timeStep.append(1e-11);
     }
-    timeStep[0] = 1.5e-9;
 
     bool globalStopComputation = false;
     while (!globalStopComputation)
     {
+        double syncTime = 0.0;
+        int syncParticle = -1;
+        for (int particleIndex = 0; particleIndex < numberOfParticles; particleIndex++)
+            if (m_timesList[particleIndex].last() > syncTime)
+            {
+                syncTime = m_timesList[particleIndex].last();
+                syncParticle = particleIndex;
+            }
+
+        double timeStp = 0.0;
+        if (syncParticle == -1)
+        for (int particleIndex = 0; particleIndex < numberOfParticles; particleIndex++)
+            if (timeStep[particleIndex] > timeStp)
+            {
+                timeStp = timeStep[particleIndex];
+                syncParticle = particleIndex;
+            }
+
         for (int particleIndex = 0; particleIndex < numberOfParticles; particleIndex++)
         {
             // stop on number of steps
@@ -328,6 +380,18 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
             if (stopComputation[particleIndex])
                 continue;
 
+            // sync
+            if (!stopComputation[particleIndex] && particleIndex == syncParticle)
+            {
+                bool otherParticlesIsRunning = false;
+                for (int particleIndexOther = 0; particleIndexOther < numberOfParticles; particleIndexOther++)
+                    if (particleIndex != particleIndexOther && !stopComputation[particleIndexOther])
+                        otherParticlesIsRunning = true;
+
+                if (otherParticlesIsRunning)
+                    continue;
+            }
+
             // increase number of steps
             numberOfSteps[particleIndex]++;
 
@@ -337,6 +401,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
             if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
                 velocity.z = velocity.z / position.x; // v_phi = omega * r
             double currentTimeStep = timeStep[particleIndex];
+            // qDebug() << currentTimeStep;
 
             // Runge-Kutta steps
             Point3 newPositionH;
@@ -355,6 +420,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                 {
                     Point3 pos = position;
                     Point3 vel = velocity;
+
                     for (int l = 0; l < butcher.get_size(); l++)
                     {
                         if (l < k)
@@ -365,7 +431,8 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     }
 
                     if ((Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool())
-                            && (vel.magnitude() > SPEEDOFLIGHT))
+                            && ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar
+                                 ? vel.magnitude() : Point3(vel.x, vel.y, pos.x * vel.z).magnitude()) > SPEEDOFLIGHT))
                     {
                         // decrease time step
                         butcherOK = false;
@@ -396,34 +463,45 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     }
 
                     // optimal step estimation
-                    double absError = abs(newPositionH.magnitude() - newPositionL.magnitude());
-                    double relError = abs(absError / newPositionH.magnitude());
-                    double currentStepLength = (position - newPositionH).magnitude();
-                    double currentStepVelocity = (velocity - newVelocityH).magnitude();
+                    double absErrorPos = fabs(newPositionH.magnitude() - newPositionL.magnitude());
+                    double relErrorPos = fabs(absErrorPos / newPositionH.magnitude());
+                    double absErrorVel = fabs(newVelocityH.magnitude() - newVelocityL.magnitude());
+                    double relErrorVel = fabs(absErrorVel / newVelocityH.magnitude());
+                    double currentStepLength = ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
+                                                    (position - newPositionH).magnitude() :
+                                                    (Point3(position.x * cos(position.z), position.x * sin(position.z), position.y)
+                                                     - Point3(newPositionH.x * cos(newPositionH.z), newPositionH.x * sin(newPositionH.z), newPositionH.y)).magnitude());
+                    double currentStepVelocity = ((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
+                                                      (velocity - newVelocityH).magnitude() :
+                                                      (Point3(velocity.x, velocity.y, position.x * velocity.z) - Point3(newVelocityH.x, newVelocityH.y, newPositionH.x * newVelocityH.z)).magnitude());
 
                     // nearly zero step
+                    // qDebug() << "currentTimeStep" << currentTimeStep << "currentStepLength" << currentStepLength << "currentStepVelocity" << currentStepVelocity << "absErrorPos" << absErrorPos << "relErrorPos" << relErrorPos << "absErrorVel" << absErrorVel << "relErrorVel" << relErrorVel;
                     if (currentStepLength < EPS_ZERO && currentStepVelocity < EPS_ZERO)
                     {
                         qDebug() << QString("Particle %1: time step is too short - refused.").arg(particleIndex);
-                        currentTimeStep *= 2.0;
+                        currentTimeStep *= 3.0;
                         continue;
                     }
 
                     // minimum step
-                    if ((currentStepLength > minStep) || (relError > relErrorMax))
+                    if ((currentStepLength > maxStep) || (relErrorVel > relErrorMax && relErrorPos > relErrorMax))
                     {
                         // decrease step
                         qDebug() << QString("Particle %1: time step is too long or relative error was exceeded - refused.").arg(particleIndex);
-                        currentTimeStep /= 3.0;
+                        currentTimeStep /= 2.0;
                         continue;
                     }
                     // relative tolerance
-                    else if ((relError < relErrorMin || relError < EPS_ZERO))
+                    else if ((relErrorVel < relErrorMin && relErrorPos < relErrorMin))
                     {
                         // increase next step
-                        // store current time step
                         qDebug() << QString("Particle %1: time step increased.").arg(particleIndex);
-                        timeStep[particleIndex] = currentTimeStep * 1.1;
+                        double optStep = 0.8 * currentTimeStep * pow((relErrorMin / relErrorPos), 0.25);
+                        if (relErrorPos > 0 && optStep > currentTimeStep)
+                            timeStep[particleIndex] = optStep;
+                        else
+                            timeStep[particleIndex] = 1.2 * currentTimeStep;
                         break;
                     }
                     else
@@ -439,7 +517,6 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     {
                         // store current time step
                         timeStep[particleIndex] = currentTimeStep;
-
                         // stop computation
                         break;
                     }
@@ -493,6 +570,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                         impact = true;
                 }
 
+                // current step ration
                 if (impact)
                 {
                     newPositionH.x = intersect.x;
@@ -508,11 +586,10 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
 
                     // tangent vector
                     Point tangent;
-                    if (crossingEdge->angle() > 0)
-                        tangent = (Point( (intersect.y - crossingEdge->center().y),
-                                          -(intersect.x - crossingEdge->center().x))).normalizePoint();
-                    else
+                    if (crossingEdge->isStraight())
                         tangent = (crossingEdge->nodeStart()->point() - crossingEdge->nodeEnd()->point()).normalizePoint();
+                    else
+                        tangent = Point((intersect.y - crossingEdge->center().y), -(intersect.x - crossingEdge->center().x)).normalizePoint();
 
                     Point idealReflectedPosition(intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y),
                                                  intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y));
@@ -520,23 +597,25 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
                     double ratio = (Point(position.x, position.y) - intersect).magnitude()
                             / (Point(newPositionH.x, newPositionH.y) - Point(position.x, position.y)).magnitude();
 
-                    // output point
-                    // newPosition.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
-                    // newPosition.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
-                    newPositionH.x = intersect.x;
-                    newPositionH.y = intersect.y;
-
                     // output vector
                     Point vectout = (idealReflectedPosition - intersect).normalizePoint();
 
+                    // stop computation (impact distance is very very small)
+                    if ((fabs(distance / 100.0 * vectout.x) < EPS_ZERO) && (fabs(distance / 100.0 * vectout.y) < EPS_ZERO))
+                        stopComputation[particleIndex] = true;
+
+                    // output point
+                    newPositionH.x = intersect.x + distance / 100.0 * vectout.x;
+                    newPositionH.y = intersect.y + distance / 100.0 * vectout.y;
+
                     // velocity in the direction of output vector
                     Point3 oldv = newVelocityH;
-                    newVelocityH.x = vectout.x * oldv.magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
-                    newVelocityH.y = vectout.y * oldv.magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
+                    newVelocityH.x = vectout.x * Point(oldv.x, oldv.y).magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
+                    newVelocityH.y = vectout.y * Point(oldv.x, oldv.y).magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
 
                     // set new timestep
-                    timeStep[particleIndex] = currentTimeStep * ratio;
-                    // qDebug() << "newVelocity: " << newVelocity.toString() << ratio << dt;
+                    currentTimeStep = currentTimeStep * ratio;
+                    timeStep[particleIndex] = currentTimeStep;
                 }
             }
 
