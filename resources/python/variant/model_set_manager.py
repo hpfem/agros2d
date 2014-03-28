@@ -82,8 +82,8 @@ class ModelSetManager(object):
 
         return totalSolved
 
-    def load_all(self):
-        files = self.find_files()
+    def load_all(self, mask = '*.rst'):
+        files = self.find_files(mask)
         models = []
         for file in files:
             model = ModelBase()
