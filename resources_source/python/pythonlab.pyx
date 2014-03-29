@@ -7,7 +7,6 @@ from cython.operator cimport preincrement as incr, dereference as deref
 cdef extern from "<string>" namespace "std":
     cdef cppclass string:
         string()
-        string(char *)
         char * c_str()
 
 cdef extern from "limits.h":
@@ -36,12 +35,12 @@ def quit():
 
 # input()
 def input(str):
-    return pyInput(string(str))
+    return pyInput(str.encode()).decode()
 
 # message()
 def message(str):
-    pyMessage(string(str))
+    pyMessage(str.encode())
 
 # datadir()
 def datadir(str = ""):
-    return pyDatadir(string(str))
+    return pyDatadir(str.encode()).decode()

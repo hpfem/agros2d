@@ -20,8 +20,9 @@
 #ifndef PYTHONLABFUNCTIONS_H
 #define PYTHONLABFUNCTIONS_H
 
-#include "pythonlab/pythonconsole.h"
 #include "pythonlab/pythonengine.h"
+
+#include "pythonlab/pythonconsole.h"
 #include "pythonlab/pythoneditor.h"
 
 #include "util.h"

@@ -36,7 +36,7 @@ class __Parameters__(dict):
         return dict.__getitem__(self, key)
 
     def __setitem__(self, key, value):
-        if (not self.has_key(key)):
+        if (not key in self):
             raise KeyError("Invalid key. Valid keys: {0}".format(self.keys()))
 
         dict.__setitem__(self, key, value)
