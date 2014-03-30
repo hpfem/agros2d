@@ -10,7 +10,12 @@ class Agros2DTestCase(ut.TestCase):
             self.assertTrue(True)
             return
         test = abs((value - normal)/value) < error
-        str = str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
+        str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
+        self.assertTrue(test, str)
+        
+    def interval_test(self, text, value, min, max):
+        test = (value >= min) and (value <= max)
+        str = "{0}: Agros2D = {1}, correct interval = ({2}, {3})".format(text, value, min, max)
         self.assertTrue(test, str)
 
 class Agros2DTestResult(ut.TestResult):

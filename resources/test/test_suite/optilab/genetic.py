@@ -19,10 +19,18 @@ class TestGenetic(Agros2DTestCase):
         self.optimization = GeneticOptimization(parameters, functionals)
         self.optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions/')
         self.optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
-        self.optimization.populationSize = 5
+        self.optimization.populationSize = 15
 
     def test_values(self):
-        self.optimization.run(10, False)
+        self.optimization.run(15, False)
+        models = self.optimization.modelSetManager.load_all()
+        max_value = 0.
+        for model in models:
+            value = model.variables["Func1"]
+            if value > max_value:
+                max_value = value
+        self.interval_test("Maximum found by GA. Ssince there is random element in GA, this test may sometimes fail.", max_value, 45,50)
+
 
 if __name__ == '__main__':
     import unittest as ut
