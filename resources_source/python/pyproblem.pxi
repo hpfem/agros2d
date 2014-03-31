@@ -67,13 +67,13 @@ cdef class __Problem__:
 
     property coordinate_type:
         def __get__(self):
-            return self.thisptr.getCoordinateType().c_str()
+            return self.thisptr.getCoordinateType().decode()
         def __set__(self, coordinate_type):
             self.thisptr.setCoordinateType(coordinate_type.encode())
 
     property mesh_type:
         def __get__(self):
-            return self.thisptr.getMeshType().c_str()
+            return self.thisptr.getMeshType().decode()
         def __set__(self, mesh_type):
             self.thisptr.setMeshType(mesh_type.encode())
 
@@ -85,7 +85,7 @@ cdef class __Problem__:
 
     property time_step_method:
         def __get__(self):
-            return self.thisptr.getTimeStepMethod().c_str()
+            return self.thisptr.getTimeStepMethod().decode()
         def __set__(self, time_step_method):
             self.thisptr.setTimeStepMethod(time_step_method.encode())
 
@@ -134,7 +134,7 @@ cdef class __Problem__:
         source_field -- source field id
         target_field -- target field id
         """
-        return self.thisptr.getCouplingType(source_field.encode(), target_field.encode()).c_str()
+        return self.thisptr.getCouplingType(source_field.encode(), target_field.encode()).decode()
 
     def set_coupling_type(self, source_field, target_field, type):
         """Set type of coupling.

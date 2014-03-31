@@ -28,7 +28,7 @@ def get_a2d_test(example):
 def get_py_test(example):
     def test(self):        
         with open(example) as f:
-            exec f.read() in globals()
+            exec(f.read() in globals())
     return test
 
 tests = list()
@@ -45,7 +45,7 @@ for dir in data_dirs:
 
         name = "TestExamples{0}".format(os.path.split(path)[-1].replace(" ", "")).replace("~1", "")
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
-        exec code
+        exec(code)
         create_tests(globals()[name], path)
         tests.append(globals()[name])
 

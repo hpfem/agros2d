@@ -170,7 +170,7 @@ cdef map[string, map[string, string]] get_settings_map(parameters):
         if isinstance(parameters[key], dict):
             if ("interpolation" in parameters[key]):
                 setting.first = b"interpolation"
-                setting.second = parameters[key]["interpolation"]
+                setting.second = parameters[key]["interpolation"].encode()
                 settings.insert(setting)
 
             if ("derivative_at_endpoints" in parameters[key]):
@@ -215,19 +215,19 @@ cdef class __Field__:
     # field id
     property field_id:
         def __get__(self):
-            return self.thisptr.fieldId().c_str()
+            return self.thisptr.fieldId().decode()
 
     # analysis
     property analysis_type:
         def __get__(self):
-            return self.thisptr.getAnalysisType().c_str()
+            return self.thisptr.getAnalysisType().decode()
         def __set__(self, analysis):
             self.thisptr.setAnalysisType(analysis.encode())
 
     # solver
     property solver:
         def __get__(self):
-            return self.thisptr.getLinearityType().c_str()
+            return self.thisptr.getLinearityType().decode()
         def __set__(self, solver):
             self.thisptr.setLinearityType(solver.encode())
 
@@ -244,7 +244,7 @@ cdef class __Field__:
     def __get_solver_parameters__(self):
         return {'residual' : self.thisptr.getDoubleParameter(b'NonlinearResidualNorm'),
                 'relative_change_of_solutions' : self.thisptr.getDoubleParameter(b'NonlinearRelativeChangeOfSolutions'),
-                'damping' : self.thisptr.getNonlinearDampingType().c_str(),
+                'damping' : self.thisptr.getNonlinearDampingType().decode(),
                 'damping_factor' : self.thisptr.getDoubleParameter(b'NonlinearDampingCoeff'),
                 'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(b'NonlinearDampingFactorDecreaseRatio'),
                 'damping_factor_increase_steps' : self.thisptr.getIntParameter(b'NonlinearStepsToIncreaseDampingFactor'),
@@ -298,7 +298,7 @@ cdef class __Field__:
     # matrix solver
     property matrix_solver:
         def __get__(self):
-            return self.thisptr.getMatrixSolver().c_str()
+            return self.thisptr.getMatrixSolver().decode()
         def __set__(self, solver):
             self.thisptr.setMatrixSolver(solver.encode())
 
@@ -309,8 +309,8 @@ cdef class __Field__:
     def __get_matrix_solver_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(b'LinearSolverIterToleranceAbsolute'),
                 'iterations' : self.thisptr.getIntParameter(b'LinearSolverIterIters'),
-                'method' : self.thisptr.getLinearSolverMethod().c_str(),
-                'preconditioner' : self.thisptr.getLinearSolverPreconditioner().c_str()}
+                'method' : self.thisptr.getLinearSolverMethod().decode(),
+                'preconditioner' : self.thisptr.getLinearSolverPreconditioner().decode()}
 
     def __set_matrix_solver_parameters__(self, parameters):
         # tolerance
@@ -342,7 +342,7 @@ cdef class __Field__:
     # adaptivity
     property adaptivity_type:
         def __get__(self):
-            return self.thisptr.getAdaptivityType().c_str()
+            return self.thisptr.getAdaptivityType().decode()
         def __set__(self, adaptivity_type):
             self.thisptr.setAdaptivityType(adaptivity_type.encode())
 
@@ -353,9 +353,9 @@ cdef class __Field__:
     def __get_adaptivity_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(b'AdaptivityTolerance'),
                 'steps' : self.thisptr.getIntParameter(b'AdaptivitySteps'),
-                'stopping_criterion' : self.thisptr.getAdaptivityStoppingCriterion().c_str(),
+                'stopping_criterion' : self.thisptr.getAdaptivityStoppingCriterion().decode(),
                 'threshold' : self.thisptr.getDoubleParameter(b'AdaptivityThreshold'),
-                'error_calculator' : self.thisptr.getAdaptivityErrorCalculator().c_str(),
+                'error_calculator' : self.thisptr.getAdaptivityErrorCalculator().decode(),
                 'anisotropic_refinement' : self.thisptr.getBoolParameter(b'AdaptivityUseAniso'),
                 'order_increase' : self.thisptr.getIntParameter(b'AdaptivityOrderIncrease'),
                 'space_refinement' : self.thisptr.getBoolParameter(b'AdaptivitySpaceRefinement'),
@@ -521,7 +521,7 @@ cdef class __Field__:
                                  solution_type.encode(), results)
         it = results.begin()
         while it != results.end():
-            out[deref(it).first.c_str()] = deref(it).second
+            out[deref(it).first.decode()] = deref(it).second
             incr(it)
 
         return out
@@ -551,7 +551,7 @@ cdef class __Field__:
                                       solution_type.encode(), results)
         it = results.begin()
         while it != results.end():
-            out[deref(it).first.c_str()] = deref(it).second
+            out[deref(it).first.decode()] = deref(it).second
             incr(it)
 
         return out
@@ -581,7 +581,7 @@ cdef class __Field__:
                                      solution_type.encode(), results)
         it = results.begin()
         while it != results.end():
-            out[deref(it).first.c_str()] = deref(it).second
+            out[deref(it).first.decode()] = deref(it).second
             incr(it)
 
         return out
@@ -595,7 +595,7 @@ cdef class __Field__:
         self.thisptr.initialMeshInfo(info_map)
         it = info_map.begin()
         while it != info_map.end():
-            info[deref(it).first.c_str()] = deref(it).second
+            info[deref(it).first.decode()] = deref(it).second
             incr(it)
 
         return info
@@ -619,7 +619,7 @@ cdef class __Field__:
 
         it = info_map.begin()
         while it != info_map.end():
-            info[deref(it).first.c_str()] = deref(it).second
+            info[deref(it).first.decode()] = deref(it).second
             incr(it)
 
         return info
@@ -701,5 +701,5 @@ def field(field_id):
     return __fields__[field_id]
 
 def __remove_field__(field_id):
-    if (not field_id in __fields__):
+    if (field_id in __fields__):
         del __fields__[field_id]
