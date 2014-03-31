@@ -30,9 +30,9 @@
 
 if (WIN32)
   if (WIN64)
-      if(ZLIB_ROOT)
-        find_library(OPENGL_gl_LIBRARY opengl32 ${ZLIB_ROOT})
-        find_library(OPENGL_glu_LIBRARY glu32  ${ZLIB_ROOT})
+      if(DEFINED OPENGL_LIB_DIR)
+        find_library(OPENGL_gl_LIBRARY opengl32 ${OPENGL_LIB_DIR})
+        find_library(OPENGL_glu_LIBRARY glu32  ${OPENGL_LIB_DIR})
       else()
         set (OPENGL_gl_LIBRARY opengl32 CACHE STRING "OpenGL library for win32")
         set (OPENGL_glu_LIBRARY glu32 CACHE STRING "GLU library for win32")
