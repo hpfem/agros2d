@@ -91,8 +91,8 @@ class TestInternalMatrixSolvers(Agros2DTestCase):
         rhs = rhs_object["rhs"]
         
         # size of the matrix
-        print("Matrix size: " + str(len(rhs)))
-        print("Number of nonzeros: " + str(matrix.getnnz()) + " (" + str(round(float(matrix.getnnz()) / (len(rhs)**2) * 100.0, 3)) + " %)")
+        print(("Matrix size: " + str(len(rhs))))
+        print(("Number of nonzeros: " + str(matrix.getnnz()) + " (" + str(round(float(matrix.getnnz()) / (len(rhs)**2) * 100.0, 3)) + " %)"))
         
         # visualize matrix sparsity pattern
         fig = pl.figure()

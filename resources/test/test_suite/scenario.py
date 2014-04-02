@@ -38,9 +38,9 @@ class Agros2DTestResult(ut.TestResult):
         
         self.output.append([modu, cls, tst, -self.time * 1000, "OK", ""])
         
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
-              "{0}".format("OK".rjust(10, ".")))
+        print(("{0}".format(id.ljust(60, "."))), end=' ')
+        print(("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
+              "{0}".format("OK".rjust(10, "."))))
 
     def addError(self, test, err):
         ut.TestResult.addError(self, test, err)
@@ -53,10 +53,10 @@ class Agros2DTestResult(ut.TestResult):
         
         self.output.append([modu, cls, tst, 0, "ERROR", err[1]])
         
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
-              "{0}".format("ERROR".rjust(10, ".")))        
-        print(err[1])
+        print(("{0}".format(id.ljust(60, "."))), end=' ')
+        print(("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
+              "{0}".format("ERROR".rjust(10, "."))))        
+        print((err[1]))
 
     def addFailure(self, test, err):
         ut.TestResult.addFailure(self, test, err)
@@ -69,10 +69,10 @@ class Agros2DTestResult(ut.TestResult):
         
         self.output.append([modu, cls, tst, 0, "FAILURE", str(err[1])])
 
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
-              "{0}".format("FAILURE".rjust(10, ".")))        
-        print(err[1])      
+        print(("{0}".format(id.ljust(60, "."))), end=' ')
+        print(("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
+              "{0}".format("FAILURE".rjust(10, "."))))        
+        print((err[1]))      
         
     def report(self):
         return self.output

@@ -110,7 +110,7 @@ class TestProblemTime(Agros2DTestCase):
     """ time_steps_total """
     def test_time_steps_total(self):
         self.problem.solve()
-        self.assertEqual(self.problem.time_steps_total(), range(0, 101, 10))
+        self.assertEqual(self.problem.time_steps_total(), list(range(0, 101, 10)))
 
     """ elapsed_time """
     def test_elapsed_time(self):

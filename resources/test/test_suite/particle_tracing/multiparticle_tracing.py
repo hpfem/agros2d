@@ -2,7 +2,7 @@ import agros2d as a2d
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-from pairparticle_tracing import save_data
+from .pairparticle_tracing import save_data
 import time
 
 class TestMultiParticleTracingPlanar(Agros2DTestCase):

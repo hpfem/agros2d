@@ -182,7 +182,7 @@ class TestGeometryTransformations(Agros2DTestCase):
         self.model()
         scale = 2.5
 
-        self.geometry.select_edges(range(0, 4))
+        self.geometry.select_edges(list(range(0, 4)))
         self.geometry.scale_selection(self.a/2.0, self.b/2.0, scale, False)
 
         self.problem.solve()
