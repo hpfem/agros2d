@@ -29,7 +29,6 @@
 #include "scene.h"
 #include "scenenode.h"
 #include "sceneedge.h"
-#include "moduledialog.h"
 
 #include "gui/lineeditdouble.h"
 #include "gui/common.h"

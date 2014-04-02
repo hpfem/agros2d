@@ -143,7 +143,7 @@ SET(SOURCES value.cpp
     preprocessorview.cpp
     infowidget.cpp
     hermes2d/solutionstore.cpp
-    moduledialog.cpp
+    #moduledialog.cpp
     parser/lex.cpp
     hermes2d/bdf2.cpp
     pythonlab/pythonengine_agros.cpp
@@ -236,7 +236,7 @@ SET(SOURCES value.cpp
     hermes2d/field.h
     hermes2d/block.h
     hermes2d/solutionstore.h
-    moduledialog.h
+    #moduledialog.h
     parser/lex.h
     hermes2d/bdf2.h
     hermes2d/plugin_interface.h

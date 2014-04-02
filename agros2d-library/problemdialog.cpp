@@ -24,7 +24,7 @@
 #include "util/global.h"
 
 #include "scene.h"
-#include "moduledialog.h"
+// #include "moduledialog.h"
 #include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
@@ -851,8 +851,8 @@ void FieldDialog::deleteField()
 
 void FieldDialog::moduleEditor()
 {
-    ModuleDialog moduleDialog(fieldWidget->fieldInfo()->fieldId(), this);
-    moduleDialog.exec();
+    // ModuleDialog moduleDialog(fieldWidget->fieldInfo()->fieldId(), this);
+    // moduleDialog.exec();
 }
 
 // ********************************************************************************************
