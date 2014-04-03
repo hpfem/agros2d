@@ -29,7 +29,7 @@ class TestGenetic(Agros2DTestCase):
             value = model.variables["Func1"]
             if value > max_value:
                 max_value = value
-        self.interval_test("Maximum found by GA. Ssince there is random element in GA, this test may sometimes fail.", max_value, 45,50)
+        self.interval_test("Maximum found by GA. Since there is random element in GA, this test may sometimes fail.", max_value, 45,50)
 
 
 if __name__ == '__main__':

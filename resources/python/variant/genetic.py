@@ -1,6 +1,6 @@
 from optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
 from model_set_manager import ModelSetManager
-from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, ImplicitMutation,\
+from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
         RandomCrossover, GeneticInfo
 import random as rnd
 
@@ -12,7 +12,10 @@ class GeneticOptimization(OptimizationMethod):
         OptimizationMethod.__init__(self, parameters, functionals)
         self.modelSetManager = ModelSetManager()
         self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
+        if (functionals.isMulticriterial):
+            self.selector = MultiCriteriaSelector(self.parameters, self.functionals)
+        else:
+            self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
         self.crossover = RandomCrossover()
         self.mutation = ImplicitMutation(self.parameters)
 
@@ -88,10 +91,11 @@ class GeneticOptimization(OptimizationMethod):
         population = self.selector.select(lastPopulation)
 
         for model in population:
+            GeneticInfo.setPopulationTo(model, self.populationIdx)
             print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
 
 
-        print "best member of the population: ", self.findBest(population)
+        #print "best member of the population: ", self.findBest(population)
 
         # Mutations
         numMutations = (self.populationSize - len(population)) / 2
@@ -137,3 +141,21 @@ class GeneticOptimization(OptimizationMethod):
             self.oneStep()
             solved = self.modelSetManager.solve_all()
             print "solved {0} ".format(solved)
+
+
+#if __name__ == '__main__':
+#    parameters = [ContinuousParameter('a', 0, 10),
+#                    ContinuousParameter('b', 0, 10),
+#                    ContinuousParameter('c', 0, 10),
+#                    ContinuousParameter('d', 0, 10),
+#                    ContinuousParameter('e', 0, 10)]
+#
+#    functionals = Functionals([Functional("Func1", "max"),
+#                                Functional("Func2", "max")])
+#
+#    self_optimization = GeneticOptimization(parameters, functionals)
+#    self_optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic_multi/solutions/')
+#    self_optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
+#    self_optimization.populationSize = 17
+#    self_optimization.run(17, False)
+#
