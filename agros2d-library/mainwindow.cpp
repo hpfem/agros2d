@@ -1044,6 +1044,7 @@ void MainWindow::doDocumentSaveAs()
             Agros2D::log()->printError(tr("Problem"), e.toString());
         }
     }
+    sceneInfoWidget->refresh();
 }
 
 void MainWindow::doDocumentClose()
