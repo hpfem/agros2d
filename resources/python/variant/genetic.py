@@ -125,18 +125,23 @@ class GeneticOptimization(OptimizationMethod):
         numCrossovers = self.populationSize - len(population) - len(mutations)
         numCrossovers = max(numCrossovers, self.populationSize / 4)
         crossovers = []
+        attempts = 0
         while len(crossovers) < numCrossovers:
             fatherIdx = self.randomMemberIdx(population)
             motherIdx = self.randomMemberIdx(population)
             while (motherIdx == fatherIdx):
                 motherIdx = self.randomMemberIdx(population)
             
-            print "fat and mat ", [fatherIdx, motherIdx]
+            #print "fat and mat ", [fatherIdx, motherIdx]
             crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
             GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
             GeneticInfo.setPopulationTo(crossover, self.populationIdx)
             if (not self.isContained(population, crossover)) and (not self.isContained(mutations, crossover)) and (not self.isContained(crossovers, crossover)):                
                 crossovers.append(crossover)
+            attempts += 1
+            if (attempts > 5 * self.populationSize):
+                print "Unable to create enough new crossovers. Population may have degenerated. "
+                break
         
             
         print "in step {0} survived {1}, added {2} mutations and {3} crossovers".format(self.populationIdx, len(population), len(mutations), len(crossovers))
