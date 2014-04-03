@@ -12,7 +12,7 @@ class GeneticOptimization(OptimizationMethod):
         OptimizationMethod.__init__(self, parameters, functionals)
         self.modelSetManager = ModelSetManager()
         self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        if (functionals.isMulticriterial):
+        if functionals.isMulticriterial():
             self.selector = MultiCriteriaSelector(self.parameters, self.functionals)
         else:
             self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
@@ -143,19 +143,17 @@ class GeneticOptimization(OptimizationMethod):
             print "solved {0} ".format(solved)
 
 
-#if __name__ == '__main__':
-#    parameters = [ContinuousParameter('a', 0, 10),
-#                    ContinuousParameter('b', 0, 10),
-#                    ContinuousParameter('c', 0, 10),
-#                    ContinuousParameter('d', 0, 10),
-#                    ContinuousParameter('e', 0, 10)]
-#
-#    functionals = Functionals([Functional("Func1", "max"),
-#                                Functional("Func2", "max")])
-#
-#    self_optimization = GeneticOptimization(parameters, functionals)
-#    self_optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic_multi/solutions/')
-#    self_optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
-#    self_optimization.populationSize = 17
-#    self_optimization.run(17, False)
-#
+if __name__ == '__main__':
+    parameters = [ContinuousParameter('a', 0, 10),
+                    ContinuousParameter('b', 0, 10),
+                    ContinuousParameter('c', 0, 10),
+                    ContinuousParameter('d', 0, 10),
+                    ContinuousParameter('e', 0, 10)]
+
+    functionals = Functionals([Functional("Func1", "max")])
+
+    self_optimization = GeneticOptimization(parameters, functionals)
+    self_optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions/')
+    self_optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
+    self_optimization.populationSize = 15
+    self_optimization.run(15, False)
