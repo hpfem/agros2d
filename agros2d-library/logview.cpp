@@ -521,7 +521,7 @@ void LogDialog::updateNonlinearChartInfo(SolverAgros::Phase phase, const QVector
 
     m_nonlinearErrorGraph->setData(steps, relativeChangeOfSolutions);
     m_nonlinearChart->rescaleAxes();
-    m_nonlinearChart->replot();
+    m_nonlinearChart->replot(QCustomPlot::rpImmediate);
 
     // progress bar
     if (phase == SolverAgros::Phase_Finished)
@@ -556,7 +556,7 @@ void LogDialog::updateAdaptivityChartInfo(const FieldInfo *fieldInfo, int timeSt
     m_adaptivityErrorGraph->setData(adaptiveSteps, adaptiveError);
     m_adaptivityDOFsGraph->setData(adaptiveSteps, adaptiveDOFs);
     m_adaptivityChart->rescaleAxes();
-    m_adaptivityChart->replot();
+    m_adaptivityChart->replot(QCustomPlot::rpImmediate);
 
     // progress bar
     double valueSteps = 10000.0 * (adaptivityStep / fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
@@ -589,7 +589,7 @@ void LogDialog::updateTransientChartInfo(double actualTime)
     m_timeChart->yAxis2->setRangeLower(0.0);
     m_timeChart->yAxis2->setRangeUpper(timeTotal.last());
     m_timeTimeStepGraph->rescaleKeyAxis();
-    m_timeChart->replot();
+    m_timeChart->replot(QCustomPlot::rpImmediate);
 
     // progress bar
     m_timeProgress->setValue((10000.0 * actualTime / Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()));

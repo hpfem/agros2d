@@ -513,7 +513,7 @@ void MaterialEditDialog::drawChart()
     // chartNonlinear->yAxis->setLabel(txtPropertyUnit->text());
     chartNonlinear->graph(0)->setData(keys, values);
     chartNonlinear->rescaleAxes();
-    chartNonlinear->replot();
+    chartNonlinear->replot(QCustomPlot::rpQueued);
 }
 
 XMLMaterial::property MaterialEditDialog::writeProperty()
