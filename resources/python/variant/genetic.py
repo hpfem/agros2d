@@ -128,6 +128,10 @@ class GeneticOptimization(OptimizationMethod):
         while len(crossovers) < numCrossovers:
             fatherIdx = self.randomMemberIdx(population)
             motherIdx = self.randomMemberIdx(population)
+            while (motherIdx == fatherIdx):
+                motherIdx = self.randomMemberIdx(population)
+            
+            print "fat and mat ", [fatherIdx, motherIdx]
             crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
             GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
             GeneticInfo.setPopulationTo(crossover, self.populationIdx)
