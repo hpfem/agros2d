@@ -98,8 +98,8 @@ class SingleCriteriaSelector(SurvivorsSelector):
         assert not self.functionals.isMulticriterial()
         signF = self.functionals.functional().directionSign()
 
-        print "len poulation ", len(population), ", 0.3*rec ", int(0.35*self.recomendedPopulationSize)
-        survivorsNum = min(len(population), int(0.35*self.recomendedPopulationSize))
+        print "len poulation ", len(population), ", 0.5*rec ", int(0.5*self.recomendedPopulationSize)
+        survivorsNum = min(len(population), int(0.5*self.recomendedPopulationSize))
         scores = []
         for member in population:
             scores.append(self.functionals.evaluate(member))
@@ -129,6 +129,8 @@ class SingleCriteriaSelector(SurvivorsSelector):
                 newMember.priority = priority
                 GeneticInfo.setPopulationTo(newMember, GeneticInfo.populationTo(newMember) + 1)
                 survivors.append(newMember)
+
+            print "score: ", score, ", priority: ", priority
 
         return survivors
 

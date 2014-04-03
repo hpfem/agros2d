@@ -41,6 +41,17 @@ class GeneticOptimization(OptimizationMethod):
 
         return [optimum, optimalParameters]
 
+    
+    # random number of the population
+    # takes into account its priority
+    def randomMemberIdx(self, population):
+        indices = []
+        for index in range(len(population)):
+            for j in range(population[index].priority):
+                indices.append(index);
+                
+        return indices[rnd.randrange(len(indices))]
+
 
     def initialStep(self, resume):
         print "initial step"
@@ -92,16 +103,18 @@ class GeneticOptimization(OptimizationMethod):
 
         for model in population:
             GeneticInfo.setPopulationTo(model, self.populationIdx)
-            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
+            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model), " prior: ", model.priority
 
 
         #print "best member of the population: ", self.findBest(population)
 
         # Mutations
         numMutations = (self.populationSize - len(population)) / 2
+        # at least 1/5 of recomended population size
+        numMutations = max(numMutations, self.populationSize / 5)
         mutations = []
         while len(mutations) < numMutations:
-            originalIdx = rnd.randrange(len(population))
+            originalIdx = self.randomMemberIdx(population)
             mutation = self.mutation.mutate(population[originalIdx])
             GeneticInfo.setPopulationFrom(mutation, self.populationIdx)
             GeneticInfo.setPopulationTo(mutation, self.populationIdx)
@@ -110,10 +123,11 @@ class GeneticOptimization(OptimizationMethod):
             
         # Crossovers
         numCrossovers = self.populationSize - len(population) - len(mutations)
+        numCrossovers = max(numCrossovers, self.populationSize / 4)
         crossovers = []
         while len(crossovers) < numCrossovers:
-            fatherIdx = rnd.randrange(len(population))
-            motherIdx = rnd.randrange(len(population))
+            fatherIdx = self.randomMemberIdx(population)
+            motherIdx = self.randomMemberIdx(population)
             crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
             GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
             GeneticInfo.setPopulationTo(crossover, self.populationIdx)
