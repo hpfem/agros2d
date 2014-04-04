@@ -26,8 +26,9 @@ def get_tests(object):
     return tests
 
 """ fields """
-test_fields = get_tests([fields.electrostatic, fields.current, fields.magnetic, fields.heat,
-                         fields.elasticity, fields.flow, fields.acoustic, fields.rf_te, fields.rf_tm])
+test_fields = get_tests([fields.electrostatic, fields.current, fields.magnetic_steady, fields.magnetic_harmonic, 
+                         fields.magnetic_transient, fields.heat, fields.elasticity, fields.flow, fields.acoustic, 
+                         fields.rf_te, fields.rf_tm])
 
 """ coupled """
 test_coupled = [
@@ -52,9 +53,9 @@ coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHard
 """ nonlin """
 test_nonlin = [
 fields.heat.TestHeatNonlinPlanar,
-fields.magnetic.TestMagneticNonlinPlanar,
-fields.magnetic.TestMagneticHarmonicNonlinPlanar,
-fields.magnetic.TestMagneticHarmonicNonlinAxisymmetric,
+fields.magnetic_steady.TestMagneticNonlinPlanar,
+fields.magnetic_harmonic.TestMagneticHarmonicNonlinPlanar,
+fields.magnetic_harmonic.TestMagneticHarmonicNonlinAxisymmetric,
 fields.flow.TestFlowPlanar,
 fields.flow.TestFlowAxisymmetric
 ]
@@ -106,16 +107,16 @@ fields.heat.TestHeatAxisymmetric,
 fields.heat.TestHeatNonlinPlanar,
 fields.heat.TestHeatTransientAxisymmetric,
 # magnetic field
-fields.magnetic.TestMagneticPlanar,
-fields.magnetic.TestMagneticAxisymmetric,
-fields.magnetic.TestMagneticHarmonicPlanar,
-fields.magnetic.TestMagneticHarmonicAxisymmetric,
-fields.magnetic.TestMagneticHarmonicPlanarTotalCurrent,
-fields.magnetic.TestMagneticHarmonicAxisymmetricTotalCurrent,
-fields.magnetic.TestMagneticNonlinPlanar,
-fields.magnetic.TestMagneticNonlinAxisymmetric,
-fields.magnetic.TestMagneticHarmonicNonlinPlanar,
-fields.magnetic.TestMagneticHarmonicNonlinAxisymmetric,
+fields.magnetic_steady.TestMagneticPlanar,
+fields.magnetic_steady.TestMagneticAxisymmetric,
+fields.magnetic_harmonic.TestMagneticHarmonicPlanar,
+fields.magnetic_harmonic.TestMagneticHarmonicAxisymmetric,
+fields.magnetic_harmonic.TestMagneticHarmonicPlanarTotalCurrent,
+fields.magnetic_harmonic.TestMagneticHarmonicAxisymmetricTotalCurrent,
+fields.magnetic_steady.TestMagneticNonlinPlanar,
+fields.magnetic_steady.TestMagneticNonlinAxisymmetric,
+fields.magnetic_harmonic.TestMagneticHarmonicNonlinPlanar,
+fields.magnetic_harmonic.TestMagneticHarmonicNonlinAxisymmetric,
 # rf te
 fields.rf_te.TestRFTEHarmonicPlanar,
 fields.rf_te.TestRFTEHarmonicAxisymmetric,
