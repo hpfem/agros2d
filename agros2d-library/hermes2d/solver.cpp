@@ -687,7 +687,8 @@ void ProblemSolver<Scalar>::createInitialSpace()
             int spaceI = i + 1;
             assert(fieldSpaces.contains(spaceI));
             Hermes::Hermes2D::SpaceSharedPtr<Scalar> oneSpace;
-            switch (fieldSpaces[spaceI].type())
+            SpaceType spaceType = fieldSpaces[spaceI].type();
+            switch (spaceType)
             {
             case HERMES_L2_SPACE:
                 oneSpace = Hermes::Hermes2D::SpaceSharedPtr<Scalar>(new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + fieldInfo->spaces()[i+1].orderAdjust()));
@@ -718,8 +719,11 @@ void ProblemSolver<Scalar>::createInitialSpace()
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt()))
                 {
-                    oneSpace->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                    if(spaceType != HERMES_L2_MARKERWISE_CONST_SPACE)
+                    {
+                        oneSpace->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
                                                 QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
+                    }
                 }
             }
 
