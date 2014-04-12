@@ -23,11 +23,7 @@ endif()
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 SET(CMAKE_AGROS_DIRECTORY "${CMAKE_HOME_DIRECTORY}/")
-
 set(WITH_OPENMP YES)
-IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  set(WITH_OPENMP NO)
-ENDIF()
 
 # Allow to override the default values in CMake.vars:
 INCLUDE(CMake.vars OPTIONAL)
