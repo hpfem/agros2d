@@ -604,6 +604,14 @@
         <module:expression analysistype="harmonic" axi="ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12)))" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * (value2+value4)"/>
         <module:expression analysistype="transient" axi="ma_Jer - ma_gamma * (ma_vy * dz1) - ma_gamma * value2" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2"/>
       </module:localvariable>
+
+<!--      <module:localvariable id="magnetic_current_density_extra" name="Current dens extra" shortname="Jextra" shortname_html="&lt;i>Jextra&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="Jextra_\mathrm{r}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
+        <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * (value4/(2*PI*(r+1e-12)))" planar="2 * PI * f * ma_gamma * (value4)"/>
+      </module:localvariable>
+      <module:localvariable id="magnetic_current_density_only" name="Current dens only" shortname="Jonly" shortname_html="&lt;i>Jonly&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="Jonly_\mathrm{r}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
+        <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * (value2)" planar="2 * PI * f * ma_gamma * (value2)"/>
+      </module:localvariable>-->
+
       <module:localvariable id="magnetic_current_density_total_imag" name="Current dens. - total - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="J_\mathrm{i}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi="ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12)))" planar="ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * (value1+value3)"/>
       </module:localvariable>

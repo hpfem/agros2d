@@ -284,11 +284,11 @@ class TestAcousticTransientAxisymmetric(Agros2DTestCase):
 
         # volume integral
         volume = self.acoustic.volume_integrals([0])
-        self.value_test("Acoustic pressure - real", volume["pr"], -0.048196)
+        self.value_test("Acoustic pressure - volume", volume["pr"], -0.22339)
                         
         # surface integral 
         surface = self.acoustic.surface_integrals([0])
-        self.value_test("Acoustic pressure - real", surface["pr"], 0.220157)
+        self.value_test("Acoustic pressure - surface", surface["pr"], -0.13398, 0.04)
         
 if __name__ == '__main__':        
     import unittest as ut

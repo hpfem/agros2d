@@ -13,18 +13,23 @@ else(${CMAKE_CL_64})
   set(WIN64 NO)
 endif(${CMAKE_CL_64})
 
+# Policy handling
+if(POLICY CMP0020)
+  cmake_policy(PUSH)
+  cmake_policy(SET CMP0020 OLD)
+endif()
+
 # Debug yes / no.
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 SET(CMAKE_AGROS_DIRECTORY "${CMAKE_HOME_DIRECTORY}/")
-
 set(WITH_OPENMP YES)
-IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  set(WITH_OPENMP NO)
-ENDIF()
 
 # Allow to override the default values in CMake.vars:
 INCLUDE(CMake.vars OPTIONAL)
+
+# OpenGL
+FIND_PACKAGE(OpenGLCustom REQUIRED)
 
 # Handle Qt.
 include(QtHandling.cmake)
@@ -318,3 +323,8 @@ set(info resources/modules/acoustic.xml
 )
 add_info_files(${info})
 add_custom_target(other SOURCES ${info})
+
+# Policy handling
+if(POLICY CMP0020)
+  cmake_policy(POP)
+endif()

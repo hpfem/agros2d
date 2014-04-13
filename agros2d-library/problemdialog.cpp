@@ -24,7 +24,7 @@
 #include "util/global.h"
 
 #include "scene.h"
-#include "moduledialog.h"
+// #include "moduledialog.h"
 #include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
@@ -851,8 +851,8 @@ void FieldDialog::deleteField()
 
 void FieldDialog::moduleEditor()
 {
-    ModuleDialog moduleDialog(fieldWidget->fieldInfo()->fieldId(), this);
-    moduleDialog.exec();
+    // ModuleDialog moduleDialog(fieldWidget->fieldInfo()->fieldId(), this);
+    // moduleDialog.exec();
 }
 
 // ********************************************************************************************
@@ -1035,7 +1035,7 @@ void CouplingsWidget::createContent()
         combo->setVisible(false);
         combo->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
         combo->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-        combo->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+//        combo->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
 
         connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
 

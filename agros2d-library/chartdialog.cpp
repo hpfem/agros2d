@@ -602,7 +602,7 @@ void ChartWidget::doApply()
     {
         m_chart->chart()->rescaleAxes();
     }
-    m_chart->chart()->replot();
+    m_chart->chart()->replot(QCustomPlot::rpQueued);
 
 
     btnSaveImage->setEnabled(m_chart->chart()->graph()->data()->size() > 0);

@@ -28,7 +28,7 @@
 #include "scene.h"
 #include "sceneview_common.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "moduledialog.h"
+// #include "moduledialog.h"
 
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"

@@ -108,6 +108,16 @@ PositionInfo::PositionInfo() :
 
 }
 
+Offset::Offset() :
+    forms(INVALID_POSITION_INFO_VALUE),
+    quant(INVALID_POSITION_INFO_VALUE),
+    prevSol(INVALID_POSITION_INFO_VALUE),
+    sourceForms(INVALID_POSITION_INFO_VALUE),
+    sourceQuant(INVALID_POSITION_INFO_VALUE),
+    sourcePrevSol(INVALID_POSITION_INFO_VALUE)
+{
+}
+
 template <typename Scalar>
 Offset WeakFormAgros<Scalar>::offsetInfo(const Marker *sourceMarker, const Marker *targetMarker) const
 {

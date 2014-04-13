@@ -22,7 +22,7 @@ set(MATIO_INCLUDE_DIR ${CMAKE_HOME_DIRECTORY}/3rdparty/matio)
 set(WITH_TC_MALLOC NO)
 
 IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  set(WITH_OPENMP NO)
+  # set(WITH_OPENMP NO)
 ENDIF()
 
 # Some search paths.
@@ -40,6 +40,8 @@ if (WIN32)
     else()
 	  message(FATAL_ERROR "\nDEPENDENCIES_ROOT should be defined in the main CMake.vars.\n")
 	endif()
+ELSE()
+    INCLUDE_DIRECTORIES(/usr/lib/gcc/x86_64-linux-gnu/4.8/plugin/include)
 ENDIF()
 
 if(AGROS_DEBUG)

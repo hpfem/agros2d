@@ -185,7 +185,7 @@ void ValueTimeDialog::plotFunction()
 
     chart->graph(0)->setData(pointsVector, valuesVector);
     chart->rescaleAxes();
-    chart->replot();
+    chart->replot(QCustomPlot::rpQueued);
 }
 
 void ValueTimeDialog::doAccept()
