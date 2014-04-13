@@ -40,6 +40,7 @@ struct PositionInfo
 
 struct Offset
 {
+    Offset();
     int forms;
     int quant;
     int prevSol;
