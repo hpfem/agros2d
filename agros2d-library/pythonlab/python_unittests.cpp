@@ -315,8 +315,6 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
     QString str = QString("from test_suite.scenario import run_test; agros2d_result_report = run_test(%1.%2)").
             arg(module).arg(cls);
 
-    qDebug() << str;
-
     currentPythonEngine()->runScript(str);
 
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_result_report");
@@ -563,7 +561,6 @@ void UnitTestsWidget::readTestsFromSuite()
             classItem->setData(1, Qt::UserRole, name);
             if (settings.value(key, false).toBool())
             {
-                qDebug() << key;
                 classItem->setCheckState(0, Qt::Checked);
             }
             else
@@ -625,10 +622,7 @@ void UnitTestsWidget::saveTestsSettings()
                 arg(item->data(1, Qt::UserRole).toString());
 
         if (item->checkState(0) == Qt::Checked)
-        {
-            qDebug() << key;
             settings.setValue(key, true);
-        }
         else
             settings.remove(key);
     }

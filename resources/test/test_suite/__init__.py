@@ -5,3 +5,4 @@ from test_suite import fields
 from test_suite import core
 from test_suite import particle_tracing
 from test_suite import script
+from test_suite import optilab

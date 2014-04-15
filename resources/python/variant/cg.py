@@ -1,4 +1,4 @@
-from optimization import ContinuousParameter, OptimizationMethod
+from variant.optimization import ContinuousParameter, OptimizationMethod
 from copy import deepcopy
 
 TypeState = 0

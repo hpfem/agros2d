@@ -202,7 +202,7 @@ class OptimizationMethod:
 if __name__ == '__main__':
     cp = ContinuousParameter("cont1", 2, 5.2)
     dp = DiscreteParameter("disc1", [4, 6, 77, 44, 99, 11])
-    print [cp.randomValue(), cp.randomValue(), cp.randomValue()]
-    print [cp.smallPerturbation(2.3, 0.2),cp.smallPerturbation(2.3, 0.2),cp.smallPerturbation(2.3, 0.2)]
-    print [dp.randomValue(), dp.randomValue(), dp.randomValue()]    
-    print [dp.smallPerturbation(99,0.1), dp.smallPerturbation(99,0.1), dp.smallPerturbation(99,0.5)]
+    print([cp.randomValue(), cp.randomValue(), cp.randomValue()])
+    print([cp.smallPerturbation(2.3, 0.2),cp.smallPerturbation(2.3, 0.2),cp.smallPerturbation(2.3, 0.2)])
+    print([dp.randomValue(), dp.randomValue(), dp.randomValue()])
+    print([dp.smallPerturbation(99,0.1), dp.smallPerturbation(99,0.1), dp.smallPerturbation(99,0.5)])

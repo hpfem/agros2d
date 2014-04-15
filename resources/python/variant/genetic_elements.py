@@ -1,5 +1,5 @@
-from model import ModelBase
-from optimization import ContinuousParameter, DiscreteParameter
+from variant.model import ModelBase
+from variant.optimization import ContinuousParameter, DiscreteParameter
 import random as rnd
 from copy import deepcopy
 
@@ -74,7 +74,7 @@ class SurvivorsSelector:
 
     @recomendedPopulationSize.setter
     def recomendedPopulationSize(self, value):
-        print "setting ", value
+        print("setting ", value)
         self._recomendedPopulationSize = value
 
     @property
@@ -98,7 +98,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
         assert not self.functionals.isMulticriterial()
         signF = self.functionals.functional().directionSign()
 
-        print "len poulation ", len(population), ", 0.5*rec ", int(0.5*self.recomendedPopulationSize)
+        print("len poulation ", len(population), ", 0.5*rec ", int(0.5*self.recomendedPopulationSize))
         survivorsNum = min(len(population), int(0.5*self.recomendedPopulationSize))
         scores = []
         for member in population:
@@ -120,7 +120,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
             newMember = deepcopy(member)
             score = self.functionals.evaluate(member)
             priority = 0
-            print "score: ", score
+            print("score: ", score)
             for prior in range(3):
                 if signF * score <= signF * priorityTresholds[prior]:
                     priority = prior + 1
@@ -130,7 +130,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
                 GeneticInfo.setPopulationTo(newMember, GeneticInfo.populationTo(newMember) + 1)
                 survivors.append(newMember)
 
-            print "score: ", score, ", priority: ", priority
+            print("score: ", score, ", priority: ", priority)
 
         return survivors
 
@@ -386,7 +386,7 @@ class RandomCrossover(GeneralCrossover):
     def cross(self, father, mother):
         son = ModelBase()
         for i in range(len(father.parameters)):
-            paramName = father.parameters.keys()[i]
+            paramName = list(father.parameters.keys())[i]
             if rnd.randrange(2) == 0:
                 son.parameters[paramName] = father.parameters[paramName]
             else:
@@ -409,13 +409,13 @@ if __name__ == '__main__':
 
     for member in population:
         mutant = mutationCreator.mutate(member)
-        print "original: ", member.parameters
-        print "mutation: ", mutant.parameters
+        print("original: ", member.parameters)
+        print("mutation: ", mutant.parameters)
 
     crossover = RandomCrossover()
 
-    print "father: ", population[0].parameters
-    print "mother: ", population[1].parameters
-    print "son1: ", crossover.cross(population[0], population[1]).parameters
-    print "son2: ", crossover.cross(population[0], population[1]).parameters
-    print "son3: ", crossover.cross(population[0], population[1]).parameters
+    print("father: ", population[0].parameters)
+    print("mother: ", population[1].parameters)
+    print("son1: ", crossover.cross(population[0], population[1]).parameters)
+    print("son2: ", crossover.cross(population[0], population[1]).parameters)
+    print("son3: ", crossover.cross(population[0], population[1]).parameters)

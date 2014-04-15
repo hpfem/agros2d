@@ -1,7 +1,7 @@
 __all__ = ["ModelBase", "ModelSetManager", "optimization", "genetic"]
 
-import optimization
-import genetic
+import variant.optimization
+import variant.genetic
 
-from model import ModelBase
-from model_set_manager import ModelSetManager
+from variant.model import ModelBase
+from variant.model_set_manager import ModelSetManager

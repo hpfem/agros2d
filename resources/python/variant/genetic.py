@@ -1,6 +1,6 @@
-from optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
-from model_set_manager import ModelSetManager
-from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
+from variant.optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
+from variant.model_set_manager import ModelSetManager
+from variant.genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
         RandomCrossover, GeneticInfo
 import random as rnd
 
@@ -54,7 +54,7 @@ class GeneticOptimization(OptimizationMethod):
 
 
     def initialStep(self, resume):
-        print "initial step"
+        print("initial step")
         # if not resume previous optimization, delete all solution files in the directory
         if not resume:
             self.modelSetManager.delete_all()
@@ -70,13 +70,13 @@ class GeneticOptimization(OptimizationMethod):
             if popul >= 0:
                 solutionsWithPopulNum.append(solution)
             else:
-                print "Solution does not contain population_to key"
+                print("Solution does not contain population_to key")
 
             lastPopulationIdx = max(lastPopulationIdx, popul)
 
         if lastPopulationIdx == -1:
             # no previous population found, create initial one
-            print "no previous population found, create initial one"
+            print("no previous population found, create initial one")
             self.lastPopulation = self.initialPopulationCreator.create(self.populationSize)
             self.modelSetManager.save_all(self.lastPopulation)
             lastPopulationIdx = 0
@@ -89,21 +89,21 @@ class GeneticOptimization(OptimizationMethod):
         return lastPopulationIdx
 
     def oneStep(self):
-        print "starting step ", self.populationIdx
+        print("starting step ", self.populationIdx)
         models = self.modelSetManager.load_all()
         lastPopulation = []
         for model in models:
             assert GeneticInfo.populationTo(model) < self.populationIdx
             if GeneticInfo.populationTo(model) == self.populationIdx - 1:
                 lastPopulation.append(model)
-                print "pop before select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
+                print("pop before select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model))
 
         self.selector.recomendedPopulationSize = self.populationSize
         population = self.selector.select(lastPopulation)
 
         for model in population:
             GeneticInfo.setPopulationTo(model, self.populationIdx)
-            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model), " prior: ", model.priority
+            print("pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model), " prior: ", model.priority)
 
 
         #print "best member of the population: ", self.findBest(population)
@@ -140,17 +140,17 @@ class GeneticOptimization(OptimizationMethod):
                 crossovers.append(crossover)
             attempts += 1
             if (attempts > 5 * self.populationSize):
-                print "Unable to create enough new crossovers. Population may have degenerated. "
+                print("Unable to create enough new crossovers. Population may have degenerated.")
                 break
         
             
-        print "in step {0} survived {1}, added {2} mutations and {3} crossovers".format(self.populationIdx, len(population), len(mutations), len(crossovers))
+        print("in step {0} survived {1}, added {2} mutations and {3} crossovers".format(self.populationIdx, len(population), len(mutations), len(crossovers)))
                 
         population.extend(mutations)
         population.extend(crossovers)
 
         for model in population:
-            print "pop after mutations: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model)#, ", ", model.functional
+            print("pop after mutations: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model)) #, ", ", model.functional)
 
         self.modelSetManager.save_all(population)
 
@@ -163,7 +163,7 @@ class GeneticOptimization(OptimizationMethod):
         for self.populationIdx in range(lastPopulationIdx + 1, maxIters):
             self.oneStep()
             solved = self.modelSetManager.solve_all()
-            print "solved {0} ".format(solved)
+            print("solved {0} ".format(solved))
 
 
 if __name__ == '__main__':

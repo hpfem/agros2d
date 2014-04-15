@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from model import ModelBase
+from variant.model import ModelBase
 import subprocess, glob, os
 
 class ModelSetManager(object):
