@@ -83,6 +83,11 @@ public:
 
     // description of module
     virtual QString localeDescription();
+
+private:
+    {{#EXT_FUNCTIONS_PART}} AgrosExtFunction *{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
+    {{/EXT_FUNCTIONS_PART}}
+
 };
 
 // ***********************************************************************************************************************************
