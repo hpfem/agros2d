@@ -30,7 +30,11 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/bdf2.h"
- 		
+
+{{#EXT_FUNCTIONS_PART}}
+// PART OF EXT FUNCTIONS (with the same analysis, linearity and coordinate type
+// **** {{PART_NAME}} *****
+
 {{#EXT_FUNCTION}}
 {{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
 {
@@ -175,4 +179,4 @@ double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, doub
 }
 
 {{/SPECIAL_FUNCTION_SOURCE}}
-
+{{/EXT_FUNCTIONS_PART}}
