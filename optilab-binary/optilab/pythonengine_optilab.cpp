@@ -17,8 +17,6 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonengine_optilab.h"
-
 #ifdef _MSC_VER
 # ifdef _DEBUG
 #  undef _DEBUG
@@ -31,6 +29,7 @@
 #  include <Python.h>
 #endif
 
+#include "pythonengine_optilab.h"
 #include "util/memory_monitor.h"
 
 // current python engine agros

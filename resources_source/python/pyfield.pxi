@@ -687,12 +687,12 @@ cdef class __Field__:
         # filename - matrix
     def filename_matrix(self, time_step = None, adaptivity_step = None):
         return self.thisptr.filenameMatrix(int(-1 if time_step is None else time_step),
-                                           int(-1 if adaptivity_step is None else adaptivity_step))
+                                           int(-1 if adaptivity_step is None else adaptivity_step)).decode()
 
         # filename - vector
     def filename_rhs(self, time_step = None, adaptivity_step = None):
         return self.thisptr.filenameRHS(int(-1 if time_step is None else time_step),
-                                        int(-1 if adaptivity_step is None else adaptivity_step))
+                                        int(-1 if adaptivity_step is None else adaptivity_step)).decode()
 __fields__ = {}
 def field(field_id):
     if (not field_id in __fields__):
