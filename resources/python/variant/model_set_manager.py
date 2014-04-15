@@ -56,7 +56,7 @@ class ModelSetManager(object):
         files = []
         for file_name in glob.glob('{0}/{1}'.format(self.directory, mask)):
           files.append(file_name)
-        return files
+        return sorted(files)
 
     def solve_problem(self, file):
         path = os.path.dirname(os.path.abspath(file))
@@ -69,8 +69,8 @@ class ModelSetManager(object):
         process = subprocess.Popen(command, stdout=subprocess.PIPE)
         self._output.append(process.communicate())
 
-    def solve_all(self, solveSolvedAgain = False):
-        files = self.find_files()
+    def solve_all(self, solveSolvedAgain = False, mask = '*.rst'):
+        files = self.find_files(mask)
         totalSolved = 0
         for file in files:
             model = ModelBase()

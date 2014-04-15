@@ -1,6 +1,6 @@
 from optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
 from model_set_manager import ModelSetManager
-from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, ImplicitMutation,\
+from genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
         RandomCrossover, GeneticInfo
 import random as rnd
 
@@ -12,7 +12,10 @@ class GeneticOptimization(OptimizationMethod):
         OptimizationMethod.__init__(self, parameters, functionals)
         self.modelSetManager = ModelSetManager()
         self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
+        if functionals.isMulticriterial():
+            self.selector = MultiCriteriaSelector(self.parameters, self.functionals)
+        else:
+            self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
         self.crossover = RandomCrossover()
         self.mutation = ImplicitMutation(self.parameters)
 
@@ -37,6 +40,17 @@ class GeneticOptimization(OptimizationMethod):
                 optimalParameters = member.parameters
 
         return [optimum, optimalParameters]
+
+    
+    # random number of the population
+    # takes into account its priority
+    def randomMemberIdx(self, population):
+        indices = []
+        for index in range(len(population)):
+            for j in range(population[index].priority):
+                indices.append(index);
+                
+        return indices[rnd.randrange(len(indices))]
 
 
     def initialStep(self, resume):
@@ -88,16 +102,19 @@ class GeneticOptimization(OptimizationMethod):
         population = self.selector.select(lastPopulation)
 
         for model in population:
-            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model)
+            GeneticInfo.setPopulationTo(model, self.populationIdx)
+            print "pop after select: ", GeneticInfo.populationFrom(model), ", ", GeneticInfo.populationTo(model), ", ", self.functionals.evaluate(model), " prior: ", model.priority
 
 
-        print "best member of the population: ", self.findBest(population)
+        #print "best member of the population: ", self.findBest(population)
 
         # Mutations
         numMutations = (self.populationSize - len(population)) / 2
+        # at least 1/5 of recomended population size
+        numMutations = max(numMutations, self.populationSize / 5)
         mutations = []
         while len(mutations) < numMutations:
-            originalIdx = rnd.randrange(len(population))
+            originalIdx = self.randomMemberIdx(population)
             mutation = self.mutation.mutate(population[originalIdx])
             GeneticInfo.setPopulationFrom(mutation, self.populationIdx)
             GeneticInfo.setPopulationTo(mutation, self.populationIdx)
@@ -106,15 +123,25 @@ class GeneticOptimization(OptimizationMethod):
             
         # Crossovers
         numCrossovers = self.populationSize - len(population) - len(mutations)
+        numCrossovers = max(numCrossovers, self.populationSize / 4)
         crossovers = []
+        attempts = 0
         while len(crossovers) < numCrossovers:
-            fatherIdx = rnd.randrange(len(population))
-            motherIdx = rnd.randrange(len(population))
+            fatherIdx = self.randomMemberIdx(population)
+            motherIdx = self.randomMemberIdx(population)
+            while (motherIdx == fatherIdx):
+                motherIdx = self.randomMemberIdx(population)
+            
+            #print "fat and mat ", [fatherIdx, motherIdx]
             crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
             GeneticInfo.setPopulationFrom(crossover, self.populationIdx)
             GeneticInfo.setPopulationTo(crossover, self.populationIdx)
             if (not self.isContained(population, crossover)) and (not self.isContained(mutations, crossover)) and (not self.isContained(crossovers, crossover)):                
                 crossovers.append(crossover)
+            attempts += 1
+            if (attempts > 5 * self.populationSize):
+                print "Unable to create enough new crossovers. Population may have degenerated. "
+                break
         
             
         print "in step {0} survived {1}, added {2} mutations and {3} crossovers".format(self.populationIdx, len(population), len(mutations), len(crossovers))
@@ -137,3 +164,19 @@ class GeneticOptimization(OptimizationMethod):
             self.oneStep()
             solved = self.modelSetManager.solve_all()
             print "solved {0} ".format(solved)
+
+
+if __name__ == '__main__':
+    parameters = [ContinuousParameter('a', 0, 10),
+                    ContinuousParameter('b', 0, 10),
+                    ContinuousParameter('c', 0, 10),
+                    ContinuousParameter('d', 0, 10),
+                    ContinuousParameter('e', 0, 10)]
+
+    functionals = Functionals([Functional("Func1", "max")])
+
+    self_optimization = GeneticOptimization(parameters, functionals)
+    self_optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions/')
+    self_optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
+    self_optimization.populationSize = 15
+    self_optimization.run(15, False)

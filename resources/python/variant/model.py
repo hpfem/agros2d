@@ -84,26 +84,17 @@ class ModelBase(object):
         # input
         input = result.findall('input')[0]
         for par in input.findall('parameter'):
-            try:
-                self.parameters[par.attrib["name"]] = float(par.attrib["value"])
-            except ValueError:
-                self.parameters[par.attrib["name"]] = literal_eval(par.attrib["value"])
+            self.parameters[par.attrib["name"]] = literal_eval(par.attrib["value"])
 
         # output
         output = result.findall('output')[0]
         for var in output.findall('variable'):
-            try:
-                self.variables[var.attrib["name"]] = float(var.attrib["value"])
-            except ValueError:
-                self.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
+            self.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
 
         # info
         info = result.findall('info')[0]
         for item in info.findall('item'):
-            try:
-                self.info[item.attrib["name"]] = float(item.attrib["value"])
-            except ValueError:
-                self.info[item.attrib["name"]] = literal_eval(item.attrib["value"])
+            self.info[item.attrib["name"]] = literal_eval(item.attrib["value"])
 
     def save(self, filename):
         import xml.etree.cElementTree as ET
@@ -131,21 +122,33 @@ class ModelBase(object):
         for key, value in self.parameters.items():
             parameter = ET.SubElement(input, "parameter")
             parameter.set("name", key)
-            parameter.set("value", str(value))
+
+            if (type(value) == str):
+                parameter.set("value", "'{0}'".format(str(value)))
+            else:
+                parameter.set("value", str(value))
 
         # output
         output = ET.SubElement(result, "output")
         for key, value in self.variables.items():
             variable = ET.SubElement(output, "variable")
             variable.set("name", key)
-            variable.set("value", str(value))
+
+            if (type(value) == str):
+                variable.set("value", "'{0}'".format(str(value)))
+            else:
+                variable.set("value", str(value))
 
         # info
         info = ET.SubElement(result, "info")
         for key, value in self.info.items():
             item = ET.SubElement(info, "item")
             item.set("name", key)
-            item.set("value", str(value))
+
+            if (type(value) == str):
+                item.set("value", "'{0}'".format(str(value)))
+            else:
+                item.set("value", str(value))
                     
         tree = ET.ElementTree(variant)
         tree.write(filename, xml_declaration = True, encoding='UTF-8')
