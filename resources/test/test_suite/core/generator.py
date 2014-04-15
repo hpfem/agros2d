@@ -20,7 +20,7 @@ def get_test(example):
     def test(self):
         agros2d.open_file(example)
         script = agros2d.get_script_from_model()
-        exec script in globals(), locals()
+        exec(script in globals(), locals())
         agros2d.problem().solve()
 
     return test

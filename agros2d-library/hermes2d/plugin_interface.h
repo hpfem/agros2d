@@ -142,7 +142,7 @@ struct LocalPointValue
 
     double scalar;
     Point vector;
-    Material *material;
+    const Material *material;
 };
 
 class LocalValue
@@ -150,6 +150,10 @@ class LocalValue
 public:
     LocalValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
         : m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType), m_point(point) {}
+    virtual ~LocalValue()
+    {
+        m_values.clear();
+    }
 
     // point
     inline Point point() { return m_point; }

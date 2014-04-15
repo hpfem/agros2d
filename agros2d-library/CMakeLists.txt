@@ -59,18 +59,18 @@ IF(WIN32)
   # In W64 Python, for some reason calling the script (.py) does not work - an error on the cython's side probably
   IF(WIN64)
     ADD_CUSTOM_COMMAND(
-        COMMAND C:/Python27/Scripts/cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        COMMAND C:/Python34/Scripts/cython ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
   ELSE()
     ADD_CUSTOM_COMMAND(
-        COMMAND C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        COMMAND C:/Python34/Scripts/cython.py ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
   ENDIF()
 ELSE()
   ADD_CUSTOM_COMMAND(
-        COMMAND cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        COMMAND cython ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ENDIF()
@@ -143,7 +143,7 @@ SET(SOURCES value.cpp
     preprocessorview.cpp
     infowidget.cpp
     hermes2d/solutionstore.cpp
-    moduledialog.cpp
+    #moduledialog.cpp
     parser/lex.cpp
     hermes2d/bdf2.cpp
     pythonlab/pythonengine_agros.cpp
@@ -236,7 +236,7 @@ SET(SOURCES value.cpp
     hermes2d/field.h
     hermes2d/block.h
     hermes2d/solutionstore.h
-    moduledialog.h
+    #moduledialog.h
     parser/lex.h
     hermes2d/bdf2.h
     hermes2d/plugin_interface.h

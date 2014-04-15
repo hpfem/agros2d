@@ -244,7 +244,7 @@ cdef class __ParticleTracing__:
         def __get__(self):
             return self.thisptr.getButcherTableType().c_str()
         def __set__(self, table_type):
-            self.thisptr.setButcherTableType(string(table_type))
+            self.thisptr.setButcherTableType(table_type.encode())
 
     property maximum_number_of_steps:
         def __get__(self):

@@ -150,26 +150,26 @@ cdef class __ViewConfig__:
             return self.workspace_parameters.get_parameters()
 
     def __get_workspace_parameters__(self):
-        return {'grid' : self.thisptr.getBoolParameter(string('View_ShowGrid')),
-                'grid_step' : self.thisptr.getDoubleParameter(string('View_GridStep')),
-                'axes' : self.thisptr.getBoolParameter(string('View_ShowAxes')),
-                'rulers' : self.thisptr.getBoolParameter(string('View_ShowRulers')),
-                'post_font_family' : self.thisptr.getPostFontFamily().c_str(),
-                'rulers_font_family' : self.thisptr.getRulersFontFamily().c_str(),
-                'post_font_size' : self.thisptr.getIntParameter(string('View_PostFontPointSize')),
-                'rulers_font_size' : self.thisptr.getIntParameter(string('View_RulersFontPointSize')),
-                'node_size' : self.thisptr.getIntParameter(string('View_NodeSize')),
-                'edge_width' : self.thisptr.getIntParameter(string('View_EdgeWidth')),
-                'label_size' : self.thisptr.getIntParameter(string('View_LabelSize')),
-                '3d_angle' : self.thisptr.getDoubleParameter(string('View_ScalarView3DAngle')),
-                '3d_height' : self.thisptr.getDoubleParameter(string('View_ScalarView3DHeight')),
-                '3d_lighting' : self.thisptr.getBoolParameter(string('View_ScalarView3DLighting')),
-                '3d_gradient_background' : self.thisptr.getBoolParameter(string('View_ScalarView3DBackground')),
-                '3d_bounding_box' : self.thisptr.getBoolParameter(string('View_ScalarView3DBoundingBox')),
-                '3d_edges' : self.thisptr.getBoolParameter(string('View_ScalarView3DSolidGeometry')),
-                'scalar_view_deform' : self.thisptr.getBoolParameter(string('View_DeformScalar')),
-                'contour_view_deform' : self.thisptr.getBoolParameter(string('View_DeformContour')),
-                'vector_view_deform' : self.thisptr.getBoolParameter(string('View_DeformVector'))}
+        return {'grid' : self.thisptr.getBoolParameter(b'View_ShowGrid'),
+                'grid_step' : self.thisptr.getDoubleParameter(b'View_GridStep'),
+                'axes' : self.thisptr.getBoolParameter(b'View_ShowAxes'),
+                'rulers' : self.thisptr.getBoolParameter(b'View_ShowRulers'),
+                'post_font_family' : self.thisptr.getPostFontFamily().decode(),
+                'rulers_font_family' : self.thisptr.getRulersFontFamily().decode(),
+                'post_font_size' : self.thisptr.getIntParameter(b'View_PostFontPointSize'),
+                'rulers_font_size' : self.thisptr.getIntParameter(b'View_RulersFontPointSize'),
+                'node_size' : self.thisptr.getIntParameter(b'View_NodeSize'),
+                'edge_width' : self.thisptr.getIntParameter(b'View_EdgeWidth'),
+                'label_size' : self.thisptr.getIntParameter(b'View_LabelSize'),
+                '3d_angle' : self.thisptr.getDoubleParameter(b'View_ScalarView3DAngle'),
+                '3d_height' : self.thisptr.getDoubleParameter(b'View_ScalarView3DHeight'),
+                '3d_lighting' : self.thisptr.getBoolParameter(b'View_ScalarView3DLighting'),
+                '3d_gradient_background' : self.thisptr.getBoolParameter(b'View_ScalarView3DBackground'),
+                '3d_bounding_box' : self.thisptr.getBoolParameter(b'View_ScalarView3DBoundingBox'),
+                '3d_edges' : self.thisptr.getBoolParameter(b'View_ScalarView3DSolidGeometry'),
+                'scalar_view_deform' : self.thisptr.getBoolParameter(b'View_DeformScalar'),
+                'contour_view_deform' : self.thisptr.getBoolParameter(b'View_DeformContour'),
+                'vector_view_deform' : self.thisptr.getBoolParameter(b'View_DeformVector')}
 
     def __set_workspace_parameters__(self, parameters):
         # grid, grid step
@@ -236,9 +236,9 @@ cdef class __ViewMeshAndPost__:
 
     property solution_type:
         def __get__(self):
-            return self.thisptrmp.getActiveSolutionType().c_str()
+            return self.thisptrmp.getActiveSolutionType().decode()
         def __set__(self, solution_type):
-            self.thisptrmp.setActiveSolutionType(string(solution_type))
+            self.thisptrmp.setActiveSolutionType(solution_type.encode())
 
 # ViewMesh
 cdef class __ViewMesh__(__ViewMeshAndPost__):
@@ -266,9 +266,9 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 
     property field:
         def __get__(self):
-            return self.thisptr.getField().c_str()
+            return self.thisptr.getField().decode()
         def __set__(self, id):
-            self.thisptr.setField(string(id))
+            self.thisptr.setField(id.encode())
 
     property solution_mesh:
         def __get__(self):
@@ -301,17 +301,17 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
             return self.order_view_parameters.get_parameters()
 
     def __get_order_view_parameters__(self):
-        return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
-                'color_bar' : self.thisptr.getBoolParameter(string('View_ShowOrderColorBar')),
-                'label' : self.thisptr.getBoolParameter(string('View_ShowOrderLabel'))}
+        return {'palette' : self.thisptr.getOrderViewPalette().decode(),
+                'color_bar' : self.thisptr.getBoolParameter(b'View_ShowOrderColorBar'),
+                'label' : self.thisptr.getBoolParameter(b'View_ShowOrderLabel')}
 
     def __set_order_view_parameters__(self, parameters):
         # palette
         self.thisptr.setOrderViewPalette(string(parameters['palette']))
 
         # color bar, label
-        self.thisptr.setParameter(string('View_ShowOrderColorBar'), <bool>parameters['color_bar'])
-        self.thisptr.setParameter(string('View_ShowOrderLabel'), <bool>parameters['label'])
+        self.thisptr.setParameter(b'View_ShowOrderColorBar', <bool>parameters['color_bar'])
+        self.thisptr.setParameter(b'View_ShowOrderLabel', <bool>parameters['label'])
 
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):
@@ -327,27 +327,27 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 
     property field:
         def __get__(self):
-            return self.thisptrp.getField().c_str()
+            return self.thisptrp.getField().decode()
         def __set__(self, id):
-            self.thisptrp.setField(string(id))
+            self.thisptrp.setField(id.encode())
 
     property scalar_view_parameters:
         def __get__(self):
             return self.scalar_view_parameters.get_parameters()
 
     def __get_scalar_view_parameters__(self):
-        return {'variable' : self.thisptrp.getScalarViewVariable().c_str(),
-                'component' : self.thisptrp.getScalarViewVariableComp().c_str(),
-                'palette' : self.thisptrp.getScalarViewPalette().c_str(),
-                'steps' : self.thisptrp.getIntParameter(string('View_PaletteSteps')),
-                'filter' : self.thisptrp.getBoolParameter(string('View_PaletteFilter')),
-                'color_bar' : self.thisptrp.getBoolParameter(string('View_ShowScalarColorBar')),
-                'decimal_place' : self.thisptrp.getIntParameter(string('View_ScalarDecimalPlace')),
-                'auto_range' : self.thisptrp.getBoolParameter(string('View_ScalarRangeAuto')),
-                'range_min' : self.thisptrp.getDoubleParameter(string('View_ScalarRangeMin')),
-                'range_max' : self.thisptrp.getDoubleParameter(string('View_ScalarRangeMax')),
-                'log_scale' : self.thisptrp.getBoolParameter(string('View_ScalarRangeLog')),
-                'log_scale_base' : self.thisptrp.getDoubleParameter(string('View_ScalarRangeBase'))}
+        return {'variable' : self.thisptrp.getScalarViewVariable().decode(),
+                'component' : self.thisptrp.getScalarViewVariableComp().decode(),
+                'palette' : self.thisptrp.getScalarViewPalette().decode(),
+                'steps' : self.thisptrp.getIntParameter(b'View_PaletteSteps'),
+                'filter' : self.thisptrp.getBoolParameter(b'View_PaletteFilter'),
+                'color_bar' : self.thisptrp.getBoolParameter(b'View_ShowScalarColorBar'),
+                'decimal_place' : self.thisptrp.getIntParameter(b'View_ScalarDecimalPlace'),
+                'auto_range' : self.thisptrp.getBoolParameter(b'View_ScalarRangeAuto'),
+                'range_min' : self.thisptrp.getDoubleParameter(b'View_ScalarRangeMin'),
+                'range_max' : self.thisptrp.getDoubleParameter(b'View_ScalarRangeMax'),
+                'log_scale' : self.thisptrp.getBoolParameter(b'View_ScalarRangeLog'),
+                'log_scale_base' : self.thisptrp.getDoubleParameter(b'View_ScalarRangeBase')}
 
     def __set_scalar_view_parameters__(self, parameters):
         # variable, component
@@ -430,13 +430,13 @@ cdef class __ViewPost2D__(__ViewPost__):
             return self.contour_view_parameters.get_parameters()
 
     def __get_contour_view_parameters__(self):
-        return {'variable' : self.thisptr2d.getContourVariable().c_str(),
-                'count' : self.thisptr2d.getIntParameter(string('View_ContoursCount')),
-                'width' : self.thisptr2d.getDoubleParameter(string('View_ContoursWidth'))}
+        return {'variable' : self.thisptr2d.getContourVariable().decode(),
+                'count' : self.thisptr2d.getIntParameter(b'View_ContoursCount'),
+                'width' : self.thisptr2d.getDoubleParameter(b'View_ContoursWidth')}
 
     def __set_contour_view_parameters__(self, parameters):
         # variable
-        self.thisptr2d.setContourVariable(string(parameters['variable']))
+        self.thisptr2d.setContourVariable(parameters['variable'].encode())
 
         # count, width
         value_in_range(parameters['count'], 1, 100, 'count')
@@ -460,17 +460,17 @@ cdef class __ViewPost2D__(__ViewPost__):
             return self.vector_view_parameters.get_parameters()
 
     def __get_vector_view_parameters__(self):
-        return {'variable' : self.thisptr2d.getVectorVariable().c_str(),
-                'count' : self.thisptr2d.getIntParameter(string('View_VectorCount')),
-                'scale' : self.thisptr2d.getDoubleParameter(string('View_VectorScale')),
-                'proportional' : self.thisptr2d.getBoolParameter(string('View_VectorProportional')),
-                'color' : self.thisptr2d.getBoolParameter(string('View_VectorColor')),
-                'type' : self.thisptr2d.getVectorType().c_str(),
-                'center' : self.thisptr2d.getVectorCenter().c_str()}
+        return {'variable' : self.thisptr2d.getVectorVariable().decode(),
+                'count' : self.thisptr2d.getIntParameter(b'View_VectorCount'),
+                'scale' : self.thisptr2d.getDoubleParameter(b'View_VectorScale'),
+                'proportional' : self.thisptr2d.getBoolParameter(b'View_VectorProportional'),
+                'color' : self.thisptr2d.getBoolParameter(b'View_VectorColor'),
+                'type' : self.thisptr2d.getVectorType().decode(),
+                'center' : self.thisptr2d.getVectorCenter().decode()}
 
     def __set_vector_view_parameters__(self, parameters):
         # variable
-        self.thisptr2d.setVectorVariable(string(parameters['variable']))
+        self.thisptr2d.setVectorVariable(parameters['variable'].encode())
 
         # count, scale
         value_in_range(parameters['count'], 1, 500, 'count')
@@ -503,7 +503,7 @@ cdef class __ViewPost3D__(__ViewPost__):
 
     property mode:
         def __get__(self):
-            return self.thisptr3d.getPost3DMode().c_str()
+            return self.thisptr3d.getPost3DMode().decode()
         def __set__(self, mode):
             self.thisptr3d.setPost3DMode(string(mode))
 

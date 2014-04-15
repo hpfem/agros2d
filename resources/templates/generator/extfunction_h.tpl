@@ -26,6 +26,10 @@
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"
 
+{{#EXT_FUNCTIONS_PART}}
+// PART OF EXT FUNCTIONS (with the same analysis, linearity and coordinate type
+// **** {{PART_NAME}} *****
+
 {{#EXT_FUNCTION}}
 class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
@@ -80,5 +84,7 @@ public:
 {{/PARAMETERS}}
 };
 {{/SPECIAL_FUNCTION_SOURCE}}
+{{/EXT_FUNCTIONS_PART}}
+
 
 #endif // {{CLASS}}_EXTFUNCTION_H

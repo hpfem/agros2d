@@ -37,7 +37,7 @@ for dir in data_dirs:
         name = "TestXSLT{0}{1}".format(version, field.title()).replace("~1", "")
 
         code = compile('class {0}(Agros2DTestCase): pass'.format(name), '<string>', 'exec')
-        exec code
+        exec(code)
         create_tests(globals()[name], path)
         tests.append(globals()[name])
 

@@ -441,11 +441,11 @@ void ValueDataTableDialog::doPlot()
 
     chartValue->graph(0)->setData(dataSpline);
     chartValue->rescaleAxes();
-    chartValue->replot();
+    chartValue->replot(QCustomPlot::rpQueued);
 
     chartDerivative->graph(0)->setData(dataSplineDerivative);
     chartDerivative->rescaleAxes();
-    chartDerivative->replot();
+    chartDerivative->replot(QCustomPlot::rpQueued);
 }
 
 void ValueDataTableDialog::doShowDerivativeClicked()

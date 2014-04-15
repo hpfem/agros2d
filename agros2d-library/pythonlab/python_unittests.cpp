@@ -17,6 +17,18 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#ifdef _MSC_VER
+# ifdef _DEBUG
+#  undef _DEBUG
+#  include <Python.h>
+#  define _DEBUG
+# else
+#  include <Python.h>
+# endif
+#else
+#  include <Python.h>
+#endif
+
 #include "pythonengine_agros.h"
 #include "python_unittests.h"
 #include "util/constants.h"
@@ -188,7 +200,7 @@ void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
     QStringList clss;
 
     // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenario = test_suite.%1").arg(action->data().toString()));
+    currentPythonEngine()->runExpression(QString("from test_suite.tests import test; agros2d_scenario = test('%1')").arg(action->data().toString()));
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenario");
@@ -200,8 +212,8 @@ void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
             PyObject *obj = PyList_GetItem(result, i);
             Py_INCREF(obj);
 
-            modules << QString::fromStdString(PyString_AsString(PyObject_GetAttrString(obj, "__module__")));
-            clss << QString::fromStdString(PyString_AsString(PyObject_GetAttrString(obj, "__name__")));
+            modules << QString::fromWCharArray(PyUnicode_AsUnicode(PyObject_GetAttrString(obj, "__module__")));
+            clss << QString::fromWCharArray(PyUnicode_AsUnicode(PyObject_GetAttrString(obj, "__name__")));
 
             Py_XDECREF(obj);
         }
@@ -300,8 +312,10 @@ void UnitTestsWidget::runTestsFromSuite()
 
 void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls)
 {
-    QString str = QString("import unittest as ut; agros2d_suite = ut.TestSuite(); import %1; agros2d_suite.addTest(ut.TestLoader().loadTestsFromTestCase(%1.%2)); agros2d_result = test_suite.scenario.Agros2DTestResult(); agros2d_suite.run(agros2d_result); agros2d_result_report = agros2d_result.report()").
+    QString str = QString("from test_suite.scenario import run_test; agros2d_result_report = run_test(%1.%2)").
             arg(module).arg(cls);
+
+    qDebug() << str;
 
     currentPythonEngine()->runScript(str);
 
@@ -314,12 +328,12 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
             PyObject *list = PyList_GetItem(result, i);
             Py_INCREF(list);
 
-            QString tmodule = PyString_AsString(PyList_GetItem(list, 0));
-            QString tcls = PyString_AsString(PyList_GetItem(list, 1));
-            QString ttest = PyString_AsString(PyList_GetItem(list, 2));
+            QString tmodule = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 0)));
+            QString tcls = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 1)));
+            QString ttest = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 2)));
             double telapsedTime = PyFloat_AsDouble(PyList_GetItem(list, 3));
-            QString tstatus = PyString_AsString(PyList_GetItem(list, 4));
-            QString terror = PyString_AsString(PyList_GetItem(list, 5));
+            QString tstatus = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 4)));
+            QString terror = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 5)));
 
             // add to the file
             XMLTest::item item(ttest.toStdString(),
@@ -337,7 +351,7 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
         Py_XDECREF(result);
     }
 
-    currentPythonEngine()->runExpression("del agros2d_suite; del agros2d_result; del agros2d_result_report");
+    currentPythonEngine()->runExpression("del agros2d_result; del agros2d_result_report");
 }
 
 void UnitTestsWidget::showInfoTests(const QString &testID)
@@ -503,9 +517,10 @@ void UnitTestsWidget::readTestsFromSuite()
     QSettings settings;
 
     trvTests->clear();
+    trvTests->setUpdatesEnabled(false);
 
     // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_tests = []; test_suite.scenario.find_all_tests(test_suite, agros2d_tests)"));
+    currentPythonEngine()->runExpression(QString("import test_suite; from test_suite.scenario import find_all_tests; agros2d_tests = find_all_tests()"));
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_tests");
@@ -523,8 +538,8 @@ void UnitTestsWidget::readTestsFromSuite()
             PyObject *list = PyList_GetItem(result, i);
             Py_INCREF(list);
 
-            QString module = PyString_AsString(PyList_GetItem(list, 1));
-            QString name = PyString_AsString(PyList_GetItem(list, 0));
+            QString module = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 1)));
+            QString name = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 0)));
 
             QString key = QString("UnitTestsWidget/Tests/%1/%2").arg(module).arg(name);
 
@@ -547,7 +562,10 @@ void UnitTestsWidget::readTestsFromSuite()
             classItem->setData(0, Qt::UserRole, module);
             classItem->setData(1, Qt::UserRole, name);
             if (settings.value(key, false).toBool())
+            {
+                qDebug() << key;
                 classItem->setCheckState(0, Qt::Checked);
+            }
             else
                 classItem->setCheckState(0, Qt::Unchecked);
 
@@ -559,7 +577,7 @@ void UnitTestsWidget::readTestsFromSuite()
                 PyObject *test = PyList_GetItem(tests, j);
                 Py_INCREF(test);
 
-                QString name = PyString_AsString(PyList_GetItem(tests, j));
+                QString name = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(tests, j)));
                 testsList << name;
 
                 Py_XDECREF(test);
@@ -571,6 +589,8 @@ void UnitTestsWidget::readTestsFromSuite()
         }
         Py_XDECREF(result);
     }
+
+    trvTests->setUpdatesEnabled(true);
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_tests");
@@ -585,10 +605,7 @@ void UnitTestsWidget::readScenariosFromSuite()
 
     foreach (QString test, list)
     {
-        QString testName = test;
-        testName.remove("test_");
-
-        QAction *act = new QAction(testName, this);
+        QAction *act = new QAction(test, this);
         act->setData(test);
 
         menu->addAction(act);
@@ -606,8 +623,12 @@ void UnitTestsWidget::saveTestsSettings()
         QString key = QString("UnitTestsWidget/Tests/%1/%2").
                 arg(item->data(0, Qt::UserRole).toString()).
                 arg(item->data(1, Qt::UserRole).toString());
+
         if (item->checkState(0) == Qt::Checked)
+        {
+            qDebug() << key;
             settings.setValue(key, true);
+        }
         else
             settings.remove(key);
     }

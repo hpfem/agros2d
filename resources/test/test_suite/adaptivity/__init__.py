@@ -1,3 +1,3 @@
 __all__ = ["adaptivity"]
 
-import adaptivity
+from test_suite.adaptivity import adaptivity

@@ -1,4 +1,3 @@
-import agros2d
 import unittest as ut
 
 class Agros2DTestCase(ut.TestCase):
@@ -43,9 +42,9 @@ class Agros2DTestResult(ut.TestResult):
         
         self.output.append([modu, cls, tst, -self.time * 1000, "OK", ""])
         
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
-              "{0}".format("OK".rjust(10, ".")))
+        print(("{0}".format(id.ljust(60, "."))), end=' ')
+        print(("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
+              "{0}".format("OK".rjust(10, "."))))
 
     def addError(self, test, err):
         ut.TestResult.addError(self, test, err)
@@ -58,10 +57,10 @@ class Agros2DTestResult(ut.TestResult):
         
         self.output.append([modu, cls, tst, 0, "ERROR", err[1]])
         
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
-              "{0}".format("ERROR".rjust(10, ".")))        
-        print(err[1])
+        print(("{0}".format(id.ljust(60, "."))), end=' ')
+        print(("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
+              "{0}".format("ERROR".rjust(10, "."))))        
+        print((err[1]))
 
     def addFailure(self, test, err):
         ut.TestResult.addFailure(self, test, err)
@@ -74,36 +73,66 @@ class Agros2DTestResult(ut.TestResult):
         
         self.output.append([modu, cls, tst, 0, "FAILURE", str(err[1])])
 
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
-              "{0}".format("FAILURE".rjust(10, ".")))        
-        print(err[1])      
+        print(("{0}".format(id.ljust(60, "."))), end=' ')
+        print(("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
+              "{0}".format("FAILURE".rjust(10, "."))))        
+        print((err[1]))      
         
     def report(self):
         return self.output
 
-def find_all_scenarios(obj, scerarios):
-    for o in dir(obj):
-	    if (o.startswith("test_")):
-        	scerarios.append(o)
-             
-def find_all_tests(obj, tests):
-    from inspect import getmembers, isclass, ismodule, ismethod
+__scerarios__ = []
+def find_all_scenarios():
+    global __scerarios__
+    if (len(__scerarios__) == 0):
+        from test_suite.tests import all_tests
 
-    for o in getmembers(obj, ismodule):
-        if (o[1].__name__.startswith("test_suite.")):
-            find_all_tests(o[1], tests)
-
-    for o in getmembers(obj, isclass):
-        if (issubclass(o[1], Agros2DTestCase) and o[1].__name__ != "Agros2DTestCase" and not o[1].__name__.endswith("GeneralTestCase")):
-            m = []
-            for d in getmembers(o[1], ismethod):
-                if (d[0].startswith("test_")):
-                    m.append(d[0])
+        for key in all_tests():
+            __scerarios__.append(key)    
+    
+        __scerarios__.sort()
+    
+    return __scerarios__
+           
+__tests__ = []
+def find_all_tests():
+    global __tests__
+    if (len(__tests__) == 0):
+        from test_suite.tests import all_tests
+        
+        alltests = all_tests()
+        
+        # remove multiple items
+        alltestsdist = []
+        for key in alltests:
+            for obj in alltests[key]:
+                if (not obj.__name__.endswith("GeneralTestCase")):
+                    if (not obj in alltestsdist):
+                        alltestsdist.append(obj) 
                     
-            tests.append([o[0], o[1].__module__, m])
+        for obj in alltestsdist:
+            m = []
+            for d in dir(obj):
+                if (d.startswith("test_")):
+                    m.append(d)
+            
+            m.sort()
+            __tests__.append([obj.__name__, obj.__module__, m])
+                    
+        tmp = sorted(__tests__, key=lambda x: x[1]+"."+x[0])
+        __tests__ = tmp
+            
+    return __tests__
 
-def run(tests): 
+def run_test(test): 
+    agros2d_suite = ut.TestSuite(); 
+    agros2d_suite.addTest(ut.TestLoader().loadTestsFromTestCase(test)); 
+    agros2d_result = Agros2DTestResult(); 
+    agros2d_suite.run(agros2d_result); 
+
+    return agros2d_result.report()
+
+def run_suite(tests): 
     suite = ut.TestSuite()
     
     for test in tests:

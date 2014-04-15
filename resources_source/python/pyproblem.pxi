@@ -67,15 +67,15 @@ cdef class __Problem__:
 
     property coordinate_type:
         def __get__(self):
-            return self.thisptr.getCoordinateType().c_str()
+            return self.thisptr.getCoordinateType().decode()
         def __set__(self, coordinate_type):
-            self.thisptr.setCoordinateType(string(coordinate_type))
+            self.thisptr.setCoordinateType(coordinate_type.encode())
 
     property mesh_type:
         def __get__(self):
-            return self.thisptr.getMeshType().c_str()
+            return self.thisptr.getMeshType().decode()
         def __set__(self, mesh_type):
-            self.thisptr.setMeshType(string(mesh_type))
+            self.thisptr.setMeshType(mesh_type.encode())
 
     property frequency:
         def __get__(self):
@@ -85,9 +85,9 @@ cdef class __Problem__:
 
     property time_step_method:
         def __get__(self):
-            return self.thisptr.getTimeStepMethod().c_str()
+            return self.thisptr.getTimeStepMethod().decode()
         def __set__(self, time_step_method):
-            self.thisptr.setTimeStepMethod(string(time_step_method))
+            self.thisptr.setTimeStepMethod(time_step_method.encode())
 
     property time_method_order:
         def __get__(self):
@@ -134,7 +134,7 @@ cdef class __Problem__:
         source_field -- source field id
         target_field -- target field id
         """
-        return self.thisptr.getCouplingType(string(source_field), string(target_field)).c_str()
+        return self.thisptr.getCouplingType(source_field.encode(), target_field.encode()).decode()
 
     def set_coupling_type(self, source_field, target_field, type):
         """Set type of coupling.
@@ -146,7 +146,7 @@ cdef class __Problem__:
         target_field -- target field id
         type -- coupling type
         """
-        self.thisptr.setCouplingType(string(source_field), string(target_field), string(type))
+        self.thisptr.setCouplingType(source_field.encode(), target_field.encode(), type.encode())
 
     def mesh(self):
         """Area discretization."""

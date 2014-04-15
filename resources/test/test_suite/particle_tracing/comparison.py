@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from pairparticle_tracing import load_data, plot_data
+from .pairparticle_tracing import load_data, plot_data
 import pylab as pl
 
 pl.rcParams['figure.figsize'] = 6, 6

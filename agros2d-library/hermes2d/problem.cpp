@@ -217,7 +217,10 @@ void Problem::addField(FieldInfo *field)
 
     // remove field
     if (hasField(field->fieldId()))
+    {
         removeField(m_fieldInfos[field->fieldId()]);
+        delete m_fieldInfos[field->fieldId()];
+    }
 
     // add to the collection
     m_fieldInfos[field->fieldId()] = field;

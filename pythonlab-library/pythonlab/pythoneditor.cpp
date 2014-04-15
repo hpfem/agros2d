@@ -17,11 +17,12 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include "pythonengine.h"
+
 #include "pythoneditor.h"
 #include "pythonhighlighter.h"
 #include "pythonconsole.h"
 #include "pythonbrowser.h"
-#include "pythonengine.h"
 #include "pythoncompleter.h"
 
 // #include "util/constants.h"

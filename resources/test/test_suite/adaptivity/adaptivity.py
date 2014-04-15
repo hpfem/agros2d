@@ -1,4 +1,5 @@
 import agros2d
+
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 

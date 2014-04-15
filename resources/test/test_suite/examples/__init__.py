@@ -1,3 +1,3 @@
 __all__ = ["examples"]
 
-import examples
+from . import examples

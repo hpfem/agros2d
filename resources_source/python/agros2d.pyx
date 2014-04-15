@@ -36,7 +36,7 @@ class __Parameters__(dict):
         return dict.__getitem__(self, key)
 
     def __setitem__(self, key, value):
-        if (not self.has_key(key)):
+        if (not key in self):
             raise KeyError("Invalid key. Valid keys: {0}".format(self.keys()))
 
         dict.__setitem__(self, key, value)
@@ -88,7 +88,7 @@ cdef map[string, int] dictionary_to_int_map(dictionary):
     cdef map[string, int] int_map
     cdef pair[string, int] row
     for key in dictionary:
-        row.first = string(key)
+        row.first = key.encode()
         row.second = dictionary[key]
         int_map.insert(row)
 
@@ -98,8 +98,8 @@ cdef map[string, string] dictionary_to_string_map(dictionary):
     cdef map[string, string] string_map
     cdef pair[string, string] row
     for key in dictionary:
-        row.first = string(key)
-        row.second = string(dictionary[key])
+        row.first = key.encode()
+        row.second = dictionary[key].encode()
         string_map.insert(row)
 
     return string_map
@@ -136,13 +136,13 @@ cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
         void setDumpFormat(string format) except +
 
 def open_file(file, open_with_solution = False):
-    openFile(string(file), open_with_solution)
+    openFile(file.encode(), open_with_solution)
 
 def save_file(file, save_with_solution = False):
-    saveFile(string(file), save_with_solution)
+    saveFile(file.encode(), save_with_solution)
 
 def get_script_from_model():
-    return getScriptFromModel().c_str()
+    return getScriptFromModel().decode()
 
 def app_time():
     return appTime()
@@ -188,8 +188,8 @@ cdef class __Options__:
 
     property dump_format:
         def __get__(self):
-            return self.thisptr.getDumpFormat()
+            return self.thisptr.getDumpFormat().decode()
         def __set__(self, format):
-            self.thisptr.setDumpFormat(format)
+            self.thisptr.setDumpFormat(format.encode())
 
 options = __Options__()

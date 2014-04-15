@@ -468,21 +468,27 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::
     if (m_block->isTransient())
         linearSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_REORDERING);
 
-    Scalar* initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaces)];
-
-    m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
-    m_hermesSolverContainer->solve(initialSolutionVector);
 
-    if (initialSolutionVector)
+    if (LoopSolver<Scalar> *iterLinearSolver = dynamic_cast<LoopSolver<Scalar> *>(linearSolver))
+    {
+        // iterative solver
+        Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaces)];
+        m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
+        m_hermesSolverContainer->solve(initialSolutionVector);
+
         delete [] initialSolutionVector;
 
-    // linear solver statistics
-    if (LoopSolver<Scalar> *iterLinearSolver = dynamic_cast<LoopSolver<Scalar> *>(linearSolver))
         Agros2D::log()->printDebug(QObject::tr("Solver"),
                                    QObject::tr("Iterative solver statistics: %1 iterations, residual %2")
                                    .arg(iterLinearSolver->get_num_iters())
                                    .arg(iterLinearSolver->get_residual_norm()));
+    }
+    else
+    {
+        // direct solver
+        m_hermesSolverContainer->solve(nullptr);
+    }
 
     return m_hermesSolverContainer->slnVector();
 }
@@ -687,7 +693,8 @@ void ProblemSolver<Scalar>::createInitialSpace()
             int spaceI = i + 1;
             assert(fieldSpaces.contains(spaceI));
             Hermes::Hermes2D::SpaceSharedPtr<Scalar> oneSpace;
-            switch (fieldSpaces[spaceI].type())
+            SpaceType spaceType = fieldSpaces[spaceI].type();
+            switch (spaceType)
             {
             case HERMES_L2_SPACE:
                 oneSpace = Hermes::Hermes2D::SpaceSharedPtr<Scalar>(new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + fieldInfo->spaces()[i+1].orderAdjust()));
@@ -718,8 +725,11 @@ void ProblemSolver<Scalar>::createInitialSpace()
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt()))
                 {
-                    oneSpace->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                    if(spaceType != HERMES_L2_MARKERWISE_CONST_SPACE)
+                    {
+                        oneSpace->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
                                                 QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
+                    }
                 }
             }
 

@@ -17,10 +17,10 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonbrowser.h"
-
 #include "pythonengine.h"
 #include "pythonconsole.h"
+
+#include "pythonbrowser.h"
 
 const int namePos = 0;
 const int typePos = 1;

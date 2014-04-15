@@ -57,30 +57,32 @@ static XMLModule::module *module_module = NULL;
 
 AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {
+    {{#EXT_FUNCTIONS_PART}}
+    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
+    {
+        return this->{{PART_NAME}}(problemId, id, derivative, linearized, wfAgros);
+    }
+    {{/EXT_FUNCTIONS_PART}}
+}
+
+{{#EXT_FUNCTIONS_PART}}
+AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
+{
     {{#EXT_FUNCTION}}
-    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}) && (linearized == {{IS_LINEARIZED}}))
+    if((id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}) && (linearized == {{IS_LINEARIZED}}))
         return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);
     {{/EXT_FUNCTION}}
     {{#VALUE_FUNCTION_SOURCE}}
-    if((id == "{{VALUE_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (linearized == {{IS_LINEARIZED}}))
-    {
-        assert(derivative == false);
-        AgrosExtFunction* extFunction = new {{VALUE_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);
-        return extFunction;
-    }
+    if((id == "{{VALUE_FUNCTION_ID}}") && (linearized == {{IS_LINEARIZED}}))
+        return new {{VALUE_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);
     {{/VALUE_FUNCTION_SOURCE}}
     {{#SPECIAL_FUNCTION_SOURCE}}
-    if((id == "{{SPECIAL_FUNCTION_ID}}") && (problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}))
-    {
-        assert(derivative == false);
-        AgrosExtFunction* extFunction = new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);
-        return extFunction;
-    }
+    if(id == "{{SPECIAL_FUNCTION_ID}}")
+        return new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.targetFieldId), wfAgros);
     {{/SPECIAL_FUNCTION_SOURCE}}
-
     return NULL;
 }
-
+{{/EXT_FUNCTIONS_PART}}
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
 {

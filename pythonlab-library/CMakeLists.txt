@@ -6,25 +6,25 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 
 # cython
 # message("Cython files - PythonLab")
-# message("\tcython pythonlab.pyx")
+# message("\tcython -3 pythonlab.pyx")
 add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 
 IF(WIN32)
   # In W64 Python, for some reason calling the script (.py) does not work - an error on the cython's side probably
   IF(WIN64)
     ADD_CUSTOM_COMMAND(
-        COMMAND C:/Python27/Scripts/cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
+        COMMAND C:/Python34/Scripts/cython ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
   ELSE()
     ADD_CUSTOM_COMMAND(
-        COMMAND C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
+        COMMAND C:/Python34/Scripts/cython.py ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
   ENDIF()
 ELSE()
   ADD_CUSTOM_COMMAND(
-        COMMAND cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
+        COMMAND cython ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 ENDIF()

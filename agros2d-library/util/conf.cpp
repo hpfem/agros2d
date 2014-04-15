@@ -122,7 +122,7 @@ void Config::setDefaultValues()
     m_settingDefault[Config_LinearSystemFormat] = EXPORT_FORMAT_MATLAB_MATIO;
     m_settingDefault[Config_LinearSystemSave] = false;
     m_settingDefault[Config_CacheSize] = 10;
-    m_settingDefault[Config_NumberOfThreads] = omp_get_max_threads();;
+    m_settingDefault[Config_NumberOfThreads] = omp_get_max_threads();
     m_settingDefault[Config_ShowGrid] = true;
     m_settingDefault[Config_ShowRulers] = true;
     m_settingDefault[Config_ShowAxes] = true;
