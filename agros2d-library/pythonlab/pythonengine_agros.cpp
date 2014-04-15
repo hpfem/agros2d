@@ -144,7 +144,7 @@ QStringList PythonEngineAgros::testSuiteScenarios()
     QStringList list;
 
     // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenarios = []; test_suite.scenario.find_all_scenarios(test_suite, agros2d_scenarios)"));
+    currentPythonEngine()->runExpression(QString("from test_suite.scenario import find_all_scenarios; agros2d_scenarios = find_all_scenarios()"));
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");

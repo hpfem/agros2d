@@ -162,7 +162,8 @@ void AgrosSolver::runSuite()
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
 
-    QString testSuite = QString("import test_suite; test_suite.scenario.run(test_suite.test_%1)").arg(m_suiteName);
+    QString testSuite = QString("from test_suite.scenario import run_suite; run_suite(test_suite.test_%1)").arg(m_suiteName);
+    qDebug() << testSuite;
 
     bool successfulRun= currentPythonEngineAgros()->runScript(testSuite);
 

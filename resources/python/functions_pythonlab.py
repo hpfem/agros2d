@@ -1,10 +1,11 @@
 # import libraries
 import pythonlab
-import sys
 from math import *
 
 # add actual directory to the path
+import sys
 sys.path.insert(0, ".")
+sys.path.append(pythonlab.datadir("resources/python"))
 
 # user functions
 def sgn(number):
@@ -49,6 +50,7 @@ def python_engine_pyflakes_check(filename):
         import _ast
         tree = compile(code, "", "exec", _ast.PyCF_ONLY_AST)
     except SyntaxError:
+        value = sys.exc_info()[1]
         msg = value.args[0]
 
         (lineno, offset, text) = value.lineno, value.offset, value.text

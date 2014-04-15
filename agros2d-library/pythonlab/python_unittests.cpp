@@ -200,7 +200,7 @@ void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
     QStringList clss;
 
     // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenario = test_suite.%1").arg(action->data().toString()));
+    currentPythonEngine()->runExpression(QString("from test_suite.tests import test; agros2d_scenario = test('%1')").arg(action->data().toString()));
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenario");
@@ -312,8 +312,10 @@ void UnitTestsWidget::runTestsFromSuite()
 
 void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls)
 {
-    QString str = QString("import unittest as ut; agros2d_suite = ut.TestSuite(); import %1; agros2d_suite.addTest(ut.TestLoader().loadTestsFromTestCase(%1.%2)); agros2d_result = test_suite.scenario.Agros2DTestResult(); agros2d_suite.run(agros2d_result); agros2d_result_report = agros2d_result.report()").
+    QString str = QString("from test_suite.scenario import run_test; agros2d_result_report = run_test(%1.%2)").
             arg(module).arg(cls);
+
+    qDebug() << str;
 
     currentPythonEngine()->runScript(str);
 
@@ -349,7 +351,7 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
         Py_XDECREF(result);
     }
 
-    currentPythonEngine()->runExpression("del agros2d_suite; del agros2d_result; del agros2d_result_report");
+    currentPythonEngine()->runExpression("del agros2d_result; del agros2d_result_report");
 }
 
 void UnitTestsWidget::showInfoTests(const QString &testID)
@@ -515,9 +517,10 @@ void UnitTestsWidget::readTestsFromSuite()
     QSettings settings;
 
     trvTests->clear();
+    trvTests->setUpdatesEnabled(false);
 
     // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_tests = []; test_suite.scenario.find_all_tests(test_suite, agros2d_tests)"));
+    currentPythonEngine()->runExpression(QString("import test_suite; from test_suite.scenario import find_all_tests; agros2d_tests = find_all_tests()"));
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_tests");
@@ -559,7 +562,10 @@ void UnitTestsWidget::readTestsFromSuite()
             classItem->setData(0, Qt::UserRole, module);
             classItem->setData(1, Qt::UserRole, name);
             if (settings.value(key, false).toBool())
+            {
+                qDebug() << key;
                 classItem->setCheckState(0, Qt::Checked);
+            }
             else
                 classItem->setCheckState(0, Qt::Unchecked);
 
@@ -584,6 +590,8 @@ void UnitTestsWidget::readTestsFromSuite()
         Py_XDECREF(result);
     }
 
+    trvTests->setUpdatesEnabled(true);
+
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_tests");
 }
@@ -597,10 +605,7 @@ void UnitTestsWidget::readScenariosFromSuite()
 
     foreach (QString test, list)
     {
-        QString testName = test;
-        testName.remove("test_");
-
-        QAction *act = new QAction(testName, this);
+        QAction *act = new QAction(test, this);
         act->setData(test);
 
         menu->addAction(act);
@@ -618,8 +623,12 @@ void UnitTestsWidget::saveTestsSettings()
         QString key = QString("UnitTestsWidget/Tests/%1/%2").
                 arg(item->data(0, Qt::UserRole).toString()).
                 arg(item->data(1, Qt::UserRole).toString());
+
         if (item->checkState(0) == Qt::Checked)
+        {
+            qDebug() << key;
             settings.setValue(key, true);
+        }
         else
             settings.remove(key);
     }

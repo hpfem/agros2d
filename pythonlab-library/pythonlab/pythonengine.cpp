@@ -295,10 +295,6 @@ void PythonEngine::init()
 
     addCustomExtensions();
 
-    // custom modules
-    PyObject *import = PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toLatin1().data(), Py_file_input, m_dict, m_dict);
-    Py_XDECREF(import);
-
     // functions.py
     PyObject *func = PyRun_String(m_functions.toLatin1().data(), Py_file_input, m_dict, m_dict);
     Py_XDECREF(func);
@@ -345,7 +341,7 @@ void PythonEngine::deleteUserModules()
     // files to be sure that changes made in imported modules were taken into account.
 
     QStringList filter_name;
-    filter_name << "pythonlab" << "agros2d" << "sys";
+    filter_name << "pythonlab" << "agros2d" << "sys" << "test_suite";
 
     QList<PythonVariable> list = variableList();
 
@@ -357,7 +353,6 @@ void PythonEngine::deleteUserModules()
                 continue;
 
             QString exp = QString("del %1; import sys; del sys.modules[\"%1\"]").arg(variable.name);
-            // qDebug() << exp;
 #pragma omp critical(del)
             {
                 PyObject *del = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
