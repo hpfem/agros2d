@@ -791,7 +791,7 @@ void Problem::solveAction()
     {
         foreach (Block* block, m_blocks)
         {
-            qDebug() << "solving " << block->fields().at(0)->fieldInfo()->fieldId();
+            // qDebug() << "solving " << block->fields().at(0)->fieldInfo()->fieldId();
             if (block->isTransient() && (actualTimeStep() == 0))
             {
                 solvers[block]->solveInitialTimeStep();

@@ -77,7 +77,7 @@ FieldInfo::FieldInfo(QString fieldId)
     setAnalysisType(analyses().begin().key());
 
     m_numberId = numberIdNext++;
-    qDebug() << "created FieldInfo " << m_fieldId << ", " << m_numberId;
+    // qDebug() << "created FieldInfo " << m_fieldId << ", " << m_numberId;
 }
 
 FieldInfo::~FieldInfo()
