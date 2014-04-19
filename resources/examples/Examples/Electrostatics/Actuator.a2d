@@ -47,7 +47,6 @@
     <fields>
       <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges>
-          <refinement_edge refinement_edge_id="-1" refinement_edge_number="1"/>
           <refinement_edge refinement_edge_id="2" refinement_edge_number="1"/>
           <refinement_edge refinement_edge_id="1" refinement_edge_number="1"/>
         </refinement_edges>
