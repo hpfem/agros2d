@@ -312,7 +312,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     problemId.linearityType = materialTarget->fieldInfo()->linearityType();
     problemId.couplingType = couplingInfo->couplingType();
 
-    qDebug() << "register form coupling " << materialSource->fieldId() << ", " << materialTarget->fieldId();
+    // qDebug() << "register form coupling " << materialSource->fieldId() << ", " << materialTarget->fieldId();
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, materialSource, materialTarget);
