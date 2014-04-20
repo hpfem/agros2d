@@ -191,7 +191,12 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     for_all_used_elements(e, global_mesh)
     {
         if (e->cm != nullptr)
+        {
+            if (e->area < 0)
+                throw AgrosMeshException(tr("Mesh is corrupted (some areas have a negative area)"));
+
             e->cm->update_refmap_coeffs(e);
+        }
     }
 }
 
@@ -283,15 +288,7 @@ void MeshGenerator::writeToHermes()
 
         MeshSharedPtr global_mesh(new Mesh);
 
-        try
-        {
-            this->writeTemporaryGlobalMeshToHermes(global_mesh);
-        }
-        catch (Hermes::Exceptions::Exception& e)
-        {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("Failed: %1").arg(e.what()));
-        }
-
+        this->writeTemporaryGlobalMeshToHermes(global_mesh);
         this->fillNeighborStructures();
 
         int subdomains_count;
