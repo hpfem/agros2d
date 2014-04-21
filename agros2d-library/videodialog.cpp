@@ -144,12 +144,16 @@ void VideoDialog::createControls()
     btnVideo->setDefault(true);
     connect(btnVideo, SIGNAL(clicked()), this, SLOT(doVideo()));
 
+    QPushButton *btnOpenFolder = new QPushButton(tr("Open folder"));
+    connect(btnOpenFolder, SIGNAL(clicked()), this, SLOT(doOpenFolder()));
+
     btnGenerate = new QPushButton(tr("Generate"));
 
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addStretch();
     layoutButton->addWidget(btnGenerate);
     layoutButton->addWidget(btnVideo);
+    layoutButton->addWidget(btnOpenFolder);
     layoutButton->addWidget(btnClose);
 
     QSettings settings;
@@ -169,6 +173,7 @@ void VideoDialog::createControls()
     layoutButtonViewport->addWidget(btnGenerate);
 
     QGridLayout *layout = new QGridLayout();
+    layout->setColumnStretch(0, 1);
     layout->addWidget(tabType, 0, 0, 1, 2);
     layout->addWidget(chkSaveImages, 1, 0);
     layout->addWidget(chkFigureShowGrid, 1, 1);
@@ -333,6 +338,11 @@ void VideoDialog::doVideo()
 {
     ImageSequenceDialog video;
     video.exec();
+}
+
+void VideoDialog::doOpenFolder()
+{
+    QDesktopServices::openUrl(QUrl(QString("file:///%1/video").arg(tempProblemDir()), QUrl::TolerantMode));
 }
 
 void VideoDialog::doClose()
