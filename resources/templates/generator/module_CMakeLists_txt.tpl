@@ -7,6 +7,11 @@ INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/paralution/src)
 INCLUDE_DIRECTORIES(.)
 
+# This overrides CXX flags for MSVC
+IF(MSVC)
+  SET(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} /Ob2")
+ENDIF(MSVC)
+
 SET(SOURCES {{ID}}_weakform.cpp {{ID}}_extfunction.cpp {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_filter.cpp {{ID}}_interface.cpp {{ID}}_errorcalculator.cpp)
 SET(HEADERS {{ID}}_weakform.h {{ID}}_extfunction.h {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_filter.h {{ID}}_interface.h {{ID}}_errorcalculator.h)
 
