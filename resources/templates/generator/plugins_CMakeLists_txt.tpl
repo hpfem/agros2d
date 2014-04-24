@@ -169,6 +169,17 @@ IF(WITH_UMFPACK)
   INCLUDE_DIRECTORIES(${UMFPACK_INCLUDE_DIRS})
 ENDIF()
 
+if(WITH_TRILINOS)
+    find_package(TRILINOS REQUIRED)
+    include_directories(${TRILINOS_INCLUDE_DIR})
+  endif(WITH_TRILINOS)
+
+if(WITH_MPI)
+  find_package(MPI REQUIRED)
+  include_directories(${MPI_INCLUDE_PATH})
+endif(WITH_MPI)
+
+
 IF(WITH_MUMPS)
   FIND_PACKAGE(MUMPS REQUIRED)
   
