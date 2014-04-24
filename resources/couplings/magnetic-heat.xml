@@ -16,8 +16,13 @@
         <module:constant id="MU0" value="1.2566371e-06" />
     </module:constants>
 
+<!-- todo: nemely by se pri vypoctu ztrat ve sdruzeni uvazovat i ostatni slozky proudove hustoty?
+           tedy tak jak je to zkopirovano pro vyraz pro w_j z magnetickeho modulu?
+    <module:expression analysistype="harmonic" axi="(ma_gamma > 0.0) ? 0.5 * (((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12))))^2 + (ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12))))^2) / ma_gamma : 0.0"
+        planar="(ma_gamma > 0.0) ? 0.5 * (((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * (value2+value4))^2 + (ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * (value1+value3))^2) / ma_gamma : 0.0"/>-->
+
     <module:volume>
-        <module:vector_form id="harmonic_weak" i="1" j="1" planar="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * vval" axi="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * r * vval" />
+        <module:vector_form id="harmonic_weak" i="1" j="1" planar="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * vval" axi="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3/(2*PI*(r+1e-12)))^2 + (source2 + source4/(2*PI*(r+1e-12)))^2) * r * vval" />
 
         <!-- TODO: has to be altered to new harmonic module with 4 fields. i: 3->5 and there will be probably two forms instead of one (i=5, j=1) AND (i=5, j=3)-->
         <module:matrix_form id="harmonic_hard_matrix_newton_3_1" i="5" j="1" planar="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * vval" axi="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * 2 * upval * uval * r * vval" />
