@@ -335,7 +335,7 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::geometryActor()
 
     // create mapper and actor
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInput(linePolyData);
+    mapper->SetInputData(linePolyData);
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
@@ -387,7 +387,7 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::scalarActor()
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetScalarRange(m_postHermes->linScalarView()->get_min_value(), m_postHermes->linScalarView()->get_max_value());
     mapper->SetLookupTable(m_palette);
-    mapper->SetInput(trianglePolyData);
+    mapper->SetInputData(trianglePolyData);
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
@@ -434,7 +434,7 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::contourActor()
     trianglePolyData->GetPointData()->SetScalars(weights);
 
     vtkSmartPointer<vtkContourFilter> bf = vtkSmartPointer<vtkContourFilter>::New();
-    bf->SetInput(trianglePolyData);
+    bf->SetInputData(trianglePolyData);
     bf->GenerateValues(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt(),
                        m_postHermes->linContourView()->get_min_value(), m_postHermes->linContourView()->get_max_value());
 
