@@ -206,8 +206,8 @@ void PostHermes::processRangeContour()
                 double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
                 m_linContourView->set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                  activeMultiSolutionArray().solutions().at(1),
-                                                  dmult);
+                                                   activeMultiSolutionArray().solutions().at(1),
+                                                   dmult);
             }
             delete filter;
         }
@@ -361,8 +361,8 @@ void PostHermes::processRangeVector()
                 double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
                 m_vecVectorView->set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                 activeMultiSolutionArray().solutions().at(1),
-                                                 dmult);
+                                                  activeMultiSolutionArray().solutions().at(1),
+                                                  dmult);
             }
             delete filter;
         }
@@ -635,27 +635,6 @@ void SceneViewPostInterface::initializeGL()
     clearGLLists();
 
     SceneViewCommon::initializeGL();
-}
-
-const QVector3D SceneViewPostInterface::paletteColor2(const int pos) const
-{
-    int n = (int) (pos / (PALETTEENTRIES / Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt()))
-            * (PALETTEENTRIES / Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
-
-    if (n < 0)
-        n = 0;
-    else if (n > PALETTEENTRIES - 1)
-        n = PALETTEENTRIES - 1;
-
-    const double *colors = NULL;
-    switch ((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt())
-    {
-    case Palette_Agros2D:
-        colors = paletteDataAgros2D[n];
-    }
-
-    assert(colors);
-    return QVector3D(colors[0], colors[1], colors[2]);
 }
 
 const double* SceneViewPostInterface::paletteColor(double x) const

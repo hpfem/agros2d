@@ -50,12 +50,15 @@ public:
 
     QAction *actSceneModeVTK2D;
 
-    virtual QIcon iconView() { return icon("scene-particle"); }
+    virtual QIcon iconView() { return icon("scene-post2d"); }
     virtual QString labelView() { return tr("Particle Tracing"); }
 
     void doZoomBestFit();
 
 protected:
+    // palette
+    const double *paletteColor(const int pos) const;
+
     vtkSmartPointer<vtkCubeAxesActor2D> axesActor();
     vtkSmartPointer<vtkLegendScaleActor> rulersActor();
 
@@ -63,6 +66,7 @@ protected:
 
     vtkSmartPointer<vtkActor> contourActor();
     vtkSmartPointer<vtkActor> scalarActor();
+    vtkSmartPointer<vtkActor> vectorActor();
     vtkSmartPointer<vtkScalarBarActor> scalarColorBar();
 
 private:

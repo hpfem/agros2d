@@ -380,10 +380,10 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
+    actSceneModeGroup->addAction(sceneViewVTK2D->actSceneModeVTK2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
     actSceneModeGroup->addAction(sceneViewChart->actSceneModeChart);
     actSceneModeGroup->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
-    actSceneModeGroup->addAction(sceneViewVTK2D->actSceneModeVTK2D);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
     actHideControlPanel->setShortcut(tr("Alt+0"));
@@ -631,7 +631,7 @@ void MainWindow::createMain()
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
     sceneViewPostParticleTracingWidget = new SceneViewWidget(sceneViewParticleTracing, this);
-    sceneViewPostVTK2DWidget = new SceneViewWidget((QWidget *) sceneViewVTK2D, this);
+    sceneViewPostVTK2DWidget = new SceneViewWidget(sceneViewVTK2D, this);
     sceneViewChartWidget = new SceneViewWidget(sceneViewChart, this);
 
     tabViewLayout = new QStackedLayout();

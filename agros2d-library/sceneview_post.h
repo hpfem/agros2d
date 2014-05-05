@@ -148,7 +148,6 @@ protected:
     void paintScalarFieldColorBar(double min, double max);
 
     // palette
-    const QVector3D paletteColor2(const int pos) const;
     const double *paletteColor(double x) const;
     const double *paletteColorOrder(int n) const;
     void paletteCreate();
