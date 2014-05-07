@@ -30,6 +30,7 @@
 #include <vtkScalarBarActor.h>
 #include <vtkCubeAxesActor2D.h>
 #include <vtkLegendScaleActor.h>
+#include <vtkEventQtSlotConnect.h>
 
 template <typename Scalar> class SceneSolution;
 template <typename Scalar> class ViewScalarFilter;
@@ -72,6 +73,7 @@ protected:
 private:
     PostHermes *m_postHermes;
     vtkSmartPointer<vtkRenderer> m_renderer;
+    vtkSmartPointer<vtkEventQtSlotConnect> m_connections;
     vtkSmartPointer<vtkLookupTable> m_palette;
 
     void initVTK();
@@ -80,6 +82,8 @@ private:
 private slots:
     virtual void refresh();
     void setControls();
+
+    void leftButtonPressEvent(vtkObject *caller, unsigned long eventId, void *clientData, void *callData);
 };
 
 #endif // SCENEVIEWVTK2D_H

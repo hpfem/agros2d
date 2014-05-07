@@ -151,6 +151,11 @@ void SceneViewVTK2D::initVTK()
     renderWindow->AddRenderer(m_renderer);
 
     SetRenderWindow(renderWindow);
+
+    m_connections = vtkSmartPointer<vtkEventQtSlotConnect>::New();
+
+    m_connections->Connect(this->GetRenderWindow()->GetInteractor(), vtkCommand::LeftButtonPressEvent,
+                           this, SLOT(leftButtonPressEvent(vtkObject*, ulong, void*, void*)));
 }
 
 void SceneViewVTK2D::createControls()
@@ -460,15 +465,23 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::scalarActor()
 
 vtkSmartPointer<vtkActor> SceneViewVTK2D::vectorActor()
 {
-    vtkSmartPointer<vtkDoubleArray> weights = vtkSmartPointer<vtkDoubleArray>::New();
-    weights->SetNumberOfComponents(1);
-    weights->SetName("vector");
+    vtkSmartPointer<vtkDoubleArray> arraysScalar = vtkSmartPointer<vtkDoubleArray>::New();
+    arraysScalar->SetNumberOfComponents(1);
+    arraysScalar->SetName("vector_size");
+
+    vtkSmartPointer<vtkDoubleArray> arrays = vtkSmartPointer<vtkDoubleArray>::New();
+    arrays->SetNumberOfComponents(3);
+    arrays->SetName("vector");
 
     double vectorRangeMin = m_postHermes->vecVectorView()->get_min_value();
     double vectorRangeMax = m_postHermes->vecVectorView()->get_max_value();
 
+    double irange = 1.0 / (vectorRangeMax - vectorRangeMin);
+
     RectPoint rect = Agros2D::scene()->boundingBox();
     double gs = (rect.width() + rect.height()) / Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt();
+
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
 
     for (Hermes::Hermes2D::Views::Vectorizer::Iterator<Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
          it = m_postHermes->vecVectorView()->triangles_begin(); !it.end; ++it)
@@ -542,39 +555,33 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::vectorActor()
                     dx = Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble() * gs * cos(angle);
                     dy = Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble() * gs * sin(angle);
 
-                    // if ((Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool()) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
-
-
+                    points->InsertNextPoint(point.x, point.y, 0.0);
+                    arrays->InsertNextTuple3(dx, dy, 0.0);
+                    if ((Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool()) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
+                        arraysScalar->InsertNextValue((value - vectorRangeMin) * irange);
                 }
             }
         }
     }
-    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
-         it = m_postHermes->linScalarView()->vertices_begin(); !it.end; ++it)
-    {
-        Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
-
-        points->InsertNextPoint(vertex[0], vertex[1], 0.0);
-        weights->InsertNextValue(vertex[2]);
-    }
 
     // create a polydata object
-    vtkSmartPointer<vtkPolyData> trianglePolyData = vtkSmartPointer<vtkPolyData>::New();
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
 
     // add the geometry and topology to the polydata
-    trianglePolyData->SetPoints(points);
-    // trianglePolyData->SetPolys(triangles);
-    trianglePolyData->GetPointData()->SetScalars(weights);
+    polyData->SetPoints(points);
+    polyData->GetPointData()->SetVectors(arrays);
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool())
+        polyData->GetPointData()->SetScalars(arraysScalar);
 
     vtkSmartPointer<vtkArrowSource> arrowSource = vtkSmartPointer<vtkArrowSource>::New();
 
-     vtkSmartPointer<vtkGlyph2D> glyph2D = vtkSmartPointer<vtkGlyph2D>::New();
-     glyph2D->SetSourceConnection(arrowSource->GetOutputPort());
-     glyph2D->SetVectorModeToUseNormal();
-     glyph2D->SetInputData(trianglePolyData);
-     glyph2D->SetScaleFactor(0.2);
-     glyph2D->Update();
+    vtkSmartPointer<vtkGlyph2D> glyph2D = vtkSmartPointer<vtkGlyph2D>::New();
+    glyph2D->SetSourceConnection(arrowSource->GetOutputPort());
+    glyph2D->OrientOn();
+    glyph2D->SetVectorModeToUseVector();
+    glyph2D->SetInputData(polyData);
+    glyph2D->SetScaleFactor(0.2);
+    glyph2D->Update();
 
     // create mapper and actor
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -652,4 +659,10 @@ void SceneViewVTK2D::setControls()
 void SceneViewVTK2D::doZoomBestFit()
 {
 
+}
+
+
+void SceneViewVTK2D::leftButtonPressEvent(vtkObject *caller, unsigned long eventId, void *clientData, void *callData)
+{
+    // qDebug() << caller;
 }
