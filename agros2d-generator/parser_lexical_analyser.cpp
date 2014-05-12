@@ -81,6 +81,25 @@ void ParserInstance::addBasicWeakformTokens()
     }
 }
 
+void ParserInstance::addCouplingWeakformTokens()
+{
+    for (int i = 1; i < m_parserModuleInfo.m_numSolutionsSource + 1; i++)
+    {
+        m_dict["source%1"] = QString("ext[%1 + offset.sourcePrevSol]->val[i]").arg(i-1);
+        if(m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        {
+            m_dict["source%1dx"] = QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1);
+            m_dict["source%1dy"] = QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1);
+        }
+        else
+        {
+            m_dict["source%1dr"] = QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1);
+            m_dict["source%1dz"] = QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1);
+        }
+    }
+}
+
+
 void ParserInstance::addPreviousSolWeakform()
 {
     for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
@@ -185,12 +204,12 @@ void ParserInstance::addVolumeVariablesErrorCalculation()
                 // nonlinear material
                 m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberFromTable(%2)").
                         arg(QString::fromStdString(quantity.shortname().get())).
-                        arg(m_fieldParser->parseErrorExpression(m_parserModuleInfo, nonlinearExpr, false));
+                        arg(Parser::parseErrorExpression(m_parserModuleInfo, nonlinearExpr, false));
 
                 if (m_parserModuleInfo.m_linearityType == LinearityType_Newton)
                     m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1->derivativeFromTable(%2)").
                             arg(QString::fromStdString(quantity.shortname().get())).
-                            arg(m_fieldParser->parseErrorExpression(m_parserModuleInfo, nonlinearExpr, false));
+                            arg(Parser::parseErrorExpression(m_parserModuleInfo, nonlinearExpr, false));
             }
         }
     }
@@ -198,7 +217,7 @@ void ParserInstance::addVolumeVariablesErrorCalculation()
     //todo: XMLModule::function
 }
 
-void ParserInstance::addVolumeVariablesWeakform()
+void ParserInstance::addVolumeVariablesWeakform()//ParserModuleInfo pmiField, bool isSource)
 {
     foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
     {
@@ -206,11 +225,11 @@ void ParserInstance::addVolumeVariablesWeakform()
         {
             // in weak forms, values replaced by ext functions
             m_dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + offset.quant]->val[i]").
-                    arg(m_fieldParser->quantityOrdering()[QString::fromStdString(quantity.id())]);
-            if(m_fieldParser->quantityIsNonlinear()[QString::fromStdString(quantity.id())])
+                    arg(m_parserModuleInfo.m_quantityOrdering[QString::fromStdString(quantity.id())]);
+            if(m_parserModuleInfo.m_quantityIsNonlinear[QString::fromStdString(quantity.id())])
             {
                 m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + offset.quant]->val[i]").
-                        arg(m_fieldParser->quantityOrdering()[QString::fromStdString(quantity.id())] + 1);
+                        arg(m_parserModuleInfo.m_quantityOrdering[QString::fromStdString(quantity.id())] + 1);
 
             }
         }
@@ -220,7 +239,7 @@ void ParserInstance::addVolumeVariablesWeakform()
     {
         // in weak forms, functions replaced by ext functions
         m_dict[QString::fromStdString(function.shortname())] = QString("ext[%1 + offset.quant]->val[i]").
-                arg(m_fieldParser->functionOrdering()[QString::fromStdString(function.id())]);
+                arg(m_parserModuleInfo.m_functionOrdering[QString::fromStdString(function.id())]);
     }
 }
 
@@ -391,7 +410,7 @@ void ParserInstance::addPostprocessorVariables()
                 // nonlinear material
                 m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1->numberFromTable(%2)").
                         arg(QString::fromStdString(quantity.id())).
-                        arg(m_fieldParser->parsePostprocessorExpression(m_parserModuleInfo, nonlinearExpr, false));
+                        arg(Parser::parsePostprocessorExpression(m_parserModuleInfo, nonlinearExpr, false));
         }
     }
 
@@ -423,7 +442,7 @@ void ParserInstance::addFilterVariables()
                 // nonlinear material
                 m_dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1->numberFromTable(%2)").
                         arg(QString::fromStdString(quantity.id())).
-                        arg(m_fieldParser->parseFilterExpression(m_parserModuleInfo, nonlinearExpr, false));
+                        arg(Parser::parseFilterExpression(m_parserModuleInfo, nonlinearExpr, false));
         }
     }
 
@@ -440,13 +459,13 @@ void ParserInstance::addFilterVariables()
 
 }
 
-ParserInstance::ParserInstance(ParserModuleInfo pmi, FieldParser *moduleParser) : m_parserModuleInfo(pmi), m_fieldParser(moduleParser)
+ParserInstance::ParserInstance(ParserModuleInfo pmi) : m_parserModuleInfo(pmi)
 {
 
 }
 
 
-QSharedPointer<LexicalAnalyser> FieldParser::postprocessorLexicalAnalyser(ParserModuleInfo parserModuleInfo) const
+QSharedPointer<LexicalAnalyser> Parser::postprocessorLexicalAnalyser(ParserModuleInfo parserModuleInfo)
 {
     QSharedPointer<LexicalAnalyser> lex = QSharedPointer<LexicalAnalyser>(new LexicalAnalyser());
 
@@ -488,7 +507,7 @@ QSharedPointer<LexicalAnalyser> FieldParser::postprocessorLexicalAnalyser(Parser
 
 //-----------------------------------------------------------------------------------------
 
-QSharedPointer<LexicalAnalyser> FieldParser::weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo) const
+QSharedPointer<LexicalAnalyser> Parser::weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo)
 {
     QSharedPointer<LexicalAnalyser> lex = QSharedPointer<LexicalAnalyser>(new LexicalAnalyser());
 
@@ -557,7 +576,7 @@ QSharedPointer<LexicalAnalyser> FieldParser::weakFormLexicalAnalyser(ParserModul
 }
 
 
-void FieldParser::commonLexicalAnalyser(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo) const
+void Parser::commonLexicalAnalyser(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo)
 {
     int numOfSol = parserModuleInfo.m_numSolutions;
 

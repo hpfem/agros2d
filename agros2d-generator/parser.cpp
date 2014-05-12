@@ -6,10 +6,13 @@
 #include "generator.h"
 #include "parser.h"
 
+QMap<ParserModuleInfo, QSharedPointer<ParserWeakForm> > Parser::m_parserWeakFormCache;
+QMap<ParserModuleInfo, QSharedPointer<ParserWeakformCheck> > Parser::m_parserWeakFormCheckCache;
 
 bool operator<(const ParserModuleInfo &pmi1, const ParserModuleInfo &pmi2)
 {
-    assert(pmi1.m_id == pmi2.m_id);
+    if (pmi1.m_id != pmi2.m_id)
+        return pmi1.m_id < pmi2.m_id;
 
     if (pmi1.m_analysisType != pmi2.m_analysisType)
         return pmi1.m_analysisType < pmi2.m_analysisType;
@@ -21,52 +24,51 @@ bool operator<(const ParserModuleInfo &pmi1, const ParserModuleInfo &pmi2)
 }
 
 
-FieldParser::FieldParser(XMLModule::field * field)
+QString Parser::parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
-    Module::volumeQuantityProperties(field, m_quantityOrdering, m_quantityIsNonlinear, m_functionOrdering);
-}
-
-QString FieldParser::parsePostprocessorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
-{
-    ParserPostprocessorExpression parser(parserModuleInfo, this, withVariables);
+    ParserPostprocessorExpression parser(parserModuleInfo, withVariables);
     return parser.parse(expr);
 }
 
-QString FieldParser::parseFilterExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString Parser::parseFilterExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
-    ParserFilterExpression parser(parserModuleInfo, this, withVariables);
+    ParserFilterExpression parser(parserModuleInfo, withVariables);
     return parser.parse(expr);
 }
 
-QString FieldParser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString Parser::parseWeakFormExpression(ParserModuleInfo parserModuleInfo, const QString &expr)
 {
+//    ParserWeakForm parser(parserModuleInfo, withVariables);
+//    return parser.parse(expr);
     QSharedPointer<ParserWeakForm> parser;
-    if(m_parserWeakFormCache.contains(parserModuleInfo) && withVariables)
+    if(m_parserWeakFormCache.contains(parserModuleInfo))
     {
         parser = m_parserWeakFormCache[parserModuleInfo];
     }
     else
     {
-        parser = QSharedPointer<ParserWeakForm>(new ParserWeakForm(parserModuleInfo, this, withVariables));
+        parser = QSharedPointer<ParserWeakForm>(new ParserWeakForm(parserModuleInfo));
         m_parserWeakFormCache[parserModuleInfo] = parser;
     }
     return parser->parse(expr);
 }
 
-QString FieldParser::parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
+QString Parser::parseErrorExpression(ParserModuleInfo parserModuleInfo, const QString &expr, bool withVariables)
 {
-    ParserErrorExpression parser(parserModuleInfo, this, withVariables);
+    ParserErrorExpression parser(parserModuleInfo, withVariables);
     return parser.parse(expr);
 }
 
-QString FieldParser::parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr)
+QString Parser::parseLinearizeDependence(ParserModuleInfo parserModuleInfo, const QString &expr)
 {
-    ParserLinearizeDependence parser(parserModuleInfo, this);
+    ParserLinearizeDependence parser(parserModuleInfo);
     return parser.parse(expr);
 }
 
-QString FieldParser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr)
+QString Parser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleInfo, const QString &expr)
 {
+//    ParserWeakformCheck parser(parserModuleInfo);
+//    return parser.parse(expr);
     QSharedPointer<ParserWeakformCheck> parser;
     if(m_parserWeakFormCheckCache.contains(parserModuleInfo))
     {
@@ -74,7 +76,7 @@ QString FieldParser::parseWeakFormExpressionCheck(ParserModuleInfo parserModuleI
     }
     else
     {
-        parser = QSharedPointer<ParserWeakformCheck>(new ParserWeakformCheck(parserModuleInfo, this));
+        parser = QSharedPointer<ParserWeakformCheck>(new ParserWeakformCheck(parserModuleInfo));
         m_parserWeakFormCheckCache[parserModuleInfo] = parser;
     }
     return parser->parse(expr);
@@ -84,7 +86,7 @@ QString ParserInstance::parse(QString expr)
 {
     try
     {
-        QSharedPointer<LexicalAnalyser> lex = m_fieldParser->weakFormLexicalAnalyser(m_parserModuleInfo);
+        QSharedPointer<LexicalAnalyser> lex = Parser::weakFormLexicalAnalyser(m_parserModuleInfo);
         lex->setExpression(expr);
         QString exprCpp = lex->replaceVariables(m_dict);
 
@@ -102,12 +104,27 @@ QString ParserInstance::parse(QString expr)
 
 }
 
-ParserModuleInfo::ParserModuleInfo(XMLModule::field field, AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType) : m_analysisType(analysisType), m_coordinateType(coordinateType),
+ParserModuleInfo::ParserModuleInfo(XMLModule::field field, AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType) :
+    m_analysisType(analysisType), m_coordinateType(coordinateType), m_linearityType(linearityType),
     m_constants(field.constants()), m_volume(field.volume()), m_surface(field.surface())
 {
     m_numSolutions = Agros2DGenerator::numberOfSolutions(field.general_field().analyses(), analysisType);
+    m_numSolutionsSource = -123456;
     m_id = QString::fromStdString(field.general_field().id());
     m_isField = true;
+
+    Module::volumeQuantityProperties(&field, m_quantityOrdering, m_quantityIsNonlinear, m_functionOrdering);
+
+}
+
+ParserModuleInfo::ParserModuleInfo(XMLModule::coupling coupling, XMLModule::field field, XMLModule::field fieldSource, AnalysisType analysisType, AnalysisType analysisTypeSource, CoordinateType coordinateType, LinearityType linearityType, LinearityType linearityTypeSource) :
+    m_analysisType(analysisType), m_analysisTypeSource(analysisTypeSource), m_coordinateType(coordinateType), m_linearityType(linearityType), m_linearityTypeSource(linearityTypeSource),
+    m_constants(field.constants()), m_volume(field.volume()), m_surface(field.surface())
+{
+    m_numSolutions = Agros2DGenerator::numberOfSolutions(field.general_field().analyses(), analysisType);
+    m_numSolutionsSource = Agros2DGenerator::numberOfSolutions(fieldSource.general_field().analyses(), analysisType);
+    m_id = QString::fromStdString(coupling.general_coupling().id());
+    m_isField = false;
 }
 
 QString ParserModuleInfo::nonlinearExpressionVolume(const QString &variable) const
@@ -248,18 +265,15 @@ QString ParserModuleInfo::dependenceSurface(const QString &variable) const
     return "";
 }
 
-ParserWeakForm::ParserWeakForm(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+ParserWeakForm::ParserWeakForm(ParserModuleInfo pmi) : ParserInstance(pmi)
 {
     addBasicWeakformTokens();
     addPreviousSolWeakform();
-    if(withVariables)
-    {
-        addVolumeVariablesWeakform();
-        addSurfaceVariables();
-    }
+    addVolumeVariablesWeakform();//pmi, false);
+    addSurfaceVariables();
 }
 
-ParserErrorExpression::ParserErrorExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+ParserErrorExpression::ParserErrorExpression(ParserModuleInfo pmi, bool withVariables) : ParserInstance(pmi)
 {
     addBasicWeakformTokens();
     addPreviousSolErroCalculation();
@@ -270,18 +284,24 @@ ParserErrorExpression::ParserErrorExpression(ParserModuleInfo pmi, FieldParser *
     }
 }
 
-ParserLinearizeDependence::ParserLinearizeDependence(ParserModuleInfo pmi, FieldParser *moduleParser) : ParserInstance(pmi, moduleParser)
+ParserWeakFormCoupling::ParserWeakFormCoupling(ParserModuleInfo pmi) : ParserInstance(pmi)
+{
+    addBasicWeakformTokens();
+    addCouplingWeakformTokens();
+}
+
+ParserLinearizeDependence::ParserLinearizeDependence(ParserModuleInfo pmi) : ParserInstance(pmi)
 {
     addBasicWeakformTokens();
     addPreviousSolLinearizeDependence();
 }
 
-ParserWeakformCheck::ParserWeakformCheck(ParserModuleInfo pmi, FieldParser *moduleParser) : ParserInstance(pmi, moduleParser)
+ParserWeakformCheck::ParserWeakformCheck(ParserModuleInfo pmi) : ParserInstance(pmi)
 {
     addWeakformCheckTokens();
 }
 
-ParserPostprocessorExpression::ParserPostprocessorExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+ParserPostprocessorExpression::ParserPostprocessorExpression(ParserModuleInfo pmi, bool withVariables) : ParserInstance(pmi)
 {
     addPostprocessorBasic();
     if(withVariables)
@@ -290,7 +310,7 @@ ParserPostprocessorExpression::ParserPostprocessorExpression(ParserModuleInfo pm
     }
 }
 
-ParserFilterExpression::ParserFilterExpression(ParserModuleInfo pmi, FieldParser *moduleParser, bool withVariables) : ParserInstance(pmi, moduleParser)
+ParserFilterExpression::ParserFilterExpression(ParserModuleInfo pmi, bool withVariables) : ParserInstance(pmi)
 {
     addPostprocessorBasic();
     if(withVariables)
@@ -299,9 +319,8 @@ ParserFilterExpression::ParserFilterExpression(ParserModuleInfo pmi, FieldParser
     }
 }
 
-ParserCouplingWeakForm::ParserCouplingWeakForm(ParserModuleInfo pmiCoupling, ParserModuleInfo pmiSource, ParserModuleInfo pmiTarget,
-                                               CouplingParser *couplingParser, FieldParser *sourceParser, FieldParser *targetParser)
-    :ParserInstance(pmiCoupling, couplingParser)
-{
-    ParserInstance sourceQuantityParser(pmiSource, sourceParser);
-}
+//ParserCouplingWeakForm::ParserCouplingWeakForm(ParserModuleInfo pmiCoupling, ParserModuleInfo pmiSource, ParserModuleInfo pmiTarget)
+//    :ParserInstance(pmiCoupling)
+//{
+//    (pmiSource);
+//}

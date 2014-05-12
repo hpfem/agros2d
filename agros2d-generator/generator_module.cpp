@@ -62,8 +62,6 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId) : m_outp
     getNames(moduleId);
 
     Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlinear, functionOrdering);
-
-    m_parser = QSharedPointer<FieldParser>(new FieldParser(m_module));
 }
 
 Agros2DGeneratorModule::~Agros2DGeneratorModule()
@@ -281,7 +279,7 @@ void Agros2DGeneratorModule::generatePluginErrorCalculator()
                             exprOriginal = QString::fromStdString(expr.axi().get());
 
                         ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityTypes[lt]);
-                        exprCpp = m_parser->parseErrorExpression(pmi, exprOriginal);
+                        exprCpp = Parser::parseErrorExpression(pmi, exprOriginal);
 
                         expression->SetValue("EXPRESSION", exprCpp.toStdString());
 

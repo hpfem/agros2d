@@ -238,9 +238,9 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
 
         // if linearized, we use dependence on allready calculated values form previous time level or weakly coupled source field
         if(linearize)
-            dependence = m_parser->parseLinearizeDependence(pmi, dependence);
+            dependence = Parser::parseLinearizeDependence(pmi, dependence);
         else
-            dependence = m_parser->parseWeakFormExpression(pmi, dependence);
+            dependence = Parser::parseWeakFormExpression(pmi, dependence);
     }
 
     // nonlinear or constant (in which case numberFromTable returns just a constant number)
@@ -373,10 +373,10 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             ParserModuleInfo pmi(*m_module, analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, linearityType);
 
             // expression
-            QString exprCpp = m_parser->parseWeakFormExpression(pmi, expression);
+            QString exprCpp = Parser::parseWeakFormExpression(pmi, expression);
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
-            QString exprCppCheck = m_parser->parseWeakFormExpressionCheck(pmi, formInfo.condition);
+            QString exprCppCheck = Parser::parseWeakFormExpressionCheck(pmi, formInfo.condition);
             if(exprCppCheck == "")
                 exprCppCheck = "true";
             field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
@@ -421,9 +421,9 @@ void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function functi
 
     // if linearized, we use dependence on allready calculated values form previous time level or weakly coupled source field
     if(linearize)
-        dependence = m_parser->parseLinearizeDependence(pmi, dependence);
+        dependence = Parser::parseLinearizeDependence(pmi, dependence);
     else
-        dependence = m_parser->parseWeakFormExpression(pmi, dependence);
+        dependence = Parser::parseWeakFormExpression(pmi, dependence);
 
     functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
 
@@ -503,7 +503,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function functio
     if(linearityType != LinearityType_Linear)
         dependence = pmi.specialFunctionNonlinearExpression(QString::fromStdString(function.id()));
 
-    dependence = m_parser->parseWeakFormExpression(pmi, dependence);
+    dependence = Parser::parseWeakFormExpression(pmi, dependence);
 
     functionTemplate->SetValue("DEPENDENCE", dependence.toStdString());
     functionTemplate->SetValue("INTERPOLATION_COUNT", function.interpolation_count().present() ? function.interpolation_count().get() : "0");
