@@ -19,6 +19,7 @@
 
 #include "generator.h"
 #include "generator_coupling.h"
+#include "parser.h"
 
 #include <QDir>
 
@@ -489,17 +490,27 @@ void Agros2DGeneratorCoupling::generateForm(FormInfo formInfo, LinearityType lin
             field->SetValue("COUPLING_TYPE", Agros2DGenerator::couplingTypeToString(weakform.couplingtype().get().c_str()).toStdString());
 
             // expression
-            QString exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis().get())),
-                                                      analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                      coordinateType,
-                                                      couplingType,
-                                                      expression);
+//            QString exprCpp = parseWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis().get())),
+//                                                      analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+//                                                      coordinateType,
+//                                                      couplingType,
+//                                                      expression);
 
             // todo: provizorne
             // todo: nevim, proc to parser nenahradi
             // todo: kazdopadne je potreba prepsat s vyuzitim noveho parseru a sloucit s generovanim modulu
-            exprCpp.replace("udx", "u->dx[i]");
-            exprCpp.replace("udy", "u->dy[i]");
+            //exprCpp.replace("udx", "u->dx[i]");
+            //exprCpp.replace("udy", "u->dy[i]");
+
+            ParserModuleInfo pmiSource(*m_sourceModule,
+                                       analysisTypeFromStringKey(QString::fromStdString(weakform.sourceanalysis().get())),
+                                       coordinateType, linearityType);
+
+            ParserModuleInfo pmi(*m_targetModule,
+                                       analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                       coordinateType, linearityType);
+
+            QString exprCpp = Parser::parseCouplingWeakFormExpression(pmiSource, pmi, expression);
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
             // add weakform

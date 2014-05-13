@@ -10,7 +10,7 @@
 void ParserInstance::addBasicWeakformTokens()
 {
     // coordinates
-    if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         m_dict["x"] = "e->x[i]";
         m_dict["y"] = "e->y[i]";
@@ -32,7 +32,7 @@ void ParserInstance::addBasicWeakformTokens()
     // constants
     m_dict["PI"] = "M_PI";
     m_dict["f"] = "this->m_markerTarget->fieldInfo()->frequency()";
-    foreach (XMLModule::constant cnst, m_parserModuleInfo.m_constants.constant())
+    foreach (XMLModule::constant cnst, m_parserModuleInfo.constants.constant())
         m_dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
     // area of a label
@@ -59,7 +59,7 @@ void ParserInstance::addBasicWeakformTokens()
     m_dict["timedermat"] = "(*this->m_table)->matrixFormCoefficient()";
     m_dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerTarget->fieldInfo()->numberOfSolutions(), offset.prevSol, i)";
 
-    if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         // scalar field
         m_dict["udx"] = "u->dx[i]";
@@ -81,33 +81,33 @@ void ParserInstance::addBasicWeakformTokens()
     }
 }
 
-void ParserInstance::addCouplingWeakformTokens()
+void ParserInstance::addCouplingWeakformTokens(int numSourceSolutions)
 {
-    for (int i = 1; i < m_parserModuleInfo.m_numSolutionsSource + 1; i++)
+    for (int i = 1; i < numSourceSolutions + 1; i++)
     {
-        m_dict["source%1"] = QString("ext[%1 + offset.sourcePrevSol]->val[i]").arg(i-1);
-        if(m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        m_dict[QString("source%1").arg(i)] = QString("ext[%1 + offset.sourcePrevSol]->val[i]").arg(i-1);
+        if(m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
-            m_dict["source%1dx"] = QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1);
-            m_dict["source%1dy"] = QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1);
+            m_dict[QString("source%1dx").arg(i)] = QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1);
+            m_dict[QString("source%1dy").arg(i)] = QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1);
         }
         else
         {
-            m_dict["source%1dr"] = QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1);
-            m_dict["source%1dz"] = QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1);
+            m_dict[QString("source%1dr").arg(i)] = QString("ext[%1 + offset.sourcePrevSol]->dx[i]").arg(i-1);
+            m_dict[QString("source%1dz").arg(i)] = QString("ext[%1 + offset.sourcePrevSol]->dy[i]").arg(i-1);
         }
     }
 }
 
 
-void ParserInstance::addPreviousSolWeakform()
+void ParserInstance::addPreviousSolWeakform(int numSolutions)
 {
-    for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
+    for (int i = 1; i < numSolutions + 1; i++)
     {
         m_dict[QString("value%1").arg(i)] = QString("u_ext[%1 + offset.forms]->val[i]").arg(i-1);
         m_dict[QString("timedervec%1").arg(i)] = QString("(*this->m_table)->vectorFormCoefficient(ext, %1, this->m_markerTarget->fieldInfo()->numberOfSolutions(), offset.prevSol, i)").arg(i-1);
 
-        if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
             m_dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + offset.forms]->dx[i]").arg(i-1);
             m_dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + offset.forms]->dy[i]").arg(i-1);
@@ -122,11 +122,11 @@ void ParserInstance::addPreviousSolWeakform()
 
 void ParserInstance::addPreviousSolErroCalculation()
 {
-    for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
+    for (int i = 1; i < m_parserModuleInfo.numSolutions + 1; i++)
     {
         m_dict[QString("value%1").arg(i)] = QString("u->val[i]");
 
-        if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
             m_dict[QString("dx%1").arg(i)] = QString("u->dx[i]");
             m_dict[QString("dy%1").arg(i)] = QString("u->dy[i]");
@@ -143,11 +143,11 @@ void ParserInstance::addPreviousSolErroCalculation()
 // used for nonlinear source term in the case of weak coupling
 void ParserInstance::addPreviousSolLinearizeDependence()
 {
-    for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
+    for (int i = 1; i < m_parserModuleInfo.numSolutions + 1; i++)
     {
         m_dict[QString("value%1").arg(i)] = QString("ext[%1 + offset.prevSol]->val[i]").arg(i-1);
 
-        if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
             m_dict[QString("dx%1").arg(i)] = QString("ext[%1 + offset.prevSol]->dx[i]").arg(i-1);
             m_dict[QString("dy%1").arg(i)] = QString("ext[%1 + offset.prevSol]->dy[i]").arg(i-1);
@@ -162,14 +162,14 @@ void ParserInstance::addPreviousSolLinearizeDependence()
 
 void ParserInstance::addVolumeVariablesErrorCalculation()
 {
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.volume.quantity())
     {
         if (quantity.shortname().present())
         {
             QString dep = m_parserModuleInfo.dependenceVolume(QString::fromStdString(quantity.id()));
             QString nonlinearExpr = m_parserModuleInfo.nonlinearExpressionVolume(QString::fromStdString(quantity.id()));
 
-            if (m_parserModuleInfo.m_linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+            if (m_parserModuleInfo.linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
             {
                 if (dep.isEmpty())
                 {
@@ -206,7 +206,7 @@ void ParserInstance::addVolumeVariablesErrorCalculation()
                         arg(QString::fromStdString(quantity.shortname().get())).
                         arg(Parser::parseErrorExpression(m_parserModuleInfo, nonlinearExpr, false));
 
-                if (m_parserModuleInfo.m_linearityType == LinearityType_Newton)
+                if (m_parserModuleInfo.linearityType == LinearityType_Newton)
                     m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1->derivativeFromTable(%2)").
                             arg(QString::fromStdString(quantity.shortname().get())).
                             arg(Parser::parseErrorExpression(m_parserModuleInfo, nonlinearExpr, false));
@@ -217,36 +217,42 @@ void ParserInstance::addVolumeVariablesErrorCalculation()
     //todo: XMLModule::function
 }
 
-void ParserInstance::addVolumeVariablesWeakform()//ParserModuleInfo pmiField, bool isSource)
+void ParserInstance::addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool isSource)
 {
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    QString offsetQuant("offset.quant");
+    if(isSource)
+        offsetQuant = "offset.sourceQuant";
+
+    foreach (XMLModule::quantity quantity, pmiField.volume.quantity())
     {
         if (quantity.shortname().present())
         {
             // in weak forms, values replaced by ext functions
-            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + offset.quant]->val[i]").
-                    arg(m_parserModuleInfo.m_quantityOrdering[QString::fromStdString(quantity.id())]);
-            if(m_parserModuleInfo.m_quantityIsNonlinear[QString::fromStdString(quantity.id())])
+            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + %2]->val[i]").
+                    arg(pmiField.quantityOrdering[QString::fromStdString(quantity.id())]).
+                    arg(offsetQuant);
+            if(pmiField.quantityIsNonlinear[QString::fromStdString(quantity.id())])
             {
-                m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + offset.quant]->val[i]").
-                        arg(m_parserModuleInfo.m_quantityOrdering[QString::fromStdString(quantity.id())] + 1);
+                m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + %2]->val[i]").
+                        arg(pmiField.quantityOrdering[QString::fromStdString(quantity.id())] + 1).
+                        arg(offsetQuant);
 
             }
         }
     }
 
-    foreach (XMLModule::function function, m_parserModuleInfo.m_volume.function())
+    foreach (XMLModule::function function, m_parserModuleInfo.volume.function())
     {
         // in weak forms, functions replaced by ext functions
         m_dict[QString::fromStdString(function.shortname())] = QString("ext[%1 + offset.quant]->val[i]").
-                arg(m_parserModuleInfo.m_functionOrdering[QString::fromStdString(function.id())]);
+                arg(m_parserModuleInfo.functionOrdering[QString::fromStdString(function.id())]);
     }
 }
 
 void ParserInstance::addSurfaceVariables()
 {
     // surface quantities still done the old way
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_surface.quantity())
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.surface.quantity())
     {
         if (quantity.shortname().present())
         {
@@ -282,14 +288,14 @@ void ParserInstance::addSurfaceVariables()
 
 void ParserInstance::addWeakformCheckTokens()
 {
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.volume.quantity())
     {
         if (quantity.shortname().present())
         {
             QString dep = m_parserModuleInfo.dependenceVolume(QString::fromStdString(quantity.id()));
             QString nonlinearExpr = m_parserModuleInfo.nonlinearExpressionVolume(QString::fromStdString(quantity.id()));
 
-            if (m_parserModuleInfo.m_linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+            if (m_parserModuleInfo.linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
             {
                 if (dep.isEmpty())
                 {
@@ -311,7 +317,7 @@ void ParserInstance::addWeakformCheckTokens()
         }
     }
 
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_surface.quantity())
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.surface.quantity())
     {
         if (quantity.shortname().present())
         {
@@ -335,7 +341,7 @@ void ParserInstance::addWeakformCheckTokens()
 void ParserInstance::addPostprocessorBasic()
 {
     // coordinates
-    if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         m_dict["x"] = "x[i]";
         m_dict["y"] = "y[i]";
@@ -363,14 +369,14 @@ void ParserInstance::addPostprocessorBasic()
     // constants
     m_dict["PI"] = "M_PI";
     m_dict["f"] = "m_fieldInfo->frequency()";
-    foreach (XMLModule::constant cnst, m_parserModuleInfo.m_constants.constant())
+    foreach (XMLModule::constant cnst, m_parserModuleInfo.constants.constant())
         m_dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
     // functions
-    for (int i = 1; i < m_parserModuleInfo.m_numSolutions + 1; i++)
+    for (int i = 1; i < m_parserModuleInfo.numSolutions + 1; i++)
     {
         m_dict[QString("value%1").arg(i)] = QString("value[%1][i]").arg(i-1);
-        if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+        if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
             m_dict[QString("dx%1").arg(i)] = QString("dudx[%1][i]").arg(i-1);
             m_dict[QString("dy%1").arg(i)] = QString("dudy[%1][i]").arg(i-1);
@@ -382,7 +388,7 @@ void ParserInstance::addPostprocessorBasic()
         }
     }
     // eggshell
-    if (m_parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         m_dict["dxegg"] = "dudx[source_functions.size() - 1][i]";
         m_dict["dyegg"] = "dudy[source_functions.size() - 1][i]";
@@ -397,7 +403,7 @@ void ParserInstance::addPostprocessorBasic()
 
 void ParserInstance::addPostprocessorVariables()
 {
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.volume.quantity())
     {
         if (quantity.shortname().present())
         {
@@ -414,7 +420,7 @@ void ParserInstance::addPostprocessorVariables()
         }
     }
 
-    foreach (XMLModule::function function, m_parserModuleInfo.m_volume.function())
+    foreach (XMLModule::function function, m_parserModuleInfo.volume.function())
     {
         QString parameter("0");
         // todo: so far used only in Richards, where is OK
@@ -429,7 +435,7 @@ void ParserInstance::addPostprocessorVariables()
 
 void ParserInstance::addFilterVariables()
 {
-    foreach (XMLModule::quantity quantity, m_parserModuleInfo.m_volume.quantity())
+    foreach (XMLModule::quantity quantity, m_parserModuleInfo.volume.quantity())
     {
         if (quantity.shortname().present())
         {
@@ -446,7 +452,7 @@ void ParserInstance::addFilterVariables()
         }
     }
 
-    foreach (XMLModule::function function, m_parserModuleInfo.m_volume.function())
+    foreach (XMLModule::function function, m_parserModuleInfo.volume.function())
     {
         QString parameter("0");
         // todo: so far used only in Richards, where is OK
@@ -459,18 +465,136 @@ void ParserInstance::addFilterVariables()
 
 }
 
-ParserInstance::ParserInstance(ParserModuleInfo pmi) : m_parserModuleInfo(pmi)
+
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+
+
+void Parser::addPreviousSolutionsLATokens(QSharedPointer<LexicalAnalyser> lex, CoordinateType coordinateType, int numSolutions)
 {
+    for (int i = 1; i < numSolutions + 1; i++)
+    {
+        lex->addVariable(QString("value%1").arg(i));
+        if (coordinateType == CoordinateType_Planar)
+        {
+            lex->addVariable(QString("dx%1").arg(i));
+            lex->addVariable(QString("dy%1").arg(i));
+        }
+        else
+        {
+            lex->addVariable(QString("dr%1").arg(i));
+            lex->addVariable(QString("dz%1").arg(i));
+        }
+    }
+}
+
+void Parser::addSourceCouplingLATokens(QSharedPointer<LexicalAnalyser> lex, CoordinateType coordinateType, int numSourceSolutions)
+{
+    qDebug() << "adding sources " << numSourceSolutions;
+    for (int i = 1; i < numSourceSolutions + 1; i++)
+    {
+        lex->addVariable(QString("source%1").arg(i));
+        if (coordinateType == CoordinateType_Planar)
+        {
+            lex->addVariable(QString("source%1dx").arg(i));
+            lex->addVariable(QString("source%1dy").arg(i));
+        }
+        else
+        {
+            lex->addVariable(QString("source%1dr").arg(i));
+            lex->addVariable(QString("source%1dz").arg(i));
+        }
+    }
 
 }
 
 
-QSharedPointer<LexicalAnalyser> Parser::postprocessorLexicalAnalyser(ParserModuleInfo parserModuleInfo)
+void Parser::addQuantitiesLATokens(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo)
 {
-    QSharedPointer<LexicalAnalyser> lex = QSharedPointer<LexicalAnalyser>(new LexicalAnalyser());
+    // constants
+    lex->addVariable("PI");
+    lex->addVariable("f");
+
+    foreach (XMLModule::constant cnst, parserModuleInfo.constants.constant())
+        lex->addVariable(QString::fromStdString(cnst.id()));
+
+    // variables
+    foreach (XMLModule::quantity quantity, parserModuleInfo.volume.quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            lex->addVariable(QString::fromStdString(quantity.shortname().get()));
+            lex->addVariable(QString::fromStdString("d" + quantity.shortname().get()));
+        }
+    }
+
+    foreach (XMLModule::quantity quantity, parserModuleInfo.surface.quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            lex->addVariable(QString::fromStdString(quantity.shortname().get()));
+            lex->addVariable(QString::fromStdString("d" + quantity.shortname().get()));
+        }
+    }
+
+}
+
+
+void Parser::addWeakFormLATokens(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo)
+{
+    // scalar field
+    lex->addVariable("uval");
+    lex->addVariable("upval");
+    lex->addVariable("vval");
+
+    // vector field
+    lex->addVariable("val0");
+    lex->addVariable("val1");
+    lex->addVariable("ucurl");
+    lex->addVariable("vcurl");
+    lex->addVariable("upcurl");
 
     // coordinates
-    if (parserModuleInfo.m_coordinateType == CoordinateType_Planar)
+    if (parserModuleInfo.coordinateType == CoordinateType_Planar)
+    {
+        // scalar field
+        lex->addVariable("udx");
+        lex->addVariable("vdx");
+        lex->addVariable("udy");
+        lex->addVariable("vdy");
+        lex->addVariable("updx");
+        lex->addVariable("updy");
+
+        lex->addVariable(QString("x"));
+        lex->addVariable(QString("y"));
+    }
+    else
+    {
+        // scalar field
+        lex->addVariable("udr");
+        lex->addVariable("vdr");
+        lex->addVariable("udz");
+        lex->addVariable("vdz");
+        lex->addVariable("updr");
+        lex->addVariable("updz");
+
+        lex->addVariable(QString("r"));
+        lex->addVariable(QString("z"));
+    }
+
+    if (parserModuleInfo.analysisType == AnalysisType_Transient)
+    {
+        lex->addVariable("deltat");
+        lex->addVariable("timedermat");
+        lex->addVariable("timedervec");
+    }
+
+}
+
+void Parser::addPostprocessorLATokens(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo)
+{
+    // coordinates
+    if (parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         lex->addVariable("tanx");
         lex->addVariable("tany");
@@ -502,122 +626,4 @@ QSharedPointer<LexicalAnalyser> Parser::postprocessorLexicalAnalyser(ParserModul
     // marker area
     lex->addVariable("area");
 
-    return lex;
-}
-
-//-----------------------------------------------------------------------------------------
-
-QSharedPointer<LexicalAnalyser> Parser::weakFormLexicalAnalyser(ParserModuleInfo parserModuleInfo)
-{
-    QSharedPointer<LexicalAnalyser> lex = QSharedPointer<LexicalAnalyser>(new LexicalAnalyser());
-
-    // scalar field
-    lex->addVariable("uval");
-    lex->addVariable("upval");
-    lex->addVariable("vval");
-
-    // vector field
-    lex->addVariable("val0");
-    lex->addVariable("val1");
-    lex->addVariable("ucurl");
-    lex->addVariable("vcurl");
-    lex->addVariable("upcurl");
-
-    // coordinates
-    if (parserModuleInfo.m_coordinateType == CoordinateType_Planar)
-    {
-        // scalar field
-        lex->addVariable("udx");
-        lex->addVariable("vdx");
-        lex->addVariable("udy");
-        lex->addVariable("vdy");
-        lex->addVariable("updx");
-        lex->addVariable("updy");
-
-        // vector field
-        lex->addVariable("dx0");
-        lex->addVariable("dx1");
-        lex->addVariable("dy0");
-        lex->addVariable("dy1");
-
-        lex->addVariable(QString("x"));
-        lex->addVariable(QString("y"));
-    }
-    else
-    {
-        // scalar field
-        lex->addVariable("udr");
-        lex->addVariable("vdr");
-        lex->addVariable("udz");
-        lex->addVariable("vdz");
-        lex->addVariable("updr");
-        lex->addVariable("updz");
-
-        // vector field
-        lex->addVariable("dr0");
-        lex->addVariable("dr1");
-        lex->addVariable("dz0");
-        lex->addVariable("dz1");
-
-        lex->addVariable(QString("r"));
-        lex->addVariable(QString("z"));
-    }
-
-    if (parserModuleInfo.m_analysisType == AnalysisType_Transient)
-    {
-        lex->addVariable("deltat");
-        lex->addVariable("timedermat");
-        lex->addVariable("timedervec");
-    }
-
-    commonLexicalAnalyser(lex, parserModuleInfo);
-
-    return lex;
-}
-
-
-void Parser::commonLexicalAnalyser(QSharedPointer<LexicalAnalyser> lex, ParserModuleInfo parserModuleInfo)
-{
-    int numOfSol = parserModuleInfo.m_numSolutions;
-
-    // functions
-    for (int i = 1; i < numOfSol + 1; i++)
-    {
-        lex->addVariable(QString("value%1").arg(i));
-        if (parserModuleInfo.m_coordinateType == CoordinateType_Planar)
-        {
-            lex->addVariable(QString("dx%1").arg(i));
-            lex->addVariable(QString("dy%1").arg(i));
-        }
-        else
-        {
-            lex->addVariable(QString("dr%1").arg(i));
-            lex->addVariable(QString("dz%1").arg(i));
-        }
-    }
-
-    // constants
-    lex->addVariable("PI");
-    lex->addVariable("f");
-    foreach (XMLModule::constant cnst, parserModuleInfo.m_constants.constant())
-        lex->addVariable(QString::fromStdString(cnst.id()));
-
-    // variables
-    foreach (XMLModule::quantity quantity, parserModuleInfo.m_volume.quantity())
-    {
-        if (quantity.shortname().present())
-        {
-            lex->addVariable(QString::fromStdString(quantity.shortname().get()));
-            lex->addVariable(QString::fromStdString("d" + quantity.shortname().get()));
-        }
-    }
-
-    foreach (XMLModule::quantity quantity, parserModuleInfo.m_surface.quantity())
-    {
-        if (quantity.shortname().present())
-        {
-            lex->addVariable(QString::fromStdString(quantity.shortname().get()));
-            lex->addVariable(QString::fromStdString("d" + quantity.shortname().get()));
-        }
-    }
 }
