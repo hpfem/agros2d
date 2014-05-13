@@ -5,6 +5,7 @@
 #include "parser/lex.h"
 #include "generator.h"
 #include "parser.h"
+#include "parser_instance.h"
 
 
 void ParserInstance::addBasicWeakformTokens()

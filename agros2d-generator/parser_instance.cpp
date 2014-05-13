@@ -1,5 +1,6 @@
 #include "parser/lex.h"
 #include "parser.h"
+#include "parser_instance.h"
 
 // todo: m_parserModuleInfoSource has to be initialized by something
 // todo: this is not good, but implicit initialization is not possible
@@ -74,7 +75,7 @@ ParserInstanceWeakformCheck::ParserInstanceWeakformCheck(ParserModuleInfo pmi) :
 
 ParserInstancePostprocessorExpression::ParserInstancePostprocessorExpression(ParserModuleInfo pmi, bool withVariables) : ParserInstance(pmi)
 {
-    m_lexicalAnalyser = Parser::weakFormLexicalAnalyser(m_parserModuleInfo);
+    m_lexicalAnalyser = Parser::postprocessorLexicalAnalyser(m_parserModuleInfo);
 
     addPostprocessorBasic();
     if(withVariables)
@@ -85,7 +86,7 @@ ParserInstancePostprocessorExpression::ParserInstancePostprocessorExpression(Par
 
 ParserInstanceFilterExpression::ParserInstanceFilterExpression(ParserModuleInfo pmi, bool withVariables) : ParserInstance(pmi)
 {
-    m_lexicalAnalyser = Parser::weakFormLexicalAnalyser(m_parserModuleInfo);
+    m_lexicalAnalyser = Parser::postprocessorLexicalAnalyser(m_parserModuleInfo);
 
     addPostprocessorBasic();
     if(withVariables)

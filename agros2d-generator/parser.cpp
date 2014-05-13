@@ -5,10 +5,12 @@
 #include "parser/lex.h"
 #include "generator.h"
 #include "parser.h"
+#include "parser_instance.h"
 
-QMap<ParserModuleInfo, QSharedPointer<ParserInstanceWeakForm> > Parser::m_parserWeakFormCache;
-QMap<ParserModuleInfo, QSharedPointer<ParserInstanceWeakformCheck> > Parser::m_parserWeakFormCheckCache;
+//QMap<ParserModuleInfo, QSharedPointer<ParserInstanceWeakForm> > Parser::m_parserWeakFormCache;
+//QMap<ParserModuleInfo, QSharedPointer<ParserInstanceWeakformCheck> > Parser::m_parserWeakFormCheckCache;
 
+// to allow use of QMap for caching (not used at the moment)
 bool operator<(const ParserModuleInfo &pmi1, const ParserModuleInfo &pmi2)
 {
     if (pmi1.id != pmi2.id)

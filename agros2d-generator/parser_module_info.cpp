@@ -3,7 +3,7 @@
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
 #include "generator.h"
-#include "parser.h"
+#include "parser_module_info.h"
 
 
 ParserModuleInfo::ParserModuleInfo(XMLModule::field field, AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType) :
