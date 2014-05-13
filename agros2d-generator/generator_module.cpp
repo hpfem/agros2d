@@ -108,11 +108,13 @@ void Agros2DGeneratorModule::prepareWeakFormsOutput()
         field = m_output->AddSectionDictionary("QUANTITY_INFO");
         field->SetValue("QUANT_ID", quantID.toStdString());
         field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID]).toStdString());
+        field->SetValue("OFFSET", "offset.quant");
         if(quantityIsNonlinear[quantID])
         {
             field = m_output->AddSectionDictionary("QUANTITY_INFO");
             field->SetValue("QUANT_ID", QString("derivative %1").arg(quantID).toStdString());
             field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID] + 1).toStdString());
+            field->SetValue("OFFSET", "offset.quant");
         }
     }
     foreach(QString funcID, this->functionOrdering.keys())
@@ -120,6 +122,7 @@ void Agros2DGeneratorModule::prepareWeakFormsOutput()
         field = m_output->AddSectionDictionary("QUANTITY_INFO");
         field->SetValue("QUANT_ID", funcID.toStdString());
         field->SetValue("INDEX", QString("%1").arg(functionOrdering[funcID]).toStdString());
+        field->SetValue("OFFSET", "offset.quant");
     }
 
     QString description = QString::fromStdString(m_module->general_field().description());
