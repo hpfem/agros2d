@@ -7,6 +7,12 @@
 #include "parser.h"
 #include "parser_instance.h"
 
+//********************************************************************************************************
+// In this file are all methods of Parser and ParserInstance, that handle creation of lexical analyser and dictionary of symbols
+// defining symbols and creation of lexical analyser is done in static methods of Parser
+// creation of dictionary is done in ParserInstance
+// This is probably not ideal state
+//********************************************************************************************************
 
 void ParserInstance::addBasicWeakformTokens()
 {
@@ -242,11 +248,12 @@ void ParserInstance::addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool 
         }
     }
 
-    foreach (XMLModule::function function, m_parserModuleInfo.volume.function())
+    foreach (XMLModule::function function, pmiField.volume.function())
     {
         // in weak forms, functions replaced by ext functions
-        m_dict[QString::fromStdString(function.shortname())] = QString("ext[%1 + offset.quant]->val[i]").
-                arg(m_parserModuleInfo.functionOrdering[QString::fromStdString(function.id())]);
+        m_dict[QString::fromStdString(function.shortname())] = QString("ext[%1 + %2]->val[i]").
+                arg(pmiField.functionOrdering[QString::fromStdString(function.id())]).
+                arg(offsetQuant);
     }
 }
 
@@ -491,7 +498,6 @@ void Parser::addPreviousSolutionsLATokens(QSharedPointer<LexicalAnalyser> lex, C
 
 void Parser::addSourceCouplingLATokens(QSharedPointer<LexicalAnalyser> lex, CoordinateType coordinateType, int numSourceSolutions)
 {
-    qDebug() << "adding sources " << numSourceSolutions;
     for (int i = 1; i < numSourceSolutions + 1; i++)
     {
         lex->addVariable(QString("source%1").arg(i));
@@ -527,6 +533,11 @@ void Parser::addQuantitiesLATokens(QSharedPointer<LexicalAnalyser> lex, ParserMo
             lex->addVariable(QString::fromStdString(quantity.shortname().get()));
             lex->addVariable(QString::fromStdString("d" + quantity.shortname().get()));
         }
+    }
+
+    foreach (XMLModule::function function, parserModuleInfo.volume.function())
+    {
+        lex->addVariable(QString::fromStdString(function.shortname()));
     }
 
     foreach (XMLModule::quantity quantity, parserModuleInfo.surface.quantity())
