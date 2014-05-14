@@ -198,6 +198,7 @@
     <module:essential_form id="velocity_1" i="1" axi="fl_vx" planar="fl_vx"/>
     <module:essential_form id="velocity_2" i="2" axi="fl_vy" planar="fl_vy"/>
     <module:essential_form id="zero_velocity_1" i="1" axi="0" planar="0"/>
+    <module:essential_form id="zero_velocity_2" i="2" axi="0" planar="0"/>
     <module:essential_form id="pressure_3" i="3" axi="fl_p" planar="fl_p"/>
 
     <module:weakforms_surface>
@@ -250,9 +251,9 @@
         </module:boundary>
 
         <module:boundary equation="v_r = 0,\,\,\, \frac{\partial v_z}{\partial n} = 0" id="flow_symmetry" name="Axial symmetry">
-        <module:linearity_option type="linear">
-          <module:essential_form id="zero_velocity_1"/>
-        </module:linearity_option>
+          <module:linearity_option type="linear">
+            <module:essential_form id="zero_velocity_1"/>
+          </module:linearity_option>
 
           <module:linearity_option type="picard">
             <module:essential_form id="zero_velocity_1"/>
@@ -262,6 +263,21 @@
             <module:essential_form id="zero_velocity_1"/>
           </module:linearity_option>
         </module:boundary>
+
+        <module:boundary equation="v_z = 0,\,\,\, \frac{\partial v_r}{\partial n} = 0" id="flow_surface" name="Surface">
+          <module:linearity_option type="linear">
+            <module:essential_form id="zero_velocity_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:essential_form id="zero_velocity_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="zero_velocity_2"/>
+          </module:linearity_option>
+        </module:boundary>
+
       </module:weakform_surface>
 
       <module:weakform_surface analysistype="transient" default="flow_velocity">
@@ -324,7 +340,22 @@
           <module:linearity_option type="newton">
             <module:essential_form id="zero_velocity_1"/>
           </module:linearity_option>
+        </module:boundary>        
+
+        <module:boundary equation="v_z = 0,\,\,\, \frac{\partial v_r}{\partial n} = 0" id="flow_surface" name="Surface">
+          <module:linearity_option type="linear">
+            <module:essential_form id="zero_velocity_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:essential_form id="zero_velocity_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="zero_velocity_2"/>
+          </module:linearity_option>
         </module:boundary>
+
       </module:weakform_surface>
     </module:weakforms_surface>
   </module:surface>

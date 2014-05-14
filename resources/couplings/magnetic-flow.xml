@@ -13,19 +13,17 @@
     </module:general_coupling>
 
     <module:constants>
-        <module:constant id="MU0" value="1.2566371e-06" />
     </module:constants>
-
 
     <module:volume>
 
        <module:vector_form id="harmonic_weak_1" i="1" j="1"
-           planar="(0.5 * (((- (ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) + ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - (2 * PI * f * ma_gamma * (value2+value4))) * (- dx1)) + ((- (ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) + ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) + (2 * PI * f * ma_gamma * (value1+value3))) * ( - dx2)))) * vval"
-           axi="(0.5 * ((((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12)))) * (dr1 + tern(r > SMALL, (value1+value3/(2*PI*(r+1e-12)))/r, dr1)) - (((ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12)))) * (dr2 + tern(r > 0, (value2+value4/(2*PI*(r+1e-12)))/r, dr2)))))) * vval"
+           planar="(0.5 * (((- (ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) + ma_gamma * ((ma_vx - ma_va * y) * source1dx + (ma_vy + ma_va * x) * source1dy) - (2 * PI * f * ma_gamma * (source2+source4))) * (- source1dx)) + ((- (ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) + ma_gamma * ((ma_vx - ma_va * y) * source2dx + (ma_vy + ma_va * x) * source2dy) + (2 * PI * f * ma_gamma * (source1+source3))) * ( - source2dx)))) * vval"
+           axi="(0.5 * ((((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * source1dz) + 2 * PI * f * ma_gamma * (source2+source4/(2*PI*(r+1e-12)))) * (source1dr + tern(r > SMALL, (source1+source3/(2*PI*(r+1e-12)))/r, source1dr)) - (((ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) - ma_gamma * (ma_vy * source2dz) - 2 * PI * f * ma_gamma * (source1+source3/(2*PI*(r+1e-12)))) * (source2dr + tern(r > 0, (source2+source4/(2*PI*(r+1e-12)))/r, source2dr)))))) * vval"
        />
        <module:vector_form id="harmonic_weak_2" i="2" j="2"
-           planar="(-0.5 * (((- (ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) + ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - (2 * PI * f * ma_gamma * (value2+value4))) * (dy1)) + ((- (ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) + ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) + (2 * PI * f * ma_gamma * (value1+value3))) * (dy2)))) * vval"
-           axi="(- 0.5 * (((((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12)))) * (- dz1)) - (((ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12)))) * (- dz2))))) * vval"
+           planar="(-0.5 * (((- (ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) + ma_gamma * ((ma_vx - ma_va * y) * source1dx + (ma_vy + ma_va * x) * source1dy) - (2 * PI * f * ma_gamma * (source2+source4))) * (source1dy)) + ((- (ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) + ma_gamma * ((ma_vx - ma_va * y) * source2dx + (ma_vy + ma_va * x) * source2dy) + (2 * PI * f * ma_gamma * (source1+source3))) * (source2dy)))) * vval"
+           axi="(- 0.5 * (((((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * source1dz) + 2 * PI * f * ma_gamma * (source2+source4/(2*PI*(r+1e-12)))) * (- source1dz)) - (((ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) - ma_gamma * (ma_vy * source2dz) - 2 * PI * f * ma_gamma * (source1+source3/(2*PI*(r+1e-12)))) * (- source2dz))))) * vval"
        />
 
         <module:weakforms_volume>
