@@ -22,6 +22,7 @@ protected:
     void addPreviousSolErroCalculation();
     void addPreviousSolLinearizeDependence();
     void addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool isSource);
+    void addConstants(ParserModuleInfo pmiField);
     void addVolumeVariablesErrorCalculation();
     void addSurfaceVariables();
     void addWeakformCheckTokens();

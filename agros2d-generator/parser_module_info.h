@@ -34,5 +34,4 @@ struct ParserModuleInfo
 
 bool operator<(const ParserModuleInfo &sid1, const ParserModuleInfo &sid2);
 
-
 #endif // PARSER_MODULE_INFO_H

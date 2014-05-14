@@ -39,8 +39,6 @@ void ParserInstance::addBasicWeakformTokens()
     // constants
     m_dict["PI"] = "M_PI";
     m_dict["f"] = "this->m_markerTarget->fieldInfo()->frequency()";
-    foreach (XMLModule::constant cnst, m_parserModuleInfo.constants.constant())
-        m_dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
     // area of a label
     // assumes, that this->getAreas has allways only one component (it is true at the moment, since in Agros we create one form for each label)
@@ -85,6 +83,14 @@ void ParserInstance::addBasicWeakformTokens()
         m_dict["vdz"] = "v->dy[i]";
         m_dict["updr"] = "u_ext[this->j]->dx[i]";
         m_dict["updz"] = "u_ext[this->j]->dy[i]";
+    }
+}
+
+void ParserInstance::addConstants(ParserModuleInfo pmiField)
+{
+    foreach (XMLModule::constant cnst, pmiField.constants.constant())
+    {
+        m_dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
     }
 }
 

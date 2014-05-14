@@ -40,6 +40,7 @@ ParserInstanceWeakForm::ParserInstanceWeakForm(ParserModuleInfo pmi) : ParserIns
     m_lexicalAnalyser = Parser::weakFormLexicalAnalyser(m_parserModuleInfo);
 
     addBasicWeakformTokens();
+    addConstants(m_parserModuleInfo);
     addPreviousSolWeakform(pmi.numSolutions);
     addVolumeVariablesWeakform(pmi, false);
     addSurfaceVariables();
@@ -50,6 +51,7 @@ ParserInstanceErrorExpression::ParserInstanceErrorExpression(ParserModuleInfo pm
     m_lexicalAnalyser = Parser::weakFormLexicalAnalyser(m_parserModuleInfo);
 
     addBasicWeakformTokens();
+    addConstants(m_parserModuleInfo);
     addPreviousSolErroCalculation();
     if(withVariables)
     {
@@ -63,6 +65,7 @@ ParserInstanceLinearizeDependence::ParserInstanceLinearizeDependence(ParserModul
     m_lexicalAnalyser = Parser::weakFormLexicalAnalyser(m_parserModuleInfo);
 
     addBasicWeakformTokens();
+    addConstants(m_parserModuleInfo);
     addPreviousSolLinearizeDependence();
 }
 
@@ -78,6 +81,8 @@ ParserInstancePostprocessorExpression::ParserInstancePostprocessorExpression(Par
     m_lexicalAnalyser = Parser::postprocessorLexicalAnalyser(m_parserModuleInfo);
 
     addPostprocessorBasic();
+    addConstants(m_parserModuleInfo);
+
     if(withVariables)
     {
         addPostprocessorVariables();
@@ -89,6 +94,8 @@ ParserInstanceFilterExpression::ParserInstanceFilterExpression(ParserModuleInfo 
     m_lexicalAnalyser = Parser::postprocessorLexicalAnalyser(m_parserModuleInfo);
 
     addPostprocessorBasic();
+    addConstants(m_parserModuleInfo);
+
     if(withVariables)
     {
         addFilterVariables();
@@ -101,6 +108,8 @@ ParserInstanceCouplingWeakForm::ParserInstanceCouplingWeakForm(ParserModuleInfo 
     m_lexicalAnalyser = Parser::weakFormCouplingLexicalAnalyser(m_parserModuleInfoSource, m_parserModuleInfo);
 
     addBasicWeakformTokens();
+    addConstants(m_parserModuleInfo);
+    addConstants(m_parserModuleInfoSource);
     addCouplingWeakformTokens(pmiSource.numSolutions);
     addPreviousSolWeakform(pmi.numSolutions + pmiSource.numSolutions);
     addVolumeVariablesWeakform(pmi, false);
