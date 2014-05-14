@@ -766,9 +766,12 @@ void PythonEditorDialog::doRunPython()
         QSettings settings;
         bool useProfiler = settings.value("PythonEditorWidget/UseProfiler", false).toBool();
 
+        // set profiler
+        pythonEngine->useProfiler(useProfiler);
         successfulRun = pythonEngine->runScript(txtEditor->toPlainText(),
-                                                QFileInfo(scriptEditorWidget()->fileName()).absoluteFilePath(),
-                                                useProfiler);
+                                                QFileInfo(scriptEditorWidget()->fileName()).absoluteFilePath());
+        // reset profiler
+        pythonEngine->useProfiler(!useProfiler);
 
         // set profiled
         txtEditor->setProfiled(useProfiler);

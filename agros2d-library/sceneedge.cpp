@@ -678,8 +678,8 @@ void SceneEdgeDialog::swap()
 
 void SceneEdgeDialog::angleChanged()
 {
-    txtSegments->setEnabled(txtAngle->value().number() > 0.0);
-    chkIsCurvilinear->setEnabled(txtAngle->value().number() > 0.0);
+    txtSegments->setEnabled(txtAngle->value().isEvaluated() && txtAngle->value().number() > 0.0);
+    chkIsCurvilinear->setEnabled(txtAngle->value().isEvaluated() && txtAngle->value().number() > 0.0);
 }
 
 SceneEdgeSelectDialog::SceneEdgeSelectDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent)

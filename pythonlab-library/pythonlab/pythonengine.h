@@ -97,7 +97,8 @@ signals:
     void startedScript();
 
 public:
-    PythonEngine() : errorType(NULL), errorValue(NULL), errorTraceback(NULL) {}
+    PythonEngine() : errorType(NULL), errorValue(NULL), errorTraceback(NULL), m_useProfiler(false),
+        m_useGlobalDict(true), m_dictLocal(NULL), m_dictGlobal(NULL) {}
     ~PythonEngine();
 
     void init();
@@ -108,7 +109,7 @@ public:
     void pythonShowHtmlCommand(const QString &fileName);
     void pythonShowImageCommand(const QString &fileName, int width = 0, int height = 0);
 
-    bool runScript(const QString &script, const QString &fileName = "", bool useProfiler = false);
+    bool runScript(const QString &script, const QString &fileName = "");
     bool runExpression(const QString &expression, double *value = NULL, const QString &command = QString());
     bool runExpressionConsole(const QString &expression);
     ErrorResult parseError();
@@ -121,14 +122,24 @@ public:
     QStringList codePyFlakes(const QString& fileName);
     QList<PythonVariable> variableList();
 
-    inline PyObject *dict() const { return m_dict; }
+    inline void useProfiler(bool use = true) { m_useProfiler = use; }
+    inline bool isProfiler() const { return m_useProfiler; }
+
+    void useLocalDict();
+    void useGlobalDict();
+
+    inline PyObject *dict() { return m_useGlobalDict ? m_dictGlobal : m_dictLocal; }
 
 public slots:
     virtual void abortScript();
 
 protected:
-    PyObject *m_dict;
+    PyObject *m_dictLocal;
+    PyObject *m_dictGlobal;
+
     bool m_isScriptRunning;
+    bool m_useProfiler;
+    bool m_useGlobalDict;
 
     inline void addFunctions(const QString& code) { m_functions += "\n\n" + code; }
     virtual void addCustomExtensions();
