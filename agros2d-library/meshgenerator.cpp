@@ -125,6 +125,8 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     Node* en;
     for (int edge_i = 0; edge_i < edges_count; edge_i++)
     {
+        if(edgeList[edge_i].marker == -1)
+            continue;
         int v1 = edgeList[edge_i].node[0];
         int v2 = edgeList[edge_i].node[1];
 
