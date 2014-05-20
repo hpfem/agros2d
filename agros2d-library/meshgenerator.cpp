@@ -104,11 +104,17 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     global_mesh->ntopvert = vertices_count;
 
     // Elements //
-    int element_count = elementList.count();
+    int element_count = 0;
+    for (int element_i = 0; element_i < elementList.count(); element_i++)
+        if(elementList[element_i].isUsed)
+            element_count++;
+
     global_mesh->nbase = global_mesh->nactive = global_mesh->ninitial = element_count;
 
-    for (int element_i = 0; element_i < element_count; element_i++)
+    for (int element_i = 0; element_i < elementList.count(); element_i++)
     {
+        if(!elementList[element_i].isUsed)
+            continue;
         // Trim whitespaces.
         int internal_marker =
                 global_mesh->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
@@ -125,6 +131,8 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     Node* en;
     for (int edge_i = 0; edge_i < edges_count; edge_i++)
     {
+        if(edgeList[edge_i].marker == -1)
+            continue;
         int v1 = edgeList[edge_i].node[0];
         int v2 = edgeList[edge_i].node[1];
 
@@ -302,7 +310,8 @@ void MeshGenerator::writeToHermes()
         {
             for (int element_i = 0; element_i < elementList.count(); element_i++)
             {
-                m_meshes[subdomains_i]->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
+                if(elementList[element_i].isUsed)
+                    m_meshes[subdomains_i]->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
             }
 
             for (int edge_i = 0; edge_i < edgeList.count(); edge_i++)
