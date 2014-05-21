@@ -90,6 +90,7 @@ private slots:
 
     void doClose();
     void doVideo();
+    void doOpenFolder();
 };
 
 // *********************************************************************************

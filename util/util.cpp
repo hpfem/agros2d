@@ -224,33 +224,34 @@ void setLocale(const QString &locale)
 
 QIcon icon(const QString &name)
 {
-    static QMap<QString, QIcon> iconCache;
+    // memory leak but works with Qt5.2 and Ubuntu 14.04
+    static QMap<QString, QIcon> *iconCache = new QMap<QString, QIcon>();
 
-    if (iconCache.contains(name))
-        return iconCache[name];
+    if (iconCache->contains(name))
+        return iconCache->value(name);
 
 #ifdef Q_WS_WIN
     if (QFile::exists(":/" + name + "-windows.png"))
-        iconCache.insert(name, QIcon(":/" + name + "-windows.png"));
+        iconCache->insert(name, QIcon(":/" + name + "-windows.png"));
 #endif
 
 #ifdef Q_WS_X11
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
-    iconCache.insert(name, QIcon::fromTheme(name, QIcon(":/" + name + ".png")));
+    iconCache->insert(name, QIcon::fromTheme(name, QIcon(":/" + name + ".png")));
 #endif
 #endif
 
-    if (!iconCache.contains(name))
+    if (!iconCache->contains(name))
     {
         if (QFile::exists(":/" + name + ".svg"))
-            iconCache.insert(name, QIcon(":/" + name + ".svg"));
+            iconCache->insert(name, QIcon(":/" + name + ".svg"));
         else if (QFile::exists(":/" + name + ".png"))
-            iconCache.insert(name, QIcon(":/" + name + ".png"));
+            iconCache->insert(name, QIcon(":/" + name + ".png"));
         else
-            iconCache.insert(name, QIcon());
+            iconCache->insert(name, QIcon());
     }
 
-    return iconCache[name];
+    return iconCache->value(name);
 }
 
 QString compatibleFilename(const QString &fileName)

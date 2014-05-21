@@ -24,6 +24,7 @@
 #include "util/global.h"
 
 #include "scene.h"
+#include "scenenode.h"
 // #include "moduledialog.h"
 #include "pythonlab/pythonengine_agros.h"
 
@@ -1035,7 +1036,7 @@ void CouplingsWidget::createContent()
         combo->setVisible(false);
         combo->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
         combo->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-//        combo->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+        //        combo->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
 
         connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
 
@@ -1459,30 +1460,16 @@ void ProblemWidget::startupScriptChanged()
     lblStartupScriptError->clear();
     lblStartupScriptError->setVisible(false);
 
+    QString error = Agros2D::scene()->checkStartupScript(txtStartupScript->toPlainText());
+
     // run and check startup script
-    if (!txtStartupScript->toPlainText().isEmpty())
+    if (error.isEmpty())
     {
-        currentPythonEngineAgros()->blockSignals(true);
-        bool successfulRun = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
-        currentPythonEngineAgros()->blockSignals(false);
-
-        if (successfulRun)
-        {
-            Agros2D::problem()->setting()->setValue(ProblemSetting::Problem_StartupScript, txtStartupScript->toPlainText());
-
-            // invalidate geometry
-            Agros2D::scene()->invalidate();
-
-            changedWithClear();
-        }
-        else
-        {
-            ErrorResult result = currentPythonEngineAgros()->parseError();
-            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(result.error()));
-            lblStartupScriptError->setVisible(true);
-
-            // original script
-            currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
-        }
+        changedWithClear();
+    }
+    else
+    {
+        lblStartupScriptError->setText(QObject::tr("Error: %1").arg(error));
+        lblStartupScriptError->setVisible(true);
     }
 }

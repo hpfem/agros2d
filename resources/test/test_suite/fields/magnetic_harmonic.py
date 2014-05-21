@@ -5,10 +5,10 @@ from test_suite.scenario import Agros2DTestResult
 class TestMagneticHarmonicPlanar(Agros2DTestCase):
     def setUp(self):                                                                                                                         
         # model
-        problem = agros2d.problem(clear = True)
-        problem.coordinate_type = "planar"
-        problem.mesh_type = "triangle"        
-        problem.frequency = 50
+        self.problem = agros2d.problem(clear = True)
+        self.problem.coordinate_type = "planar"
+        self.problem.mesh_type = "triangle"        
+        self.problem.frequency = 50
         
         # disable view
         agros2d.view.mesh.disable()
@@ -24,43 +24,41 @@ class TestMagneticHarmonicPlanar(Agros2DTestCase):
         self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
         
         self.magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
-        self.magnetic.add_material("Cond 1", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 2e7, "magnetic_conductivity" : 5.7e7}) 
         self.magnetic.add_material("Cond 2", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 3e7, "magnetic_conductivity" : 5.7e7}) 
         self.magnetic.add_material("Magnet", {"magnetic_permeability" : 1.1, "magnetic_remanence" : 0.1, "magnetic_remanence_angle" : 20})    
         
         # geometry
-        geometry = agros2d.geometry
+        self.geometry = agros2d.geometry
         
         # edges
-        geometry.add_edge(-0.075, 0.06, 0.075, 0.06, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.075, 0.06, 0.075, -0.06, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(0.075, -0.06, -0.075, -0.06, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(-0.075, -0.06, -0.075, 0.06, boundaries = {"magnetic" : "A = 0"})
-        geometry.add_edge(-0.015, -0.01, -0.015, 0.01)
-        geometry.add_edge(-0.015, 0.01, -0.005, 0.01)
-        geometry.add_edge(-0.015, -0.01, -0.005, -0.01)
-        geometry.add_edge(-0.005, -0.01, -0.005, 0.01)
-        geometry.add_edge(0.005, 0.02, 0.005, 0)
-        geometry.add_edge(0.005, 0, 0.015, 0)
-        geometry.add_edge(0.015, 0, 0.015, 0.02)
-        geometry.add_edge(0.015, 0.02, 0.005, 0.02)
-        geometry.add_edge(0.01, -0.01, 0.03, -0.01)
-        geometry.add_edge(0.03, -0.03, 0.01, -0.03)
-        geometry.add_edge(0.01, -0.01, 0.01, -0.03)
-        geometry.add_edge(0.03, -0.01, 0.03, -0.03)
+        self.geometry.add_edge(-0.075, 0.06, 0.075, 0.06, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.075, 0.06, 0.075, -0.06, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(0.075, -0.06, -0.075, -0.06, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(-0.075, -0.06, -0.075, 0.06, boundaries = {"magnetic" : "A = 0"})
+        self.geometry.add_edge(-0.015, -0.01, -0.015, 0.01)
+        self.geometry.add_edge(-0.015, 0.01, -0.005, 0.01)
+        self.geometry.add_edge(-0.015, -0.01, -0.005, -0.01)
+        self.geometry.add_edge(-0.005, -0.01, -0.005, 0.01)
+        self.geometry.add_edge(0.005, 0.02, 0.005, 0)
+        self.geometry.add_edge(0.005, 0, 0.015, 0)
+        self.geometry.add_edge(0.015, 0, 0.015, 0.02)
+        self.geometry.add_edge(0.015, 0.02, 0.005, 0.02)
+        self.geometry.add_edge(0.01, -0.01, 0.03, -0.01)
+        self.geometry.add_edge(0.03, -0.03, 0.01, -0.03)
+        self.geometry.add_edge(0.01, -0.01, 0.01, -0.03)
+        self.geometry.add_edge(0.03, -0.01, 0.03, -0.03)
         
         # labels
-        geometry.add_label(0.035349, 0.036683, materials = {"magnetic" : "Air"}, area=0)
-        geometry.add_label(0.00778124, 0.00444642, materials = {"magnetic" : "Cond 1"}, area=1e-05)
-        geometry.add_label(-0.0111161, -0.00311249, materials = {"magnetic" : "Cond 2"}, area=1e-05)
-        geometry.add_label(0.016868, -0.0186625, materials = {"magnetic" : "Magnet"}, area=0)
+        self.geometry.add_label(0.035349, 0.036683, materials = {"magnetic" : "Air"}, area=0)
+        self.geometry.add_label(-0.0111161, -0.00311249, materials = {"magnetic" : "Cond 2"}, area=1e-05)
+        self.geometry.add_label(0.016868, -0.0186625, materials = {"magnetic" : "Magnet"}, area=0)
         
         agros2d.view.zoom_best_fit()
-        
-        # solve problem
-        problem.solve()        
+            
                      
-    def test_values(self):                                                                                                                        
+    # in this test, both Cond1 and Cond2 have conductivity 5.7e7
+    # results from comsol test test_magnetic_harmonic_planar
+    def general_nonzero_cond_test_values(self):                                                                                                                        
         # point value
         point = self.magnetic.local_values(0.012448, 0.016473)
         self.value_test("Magnetic potential", point["A"], 0.001087)
@@ -86,7 +84,7 @@ class TestMagneticHarmonicPlanar(Agros2DTestCase):
         self.value_test("Lorentz force - y", point["Fly"], -89097)
         
         # volume integral
-        volume = self.magnetic.volume_integrals([1])
+        volume = self.magnetic.volume_integrals([3])
         self.value_test("Current - external - real", volume["Ier"], 4000.0)
         self.value_test("Current - external - imag", volume["Iei"], 0.0)
         self.value_test("Current - induced transform - real", volume["Iitr"], -4104.701323)
@@ -97,7 +95,57 @@ class TestMagneticHarmonicPlanar(Agros2DTestCase):
         self.value_test("Losses", volume["Pj"], 90.542962)
         self.value_test("Lorentz force - x", volume["Flx"], -11.228229)
         self.value_test("Lorentz force - y", volume["Fly"], -4.995809)   
-             
+
+    # in this test, Cond1 has conductivity 0
+    # results from comsol test test_magnetic_harmonic_planar_zero_cond
+    def general_zero_cond_test_values(self):                                                                                                                        
+        point = self.magnetic.local_values(-0.0078561, 0.00453680)
+        self.value_test("Current density - total - real", point["Jr"], -2.261e6)
+        self.value_test("Current density - total - imag", point["Ji"], -2.02266e7)
+        self.value_test("Current density - external - real", point["Jer"], 3e7)
+        self.value_test("Current density - external - imag", point["Jei"], 0)
+        
+        point2 = self.magnetic.local_values(0.0073347240686417, 0.0036161467432976)
+        self.value_test("Current density - total - real", point2["Jr"], 2e7)
+        self.value_test("Current density - total - imag", point2["Ji"], 0)
+        self.value_test("Current density - external - real", point2["Jer"], 2e7)
+        self.value_test("Current density - external - imag", point2["Jei"], 0)
+        
+        volume = self.magnetic.volume_integrals([3])
+        self.value_test("Current - real", volume["Ir"], 4000)
+        self.value_test("Current - imag", volume["Ii"], 0)
+        self.value_test("Current - external - real", volume["Ier"], 4000)
+        self.value_test("Current - external - imag", volume["Iei"], 0)
+
+        volume2 = self.magnetic.volume_integrals([1])
+        self.value_test("Current - real", volume2["Ir"], -55.75)
+        self.value_test("Current - imag", volume2["Ii"], -3601)
+        self.value_test("Current - external - real", volume2["Ier"], 6000)
+        self.value_test("Current - external - imag", volume2["Iei"], 0)
+
+        
+    # nonzero conductivity
+    def test_values_nonzero_cond(self):
+        self.magnetic.add_material("Cond 1", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 2e7, "magnetic_conductivity" : 5.7e7}) 
+        self.geometry.add_label(0.00778124, 0.00444642, materials = {"magnetic" : "Cond 1"}, area=1e-05)
+        self.problem.solve()
+        self.general_nonzero_cond_test_values()
+                          
+    # zero conductivity and external current density given                                                        
+    def test_values_zero_cond_J_ext_given(self):
+        self.magnetic.add_material("Cond 1", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : 2e7, "magnetic_conductivity" : 0}) 
+        self.geometry.add_label(0.00778124, 0.00444642, materials = {"magnetic" : "Cond 1"}, area=1e-05)
+        self.problem.solve()
+        self.general_zero_cond_test_values()
+
+    # zero conductivity and total current given 
+    def test_values_zero_cond_I_given(self):
+        self.magnetic.add_material("Cond 1", {"magnetic_permeability" : 1, "magnetic_total_current_real" : 2e7 * 2e-4, "magnetic_total_current_prescribed" : 1, "magnetic_conductivity" : 0}) 
+        self.geometry.add_label(0.00778124, 0.00444642, materials = {"magnetic" : "Cond 1"}, area=1e-05)
+        self.problem.solve()
+        self.general_zero_cond_test_values()
+
+                                                                              
 class TestMagneticHarmonicAxisymmetric(Agros2DTestCase):
     def setUp(self):                                                                                                                         
         # model

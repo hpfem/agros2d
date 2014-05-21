@@ -312,7 +312,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     problemId.linearityType = materialTarget->fieldInfo()->linearityType();
     problemId.couplingType = couplingInfo->couplingType();
 
-    qDebug() << "register form coupling " << materialSource->fieldId() << ", " << materialTarget->fieldId();
+    // qDebug() << "register form coupling " << materialSource->fieldId() << ", " << materialTarget->fieldId();
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, materialSource, materialTarget);
@@ -708,8 +708,8 @@ void WeakFormAgros<Scalar>::updateExtField()
     this->set_u_ext_fn(externalUSlns);
     this->set_ext(externalSlns);
 
-    outputPositionInfos();
-    qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
+    // outputPositionInfos();
+    // qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
 }
 
 template <typename SectionWithTemplates>

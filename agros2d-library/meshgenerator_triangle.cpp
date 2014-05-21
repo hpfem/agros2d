@@ -419,30 +419,6 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
     }
     int elementCountLinear = elementList.count();
 
-    // check for multiple label markers
-    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
-    {
-        // if (Agros2D::scene()->materials.indexOf(Agros2D::scene()->labels[i]->material) > 0)
-        {
-            //            if (!labelMarkersCheck.contains(i + 1))
-            //            {
-            //                emit message(tr("Label marker '%1' is not present in mesh file (multiple label markers in one area).").
-            //                             arg(i), true, 0);
-            //                return false;
-            //            }
-        }
-    }
-    labelMarkersCheck.clear();
-
-    // TODO: move
-    /*
-        if (elementList.count() < 1)
-        {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("Invalid number of label markers"));
-            return false;
-        }
-        */
-
     // triangle neigh
     QString lineNeigh = inNeigh.readLine().trimmed();
     int numberOfNeigh = lineNeigh.split(whiteChar).at(0).toInt();

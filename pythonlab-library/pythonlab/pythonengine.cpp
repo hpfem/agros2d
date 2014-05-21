@@ -253,8 +253,8 @@ void PythonEngineProfiler::finishProfiler()
 PythonEngine::~PythonEngine()
 {
     // finalize and garbage python
-    Py_DECREF(m_dict);
-    Py_DECREF(m_dict);
+    Py_DECREF(dict());
+    Py_DECREF(dict());
 
     if (Py_IsInitialized())
         Py_Finalize();
@@ -286,8 +286,8 @@ void PythonEngine::init()
 
     PyObject *main = PyImport_ImportModule("__main__");
     Py_INCREF(main);
-    m_dict = PyModule_GetDict(main);
-    Py_INCREF(m_dict);
+    m_dictGlobal = PyModule_GetDict(main);
+    Py_INCREF(m_dictGlobal);
 
     // init engine extensions
     PyObject *m = PyModule_Create(&pythonEngineDef);
@@ -295,9 +295,35 @@ void PythonEngine::init()
 
     addCustomExtensions();
 
+    // custom modules
+    PyObject *import = PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toLatin1().data(), Py_file_input, dict(), dict());
+    Py_XDECREF(import);
+
     // functions.py
-    PyObject *func = PyRun_String(m_functions.toLatin1().data(), Py_file_input, m_dict, m_dict);
+    PyObject *func = PyRun_String(m_functions.toLatin1().data(), Py_file_input, dict(), dict());
     Py_XDECREF(func);
+}
+
+void PythonEngine::useLocalDict()
+{
+    m_useGlobalDict = false;
+
+    m_dictLocal = PyDict_New();
+    Py_INCREF(m_dictLocal);
+
+    // init engine extensions
+    Py_InitModule("pythonlab", pythonEngineFuntions);
+}
+
+void PythonEngine::useGlobalDict()
+{
+    m_useGlobalDict = true;
+
+    if (m_dictLocal)
+    {
+        Py_XDECREF(m_dictLocal);
+        m_dictLocal = NULL;
+    }
 }
 
 void PythonEngine::abortScript()
@@ -355,7 +381,7 @@ void PythonEngine::deleteUserModules()
             QString exp = QString("del %1; import sys; del sys.modules[\"%1\"]").arg(variable.name);
 #pragma omp critical(del)
             {
-                PyObject *del = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+                PyObject *del = PyRun_String(exp.toLatin1().data(), Py_single_input, dict(), dict());
                 Py_XDECREF(del);
             }
         }
@@ -364,7 +390,7 @@ void PythonEngine::deleteUserModules()
     PyErr_Clear();
 }
 
-bool PythonEngine::runScript(const QString &script, const QString &fileName, bool useProfiler)
+bool PythonEngine::runScript(const QString &script, const QString &fileName)
 {
     m_isScriptRunning = true;
 
@@ -387,7 +413,7 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
         QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
 #pragma omp critical(import)
         {
-            PyObject *import = PyRun_String(str.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            PyObject *import = PyRun_String(str.toLatin1().data(), Py_single_input, dict(), dict());
             Py_XDECREF(import);
         }
     }
@@ -395,13 +421,15 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
     // compile
     PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
     // run
-    if (useProfiler)
+    if (m_useProfiler)
     {
         setProfilerFileName(fileName);
         startProfiler();
     }
-    if (code) output = PyEval_EvalCode(code, m_dict, m_dict);
-    if (useProfiler)
+
+    if (code) output = PyEval_EvalCode((PyCodeObject *) code, dict(), dict());
+    
+    if (m_useProfiler)
         finishProfiler();
 
     if (output)
@@ -450,13 +478,13 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
 
 #pragma omp critical(expression)
         {
-            output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            output = PyRun_String(exp.toLatin1().data(), Py_single_input, dict(), dict());
         }
 
         if (output)
         {
             // parse result
-            PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
+            PyObject *result = PyDict_GetItemString(dict(), "result_pythonlab");
 
             if (result)
             {
@@ -488,7 +516,7 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
     {
 #pragma omp critical(expression)
         {
-            output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            output = PyRun_String(expression.toLatin1().data(), Py_single_input, dict(), dict());
         }
         if (output)
             successfulRun = true;
@@ -554,12 +582,12 @@ QStringList PythonEngine::codeCompletion(const QString& command)
 
 #pragma omp critical(completion)
     {
-        PyObject *output = PyRun_String(command.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        PyObject *output = PyRun_String(command.toLatin1().data(), Py_single_input, dict(), dict());
 
         // parse result
         if (output)
         {
-            PyObject *result = PyDict_GetItemString(m_dict, "result_jedi_pythonlab");
+            PyObject *result = PyDict_GetItemString(dict(), "result_jedi_pythonlab");
             if (result)
             {
                 Py_INCREF(result);
@@ -584,7 +612,7 @@ QStringList PythonEngine::codeCompletion(const QString& command)
                 Py_DECREF(result);
             }
 
-            PyObject *del = PyRun_String("del result_jedi_pythonlab", Py_single_input, m_dict, m_dict);
+            PyObject *del = PyRun_String("del result_jedi_pythonlab", Py_single_input, dict(), dict());
             Py_XDECREF(del);
         }
         else
@@ -608,9 +636,9 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 
 #pragma omp critical(flakes)
         {
-            PyObject *run = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            PyObject *run = PyRun_String(exp.toLatin1().data(), Py_single_input, dict(), dict());
             // parse result
-            PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
+            PyObject *result = PyDict_GetItemString(dict(), "result_pyflakes_pythonlab");
             if (result)
             {
                 Py_INCREF(result);
@@ -630,7 +658,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
             }
             Py_XDECREF(run);
 
-            PyObject *del = PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
+            PyObject *del = PyRun_String("del result_pyflakes_pythonlab", Py_single_input, dict(), dict());
             Py_XDECREF(del);
         }
     }
@@ -751,11 +779,11 @@ QList<PythonVariable> PythonEngine::variableList()
 
     QList<PythonVariable> list;
 
-    PyObject *keys = PyDict_Keys(m_dict);
+    PyObject *keys = PyDict_Keys(dict());
     for (int i = 0; i < PyList_Size(keys); ++i)
     {
         PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(m_dict, key);
+        PyObject *value = PyDict_GetItem(dict(), key);
 
         // variable
         PythonVariable var;

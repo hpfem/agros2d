@@ -71,7 +71,7 @@ void PythonEngineAgros::runPythonHeader()
     {
 #pragma omp critical(flakes)
         {
-            PyObject *func = PyRun_String(script.toLatin1().data(), Py_file_input, m_dict, m_dict);
+            PyObject *func = PyRun_String(script.toLatin1().data(), Py_file_input, dict(), dict());
             Py_XDECREF(func);
         }
     }
@@ -119,7 +119,7 @@ void PythonEngineAgros::materialValues(const QString &function, double from, dou
     runExpression(QString("agros2d_material_values = agros2d_material_eval(%1)").arg(keysVector));
 
     // extract values
-    PyObject *result = PyDict_GetItemString(m_dict, "agros2d_material_values");
+    PyObject *result = PyDict_GetItemString(dict(), "agros2d_material_values");
     if (result)
     {
         Py_INCREF(result);

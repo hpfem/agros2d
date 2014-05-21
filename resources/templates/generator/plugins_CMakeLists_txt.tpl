@@ -154,12 +154,10 @@ ENDIF(AGROS_PLUGINS_DEBUG)
 IF(MSVC)
   # On MSVC, we will always use Debug, otherwise the plugins do not work.
   SET(CMAKE_BUILD_TYPE Debug)
-  SET(MSVC_DEFINES "/DWIN32 /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS /MP")
-  SET(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /Od /Ob2 /MDd /Zi ${MSVC_DEFINES}")
-  SET(CMAKE_CXX_FLAGS_RELEASE_INIT        "/DNDEBUG /O2 /Ob2 /MD ${MSVC_DEFINES}")
   SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
   SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
   SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
+  # The rest had to be moved to modules / couplings because of a strange linking problems caused by inline functions expansion (/Ob2).
 ENDIF(MSVC)
 
 # Include OUR header files location
@@ -170,6 +168,17 @@ IF(WITH_UMFPACK)
   FIND_PACKAGE(UMFPACK REQUIRED)
   INCLUDE_DIRECTORIES(${UMFPACK_INCLUDE_DIRS})
 ENDIF()
+
+if(WITH_TRILINOS)
+    find_package(TRILINOS REQUIRED)
+    include_directories(${TRILINOS_INCLUDE_DIR})
+  endif(WITH_TRILINOS)
+
+if(WITH_MPI)
+  find_package(MPI REQUIRED)
+  include_directories(${MPI_INCLUDE_PATH})
+endif(WITH_MPI)
+
 
 IF(WITH_MUMPS)
   FIND_PACKAGE(MUMPS REQUIRED)

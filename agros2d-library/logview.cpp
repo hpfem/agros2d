@@ -579,7 +579,7 @@ void LogDialog::updateTransientChartInfo(double actualTime)
         if (timeLengths[i] > maximum)
             maximum = timeLengths[i];
 
-        timeTotal.append(timeTotal.last() + timeLengths[i]);
+        timeTotal.append((timeTotal.size() == 0 ? 0.0 : timeTotal.last()) + timeLengths[i]);
     }
 
     m_timeTimeStepGraph->setData(timeSteps, timeLengths);
