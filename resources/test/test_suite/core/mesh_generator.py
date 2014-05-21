@@ -70,9 +70,9 @@ class TestMeshGenerator(Agros2DTestCase):
         self.problem.mesh_type = "gmsh_quad"
         self.solution_test_values()
 
-    def test_gmsh_quad_delaunay(self):
-        self.problem.mesh_type = "gmsh_quad_delaunay"
-        self.solution_test_values()
+    #def test_gmsh_quad_delaunay(self):
+    #    self.problem.mesh_type = "gmsh_quad_delaunay"
+    #    self.solution_test_values()
         
     def solution_test_values(self):
        self.problem.solve()

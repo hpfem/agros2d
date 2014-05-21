@@ -76,6 +76,7 @@ test_examples = examples.examples.tests
 """ core """
 test_core = get_tests(core.matrix_solvers)
 test_core += get_tests(core.generator)
+test_core += get_tests(core.mesh_generator)
 test_core += core.xslt.tests
 
 """ complete """
