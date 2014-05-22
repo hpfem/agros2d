@@ -1809,7 +1809,8 @@ void Scene::readFromFile31(const QString &fileName)
             {
                 XMLProblem::refinement_edge edge = field.refinement_edges().refinement_edge().at(j);
 
-                fieldInfo->setEdgeRefinement(edges->items().at(edge.refinement_edge_id()), edge.refinement_edge_number());
+				if (edge.refinement_edge_id() != -1)
+                	fieldInfo->setEdgeRefinement(edges->items().at(edge.refinement_edge_id()), edge.refinement_edge_number());
             }
 
             // label refinement
@@ -1817,7 +1818,8 @@ void Scene::readFromFile31(const QString &fileName)
             {
                 XMLProblem::refinement_label label = field.refinement_labels().refinement_label().at(j);
 
-                fieldInfo->setLabelRefinement(labels->items().at(label.refinement_label_id()), label.refinement_label_number());
+				if (label.refinement_label_id() != -1)	
+                	fieldInfo->setLabelRefinement(labels->items().at(label.refinement_label_id()), label.refinement_label_number());
             }
 
             // polynomial order
