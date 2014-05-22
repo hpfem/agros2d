@@ -97,10 +97,6 @@ enum MeshType
     MeshType_Triangle_QuadFineDivision = 1,
     MeshType_Triangle_QuadRoughDivision = 2,
     MeshType_Triangle_QuadJoin = 3,
-    MeshType_TriangleExternal = 7,
-    MeshType_TriangleExternal_QuadFineDivision = 8,
-    MeshType_TriangleExternal_QuadRoughDivision = 9,
-    MeshType_TriangleExternal_QuadJoin = 10,
     MeshType_GMSH_Triangle = 4,
     MeshType_GMSH_Quad = 5,
     MeshType_GMSH_QuadDelaunay_Experimental = 6
