@@ -131,7 +131,8 @@ ENDIF(WIN32)
 
 # Set global compiler parameters.
 IF (WITH_OPENMP)
-  IF(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  ELSE()
     find_package(OpenMP REQUIRED)
   ENDIF()
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
