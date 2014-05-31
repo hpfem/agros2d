@@ -312,7 +312,8 @@ void PythonEngine::useLocalDict()
     Py_INCREF(m_dictLocal);
 
     // init engine extensions
-    Py_InitModule("pythonlab", pythonEngineFuntions);
+    PyObject *m = PyModule_Create(&pythonEngineDef);
+    PyDict_SetItemString(PyImport_GetModuleDict(), pythonEngineDef.m_name, m);
 }
 
 void PythonEngine::useGlobalDict()
@@ -427,7 +428,7 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
         startProfiler();
     }
 
-    if (code) output = PyEval_EvalCode((PyCodeObject *) code, dict(), dict());
+    if (code) output = PyEval_EvalCode(code, dict(), dict());
     
     if (m_useProfiler)
         finishProfiler();
@@ -745,7 +746,7 @@ void PythonEngine::addCustomExtensions()
     PyDict_SetItemString(PyImport_GetModuleDict(), "pythonlab_cython", m);
 
     // merge modules
-    PyObject *del = PyRun_String("import pythonlab_cython; import pythonlab; pythonlab.__dict__.update(pythonlab_cython.__dict__); del pythonlab_cython;", Py_single_input, m_dict, m_dict);
+    PyObject *del = PyRun_String("import pythonlab_cython; import pythonlab; pythonlab.__dict__.update(pythonlab_cython.__dict__); del pythonlab_cython;", Py_single_input, dict(), dict());
     Py_XDECREF(del);
 }
 

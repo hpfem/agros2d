@@ -65,7 +65,6 @@ ELSE()
     COMMAND cython ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
     DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
     OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
->>>>>>> master
 ENDIF()
 
 SET(SOURCES value.cpp
