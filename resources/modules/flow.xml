@@ -412,13 +412,29 @@
         <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
         <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:surfaceintegral>
-      <module:surfaceintegral id="flow_force_x" name="Force X" shortname="Fx" shortname_html="&lt;i>F&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="F_\mathrm{x}" unit="N" unit_html="N" unit_latex="N">
-        <module:expression analysistype="steadystate" axi="0" planar="0"/>
-        <module:expression analysistype="transient" axi="0" planar="0"/>
+      <module:surfaceintegral id="flow_pressure_force_x" name="Pressure force X" shortname="Fpx" shortname_html="&lt;i>F&lt;/i>&lt;sub>p,x&lt;/sub>" shortname_latex="F_\mathrm{p,x}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="- 2.0 * PI * r * tanz * value3" planar="- tany * value3"/>
+        <module:expression analysistype="transient" axi="- 2.0 * PI * r * tanz * value3" planar="- tany * value3"/>
       </module:surfaceintegral>
-      <module:surfaceintegral id="flow_force_y" name="Force Y" shortname="Fy" shortname_html="&lt;i>F&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="F_\mathrm{x}" unit="N" unit_html="N" unit_latex="N">
-        <module:expression analysistype="steadystate" axi="0" planar="0"/>
-        <module:expression analysistype="transient" axi="0" planar="0"/>
+      <module:surfaceintegral id="flow_pressure_force_y" name="Pressure force Y" shortname="Fpy" shortname_html="&lt;i>F&lt;/i>&lt;sub>p,y&lt;/sub>" shortname_latex="F_\mathrm{p,y}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * tanr * value3" planar="tanx * value3"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * tanr * value3" planar="tanx * value3"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="flow_viscous_force_x" name="Viscous force X" shortname="Fvx" shortname_html="&lt;i>F&lt;/i>&lt;sub>v,x&lt;/sub>" shortname_latex="F_\mathrm{v,x}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="- 2.0 * PI * r * fl_mu * (tanr * (dz1 + dr2) - tanz * (2 * dr1))" planar="- fl_mu * (tanx * (dy1 + dx2) - tany * (2 * dx1))"/>
+        <module:expression analysistype="transient" axi="- 2.0 * PI * r * fl_mu * (tanr * (dz1 + dr2) - tanz * (2 * dr1))" planar="- fl_mu * (tanx * (dy1 + dx2) - tany * (2 * dx1))"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="flow_viscous_force_y" name="Viscous force Y" shortname="Fvy" shortname_html="&lt;i>F&lt;/i>&lt;sub>v,y&lt;/sub>" shortname_latex="F_\mathrm{v,y}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * fl_mu * (tanz * (dz1 + dr2) - tanr * (2 * dz2))" planar="fl_mu * (tany * (dy1 + dx2) - tanx * (2 * dy2))"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * fl_mu * (tanz * (dz1 + dr2) - tanr * (2 * dz2))" planar="fl_mu * (tany * (dy1 + dx2) - tanx * (2 * dy2))"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="flow_force_x" name="Total force X" shortname="Fx" shortname_html="&lt;i>F&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="F_\mathrm{x}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="- 2.0 * PI * r * (tanz * value3 + fl_mu * (tanr * (dz1 + dr2) - tanz * (2 * dr1)))" planar="- tany * value3 - fl_mu * (tanx * (dy1 + dx2) - tany * (2 * dx1))"/>
+        <module:expression analysistype="transient" axi="- 2.0 * PI * r * (tanz * value3 + fl_mu * (tanr * (dz1 + dr2) - tanz * (2 * dr1)))" planar="- tany * value3 - fl_mu * (tanx * (dy1 + dx2) - tany * (2 * dx1))"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="flow_force_y" name="Total force Y" shortname="Fy" shortname_html="&lt;i>F&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="F_\mathrm{y}" unit="N" unit_html="N" unit_latex="N">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * (tanr * value3 + fl_mu * (tanz * (dz1 + dr2) - tanr * (2 * dz2)))" planar="tanx * value3 + fl_mu * (tany * (dy1 + dx2) - tanx * (2 * dy2))"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * (tanr * value3 + fl_mu * (tanz * (dz1 + dr2) - tanr * (2 * dz2)))" planar="tanx * value3 + fl_mu * (tany * (dy1 + dx2) - tanx * (2 * dy2))"/>
       </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force/>
