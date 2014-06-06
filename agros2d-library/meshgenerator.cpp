@@ -47,31 +47,213 @@ MeshGenerator::~MeshGenerator()
 
 using namespace Hermes::Hermes2D;
 
+void MeshGenerator::elements_sharing_node(MeshElement* e, Point* node, QList<MeshElement*>& elements)
+{
+    if(!elements.contains(e))
+    {
+        elements.append(e);
+        for(int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                if(e->neigh[i] != -1 && &this->nodeList[this->elementList[e->neigh[i]].node[j]] == node)
+                {
+                    elements_sharing_node(&this->elementList[e->neigh[i]], node, elements);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+bool MeshGenerator::get_determinant(MeshElement* element)
+{
+
+    bool is_triangle = element->node[3] == -1;
+
+    if(!is_triangle)
+        throw Hermes::Exceptions::Exception("Shifting nodes using get_determinant works only for triangles.");
+
+    double x[3], y[3];
+    for(int i = 0; i < 3; i++)
+    {
+        x[i] = this->nodeList[element->node[i]].x;
+        y[i] = this->nodeList[element->node[i]].y;
+    }
+
+    double determinant = x[0]*( y[1] - y[2] ) - x[1]*( y[0] - y[2] ) + x[2]*( y[0] - y[1] );
+
+    // std::cout << "E[" << x[0] << "," << y[0] << "],[" << x[1] << "," << y[1] << "],[" << x[2] << "," << y[2] << "]" << ",   D=" << determinant << std::endl;
+
+    return (determinant > 0);
+}
+
+// Used in moveNode - this actually moves the node (if it has not been moved before).
+void MeshGenerator::performActualNodeMove(Point* node, QList<Point*>& already_moved_nodes, const double x_displacement, const double y_displacement, const double multiplier)
+{
+    if(already_moved_nodes.contains(node))
+        return;
+    else
+    {
+        double x = node->x;
+        double y = node->y;
+
+        node->x += multiplier * x_displacement;
+        node->y += multiplier * y_displacement;
+
+        std::cout << "Shift: multiplier=" << multiplier << ", x=" << x << ", y=" << y << ", shifted to: x=" << node->x << ", y=" << node->y << "\n";
+
+        already_moved_nodes.append(node);
+    }
+}
+
+void MeshGenerator::moveNode(MeshElement* element, Point* node, QList<Point*>& already_moved_nodes, const double x_displacement, const double y_displacement, const double multiplier, const QList<std::pair<MeshElement*, bool> >& determinants)
+{
+    // We have to stop updating somewhere.
+    if(multiplier < .01)
+        return;
+
+    /* For debugging purposes
+    for (int i = 0; i < determinants.count(); i++)
+    {
+        double x[3], y[3];
+        for(int j = 0; j < 3; j++)
+        {
+            x[j] = this->nodeList[determinants[i].first->node[j]].x;
+            y[j] = this->nodeList[determinants[i].first->node[j]].y;
+        }
+        std::cout << "Old - E[" << x[0] << "," << y[0] << "],[" << x[1] << "," << y[1] << "],[" << x[2] << "," << y[2] << "]" << ",   D=" << determinants[i].second << std::endl;
+    }
+
+    */
+
+    performActualNodeMove(node, already_moved_nodes, x_displacement, y_displacement, multiplier);
+
+    for (int i = 0; i < determinants.count(); i++)
+    {
+        bool new_determinant = get_determinant(determinants[i].first);
+        bool old_determinant = (determinants[i].second > 0);
+        // If we broke the element orientation, we need to recursively continue fixing the elements (vertices)
+        if(new_determinant != old_determinant)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                if(!already_moved_nodes.contains(&this->nodeList[determinants[i].first->node[j]]))
+                {
+                    // Prepare the data structures to pass
+                    QList<MeshElement*> elements_to_pass;
+                    QList<std::pair<MeshElement*, bool> > determinants_to_pass;
+                    // Elements sharing the vertex that broke something.
+                    elements_sharing_node(determinants[i].first, &this->nodeList[determinants[i].first->node[j]], elements_to_pass);
+                    // Calculate the determinants now - to check if this fix won't break something else.
+                    for (int ifound_elems = 0; ifound_elems < elements_to_pass.count(); ifound_elems++)
+                        determinants_to_pass.append(std::pair<MeshElement*, bool>(elements_to_pass[ifound_elems], get_determinant(elements_to_pass[ifound_elems])));
+
+                    // We have to stop updating somewhere - this reduces the multiplier multiplying the displacement of vertices.
+                    // Very important is the right constant.
+                    double new_multiplier = multiplier * 0.9;
+                    this->moveNode(determinants[i].first, &this->nodeList[determinants[i].first->node[j]], already_moved_nodes, x_displacement, y_displacement, new_multiplier, determinants_to_pass);
+                }
+            }
+        }
+    }
+}
+
 void MeshGenerator::moveNodesOnCurvedEdges()
 {
-    // move nodes (arcs)
+    // First move the boundary elements - they are easy, they can not distort any element that lies between the boundary and themselves.
+    for (int i = 0; i < edgeList.count(); i++)
+    {
+        MeshEdge edge = edgeList[i];
+
+        if (edge.marker == -1)
+            continue;
+
+        if (!(Agros2D::scene()->edges->at(edge.marker)->angle() > 0.0 && Agros2D::scene()->edges->at(edge.marker)->isCurvilinear()))
+            continue;
+
+        // Only boundary now.
+        if(edge.neighElem[0] == -1 || edge.neighElem[1] == -1)
+        {
+            // assert(edge.marker >= 0); // markers changed to marker - 1, check...
+            if (edge.marker != -1)
+            {
+                // curve
+                if (Agros2D::scene()->edges->at(edge.marker)->angle() > 0.0 &&
+                    Agros2D::scene()->edges->at(edge.marker)->isCurvilinear())
+                {
+                    // Nodes.
+                    Point* node[2] = { &nodeList[edge.node[0]], &nodeList[edge.node[1]]};
+                    // Center
+                    Point center = Agros2D::scene()->edges->at(edge.marker)->center();
+                    // Radius
+                    double radius = Agros2D::scene()->edges->at(edge.marker)->radius();
+
+                    // First node handling
+                    double pointAngle1 = atan2(center.y - node[0]->y, center.x - node[0]->x) - M_PI;
+                    node[0]->x = center.x + radius * cos(pointAngle1);
+                    node[0]->y = center.y + radius * sin(pointAngle1);
+
+                    // Second node handling
+                    double pointAngle2 = atan2(center.y - node[1]->y, center.x - node[1]->x) - M_PI;
+                    node[1]->x = center.x + radius * cos(pointAngle2);
+                    node[1]->y = center.y + radius * sin(pointAngle2);
+                }
+            }
+        }
+    }
+
+    // Now move the problematic ones
     for (int i = 0; i<edgeList.count(); i++)
     {
-        // assert(edgeList[i].marker >= 0); // markers changed to marker - 1, check...
-        if (edgeList[i].marker != -1)
+        MeshEdge edge = edgeList[i];
+
+        if (edge.marker == -1)
+            continue;
+
+        if (!(Agros2D::scene()->edges->at(edge.marker)->angle() > 0.0 && Agros2D::scene()->edges->at(edge.marker)->isCurvilinear()))
+            continue;
+
+        // Boundary has been taken care of.
+        if(edge.neighElem[0] == -1 || edge.neighElem[1] == -1)
+            continue;
+
+        // assert(edge.marker >= 0); // markers changed to marker - 1, check...
+        if (edge.marker != -1)
         {
             // curve
-            if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0 &&
-                    Agros2D::scene()->edges->at(edgeList[i].marker)->isCurvilinear())
+            if (Agros2D::scene()->edges->at(edge.marker)->angle() > 0.0 &&
+                Agros2D::scene()->edges->at(edge.marker)->isCurvilinear())
             {
-                // angle
-                Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
-                double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
-                        center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
+                // Nodes.
+                Point* node[2] = { &nodeList[edge.node[0]], &nodeList[edge.node[1]]};
+                // Center
+                Point center = Agros2D::scene()->edges->at(edge.marker)->center();
+                // Radius
+                double radius = Agros2D::scene()->edges->at(edge.marker)->radius();
 
-                double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
-                        center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
+                // Handle the nodes recursively using moveNode()
+                for(int inode = 0; inode < 2; inode++)
+                {
+                    double pointAngle = atan2(center.y - node[inode]->y, center.x - node[inode]->x) - M_PI;
+                    double x_displacement = center.x + radius * cos(pointAngle) - node[inode]->x;
+                    double y_displacement = center.y + radius * sin(pointAngle) - node[inode]->y;
 
-                nodeList[edgeList[i].node[0]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
-                nodeList[edgeList[i].node[0]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
+                    // Initialization for the one node algorithm
+                    QList<Point*> already_moved_nodes;
+                    QList<MeshElement*> elements_to_pass;
+                    QList<std::pair<MeshElement*, bool> > determinants_to_pass;
 
-                nodeList[edgeList[i].node[1]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle2);
-                nodeList[edgeList[i].node[1]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle2);
+                    // Find elements sharing this node
+                    elements_sharing_node(&this->elementList[edge.neighElem[0]], node[inode], elements_to_pass);
+
+                    // Calculate determinants for them
+                    for (int ifound_elems = 0; ifound_elems < elements_to_pass.count(); ifound_elems++)
+                        determinants_to_pass.append(std::pair<MeshElement*, bool>(elements_to_pass[ifound_elems], get_determinant(elements_to_pass[ifound_elems])));
+
+                    // Start the algorithm
+                    moveNode(&this->elementList[edge.neighElem[0]], node[inode], already_moved_nodes, x_displacement, y_displacement, 1.0, determinants_to_pass);
+                }
             }
         }
     }
@@ -117,7 +299,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
             continue;
         // Trim whitespaces.
         int internal_marker =
-                global_mesh->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
+            global_mesh->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
 
         if (elementList[element_i].isTriangle())
             global_mesh->create_triangle(internal_marker, global_mesh->get_node(elementList[element_i].node[0]), global_mesh->get_node(elementList[element_i].node[1]), global_mesh->get_node(elementList[element_i].node[2]), nullptr);
@@ -160,11 +342,11 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     // Just Arcs //
     for (int edge_i = 0; edge_i < edgeList.count(); edge_i++)
     {
-        if (edgeList[edge_i].marker != -1)
+        if (false)//edgeList[edge_i].marker != -1)
         {
             // curve
             if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->angle() > 0.0 &&
-                    Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
+                Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
             {
                 // load the control points, knot vector, etc.
                 Node* en;
@@ -182,7 +364,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
                 // direction
                 Point center = Agros2D::scene()->edges->at(edgeList[edge_i].marker)->center();
                 int direction = (((nodeList[edgeList[edge_i].node[0]].x - center.x)*(nodeList[edgeList[edge_i].node[1]].y - center.y) -
-                        (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
+                    (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
 
                 double angle = direction * theta * chordShort / chord;
 
@@ -252,14 +434,14 @@ void MeshGenerator::getDataCountsForSingleSubdomain(FieldInfo* fieldInfo, int& e
                 if (neigh != -1)
                 {
                     if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
-                            != SceneMaterialContainer::getNone(fieldInfo))
+                        != SceneMaterialContainer::getNone(fieldInfo))
                         numNeighWithField++;
                 }
             }
 
             // edge has boundary condition prescribed for this field
             bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->hasMarker(fieldInfo)
-                                              && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
+                && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
 
             if (numNeighWithField == 1)
             {
@@ -292,12 +474,12 @@ void MeshGenerator::writeToHermes()
 
     try
     {
+        this->fillNeighborStructures();
         this->moveNodesOnCurvedEdges();
 
         MeshSharedPtr global_mesh(new Mesh);
 
         this->writeTemporaryGlobalMeshToHermes(global_mesh);
-        this->fillNeighborStructures();
 
         int subdomains_count;
         if (Agros2D::problem()->fieldInfos().isEmpty())
@@ -395,7 +577,7 @@ void MeshGenerator::writeToHermes()
                             if (neigh != -1)
                             {
                                 if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
-                                        != SceneMaterialContainer::getNone(fieldInfo))
+                                    != SceneMaterialContainer::getNone(fieldInfo))
                                     numNeighWithField++;
                             }
                         }
@@ -405,7 +587,7 @@ void MeshGenerator::writeToHermes()
 
                             // edge has boundary condition prescribed for this field
                             bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->hasMarker(fieldInfo)
-                                                              && (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
+                                && (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
 
                             // edge is on "boundary" of the field, should have boundary condition prescribed
                             if (!hasFieldBoundaryCondition)
@@ -458,7 +640,7 @@ void MeshGenerator::writeToHermes()
                     {
                         // curve
                         if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->angle() > 0.0 &&
-                                Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
+                            Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
                         {
                             // load the control points, knot vector, etc.
                             Node* en;
@@ -476,7 +658,7 @@ void MeshGenerator::writeToHermes()
                             // direction
                             Point center = Agros2D::scene()->edges->at(edgeList[edge_i].marker)->center();
                             int direction = (((nodeList[edgeList[edge_i].node[0]].x - center.x)*(nodeList[edgeList[edge_i].node[1]].y - center.y) -
-                                    (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
+                                (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
 
                             double angle = direction * theta * chordShort / chord;
 
