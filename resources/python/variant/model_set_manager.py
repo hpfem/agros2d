@@ -48,28 +48,28 @@ class ModelSetManager(object):
             index += 1
             strIndex = str(index)
             strZeros = '0' * (numberLen - len(strIndex))
-            name = self.directory + 'solution_' + strZeros + strIndex + '.rst'
+            name = self.directory + 'solution_' + strZeros + strIndex + '.pickle'
 
         return name
 
-    def find_files(self, mask = '*.rst'):
+    def find_files(self, mask = '*.pickle'):
         files = []
         for file_name in glob.glob('{0}/{1}'.format(self.directory, mask)):
-          files.append(file_name)
+            files.append(file_name)
         return sorted(files)
 
     def solve_problem(self, file):
         path = os.path.dirname(os.path.abspath(file))
 
         code = "import sys; sys.path.insert(0, '{0}/..');".format(path)
-        code += "import {0}; model = {0}.{1}();".format(self.problem_module, self.model_class)
-        code += "model.load('{0}');model.create(); model.solve(); model.process(); model.save('{0}');".format(file)
+        code += "from {0} import {1}; model = {1}();".format(self.problem_module, self.model_class)
+        code += "model.load('{0}'); model.create(); model.solve(); model.process(); model.save('{0}');".format(file)
         
         command = ['{0}'.format(self.solver), '-l', '-c', '{0}'.format(code)]
         process = subprocess.Popen(command, stdout=subprocess.PIPE)
         self._output.append(process.communicate())
 
-    def solve_all(self, solveSolvedAgain = False, mask = '*.rst'):
+    def solve_all(self, solveSolvedAgain = False, mask = '*.pickle'):
         files = self.find_files(mask)
         totalSolved = 0
         for file in files:
@@ -82,7 +82,7 @@ class ModelSetManager(object):
 
         return totalSolved
 
-    def load_all(self, mask = '*.rst'):
+    def load_all(self, mask = '*.pickle'):
         files = self.find_files(mask)
         models = []
         for file in files:

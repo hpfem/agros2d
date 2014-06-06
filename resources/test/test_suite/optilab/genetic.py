@@ -8,6 +8,8 @@ from variant.genetic import GeneticOptimization
 
 class TestGenetic(Agros2DTestCase):
     def setUp(self):
+        self.sz = 15
+        
         parameters = [ContinuousParameter('a', 0, 10),
                       ContinuousParameter('b', 0, 10),
                       ContinuousParameter('c', 0, 10),
@@ -19,10 +21,10 @@ class TestGenetic(Agros2DTestCase):
         self.optimization = GeneticOptimization(parameters, functionals)
         self.optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions/')
         self.optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
-        self.optimization.populationSize = 15
+        self.optimization.population_size = self.sz
 
     def test_values(self):
-        self.optimization.run(15, False)
+        self.optimization.run(self.sz, False)
         models = self.optimization.modelSetManager.load_all()
         max_value = 0.
         for model in models:

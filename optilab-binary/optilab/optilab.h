@@ -51,8 +51,6 @@ private slots:
     void doAbout();
 
     void refreshVariants();
-    QDomNode readVariant(const QString fileName);
-    void addVariants();
 
     void variantOpenInAgros2D();
     void variantSolveInSolver();
@@ -73,9 +71,7 @@ private slots:
 
 private:
     // problem
-    QString m_problemFileName;
-    // xml doc
-    QDomDocument docXML;
+    QString m_problemDir;
 
     QStringList recentFiles;
     QMenu *mnuRecentFiles;
@@ -101,7 +97,6 @@ private:
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
     QAction *actDocumentClose;
-    QAction *actAddVariants;
     QAction *actOpenAgros2D;
 
     QPushButton *btnSolveInSolver;
@@ -112,7 +107,7 @@ private:
 
     OutputVariablesAnalysis outputVariables;
 
-    void variantInfo(const QString &fileName);
+    void variantInfo(const QString &key);
     void welcomeInfo();
 
     void createActions();

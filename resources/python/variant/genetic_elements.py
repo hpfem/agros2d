@@ -5,19 +5,19 @@ from copy import deepcopy
 
 class GeneticInfo:
     @staticmethod
-    def populationFrom(member):
+    def population_from(member):
         return int(member.info["population_from"])
 
     @staticmethod
-    def setPopulationFrom(member, value):
+    def set_population_from(member, value):
         member.info["population_from"] = value
 
     @staticmethod
-    def populationTo(member):
+    def population_to(member):
         return int(member.info["population_to"])
 
     @staticmethod
-    def setPopulationTo(member, value):
+    def set_population_to(member, value):
         member.info["population_to"] = value
 
 class InitialPopulationCreator:
@@ -32,8 +32,8 @@ class InitialPopulationCreator:
         pass
 
     def markInitialMember(self, member):
-        GeneticInfo.setPopulationFrom(member, 0)
-        GeneticInfo.setPopulationTo(member, 0)
+        GeneticInfo.set_population_from(member, 0)
+        GeneticInfo.set_population_to(member, 0)
 
 class ImplicitInitialPopulationCreator(InitialPopulationCreator):
     """
@@ -66,16 +66,17 @@ class SurvivorsSelector:
     def __init__(self, bounds, functionals):
         self.bounds = bounds
         self.functionals = functionals
+        self._recomended_population_size = 0
 
     @property
-    def recomendedPopulationSize(self):
+    def recomended_population_size(self):
         """Recomended population size. Actual population size may differ, but should be close to this"""
-        return self._recomendedPopulationSize
+        return self._recomended_population_size
 
-    @recomendedPopulationSize.setter
-    def recomendedPopulationSize(self, value):
+    @recomended_population_size.setter
+    def recomended_population_size(self, value):
         print("setting ", value)
-        self._recomendedPopulationSize = value
+        self._recomended_population_size = value
 
     @property
     def direction(self):
@@ -98,8 +99,8 @@ class SingleCriteriaSelector(SurvivorsSelector):
         assert not self.functionals.isMulticriterial()
         signF = self.functionals.functional().directionSign()
 
-        print("len poulation ", len(population), ", 0.5*rec ", int(0.5*self.recomendedPopulationSize))
-        survivorsNum = min(len(population), int(0.5*self.recomendedPopulationSize))
+        print("len poulation ", len(population), ", 0.5*rec ", int(0.5*self.recomended_population_size))
+        survivorsNum = min(len(population), int(0.5*self.recomended_population_size))
         scores = []
         for member in population:
             scores.append(self.functionals.evaluate(member))
@@ -127,7 +128,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
             if priority > 0:
                 newMember.priority = priority
-                GeneticInfo.setPopulationTo(newMember, GeneticInfo.populationTo(newMember) + 1)
+                GeneticInfo.set_population_to(newMember, GeneticInfo.population_to(newMember) + 1)
                 survivors.append(newMember)
 
             print("score: ", score, ", priority: ", priority)
@@ -262,7 +263,7 @@ class MultiCriteriaSelector(SurvivorsSelector):
             values_ratios.append(values)
         
         level = 0
-        while (len(include) < 0.6 * self.recomendedPopulationSize or len(include) - front_len < 0.25 * self.recomendedPopulationSize):
+        while (len(include) < 0.6 * self.recomended_population_size or len(include) - front_len < 0.25 * self.recomended_population_size):
             for ratio_idx in range(len(ratios)):
                 candidate_idx = values_ratios[ratio_idx][level][1]
                 

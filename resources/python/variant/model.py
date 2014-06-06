@@ -1,78 +1,83 @@
-from ast import literal_eval
+__empty_svg__ = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32" height="32" viewBox="0 0 32 32"></svg>'
+
+class ModelData:
+    def __init__(self):
+        self.defaults = dict()
+        self.parameters = dict()
+        self.variables = dict()
+        self.info = dict()
+
+        self.geometry_image = ""
+        self.images = list()
+
+        self.solved = False
 
 class ModelBase(object):
     def __init__(self):
-        self._defaults = dict()
-        self._parameters = dict()
-        self._variables = dict()
-        self._info = dict()
-        self._solved = False
-
-        self._images = list()
-        self._geometry_image = ""
+        self._data = ModelData()
 
     @property
     def parameters(self):
         """ Input parameters """
-        return self._parameters
+        return self._data.parameters
 
     @parameters.setter
     def parameters(self, value):
-        self._defaults = value
+        self._data.parameters = value
 
     @property
     def defaults(self):
         """ Default values for parameters """
-        return self._defaults
+        return self._data.defaults
 
     @defaults.setter
     def defaults(self, value):
-        self._defaults = value
+        self._data.defaults = value
 
     @property
     def variables(self):
         """ Output variables """
-        return self._variables
+        return self._data.variables
 
     @variables.setter
     def variables(self, value):
-        self._variables = value
+        self._data.variables = value
 
     @property
     def info(self):
         """ Optional info """
-        return self._info
+        return self._data.info
 
     @info.setter
     def info(self, value):
-        self._info = value
+        self._data.info = value
 
     @property
     def geometry_image(self):
         """ Geometry image """
-        return self._geometry_image
+        return self._data.geometry_image
 
     @geometry_image.setter
     def geometry_image(self, value):
-        self._geometry_image = value
+        self._data.geometry_image = value
 
     @property
     def images(self):
         """ Optional images """
-        return self._images
+        return self._data.images
 
     @images.setter
     def images(self, value):
-        self._images = value
+        self._data.images = value
 
     @property
     def solved(self):
         """ Solution state """
-        return self._solved
+        return self._data.solved
 
     @solved.setter
     def solved(self, value):
-        self._solved = value
+        self._data.solved = value
 
     def create(self):
         pass
@@ -81,103 +86,132 @@ class ModelBase(object):
         pass
 
     def process(self):
-        pass
-
+        pass    
+        
     def load(self, filename):
-        import xml.etree.ElementTree as ET
-
-        tree = ET.parse(filename)
-        variant = tree.getroot()
-
-        # TODO: only one result
-        results = variant.findall('results')[0]
-        result = results.findall('result')[0]
-
-        # solution
-        solution = result.findall('solution')[0]
-        self.solved = int(solution.attrib['solved'])
-
-        # input
-        input = result.findall('input')[0]
-        for par in input.findall('parameter'):
-            self.parameters[par.attrib["name"]] = literal_eval(par.attrib["value"])
-
-        # output
-        output = result.findall('output')[0]
-        for var in output.findall('variable'):
-            self.variables[var.attrib["name"]] = literal_eval(var.attrib["value"])
-
-        # info
-        info = result.findall('info')[0]
-        for item in info.findall('item'):
-            self.info[item.attrib["name"]] = literal_eval(item.attrib["value"])
-
-        # geometry
-        geometry_image = solution.find('geometry_image')
-        self.geometry_image  = str(geometry_image.attrib["source"])
-
-        # images
-        images = solution.findall('images')[0]
-        for image in images.findall('image'):
-            self.images.append(str(image.attrib["source"]))
-
+        m = load_pickle(filename)
+        
+        self._data = m
+                                
     def save(self, filename):
-        import xml.etree.cElementTree as ET
+        save_pickle(self._data, filename)
+        
+def load_pickle(filename):
+    import pickle
+    
+    with open(filename, 'rb') as infile:
+        return pickle.load(infile)
 
-        variant = ET.Element("variant:variant")        
-        variant.set("xmlns:variant", "XMLOptVariant")
-        variant.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-
-        # results
-        results = ET.SubElement(variant, "results")
-        result = ET.SubElement(results, "result")
-
-        # solution
-        solution = ET.SubElement(result, "solution")
-        solution.set("solved", "1" if self.solved else "0")
-
-        # input
-        input = ET.SubElement(result, "input")
-        for key, value in self.parameters.items():
-            parameter = ET.SubElement(input, "parameter")
-            parameter.set("name", key)
-
-            if (type(value) == str):
-                parameter.set("value", "'{0}'".format(str(value)))
+def save_pickle(model, filename):        
+    import pickle
+    
+    with open(filename, 'wb') as outfile:
+        pickle.dump(model, outfile, pickle.HIGHEST_PROTOCOL)
+            
+def convert_xml_to_pickle(dir):
+    import json
+    import xml.etree.ElementTree as ET
+    from os.path import basename, splitext
+    import os
+                
+    # load all files in directory
+    for file in os.listdir(dir):
+        if file.endswith(".rst"):
+            m = ModelData()            
+                
+            tree = ET.parse(dir + "/" + file)
+            variant = tree.getroot()
+        
+            # only one result
+            results = variant.findall('results')[0]
+            result = results.findall('result')[0]
+                        
+            # solution
+            solution = result.findall('solution')[0]
+            m.solved = int(solution.attrib['solved'])
+        
+            # input
+            input = result.findall('input')[0]
+            for par in input.iter(tag='parameter'):             
+                m.parameters[par.attrib["name"]] = json.loads(par.attrib["value"])
+        
+            # output
+            output = result.findall('output')[0]
+            for var in output.iter(tag='variable'): 
+                m.variables[var.attrib["name"]] = json.loads(var.attrib["value"])
+        
+            # info
+            info = result.findall('info')[0]
+            for item in info.iter(tag='item'): 
+                m.info[item.attrib["name"]] = json.loads(item.attrib["value"])
+        
+            # geometry
+            geometry_image = solution.find('geometry_image')
+            if (geometry_image is None):
+                m.geometry_image = __empty_svg__
             else:
-                parameter.set("value", str(value))
+                m.geometry_image  = str(geometry_image.attrib["source"])
+        
+            # images
+            images = solution.findall('images')[0]
+            for image in images.findall('image'):
+                m.images.append(str(image.attrib["source"]))
+                
+            # save pickle
+            save_pickle(m, dir + "/" + splitext(basename(file))[0] + ".pickle")
+                    
+class ModelDict(object):
+    def __init__(self):
+        self._data = dict()
 
-        # output
-        output = ET.SubElement(result, "output")
-        for key, value in self.variables.items():
-            variable = ET.SubElement(output, "variable")
-            variable.set("name", key)
+    def append(self, model):
+        self._data.append(model)
+    
+    @property
+    def models(self):
+        """ Models """
+        return self._data
 
-            if (type(value) == str):
-                variable.set("value", "'{0}'".format(str(value)))
-            else:
-                variable.set("value", str(value))
+    @models.setter
+    def models(self, value):
+        self._data = value
+        
+    def count(self):
+        return len(self._data)
+        
+    def keys(self):
+        return sorted(list(self._data.keys()))
 
-        # info
-        info = ET.SubElement(result, "info")
-        for key, value in self.info.items():
-            item = ET.SubElement(info, "item")
-            item.set("name", key)
+    def list(self):
+        lst = []
+        for k,m in sorted(self._data.items()):
+            lst.append({ 'key' : k, 'solved' : m.solved })
+                
+        return lst
+        
+    def read_pickles_from_directory(self, dir):
+        import os
+        
+        # clear list
+        self._data.clear()
+        
+        # load all files in directory
+        for file in os.listdir(dir):
+            if file.endswith(".pickle"):
+                m = load_pickle(dir + "/" + file)
+                self._data[file] = m
 
-            if (type(value) == str):
-                item.set("value", "'{0}'".format(str(value)))
-            else:
-                item.set("value", str(value))
+def create_model_dict(solutions_dir):   
+    md = ModelDict()
+    md.read_pickles_from_directory(solutions_dir)
+    
+    return md
 
-        # geometry
-        geometry_image = ET.SubElement(solution, "geometry_image")
-        geometry_image.set("source", self.geometry_image)
-
-        # images
-        images = ET.SubElement(solution, "images")
-        for image in self.images:
-            item = ET.SubElement(images, "image")
-            item.set("source", image)
-     
-        tree = ET.ElementTree(variant)
-        tree.write(filename, xml_declaration = True, encoding='UTF-8')
+if __name__ == '__main__':
+    pass
+    #convert_xml_to_pickle('/home/karban/Projects/agros2d-optilab/data/sweep/act/solutions')
+    
+    #md = create_model_dict('/home/karban/Projects/agros2d-optilab/resources/test/test_suite/optilab/genetic/solutions')
+    #md = create_model_dict('/home/karban/Projects/agros2d-optilab/data/sweep/act/solutions')
+    #print(md.count())   
+    #print(md.list())

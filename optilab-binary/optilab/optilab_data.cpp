@@ -38,6 +38,8 @@ OutputVariable::OutputVariable::OutputVariable(const QString &valueName, const Q
     }
     else
     {
+        m_number = -1;
+        /*
         QString valueTMP = valueString;
 
         QStringList data = valueTMP.replace("[[", "").replace("]]", "").split("], [");
@@ -51,6 +53,7 @@ OutputVariable::OutputVariable::OutputVariable(const QString &valueName, const Q
             m_x.append(dataX[i].toDouble());
             m_y.append(dataY[i].toDouble());
         }
+        */
     }
 }
 

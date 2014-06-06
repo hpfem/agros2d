@@ -22,7 +22,7 @@ class TestModelSetManager(Agros2DTestCase):
             model.parameters["R4"] = 0.06
             model.parameters["L"] = L[i]
 
-            model.save('{0}/solutions_{1}.rst'.format(self.solver.directory, i))
+            model.save('{0}/solutions_{1}.pickle'.format(self.solver.directory, i))
 
     def test_values(self):
         self.solver.solve_all()

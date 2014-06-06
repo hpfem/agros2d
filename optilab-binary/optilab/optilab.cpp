@@ -17,6 +17,18 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#ifdef _MSC_VER
+# ifdef _DEBUG
+#  undef _DEBUG
+#  include <Python.h>
+#  define _DEBUG
+# else
+#  include <Python.h>
+# endif
+#else
+#  include <Python.h>
+#endif
+
 #include "optilab.h"
 
 #include "util/constants.h"
@@ -32,7 +44,7 @@
 
 #include <QXmlSimpleReader>
 
-OptilabWindow::OptilabWindow() : QMainWindow(), m_problemFileName("")
+OptilabWindow::OptilabWindow() : QMainWindow(), m_problemDir("")
 {
     setWindowTitle(tr("Optilab"));
 
@@ -67,14 +79,14 @@ OptilabWindow::~OptilabWindow()
 
 void OptilabWindow::variantOpenInAgros2D()
 {
-    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
+    QString fileName = QString("%1/solutions/%2").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
         // TODO: template?
         QString str;
         str += "from variant import model\n";
-        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_problemFileName).absolutePath());
+        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(m_problemDir);
         str += "import problem\n";
         str += "p = problem.Model()\n";
         str += QString("p.load('%1')\n").arg(fileName);
@@ -122,14 +134,14 @@ void OptilabWindow::processOpenFinished(int exitCode)
 
 void OptilabWindow::variantSolveInSolver()
 {
-    QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
+    QString fileName = QString("%1/solutions/%2").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
         // TODO: template?
         QString str;
         str += "from variant import model\n";
-        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(QFileInfo(m_problemFileName).absolutePath());
+        str += QString("import sys; sys.path.insert(0, '%1')\n").arg(m_problemDir);
         str += "import problem\n";
         str += "p = problem.Model()\n";
         str += QString("p.load('%1')\n").arg(fileName);
@@ -159,14 +171,16 @@ void OptilabWindow::processSolveFinished(int exitCode)
     {
         QApplication::processEvents();
 
+        /*
         int index = trvVariants->currentItem()->data(0, Qt::UserRole).toInt();
         QDomNode nodeResultOld = docXML.elementsByTagName("results").at(0).childNodes().at(index);
 
-        QString fileName = QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
+        QString fileName = QString("%1/solutions/%2").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
         QDomNode nodeResultNew = readVariant(fileName);
         nodeResultOld.parentNode().appendChild(nodeResultNew);
         nodeResultOld.parentNode().replaceChild(nodeResultOld, nodeResultNew);
+        */
 
         refreshVariants();
     }
@@ -214,9 +228,6 @@ void OptilabWindow::createActions()
     actDocumentClose->setShortcuts(QKeySequence::Close);
     connect(actDocumentClose, SIGNAL(triggered()), this, SLOT(documentClose()));
 
-    actAddVariants = new QAction(icon("directory-add"), tr("Refresh solutions from directory"), this);
-    connect(actAddVariants, SIGNAL(triggered()), this, SLOT(addVariants()));
-
     actOpenAgros2D = new QAction(icon("agros2d"), tr("Open Agros2D"), this);
     actOpenAgros2D->setEnabled(false);
     connect(actOpenAgros2D, SIGNAL(triggered()), this, SLOT(openProblemAgros2D()));
@@ -234,8 +245,6 @@ void OptilabWindow::createMenus()
     mnuFile->addAction(actDocumentOpen);
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addAction(actDocumentClose);
-    mnuFile->addSeparator();
-    mnuFile->addAction(actAddVariants);
 #ifndef Q_WS_MAC
     mnuFile->addSeparator();
     mnuFile->addAction(actExit);
@@ -271,8 +280,6 @@ void OptilabWindow::createToolBars()
 #endif
     tlbFile->addAction(actDocumentNew);
     tlbFile->addAction(actDocumentOpen);
-    tlbFile->addSeparator();
-    tlbFile->addAction(actAddVariants);
 
     QToolBar *tlbTools = addToolBar(tr("Tools"));
     tlbTools->setObjectName("Tools");
@@ -400,7 +407,7 @@ void OptilabWindow::createMain()
     layoutLeft->addWidget(lblProblems);
 
     QVBoxLayout *layoutChartConsole = new QVBoxLayout();
-    layoutChartConsole->addWidget(console, 0.3);
+    layoutChartConsole->addWidget(console, 1);
     layoutChartConsole->addLayout(layoutChart);
 
     QHBoxLayout *layoutRight = new QHBoxLayout();
@@ -419,7 +426,7 @@ void OptilabWindow::createMain()
 
 void OptilabWindow::openProblemAgros2D()
 {
-    QString problem = QString("%1/problem.py").arg(QFileInfo(m_problemFileName).absolutePath());
+    QString problem = QString("%1/problem.py").arg(m_problemDir);
     if (QFile::exists(problem))
     {
         QProcess process;
@@ -446,7 +453,7 @@ void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *pre
 
     if (current)
     {
-        variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(current->data(0, Qt::UserRole).toString()));
+        variantInfo(current->data(0, Qt::UserRole).toString());
         refreshChart();
     }
 }
@@ -462,7 +469,7 @@ void OptilabWindow::documentNew()
     QSettings settings;
 
     QString dir = settings.value("General/LastProblemDir", "data").toString();
-    QString fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (*.opt)"));
+    QString fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (problem.py)"));
 
     if (!fileNameDocument.isEmpty())
     {
@@ -478,7 +485,7 @@ void OptilabWindow::documentOpen(const QString &fileName)
     if (fileName.isEmpty())
     {
         QString dir = settings.value("General/LastProblemDir", "data").toString();
-        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (*.opt)"));
+        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (problem.py)"));
     }
     else
     {
@@ -489,40 +496,10 @@ void OptilabWindow::documentOpen(const QString &fileName)
         return;
 
     QFileInfo fileInfo(fileNameDocument);
-    if (fileInfo.suffix() == "opt")
+    if (fileInfo.suffix() == "py")
     {
-        m_problemFileName = QFileInfo(fileNameDocument).absoluteFilePath();
-        settings.setValue("General/LastProblemDir", QFileInfo(fileNameDocument).absolutePath());
-
-        QFile docFile(m_problemFileName);
-        if (!docFile.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            qDebug() << tr("Cannot open OPT file");
-            return;
-        }
-
-        /*
-            QXmlSchema schema;
-            schema.load(QUrl::fromLocalFile(QString("%1/resources/xsd/opt_variant_xml.xsd").arg(datadir())));
-
-            QXmlSchemaValidator validator(schema);
-            if (validator.validate(&docFile))
-            {
-                qDebug() << "xml" << m_problemFileName << "is valid";
-            }
-            else
-            {
-                qDebug() << "xml" << m_problemFileName << "is invalid";
-            }
-            */
-
-        QTime tm;
-        tm.start();
-        docXML = QDomDocument();
-        docXML.setContent(&docFile);
-        // qDebug() << "setContent" << tm.elapsed();
-
-        docFile.close();
+        m_problemDir = QFileInfo(fileNameDocument).absolutePath();
+        settings.setValue("General/LastProblemDir", m_problemDir);
 
         webView->setHtml("");
         actOpenAgros2D->setEnabled(true);
@@ -542,16 +519,17 @@ void OptilabWindow::documentOpenRecent(QAction *action)
 
 void OptilabWindow::documentClose()
 {
-    m_problemFileName = "";
+    m_problemDir = "";
 
     // clear listview
     trvVariants->clear();
     // clear cache
     outputVariables.clear();
-    // clear dom
-    docXML.clear();
 
     actOpenAgros2D->setEnabled(false);
+
+    currentPythonEngine()->runExpression("del md");
+    currentPythonEngine()->runExpression("del m");
 
     welcomeInfo();
 
@@ -567,6 +545,14 @@ void OptilabWindow::doAbout()
 
 void OptilabWindow::refreshVariants()
 {
+    QString str;
+    str += "from variant import model\n";
+    str += "from variant.model import ModelData\n";
+    str += QString("md = model.create_model_dict('%1/solutions/')").arg(m_problemDir);
+
+    currentPythonEngineOptilab()->runScript(str);
+    currentPythonEngineOptilab()->runExpression("agros2d_variants = md.list()");
+
     trvVariants->setUpdatesEnabled(false);
 
     // save current item
@@ -574,8 +560,8 @@ void OptilabWindow::refreshVariants()
     if (trvVariants->currentItem())
         selectedItem = trvVariants->currentItem()->data(0, Qt::UserRole).toString();
 
-    // QTime time;
-    // time.start();
+    QTime time;
+    time.start();
 
     // clear listview
     trvVariants->clear();
@@ -585,51 +571,42 @@ void OptilabWindow::refreshVariants()
     int count = 0;
     int countSolved = 0;
 
-    QDomNodeList resultNodes = docXML.elementsByTagName("results").at(0).childNodes();
-    for (int i = 0; i < resultNodes.count(); i++)
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_variants");
+    if (result)
     {
-        QDomNode nodeResult = resultNodes.at(i);
-
-        QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
-        QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
-        QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
-
-        bool isSolved = (nodeSolution.toElement().attribute("solved").toInt() == 1);
-        QString fileName = nodeSolution.toElement().attribute("filename");
-
-        QTreeWidgetItem *variantItem = new QTreeWidgetItem(trvVariants->invisibleRootItem());
-        if (isSolved)
-            variantItem->setIcon(0, icon("browser-other"));
-        else
-            variantItem->setIcon(0, icon("browser-class"));
-        variantItem->setText(0, QFileInfo(fileName).baseName());
-        variantItem->setText(1, QFileInfo(QString("%1/solutions/%2").
-                                          arg(QFileInfo(m_problemFileName).absolutePath()).
-                                          arg(fileName)).lastModified().toString("yyyy-MM-dd hh:mm:ss"));
-        variantItem->setData(0, Qt::UserRole, fileName);
-
-        if (isSolved)
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
         {
-            QList<OutputVariable> variables;
+            PyObject *d = PyList_GetItem(result, i);
+            Py_INCREF(d);
 
-            QDomNodeList nodeVariables = nodeOutput.toElement().elementsByTagName("variable");
+            QString name = QString::fromWCharArray(PyUnicode_AsUnicode(PyDict_GetItemString(d, "key")));
+            bool isSolved = PyDict_GetItemString(d, "solved");
 
-            for (int j = 0; j < nodeVariables.count(); j++)
-            {
-                QDomElement eleVariable = nodeVariables.at(j).toElement();
+            QTreeWidgetItem *variantItem = new QTreeWidgetItem(trvVariants->invisibleRootItem());
+            if (isSolved)
+                variantItem->setIcon(0, icon("browser-other"));
+            else
+                variantItem->setIcon(0, icon("browser-class"));
+            variantItem->setText(0, QFileInfo(name).baseName());
+            variantItem->setText(1, QFileInfo(QString("%1/solutions/%2.pickle").
+                                              arg(m_problemDir).
+                                              arg(name)).lastModified().toString("yyyy-MM-dd hh:mm:ss"));
+            variantItem->setData(0, Qt::UserRole, name);
 
-                variables.append(OutputVariable(eleVariable.attribute("name"),
-                                                eleVariable.attribute("value")));
-            }
+            Py_XDECREF(d);
 
-            outputVariables.append(i, variables);
+            // increase counter
+            count++;
+            if (isSolved)
+                countSolved++;
         }
-
-        // increase counter
-        count++;
-        if (isSolved)
-            countSolved++;
+        Py_XDECREF(result);
     }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_variants");
 
     trvVariants->setUpdatesEnabled(true);
 
@@ -657,7 +634,7 @@ void OptilabWindow::refreshVariants()
 
     lblProblems->setText(tr("Solutions: %1/%2").arg(countSolved).arg(count));
 
-    // qDebug() << "refresh" << time.elapsed();
+    qDebug() << "refresh" << time.elapsed();
 
     // set Python variables
     setPythonVariables();
@@ -686,6 +663,8 @@ void OptilabWindow::setPythonVariables()
 
 void OptilabWindow::refreshChart()
 {
+    return;
+
     chart->graph(0)->clearData();
     chart->graph(1)->clearData();
 
@@ -702,7 +681,7 @@ void OptilabWindow::refreshChart()
         if (trvVariants->currentItem())
         {
             int index = trvVariants->indexOfTopLevelItem(trvVariants->currentItem());
-
+            /*
             QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
             QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
 
@@ -720,6 +699,7 @@ void OptilabWindow::refreshChart()
 
                 chart->graph(1)->setData(x, y);
             }
+            */
         }
     }
     else if (radChartLine->isChecked())
@@ -735,7 +715,7 @@ void OptilabWindow::refreshChart()
         if (trvVariants->currentItem())
         {
             int index = trvVariants->indexOfTopLevelItem(trvVariants->currentItem());
-
+            /*
             QDomNode nodeResult = docXML.elementsByTagName("results").at(0).childNodes().at(index);
             QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
 
@@ -751,6 +731,7 @@ void OptilabWindow::refreshChart()
 
                 chart->graph(1)->setData(x, y);
             }
+            */
         }
     }
 
@@ -799,104 +780,97 @@ void OptilabWindow::refreshChartControls()
     chart->yAxis->setLabel(cmbY->currentText());
 }
 
-QDomNode OptilabWindow::readVariant(const QString fileName)
+void OptilabWindow::variantInfo(const QString &key)
 {
-    QFileInfo fileInfo(fileName);
+    qDebug() << key;
+    currentPythonEngineOptilab()->runExpression(QString("m = md.models['%1']").arg(key));
 
-    QFile fileResult(fileInfo.absoluteFilePath());
-    if (!fileResult.open(QIODevice::ReadOnly | QIODevice::Text))
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "m");
+    if (result)
     {
-        qDebug() << tr("Cannot open OPT file");
-        return QDomNode();
-    }
+        Py_INCREF(result);
 
-    QDomDocument docXMLResult;
-    docXMLResult.setContent(&fileResult);
+        // template
+        ctemplate::TemplateDictionary model("model");
 
-    fileResult.close();
+        // problem info
+        model.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
 
-    QDomNode nodeResult = docXMLResult.elementsByTagName("results").at(0).childNodes().at(0);
-    QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
-    nodeSolution.toElement().setAttribute("filename", fileInfo.fileName());
+        model.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+        model.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+        model.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
-    return nodeResult;
-}
+        model.SetValue("NAME_LABEL", tr("Name:").toStdString());
+        model.SetValue("NAME", QFileInfo(key).baseName().toStdString());
 
-void OptilabWindow::addVariants()
-{
-    // clear results
-    QDomNode results = docXML.elementsByTagName("results").at(0);
-    docXML.documentElement().removeChild(results);
-    docXML.documentElement().appendChild(docXML.createElement("results"));
-    results = docXML.elementsByTagName("results").at(0);
+        model.SetValue("IMAGES_LABEL", tr("Geometry:").toStdString());
 
-    // read solutions
-    QDir dir = QDir(QString("%1/solutions").arg(QFileInfo(m_problemFileName).absolutePath()));
-    dir.setFilter(QDir::Files | QDir::NoSymLinks);
-
-    QFileInfoList listVariants = dir.entryInfoList();
-    for (int i = 0; i < listVariants.size(); ++i)
-    {
-        QFileInfo fileInfo = listVariants.at(i);
-        if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
-            continue;
-
-        if (fileInfo.suffix() == "rst")
+        // input parameters
+        PyObject *input = PyObject_GetAttrString(result, "parameters");
+        if (input)
         {
-            QDomNode node = readVariant(fileInfo.absoluteFilePath());
+            Py_INCREF(input);
+            model.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
 
-            // remove geometry (speed improvement)
-            QDomNode nodeSolution = node.toElement().elementsByTagName("solution").at(0);
-            nodeSolution.toElement().setAttribute("geometry", "");
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
 
-            if (!node.isNull())
-                results.appendChild(node);
+            while (PyDict_Next(input, &pos, &key, &value))
+            {
+                QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
+                double val = PyFloat_AsDouble(value);
+
+                ctemplate::TemplateDictionary *paramSection = model.AddSectionDictionary("PARAM_SECTION");
+
+                paramSection->SetValue("PARAM_LABEL", name.toStdString());
+                paramSection->SetValue("PARAM_VALUE", QString::number(val).toStdString());
+                // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
+            }
+            Py_XDECREF(input);
         }
+
+        // info
+        PyObject *info = PyObject_GetAttrString(result, "info");
+        if (info)
+        {
+            Py_INCREF(info);
+            model.SetValue("INFO_LABEL", tr("Variant info").toStdString());
+
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
+
+            while (PyDict_Next(info, &pos, &key, &value))
+            {
+                QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
+                double val = PyFloat_AsDouble(value);
+
+                ctemplate::TemplateDictionary *paramSection = model.AddSectionDictionary("INFO_SECTION");
+
+                paramSection->SetValue("INFO_LABEL", name.toStdString());
+                paramSection->SetValue("INFO_VALUE", QString::number(val).toStdString());
+            }
+            Py_XDECREF(info);
+        }
+
+        QString templateName = "variant.tpl";
+        std::string output;
+        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &model, &output);
+
+        // setHtml(...) doesn't work
+        // webView->setHtml(QString::fromStdString(info));
+
+        // load(...) works
+        writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(output));
+        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
+
+        btnOpenInAgros2D->setEnabled(true);
+        btnSolveInSolver->setEnabled(true);
+
+        Py_XDECREF(result);
     }
 
-    // save file
-    QFile docFile(m_problemFileName);
-    if (!docFile.open(QIODevice::ReadWrite | QIODevice::Text))
-    {
-        qDebug() << tr("Cannot open OPT file");
-        return;
-    }
-
-    QTextStream out(&docFile);
-    docXML.save(out, 4);
-
-    docFile.close();
-
-    // qDebug() << "add variants" << time.elapsed();
-
-    refreshVariants();
-}
-
-void OptilabWindow::variantInfo(const QString &fileName)
-{
-    QDomNode nodeResult = readVariant(fileName);
-
-    QDomNode nodeSolution = nodeResult.toElement().elementsByTagName("solution").at(0);
-    QDomNode nodeImages = nodeSolution.toElement().elementsByTagName("images").at(0);
-    QDomNode nodeInput = nodeResult.toElement().elementsByTagName("input").at(0);
-    QDomNode nodeOutput = nodeResult.toElement().elementsByTagName("output").at(0);
-    QDomNode nodeInfo = nodeResult.toElement().elementsByTagName("info").at(0);
-
-    // template
-    ctemplate::TemplateDictionary info("info");
-
-    // problem info
-    info.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
-
-    info.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-    info.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-    info.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
-
-    info.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    info.SetValue("NAME", QFileInfo(fileName).fileName().toStdString());
-
-    info.SetValue("IMAGES_LABEL", tr("Geometry:").toStdString());
-
+    /*
     // TODO: more images
     QDomElement eleGeometry = nodeImages.childNodes().at(0).toElement();
     QString geometry = eleGeometry.attribute("source");
@@ -904,19 +878,6 @@ void OptilabWindow::variantInfo(const QString &fileName)
         info.SetValue("IMAGE", geometry.toStdString());
 
     info.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
-
-    // input
-    info.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
-    for (unsigned int i = 0; i < nodeInput.childNodes().count(); i++)
-    {
-        ctemplate::TemplateDictionary *paramSection = info.AddSectionDictionary("PARAM_SECTION");
-
-        QDomElement eleParameter = nodeInput.childNodes().at(i).toElement();
-
-        paramSection->SetValue("PARAM_LABEL", eleParameter.attribute("name").toStdString());
-        paramSection->SetValue("PARAM_VALUE", eleParameter.attribute("value").toStdString());
-        // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
-    }
 
     // output
     info.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
@@ -967,20 +928,7 @@ void OptilabWindow::variantInfo(const QString &fileName)
         infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name").toStdString());
         infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value").toStdString());
     }
-
-    QString templateName = "variant.tpl";
-    std::string output;
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &info, &output);
-
-    // setHtml(...) doesn't work
-    // webView->setHtml(QString::fromStdString(info));
-
-    // load(...) works
-    writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(output));
-    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
-
-    btnOpenInAgros2D->setEnabled(true);
-    btnSolveInSolver->setEnabled(true);
+    */
 }
 
 void OptilabWindow::welcomeInfo()
@@ -1024,27 +972,24 @@ void OptilabWindow::linkClicked(const QUrl &url)
     {
 #if QT_VERSION < 0x050000
         QString fileName = url.queryItemValue("filename");
-        QString form = url.queryItemValue("form");
 #else
         QString fileName = QUrlQuery(url).queryItemValue("filename");
-        QString form = QUrlQuery(url).queryItemValue("form");
 #endif
 
-        if (QFile::exists(QUrl(fileName).toLocalFile()))
-            documentOpen(QUrl(fileName).toLocalFile());
+        if (QFile::exists(QUrl(fileName + "/problem.py").toLocalFile()))
+            documentOpen(QUrl(fileName + "/problem.py").toLocalFile());
     }
 }
 
 void OptilabWindow::setRecentFiles()
 {
     // recent files
-    if (!m_problemFileName.isEmpty())
+    if (!m_problemDir.isEmpty())
     {
-        QFileInfo fileInfo(m_problemFileName);
-        if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
-            recentFiles.insert(0, fileInfo.absoluteFilePath());
+        if (recentFiles.indexOf(m_problemDir) == -1)
+            recentFiles.insert(0, m_problemDir);
         else
-            recentFiles.move(recentFiles.indexOf(fileInfo.absoluteFilePath()), 0);
+            recentFiles.move(recentFiles.indexOf(m_problemDir), 0);
 
         while (recentFiles.count() > 15) recentFiles.removeLast();
     }
@@ -1098,7 +1043,7 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
         trvVariants->topLevelItem(index)->setSelected(true);
         trvVariants->setCurrentItem(trvVariants->topLevelItem(index));
 
-        variantInfo(QString("%1/solutions/%2").arg(QFileInfo(m_problemFileName).absolutePath()).arg(trvVariants->topLevelItem(index)->data(0, Qt::UserRole).toString()));
+        variantInfo(trvVariants->topLevelItem(index)->data(0, Qt::UserRole).toString());
     }
 
 }
