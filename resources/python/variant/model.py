@@ -4,10 +4,23 @@ import pickle
 from os.path import dirname, isdir
 from os import makedirs
 
+class Parameters(dict):
+    def __init__(self, defaults):
+        dict.__init__(self)
+        self._defaults = defaults
+
+    def __getitem__(self, key):
+        if key in dict.keys(self):
+            return dict.__getitem__(self, key)
+        elif key in self._defaults.keys():
+            return self._defaults[key]
+        else:
+            raise KeyError(key)
+
 class ModelData:
     def __init__(self):
         self.defaults = dict()
-        self.parameters = dict()
+        self.parameters = Parameters(self.defaults)
         self.variables = dict()
         self.info = dict()
 
@@ -105,6 +118,9 @@ class ModelBase(object):
 
         with open(file_name, 'wb') as outfile:
             pickle.dump(self._data, outfile, pickle.HIGHEST_PROTOCOL)
+
+    def clear(self):
+        self._data = ModelData()
 
 def create_model_dict(directory):   
     md = ModelDict()

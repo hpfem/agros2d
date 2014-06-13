@@ -38,6 +38,10 @@ class ModelDict(object):
 
         self._models[file_name] = model
 
+    def find_model(self, parameters):
+        for file_name, model in self._models.items():
+            if (model.parameters == parameters): return model
+
     def find_files(self, mask):
         """ Find existing model files """
         if isdir(abspath(mask)):
