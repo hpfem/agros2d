@@ -89,6 +89,7 @@ SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
 SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 SET(MATIO_LIBRARY agros2d_3dparty_matio)
 SET(TRIANGLE_LIBRARY agros2d_3dparty_triangle)
+SET(GMSH_LIBRARY agros2d_3dparty_gmsh)
 
 SET(AGROS_SOLVER_EXTERNAL solver_external)
 

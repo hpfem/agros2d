@@ -47,7 +47,7 @@ MeshGenerator::~MeshGenerator()
 
 using namespace Hermes::Hermes2D;
 
-void MeshGenerator::elements_sharing_node(MeshElement* e, Point* node, QList<MeshElement*>& elements)
+void MeshGenerator::elementsSharingNode(MeshElement* e, Point* node, QList<MeshElement*>& elements)
 {
     if(!elements.contains(e))
     {
@@ -58,7 +58,7 @@ void MeshGenerator::elements_sharing_node(MeshElement* e, Point* node, QList<Mes
             {
                 if(e->neigh[i] != -1 && &this->nodeList[this->elementList[e->neigh[i]].node[j]] == node)
                 {
-                    elements_sharing_node(&this->elementList[e->neigh[i]], node, elements);
+                    elementsSharingNode(&this->elementList[e->neigh[i]], node, elements);
                     break;
                 }
             }
@@ -66,7 +66,7 @@ void MeshGenerator::elements_sharing_node(MeshElement* e, Point* node, QList<Mes
     }
 }
 
-bool MeshGenerator::get_determinant(MeshElement* element)
+bool MeshGenerator::getDeterminant(MeshElement* element)
 {
 
     bool is_triangle = element->node[3] == -1;
@@ -131,7 +131,7 @@ void MeshGenerator::moveNode(MeshElement* element, Point* node, QList<Point*>& a
 
     for (int i = 0; i < determinants.count(); i++)
     {
-        bool new_determinant = get_determinant(determinants[i].first);
+        bool new_determinant = getDeterminant(determinants[i].first);
         bool old_determinant = (determinants[i].second > 0);
         // If we broke the element orientation, we need to recursively continue fixing the elements (vertices)
         if(new_determinant != old_determinant)
@@ -144,10 +144,10 @@ void MeshGenerator::moveNode(MeshElement* element, Point* node, QList<Point*>& a
                     QList<MeshElement*> elements_to_pass;
                     QList<std::pair<MeshElement*, bool> > determinants_to_pass;
                     // Elements sharing the vertex that broke something.
-                    elements_sharing_node(determinants[i].first, &this->nodeList[determinants[i].first->node[j]], elements_to_pass);
+                    elementsSharingNode(determinants[i].first, &this->nodeList[determinants[i].first->node[j]], elements_to_pass);
                     // Calculate the determinants now - to check if this fix won't break something else.
                     for (int ifound_elems = 0; ifound_elems < elements_to_pass.count(); ifound_elems++)
-                        determinants_to_pass.append(std::pair<MeshElement*, bool>(elements_to_pass[ifound_elems], get_determinant(elements_to_pass[ifound_elems])));
+                        determinants_to_pass.append(std::pair<MeshElement*, bool>(elements_to_pass[ifound_elems], getDeterminant(elements_to_pass[ifound_elems])));
 
                     // We have to stop updating somewhere - this reduces the multiplier multiplying the displacement of vertices.
                     // Very important is the right constant.
@@ -245,11 +245,11 @@ void MeshGenerator::moveNodesOnCurvedEdges()
                     QList<std::pair<MeshElement*, bool> > determinants_to_pass;
 
                     // Find elements sharing this node
-                    elements_sharing_node(&this->elementList[edge.neighElem[0]], node[inode], elements_to_pass);
+                    elementsSharingNode(&this->elementList[edge.neighElem[0]], node[inode], elements_to_pass);
 
                     // Calculate determinants for them
                     for (int ifound_elems = 0; ifound_elems < elements_to_pass.count(); ifound_elems++)
-                        determinants_to_pass.append(std::pair<MeshElement*, bool>(elements_to_pass[ifound_elems], get_determinant(elements_to_pass[ifound_elems])));
+                        determinants_to_pass.append(std::pair<MeshElement*, bool>(elements_to_pass[ifound_elems], getDeterminant(elements_to_pass[ifound_elems])));
 
                     // Start the algorithm
                     moveNode(&this->elementList[edge.neighElem[0]], node[inode], already_moved_nodes, x_displacement, y_displacement, 1.0, determinants_to_pass);
@@ -342,7 +342,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     // Just Arcs //
     for (int edge_i = 0; edge_i < edgeList.count(); edge_i++)
     {
-        if (false)//edgeList[edge_i].marker != -1)
+        if (edgeList[edge_i].marker != -1)
         {
             // curve
             if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->angle() > 0.0 &&
@@ -636,7 +636,7 @@ void MeshGenerator::writeToHermes()
                 // Just Arcs //
                 for (int edge_i = 0; edge_i < edgeList.count(); edge_i++)
                 {
-                    if (edgeList[edge_i].marker != -1)
+                    if (false)//edgeList[edge_i].marker != -1)
                     {
                         // curve
                         if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->angle() > 0.0 &&
