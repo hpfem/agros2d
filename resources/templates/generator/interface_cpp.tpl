@@ -44,9 +44,52 @@ static XMLModule::module *module_module = NULL;
     // xml module description
     if (!module_module)
     {
-        std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir() + MODULEROOT + QDir::separator() + "{{ID}}.xml").toStdString(),
-                                                                         xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
-        module_module = module_xsd.release();
+        try
+        {
+            std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir() + MODULEROOT + QDir::separator() + "{{ID}}.xml").toStdString(),
+                                                                             xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
+            module_module = module_xsd.release();
+        }
+        catch (const xml_schema::expected_element& e)
+        {
+            QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name()));
+            qDebug() << str;
+        }
+        catch (const xml_schema::expected_attribute& e)
+        {
+            QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name()));
+            qDebug() << str;
+        }
+        catch (const xml_schema::unexpected_element& e)
+        {
+            QString str = QString("%1: %2 instead of %3").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.encountered_name())).arg(QString::fromStdString(e.expected_name()));
+            qDebug() << str;
+        }
+        catch (const xml_schema::unexpected_enumerator& e)
+        {
+            QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.enumerator()));
+            qDebug() << str;
+        }
+        catch (const xml_schema::expected_text_content& e)
+        {
+            QString str = QString("%1").arg(QString::fromStdString(e.what()));
+            qDebug() << str;
+        }
+        catch (const xml_schema::parsing& e)
+        {
+            QString str = QString("%1").arg(QString::fromStdString(e.what()));
+            qDebug() << str;
+            xml_schema::diagnostics diagnostic = e.diagnostics();
+            for(int i = 0; i < diagnostic.size(); i++)
+            {
+                xml_schema::error err = diagnostic.at(i);
+                qDebug() << QString("%1, position %2:%3, %4").arg(QString::fromStdString(err.id())).arg(err.line()).arg(err.column()).arg(QString::fromStdString(err.message()));
+            }
+        }
+        catch (const xml_schema::exception& e)
+        {
+            qDebug() << QString::fromStdString(e.what());
+        }
     }
     m_module = &module_module->field().get();
 }

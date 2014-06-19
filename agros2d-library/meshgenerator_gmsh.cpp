@@ -103,8 +103,8 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             // Agros2D::log()->printDebug(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             //  remove gmsh temp files
-            QFile::remove(tempProblemFileName() + ".geo");
-            QFile::remove(tempProblemFileName() + ".msh");
+            // QFile::remove(tempProblemFileName() + ".geo");
+            // QFile::remove(tempProblemFileName() + ".msh");
             QFile::remove(tempProblemFileName() + ".gmsh.out");
             QFile::remove(tempProblemFileName() + ".gmsh.err");
         }
