@@ -1,4 +1,5 @@
 import agros2d
+
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
@@ -75,7 +76,7 @@ class TestMathCoeffPlanar(Agros2DTestCase):
         surface = self.math_coeff.surface_integrals([0, 1, 2, 3, 4])
         self.value_test("Gradient", surface["g"], 59.98499 / 2)
         self.value_test("Flux", surface["f"], 59.98499)
-"""   
+   
 class TestMathCoeffAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # model
@@ -88,31 +89,42 @@ class TestMathCoeffAxisymmetric(Agros2DTestCase):
         agros2d.view.post2d.disable()
         
         # fields
-        self.current = agros2d.field("current")
-        self.current.analysis_type = "steadystate"
-        self.current.number_of_refinements = 1
-        self.current.polynomial_order = 4
-        self.current.solver = "linear"
+        self.math_coeff = agros2d.field("math_coeff")
+        self.math_coeff.analysis_type = "steadystate"
+        self.math_coeff.matrix_solver = "mumps"
+        self.math_coeff.number_of_refinements = 3
+        self.math_coeff.polynomial_order = 3
+        self.math_coeff.solver = "linear"
         
-        self.current.add_boundary("Neumann", "current_inward_current_flow", {"current_inward_current_flow" : 0})
-        self.current.add_boundary("Ground", "current_potential", {"current_potential" : 0})
-        self.current.add_boundary("Voltage", "current_potential", {"current_potential" : 10})
-        self.current.add_boundary("Inlet", "current_inward_current_flow", {"current_inward_current_flow" : -3e9})
+        self.math_coeff.add_boundary("Dirichlet 1", "math_coeff_solution", {"math_coeff_solution" : 10})
+        self.math_coeff.add_boundary("Dirichlet 2", "math_coeff_solution", {"math_coeff_solution" : -5})
+        self.math_coeff.add_boundary("Flux", "math_coeff_flux", {"math_coeff_flux" : -30})
+        self.math_coeff.add_boundary("Zero flux", "math_coeff_flux", {"math_coeff_flux" : 0})
         
-        self.current.add_material("Copper", {"current_conductivity" : 5.7e7})
-        
+        self.math_coeff.add_material("Material 1", {"math_coeff_c" : 5, "math_coeff_a" : 0, "math_coeff_beta_x" : 5, "math_coeff_beta_y" : 8, "math_coeff_f" : -50})
+        self.math_coeff.add_material("Material 2", {"math_coeff_c" : 3, "math_coeff_a" : 0, "math_coeff_beta_x" : -3, "math_coeff_beta_y" : 4, "math_coeff_f" : 0})
+
         # geometry
         geometry = agros2d.geometry
         
         # edges
-        geometry.add_edge(0, 0.45, 0, 0, boundaries = {"current" : "Neumann"})
-        geometry.add_edge(0, 0, 0.2, 0, boundaries = {"current" : "Ground"})
-        geometry.add_edge(0.2, 0, 0.2, 0.15, boundaries = {"current" : "Inlet"})
-        geometry.add_edge(0.2, 0.15, 0.35, 0.45, boundaries = {"current" : "Neumann"})
-        geometry.add_edge(0.35, 0.45, 0, 0.45, boundaries = {"current" : "Voltage"})
+        geometry.add_edge(0, 1.6, 0, 0.95, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(0, 0.95, 0.35, 0.45, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(0.35, 0.45, 0.25, 0, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(0.25, 0, 0, -0.25, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(0, -0.25, 0.9, -0.75, boundaries = {"math_coeff" : "Dirichlet 1"})
+        geometry.add_edge(0.9, -0.75, 1.65, 0.15, boundaries = {"math_coeff" : "Flux"})
+        geometry.add_edge(1.65, 0.15, 1.25, 1.7, boundaries = {"math_coeff" : "Flux"})
+        geometry.add_edge(1.25, 1.7, 0, 1.6, boundaries = {"math_coeff" : "Dirichlet 2"})
+        geometry.add_edge(0.6, 1.1, 1.15, 0.95, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(0.95, 0.6, 0.6, 1.1, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(1.15, 0.95, 0.95, 0.6, boundaries = {"math_coeff" : "Zero flux"})
+        geometry.add_edge(0.35, 0.45, 1.65, 0.15)
         
         # labels
-        geometry.add_label(0.0933957, 0.350253, materials = {"current" : "Copper"})
+        geometry.add_label(0.888828, 0.877296, materials = {"math_coeff" : "none"})
+        geometry.add_label(0.301166, 0.88379, materials = {"math_coeff" : "Material 1"})
+        geometry.add_label(0.755711, -0.216858, materials = {"math_coeff" : "Material 2"})
         
         agros2d.view.zoom_best_fit()
         
@@ -121,24 +133,23 @@ class TestMathCoeffAxisymmetric(Agros2DTestCase):
         
     def test_values(self):
         # point value
-        point = self.current.local_values(0.213175, 0.25045)
-        self.value_test("Scalar potential", point["V"], 5.566438)
-        self.value_test("Electric field", point["Er"], 32.059116)
-        self.value_test("Electric field - r", point["Err"], -11.088553)
-        self.value_test("Electric field - z", point["Erz"], -30.080408)
-        self.value_test("MathCoeff density", point["Jrc"], 1.82737e9)
-        self.value_test("MathCoeff density - r", point["Jrcr"], -6.320475e8)
-        self.value_test("MathCoeff density - z", point["Jrcz"], -1.714583e9)
-        self.value_test("Losses", point["pj"], 5.858385e10)	
+        point = self.math_coeff.local_values(1.220, 8.820e-02)
+        self.value_test("Solution", point["u"], -16.28353)
+        self.value_test("Gradient", point["g"], 15.85405	)
+        self.value_test("Gradient - r", point["gr"], -14.25501)
+        self.value_test("Gradient - z", point["gz"], -6.93706)
+        self.value_test("Flux", point["f"], 15.85405 * 3)
+        self.value_test("Flux - r", point["fr"], -14.25501 * 3)
+        self.value_test("Flux - z", point["fz"], -6.93706 * 3)
         
         # volume integral
-        volume = self.current.volume_integrals([0])
-        self.value_test("Losses", volume["Pj"], 4.542019e9)
+        volume = self.math_coeff.volume_integrals([2])
+        self.value_test("Solution", volume["u"], -45.8945)
         
         # surface integral
-        surface = self.current.surface_integrals([1])
-        self.value_test("MathCoeff", surface["Ir"], -2.166256e8)        
-"""
+        surface = self.math_coeff.surface_integrals([5, 6])
+        self.value_test("Gradient", surface["g"], -281.55775	 / 3 - 437.52318 / 5)
+        self.value_test("Flux", surface["f"], -719.08092)
         
 if __name__ == '__main__':        
     import unittest as ut
@@ -146,5 +157,5 @@ if __name__ == '__main__':
     suite = ut.TestSuite()
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffPlanar))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffAxisymmetric))
     suite.run(result)
