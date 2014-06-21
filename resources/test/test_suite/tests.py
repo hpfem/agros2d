@@ -124,6 +124,8 @@ fields.rf_te.TestRFTEHarmonicAxisymmetric,
 # rf tm
 fields.rf_tm.TestRFTMHarmonicPlanar,
 fields.rf_tm.TestRFTMHarmonicAxisymmetric,
+# math coeff
+fields.math_coeff.TestMathCoeffPlanar,
 # adaptivity
 adaptivity.adaptivity.TestAdaptivityElectrostatic,
 adaptivity.adaptivity.TestAdaptivityAcoustic,

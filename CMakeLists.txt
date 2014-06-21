@@ -294,6 +294,7 @@ set(info resources/modules/acoustic.xml
          resources/modules/rf_te.xml
          resources/modules/rf_tm.xml
          resources/modules/richards.xml
+         resources/modules/math_coeff.xml
          resources/couplings/current-heat.xml
          resources/couplings/heat-elasticity.xml
          resources/couplings/magnetic-heat.xml

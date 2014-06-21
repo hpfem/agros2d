@@ -133,5 +133,6 @@
         <file alias="fields/rf_te.png">images/fields/rf_te.png</file>
         <file alias="fields/rf_tm.png">images/fields/rf_tm.png</file>
         <file alias="fields/richards.png">images/fields/richards.png</file>
+        <file alias="fields/math_coeff.png">images/fields/math_coeff.png</file>
     </qresource>
 </RCC>

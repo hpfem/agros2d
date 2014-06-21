@@ -6,6 +6,7 @@
   <module:general_field id="math_coeff" name="Math - Coefficient Form PDE">
     <module:description>Coefficient PDE</module:description>
     <module:analyses>
+      <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate" />
       <module:analysis id="transient" name="Transient" solutions="2" type="transient" />
     </module:analyses>
   </module:general_field>
@@ -13,6 +14,9 @@
   <module:constants />
 
   <module:spaces>
+    <module:space analysistype="steadystate">
+      <module:space_config i="1" orderadjust="0" type="h1"/>
+    </module:space>
     <module:space analysistype="transient">
       <module:space_config i="1" orderadjust="0" type="h1"/>
       <module:space_config i="2" orderadjust="0" type="h1"/>
@@ -24,9 +28,15 @@
     <module:quantity id="math_coeff_da" shortname="mc_da"/>
     <module:quantity id="math_coeff_c" shortname="mc_c"/>
     <module:quantity id="math_coeff_a" shortname="mc_a"/>
+    <module:quantity id="math_coeff_beta_x" shortname="mc_beta_x"/>
+    <module:quantity id="math_coeff_beta_y" shortname="mc_beta_y"/>
     <module:quantity id="math_coeff_f" shortname="mc_f"/>
 
-    <module:matrix_form id="transient_1_1" i="1" j="1" planar="mc_c * (udx * vdx + udy * vdy)" axi="mc_c * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form id="diffusion" i="1" j="1" planar="mc_c * (udx * vdx + udy * vdy)" axi="mc_c * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form id="convection" i="1"  j="1" planar="(mc_beta_x * udx + mc_beta_y * udy) * vval" axi="r * (mc_beta_x * udr + mc_beta_y * udz) * vval" />
+    <module:matrix_form id="absorption" i="1" j="1" planar="mc_a * uval * vval" axi="mc_a * r * uval * vval" />
+    <module:vector_form id="rhs" i="1" j="1" planar="mc_f * vval" axi="r * mc_f * vval" />
+
     <module:matrix_form id="transient_1_2" i="1" j="2" planar="mc_ea * timedermat * uval * vval" axi="mc_ea * timedermat * r * uval * vval"/>
     <module:matrix_form id="transient_2_2" i="2" j="2" planar="- uval * vval" axi="- r * uval * vval" symmetric="1"/>
     <module:matrix_form id="transient_2_1" i="2" j="1" planar="timedermat * uval * vval" axi="timedermat * r * uval * vval"/>
@@ -34,32 +44,50 @@
     <module:matrix_form id="transient_time_mat" i="1" j="1" planar="mc_da * uval * vval * timedermat" axi="r * mc_da * uval * vval * timedermat"/>
     <module:vector_form id="transient_time_vec" i="1" j="1" planar="mc_da * timedervec * vval" axi="r * mc_da * timedervec * vval"/>
     
-    <module:vector_form id="transient_rhs_1_1" i="1" j="1" planar="mc_f * vval" axi="r * mc_f * vval" />
     
     <module:vector_form id="transient_rhs_1_2" i="1" j="2" planar="mc_ea * timedervec * vval" axi="mc_ea * r * timedervec * vval" />
     <module:vector_form id="transient_rhs_2_1" i="2" j="1" planar="timedervec * vval" axi="timedervec * r * vval" />
     
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="transient" equation="-\, \div \left( c\,\, \grad u \right) + e_\mathrm{a} \frac{\partial^2 u}{\partial t^2} + d_\mathrm{a} \frac{\partial u}{\partial t} + a \cdot u = f">
+      <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( c\,\, \grad u \right) + \vec{b} \cdot \grad u + a \cdot u = f">
+        <module:quantity id="math_coeff_c"/>
+        <module:quantity id="math_coeff_a"/>
+        <module:quantity id="math_coeff_beta_x"/>
+        <module:quantity id="math_coeff_beta_y"/>
+        <module:quantity id="math_coeff_f"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="diffusion" />
+          <module:matrix_form id="convection" />
+          <module:matrix_form id="absorption" />
+          <module:vector_form id="rhs" />
+        </module:linearity_option>
+      </module:weakform_volume>
+
+      <module:weakform_volume analysistype="transient" equation="-\, \div \left( c\,\, \grad u \right) + \vec{b} \cdot \grad u + a \cdot u + e_\mathrm{a} \frac{\partial^2 u}{\partial t^2} + d_\mathrm{a} \frac{\partial u}{\partial t} = f">
         <module:quantity id="math_coeff_ea"/>
         <module:quantity id="math_coeff_da"/>
         <module:quantity id="math_coeff_c"/>
         <module:quantity id="math_coeff_a"/>
+        <module:quantity id="math_coeff_beta_x"/>
+        <module:quantity id="math_coeff_beta_y"/>
         <module:quantity id="math_coeff_f"/>
 
         <module:linearity_option type="linear">
-          <module:matrix_form id="transient_1_1" />
+          <module:matrix_form id="diffusion" />
+          <module:matrix_form id="convection" />
+          <module:matrix_form id="absorption" />
+          <module:vector_form id="rhs" />
           <module:matrix_form id="transient_1_2" />
           <module:matrix_form id="transient_2_1" />
           <module:matrix_form id="transient_2_2" />
-          <module:matrix_form id="transient_time_mat" />          
+          <module:matrix_form id="transient_time_mat" />
           <module:vector_form id="transient_time_vec" />
-          <module:vector_form id="transient_rhs_1_1" />
           <module:vector_form id="transient_rhs_1_2" />
           <module:vector_form id="transient_rhs_2_1" />
         </module:linearity_option>
-
       </module:weakform_volume>
+
     </module:weakforms_volume>
   </module:volume>
 
@@ -68,30 +96,49 @@
     <module:quantity id="math_coeff_solution_time_derivative" shortname="mc_dut"/>
     <module:quantity id="math_coeff_flux" shortname="mc_uf"/>    
 
-    <module:essential_form id="transient_sol_2" i="2" axi="mc_dut" planar="mc_dut"/>
-    <module:essential_form id="transient_sol_1" i="1" axi="mc_u" planar="mc_u"/>
-    <module:vector_form id="transient_flux" i="1" j="1" axi="mc_uf * r * vval" planar="mc_uf * vval"/>
+    <module:essential_form id="solution" i="1" axi="mc_u" planar="mc_u"/>
+    <module:vector_form id="flux" i="1" j="1" axi="mc_uf * r * vval" planar="mc_uf * vval"/>
+    <module:essential_form id="transient_solution_time" i="2" axi="mc_dut" planar="mc_dut"/>
 
-    <module:weakforms_surface>
+      <module:weakforms_surface>
+      <module:weakform_surface analysistype="steadystate" default="math_coeff_solution">
+        <module:boundary equation="u = u_0" id="math_coeff_solution" name="Solution">
+          <module:quantity id="math_coeff_solution"/>
+          
+          <module:linearity_option type="linear">
+            <module:essential_form id="solution"/>
+          </module:linearity_option>
+        </module:boundary>
+
+        <module:boundary equation="f_\mathrm{n} = c \frac{\partial u}{\partial n_0} = f_0" id="math_coeff_flux" name="Flux">
+          <module:quantity id="math_coeff_flux"/>
+          
+          <module:linearity_option type="linear">
+            <module:vector_form id="flux"/>
+          </module:linearity_option>
+        </module:boundary>
+      </module:weakform_surface>
+
       <module:weakform_surface analysistype="transient" default="math_coeff_solution">
         <module:boundary equation="u = u_0" id="math_coeff_solution" name="Solution">
           <module:quantity dependence="time" id="math_coeff_solution"/>
           <module:quantity dependence="time" id="math_coeff_solution_time_derivative"/>
-          
+
           <module:linearity_option type="linear">
-            <module:essential_form id="transient_sol_2"/>
-            <module:essential_form id="transient_sol_1"/>
-          </module:linearity_option>         
+            <module:essential_form id="transient_solution_time"/>
+            <module:essential_form id="solution"/>
+          </module:linearity_option>
         </module:boundary>
 
-        <module:boundary equation="f_\mathrm{n} = c \frac{\partial u}{\partial n_0} = f_0" id="transient_coeff_flux" name="Flux">
+        <module:boundary equation="f_\mathrm{n} = c \frac{\partial u}{\partial n_0} = f_0" id="math_coeff_flux" name="Flux">
           <module:quantity dependence="time" id="math_coeff_flux"/>
-          
+
           <module:linearity_option type="linear">
-            <module:vector_form id="transient_flux"/>
-          </module:linearity_option>              
-        </module:boundary>       
+            <module:vector_form id="flux"/>
+          </module:linearity_option>
+        </module:boundary>
       </module:weakform_surface>
+
     </module:weakforms_surface>
   </module:surface>
 
@@ -99,22 +146,38 @@
         <module:calculator id="l2" name="L2 norm">
             <module:expression analysistype="transient" axi="(uval * vval)"
                                                        planar="(uval * vval)"/>
+           <module:expression analysistype="steadystate" axi="(uval * vval)"
+                                                      planar="(uval * vval)"/>
         </module:calculator>
         <module:calculator id="h1" name="H1 norm">
-            <module:expression analysistype="transient" axi="(uval * vval + udr * vdr + udz * vdz)"
-                                                       planar="(uval * vval + udx * vdx + udy * vdy)"/>
+        <module:expression analysistype="transient" axi="(uval * vval + udr * vdr + udz * vdz)"
+                                                   planar="(uval * vval + udx * vdx + udy * vdy)"/>
+       <module:expression analysistype="steadystate" axi="(uval * vval + udr * vdr + udz * vdz)"
+                                                  planar="(uval * vval + udx * vdx + udy * vdy)"/>
         </module:calculator>
   </module:error_calculator>
 
   <module:preprocessor>
     <module:gui type="volume">
-      <module:group>
-        <module:quantity default="1" id="math_coeff_ea" name="Mass coefficient" shortname="ea" shortname_html="&lt;i>e&lt;/i>&lt;sub>a&lt;/sub>" shortname_latex="e_\mathrm{a}" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity default="0" id="math_coeff_da" name="Damping coefficient" shortname="da" shortname_html="&lt;i>d&lt;/i>&lt;sub>a&lt;/sub>" shortname_latex="d_\mathrm{a}" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity default="1" id="math_coeff_c" name="Diffusion coefficient" shortname="c" shortname_html="&lt;i>c&lt;/i>" shortname_latex="c" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity default="0" id="math_coeff_a" name="Absorption coefficient" shortname="a" shortname_html="&lt;i>a&lt;/i>" shortname_latex="a" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity default="0" id="math_coeff_f" name="Source term" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" unit="-" unit_html="-" unit_latex="-"/>
-      </module:group>
+        <module:group name="Mass coefficient">
+            <module:quantity default="1" id="math_coeff_ea" name="Mass coefficient" shortname="ea" shortname_html="&lt;i>e&lt;/i>&lt;sub>a&lt;/sub>" shortname_latex="e_\mathrm{a}" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
+        <module:group name="Damping coefficient">
+            <module:quantity default="0" id="math_coeff_da" name="Damping coefficient" shortname="da" shortname_html="&lt;i>d&lt;/i>&lt;sub>a&lt;/sub>" shortname_latex="d_\mathrm{a}" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
+        <module:group name="Diffusion coefficient">
+            <module:quantity default="1" id="math_coeff_c" name="Diffusion coefficient" shortname="c" shortname_html="&lt;i>c&lt;/i>" shortname_latex="c" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
+        <module:group name="Absorption coefficient">
+            <module:quantity default="0" id="math_coeff_a" name="Absorption coefficient" shortname="a" shortname_html="&lt;i>a&lt;/i>" shortname_latex="a" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
+        <module:group name="Convection coefficient">
+            <module:quantity default="0" id="math_coeff_beta_x" name="Convection coefficient" shortname="bx" shortname_html="&lt;i>b&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="b_\mathrm{x}" unit="-" unit_html="-" unit_latex="-"/>
+            <module:quantity default="0" id="math_coeff_beta_y" name="Convection coefficient" shortname="by" shortname_html="&lt;i>b&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="b_\mathrm{y}" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
+        <module:group name="Source term">
+            <module:quantity default="0" id="math_coeff_f" name="Source term" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
     </module:gui>
     <module:gui type="surface">
       <module:group>
@@ -127,37 +190,65 @@
 
   <module:postprocessor>
     <module:localvariables>
-      <module:localvariable id="math_coeff_u" name="Solution" shortname="u" shortname_html="&lt;i>u&lt;/i>" shortname_latex="u" type="scalar" unit="-" unit_html="u" unit_latex="u">
-        <module:expression analysistype="transient" axi="value1" planar="value1"/>
-      </module:localvariable>
+    <module:localvariable id="math_coeff_solution" name="Solution" shortname="u" shortname_html="&lt;i>u&lt;/i>" shortname_latex="u" type="scalar" unit="-" unit_html="-" unit_latex="-">
+      <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
+      <module:expression analysistype="transient" axi="value1" planar="value1"/>
+    </module:localvariable>
+    <module:localvariable id="math_coeff_gradient" name="Gradient" shortname="g" shortname_html="&lt;i>g&lt;/i>" shortname_latex="g" type="vector" unit="-" unit_html="-" unit_latex="-">
+      <module:expression analysistype="steadystate" axi_r="dr1" axi_z="dz1" planar_x="dx1" planar_y="dy1"/>
+      <module:expression analysistype="transient" axi_r="dr1" axi_z="dz1" planar_x="dx1" planar_y="dy1"/>
+    </module:localvariable>
+    <module:localvariable id="math_coeff_flux" name="Flux" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" type="vector" unit="-" unit_html="-" unit_latex="-">
+      <module:expression analysistype="steadystate" axi_r="mc_c * dr1" axi_z="mc_c * dz1" planar_x="mc_c * dx1" planar_y="mc_c * dy1"/>
+      <module:expression analysistype="transient" axi_r="mc_c * dr1" axi_z="mc_c * dz1" planar_x="mc_c * dx1" planar_y="mc_c * dy1"/>
+    </module:localvariable>
       <module:localvariable id="math_coeff_dudt" name="Solution time derivative" shortname="dudt" shortname_html="&lt;i>dudt&lt;/i>" shortname_latex="dudt" type="scalar" unit="1/s" unit_html="s&lt;sup>-1&lt;/sup>" unit_latex="s^{-1}">
         <module:expression analysistype="transient" axi="value2" planar="value2"/>
       </module:localvariable>
     </module:localvariables>
+
     <module:view>
       <module:scalar_view>
-        <module:default analysistype="transient" id="math_coeff_u"/>
+        <module:default analysistype="steadystate" id="math_coeff_solution"/>
+        <module:default analysistype="transient" id="math_coeff_solution"/>
       </module:scalar_view>
       <module:vector_view>
-        <module:default analysistype="transient" id="math_coeff_u"/>
+        <module:default analysistype="steadystate" id="math_coeff_gradient"/>
+        <module:default analysistype="transient" id="math_coeff_gradient"/>
       </module:vector_view>
     </module:view>
 
     <module:volumeintegrals>
       <module:volumeintegral id="math_coeff_volume" name="Volume" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
         <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
       </module:volumeintegral>
       <module:volumeintegral id="math_coeff_cross_section" name="Cross section" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
+        <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
         <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:volumeintegral>      
+      <module:volumeintegral id="math_coeff_solution" name="Solution" shortname="u" shortname_html="&lt;i>u&lt;/i>" shortname_latex="u" unit="m3" unit_html=" m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * value1" planar="value1"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/>
+      </module:volumeintegral>
     </module:volumeintegrals>
 
     <module:surfaceintegrals>
       <module:surfaceintegral id="math_coeff_length" name="Length" shortname="l" shortname_html="&lt;i>l&lt;/i>" shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
+        <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
         <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:surfaceintegral>
       <module:surfaceintegral id="math_coeff_surface" name="Surface" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
-        <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
+        <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="math_coeff_gradient" name="Gradient" shortname="g" shortname_html="&lt;i>g&lt;/i>" shortname_latex="g" unit="-" unit_html="-" unit_latex="-">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * (tanz * dr1 - tanr * dz1)" planar="(tany * dx1 - tanx * dy1)"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * (tanz * dr1 - tanr * dz1)" planar="(tany * dx1 - tanx * dy1)"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="math_coeff_flux" name="Flux" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" unit="-" unit_html="-" unit_latex="-">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * mc_c * (tanz * dr1 - tanr * dz1)" planar="mc_c * (tany * dx1 - tanx * dy1)"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r * mc_c * (tanz * dr1 - tanr * dz1)" planar="mc_c * (tany * dx1 - tanx * dy1)"/>
       </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force/>
@@ -165,3 +256,4 @@
 
 </module:field>
 </module:module>
+
