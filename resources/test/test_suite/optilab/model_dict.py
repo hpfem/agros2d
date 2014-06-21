@@ -7,7 +7,7 @@ from variant import ModelBase, ModelDict, ModelDictExternal
 from shutil import rmtree
 from os.path import isdir
 
-from problem import Model
+# from problem import Model
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):

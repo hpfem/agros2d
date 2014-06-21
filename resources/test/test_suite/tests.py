@@ -77,7 +77,7 @@ __tests__["examples"] = examples.examples.tests
 __tests__["core"] = __get_tests__(core.matrix_solvers) + __get_tests__(core.generator) + core.xslt.tests
 
 # optilab
-__tests__["optilab"] = __get_tests__([optilab.model_set_manager, optilab.genetic])
+# __tests__["optilab"] = __get_tests__([optilab.model_set_manager, optilab.genetic])
 
 # complete 
 __tests__["complete"] = __tests__["fields"] + __tests__["coupled"] + __tests__["nonlin"] + \
@@ -126,6 +126,7 @@ fields.rf_tm.TestRFTMHarmonicPlanar,
 fields.rf_tm.TestRFTMHarmonicAxisymmetric,
 # math coeff
 fields.math_coeff.TestMathCoeffPlanar,
+fields.math_coeff.TestMathCoeffAxisymmetric,
 # adaptivity
 adaptivity.adaptivity.TestAdaptivityElectrostatic,
 adaptivity.adaptivity.TestAdaptivityAcoustic,
