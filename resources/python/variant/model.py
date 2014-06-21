@@ -1,13 +1,30 @@
 __empty_svg__ = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32" height="32" viewBox="0 0 32 32"></svg>'
 
+import pickle
+from os.path import dirname, isdir
+from os import makedirs
+
+class Parameters(dict):
+    def __init__(self, defaults):
+        dict.__init__(self)
+        self._defaults = defaults
+
+    def __getitem__(self, key):
+        if key in dict.keys(self):
+            return dict.__getitem__(self, key)
+        elif key in self._defaults.keys():
+            return self._defaults[key]
+        else:
+            raise KeyError(key)
+
 class ModelData:
     def __init__(self):
         self.defaults = dict()
-        self.parameters = dict()
+        self.parameters = Parameters(self.defaults)
         self.variables = dict()
         self.info = dict()
 
-        self.geometry_image = ""
+        self.geometry_image = __empty_svg__
         self.images = list()
 
         self.solved = False
@@ -88,130 +105,79 @@ class ModelBase(object):
     def process(self):
         pass    
         
-    def load(self, filename):
-        m = load_pickle(filename)
-        
-        self._data = m
+    def load(self, file_name):
+        """ Load model data from file """
+        with open(file_name, 'rb') as infile:
+            self._data = pickle.load(infile)
                                 
-    def save(self, filename):
-        save_pickle(self._data, filename)
-        
-def load_pickle(filename):
-    import pickle
-    
-    with open(filename, 'rb') as infile:
-        return pickle.load(infile)
+    def save(self, file_name):
+        """ Save model data from file """
+        directory = dirname(file_name)
+        if not isdir(directory):
+            makedirs(directory)
 
-def save_pickle(model, filename):        
-    import pickle
-    
-    with open(filename, 'wb') as outfile:
-        pickle.dump(model, outfile, pickle.HIGHEST_PROTOCOL)
-            
-def convert_xml_to_pickle(dir):
-    import json
-    import xml.etree.ElementTree as ET
-    from os.path import basename, splitext
-    import os
-                
-    # load all files in directory
-    for file in os.listdir(dir):
-        if file.endswith(".rst"):
-            m = ModelData()            
-                
-            tree = ET.parse(dir + "/" + file)
-            variant = tree.getroot()
-        
-            # only one result
-            results = variant.findall('results')[0]
-            result = results.findall('result')[0]
-                        
-            # solution
-            solution = result.findall('solution')[0]
-            m.solved = int(solution.attrib['solved'])
-        
-            # input
-            input = result.findall('input')[0]
-            for par in input.iter(tag='parameter'):             
-                m.parameters[par.attrib["name"]] = json.loads(par.attrib["value"])
-        
-            # output
-            output = result.findall('output')[0]
-            for var in output.iter(tag='variable'): 
-                m.variables[var.attrib["name"]] = json.loads(var.attrib["value"])
-        
-            # info
-            info = result.findall('info')[0]
-            for item in info.iter(tag='item'): 
-                m.info[item.attrib["name"]] = json.loads(item.attrib["value"])
-        
-            # geometry
-            geometry_image = solution.find('geometry_image')
-            if (geometry_image is None):
-                m.geometry_image = __empty_svg__
-            else:
-                m.geometry_image  = str(geometry_image.attrib["source"])
-        
-            # images
-            images = solution.findall('images')[0]
-            for image in images.findall('image'):
-                m.images.append(str(image.attrib["source"]))
-                
-            # save pickle
-            save_pickle(m, dir + "/" + splitext(basename(file))[0] + ".pickle")
-                    
-class ModelDict(object):
-    def __init__(self):
-        self._data = dict()
+        with open(file_name, 'wb') as outfile:
+            pickle.dump(self._data, outfile, pickle.HIGHEST_PROTOCOL)
 
-    def append(self, model):
-        self._data.append(model)
-    
-    @property
-    def models(self):
-        """ Models """
-        return self._data
+    def clear(self):
+        self._data = ModelData()
 
-    @models.setter
-    def models(self, value):
-        self._data = value
-        
-    def count(self):
-        return len(self._data)
-        
-    def keys(self):
-        return sorted(list(self._data.keys()))
-
-    def list(self):
-        lst = []
-        for k,m in sorted(self._data.items()):
-            lst.append({ 'key' : k, 'solved' : m.solved })
-                
-        return lst
-        
-    def read_pickles_from_directory(self, dir):
-        import os
-        
-        # clear list
-        self._data.clear()
-        
-        # load all files in directory
-        for file in os.listdir(dir):
-            if file.endswith(".pickle"):
-                m = load_pickle(dir + "/" + file)
-                self._data[file] = m
-
-def create_model_dict(solutions_dir):   
+def create_model_dict(directory):   
     md = ModelDict()
-    md.read_pickles_from_directory(solutions_dir)
-    
+    md.load('{0}/*.pickle'.format(directory))
     return md
 
+def convert_xml_to_pickle(directory):
+    import xml.etree.ElementTree as ET
+    from glob import glob
+    from json import loads
+    from os.path import basename, splitext
+                
+    for file_name in glob('{0}/*.rst'.format(directory)):
+        model_data = ModelData()
+        tree = ET.parse(directory + "/" + file)
+        variant = tree.getroot()
+        results = variant.findall('results')[0]
+        result = results.findall('result')[0]
+                        
+        # solution
+        solution = result.findall('solution')[0]
+        model_data.solved = int(solution.attrib['solved'])
+        
+        # input
+        input = result.findall('input')[0]
+        for par in input.iter(tag='parameter'):             
+            model_data.parameters[par.attrib["name"]] = loads(par.attrib["value"])
+        
+        # output
+        output = result.findall('output')[0]
+        for var in output.iter(tag='variable'): 
+            model_data.variables[var.attrib["name"]] = loads(var.attrib["value"])
+        
+        # info
+        info = result.findall('info')[0]
+        for item in info.iter(tag='item'): 
+            model_data.info[item.attrib["name"]] = loads(item.attrib["value"])
+        
+        # geometry
+        geometry_image = solution.find('geometry_image')
+        if (geometry_image is None):
+            model_data.geometry_image = __empty_svg__
+        else:
+            model_data.geometry_image  = str(geometry_image.attrib["source"])
+        
+        # images
+        images = solution.findall('images')[0]
+        for image in images.findall('image'):
+            model_data.images.append(str(image.attrib["source"]))
+
+        # save
+        save_pickle(m, )
+        with open(file_name, 'wb') as outfile:
+            pickle.dump(model_data, '{0}/{1}.pickle'.format(directory, splitext(basename(file))[0]), pickle.HIGHEST_PROTOCOL)
+
 if __name__ == '__main__':
+    #import pythonlab
+    #convert_xml_to_pickle(pythonlab.datadir('/data/sweep/act/solutions'))
+    #md = create_model_dict(pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions'))
     pass
-    #convert_xml_to_pickle('/home/karban/Projects/agros2d-optilab/data/sweep/act/solutions')
-    
-    #md = create_model_dict('/home/karban/Projects/agros2d-optilab/resources/test/test_suite/optilab/genetic/solutions')
-    #md = create_model_dict('/home/karban/Projects/agros2d-optilab/data/sweep/act/solutions')
-    #print(md.count())   
-    #print(md.list())
