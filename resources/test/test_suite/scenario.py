@@ -8,7 +8,8 @@ class Agros2DTestCase(ut.TestCase):
         if ((normal == 0.0) and (abs(value) < 1e-14)):
             self.assertTrue(True)
             return
-        test = abs((value - normal)/value) < error
+            
+        test = abs((value - normal)/normal) < error
         str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
         self.assertTrue(test, str)
         

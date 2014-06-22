@@ -60,7 +60,7 @@ CouplingList::CouplingList()
             // todo: this was copied from module. Find a way to do all catching at one place
 
             // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
-            bool validateAtTheBeginning = false;
+            bool validateAtTheBeginning = true;
             ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
             if(validateAtTheBeginning)
             {
@@ -189,11 +189,11 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 
 CouplingType CouplingInfo::couplingType() const
 {
-    if(m_couplingType == CouplingType_Hard)
-    {
-        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Hard coupling is not available yet, switching to weak coupling"));
-        return CouplingType_Weak;
-    }
+//    if(m_couplingType == CouplingType_Hard)
+//    {
+//        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Hard coupling is not available yet, switching to weak coupling"));
+//        return CouplingType_Weak;
+//    }
     return m_couplingType;
 }
 

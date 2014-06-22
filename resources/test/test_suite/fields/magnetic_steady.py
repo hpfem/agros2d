@@ -420,8 +420,8 @@ if __name__ == '__main__':
 
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticPlanar))
+#    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticAxisymmetric))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticNonlinPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticNonlinAxisymmetric)) 
+#    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticNonlinPlanar))
+#    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMagneticNonlinAxisymmetric)) 
     suite.run(result)

@@ -67,10 +67,6 @@ private:
     template <typename WeakForm>
     void generateForm(FormInfo formInfo, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType);
 
-
-    QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, CouplingType couplingType, const QString &expr);
-    QString generateDocWeakFormExpression(QString symbol);
-
     QMap<QString, int> quantityOrdering;
     QMap<QString, bool> quantityIsNonlinear;
     QMap<QString, int> functionOrdering;

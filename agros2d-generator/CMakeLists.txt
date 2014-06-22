@@ -20,7 +20,9 @@ SET(SOURCES main.cpp
     generator_postprocessor.cpp
     generator_documentation.cpp
     parser.cpp
+    parser_instance.cpp
     parser_lexical_analyser.cpp
+    parser_module_info.cpp
 )
 
 SET(HEADERS generator.h

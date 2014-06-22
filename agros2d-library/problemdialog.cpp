@@ -1036,7 +1036,7 @@ void CouplingsWidget::createContent()
         combo->setVisible(false);
         combo->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
         combo->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-        //        combo->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+        combo->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
 
         connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
 

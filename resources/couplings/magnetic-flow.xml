@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<module:module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd"
+    xmlns:module="XMLModule">
+<module:coupling>
+
+    <module:general_coupling id="magnetic-flow" name="Lorentz force">
+        <module:description>Flow caused by Lorentz force</module:description>
+        <module:modules>
+            <module:source id="magnetic" />
+            <module:target id="flow" />
+        </module:modules>
+    </module:general_coupling>
+
+    <module:constants>
+    </module:constants>
+
+    <module:volume>
+
+       <module:vector_form id="harmonic_weak_1" i="1" j="1"
+           planar="(0.5 * (((- (ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) + ma_gamma * ((ma_vx - ma_va * y) * source1dx + (ma_vy + ma_va * x) * source1dy) - (2 * PI * f * ma_gamma * (source2+source4))) * (- source1dx)) + ((- (ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) + ma_gamma * ((ma_vx - ma_va * y) * source2dx + (ma_vy + ma_va * x) * source2dy) + (2 * PI * f * ma_gamma * (source1+source3))) * ( - source2dx)))) * vval"
+           axi="(0.5 * ((((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * source1dz) + 2 * PI * f * ma_gamma * (source2+source4/(2*PI*(r+1e-12)))) * (source1dr + tern(r > SMALL, (source1+source3/(2*PI*(r+1e-12)))/r, source1dr)) - (((ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) - ma_gamma * (ma_vy * source2dz) - 2 * PI * f * ma_gamma * (source1+source3/(2*PI*(r+1e-12)))) * (source2dr + tern(r > 0, (source2+source4/(2*PI*(r+1e-12)))/r, source2dr)))))) * vval"
+       />
+       <module:vector_form id="harmonic_weak_2" i="2" j="2"
+           planar="(-0.5 * (((- (ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) + ma_gamma * ((ma_vx - ma_va * y) * source1dx + (ma_vy + ma_va * x) * source1dy) - (2 * PI * f * ma_gamma * (source2+source4))) * (source1dy)) + ((- (ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) + ma_gamma * ((ma_vx - ma_va * y) * source2dx + (ma_vy + ma_va * x) * source2dy) + (2 * PI * f * ma_gamma * (source1+source3))) * (source2dy)))) * vval"
+           axi="(- 0.5 * (((((ma_JVariable*ma_Jer + (1-ma_JVariable)*ma_Jer_compl) - ma_gamma * (ma_vy * source1dz) + 2 * PI * f * ma_gamma * (source2+source4/(2*PI*(r+1e-12)))) * (- source1dz)) - (((ma_JVariable*ma_Jei + (1-ma_JVariable)*ma_Jei_compl) - ma_gamma * (ma_vy * source2dz) - 2 * PI * f * ma_gamma * (source1+source3/(2*PI*(r+1e-12)))) * (- source2dz))))) * vval"
+       />
+
+        <module:weakforms_volume>
+            <module:weakform_volume couplingtype="weak" sourceanalysis="harmonic" analysistype="steadystate" equation="">
+                <module:linearity_option type="linear">
+                    <module:vector_form id="harmonic_weak_1" />
+                    <module:vector_form id="harmonic_weak_2" />
+                </module:linearity_option>
+
+                <module:linearity_option type="newton">
+                    <module:vector_form id="harmonic_weak_1" coefficient="-1"/>
+                    <module:vector_form id="harmonic_weak_2" coefficient="-1"/>
+                </module:linearity_option>
+
+            </module:weakform_volume>
+
+<!--            <module:weakform_volume couplingtype="hard" sourceanalysis="harmonic" analysistype="steadystate" equation="">
+                <module:linearity_option type="newton">
+                    <module:matrix_form id="harmonic_hard_matrix_newton_3_1"/>
+                    <module:matrix_form id="harmonic_hard_matrix_newton_3_2"/>
+                    <module:vector_form id="harmonic_hard_vector_newton_3_1"/>
+                    <module:vector_form id="harmonic_hard_vector_newton_3_2"/>
+                </module:linearity_option>
+
+            </module:weakform_volume>-->
+
+
+        </module:weakforms_volume>
+    </module:volume>
+</module:coupling>
+</module:module>

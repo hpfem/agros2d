@@ -34,7 +34,7 @@
 #include "hermes2d/bdf2.h"
  		
 // quantities in volume weak forms:
-{{#QUANTITY_INFO}}//{{QUANT_ID}} = ext[{{INDEX}}]
+{{#QUANTITY_INFO}}//{{QUANT_ID}} = ext[{{INDEX}} + {{OFFSET}}]
 {{/QUANTITY_INFO}}
 
 {{#VOLUME_MATRIX_SOURCE}}
