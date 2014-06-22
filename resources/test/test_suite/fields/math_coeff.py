@@ -151,6 +151,81 @@ class TestMathCoeffAxisymmetric(Agros2DTestCase):
         self.value_test("Gradient", surface["g"], -281.55775	 / 3 - 437.52318 / 5)
         self.value_test("Flux", surface["f"], -719.08092)
 
+class TestMathCoeffTransientPlanar(Agros2DTestCase):
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "planar"
+        problem.mesh_type = "triangle"
+        problem.time_step_method = "fixed"
+        problem.time_method_order = 2
+        problem.time_total = 1.1
+        problem.time_steps = 20
+        
+        # math_coeff
+        self.math_coeff = agros2d.field("math_coeff")
+        self.math_coeff.analysis_type = "transient"
+        self.math_coeff.matrix_solver = "mumps"
+        self.math_coeff.transient_initial_condition = 0
+        self.math_coeff.number_of_refinements = 3
+        self.math_coeff.polynomial_order = 3
+        self.math_coeff.adaptivity_type = "disabled"
+        self.math_coeff.solver = "linear"
+        
+        # boundaries
+        self.math_coeff.add_boundary("Source 1", "math_coeff_solution", {"math_coeff_solution" : { "expression" : "exp(-10/5*time) - exp(-20/5*time)" }, "math_coeff_solution_time_derivative" : { "expression" : "-10/5*exp(-10/5*time) + 20/5*exp(-20/5*time)" }})
+        self.math_coeff.add_boundary("Neumann", "math_coeff_flux", {"math_coeff_flux" : 10})
+        self.math_coeff.add_boundary("Source 2", "math_coeff_solution", {"math_coeff_solution" : { "expression" : "sin(2*pi*0.5/0.75*time)" }, "math_coeff_solution_time_derivative" : { "expression" : "2*pi*0.5/0.75*cos(2*pi*0.5/0.75*time)" }})
+        
+        # materials
+        self.math_coeff.add_material("Material", {"math_coeff_ea" : 300, "math_coeff_da" : 280, "math_coeff_c" : 3, "math_coeff_a" : 4, "math_coeff_beta_x" : 2, "math_coeff_beta_y" : -2, "math_coeff_f" : 5})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(-0.22, 0.055, 0.045, 0.08, boundaries = {"math_coeff" : "Neumann"})
+        geometry.add_edge(0.045, 0.08, 0.095, 0.005, boundaries = {"math_coeff" : "Neumann"})
+        geometry.add_edge(0.095, 0.005, 0.05, -0.095, boundaries = {"math_coeff" : "Neumann"})
+        geometry.add_edge(0.05, -0.095, -0.215, -0.045, boundaries = {"math_coeff" : "Neumann"})
+        geometry.add_edge(-0.22, 0.055, -0.215, -0.045, boundaries = {"math_coeff" : "Neumann"})
+        geometry.add_edge(-0.025, 0.04, 0.015, -0.03, boundaries = {"math_coeff" : "Source 1"})
+        geometry.add_edge(0.04, 0.015, 0.06, -0.02, boundaries = {"math_coeff" : "Source 1"})
+        geometry.add_edge(0.06, -0.02, 0.015, -0.03, boundaries = {"math_coeff" : "Source 1"})
+        geometry.add_edge(-0.025, 0.04, 0.04, 0.015, boundaries = {"math_coeff" : "Source 1"})
+        geometry.add_edge(-0.16, 0.025, -0.16, -0.02, boundaries = {"math_coeff" : "Source 2"})
+        geometry.add_edge(-0.16, 0.025, -0.09, 0.03, boundaries = {"math_coeff" : "Source 2"})
+        geometry.add_edge(-0.09, 0.03, -0.115, -0.005, boundaries = {"math_coeff" : "Source 2"})
+        geometry.add_edge(-0.095, -0.03, -0.115, -0.005, boundaries = {"math_coeff" : "Source 2"})
+        geometry.add_edge(-0.16, -0.02, -0.095, -0.03, boundaries = {"math_coeff" : "Source 2"})
+        
+        geometry.add_label(0.0350372, -0.00349351, materials = {"math_coeff" : "none"})
+        geometry.add_label(0.0270465, 0.0500445, materials = {"math_coeff" : "Material"})
+        geometry.add_label(-0.150064, 0.00228808, materials = {"math_coeff" : "none"})
+        
+        agros2d.view.zoom_best_fit()
+        
+        # solve problem
+        problem.solve()
+        
+    def test_values(self):
+        # point value
+        point = self.math_coeff.local_values(9.386e-01, 1.147e-01)
+        self.value_test("Solution", point["u"], -0.91572, 5)
+        self.value_test("Gradient", point["g"], 0.176053, 10)
+        self.value_test("Gradient - r", point["gr"], 0.04536, 10)
+        self.value_test("Gradient - z", point["gz"], 0.17011, 10)
+        self.value_test("Flux", point["f"], 0.176053 * 3, 10)
+        self.value_test("Flux - r", point["fr"], 0.04536 * 3, 10)
+        self.value_test("Flux - z", point["fz"], 0.17011 * 3, 10)
+        
+        # volume integral
+        volume = self.math_coeff.volume_integrals([1])
+        self.value_test("Solution", volume["u"], -4.29455, 10)
+        
+        # surface integral
+        surface = self.math_coeff.surface_integrals([4])
+        self.value_test("Gradient", surface["g"], 1.33109 / 3, 10)
+        self.value_test("Flux", surface["f"], 1.33109, 10)
+        
 class TestMathCoeffTransientAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # model
@@ -227,7 +302,7 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffPlanar))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMathCoeffTransientAxisymmetric))    
     suite.run(result)
