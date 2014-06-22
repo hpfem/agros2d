@@ -120,6 +120,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     // edges
     QList<GEdge *> edges;
+    edgesMap.clear();
     for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
     {
         GEdge *edge = NULL;
@@ -142,6 +143,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
                     vertices[Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd())]);
         }
 
+        edgesMap[Agros2D::scene()->edges->at(i)] = edge;
         edges.append(edge);
     }
 
@@ -159,38 +161,42 @@ bool MeshGeneratorGMSH::writeToGmsh()
     QList<std::vector<GEdge *> > edgesLoop;
     for(int i = 0; i < Agros2D::scene()->loopsInfo()->loops().size(); i++)
     {
+        edgesLoop.append(std::vector<GEdge *>());
+        qDebug() << "loop" << i;
+
         if (!Agros2D::scene()->loopsInfo()->outsideLoops().contains(i))
-        {
-            edgesLoop.append(std::vector<GEdge *>());
-            // qDebug() << "loop" << i;
+        {            
             for(int j = 0; j < Agros2D::scene()->loopsInfo()->loops().at(i).size(); j++)
             {
-                // qDebug() << Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse;
-                // if (Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse)
-                //    outLoops.append("-");
+                GEdge *edge = edges[Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge];
 
-                edgesLoop.last().push_back(edges[Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge]);
-                // qDebug() << Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge;
-            }                       
+                // if (Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse)
+                    // edge->reverse();
+
+                edgesLoop.last().push_back(edge);
+                qDebug() << "edge" << Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge << " reverse " << Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse;
+            }
         }
     }
 
     qDebug() << "edges loop size" << edgesLoop.size();
-
     for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
     {
         SceneLabel* label = Agros2D::scene()->labels->at(i);
         if (!label->isHole())
         {
-            qDebug() << "label" << i;
+            qDebug() << "label PRE" << i;
             std::vector<std::vector<GEdge *> > loops;
             for (int j = 0; j < Agros2D::scene()->loopsInfo()->labelLoops()[label].count(); j++)
             {
-                qDebug() << Agros2D::scene()->loopsInfo()->labelLoops()[label][j] - 1;
-                loops.push_back(edgesLoop[Agros2D::scene()->loopsInfo()->labelLoops()[label][j] - 1]);
+                qDebug() << Agros2D::scene()->loopsInfo()->labelLoops()[label][j];
+                loops.push_back(edgesLoop[Agros2D::scene()->loopsInfo()->labelLoops()[label][j]]);
             }
             GFace *face = m->addPlanarFace(loops);
+
             face->setMeshingAlgo(ALGO_2D_AUTO);
+
+            facesMap[label] = face;
         }
     }
 
@@ -251,48 +257,43 @@ bool MeshGeneratorGMSH::readGmshMeshFormat()
             nodeList.append(Point(mv->x(), mv->y()));
     }
 
-    for (GModel::eiter fit = m->firstEdge(); fit != m->lastEdge(); ++fit)
+    QMap<SceneEdge *, GEdge *>::const_iterator iEdge = edgesMap.constBegin();
+    while (iEdge != edgesMap.constEnd())
     {
-        GEdge *edge = *fit;
+        GEdge *edge = iEdge.value();
 
         for (int i = 0; i < edge->getNumMeshElements(); ++i)
         {
             MElement *me = edge->getMeshElement(i);
-
-            // qDebug() << me->getType();
 
             // edge
             if (me->getType() == TYPE_LIN)
             {
                 edgeList.append(MeshEdge(me->getVertex(0)->getIndex() - 1,
                                          me->getVertex(1)->getIndex() - 1,
-                                         edge->tag() - 1)); // marker conversion from gmsh, where it starts from 1
+                                         Agros2D::scene()->edges->items().indexOf(iEdge.key())));
             }
         }
+
+        ++iEdge;
     }
 
-    for (GModel::fiter fit = m->firstFace(); fit != m->lastFace(); ++fit)
+    QMap<SceneLabel *, GFace *>::const_iterator iFace = facesMap.constBegin();
+    while (iFace != facesMap.constEnd())
     {
-        GFace *face = *fit;
+        GFace *face = iFace.value();
 
         for (int i = 0; i < face->getNumMeshElements(); ++i)
         {
-            // Get element. Note that the argument given to getMeshElement()
-            // starts from 0.
             MElement *me = face->getMeshElement(i);
 
             // triangle
             if (me->getType() == TYPE_TRI)
             {
-                // qDebug() << "label" << face->tag();
-                int lbl = face->tag() - 1;
-                // if (face->tag() == 1) lbl = 0;
-                // if (face->tag() == 2) lbl = 3;
-
                 elementList.append(MeshElement(me->getVertex(0)->getIndex() - 1,
                                                me->getVertex(1)->getIndex() - 1,
                                                me->getVertex(2)->getIndex() - 1,
-                                               lbl)); // marker conversion from gmsh, where it starts from 1
+                                               Agros2D::scene()->labels->items().indexOf(iFace.key())));
             }
 
             // quad
@@ -302,13 +303,18 @@ bool MeshGeneratorGMSH::readGmshMeshFormat()
                                                me->getVertex(1)->getIndex() - 1,
                                                me->getVertex(2)->getIndex() - 1,
                                                me->getVertex(3)->getIndex() - 1,
-                                               face->tag() - 1)); // marker conversion from gmsh, where it starts from 1
+                                               Agros2D::scene()->labels->items().indexOf(iFace.key())));
             }
         }
+
+        ++iFace;
     }
 
     // Finalization.
     delete m;
+    edgesMap.clear();
+    facesMap.clear();
+
     GmshFinalize();
 
     writeToHermes();

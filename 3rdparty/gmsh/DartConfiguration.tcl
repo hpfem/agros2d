@@ -4,8 +4,8 @@
 
 
 # Configuration directories and files
-SourceDirectory: /home/karban/Projects/agros2d/3rdparty/gmsh
-BuildDirectory: /home/karban/Projects/agros2d/3rdparty/gmsh
+SourceDirectory: /home/karban/Projects/agros2d-optilab/3rdparty/gmsh
+BuildDirectory: /home/karban/Projects/agros2d-optilab/3rdparty/gmsh
 
 # Where to place the cost data store
 CostDataFile: 
@@ -33,7 +33,7 @@ ScpCommand: /usr/bin/scp
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/bin/cmake" "/home/karban/Projects/agros2d/3rdparty/gmsh"
+ConfigureCommand: "/usr/bin/cmake" "/home/karban/Projects/agros2d-optilab/3rdparty/gmsh"
 MakeCommand: /usr/bin/make -i
 DefaultCTestConfigurationType: Release
 
@@ -58,7 +58,7 @@ UpdateOptions:
 UpdateType: 
 
 # Compiler info
-Compiler: /usr/bin/c++
+Compiler: /home/karban/Projects/3rdparty/llvm/build/Release+Asserts/bin/clang++
 
 # Dynamic analysis (MemCheck)
 PurifyCommand: 

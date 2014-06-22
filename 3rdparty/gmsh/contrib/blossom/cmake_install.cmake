@@ -1,4 +1,4 @@
-# Install script for directory: /home/karban/Projects/agros2d/3rdparty/gmsh/contrib/blossom
+# Install script for directory: /home/karban/Projects/agros2d-optilab/3rdparty/gmsh/contrib/blossom
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)

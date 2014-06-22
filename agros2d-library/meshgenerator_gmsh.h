@@ -24,6 +24,8 @@
 #include "meshgenerator.h"
 
 class GModel;
+class GEdge;
+class GFace;
 
 class MeshGeneratorGMSH : public MeshGenerator
 {
@@ -33,7 +35,12 @@ private:
     bool writeToGmsh();
     bool readGmshMeshFormat();
 
+    // model
     GModel *m;
+    // edges
+    QMap<SceneEdge *, GEdge *> edgesMap;
+    // faces
+    QMap<SceneLabel *, GFace *> facesMap;
 
 public:
     MeshGeneratorGMSH();
