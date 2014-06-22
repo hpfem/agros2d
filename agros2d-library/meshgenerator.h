@@ -39,6 +39,7 @@ class AGROS_LIBRARY_API MeshGenerator : public QObject
 
 public:
     MeshGenerator();
+
     virtual ~MeshGenerator();
 
     virtual bool mesh() = 0;
@@ -47,148 +48,153 @@ public:
 
 protected:
     struct MeshEdge
+    {
+        MeshEdge()
         {
-            MeshEdge()
-            {
-                this->node[0] = -1;
-                this->node[1] = -1;
-                this->marker = -1;
+            this->node[0] = -1;
+            this->node[1] = -1;
+            this->marker = -1;
 
-                this->isActive = true;
-                this->isUsed = true;
+            this->isActive = true;
+            this->isUsed = true;
 
-                this->neighElem[0] = -1;
-                this->neighElem[1] = -1;
-            }
+            this->neighElem[0] = -1;
+            this->neighElem[1] = -1;
+        }
 
-            MeshEdge(int node_1, int node_2, int marker)
-            {
-                this->node[0] = node_1;
-                this->node[1] = node_2;
-                this->marker = marker;
-
-                this->isActive = true;
-                this->isUsed = true;
-
-                this->neighElem[0] = -1;
-                this->neighElem[1] = -1;
-            }
-
-            bool contains(int node)
-            {
-                for(int i = 0; i < 2; i++)
-                    if(this->node[i] == node)
-                        return true;
-                return false;
-            }
-
-            int node[2], marker;
-            bool isActive, isUsed;
-            int neighElem[2];
-        };
-
-        struct MeshElement
+        MeshEdge(int node_1, int node_2, int marker)
         {
-            MeshElement()
-            {
-                this->node[0] = -1;
-                this->node[1] = -1;
-                this->node[2] = -1;
-                this->node[3] = -1;
-                this->marker = -1;
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->marker = marker;
 
-                this->isActive = true;
-                this->isUsed = true;
-            }
+            this->isActive = true;
+            this->isUsed = true;
 
-            MeshElement(int node_1, int node_2, int node_3, int marker)
-            {
-                this->node[0] = node_1;
-                this->node[1] = node_2;
-                this->node[2] = node_3;
-                this->node[3] = -1;
-                this->marker = marker;
+            this->neighElem[0] = -1;
+            this->neighElem[1] = -1;
+        }
 
-                this->isActive = true;
-                this->isUsed = true;
-            }
-
-            MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
-            {
-                this->node[0] = node_1;
-                this->node[1] = node_2;
-                this->node[2] = node_3;
-                this->node[3] = node_4;
-                this->marker = marker;
-
-                this->isActive = true;
-                this->isUsed = true;
-            }
-
-            bool contains(int node)
-            {
-                for(int i = 0; i < isTriangle() ? 3 : 4; i++)
-                    if(this->node[i] == node)
-                        return true;
-                return false;
-            }
-
-            inline bool isTriangle() const { return (node[3] == -1); }
-
-            int node[4], marker;
-            bool isActive, isUsed;
-
-            int neigh[3];
-        };
-
-        struct MeshNode
+        bool contains(int node)
         {
-            MeshNode()
-            {
-                this->n = -1;
-                this->x = -1;
-                this->y = -1;
-                this->marker = -1;
-            }
+            for(int i = 0; i < 2; i++)
+                if(this->node[i] == node)
+                    return true;
+            return false;
+        }
 
-            MeshNode(int n, double x, double y, int marker)
-            {
-                this->n = n;
-                this->x = x;
-                this->y = y;
-                this->marker = marker;
-            }
+        int node[2], marker;
+        bool isActive, isUsed;
+        int neighElem[2];
+    };
 
-            int n;
-            double x, y;
-            int marker;
-        };
-
-        struct MeshLabel
+    struct MeshElement
+    {
+        MeshElement()
         {
-            MeshLabel()
-            {
-                this->n = -1;
-                this->x = -1;
-                this->y = -1;
-                this->marker = -1;
-                this->area = -1;
-            }
+            this->node[0] = -1;
+            this->node[1] = -1;
+            this->node[2] = -1;
+            this->node[3] = -1;
+            this->marker = -1;
 
-            MeshLabel(int n, double x, double y, int marker, double area)
-            {
-                this->n = n;
-                this->x = x;
-                this->y = y;
-                this->marker = marker;
-                this->area = area;
-            }
+            this->isActive = true;
+            this->isUsed = true;
+        }
 
-            int n;
-            double x, y;
-            int marker;
-            double area;
-        };
+        MeshElement(int node_1, int node_2, int node_3, int marker)
+        {
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->node[2] = node_3;
+            this->node[3] = -1;
+            this->marker = marker;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        MeshElement(int node_1, int node_2, int node_3, int node_4, int marker)
+        {
+            this->node[0] = node_1;
+            this->node[1] = node_2;
+            this->node[2] = node_3;
+            this->node[3] = node_4;
+            this->marker = marker;
+
+            this->isActive = true;
+            this->isUsed = true;
+        }
+
+        bool contains(int node)
+        {
+            for(int i = 0; i < isTriangle() ? 3 : 4; i++)
+                if(this->node[i] == node)
+                    return true;
+            return false;
+        }
+
+        inline bool isTriangle() const { return (node[3] == -1); }
+
+        int node[4], marker;
+        bool isActive, isUsed;
+
+        int neigh[3];
+    };
+
+    struct MeshNode
+    {
+        MeshNode()
+        {
+            this->n = -1;
+            this->x = -1;
+            this->y = -1;
+            this->marker = -1;
+        }
+
+        MeshNode(int n, double x, double y, int marker)
+        {
+            this->n = n;
+            this->x = x;
+            this->y = y;
+            this->marker = marker;
+        }
+
+        int n;
+        double x, y;
+        int marker;
+    };
+
+    struct MeshLabel
+    {
+        MeshLabel()
+        {
+            this->n = -1;
+            this->x = -1;
+            this->y = -1;
+            this->marker = -1;
+            this->area = -1;
+        }
+
+        MeshLabel(int n, double x, double y, int marker, double area)
+        {
+            this->n = n;
+            this->x = x;
+            this->y = y;
+            this->marker = marker;
+            this->area = area;
+        }
+
+        int n;
+        double x, y;
+        int marker;
+        double area;
+    };
+
+    void moveNode(MeshElement* element, Point* node, QList<Point*>& already_moved_nodes, const double x_displacement, const double y_displacement, const double multiplier, const QList<std::pair<MeshElement*, bool> >& determinants);
+    void performActualNodeMove(Point* node, QList<Point*>& already_moved_nodes, const double x_displacement, const double y_displacement, const double multiplier);
+    bool get_determinant(MeshElement* element);
+    void MeshGenerator::elements_sharing_node(MeshElement* e, Point* node, QList<MeshElement*>& elements);
 
     QList<Point> nodeList;
     QList<MeshEdge> edgeList;
