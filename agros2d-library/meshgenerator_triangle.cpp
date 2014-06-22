@@ -401,7 +401,7 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadJoin ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
         {
-            elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1            
         }
 
         if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)

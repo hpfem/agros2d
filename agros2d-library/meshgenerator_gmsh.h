@@ -23,15 +23,17 @@
 #include "util.h"
 #include "meshgenerator.h"
 
+class GModel;
+
 class MeshGeneratorGMSH : public MeshGenerator
 {
     Q_OBJECT
 
-private slots:
-    void meshGmshError(QProcess::ProcessError error);
-    void meshGmshCreated(int exitCode);
+private:
     bool writeToGmsh();
-    bool readGmshMeshFile();
+    bool readGmshMeshFormat();
+
+    GModel *m;
 
 public:
     MeshGeneratorGMSH();

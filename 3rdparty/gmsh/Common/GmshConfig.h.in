@@ -1,0 +1,72 @@
+// Gmsh - Copyright (C) 1997-2014 C. Geuzaine, J.-F. Remacle
+//
+// See the LICENSE.txt file for license information. Please report all
+// bugs and problems to the public mailing list <gmsh@geuz.org>.
+
+#ifndef _GMSH_CONFIG_H_
+#define _GMSH_CONFIG_H_
+
+#cmakedefine HAVE_3M
+#cmakedefine HAVE_64BIT_SIZE_T
+#cmakedefine HAVE_ACIS
+#cmakedefine HAVE_ANN
+#cmakedefine HAVE_BAMG
+#cmakedefine HAVE_BFGS
+#cmakedefine HAVE_BLAS
+#cmakedefine HAVE_BLOSSOM
+#cmakedefine HAVE_CAIRO
+#cmakedefine HAVE_CHACO
+#cmakedefine HAVE_DLOPEN
+#cmakedefine HAVE_DINTEGRATION
+#cmakedefine HAVE_FLTK
+#cmakedefine HAVE_FOURIER_MODEL
+#cmakedefine HAVE_GMM
+#cmakedefine HAVE_GMP
+#cmakedefine HAVE_KBIPACK
+#cmakedefine HAVE_LAPACK
+#cmakedefine HAVE_LIBCGNS
+#cmakedefine HAVE_LIBJPEG
+#cmakedefine HAVE_LIBPNG
+#cmakedefine HAVE_LIBZ
+#cmakedefine HAVE_LINUX_JOYSTICK
+#cmakedefine HAVE_MATHEX
+#cmakedefine HAVE_MED
+#cmakedefine HAVE_MESH
+#cmakedefine HAVE_METIS
+#cmakedefine HAVE_MMG3D
+#cmakedefine HAVE_MPEG_ENCODE
+#cmakedefine HAVE_MPI
+#cmakedefine HAVE_MUMPS
+#cmakedefine HAVE_NATIVE_FILE_CHOOSER
+#cmakedefine HAVE_NETGEN
+#cmakedefine HAVE_NUMPY
+#cmakedefine HAVE_NO_INTPTR_T
+#cmakedefine HAVE_NO_SOCKLEN_T
+#cmakedefine HAVE_NO_STDINT_H
+#cmakedefine HAVE_NO_VSNPRINTF
+#cmakedefine HAVE_OCC
+#cmakedefine HAVE_ONELAB
+#cmakedefine HAVE_ONELAB_METAMODEL
+#cmakedefine HAVE_OPENGL
+#cmakedefine HAVE_OPTHOM
+#cmakedefine HAVE_OSMESA
+#cmakedefine HAVE_PARSER
+#cmakedefine HAVE_PETSC
+#cmakedefine HAVE_PLUGINS
+#cmakedefine HAVE_POST
+#cmakedefine HAVE_POPPLER
+#cmakedefine HAVE_QT
+#cmakedefine HAVE_RTREE
+#cmakedefine HAVE_SALOME
+#cmakedefine HAVE_SGEOM
+#cmakedefine HAVE_SLEPC
+#cmakedefine HAVE_SOLVER
+#cmakedefine HAVE_TAUCS
+#cmakedefine HAVE_TETGEN
+#cmakedefine HAVE_VORO3D
+
+#define GMSH_CONFIG_OPTIONS "${GMSH_CONFIG_OPTIONS}"
+
+${GMSH_CONFIG_PRAGMAS}
+
+#endif

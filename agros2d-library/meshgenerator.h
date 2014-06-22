@@ -193,8 +193,8 @@ protected:
 
     void moveNode(MeshElement* element, Point* node, QList<Point*>& already_moved_nodes, const double x_displacement, const double y_displacement, const double multiplier, const QList<std::pair<MeshElement*, bool> >& determinants);
     void performActualNodeMove(Point* node, QList<Point*>& already_moved_nodes, const double x_displacement, const double y_displacement, const double multiplier);
-    bool get_determinant(MeshElement* element);
-    void MeshGenerator::elements_sharing_node(MeshElement* e, Point* node, QList<MeshElement*>& elements);
+    bool getDeterminant(MeshElement* element);
+    void elementsSharingNode(MeshElement* e, Point* node, QList<MeshElement*>& elements);
 
     QList<Point> nodeList;
     QList<MeshEdge> edgeList;
