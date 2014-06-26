@@ -99,7 +99,6 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     GmshSetOption("Mesh", "Algorithm", (unsigned int) 8);
     GmshSetOption("Mesh", "SubdivisionAlgorithm", (unsigned int) 1);
-    GmshSetOption("Mesh", "Algorithm", (unsigned int) 8);
 
     m = new GModel;
     m->setFactory("Gmsh");
@@ -158,27 +157,30 @@ bool MeshGeneratorGMSH::writeToGmsh()
         return false;
     }
 
+    // loops
     QList<std::vector<GEdge *> > edgesLoop;
+    QList<bool> edgesIsReversed;
     for(int i = 0; i < Agros2D::scene()->loopsInfo()->loops().size(); i++)
     {
         edgesLoop.append(std::vector<GEdge *>());
+        edgesIsReversed.append(true);
         qDebug() << "loop" << i;
 
         if (!Agros2D::scene()->loopsInfo()->outsideLoops().contains(i))
-        {            
+        {
             for(int j = 0; j < Agros2D::scene()->loopsInfo()->loops().at(i).size(); j++)
             {
                 GEdge *edge = edges[Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge];
 
-                // if (Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse)
-                    // edge->reverse();
-
+                edgesIsReversed.last() = edgesIsReversed.last() && Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse;
                 edgesLoop.last().push_back(edge);
+
                 qDebug() << "edge" << Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge << " reverse " << Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse;
             }
         }
     }
 
+    // faces
     qDebug() << "edges loop size" << edgesLoop.size();
     for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
     {
@@ -186,14 +188,17 @@ bool MeshGeneratorGMSH::writeToGmsh()
         if (!label->isHole())
         {
             qDebug() << "label PRE" << i;
+            bool isReversed = true;
             std::vector<std::vector<GEdge *> > loops;
             for (int j = 0; j < Agros2D::scene()->loopsInfo()->labelLoops()[label].count(); j++)
             {
                 qDebug() << Agros2D::scene()->loopsInfo()->labelLoops()[label][j];
+                isReversed = isReversed && edgesIsReversed[Agros2D::scene()->loopsInfo()->labelLoops()[label][j]];
                 loops.push_back(edgesLoop[Agros2D::scene()->loopsInfo()->labelLoops()[label][j]]);
             }
             GFace *face = m->addPlanarFace(loops);
-
+            if (isReversed)
+                face->meshAttributes.reverseMesh = true;
             face->setMeshingAlgo(ALGO_2D_AUTO);
 
             facesMap[label] = face;
@@ -250,11 +255,17 @@ bool MeshGeneratorGMSH::readGmshMeshFormat()
     m->indexMeshVertices(true, 0, false);
 
     // nodes
-    for (int i = 0; i < m->getNumMeshVertices(); ++i)
+    int numNodes = 0;
+    std::vector<GEntity*> entities;
+    m->getEntities(entities);
+    for(unsigned int i = 0; i < entities.size(); i++)
     {
-        MVertex *mv = m->getMeshVertexByTag(i + 1);
-        if (mv)
+        for(unsigned int j = 0; j < entities[i]->mesh_vertices.size(); j++)
+        {
+            MVertex *mv = entities[i]->mesh_vertices[j];
             nodeList.append(Point(mv->x(), mv->y()));
+            numNodes++;
+        }
     }
 
     QMap<SceneEdge *, GEdge *>::const_iterator iEdge = edgesMap.constBegin();
