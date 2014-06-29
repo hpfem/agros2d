@@ -698,7 +698,30 @@ void LoopsInfo::processLoops()
         if (!usedLoops.contains(principalLoopOfLabel[label]))
             usedLoops.append(principalLoopOfLabel[label]);
         else
-            throw AgrosGeometryException(tr("There is multiple labels in the domain"));
+            throw AgrosGeometryException(tr("There are multiple labels in the domain"));
+    }
+
+    // use the loops to determine what is the right and left label for each edge
+
+    foreach(SceneEdge* edge, m_scene->edges->items())
+    {
+        edge->unsetRightLeftLabelIdx();
+    }
+
+    for(int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
+    {
+        SceneLabel* label = m_scene->labels->at(labelIdx);
+        if (m_labelLoops[label].count() > 0)
+        {
+            // main loop around label
+            int mainLoopIdx = m_labelLoops[label][0];
+
+            for (int edgeIdx = 0; edgeIdx < m_loops[mainLoopIdx].size(); edgeIdx++)
+            {
+                SceneEdge *edge = m_scene->edges->at(m_loops[mainLoopIdx][edgeIdx].edge);
+                edge->addNeighbouringLabel(labelIdx);
+            }
+        }
     }
 }
 

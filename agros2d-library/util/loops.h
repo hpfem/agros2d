@@ -110,8 +110,14 @@ private:
 
     bool m_isProcessPolygonError;
 
+    // list of individual loops. Each loop is a list of LoopsNodeEdgeData
     QList<QList<LoopsNodeEdgeData> > m_loops;
+
+    // loops cooresponding to indiviual labels. Indices to the m_loops list
+    // the firs (0) corresponds to a inmost loop around label
+    // the rest are (if present) holes in this label
     QMap<SceneLabel*, QList<int> > m_labelLoops;
+
     QList<int> m_outsideLoops;
 
     QMap<SceneLabel*, QList<Triangle> > m_polygonTriangles;

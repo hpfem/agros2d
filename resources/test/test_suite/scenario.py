@@ -6,11 +6,16 @@ class Agros2DTestCase(ut.TestCase):
         ut.TestCase.__init__(self, methodName)
 
     def value_test(self, text, value, normal, error = 0.03):
-        if ((normal == 0.0) and (abs(value) < 1e-14)):
-            self.assertTrue(True)
+        if (abs(value) < 1e-50):
+            if(abs(normal) < 1e-30):
+                self.assertTrue(True)
+            else:
+                str = "{0}: Agros2D = {1}, correct = {2}".format(text, value, normal)
+                self.assertTrue(False, str)
+                
             return
         test = abs((value - normal)/value) < error
-        str = str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
+        str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
         self.assertTrue(test, str)
 
 class Agros2DTestResult(ut.TestResult):

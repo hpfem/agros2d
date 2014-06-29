@@ -40,6 +40,8 @@ class FieldInfo;
 // Q_DECLARE_METATYPE(SceneEdge *)
 // Q_DECLARE_METATYPE(SceneLabel *)
 
+const int MARKER_IDX_NOT_EXISTING = -1;
+
 class AGROS_LIBRARY_API SceneBasic 
 {
 
