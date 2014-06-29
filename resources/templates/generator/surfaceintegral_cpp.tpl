@@ -47,8 +47,14 @@ public:
 
     virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
     {
-        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-        SceneMaterial *material = label->marker(m_fieldInfo);
+        int labelIdx = atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str());
+        int edgeIdx = atoi(m_fieldInfo->initialMesh()->get_boundary_markers_conversion().get_user_marker(e->edge_marker).marker.c_str());
+        int labelIdxToIntegrate = Agros2D::scene()->edges->at(edgeIdx)->innerLabelIdx(m_fieldInfo);
+
+        if(labelIdx != labelIdxToIntegrate)
+            return;
+
+        SceneMaterial *material = Agros2D::scene()->labels->at(labelIdx)->marker(m_fieldInfo);
 
         double *x = e->x;
         double *y = e->y;
@@ -142,7 +148,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
 
             {{#VARIABLE_SOURCE}}
             if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[QLatin1String("{{VARIABLE}}")] = 0.5 * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
+                m_values[QLatin1String("{{VARIABLE}}")] = 1 * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
             {{/VARIABLE_SOURCE}}
 
             ::free(internalValues);

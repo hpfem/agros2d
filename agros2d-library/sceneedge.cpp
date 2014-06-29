@@ -42,6 +42,9 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, const Value &angl
         this->addMarker(SceneBoundaryContainer::getNone(field));
     }
 
+    m_rightLabelIdx = MARKER_IDX_NOT_EXISTING;
+    m_leftLabelIdx = MARKER_IDX_NOT_EXISTING;
+
     // cache center;
     computeCenterAndRadius();
 }
@@ -275,6 +278,99 @@ void SceneEdge::addMarkersFromStrings(QMap<QString, QString> markers)
             addMarker(boundary);
         }
     }
+}
+
+int SceneEdge::innerLabelIdx(const FieldInfo *fieldInfo) const
+{
+    if((m_leftLabelIdx == MARKER_IDX_NOT_EXISTING) && (m_rightLabelIdx == MARKER_IDX_NOT_EXISTING))
+        throw AgrosGeometryException(QObject::tr("right/left label idx not initialized"));
+
+    if((m_leftLabelIdx == MARKER_IDX_NOT_EXISTING) || (Agros2D::scene()->labels->at(m_leftLabelIdx)->marker(fieldInfo)->isNone()))
+    {
+        // on the left is either outside area or label not used for this field, use the right hand side
+        if((m_rightLabelIdx == MARKER_IDX_NOT_EXISTING) || (Agros2D::scene()->labels->at(m_rightLabelIdx)->marker(fieldInfo)->isNone()))
+        {
+            // also on the right
+            return MARKER_IDX_NOT_EXISTING;
+        }
+        else
+        {
+            return m_rightLabelIdx;
+        }
+    }
+    else
+    {
+        return m_leftLabelIdx;
+    }
+}
+
+int SceneEdge::innerLabelIdx() const
+{
+    int returnIdx = MARKER_IDX_NOT_EXISTING;
+    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    {
+        int idx = innerLabelIdx(fieldInfo);
+        if(returnIdx == MARKER_IDX_NOT_EXISTING)
+        {
+            returnIdx = idx;
+        }
+        else
+        {
+            if(returnIdx != idx)
+            {
+                // conflict, return nothing
+                return MARKER_IDX_NOT_EXISTING;
+            }
+        }
+    }
+
+    return returnIdx;
+}
+
+void SceneEdge::addNeighbouringLabel(int idx)
+{
+    int *first, *second;
+    bool turn = false;
+
+    // ensure that if dirrection of edge is swaped, we would switch left and right label
+    if(m_nodeStart->point().x > m_nodeEnd->point().x)
+        turn = true;
+    if(m_nodeStart->point().x == m_nodeEnd->point().x)
+        if(m_nodeStart->point().y > m_nodeEnd->point().y)
+            turn = true;
+
+    if(turn)
+    {
+        first = &m_leftLabelIdx;
+        second = &m_rightLabelIdx;
+    }
+    else
+    {
+        first = &m_rightLabelIdx;
+        second = &m_leftLabelIdx;
+    }
+
+    if(*first == MARKER_IDX_NOT_EXISTING)
+    {
+        *first = idx;
+    }
+    else
+    {
+        if(*second == MARKER_IDX_NOT_EXISTING)
+        {
+            *second = idx;
+        }
+        else
+        {
+            throw AgrosGeometryException(QObject::tr("Edge cannot have three adjacent labels"));
+        }
+    }
+}
+
+void SceneEdge::unsetRightLeftLabelIdx()
+{
+    m_rightLabelIdx = MARKER_IDX_NOT_EXISTING;
+    m_leftLabelIdx = MARKER_IDX_NOT_EXISTING;
 }
 
 //************************************************************************************************

@@ -71,6 +71,28 @@ public:
 
     void addMarkersFromStrings(QMap<QString, QString> markers);
 
+    // for boundary edges returns idx of the only adjacent label
+    // for inner edges returns, by convention, the left hand side label
+    // used for sufrace integration and drawing of outer normal
+    // for convex label regions, this is the other halfplain than the one, where the label coordinates are
+    // for non-convex regions it is more complicated!
+    int innerLabelIdx(const FieldInfo* fieldInfo) const;
+
+    // used for drawing outer normal, since we want to draw one outer normal for all fields
+    // if previous function has for all fieldInfos value X or MARKER_IDX_NOT_EXISTING, returns X
+    // otherwise returns MARKER_IDX_NOT_EXISTING and outer normal may not be drawn reasonably.
+    // this happends only if this edge divides label which has material A and not material B with
+    // label which has material B and not material A. In such a case, universal outer normal does not exist
+    int innerLabelIdx() const;
+
+    //sets right and left label idx to MARKER_IDX_NOT_EXISTING
+    void unsetRightLeftLabelIdx();
+
+    // first right and left label marker should be set to MARKER_IDX_NOT_EXISTING by previous function
+    // than first call to this function will set thel leftLabelIdx. The second call will set rightLabelIdx
+    // third call will raise exception
+    void addNeighbouringLabel(int idx);
+
 private:
     SceneNode *m_nodeStart;
     SceneNode *m_nodeEnd;
@@ -85,6 +107,9 @@ private:
     void computeCenterAndRadius();
 
     friend class SceneNode;
+
+    int m_leftLabelIdx;
+    int m_rightLabelIdx;
 };
 
 Q_DECLARE_METATYPE(SceneEdge *)
