@@ -1,0 +1,52 @@
+#######################################################
+# Auxiliary utility functions and macros for use with #
+# the Netgen-mesher CMake Build System                #
+####################################################### 
+
+
+###########################################
+# Define helper macro OPTION_WITH_DEFAULT #
+###########################################
+MACRO(OPTION_WITH_DEFAULT OPTION_NAME OPTION_STRING OPTION_DEFAULT)
+	IF(NOT DEFINED ${OPTION_NAME})
+		SET(${OPTION_NAME} ${OPTION_DEFAULT})
+	ENDIF(NOT DEFINED ${OPTION_NAME})
+	OPTION(${OPTION_NAME} "${OPTION_STRING}" ${${OPTION_NAME}})
+ENDMACRO(OPTION_WITH_DEFAULT)
+
+
+#########################################
+# Define helper macro SET_WARNING_LEVEL #
+#########################################
+MACRO(SET_WARNING_LEVEL WARNING_LEVEL)
+	IF(MSVC_IDE)
+		SET(CMAKE_CXX_WARNING_LEVEL ${WARNING_LEVEL})
+		IF(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+			STRING(REGEX REPLACE "/W[0-4]" "/W${WARNING_LEVEL}"
+				   CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+		ELSE(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+			SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W${WARNING_LEVEL}")
+		ENDIF(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")	
+
+		SET(CMAKE_C_WARNING_LEVEL ${WARNING_LEVEL})
+		IF(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+			STRING(REGEX REPLACE "/W[0-4]" "/W${WARNING_LEVEL}"
+				   CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+		ELSE(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+			SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W${WARNING_LEVEL}")
+		ENDIF(CMAKE_C_FLAGS MATCHES "/W[0-4]")		
+	ELSEIF(UNIX)
+		IF(${WARNING_LEVEL} EQUAL 0)
+			SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-w")
+			SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-w")
+		ELSEIF((${WARNING_LEVEL} GREATER 0) AND (${WARNING_LEVEL} LESSER 4))
+			SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall")
+			SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-Wall")
+		ELSE(${WARNING_LEVEL} EQUAL 0)
+			SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall" "-Wextra")
+			SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-Wall" "-Wextra")
+		ENDIF(${WARNING_LEVEL} EQUAL 0)
+	ENDIF(MSVC_IDE)
+ENDMACRO(SET_WARNING_LEVEL WARNING_LEVEL)
+		
+		

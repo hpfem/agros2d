@@ -32,8 +32,13 @@ class MeshGeneratorGMSH : public MeshGenerator
     Q_OBJECT
 
 private:
-    bool writeToGmsh();
-    bool readGmshMeshFormat();
+    bool writeToGmshInternal();
+    bool readFromGmshInternal();
+
+    // deprecated but functional
+    bool writeToGmshMeshFile();
+    // deprecated but functional
+    bool readFromGmshMeshFile();
 
     // model
     GModel *m;

@@ -41,6 +41,10 @@
 
 #include "pythonlab/pythonengine.h"
 
+#include "meshgenerator_triangle.h"
+#include "meshgenerator_gmsh.h"
+#include "meshgenerator_netgen.h"
+
 CalculationThread::CalculationThread() : QThread()
 {
 }
@@ -425,6 +429,10 @@ bool Problem::meshAction(bool emitMeshed)
     case MeshType_GMSH_Quad:
     case MeshType_GMSH_QuadDelaunay_Experimental:
         meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorGMSH());
+        break;       
+    case MeshType_NETGEN_Triangle:
+    case MeshType_NETGEN_QuadDominated:
+        meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorNetgen());
         break;
     default:
         QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));

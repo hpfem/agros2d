@@ -4,8 +4,8 @@
 #include "util.h"
 #include "value.h"
 #include "solutiontypes.h"
-#include "meshgenerator_triangle.h"
-#include "meshgenerator_gmsh.h"
+
+#include "meshgenerator.h"
 
 class FieldInfo;
 class CouplingInfo;

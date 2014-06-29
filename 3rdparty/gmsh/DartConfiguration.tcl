@@ -58,7 +58,7 @@ UpdateOptions:
 UpdateType: 
 
 # Compiler info
-Compiler: /home/karban/Projects/3rdparty/llvm/build/Release+Asserts/bin/clang++
+Compiler: /usr/bin/c++
 
 # Dynamic analysis (MemCheck)
 PurifyCommand: 

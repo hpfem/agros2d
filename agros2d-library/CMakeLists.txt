@@ -20,6 +20,9 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/poly2tri)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/netgen/libsrc/include)
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/netgen/libsrc/meshing)
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/netgen/agros2d_3dparty_netgen)
 
 # languages
 # message("Translations")
@@ -115,6 +118,7 @@ SET(SOURCES value.cpp
     meshgenerator.cpp
     meshgenerator_triangle.cpp
     meshgenerator_gmsh.cpp
+    meshgenerator_netgen.cpp
     chartdialog.cpp
     problemdialog.cpp
     scenetransformdialog.cpp
@@ -201,6 +205,7 @@ SET(SOURCES value.cpp
     meshgenerator.h
     meshgenerator_triangle.h
     meshgenerator_gmsh.h
+    meshgenerator_netgen.h
     chartdialog.h
     problemdialog.h
     scenetransformdialog.h
@@ -270,5 +275,5 @@ IF(WITH_QT5)
   QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets Svg UiTools OpenGL)
 ENDIF(WITH_QT5)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${TRIANGLE_LIBRARY} ${GMSH_LIBRARY} ${GMSH_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${TRIANGLE_LIBRARY} ${GMSH_LIBRARY} ${NETGEN_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES} ${ZLIB_LIBRARY})
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

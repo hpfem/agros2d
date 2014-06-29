@@ -204,7 +204,7 @@ void MeshGenerator::moveNodesOnCurvedEdges()
     }
 
     // Now move the problematic ones
-    for (int i = 0; i<edgeList.count(); i++)
+    for (int i = 0; i < edgeList.count(); i++)
     {
         MeshEdge edge = edgeList[i];
 
@@ -474,8 +474,8 @@ void MeshGenerator::writeToHermes()
 
     try
     {
-        this->fillNeighborStructures();
-        this->moveNodesOnCurvedEdges();
+        // this->fillNeighborStructures();
+        // this->moveNodesOnCurvedEdges();
 
         MeshSharedPtr global_mesh(new Mesh);
 

@@ -150,8 +150,6 @@ bool MeshGeneratorTriangleExternal::writeToTriangle()
     // char *plocale = setlocale (LC_NUMERIC, "");
     // setlocale (LC_NUMERIC, "C");
 
-    QDir dir;
-    dir.mkdir(QDir::temp().absolutePath() + "/agros2d");
     QFile file(tempProblemFileName() + ".poly");
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
