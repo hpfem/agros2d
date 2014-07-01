@@ -548,7 +548,7 @@ void LoopsInfo::processLoops()
             do
             {
                 currentNodeIdx = ned.node;
-//                qDebug() << "previous " << previousNodeIdx << ", current" << currentNodeIdx;
+                //                qDebug() << "previous " << previousNodeIdx << ", current" << currentNodeIdx;
                 LoopsNode& actualNode = graph.nodes[currentNodeIdx];
                 ned = actualNode.continueLoop(previousNodeIdx);
                 previousNodeIdx = currentNodeIdx;
@@ -708,21 +708,43 @@ void LoopsInfo::processLoops()
         edge->unsetRightLeftLabelIdx();
     }
 
-    for(int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
+    // FIXME
+    /*
+    for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
     {
         SceneLabel* label = m_scene->labels->at(labelIdx);
+        if (label->isHole())
+            continue;
+
         if (m_labelLoops[label].count() > 0)
         {
             // main loop around label
-            int mainLoopIdx = m_labelLoops[label][0];
-
-            for (int edgeIdx = 0; edgeIdx < m_loops[mainLoopIdx].size(); edgeIdx++)
+            for (int mainLoopIdx = 0; mainLoopIdx < m_labelLoops[label].size(); mainLoopIdx++)
             {
-                SceneEdge *edge = m_scene->edges->at(m_loops[mainLoopIdx][edgeIdx].edge);
-                edge->addNeighbouringLabel(labelIdx);
+                for (int edgeIdx = 0; edgeIdx < m_loops[mainLoopIdx].size(); edgeIdx++)
+                {
+                    SceneEdge *edge = m_scene->edges->at(m_loops[mainLoopIdx][edgeIdx].edge);
+                    // edge->addNeighbouringLabel(labelIdx);
+                    qDebug() << m_scene->edges->items().indexOf(edge) << m_loops[mainLoopIdx][edgeIdx].reverse << labelIdx;
+                    if (!m_loops[mainLoopIdx][edgeIdx].reverse)
+                    {
+                        if (edge->leftLabelIdx() == MARKER_IDX_NOT_EXISTING)
+                            edge->setLeftLabelIdx(labelIdx);
+                        else
+                            edge->setRightLabelIdx(labelIdx);
+                    }
+                    else
+                    {
+                        if (edge->rightLabelIdx() == MARKER_IDX_NOT_EXISTING)
+                            edge->setRightLabelIdx(labelIdx);
+                        else
+                            edge->setLeftLabelIdx(labelIdx);
+                    }
+                }
             }
         }
     }
+    */
 }
 
 QList<LoopsInfo::Triangle> LoopsInfo::triangulateLabel(const QList<Point> &polyline, const QList<QList<Point> > &holes)

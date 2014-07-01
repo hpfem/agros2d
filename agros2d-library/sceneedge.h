@@ -93,6 +93,13 @@ public:
     // third call will raise exception
     void addNeighbouringLabel(int idx);
 
+    int leftLabelIdx() const { return m_leftLabelIdx; }
+    int rightLabelIdx() const { return m_rightLabelIdx; }
+    void setLeftLabelIdx(int idx) { m_leftLabelIdx = idx; }
+    void setRightLabelIdx(int idx) { m_rightLabelIdx = idx; }
+    SceneLabel *leftLabel() const;
+    SceneLabel *rightLabel() const;
+
 private:
     SceneNode *m_nodeStart;
     SceneNode *m_nodeEnd;

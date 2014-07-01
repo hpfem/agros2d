@@ -197,6 +197,8 @@ void initLists()
     meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
     meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
     meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
+    meshTypeList.insert(MeshType_NETGEN_Triangle, "netgen_triangle");
+    meshTypeList.insert(MeshType_NETGEN_QuadDominated, "netgen_quaddominated");
 
     timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
     timeStepMethodList.insert(TimeStepMethod_BDFTolerance, "adaptive");
@@ -549,6 +551,10 @@ QString meshTypeString(MeshType meshType)
         return QObject::tr("GMSH (exp.) - quad");
     case MeshType_GMSH_QuadDelaunay_Experimental:
         return QObject::tr("GMSH (exp.) - quad Delaunay");
+    case MeshType_NETGEN_Triangle:
+        return QObject::tr("NETGEN (exp.) - triangle");
+    case MeshType_NETGEN_QuadDominated:
+        return QObject::tr("NETGEN (exp.) - quad dominated");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;

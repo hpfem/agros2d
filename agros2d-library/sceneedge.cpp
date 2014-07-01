@@ -333,13 +333,13 @@ void SceneEdge::addNeighbouringLabel(int idx)
     bool turn = false;
 
     // ensure that if dirrection of edge is swaped, we would switch left and right label
-    if(m_nodeStart->point().x > m_nodeEnd->point().x)
+    if (m_nodeStart->point().x > m_nodeEnd->point().x)
         turn = true;
-    if(m_nodeStart->point().x == m_nodeEnd->point().x)
-        if(m_nodeStart->point().y > m_nodeEnd->point().y)
+    if (m_nodeStart->point().x == m_nodeEnd->point().x)
+        if (m_nodeStart->point().y > m_nodeEnd->point().y)
             turn = true;
 
-    if(turn)
+    if (turn)
     {
         first = &m_leftLabelIdx;
         second = &m_rightLabelIdx;
@@ -350,20 +350,17 @@ void SceneEdge::addNeighbouringLabel(int idx)
         second = &m_leftLabelIdx;
     }
 
-    if(*first == MARKER_IDX_NOT_EXISTING)
+    if (*first == MARKER_IDX_NOT_EXISTING)
     {
         *first = idx;
     }
+    else if (*second == MARKER_IDX_NOT_EXISTING)
+    {
+        *second = idx;
+    }
     else
     {
-        if(*second == MARKER_IDX_NOT_EXISTING)
-        {
-            *second = idx;
-        }
-        else
-        {
-            throw AgrosGeometryException(QObject::tr("Edge cannot have three adjacent labels"));
-        }
+        throw AgrosGeometryException(QObject::tr("Edge cannot have three adjacent labels"));
     }
 }
 
@@ -371,6 +368,16 @@ void SceneEdge::unsetRightLeftLabelIdx()
 {
     m_rightLabelIdx = MARKER_IDX_NOT_EXISTING;
     m_leftLabelIdx = MARKER_IDX_NOT_EXISTING;
+}
+
+SceneLabel *SceneEdge::leftLabel() const
+{
+    return (m_leftLabelIdx == MARKER_IDX_NOT_EXISTING) ? NULL : Agros2D::scene()->labels->at(m_leftLabelIdx);
+}
+
+SceneLabel *SceneEdge::rightLabel() const
+{
+    return (m_rightLabelIdx == MARKER_IDX_NOT_EXISTING) ? NULL : Agros2D::scene()->labels->at(m_rightLabelIdx);
 }
 
 //************************************************************************************************
@@ -607,7 +614,7 @@ QLayout* SceneEdgeDialog::createContent()
 
     txtAngle = new ValueLineEdit();
     txtAngle->setMinimum(0.0);
-    txtAngle->setMaximum(90.0);    
+    txtAngle->setMaximum(90.0);
     txtSegments = new QSpinBox();
     txtSegments->setMinimum(3);
     txtSegments->setMaximum(20);
@@ -914,7 +921,7 @@ void SceneEdgeCommandAdd::redo()
 }
 
 SceneEdgeCommandAddOrRemoveMulti::SceneEdgeCommandAddOrRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                                   QList<Value> angles, QList<int> segments, QList<bool> isCurvilinear, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
+                                                                   QList<Value> angles, QList<int> segments, QList<bool> isCurvilinear, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
 {
     assert(pointStarts.size() == pointEnds.size());
     assert(pointStarts.size() == angles.size());
