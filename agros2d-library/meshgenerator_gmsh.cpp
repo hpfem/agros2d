@@ -40,7 +40,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-#include "gmsh/Gmsh.h"
+#include "gmsh/Common/Gmsh.h"
 #include "gmsh/Context.h"
 #include "gmsh/GModel.h"
 #include "gmsh/GVertex.h"
