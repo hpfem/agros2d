@@ -709,7 +709,7 @@ void LoopsInfo::processLoops()
     }
 
     // FIXME
-    /*
+
     for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
     {
         SceneLabel* label = m_scene->labels->at(labelIdx);
@@ -744,7 +744,6 @@ void LoopsInfo::processLoops()
             }
         }
     }
-    */
 }
 
 QList<LoopsInfo::Triangle> LoopsInfo::triangulateLabel(const QList<Point> &polyline, const QList<QList<Point> > &holes)

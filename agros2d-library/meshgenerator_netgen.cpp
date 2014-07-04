@@ -44,6 +44,7 @@
 #include "meshing.hpp"
 #include "basegeom.hpp"
 #include "geometry2d.hpp"
+#include "meshclass.hpp"
 
 MeshGeneratorNetgen::MeshGeneratorNetgen()
     : MeshGenerator()
@@ -60,13 +61,10 @@ bool MeshGeneratorNetgen::mesh()
     {
         // Agros2D::log()->printDebug(tr("Mesh generator"), tr("Mesh files were created"));
 
-        // FIX: remove
-        m_isError = false;
-
         // convert triangle mesh to hermes mesh
-        // if (!readNetgenMeshFormat())
+        if (!readNetgenMeshFormat())
         {
-            // m_isError = true;
+            m_isError = true;
             // QFile::remove(Agros2D::problem()->config()->fileName() + ".in2d");
         }
     }
@@ -152,25 +150,7 @@ bool MeshGeneratorNetgen::writeToNetgen()
         }
     }
 
-    /*
-    QList<MeshNode> inHoles;
-    holesCount = 0;
-    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
-    {
-        if (label->markersCount() == 0)
-        {
-            inHoles.append(MeshNode(holesCount,
-                                    label->point().x,
-                                    label->point().y,
-                                    -1));
-
-            holesCount++;
-        }
-    }
-    */
-
     // labels
-
     QString outLabels;
     int labelsCount = 0;
     foreach (SceneLabel *label, Agros2D::scene()->labels->items())
@@ -227,6 +207,31 @@ bool MeshGeneratorNetgen::readNetgenMeshFormat()
     nodeList.clear();
     edgeList.clear();
     elementList.clear();
+
+    netgen::Mesh *mesh = new netgen::Mesh();
+    mesh->SetDimension(2);
+
+    netgen::MeshingParameters params;
+
+    netgen::SplineGeometry2d *geom = new netgen::SplineGeometry2d();
+    geom->Load((tempProblemFileName() + ".in2d").toStdString().c_str());
+    geom->GenerateMesh(mesh, params, 1, 1);
+
+    for (int i = 0; i < mesh->GetNP(); i++)
+    {
+        netgen::MeshPoint point = mesh->Point(i);
+        nodeList.append(Point(point[0], point[1]));
+    }
+
+    qDebug() << mesh->GetNSE() << mesh->GetNE() << mesh->GetNSeg();
+
+    for (int i = 0; i < mesh->GetNSeg(); i++)
+    {
+        netgen::Segment segment = mesh->LineSegment(i);
+        edgeList.append(MeshEdge(segment[0], segment[1], QString::fromStdString(segment.GetBCName()).toInt()));
+
+        // qDebug() << // QString::fromStdString(segment.GetBCName()).toInt(); // segment[0] << segment[1] <<
+    }
 
 
     writeToHermes();
