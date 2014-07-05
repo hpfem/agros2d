@@ -40,14 +40,14 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-#include "gmsh/Common/Gmsh.h"
-#include "gmsh/Context.h"
-#include "gmsh/GModel.h"
-#include "gmsh/GVertex.h"
-#include "gmsh/GEdge.h"
-#include "gmsh/GEdgeLoop.h"
-#include "gmsh/GmshDefines.h"
-#include "gmsh/MElement.h"
+#include "Gmsh.h"
+#include "Context.h"
+#include "GModel.h"
+#include "GVertex.h"
+#include "GEdge.h"
+#include "GEdgeLoop.h"
+#include "GmshDefines.h"
+#include "MElement.h"
 
 MeshGeneratorGMSH::MeshGeneratorGMSH() : MeshGenerator()
 {
