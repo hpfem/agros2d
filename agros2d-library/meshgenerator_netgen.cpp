@@ -160,7 +160,7 @@ bool MeshGeneratorNetgen::writeToNetgen()
             outLabels += QString("%1\tdomain%2\t\t%3\n").
                    arg(labelsCount + 1).
                    arg(Agros2D::scene()->labels->items().indexOf(label) + 1).
-                   arg(QString("-maxh=%1").arg((label->area() > 0) ? label->area() : 1e22));
+                   arg(QString("-maxh=%1").arg((label->area() > 0) ? label->area() * 10: 1e22));
 
             labelsCount++;
         }
@@ -196,9 +196,6 @@ bool MeshGeneratorNetgen::writeToNetgen()
     file.waitForBytesWritten(0);
     file.close();
 
-    // netgen::SplineGeometry2d * geom = new netgen::SplineGeometry2d();
-    // geom->Load("x");
-
     return true;
 }
 
@@ -217,22 +214,29 @@ bool MeshGeneratorNetgen::readNetgenMeshFormat()
     geom->Load((tempProblemFileName() + ".in2d").toStdString().c_str());
     geom->GenerateMesh(mesh, params, 1, 1);
 
-    for (int i = 0; i < mesh->GetNP(); i++)
+    // qDebug() << mesh->GetNP() << mesh->GetNSeg() << mesh->GetNSE();
+
+    for (int i = 1; i < mesh->GetNP() + 1; i++)
     {
         netgen::MeshPoint point = mesh->Point(i);
         nodeList.append(Point(point[0], point[1]));
+        // qDebug() << "node" << i - 1 << point[0] << point[1];
     }
 
-    qDebug() << mesh->GetNSE() << mesh->GetNE() << mesh->GetNSeg();
-
-    for (int i = 0; i < mesh->GetNSeg(); i++)
+    for (int i = 1; i < mesh->GetNSeg() + 1; i++)
     {
         netgen::Segment segment = mesh->LineSegment(i);
-        edgeList.append(MeshEdge(segment[0], segment[1], QString::fromStdString(segment.GetBCName()).toInt()));
-
-        // qDebug() << // QString::fromStdString(segment.GetBCName()).toInt(); // segment[0] << segment[1] <<
+        edgeList.append(MeshEdge(segment.pnums[0] - 1, segment.pnums[1] - 1, segment.si - 1));
+        // qDebug() << "edge" << i - 1 << segment.pnums[0] - 1 << segment.pnums[1] - 1 << segment.si - 1;
     }
 
+    for (int i = 1; i < mesh->GetNSE() + 1; i++)
+    {
+        netgen::Element2d element = mesh->SurfaceElement(i);
+        if (element.GetType() == netgen::TRIG)
+            elementList.append(MeshElement(element.PNum(1) - 1, element.PNum(2) - 1, element.PNum(3) - 1, element.GetIndex() - 1));
+        // qDebug() << "element" << i - 1 << element.PNum(1) - 1 << element.PNum(2) - 1 << element.PNum(3) - 1 << element.GetIndex() - 1;
+    }
 
     writeToHermes();
 
