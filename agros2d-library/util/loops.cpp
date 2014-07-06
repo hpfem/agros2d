@@ -708,37 +708,62 @@ void LoopsInfo::processLoops()
         edge->unsetRightLeftLabelIdx();
     }
 
-    // FIXME
-
-    for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
+    // loops
+    QList<QList<int> > edgesLoop;
+    QList<QList<bool> > edgesReverse;
+    for (int i = 0; i < m_loops.size(); i++)
     {
-        SceneLabel* label = m_scene->labels->at(labelIdx);
-        if (label->isHole())
-            continue;
+        edgesLoop.append(QList<int>());
+        edgesReverse.append(QList<bool>());
+        // qDebug() << "loop" << i;
 
-        if (m_labelLoops[label].count() > 0)
+        if (!m_outsideLoops.contains(i))
         {
-            // main loop around label
-            for (int mainLoopIdx = 0; mainLoopIdx < m_labelLoops[label].size(); mainLoopIdx++)
+            for (int j = 0; j < m_loops.at(i).size(); j++)
             {
-                for (int edgeIdx = 0; edgeIdx < m_loops[mainLoopIdx].size(); edgeIdx++)
+                edgesLoop.last().append(m_loops.at(i)[j].edge);
+                edgesReverse.last().append(m_loops.at(i)[j].reverse);
+                // qDebug() << "edge" << m_loops.at(i)[j].edge << " reverse " << m_loops.at(i)[j].reverse;
+            }
+        }
+    }
+
+    // faces
+    if (m_loops.size() > 0)
+    {
+        // qDebug() << "edges loop size" << edgesLoop.size();
+        for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
+        {
+            SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
+            // qDebug() << "label PRE" << labelIdx;
+
+            for (int j = 0; j < m_labelLoops[label].count(); j++)
+            {
+                // qDebug() << m_labelLoops[label][j];
+                for (int k = 0; k < edgesLoop[m_labelLoops[label][j]].size(); k++)
                 {
-                    SceneEdge *edge = m_scene->edges->at(m_loops[mainLoopIdx][edgeIdx].edge);
-                    // edge->addNeighbouringLabel(labelIdx);
-                    qDebug() << m_scene->edges->items().indexOf(edge) << m_loops[mainLoopIdx][edgeIdx].reverse << labelIdx;
-                    if (!m_loops[mainLoopIdx][edgeIdx].reverse)
+                    // qDebug() <<  edgesLoop[m_labelLoops[label][j]][k];
+
+                    SceneEdge *edge = m_scene->edges->at(edgesLoop[m_labelLoops[label][j]][k]);
+
+                    int index = label->isHole() ? MARKER_IDX_NOT_EXISTING : labelIdx;
+
+                    if (label->isHole())
+                        edgesReverse[m_labelLoops[label][j]][k] = !edgesReverse[m_labelLoops[label][j]][k];
+
+                    if (!edgesReverse[m_labelLoops[label][j]][k])
                     {
                         if (edge->leftLabelIdx() == MARKER_IDX_NOT_EXISTING)
-                            edge->setLeftLabelIdx(labelIdx);
+                            edge->setLeftLabelIdx(index);
                         else
-                            edge->setRightLabelIdx(labelIdx);
+                            edge->setRightLabelIdx(index);
                     }
                     else
                     {
                         if (edge->rightLabelIdx() == MARKER_IDX_NOT_EXISTING)
-                            edge->setRightLabelIdx(labelIdx);
+                            edge->setRightLabelIdx(index);
                         else
-                            edge->setLeftLabelIdx(labelIdx);
+                            edge->setLeftLabelIdx(index);
                     }
                 }
             }

@@ -40,7 +40,7 @@
 #include "hermes2d/problem_config.h"
 #include "util/loops.h"
 
-// #define debugIN2D
+#define debugIN2D
 
 MeshGeneratorNetgen::MeshGeneratorNetgen()
     : MeshGenerator()
@@ -61,7 +61,7 @@ bool MeshGeneratorNetgen::mesh()
         if (!readNetgenMeshFormat())
         {
             m_isError = true;
-            QFile::remove(Agros2D::problem()->config()->fileName() + ".in2d");
+            //  QFile::remove(Agros2D::problem()->config()->fileName() + ".in2d");
         }
     }
     else
@@ -124,18 +124,20 @@ bool MeshGeneratorNetgen::writeToNetgen()
     {
         netgen::SplineSeg<2> *spline = NULL;
 
-        if (Agros2D::scene()->edges->at(i)->angle() == 0)
+        SceneEdge *edge = Agros2D::scene()->edges->at(i);
+
+        if (edge->angle() == 0)
         {
-            spline = new netgen::LineSeg<2>(geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart())),
-                                            geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd())));
+            spline = new netgen::LineSeg<2>(geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart())),
+                                            geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd())));
 
 #ifdef debugIN2D
             outEdges += QString("%1\t%2\t%3\t%4\t%5\t%6\n").
-                    arg(Agros2D::scene()->edges->at(i)->leftLabelIdx() + 1).
-                    arg(Agros2D::scene()->edges->at(i)->rightLabelIdx() + 1).
+                    arg(edge->leftLabelIdx() + 1).
+                    arg(edge->rightLabelIdx() + 1).
                     arg(2).
-                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart()) + 1).
-                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd()) + 1).
+                    arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart()) + 1).
+                    arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd()) + 1).
                     arg(QString("-bc=%1").arg(i+1));
 #endif
         }
@@ -144,41 +146,46 @@ bool MeshGeneratorNetgen::writeToNetgen()
             // arc
             // add center
 
-            Point center = centerPoint(Agros2D::scene()->edges->at(i)->nodeEnd()->point(),
-                                       Agros2D::scene()->edges->at(i)->nodeStart()->point(),
-                                       Agros2D::scene()->edges->at(i)->angle());
+            Point center = centerPoint(edge->nodeEnd()->point(),
+                                       edge->nodeStart()->point(),
+                                       edge->angle());
 
-            geom->AppendPoint(netgen::Point<2>(center.x,
-                                               center.y));
+            Point midpoint = (edge->nodeStart()->point() + edge->nodeEnd()->point()) / 2;
+            Point perpendicular = Point(-(edge->nodeEnd()->point() - midpoint).y, (edge->nodeEnd()->point() - midpoint).x);
 
-            spline = new netgen::SplineSeg3<2>(geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart())),
+            double h = (edge->nodeEnd()->point() - edge->nodeStart()->point()).magnitude() / 2.0 / (center - midpoint).magnitude();
+            Point H = midpoint - perpendicular * h;
+
+            geom->AppendPoint(netgen::Point<2>(H.x, H.y));
+
+            spline = new netgen::SplineSeg3<2>(geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart())),
                                                geom->GetPoint(geom->GetNP() - 1),
-                                               geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd())));
+                                               geom->GetPoint(Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd())));
 
 #ifdef debugIN2D
             nodesCount++;
 
             outNodes += QString("%1\t%2\t%3\n").
                     arg(nodesCount).
-                    arg(center.x).
-                    arg(center.y);
+                    arg(H.x).
+                    arg(H.y);
 
             outEdges += QString("%1\t%2\t%3\t%4\t%5\t%6\t%7\n").
-                    arg(Agros2D::scene()->edges->at(i)->leftLabelIdx() + 1).
-                    arg(Agros2D::scene()->edges->at(i)->rightLabelIdx() + 1).
+                    arg(edge->leftLabelIdx() + 1).
+                    arg(edge->rightLabelIdx() + 1).
                     arg(3).
-                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart()) + 1).
+                    arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart()) + 1).
                     arg(nodesCount).
-                    arg(Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeEnd()) + 1).
+                    arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd()) + 1).
                     arg(QString("-bc=%1").arg(i+1));
 #endif
         }
 
         netgen::SplineSegExt *spex = new netgen::SplineSegExt(*spline);
-        spex->leftdom = Agros2D::scene()->edges->at(i)->leftLabelIdx() + 1;
-        spex->rightdom = Agros2D::scene()->edges->at(i)->rightLabelIdx() + 1;
+        spex->leftdom = edge->leftLabelIdx() + 1;
+        spex->rightdom = edge->rightLabelIdx() + 1;
         spex->bc = i + 1;
-        spex->hmax = 1e99;
+        spex->hmax = edge->length() / 2;
         spex->hpref_left = false;
         spex->hpref_right = false;
         spex->copyfrom = -1;
@@ -191,7 +198,7 @@ bool MeshGeneratorNetgen::writeToNetgen()
     // labels
     foreach (SceneLabel *label, Agros2D::scene()->labels->items())
     {
-        if (label->markersCount() > 0)
+        // if (label->markersCount() > 0)
         {
             double ar = (label->area() > 0) ? label->area() * 10: 1e22;
 
@@ -250,6 +257,9 @@ bool MeshGeneratorNetgen::writeToNetgen()
 
 bool MeshGeneratorNetgen::readNetgenMeshFormat()
 {
+    // writeToHermes();
+    // return false;
+
     netgen::MeshingParameters params;
 
     netgen::Mesh *mesh = NULL;
@@ -287,6 +297,7 @@ bool MeshGeneratorNetgen::readNetgenMeshFormat()
 
     writeToHermes();
 
+    mesh->DeleteMesh();
     delete mesh;
     delete geom;
 

@@ -125,8 +125,8 @@ void clearAgros2DCache()
         if (fileInfo.isDir())
         {
             // process doesn't exists
-            if (!SystemUtils::isProcessRunning(fileInfo.fileName().toInt()))
-                removeDirectory(fileInfo.absoluteFilePath());
+            // if (!SystemUtils::isProcessRunning(fileInfo.fileName().toInt()))
+            //     removeDirectory(fileInfo.absoluteFilePath());
         }
     }
 
