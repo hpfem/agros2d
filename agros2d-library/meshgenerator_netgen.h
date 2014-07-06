@@ -23,6 +23,42 @@
 #include "util.h"
 #include "meshgenerator.h"
 
+#include "nglib.h"
+#include "meshing.hpp"
+#include "basegeom.hpp"
+#include "meshclass.hpp"
+#include "geometry2d.hpp"
+
+class SplineGeometry2dAgros : public netgen::SplineGeometry2d
+{
+public:
+    SplineGeometry2dAgros() : netgen::SplineGeometry2d()
+    {
+        // global grading factor
+        elto0 = 1;
+    }
+
+    void AppendMaterial(int index, double mx, bool qm)
+    {
+      const char *name = QString::number(index).toStdString().c_str();
+
+      char *material = new char[100];
+      strcpy(material, name);
+
+      materials.Append(material);
+      maxh.Append(mx);
+      quadmeshing.Append(qm);
+      tensormeshing.Append(false);
+      layer.Append(1);
+      bcnames.Append(NULL);
+    }
+
+    int GetNMaterial() const
+    {
+        return materials.Size();
+    }
+};
+
 class MeshGeneratorNetgen : public MeshGenerator
 {
     Q_OBJECT
@@ -37,7 +73,7 @@ public:
     virtual bool mesh();
 
 private:
-
+    SplineGeometry2dAgros *geom;
 };
 
 
