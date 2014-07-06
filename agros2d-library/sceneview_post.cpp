@@ -91,7 +91,7 @@ void PostHermes::processInitialMesh()
         // init linearizer for initial mesh
         try
         {
-            m_linInitialMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(0));
+            m_linInitialMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
             m_linInitialMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
         }
         catch (Hermes::Exceptions::Exception& e)
@@ -121,7 +121,7 @@ void PostHermes::processSolutionMesh()
 
         try
         {
-            m_linSolutionMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(0));
+            m_linSolutionMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
             m_linSolutionMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
         }
         catch (Hermes::Exceptions::Exception& e)
