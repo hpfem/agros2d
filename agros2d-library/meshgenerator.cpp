@@ -473,10 +473,7 @@ void MeshGenerator::writeToHermes()
     }
 
     try
-    {
-        // this->fillNeighborStructures();
-        // this->moveNodesOnCurvedEdges();
-
+    {        
         MeshSharedPtr global_mesh(new Mesh);
 
         this->writeTemporaryGlobalMeshToHermes(global_mesh);

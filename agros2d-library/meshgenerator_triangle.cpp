@@ -301,10 +301,6 @@ bool MeshGeneratorTriangleExternal::writeToTriangle()
 
 bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
 {
-    nodeList.clear();
-    edgeList.clear();
-    elementList.clear();
-
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -567,6 +563,9 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
             }
         }
     }
+
+    fillNeighborStructures();
+    moveNodesOnCurvedEdges();
 
     writeToHermes();
 
@@ -845,10 +844,6 @@ bool MeshGeneratorTriangle::writeToTriangle()
 
 bool MeshGeneratorTriangle::readTriangleMeshFormat()
 {
-    nodeList.clear();
-    edgeList.clear();
-    elementList.clear();
-
     // triangle nodes
     int numberOfNodes = triOut.numberofpoints;
     for (int i = 0; i < numberOfNodes; i++)
@@ -1059,6 +1054,9 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     free(triOut.segmentmarkerlist);
     free(triOut.edgelist);
     free(triOut.edgemarkerlist);
+
+    this->fillNeighborStructures();
+    this->moveNodesOnCurvedEdges();
 
     writeToHermes();
 
