@@ -111,10 +111,14 @@ bool AgrosApplication::notify(QObject *receiver, QEvent *event)
 
 void clearAgros2DCache()
 {
-    QFileInfoList listExamples = QFileInfo(cacheProblemDir()).absoluteDir().entryInfoList();
-    for (int i = 0; i < listExamples.size(); ++i)
+    QFileInfoList listCache = QFileInfo(cacheProblemDir()).absoluteDir().entryInfoList();
+    QFileInfoList listTemp = QFileInfo(tempProblemDir()).absoluteDir().entryInfoList();
+
+    QFileInfoList list;
+    list << listCache << listTemp;
+    for (int i = 0; i < list.size(); ++i)
     {
-        QFileInfo fileInfo = listExamples.at(i);
+        QFileInfo fileInfo = list.at(i);
         if (fileInfo.fileName() == "." || fileInfo.fileName() == ".." || fileInfo.fileName() == QString::number(QCoreApplication::applicationPid()))
             continue;
 
@@ -122,7 +126,7 @@ void clearAgros2DCache()
         {
             // process doesn't exists
             if (!SystemUtils::isProcessRunning(fileInfo.fileName().toInt()))
-                removeDirectory(QString("%1/%2").arg(QFileInfo(cacheProblemDir()).absolutePath()).arg(fileInfo.fileName()));
+                removeDirectory(fileInfo.absoluteFilePath());
         }
     }
 
