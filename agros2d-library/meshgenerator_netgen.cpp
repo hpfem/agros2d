@@ -120,11 +120,14 @@ bool MeshGeneratorNetgen::writeToNetgen()
 #endif
     }
 
-    for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
+    for (int i = 0; i < Agros2D::scene()->edges->length(); i++)
     {
         netgen::SplineSeg<2> *spline = NULL;
 
         SceneEdge *edge = Agros2D::scene()->edges->at(i);
+
+        if (edge->leftLabelIdx() == MARKER_IDX_NOT_EXISTING && edge->rightLabelIdx() == MARKER_IDX_NOT_EXISTING)
+            continue;
 
         if (edge->angle() == 0)
         {
@@ -177,7 +180,7 @@ bool MeshGeneratorNetgen::writeToNetgen()
                     arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart()) + 1).
                     arg(nodesCount).
                     arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd()) + 1).
-                    arg(QString("-bc=%1").arg(i+1));
+                    arg(QString("-bc=%1 -hmax=%2").arg(i+1).arg(edge->length() / 2));
 #endif
         }
 
