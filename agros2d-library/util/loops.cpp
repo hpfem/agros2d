@@ -715,7 +715,7 @@ void LoopsInfo::processLoops()
     {
         edgesLoop.append(QList<int>());
         edgesReverse.append(QList<bool>());
-        qDebug() << "loop" << i;
+        // qDebug() << "loop" << i;
 
         if (!m_outsideLoops.contains(i))
         {
@@ -723,7 +723,7 @@ void LoopsInfo::processLoops()
             {
                 edgesLoop.last().append(m_loops.at(i)[j].edge);
                 edgesReverse.last().append(m_loops.at(i)[j].reverse);
-                qDebug() << "edge" << m_loops.at(i)[j].edge << " reverse " << m_loops.at(i)[j].reverse;
+                // qDebug() << "edge" << m_loops.at(i)[j].edge << " reverse " << m_loops.at(i)[j].reverse;
             }
         }
     }
@@ -735,7 +735,7 @@ void LoopsInfo::processLoops()
         for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
         {
             SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
-            qDebug() << "label" << labelIdx;
+            // qDebug() << "label" << labelIdx;
 
             if (!label->isHole())
             {
@@ -743,7 +743,7 @@ void LoopsInfo::processLoops()
                 {
                     int loopIdx = m_labelLoops[label][j];
                     bool isInside = labelsInsideLoop[loopIdx].contains(label);
-                    qDebug() << loopIdx << "inside" << isInside << "hole" << label->isHole();
+                    // qDebug() << loopIdx << "inside" << isInside << "hole" << label->isHole();
 
                     for (int k = 0; k < edgesLoop[loopIdx].size(); k++)
                     {

@@ -141,7 +141,7 @@ bool MeshGeneratorGMSH::writeToGmshInternal()
             // arc
             Point center = Agros2D::scene()->edges->at(i)->center();
 
-            vertices.append(m->addVertex(center.x, center.y, 0.0, mesh_size));
+            vertices.append(m->addVertex(center.x, center.y, 0.0, 1e22));
 
             edge = m->addCircleArcCenter(vertices[Agros2D::scene()->nodes->items().indexOf(Agros2D::scene()->edges->at(i)->nodeStart())],
                     vertices.last(),
@@ -364,18 +364,33 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
 
     // mesh size
     RectPoint rect = Agros2D::scene()->boundingBox();
-    // out << QString("mesh_size = %1;\n").arg(qMin(rect.width(), rect.height()) / 6.0);
-    out << QString("mesh_size = 1e22;\n");
+    double charEdge = 0; // qMax(rect.width(), rect.height()) / 2.0;
+
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        if (edge->length() > charEdge)
+            charEdge = edge->length();
 
     // nodes
     QString outNodes;
     int nodesCount = 0;
-    for (int i = 0; i<Agros2D::scene()->nodes->length(); i++)
+    for (int i = 0; i < Agros2D::scene()->nodes->length(); i++)
     {
-        outNodes += QString("Point(%1) = {%2, %3, 0, mesh_size};\n").
+        // find the longest line connected to the node
+        double longestLength = numeric_limits<double>::max();
+        double shortestLength = numeric_limits<double>::max();
+        foreach (SceneEdge *edge, Agros2D::scene()->nodes->at(i)->connectedEdges())
+        {
+            if (edge->length() > longestLength)
+                longestLength = edge->length();
+            if (edge->length() < shortestLength)
+                shortestLength = edge->length();
+        }
+
+        outNodes += QString("Point(%1) = {%2, %3, 0, %4};\n").
                 arg(i).
                 arg(Agros2D::scene()->nodes->at(i)->point().x, 0, 'f', 10).
-                arg(Agros2D::scene()->nodes->at(i)->point().y, 0, 'f', 10);
+                arg(Agros2D::scene()->nodes->at(i)->point().y, 0, 'f', 10).
+                arg(shortestLength / longestLength < 0.15 ? shortestLength * 3 : longestLength / 5);
         nodesCount++;
     }
 
@@ -500,11 +515,11 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
     outCommands.append(QString("Mesh.CharacteristicLengthFromPoints = 1;\n"));
-    outCommands.append(QString("Mesh.CharacteristicLengthFromCurvature = 0;\n"));
-    outCommands.append(QString("Mesh.CharacteristicLengthFactor = 1;\n"));
-    outCommands.append(QString("Mesh.CharacteristicLengthMin = 0.1;\n"));
-    outCommands.append(QString("Mesh.CharacteristicLengthMax = %1;\n").arg(qMin(rect.width(), rect.height()) / 10));
-    outCommands.append(QString("Mesh.MinimumCirclePoints = 15;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthFromCurvature = 1;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthFactor = 1.2;\n"));
+    // outCommands.append(QString("Mesh.CharacteristicLengthMin = 0.1;\n"));
+    // outCommands.append(QString("Mesh.CharacteristicLengthMax = %1;\n").arg(qMin(rect.width(), rect.height()) / 10));
+    outCommands.append(QString("Mesh.MinimumCirclePoints = 10;\n"));
     outCommands.append(QString("Mesh.Optimize = 1;\n"));
     if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Triangle)
     {
