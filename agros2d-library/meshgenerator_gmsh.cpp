@@ -170,7 +170,6 @@ bool MeshGeneratorGMSH::writeToGmshInternal()
     {
         edgesLoop.append(std::vector<GEdge *>());
         edgesIsReversed.append(true);
-        qDebug() << "loop" << i;
 
         if (!Agros2D::scene()->loopsInfo()->outsideLoops().contains(i))
         {
@@ -180,32 +179,27 @@ bool MeshGeneratorGMSH::writeToGmshInternal()
 
                 edgesIsReversed.last() = edgesIsReversed.last() && Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse;
                 edgesLoop.last().push_back(edge);
-
-                qDebug() << "edge" << Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge << " reverse " << Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse;
             }
         }
     }
 
     // faces
-    qDebug() << "edges loop size" << edgesLoop.size();
     for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
     {
         SceneLabel* label = Agros2D::scene()->labels->at(i);
         if (!label->isHole())
         {
-            qDebug() << "label PRE" << i;
             bool isReversed = true;
             std::vector<std::vector<GEdge *> > loops;
             for (int j = 0; j < Agros2D::scene()->loopsInfo()->labelLoops()[label].count(); j++)
             {
-                qDebug() << Agros2D::scene()->loopsInfo()->labelLoops()[label][j];
                 isReversed = isReversed && edgesIsReversed[Agros2D::scene()->loopsInfo()->labelLoops()[label][j]];
                 loops.push_back(edgesLoop[Agros2D::scene()->loopsInfo()->labelLoops()[label][j]]);
             }
             GFace *face = m->addPlanarFace(loops);
             if (isReversed)
                 face->meshAttributes.reverseMesh = true;
-            face->setMeshingAlgo(ALGO_2D_AUTO);
+            // face->setMeshingAlgo(ALGO_2D_AUTO);
 
             facesMap[label] = face;
         }
@@ -505,11 +499,16 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
 
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
     QString outCommands;
-    outCommands.append(QString("Mesh.CharacteristicLengthFromCurvature = 1;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthFromPoints = 1;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthFromCurvature = 0;\n"));
     outCommands.append(QString("Mesh.CharacteristicLengthFactor = 1;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthMin = 0.1;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthMax = %1;\n").arg(qMin(rect.width(), rect.height()) / 10));
+    outCommands.append(QString("Mesh.MinimumCirclePoints = 15;\n"));
+    outCommands.append(QString("Mesh.Optimize = 1;\n"));
     if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Triangle)
     {
-        outCommands.append(QString("Mesh.Algorithm = 2;\n"));
+        outCommands.append(QString("Mesh.Algorithm = 5;\n"));
     }
     else if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Quad)
     {

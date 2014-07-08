@@ -86,6 +86,8 @@ bool MeshGeneratorNetgen::writeToNetgen()
         return false;
     }
 
+    RectPoint box = Agros2D::scene()->boundingBox();
+
     geom = new SplineGeometry2dAgros();
 
 #ifdef debugIN2D
@@ -180,7 +182,7 @@ bool MeshGeneratorNetgen::writeToNetgen()
                     arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart()) + 1).
                     arg(nodesCount).
                     arg(Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd()) + 1).
-                    arg(QString("-bc=%1 -hmax=%2").arg(i+1).arg(edge->length() / 2));
+                    arg(QString("-bc=%1 -hmax=%2").arg(i+1).arg(edge->length() / 10));
 #endif
         }
 
@@ -203,7 +205,7 @@ bool MeshGeneratorNetgen::writeToNetgen()
     {
         // if (label->markersCount() > 0)
         {
-            double ar = (label->area() > 0) ? label->area() * 10: 1e22;
+            double ar = (label->area() > 0) ? label->area() * 10: fmin(box.width(), box.height()) / 4.0;
 
             geom->AppendMaterial(Agros2D::scene()->labels->items().indexOf(label) + 1,
                                  ar,
@@ -263,7 +265,23 @@ bool MeshGeneratorNetgen::readNetgenMeshFormat()
     // writeToHermes();
     // return false;
 
+     RectPoint box = Agros2D::scene()->boundingBox();
+
     netgen::MeshingParameters params;
+
+    ofstream testout("/tmp/test.out");
+
+    params.optimize2d = "smsmsmSmSmSm";
+    params.optsteps2d = 1;
+    params.minh = 0;
+    params.maxh = fmin(box.width(), box.height()) / 10.0;
+    params.grading = 0.3;
+    params.curvaturesafety = 3;
+    params.segmentsperedge = 2;
+    params.badellimit = 160;
+
+    params.Print(testout);
+    testout.close();
 
     netgen::Mesh *mesh = NULL;
     // geom = new SplineGeometry2dAgros();
