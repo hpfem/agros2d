@@ -290,7 +290,7 @@ namespace netgen
               << "    version     2.0; \n"
               << "    format      ascii; \n"
               << "    class       labelList; \n"
-              << "    note        \"Mesh generated and converted using NETGEN-" << PACKAGE_VERSION << "\"; \n"
+              << "    note        \"Mesh generated and converted using NETGEN-\"; \n"
               << "    location    \"constant\\polyMesh\"; \n"
               << "    object      neighbour; \n"
               << "} \n";
@@ -324,7 +324,7 @@ namespace netgen
               << "    version     2.0; \n"
               << "    format      ascii; \n"
               << "    class       labelList; \n"
-              << "    note        \"Mesh generated and converted using NETGEN-" << PACKAGE_VERSION << "\"; \n"
+              << "    note        \"Mesh generated and converted using NETGEN-\"; \n"
               << "    location    \"constant\\polyMesh\"; \n"
               << "    object      owner; \n"
               << "} \n";
@@ -367,7 +367,7 @@ namespace netgen
               << "    version     2.0; \n"
               << "    format      ascii; \n"
               << "    class       faceList; \n"
-              << "    note        \"Mesh generated and converted using NETGEN-" << PACKAGE_VERSION << "\"; \n"
+              << "    note        \"Mesh generated and converted using NETGEN-\"; \n"
               << "    location    \"constant\\polyMesh\"; \n"
               << "    object      faces; \n"
               << "} \n";
@@ -490,7 +490,7 @@ namespace netgen
               << "    version     2.0; \n"
               << "    format      ascii; \n"
               << "    class       vectorField; \n"
-              << "    note        \"Mesh generated and converted using NETGEN-" << PACKAGE_VERSION << "\"; \n"
+              << "    note        \"Mesh generated and converted using NETGEN-\"; \n"
               << "    location    \"constant\\polyMesh\"; \n"
               << "    object      points; \n"
               << "} \n";
@@ -534,7 +534,7 @@ namespace netgen
               << "    version     2.0; \n"
               << "    format      ascii; \n"
               << "    class       polyBoundaryMesh; \n"
-              << "    note        \"Mesh generated and converted using NETGEN-" << PACKAGE_VERSION << "\"; \n"
+              << "    note        \"Mesh generated and converted using NETGEN-\"; \n"
               << "    location    \"constant\\polyMesh\"; \n"
               << "    object      boundary; \n"
               << "} \n";

@@ -2,7 +2,7 @@
 #define FILE_MYSTDLIB
 
 #ifdef HAVE_CONFIG_H
-#include <config_netgen.h>
+#include <config.h>
 #endif
 
 

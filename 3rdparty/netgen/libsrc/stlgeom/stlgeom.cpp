@@ -41,6 +41,7 @@ void STLMeshing (STLGeometry & geom,
     lineendpoints(), spiralpoints(), selectedmultiedge()
   */
 {
+  ref = NULL;
   edgedata = new STLEdgeDataList(*this);
   externaledges.SetSize(0);
   Clear();
@@ -61,6 +62,7 @@ void STLMeshing (STLGeometry & geom,
 STLGeometry :: ~STLGeometry()
 {
   delete edgedata;
+  delete ref;
 }
 
 void STLGeometry :: Save (string filename) const
@@ -98,7 +100,11 @@ int STLGeometry :: GenerateMesh (Mesh*& mesh, MeshingParameters & mparam,
 
 const Refinement & STLGeometry :: GetRefinement () const
 {
-  return RefinementSTLGeometry (*this);
+  delete ref;
+  ref = new RefinementSTLGeometry(*this);
+  // ref -> Set2dOptimizer(new MeshOptimizeSTLSurface(*this)); ??? copied from CSG
+  return *ref;
+
 }
 
 
@@ -2361,11 +2367,8 @@ void STLGeometry :: BuildEdges()
 
 void STLGeometry :: UseExternalEdges()
 {
-  int i;
-  for (i = 1; i <= NOExternalEdges(); i++)
-    {
-      AddEdge(GetExternalEdge(i).i1,GetExternalEdge(i).i2);
-    }
+  for (int i = 1; i <= NOExternalEdges(); i++)
+    AddEdge(GetExternalEdge(i).i1,GetExternalEdge(i).i2);
   //BuildEdgesPerPointy();
 }
 
@@ -2493,8 +2496,7 @@ void STLGeometry :: FindEdgesFromAngles()
 
   if (calcedgedataanglesnew) {CalcEdgeDataAngles(); calcedgedataanglesnew = 0;}
 
-  int i;
-  for (i = 1; i <= edgedata->Size(); i++)
+  for (int i = 1; i <= edgedata->Size(); i++)
     {
       STLTopEdge & sed = edgedata->Elem(i);
       if (sed.GetStatus() == ED_CANDIDATE || 
@@ -2520,7 +2522,7 @@ void STLGeometry :: FindEdgesFromAngles()
 	  its++;
 	  //(*mycout) << "." << flush;
 	  changed = 0;
-	  for (i = 1; i <= edgedata->Size(); i++)
+	  for (int i = 1; i <= edgedata->Size(); i++)
 	    {
 	      STLTopEdge & sed = edgedata->Elem(i);
 	      if (sed.CosAngle() <= cos_cont_min_edge_angle 
@@ -2541,7 +2543,7 @@ void STLGeometry :: FindEdgesFromAngles()
       confcand = 1;
     }
   
-  for (i = 1; i <= edgedata->Size(); i++)
+  for (int i = 1; i <= edgedata->Size(); i++)
     {
       STLTopEdge & sed = edgedata->Elem(i);
       if (sed.GetStatus() == ED_CONFIRMED || 
@@ -2625,8 +2627,7 @@ void STLGeometry :: BuildEdgesPerPoint()
   edgesperpoint.SetSize(GetNP());
 
   //add edges to points
-  int i;
-  for (i = 1; i <= GetNE(); i++)
+  for (int i = 1; i <= GetNE(); i++)
     {
       //(*mycout) << "EDGE " << GetEdge(i).PNum(1) << " - " << GetEdge(i).PNum(2) << endl;
       for (int j = 1; j <= 2; j++)
@@ -2648,49 +2649,60 @@ void STLGeometry :: AddFaceEdges()
   edgecnt.SetSize(GetNOFaces());
   chartindex.SetSize(GetNOFaces());
 
-  int i,j;
-  for (i = 1; i <= GetNOFaces(); i++)
+  for (int i = 1; i <= GetNOFaces(); i++)
     {
       edgecnt.Elem(i) = 0;
       chartindex.Elem(i) = 0;
     }
 
-  for (i = 1; i <= GetNT(); i++)
+  for (int i = 1; i <= GetNT(); i++)
     {
       int fn = GetTriangle(i).GetFaceNum();
       if (!chartindex.Get(fn)) {chartindex.Elem(fn) = GetChartNr(i);}
-      for (j = 1; j <= 3; j++)
+      for (int j = 1; j <= 3; j++)
 	{
 	  edgecnt.Elem(fn) += GetNEPP(GetTriangle(i).PNum(j));
 	}
     }
 
-  for (i = 1; i <= GetNOFaces(); i++)
+  for (int i = 1; i <= GetNOFaces(); i++)
     {
       if (!edgecnt.Get(i)) {PrintMessage(5,"Face", i, " has no edge!");}
     }
   
   int changed = 0;
-  int k, ap1, ap2;
-  for (i = 1; i <= GetNOFaces(); i++)
+  int ap1, ap2;
+  for (int i = 1; i <= GetNOFaces(); i++)
     {
       if (!edgecnt.Get(i))
       {
 	const STLChart& c = GetChart(chartindex.Get(i));
-	for (j = 1; j <= c.GetNChartT(); j++)
+        // bool foundone = false;
+        int longest_ap1, longest_ap2 = -1;
+        double maxlen = -1;
+	for (int j = 1; j <= c.GetNChartT(); j++)
 	  {
 	    const STLTriangle& t1 = GetTriangle(c.GetChartTrig(j));
-	    for (k = 1; k <= 3; k++)
+	    for (int k = 1; k <= 3; k++)
 	      {
 		int nt = NeighbourTrig(c.GetChartTrig(j),k);
 		if (GetChartNr(nt) != chartindex.Get(i))
 		  {
 		    t1.GetNeighbourPoints(GetTriangle(nt),ap1,ap2);
-		    AddEdge(ap1,ap2);
+                    // AddEdge(ap1,ap2);
+                    double len = Dist(GetPoint(ap1), GetPoint(ap2));
+                    if (len > maxlen) 
+                      {
+                        maxlen = len;
+                        longest_ap1 = ap1;
+                        longest_ap2 = ap2;
+                      }
 		    changed = 1;
 		  }
 	      }
 	  }
+        if (maxlen > 0)
+          AddEdge(longest_ap1,longest_ap2);
       }
       
     }
@@ -3066,13 +3078,11 @@ void STLGeometry :: BuildSmoothEdges ()
       for (int j = 1; j <= 3; j++)
 	{ 
 	  int nbt = NeighbourTrig (i, j);
-	  
+
 	  ng2 = GetTriangle(nbt).GeomNormal(points);
 	  ng2 /= (ng2.Length() + 1e-24);
 	  
-	  
 	  int pi1, pi2;
-
 	  trig.GetNeighbourPoints(GetTriangle(nbt), pi1, pi2);
 
 	  if (!IsEdge(pi1,pi2)) 
