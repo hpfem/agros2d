@@ -110,6 +110,7 @@ class ModelDictExternal(ModelDict):
     def __init__(self):
         ModelDict.__init__(self)
         self.solver = "agros2d_solver"
+        self.solver_parameters = ['-l', '-c']
 
     def solve(self, recalculate=False):
         """ Solve models """
@@ -121,7 +122,7 @@ class ModelDictExternal(ModelDict):
             code += "model.load('{0}/{1}');".format(self.directory, file_name)
             code += "model.create(); model.solve(); model.process();"
             code += "model.save('{0}/{1}')".format(self.directory, file_name)
-            command = ['{0}'.format(self.solver), '-l', '-c', '{0}'.format(code)]
+            command = ['{0}'.format(self.solver)] + self.solver_parameters + ['{0}'.format(code)]
 
             process = Popen(command, stdout=PIPE)
             self._output.append(process.communicate())
