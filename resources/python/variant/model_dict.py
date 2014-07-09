@@ -1,7 +1,8 @@
 from glob import glob
-from os.path import abspath, dirname, basename, splitext, isdir
+from os.path import abspath, dirname, basename, isdir
 from os import makedirs, getcwd
 from subprocess import Popen, PIPE
+from re import search
 
 class ModelDict(object):
     def __init__(self):
@@ -47,6 +48,7 @@ class ModelDict(object):
         if not file_name:
             if hasattr(self, '_file_name_index'):
                 self._file_name_index += 1
+                # TODO: exist
             else:
                 self._file_name_index = len(self.find_files('solution_*.pickle'))
 
@@ -79,22 +81,30 @@ class ModelDict(object):
         for file_name in files:
             model = model_class()
             model.load(file_name)
-            self._models[splitext(basename(file_name))[0]] = model
+            self._models[basename(file_name)] = model
 
     def save(self):
         """ Save models """
         for file_name, model in self._models.items():
             model.save('{0}/{1}'.format(self.directory, file_name))
 
-    def solve(self, recalculate=False):
+    def solve(self, mask='', recalculate=False):
         """ Solve models """
-        for file_name, model in self._models.items():
+        models = {}
+        if not mask:
+            models = self._models
+        else:
+            for file_name, model in self._models.items():
+                if bool(search(r'{0}'.format(mask), file_name)): models[file_name] = model
+
+        for file_name, model in models.items():
             solve_model = recalculate or not model.solved
             if not solve_model: continue
 
             model.create()
             model.solve()
             model.process()
+            model.solved = True
             model.save('{0}/{1}'.format(self.directory, file_name))
 
     def update(self):

@@ -43,6 +43,18 @@ class TestModelDict(Agros2DTestCase):
             model = self.md.find_model({'a' : a, 'b' : b})
             self.assertEqual(a**b, model.variables['sqr'])
 
+    def test_solve_models_by_mask(self):
+        variants = [(1, 2), (2, 3), (3, 4)]
+        for a, b in variants:
+            model = Model()
+            model.parameters['a'] = a
+            model.parameters['b'] = b
+            self.md.add_model(model)
+
+        self.md.solve(mask='solution_00000[0, 2].pickle')
+        self.assertEqual(len(self.md.models), 3)
+        self.assertEqual(len(self.md.solved_models), 2)
+
 class TestModelDictExternal(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDictExternal()
@@ -65,5 +77,5 @@ if __name__ == '__main__':
     suite = ut.TestSuite()
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestModelDict))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestModelDictExternal))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestModelDictExternal))
     suite.run(result)
