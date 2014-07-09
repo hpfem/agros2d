@@ -1,11 +1,12 @@
 from glob import glob
-from os.path import abspath, dirname, isdir
-from os import makedirs
+from os.path import abspath, dirname, basename, splitext, isdir
+from os import makedirs, getcwd
 from subprocess import Popen, PIPE
 
 class ModelDict(object):
     def __init__(self):
         self._models = dict()
+        self._directory = getcwd()
         self._output = []
 
     @property
@@ -22,6 +23,21 @@ class ModelDict(object):
         return models
 
     @property
+    def directory(self):
+        """ Directory """
+        return self._directory
+
+    @directory.setter
+    def directory(self, value):
+        if not isdir(value):
+            try:
+                makedirs(value)
+            except OSError as exception:
+                raise
+
+        self._directory = abspath(value)
+
+    @property
     def output(self):
         """ Solver output """
         return self._output
@@ -32,9 +48,9 @@ class ModelDict(object):
             if hasattr(self, '_file_name_index'):
                 self._file_name_index += 1
             else:
-                self._file_name_index = len(self.find_files('solutions/solution_*.pickle'))
+                self._file_name_index = len(self.find_files('solution_*.pickle'))
 
-            file_name = 'solutions/solution_{0:06d}.pickle'.format(self._file_name_index)
+            file_name = 'solution_{0:06d}.pickle'.format(self._file_name_index)
 
         self._models[file_name] = model
 
@@ -52,18 +68,23 @@ class ModelDict(object):
             files.append(file_name)
         return sorted(files)
 
-    def load(self, model_class, mask):
+    def load(self, model_class, mask=''):
         """ Load models """
+        if not mask:
+            mask = '{0}/*.pickle'.format(self.directory)
+        else:
+            self.directory = abspath(dirname(mask))
+
         files = self.find_files(mask)
         for file_name in files:
             model = model_class()
             model.load(file_name)
-            self._models[abspath(file_name)] = model
+            self._models[splitext(basename(file_name))[0]] = model
 
     def save(self):
         """ Save models """
         for file_name, model in self._models.items():
-            model.save(file_name)
+            model.save('{0}/{1}'.format(self.directory, file_name))
 
     def solve(self, recalculate=False):
         """ Solve models """
@@ -74,12 +95,12 @@ class ModelDict(object):
             model.create()
             model.solve()
             model.process()
-            model.save(file_name)
+            model.save('{0}/{1}'.format(self.directory, file_name))
 
     def update(self):
         """ Update models """
         for file_name in list(self._models.keys()):
-            self._models[file_name].load(file_name)
+            self._models[file_name].load('{0}/{1}'.format(self.directory, file_name))
 
     def clear(self):
         """ Clear models """
@@ -97,9 +118,11 @@ class ModelDictExternal(ModelDict):
             if not solve_model: continue
 
             code = "from problem import {0}; model = {0}();".format(type(model).__name__)
-            code += "model.load('{0}'); model.create(); model.solve(); model.process(); model.save('{0}');".format(abspath(file_name))
+            code += "model.load('{0}/{1}');".format(self.directory, file_name)
+            code += "model.create(); model.solve(); model.process();"
+            code += "model.save('{0}/{1}')".format(self.directory, file_name)
             command = ['{0}'.format(self.solver), '-l', '-c', '{0}'.format(code)]
 
             process = Popen(command, stdout=PIPE)
             self._output.append(process.communicate())
-            model.load(file_name)
+            model.load('{0}/{1}'.format(self.directory, file_name))

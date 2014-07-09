@@ -4,17 +4,14 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelDictExternal
-from shutil import rmtree
-from os.path import isdir
+from os.path import dirname
 
-# from problem import Model
+from problem import Model
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDict()
-
-        if isdir('solutions'):
-            rmtree('solutions')
+        self.md.directory = '{0}/solutions'.format(dirname(pythonlab.tempname()))
 
     def test_add_model(self):
         model = ModelBase()
@@ -30,7 +27,7 @@ class TestModelDict(Agros2DTestCase):
         self.md.save()
 
         self.md.clear()
-        self.md.load(ModelBase, 'solutions')
+        self.md.load(ModelBase)
         self.assertEqual(N, len(self.md.models))
 
     def test_solve(self):
@@ -49,10 +46,8 @@ class TestModelDict(Agros2DTestCase):
 class TestModelDictExternal(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDictExternal()
+        self.md.directory = '{0}/solutions'.format(dirname(pythonlab.tempname()))
         self.md.solver = pythonlab.datadir('agros2d_solver')
-
-        if isdir('solutions'):
-            rmtree('solutions')
 
     def test_external_solver(self):
         model = Model()
