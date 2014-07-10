@@ -1,13 +1,11 @@
-from glob import glob
-from os.path import abspath, dirname, basename, isdir
-from os import makedirs, getcwd
-from subprocess import Popen, PIPE
-from re import search
+import os
+import subprocess
+import re
 
 class ModelDict(object):
     def __init__(self):
         self._models = dict()
-        self._directory = getcwd()
+        self._directory = os.getcwd() + '/models'
         self._output = []
 
     @property
@@ -30,63 +28,72 @@ class ModelDict(object):
 
     @directory.setter
     def directory(self, value):
-        if not isdir(value):
+        if not os.path.isdir(value):
             try:
-                makedirs(value)
+                os.makedirs(value)
             except OSError as exception:
                 raise
 
-        self._directory = abspath(value)
+        self._directory = os.path.abspath(value)
 
     @property
     def output(self):
         """ Solver output """
         return self._output
 
-    def add_model(self, model, file_name=''):
+    def _model_file_name(self, name):
+        return '{0}/{1}.pickle'.format(self.directory, name)
+
+    def add_model(self, model, name=''):
         """ Add model to dictionary """
-        if not file_name:
-            if hasattr(self, '_file_name_index'):
-                self._file_name_index += 1
-                # TODO: exist
+        if not name:
+            if hasattr(self, '_name_index'):
+                self._name_index += 1
             else:
-                self._file_name_index = len(self.find_files('solution_*.pickle'))
+                files = self.find_files('{0}/model_.*.pickle'.format(self.directory))
+                self._name_index = 0
+                for file_name in files:
+                    name, extension = os.path.basename(file_name).split(".")
+                    index = int(name.split("_")[1])
+                    if (index >= self._name_index):
+                        self._name_index = index + 1
 
-            file_name = 'solution_{0:06d}.pickle'.format(self._file_name_index)
+            name = 'model_{0:06d}'.format(self._name_index)
+            if os.path.isfile(self._model_file_name(name)):
+                raise NameError('File exist!')
 
-        self._models[file_name] = model
+        self._models[name] = model
 
     def find_model(self, parameters):
-        for file_name, model in self._models.items():
+        for name, model in self._models.items():
             if (model.parameters == parameters): return model
 
     def find_files(self, mask):
         """ Find existing model files """
-        if isdir(abspath(mask)):
-            mask = '{0}/*.pickle'.format(mask)
-
         files = []
-        for file_name in glob(mask):
-            files.append(file_name)
-        return sorted(files)
+        if os.path.isdir(mask):
+            files = os.listdir(mask)
+        else:
+            for file_name in os.listdir(os.path.dirname(mask)):
+                if bool(re.match(r'^{0}$'.format(os.path.basename(mask)), file_name)): files.append(file_name)
+
+        return files
 
     def load(self, model_class, mask=''):
         """ Load models """
         if not mask:
-            mask = '{0}/*.pickle'.format(self.directory)
-        else:
-            self.directory = abspath(dirname(mask))
+            mask = self.directory
 
         files = self.find_files(mask)
         for file_name in files:
             model = model_class()
-            model.load(file_name)
-            self._models[basename(file_name)] = model
+            model.load('{0}/{1}'.format(self.directory, file_name))
+            self._models[os.path.basename(file_name)] = model
 
     def save(self):
         """ Save models """
-        for file_name, model in self._models.items():
-            model.save('{0}/{1}'.format(self.directory, file_name))
+        for name, model in self._models.items():
+            model.save(self._model_file_name(name))
 
     def solve(self, mask='', recalculate=False):
         """ Solve models """
@@ -94,10 +101,10 @@ class ModelDict(object):
         if not mask:
             models = self._models
         else:
-            for file_name, model in self._models.items():
-                if bool(search(r'{0}'.format(mask), file_name)): models[file_name] = model
+            for name, model in self._models.items():
+                if bool(re.match(r'^{0}$'.format(mask), name)): models[name] = model
 
-        for file_name, model in models.items():
+        for name, model in models.items():
             solve_model = recalculate or not model.solved
             if not solve_model: continue
 
@@ -105,12 +112,12 @@ class ModelDict(object):
             model.solve()
             model.process()
             model.solved = True
-            model.save('{0}/{1}'.format(self.directory, file_name))
+            model.save(self._model_file_name(name))
 
     def update(self):
         """ Update models """
-        for file_name in list(self._models.keys()):
-            self._models[file_name].load('{0}/{1}'.format(self.directory, file_name))
+        for name in list(self._models.keys()):
+            self._models[name].load(self._model_file_name(name))
 
     def clear(self):
         """ Clear models """
@@ -122,18 +129,25 @@ class ModelDictExternal(ModelDict):
         self.solver = "agros2d_solver"
         self.solver_parameters = ['-l', '-c']
 
-    def solve(self, recalculate=False):
+    def solve(self, mask='', recalculate=False):
         """ Solve models """
-        for file_name, model in self._models.items():
+        models = {}
+        if not mask:
+            models = self._models
+        else:
+            for name, model in self._models.items():
+                if bool(re.match(r'^{0}$'.format(mask), name)): models[name] = model
+
+        for name, model in models.items():
             solve_model = recalculate or not model.solved
             if not solve_model: continue
 
             code = "from problem import {0}; model = {0}();".format(type(model).__name__)
-            code += "model.load('{0}/{1}');".format(self.directory, file_name)
+            code += "model.load('{0}/{1}.pickle');".format(self.directory, name)
             code += "model.create(); model.solve(); model.process();"
-            code += "model.save('{0}/{1}')".format(self.directory, file_name)
+            code += "model.save('{0}/{1}.pickle')".format(self.directory, name)
             command = ['{0}'.format(self.solver)] + self.solver_parameters + ['{0}'.format(code)]
 
-            process = Popen(command, stdout=PIPE)
+            process = subprocess.Popen(command, stdout=subprocess.PIPE)
             self._output.append(process.communicate())
-            model.load('{0}/{1}'.format(self.directory, file_name))
+            model.load('{0}/{1}.pickle'.format(self.directory, name))

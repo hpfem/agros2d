@@ -4,14 +4,12 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelDictExternal
-from os.path import dirname
-
 from problem import Model
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDict()
-        self.md.directory = '{0}/solutions'.format(dirname(pythonlab.tempname()))
+        self.md.directory = '{0}/models'.format(pythonlab.tempname())
 
     def test_add_model(self):
         model = ModelBase()
@@ -51,14 +49,14 @@ class TestModelDict(Agros2DTestCase):
             model.parameters['b'] = b
             self.md.add_model(model)
 
-        self.md.solve(mask='solution_00000[0, 2].pickle')
+        self.md.solve(mask='model_00000[0, 2]')
         self.assertEqual(len(self.md.models), 3)
         self.assertEqual(len(self.md.solved_models), 2)
 
 class TestModelDictExternal(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDictExternal()
-        self.md.directory = '{0}/solutions'.format(dirname(pythonlab.tempname()))
+        self.md.directory = '{0}/solutions'.format(pythonlab.tempname())
         self.md.solver = pythonlab.datadir('agros2d_solver')
 
     def test_external_solver(self):
@@ -77,5 +75,5 @@ if __name__ == '__main__':
     suite = ut.TestSuite()
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestModelDict))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestModelDictExternal))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestModelDictExternal))
     suite.run(result)
