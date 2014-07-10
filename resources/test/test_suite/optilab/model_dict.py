@@ -74,28 +74,31 @@ class TestModelDict(Agros2DTestCase):
 
     def test_solve(self):
         variants = [(1, 2), (2, 3), (3, 4)]
-        for a, b in variants:
+        for a, x in variants:
             model = Model()
             model.parameters['a'] = a
-            model.parameters['b'] = b
+            model.parameters['x'] = x
             self.md.add_model(model)
 
         self.md.solve()
-        for a, b in variants:
-            model = self.md.find_model_by_parameters({'a' : a, 'b' : b})
-            self.assertEqual(a**b, model.variables['sqr'])
+        for a, x in variants:
+            model = self.md.find_model_by_parameters({'a' : a, 'x' : x})
+            self.assertEqual(a*x**2, model.variables['y'])
 
     def test_solve_models_by_mask(self):
-        variants = [(1, 2), (2, 3), (3, 4)]
-        for a, b in variants:
+        for a, x in [(1, 2), (2, 3), (3, 4)]:
             model = Model()
             model.parameters['a'] = a
-            model.parameters['b'] = b
+            model.parameters['x'] = x
             self.md.add_model(model)
 
         self.md.solve(mask='model_00000[0, 2]')
         self.assertEqual(len(self.md.models), 3)
         self.assertEqual(len(self.md.solved_models), 2)
+
+        for a, x in [(1, 2), (3, 4)]:
+            model = self.md.find_model_by_parameters({'a' : a, 'x' : x})
+            self.assertEqual(a*x**2, model.variables['y'])
 
 class TestModelDictExternal(Agros2DTestCase):
     def setUp(self):
@@ -105,14 +108,14 @@ class TestModelDictExternal(Agros2DTestCase):
 
     def test_external_solver(self):
         model = Model()
-        model.parameters['a'] = 4
-        model.parameters['b'] = 2
+        model.parameters['a'] = 2
+        model.parameters['x'] = 2
 
         self.md.add_model(model)
         self.md.save()
 
         self.md.solve()
-        self.assertEqual(4**2, self.md.models[0].variables['sqr'])
+        self.assertEqual(2*2**2, self.md.models[0].variables['y'])
 
 if __name__ == '__main__':
     import unittest as ut

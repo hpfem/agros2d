@@ -1,58 +1,58 @@
+import pythonlab
+
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase
 from problem import Model
-from shutil import rmtree
-from os.path import isdir
 
 class TestModel(Agros2DTestCase):
-    def setUp(self):
-        if isdir('solutions'):
-            rmtree('solutions')
-
     def test_defaults(self):
         model = ModelBase()
+        model.defaults['b'] = 0
+        self.assertEqual(0, model.parameters['b'])
 
-        model.defaults['p'] = 0
-        self.assertEqual(0, model.parameters['p'])
-        
-        model.defaults['p'] = 1
-        self.assertEqual(1, model.parameters['p'])
+        model = Model()
+        model.parameters['x'] = 4
+        model.create()
+        model.solve()
+        model.process()
+        self.assertEqual(4**2, model.variables['y'])
 
     def test_undefined_default(self):
         model = ModelBase()
         with self.assertRaises(KeyError):
-            model.parameters['p']
+            model.parameters['b']
 
     def test_save_and_load(self):
+        file_name = '{0}/model.pickle'.format('{0}'.format(pythonlab.tempname()))
+
         model = Model()
-        model.parameters['a'] = 5
-        model.parameters['b'] = 7
+        model.parameters['x'] = 7
+        model.create()
         model.solve()
         model.process()
-        model.save('solutions/test.pickle')
+        model.save(file_name)
 
         model.clear()
-        model.load('solutions/test.pickle')
-        self.assertEqual(5**7, model.variables['sqr'])
+        model.load(file_name)
+        self.assertEqual(7**2, model.variables['y'])
 
-    def test_solve(self):
-        model = Model()
-        model.parameters['a'] = 4
-        model.parameters['b'] = 2
-
+    def test_solved(self):
+        model = ModelBase()
+        model.parameters['nonexisting_parameter'] = 123
+        model.create()
         model.solve()
         model.process()
 
-        self.assertEqual(4**2, model.variables['sqr'])
+        self.assertFalse(model.solved)
 
     def test_clear(self):
         model = ModelBase()
-        model.parameters['p'] = 0
+        model.parameters['b'] = 0
         model.clear()
         with self.assertRaises(KeyError):
-            model.parameters['p']
+            model.parameters['b']
 
 if __name__ == '__main__':
     import unittest as ut

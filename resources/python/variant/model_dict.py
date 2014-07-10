@@ -2,7 +2,7 @@ import os
 import subprocess
 import re
 
-class ModelDict(object):
+class ModelDict:
     def __init__(self):
         self._models = dict()
         self._directory = os.getcwd() + '/models'

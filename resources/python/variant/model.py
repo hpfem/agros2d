@@ -1,8 +1,7 @@
-__empty_svg__ = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32" height="32" viewBox="0 0 32 32"></svg>'
+_empty_svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32" height="32" viewBox="0 0 32 32"></svg>'
 
 import pickle
-from os.path import dirname, isdir
-from os import makedirs
+import os
 
 class Parameters(dict):
     def __init__(self, defaults):
@@ -22,20 +21,16 @@ class ModelData:
         self.defaults = dict()
         self.parameters = Parameters(self.defaults)
         self.variables = dict()
-        self.info = dict()
-
-        self.geometry_image = __empty_svg__
-        self.images = list()
-
+        self.info = {'_geometry' : _empty_svg}
         self.solved = False
 
-class ModelBase(object):
+class ModelBase:
     def __init__(self):
         self._data = ModelData()
 
     @property
     def parameters(self):
-        """ Input parameters """
+        """Model parameters dictionary."""
         return self._data.parameters
 
     @parameters.setter
@@ -44,7 +39,7 @@ class ModelBase(object):
 
     @property
     def defaults(self):
-        """ Default values for parameters """
+        """Default parameters dictionary used if key can not be find in model parameters."""
         return self._data.defaults
 
     @defaults.setter
@@ -53,7 +48,7 @@ class ModelBase(object):
 
     @property
     def variables(self):
-        """ Output variables """
+        """Output variables dictionary"""
         return self._data.variables
 
     @variables.setter
@@ -62,7 +57,7 @@ class ModelBase(object):
 
     @property
     def info(self):
-        """ Optional info """
+        """Optional info dictionary"""
         return self._data.info
 
     @info.setter
@@ -70,26 +65,8 @@ class ModelBase(object):
         self._data.info = value
 
     @property
-    def geometry_image(self):
-        """ Geometry image """
-        return self._data.geometry_image
-
-    @geometry_image.setter
-    def geometry_image(self, value):
-        self._data.geometry_image = value
-
-    @property
-    def images(self):
-        """ Optional images """
-        return self._data.images
-
-    @images.setter
-    def images(self, value):
-        self._data.images = value
-
-    @property
     def solved(self):
-        """ Solution state """
+        """Solution state of model."""
         return self._data.solved
 
     @solved.setter
@@ -97,87 +74,45 @@ class ModelBase(object):
         self._data.solved = value
 
     def create(self):
+        """Method creates model from parameters."""
         pass
 
     def solve(self):
+        """Method solved model."""
         pass
 
     def process(self):
+        """Method calculate output variables."""
         pass    
         
     def load(self, file_name):
-        """ Load model data from file """
+        """Unpickle model and save binary file (marshalling of model object).
+
+        load(file_name)
+
+        Keyword arguments:
+        file_name -- file name of binary file for read
+        """
+
         with open(file_name, 'rb') as infile:
             self._data = pickle.load(infile)
-                                
+
     def save(self, file_name):
-        """ Save model data from file """
-        directory = dirname(file_name)
-        if not isdir(directory):
-            makedirs(directory)
+        """Pickle model and save binary file (serialization of model object).
+
+        save(file_name)
+
+        Keyword arguments:
+        file_name -- file name of binary file for write
+        """
+
+        directory = os.path.dirname(file_name)
+        if not os.path.isdir(directory):
+            os.makedirs(directory)
 
         with open(file_name, 'wb') as outfile:
             pickle.dump(self._data, outfile, pickle.HIGHEST_PROTOCOL)
 
     def clear(self):
+        """Clear model data"""
         self._data = ModelData()
-
-def create_model_dict(directory):   
-    md = ModelDict()
-    md.load('{0}/*.pickle'.format(directory))
-    return md
-
-def convert_xml_to_pickle(directory):
-    import xml.etree.ElementTree as ET
-    from glob import glob
-    from json import loads
-    from os.path import basename, splitext
-                
-    for file_name in glob('{0}/*.rst'.format(directory)):
-        model_data = ModelData()
-        tree = ET.parse(directory + "/" + file)
-        variant = tree.getroot()
-        results = variant.findall('results')[0]
-        result = results.findall('result')[0]
-                        
-        # solution
-        solution = result.findall('solution')[0]
-        model_data.solved = int(solution.attrib['solved'])
-        
-        # input
-        input = result.findall('input')[0]
-        for par in input.iter(tag='parameter'):             
-            model_data.parameters[par.attrib["name"]] = loads(par.attrib["value"])
-        
-        # output
-        output = result.findall('output')[0]
-        for var in output.iter(tag='variable'): 
-            model_data.variables[var.attrib["name"]] = loads(var.attrib["value"])
-        
-        # info
-        info = result.findall('info')[0]
-        for item in info.iter(tag='item'): 
-            model_data.info[item.attrib["name"]] = loads(item.attrib["value"])
-        
-        # geometry
-        geometry_image = solution.find('geometry_image')
-        if (geometry_image is None):
-            model_data.geometry_image = __empty_svg__
-        else:
-            model_data.geometry_image  = str(geometry_image.attrib["source"])
-        
-        # images
-        images = solution.findall('images')[0]
-        for image in images.findall('image'):
-            model_data.images.append(str(image.attrib["source"]))
-
-        # save
-        save_pickle(m, )
-        with open(file_name, 'wb') as outfile:
-            pickle.dump(model_data, '{0}/{1}.pickle'.format(directory, splitext(basename(file))[0]), pickle.HIGHEST_PROTOCOL)
-
-if __name__ == '__main__':
-    #import pythonlab
-    #convert_xml_to_pickle(pythonlab.datadir('/data/sweep/act/solutions'))
-    #md = create_model_dict(pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions'))
-    pass
