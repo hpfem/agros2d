@@ -55,13 +55,15 @@ class ModelDict:
             if hasattr(self, '_name_index'):
                 self._name_index += 1
             else:
-                files = self.find_files('{0}/model_.*.pickle'.format(self.directory))
                 self._name_index = 0
+                """
+                files = self.find_files('{0}/model_.*.pickle'.format(self.directory))
                 for file_name in files:
                     name, extension = os.path.basename(file_name).split(".")
                     index = int(name.split("_")[1])
                     if (index >= self._name_index):
                         self._name_index = index + 1
+                """
 
             name = 'model_{0:06d}'.format(self._name_index)
 
