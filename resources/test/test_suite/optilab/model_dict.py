@@ -11,10 +11,47 @@ class TestModelDict(Agros2DTestCase):
         self.md = ModelDict()
         self.md.directory = '{0}/models'.format(pythonlab.tempname())
 
+    def test_set_directory(self):
+        model = ModelBase()
+        self.md.add_model(model)
+
+        with self.assertRaises(RuntimeError):
+            self.md.directory = '{0}/models'.format(pythonlab.tempname())
+
+    def test_set_wrong_directory(self):
+        with self.assertRaises(IOError):
+            self.md.directory = '/models'
+
     def test_add_model(self):
         model = ModelBase()
         self.md.add_model(model)
         self.assertTrue(len(self.md.models))
+
+    def test_add_model_with_existing_name(self):
+        model = ModelBase()
+        self.md.add_model(model, 'model')
+        self.md.save()
+        self.md.clear()
+
+        with self.assertRaises(KeyError):
+            self.md.add_model(model, 'model')
+
+    def test_add_model_with_automatic_name(self):
+        model = ModelBase()
+        indexes = [0, 1, 3]
+        for index in indexes:
+            self.md.add_model(model, name='model_{0:06d}'.format(index))
+        self.md.save()
+
+        self.md.add_model(model)
+        self.md.save()
+        self.md.clear()
+
+        self.md.load(ModelBase)
+        self.assertEqual(len(indexes)+1, len(self.md.models))
+
+        self.md.load(ModelBase, mask='model_000002.pickle')
+        self.assertEqual(len(indexes)+1, len(self.md.models))
 
     def test_save_and_load(self):
         model = ModelBase()
@@ -28,6 +65,13 @@ class TestModelDict(Agros2DTestCase):
         self.md.load(ModelBase)
         self.assertEqual(N, len(self.md.models))
 
+    def test_load_files_with_wrong_directory(self):
+        model = ModelBase()
+        self.md.add_model(model)
+
+        with self.assertRaises(RuntimeError):
+            self.md.load(ModelBase, mask='{0}/models'.format(pythonlab.tempname()))
+
     def test_solve(self):
         variants = [(1, 2), (2, 3), (3, 4)]
         for a, b in variants:
@@ -38,7 +82,7 @@ class TestModelDict(Agros2DTestCase):
 
         self.md.solve()
         for a, b in variants:
-            model = self.md.find_model({'a' : a, 'b' : b})
+            model = self.md.find_model_by_parameters({'a' : a, 'b' : b})
             self.assertEqual(a**b, model.variables['sqr'])
 
     def test_solve_models_by_mask(self):
