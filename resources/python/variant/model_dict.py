@@ -27,8 +27,10 @@ class ModelDict:
 
     @directory.setter
     def directory(self, value):
+        """
         if len(self.models):
             raise RuntimeError('Current working directory can not be changed (dictionary is not empty).')
+        """
 
         if not os.path.isdir(value):
             try:
@@ -41,6 +43,7 @@ class ModelDict:
     def _model_file_name(self, name):
         return '{0}/{1}.pickle'.format(self.directory, name)
 
+    # TODO: remove_model()
     def add_model(self, model, name=''):
         """Add new model to dictionary.
 
