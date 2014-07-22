@@ -157,6 +157,8 @@ SET(SOURCES value.cpp
     pythonlab/pyparticletracing.cpp
     pythonlab/python_unittests.cpp
     pythonlab/remotecontrol.cpp
+    optilab/optilab.cpp
+    optilab/optilab_data.cpp
     particle/particle_tracing.cpp
     util/form_interface.cpp
     util/form_script.cpp
@@ -255,6 +257,8 @@ SET(SOURCES value.cpp
     pythonlab/pyparticletracing.h
     pythonlab/python_unittests.h
     pythonlab/remotecontrol.h
+    optilab/optilab.h
+    optilab/optilab_data.h
     particle/particle_tracing.h
     )
 

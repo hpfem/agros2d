@@ -7,6 +7,13 @@ class ModelDict:
         self._models = dict()
         self._directory = os.getcwd() + '/models'
 
+    def _list(self):
+        lst = []
+        for k, m in sorted(self._models.items()):
+            lst.append({ 'key' : k, 'solved' : m.solved })
+                
+        return lst
+
     @property
     def models(self):
         """List of models in dictionary."""
