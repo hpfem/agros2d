@@ -234,6 +234,7 @@ MainWindow::~MainWindow()
 
     delete logStdOut;
     delete scriptEditorDialog;
+    delete optilabWindow;
 }
 
 void MainWindow::createActions()
