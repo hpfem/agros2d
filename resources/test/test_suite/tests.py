@@ -5,7 +5,7 @@ from test_suite import fields
 from test_suite import core
 from test_suite import particle_tracing
 from test_suite import script
-from test_suite import optilab
+#from test_suite import optilab
 
 import inspect
 def __get_tests__(object):
@@ -69,7 +69,7 @@ __tests__["tracing"] = __get_tests__(particle_tracing.particle_tracing)
 # script 
 __tests__["script"] = __get_tests__([script.problem, script.field, script.geometry,
                                      script.benchmark, script.script])      
-        
+
 # examples 
 __tests__["examples"] = examples.examples.tests
 
@@ -83,7 +83,6 @@ __tests__["core"] = __get_tests__(core.matrix_solvers) + __get_tests__(core.gene
 __tests__["complete"] = __tests__["fields"] + __tests__["coupled"] + __tests__["nonlin"] + \
                         __tests__["adaptivity"] + __tests__["tracing"] + \
                         __tests__["script"] + __tests__["examples"] + __tests__["core"]
-
 
 # fast 
 __tests__["fast"] = [

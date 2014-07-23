@@ -1,5 +1,6 @@
-__all__ = ["model_dict"] # , "model_set_manager", "genetic"
-
+from test_suite.optilab import model
 from test_suite.optilab import model_dict
-#from test_suite.optilab import model_set_manager
-#from test_suite.optilab import genetic
+from test_suite.optilab import model_generator
+
+from test_suite.optilab import optimization_parameter
+#from test_suite.optilab import optimization-genetic
