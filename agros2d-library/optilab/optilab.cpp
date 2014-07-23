@@ -552,17 +552,8 @@ void OptilabWindow::showDialog()
 
 void OptilabWindow::refreshVariants()
 {
-    QString str;
-    str += "from variant import model\n";
-    str += "from variant import ModelDict\n";
-    str += "from variant import ModelBase\n";
-    str += "md = ModelDict()\n";
-    str += QString("md.directory = '%1/models/'\n").arg(m_problemDir);
-    str += QString("md.load(ModelBase)");
-    // qDebug() << str;
-
-    currentPythonEngine()->runScript(str);
-    currentPythonEngine()->runExpression("agros2d_variants = md._list()");
+    QString str = QString("agros2d_variants = variant.optilab_interface._md_problems('%1/models/')").arg(m_problemDir);
+    currentPythonEngine()->runExpression(str);
 
     trvVariants->setUpdatesEnabled(false);
 

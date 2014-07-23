@@ -6,6 +6,8 @@ from variant.model import ModelBase
 from variant.model_dict import ModelDict
 from variant.model_dict import ModelDictExternal
 
+from variant.optilab_interface import *
+
 #from variant.model_set_manager import ModelSetManager
 
 #import variant.optimization

@@ -7,13 +7,6 @@ class ModelDict:
         self._models = dict()
         self._directory = os.getcwd() + '/models'
 
-    def _list(self):
-        lst = []
-        for k, m in sorted(self._models.items()):
-            lst.append({ 'key' : k, 'solved' : m.solved })
-                
-        return lst
-
     @property
     def models(self):
         """List of models in dictionary."""
@@ -218,4 +211,4 @@ class ModelDictExternal(ModelDict):
 
             process = subprocess.Popen(command, stdout=subprocess.PIPE)
             self._output.append(process.communicate())
-            model.load('{0}/{1}.pickle'.format(self.directory, name))
+            model.load('{0}/{1}.pickle'.format(self.directory, name))      
