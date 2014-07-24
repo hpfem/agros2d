@@ -14,6 +14,11 @@ class ModelGenerator:
         """Parameters of the model."""
         return list(self._parameters)
 
+    @property
+    def models(self):
+        """List of models in dictionary."""
+        return self._dict.models
+
     def add_parameter(self, name, values):
         """Add new model parameter.
 

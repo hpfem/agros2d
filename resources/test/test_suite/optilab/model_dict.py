@@ -4,19 +4,35 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelDictExternal
-from problem import Model
+
+class Model(ModelBase):
+    """ y = a*x**2 """
+    def create(self):
+        self.defaults['a'] = 1
+
+    def solve(self):
+        try:
+            self.y = self.parameters['a'] * self.parameters['x']**2
+            self.solved = True
+        except:
+            self.solved = False
+
+    def process(self):
+        self.variables['y'] = self.y
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDict()
         self.md.directory = '{0}/models'.format(pythonlab.tempname())
 
+    """
     def test_set_directory(self):
         model = ModelBase()
         self.md.add_model(model)
 
         with self.assertRaises(RuntimeError):
             self.md.directory = '{0}/models'.format(pythonlab.tempname())
+    """
 
     def test_set_wrong_directory(self):
         with self.assertRaises(IOError):
@@ -27,6 +43,7 @@ class TestModelDict(Agros2DTestCase):
         self.md.add_model(model)
         self.assertTrue(len(self.md.models))
 
+    """
     def test_add_model_with_existing_name(self):
         model = ModelBase()
         self.md.add_model(model, 'model')
@@ -35,6 +52,7 @@ class TestModelDict(Agros2DTestCase):
 
         with self.assertRaises(KeyError):
             self.md.add_model(model, 'model')
+    """
 
     """
     def test_add_model_with_automatic_name(self):
@@ -117,7 +135,7 @@ class TestModelDictExternal(Agros2DTestCase):
         self.md.save()
 
         self.md.solve()
-        self.assertEqual(2*2**2, self.md.models[0].variables['y'])
+        self.assertEqual(2*2**2, self.md.models[-1].variables['y'])
 
 if __name__ == '__main__':
     import unittest as ut
