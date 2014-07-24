@@ -1,161 +1,139 @@
-from test_suite import adaptivity
-from test_suite import coupled_problems
-from test_suite import examples
-from test_suite import fields
-from test_suite import core
-from test_suite import particle_tracing
-from test_suite import script
-#from test_suite import optilab
-
+import test_suite
 import inspect
+import types
+
 def __get_tests__(object):
     tests = list()
-
     if isinstance(object, list):
         for member in object:
             tests += __get_tests__(member)
-    else:
+
+    if isinstance(object, types.ModuleType):
         for name, obj in inspect.getmembers(object):
-            test_or_benchmark = name.startswith('Test') or name.startswith('Benchmark')
-            if inspect.isclass(obj) and test_or_benchmark:
-                tests.append(obj)
+            for sub_name, sub_obj in inspect.getmembers(obj):
+                if isinstance(sub_obj, types.ModuleType): continue
+                test_or_benchmark = sub_name.startswith('Test') or sub_name.startswith('Benchmark')
+                if inspect.isclass(sub_obj) and test_or_benchmark:
+                    tests.append(sub_obj)
+
+    for name, obj in inspect.getmembers(object):
+        test_or_benchmark = name.startswith('Test') or name.startswith('Benchmark')
+        if inspect.isclass(obj) and test_or_benchmark:
+            tests.append(obj)
 
     return tests
-
 __tests__ = dict()
 
-# fields 
-__tests__["fields"] = __get_tests__([fields.electrostatic, fields.current, fields.magnetic_steady, fields.magnetic_harmonic, 
-                            fields.magnetic_transient, fields.heat, fields.elasticity, fields.flow, fields.acoustic, 
-                            fields.rf_te, fields.rf_tm])                             
-
+# fields
+__tests__["fields"] = __get_tests__(test_suite.fields)
 
 # coupled
-__tests__["coupled"] = [
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1WeakWeak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1WeakHard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1HardWeak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1HardHard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2Weak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2Hard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3WeakWeak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3WeakHard,
-#coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3HardWeak,
-#coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3HardHard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4Weak,
-#coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4Hard,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsWeakWeak,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsWeakHard,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHardWeak,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHardHard,
-]
+__tests__["coupled"] = __get_tests__(test_suite.coupled_problems)
 
 # nonlin
 __tests__["nonlin"] = [
-fields.heat.TestHeatNonlinPlanar,
-fields.magnetic_steady.TestMagneticNonlinPlanar,
-fields.magnetic_harmonic.TestMagneticHarmonicNonlinPlanar,
-fields.magnetic_harmonic.TestMagneticHarmonicNonlinAxisymmetric,
-fields.flow.TestFlowPlanar,
-fields.flow.TestFlowAxisymmetric
+test_suite.fields.heat.TestHeatNonlinPlanar,
+test_suite.fields.magnetic_steady.TestMagneticNonlinPlanar,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicNonlinPlanar,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicNonlinAxisymmetric,
+test_suite.fields.flow.TestFlowPlanar,
+test_suite.fields.flow.TestFlowAxisymmetric
 ]
 
-# adaptivity 
-__tests__["adaptivity"] = __get_tests__(adaptivity.adaptivity)
+# adaptivity
+__tests__["adaptivity"] = __get_tests__(test_suite.adaptivity)
 
-# tracing 
-__tests__["tracing"] = __get_tests__(particle_tracing.particle_tracing)
+# tracing
+__tests__["tracing"] = __get_tests__(test_suite.particle_tracing)
 
-# script 
-__tests__["script"] = __get_tests__([script.problem, script.field, script.geometry,
-                                     script.benchmark, script.script])      
+# script
+__tests__["script"] = __get_tests__(test_suite.script)
 
-# examples 
-__tests__["examples"] = examples.examples.tests
+# examples
+__tests__["examples"] = test_suite.examples.examples.tests
 
-# core 
-__tests__["core"] = __get_tests__(core.matrix_solvers) + __get_tests__(core.generator) + core.xslt.tests
-
+# core
+__tests__["core"] = __get_tests__(test_suite.core.matrix_solvers) + \
+                    __get_tests__(test_suite.core.generator) + \
+                    test_suite.core.xslt.tests
 # optilab
-# __tests__["optilab"] = __get_tests__([optilab.model_set_manager, optilab.genetic])
+__tests__["optilab"] = __get_tests__(test_suite.optilab)
 
 # complete 
 __tests__["complete"] = __tests__["fields"] + __tests__["coupled"] + __tests__["nonlin"] + \
                         __tests__["adaptivity"] + __tests__["tracing"] + \
-                        __tests__["script"] + __tests__["examples"] + __tests__["core"]
+                        __tests__["script"] + __tests__["examples"] + __tests__["core"] + \
+                        __tests__["optilab"]
 
 # fast 
 __tests__["fast"] = [
 # electrostatic field
-fields.electrostatic.TestElectrostaticPlanar, 
-fields.electrostatic.TestElectrostaticAxisymmetric,
+test_suite.fields.electrostatic.TestElectrostaticPlanar, 
+test_suite.fields.electrostatic.TestElectrostaticAxisymmetric,
 # current field
-fields.current.TestCurrentPlanar,
-fields.current.TestCurrentAxisymmetric,
+test_suite.fields.current.TestCurrentPlanar,
+test_suite.fields.current.TestCurrentAxisymmetric,
 # elasticity
-fields.elasticity.TestElasticityPlanar,
-fields.elasticity.TestElasticityAxisymmetric,
+test_suite.fields.elasticity.TestElasticityPlanar,
+test_suite.fields.elasticity.TestElasticityAxisymmetric,
 # incompressible flow
-fields.flow.TestFlowPlanar,
-fields.flow.TestFlowAxisymmetric,
+test_suite.fields.flow.TestFlowPlanar,
+test_suite.fields.flow.TestFlowAxisymmetric,
 # acoustic field
-fields.acoustic.TestAcousticHarmonicPlanar,
-fields.acoustic.TestAcousticHarmonicAxisymmetric,
+test_suite.fields.acoustic.TestAcousticHarmonicPlanar,
+test_suite.fields.acoustic.TestAcousticHarmonicAxisymmetric,
 # heat transfer
-fields.heat.TestHeatPlanar,
-fields.heat.TestHeatAxisymmetric,
-fields.heat.TestHeatNonlinPlanar,
-fields.heat.TestHeatTransientAxisymmetric,
+test_suite.fields.heat.TestHeatPlanar,
+test_suite.fields.heat.TestHeatAxisymmetric,
+test_suite.fields.heat.TestHeatNonlinPlanar,
+test_suite.fields.heat.TestHeatTransientAxisymmetric,
 # magnetic field
-fields.magnetic_steady.TestMagneticPlanar,
-fields.magnetic_steady.TestMagneticAxisymmetric,
-fields.magnetic_harmonic.TestMagneticHarmonicPlanar,
-fields.magnetic_harmonic.TestMagneticHarmonicAxisymmetric,
-fields.magnetic_harmonic.TestMagneticHarmonicPlanarTotalCurrent,
-fields.magnetic_harmonic.TestMagneticHarmonicAxisymmetricTotalCurrent,
-fields.magnetic_steady.TestMagneticNonlinPlanar,
-fields.magnetic_steady.TestMagneticNonlinAxisymmetric,
-fields.magnetic_harmonic.TestMagneticHarmonicNonlinPlanar,
-fields.magnetic_harmonic.TestMagneticHarmonicNonlinAxisymmetric,
+test_suite.fields.magnetic_steady.TestMagneticPlanar,
+test_suite.fields.magnetic_steady.TestMagneticAxisymmetric,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicPlanar,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicAxisymmetric,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicPlanarTotalCurrent,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicAxisymmetricTotalCurrent,
+test_suite.fields.magnetic_steady.TestMagneticNonlinPlanar,
+test_suite.fields.magnetic_steady.TestMagneticNonlinAxisymmetric,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicNonlinPlanar,
+test_suite.fields.magnetic_harmonic.TestMagneticHarmonicNonlinAxisymmetric,
 # rf te
-fields.rf_te.TestRFTEHarmonicPlanar,
-fields.rf_te.TestRFTEHarmonicAxisymmetric,
+test_suite.fields.rf_te.TestRFTEHarmonicPlanar,
+test_suite.fields.rf_te.TestRFTEHarmonicAxisymmetric,
 # rf tm
-fields.rf_tm.TestRFTMHarmonicPlanar,
-fields.rf_tm.TestRFTMHarmonicAxisymmetric,
+test_suite.fields.rf_tm.TestRFTMHarmonicPlanar,
+test_suite.fields.rf_tm.TestRFTMHarmonicAxisymmetric,
 # math coeff
-fields.math_coeff.TestMathCoeffPlanar,
-fields.math_coeff.TestMathCoeffAxisymmetric,
+test_suite.fields.math_coeff.TestMathCoeffPlanar,
+test_suite.fields.math_coeff.TestMathCoeffAxisymmetric,
 # adaptivity
-adaptivity.adaptivity.TestAdaptivityElectrostatic,
-adaptivity.adaptivity.TestAdaptivityAcoustic,
-adaptivity.adaptivity.TestAdaptivityElasticityBracket,
-adaptivity.adaptivity.TestAdaptivityMagneticProfileConductor,
-adaptivity.adaptivity.TestAdaptivityRF_TE,
-adaptivity.adaptivity.TestAdaptivityHLenses,
-adaptivity.adaptivity.TestAdaptivityPAndHCoupled,
+test_suite.adaptivity.adaptivity.TestAdaptivityElectrostatic,
+test_suite.adaptivity.adaptivity.TestAdaptivityAcoustic,
+test_suite.adaptivity.adaptivity.TestAdaptivityElasticityBracket,
+test_suite.adaptivity.adaptivity.TestAdaptivityMagneticProfileConductor,
+test_suite.adaptivity.adaptivity.TestAdaptivityRF_TE,
+test_suite.adaptivity.adaptivity.TestAdaptivityHLenses,
+test_suite.adaptivity.adaptivity.TestAdaptivityPAndHCoupled,
 # particle tracing
-particle_tracing.particle_tracing.TestParticleTracingPlanar,
-particle_tracing.particle_tracing.TestParticleTracingAxisymmetric,
+test_suite.particle_tracing.particle_tracing.TestParticleTracingPlanar,
+test_suite.particle_tracing.particle_tracing.TestParticleTracingAxisymmetric,
 # coupled fields
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1WeakWeak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1WeakHard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1HardWeak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1HardHard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2Weak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2Hard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3WeakWeak,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3WeakHard,
-#coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3HardWeak,
-#coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3HardHard,
-coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4Weak,
-#coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4Hard,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsWeakWeak,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsWeakHard,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHardWeak,
-coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHardHard,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1WeakWeak,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1WeakHard,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1HardWeak,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic1HardHard,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2Weak,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic2Hard,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3WeakWeak,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic3WeakHard,
+test_suite.coupled_problems.basic_coupled_problems.TestCoupledProblemsBasic4Weak,
+test_suite.coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsWeakWeak,
+test_suite.coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsWeakHard,
+test_suite.coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHardWeak,
+test_suite.coupled_problems.unrealistic_coupled_problems.TestCoupledProblemsManyDomainsHardHard,
 # core
-core.matrix_solvers.TestInternalMatrixSolvers
+test_suite.core.matrix_solvers.TestInternalMatrixSolvers
 ] + __tests__["script"]
 
 def all_tests():

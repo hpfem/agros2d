@@ -1,3 +1,3 @@
 __all__ = ["examples"]
 
-from . import examples
+from test_suite.examples import examples

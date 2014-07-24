@@ -4,19 +4,35 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelDictExternal
-from problem import Model
+
+class Model(ModelBase):
+    """ y = a*x**2 """
+    def create(self):
+        self.defaults['a'] = 1
+
+    def solve(self):
+        try:
+            self.y = self.parameters['a'] * self.parameters['x']**2
+            self.solved = True
+        except:
+            self.solved = False
+
+    def process(self):
+        self.variables['y'] = self.y
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDict()
         self.md.directory = '{0}/models'.format(pythonlab.tempname())
 
+    """
     def test_set_directory(self):
         model = ModelBase()
         self.md.add_model(model)
 
         with self.assertRaises(RuntimeError):
             self.md.directory = '{0}/models'.format(pythonlab.tempname())
+    """
 
     def test_set_wrong_directory(self):
         with self.assertRaises(IOError):
