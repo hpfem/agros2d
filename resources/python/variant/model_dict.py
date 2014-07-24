@@ -4,24 +4,24 @@ import re
 
 class ModelDict:
     def __init__(self):
-        self._models = dict()
+        self._dict = dict()
         self._directory = os.getcwd() + '/models'
 
     @property
     def dict(self):
         """Return models dictionary."""
-        return self._models
+        return self._dict
 
     @property
     def models(self):
         """Return list of models in dictionary."""
-        return list(self._models.values())
+        return list(self._dict.values())
 
     @property
     def solved_models(self):
         """Return list of solved models in dictionary."""
         models = []
-        for model in list(self._models.values()):
+        for model in list(self._dict.values()):
             if model.solved: models.append(model)
         return models
 
@@ -79,7 +79,7 @@ class ModelDict:
             raise KeyError('Model file "{0}" already exist.'.format(self._model_file_name(name)))
         """
 
-        self._models[name] = model
+        self._dict[name] = model
 
     def delete_model(self, name):
         """Delete existing model in dictionary.
@@ -89,8 +89,8 @@ class ModelDict:
         Keyword arguments:
         name -- name of model used as dictionary key
         """
-        if name in self._models.keys():
-            del self._models[name]
+        if name in self._dict.keys():
+            del self._dict[name]
 
     def find_model_by_parameters(self, parameters):
         """Find and return model in dictionary by parameters.
@@ -101,7 +101,7 @@ class ModelDict:
         parameters -- list of model parameters
         """
 
-        for name, model in self._models.items():
+        for name, model in self._dict.items():
             if (model.parameters == parameters): return model
 
     def find_files(self, mask):
@@ -145,14 +145,14 @@ class ModelDict:
             model = model_class()
             model.load('{0}/{1}'.format(self.directory, file_name))
             name, extension = os.path.basename(file_name).split(".")
-            self._models[name] = model
+            self._dict[name] = model
 
     def save(self):
         """Save models from dictionary to current working directory."""
-        for name, model in self._models.items():
+        for name, model in self._dict.items():
             model.save(self._model_file_name(name))
 
-    def solve(self, mask='', recalculate=False):
+    def solve(self, mask='', recalculate=False, save=True):
         """Solve model in directory.
 
         solve(mask='', recalculate=False)
@@ -164,9 +164,9 @@ class ModelDict:
 
         models = {}
         if not mask:
-            models = self._models
+            models = self._dict
         else:
-            for name, model in self._models.items():
+            for name, model in self._dict.items():
                 if bool(re.match(r'^{0}$'.format(mask), name)): models[name] = model
 
         for name, model in models.items():
@@ -176,17 +176,17 @@ class ModelDict:
             model.create()
             model.solve()
             model.process()
-            model.solved = True
-            model.save(self._model_file_name(name))
+
+            if save: model.save(self._model_file_name(name))
 
     def update(self):
         """Update dictionary from models in current working dictionary."""
-        for name in list(self._models.keys()):
-            self._models[name].load(self._model_file_name(name))
+        for name in list(self._dict.keys()):
+            self._dict[name].load(self._model_file_name(name))
 
     def clear(self):
         """Clear dictionary."""
-        self._models.clear()
+        self._dict.clear()
 
 class ModelDictExternal(ModelDict):
     def __init__(self):
@@ -212,9 +212,9 @@ class ModelDictExternal(ModelDict):
 
         models = {}
         if not mask:
-            models = self._models
+            models = self._dict
         else:
-            for name, model in self._models.items():
+            for name, model in self._dict.items():
                 if bool(re.match(r'^{0}$'.format(mask), name)): models[name] = model
 
         for name, model in models.items():
