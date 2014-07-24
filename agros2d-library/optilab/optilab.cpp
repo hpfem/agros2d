@@ -528,8 +528,7 @@ void OptilabWindow::documentClose()
 
     actOpenAgros2D->setEnabled(false);
 
-    currentPythonEngine()->runExpression("del md");
-    currentPythonEngine()->runExpression("del m");
+    currentPythonEngine()->runExpression("del md; del m");
 
     welcomeInfo();
 
@@ -554,6 +553,7 @@ void OptilabWindow::refreshVariants()
 {
     QString str = QString("agros2d_variants = variant.optilab_interface._md_problems('%1/models/')").arg(m_problemDir);
     currentPythonEngine()->runExpression(str);
+    qDebug() << str;
 
     trvVariants->setUpdatesEnabled(false);
 
@@ -592,7 +592,7 @@ void OptilabWindow::refreshVariants()
             else
                 variantItem->setIcon(0, icon("browser-class"));
             variantItem->setText(0, QFileInfo(name).baseName());
-            variantItem->setText(1, QFileInfo(QString("%1/models/%2.pickle").
+            variantItem->setText(1, QFileInfo(QString("%1/models/%2").
                                               arg(m_problemDir).
                                               arg(name)).lastModified().toString("yyyy-MM-dd hh:mm:ss"));
             variantItem->setData(0, Qt::UserRole, name);
@@ -785,10 +785,11 @@ void OptilabWindow::refreshChartControls()
 void OptilabWindow::variantInfo(const QString &key)
 {
     qDebug() << key;
-    currentPythonEngine()->runExpression(QString("m = md.models['%1']").arg(key));
+    QString str = QString("agros2d_model = variant.optilab_interface._md_model('%1')").arg(key);
+    currentPythonEngine()->runExpression(str);
 
     // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "m");
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_model");
     if (result)
     {
         Py_INCREF(result);
