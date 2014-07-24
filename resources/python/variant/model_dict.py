@@ -8,13 +8,18 @@ class ModelDict:
         self._directory = os.getcwd() + '/models'
 
     @property
+    def dict(self):
+        """Return models dictionary."""
+        return self._models
+
+    @property
     def models(self):
-        """List of models in dictionary."""
+        """Return list of models in dictionary."""
         return list(self._models.values())
 
     @property
     def solved_models(self):
-        """List of solved models in dictionary."""
+        """Return list of solved models in dictionary."""
         models = []
         for model in list(self._models.values()):
             if model.solved: models.append(model)
@@ -43,7 +48,6 @@ class ModelDict:
     def _model_file_name(self, name):
         return '{0}/{1}.pickle'.format(self.directory, name)
 
-    # TODO: remove_model()
     def add_model(self, model, name=''):
         """Add new model to dictionary.
 
@@ -70,10 +74,23 @@ class ModelDict:
 
             name = 'model_{0:06d}'.format(self._name_index)
 
+        """
         if os.path.isfile(self._model_file_name(name)):
             raise KeyError('Model file "{0}" already exist.'.format(self._model_file_name(name)))
+        """
+
         self._models[name] = model
-        
+
+    def delete_model(self, name):
+        """Delete existing model in dictionary.
+
+        delete_model(name)
+
+        Keyword arguments:
+        name -- name of model used as dictionary key
+        """
+        if name in self._models.keys():
+            del self._models[name]
 
     def find_model_by_parameters(self, parameters):
         """Find and return model in dictionary by parameters.
@@ -127,7 +144,8 @@ class ModelDict:
         for file_name in files:
             model = model_class()
             model.load('{0}/{1}'.format(self.directory, file_name))
-            self._models[os.path.basename(file_name)] = model
+            name, extension = os.path.basename(file_name).split(".")
+            self._models[name] = model
 
     def save(self):
         """Save models from dictionary to current working directory."""
@@ -203,7 +221,9 @@ class ModelDictExternal(ModelDict):
             solve_model = recalculate or not model.solved
             if not solve_model: continue
 
-            code = "from problem import {0}; model = {0}();".format(type(model).__name__)
+            # TODO: Diferent directory for models and problem file
+            code = "import sys; sys.path.insert(0, '{0}');".format(self.directory)
+            code += "from problem import {0}; model = {0}();".format(type(model).__name__)
             code += "model.load('{0}/{1}.pickle');".format(self.directory, name)
             code += "model.create(); model.solve(); model.process();"
             code += "model.save('{0}/{1}.pickle')".format(self.directory, name)
@@ -211,4 +231,4 @@ class ModelDictExternal(ModelDict):
 
             process = subprocess.Popen(command, stdout=subprocess.PIPE)
             self._output.append(process.communicate())
-            model.load('{0}/{1}.pickle'.format(self.directory, name))      
+            model.load('{0}/{1}.pickle'.format(self.directory, name))

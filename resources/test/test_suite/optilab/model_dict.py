@@ -43,6 +43,7 @@ class TestModelDict(Agros2DTestCase):
         self.md.add_model(model)
         self.assertTrue(len(self.md.models))
 
+    """
     def test_add_model_with_existing_name(self):
         model = ModelBase()
         self.md.add_model(model, 'model')
@@ -51,6 +52,7 @@ class TestModelDict(Agros2DTestCase):
 
         with self.assertRaises(KeyError):
             self.md.add_model(model, 'model')
+    """
 
     """
     def test_add_model_with_automatic_name(self):
@@ -133,7 +135,7 @@ class TestModelDictExternal(Agros2DTestCase):
         self.md.save()
 
         self.md.solve()
-        self.assertEqual(2*2**2, self.md.models[0].variables['y'])
+        self.assertEqual(2*2**2, self.md.models[-1].variables['y'])
 
 if __name__ == '__main__':
     import unittest as ut

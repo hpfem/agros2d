@@ -2,7 +2,6 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelGenerator
-from math import factorial
 
 class TestModelGenerator(Agros2DTestCase):
     def setUp(self):
@@ -23,7 +22,7 @@ class TestModelGenerator(Agros2DTestCase):
             self.mg.add_parameter('p{0}'.format(i), range(k))
 
         self.mg.combination()
-        self.assertTrue(factorial(n)/(factorial(k)*factorial(n-k)), len(self.mg.models))
+        self.assertTrue(factorial(n)/(n**k))
 
 if __name__ == '__main__':
     import unittest as ut
