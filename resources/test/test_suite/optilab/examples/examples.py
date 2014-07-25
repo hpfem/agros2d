@@ -2,27 +2,14 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelGenerator
+from test_suite.optilab.examples import booths_function
 
 import numpy as np
 import pythonlab
 
-class BoothsFunction(ModelBase):
-    """ f(x,y) = (x + 2y - 7)**2 + (2x + y - 5)**2 """
-    def solve(self):
-        try:
-            self.F = (self.parameters['x'] + 2 * self.parameters['y'] - 7)**2 + \
-                     (2 * self.parameters['x'] + self.parameters['y'] - 5)**2
-
-            self.solved = True
-        except:
-            self.solved = False
-
-    def process(self):
-        self.variables['F'] = self.F
-
 class TestBoothsFunction(Agros2DTestCase):
     def setUp(self):
-        self.model = BoothsFunction
+        self.model = booths_function.BoothsFunction()
 
     def test_parameteric_study(self):
         mg = ModelGenerator()
@@ -37,7 +24,7 @@ class TestBoothsFunction(Agros2DTestCase):
 
         md = ModelDict()
         md.directory = cwd
-        md.load(BoothsFunction)
+        md.load(booths_function.BoothsFunction)
         md.solve()
 
         self.assertEqual(len(md.solved_models), n**k)

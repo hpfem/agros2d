@@ -4,21 +4,8 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelDictExternal
-
-class Model(ModelBase):
-    """ y = a*x**2 """
-    def create(self):
-        self.defaults['a'] = 1
-
-    def solve(self):
-        try:
-            self.y = self.parameters['a'] * self.parameters['x']**2
-            self.solved = True
-        except:
-            self.solved = False
-
-    def process(self):
-        self.variables['y'] = self.y
+from test_suite.optilab.examples import quadratic_function
+from shutil import copyfile
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):
@@ -95,7 +82,7 @@ class TestModelDict(Agros2DTestCase):
     def test_solve(self):
         variants = [(1, 2), (2, 3), (3, 4)]
         for a, x in variants:
-            model = Model()
+            model = quadratic_function.QuadraticFunction()
             model.parameters['a'] = a
             model.parameters['x'] = x
             self.md.add_model(model)
@@ -103,11 +90,11 @@ class TestModelDict(Agros2DTestCase):
         self.md.solve()
         for a, x in variants:
             model = self.md.find_model_by_parameters({'a' : a, 'x' : x})
-            self.assertEqual(a*x**2, model.variables['y'])
+            self.assertEqual(a*x**2, model.variables['F'])
 
     def test_solve_models_by_mask(self):
         for a, x in [(1, 2), (2, 3), (3, 4)]:
-            model = Model()
+            model = quadratic_function.QuadraticFunction()
             model.parameters['a'] = a
             model.parameters['x'] = x
             self.md.add_model(model)
@@ -118,16 +105,20 @@ class TestModelDict(Agros2DTestCase):
 
         for a, x in [(1, 2), (3, 4)]:
             model = self.md.find_model_by_parameters({'a' : a, 'x' : x})
-            self.assertEqual(a*x**2, model.variables['y'])
+            self.assertEqual(a*x**2, model.variables['F'])
 
 class TestModelDictExternal(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDictExternal()
-        self.md.directory = '{0}/solutions'.format(pythonlab.tempname())
+        tmp = pythonlab.tempname()
+        self.md.directory = '{0}/models'.format(tmp)
         self.md.solver = pythonlab.datadir('agros2d_solver')
 
+        copyfile('{0}/resources/test/test_suite/optilab/examples/quadratic_function.py'.format(pythonlab.datadir()),
+                 '{0}/problem.py'.format(tmp))
+
     def test_external_solver(self):
-        model = Model()
+        model = quadratic_function.QuadraticFunction()
         model.parameters['a'] = 2
         model.parameters['x'] = 2
 
@@ -135,7 +126,7 @@ class TestModelDictExternal(Agros2DTestCase):
         self.md.save()
 
         self.md.solve()
-        self.assertEqual(2*2**2, self.md.models[-1].variables['y'])
+        self.assertEqual(2*2**2, self.md.models[-1].variables['F'])
 
 if __name__ == '__main__':
     import unittest as ut

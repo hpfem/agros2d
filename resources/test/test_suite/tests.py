@@ -57,7 +57,9 @@ __tests__["core"] = __get_tests__(test_suite.core.matrix_solvers) + \
                     __get_tests__(test_suite.core.generator) + \
                     test_suite.core.xslt.tests
 # optilab
-__tests__["optilab"] = __get_tests__(test_suite.optilab)
+__tests__["optilab"] = __get_tests__(test_suite.optilab) + \
+                       __get_tests__(test_suite.optilab.optimization) + \
+                       __get_tests__(test_suite.optilab.examples)
 
 # complete 
 __tests__["complete"] = __tests__["fields"] + __tests__["coupled"] + __tests__["nonlin"] + \

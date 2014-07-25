@@ -5,7 +5,7 @@ import re
 class ModelDict:
     def __init__(self):
         self._dict = dict()
-        self._directory = os.getcwd() + '/models'
+        self._directory = os.getcwd() + '/models/'
 
     @property
     def dict(self):
@@ -221,8 +221,7 @@ class ModelDictExternal(ModelDict):
             solve_model = recalculate or not model.solved
             if not solve_model: continue
 
-            # TODO: Diferent directory for models and problem file
-            code = "import sys; sys.path.insert(0, '{0}');".format(self.directory)
+            code = "import sys; sys.path.insert(0, '{0}');".format(os.path.dirname(self.directory))
             code += "from problem import {0}; model = {0}();".format(type(model).__name__)
             code += "model.load('{0}/{1}.pickle');".format(self.directory, name)
             code += "model.create(); model.solve(); model.process();"
