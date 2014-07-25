@@ -1,6 +1,4 @@
-__all__ = ["parameter", "functional"]
+__all__ = ["basic_classes"]
 
-from test_suite.optilab.optimization import parameter
-#from test_suite.optilab.optimization import functional
-
+from test_suite.optilab.optimization import basic_classes
 #from test_suite.optilab.optimization import genetic

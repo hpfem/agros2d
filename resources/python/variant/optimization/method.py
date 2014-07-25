@@ -1,34 +1,50 @@
+from variant import ModelDict
+from variant.optimization.parameter import OptimizationParameter
+from variant.optimization.functional import Functionals
+
 class OptimizationMethod:
     def __init__(self, parameters, functionals):
-        self._parameters = parameters
-        self._functionals = functionals
-        
+        self._parameters = list()
+        self.parameters = parameters
+        self._functionals = None
+        self.functionals = functionals
+
+        self.model_dict = ModelDict()
+
     @property
     def parameters(self):
-        """Parameters"""
+        """List of parameters for optimization."""
         return self._parameters
-        
+
+    def _add_parameter(self, parameter):
+        if (parameter.__class__.__base__ == OptimizationParameter):
+            self._parameters.append(parameter)
+        else:
+            raise TypeError('Parameter must be instance of variant.optimization.OptimizationParameter class.')
+
     @parameters.setter
     def parameters(self, value):
-        self._parameters = value
-        
-    @property
-    def directory(self):
-        """Working directory"""
-        return self._directory
+        if isinstance(value, list):
+            for item in value:
+              self._add_parameter(item)
+        else:
+            raise TypeError('Parameters must be collected in list.')
 
-    @directory.setter
-    def directory(self, value):
-        self._directory = value
-                    
     @property
     def functionals(self):
-        """Functionals"""
-        return self._functionals      
-                   
-         
-    def isContained(self, population, newModel):
-        """ checks whether newModel is allready contained in population """
+        """Functionals for optimization."""
+        return self._functionals
+        
+    @functionals.setter
+    def functionals(self, value):
+        if isinstance(value, Functionals):
+            self._functionals = value
+        else:
+            raise TypeError('Functionals must be instance of variant.optimization.Functionals class.')
+
+    """
+    def find_existing_model(self, model):
+        Check whether model is allready contained in model dictionary
         contained = False
         for oldModel in population:
             allSame = True
@@ -43,3 +59,4 @@ class OptimizationMethod:
                 break
                 
         return contained
+    """
