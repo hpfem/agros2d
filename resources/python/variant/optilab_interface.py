@@ -11,7 +11,7 @@ def _md_problems(problem_dir):
     _md.load(ModelBase)
     
     lst = []
-    for k, m in sorted(_md._models.items()):
+    for k, m in sorted(_md.dict.items()):
         lst.append({ 'key' : k, 'solved' : m.solved })
                 
     return lst  
@@ -19,4 +19,4 @@ def _md_problems(problem_dir):
 def _md_model(key):
     global _md
     
-    return _md._models[key]
+    return _md.dict[key]
