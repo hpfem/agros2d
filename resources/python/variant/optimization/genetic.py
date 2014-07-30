@@ -1,182 +1,175 @@
-from variant.optimization import OptimizationMethod, ContinuousParameter, Functionals, Functional
-from variant.model_set_manager import ModelSetManager
-from variant.genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
-        RandomCrossover, GeneticInfo
-import random as rnd
+from variant import ModelBase
 
+from variant.optimization import OptimizationMethod, ContinuousParameter, DiscreteParameter, Functionals, Functional
+from variant.optimization.genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
+                                                  RandomCrossover, GeneticInfo
+
+import random as rnd
 import pythonlab
 
-
 class GeneticOptimization(OptimizationMethod):
-    def __init__(self, parameters, functionals):
-        OptimizationMethod.__init__(self, parameters, functionals)
-        self.modelSetManager = ModelSetManager()
-        self.initialPopulationCreator = ImplicitInitialPopulationCreator(self.parameters)
-        if functionals.isMulticriterial():
+    def __init__(self, parameters, functionals, model_class = ModelBase):
+        OptimizationMethod.__init__(self, parameters, functionals, model_class)
+        self.current_population_index = 0
+
+        self.initial_population_creator = ImplicitInitialPopulationCreator(self.model_class, self.parameters)
+
+        if self.functionals.multicriteria():
             self.selector = MultiCriteriaSelector(self.parameters, self.functionals)
         else:
             self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
-        self.crossover = RandomCrossover()
-        self.mutation = ImplicitMutation(self.parameters)
+
+        self.mutation_creator = ImplicitMutation(self.parameters)
+        self.crossover_creator = RandomCrossover()
 
     @property
     def population_size(self):
-        """Parameters"""
+        """Return number of genoms in population."""
         return self._population_size
 
     @population_size.setter
     def population_size(self, value):
         self._population_size = value
-
-        # why does not work from here? Has to be set again in oneStep()
         self.selector.recomended_population_size = value
 
-    def findBest(self, population):
-        signF = self.functionals.functional().directionSign()
+    def find_best(self, population):
+        signF = self.functionals.functional().direction_sign()
         optimum = signF * 1e50
-        for member in population:
-            if signF * self.functionals.evaluate(member) < signF * optimum:
-                optimum = self.functionals.evaluate(member)
-                optimalParameters = member.parameters
 
-        return [optimum, optimalParameters]
+        for genom in population:
+            if signF * self.functionals.evaluate(genom) < signF * optimum:
+                optimum = self.functionals.evaluate(genom)
+                optimal_parameters = genom.parameters
 
-    
-    # random number of the population
-    # takes into account its priority
-    def randomMemberIdx(self, population):
-        indices = []
-        for index in range(len(population)):
-            for j in range(population[index].priority):
-                indices.append(index);
-                
-        return indices[rnd.randrange(len(indices))]
+        return optimum, optimal_parameters
 
+    def random_member(self, population):
+        """Return random genom of the population. Takes into account its priority."""
+        genoms = []
+        for genom in population:
+            genoms += [genom] * GeneticInfo.priority(genom)
 
-    def initialStep(self, resume):
-        print("initial step")
-        # if not resume previous optimization, delete all solution files in the directory
-        if not resume:
-            self.modelSetManager.delete_all()
+        return rnd.choice(genoms)
 
-        # read all the solution files in the directory
-        solutions = self.modelSetManager.load_all()
+    def population(self, index):
+        """Find and return population (list of models) by index.
+        
+        population(index)
+        
+        Keyword arguments:
+        index -- population index
+        """
+        population = []
+        for model in self.model_dict.models:
+            if GeneticInfo.population_to(model) == index:
+                population.append(model)
 
-        # find what is the latest present population
-        lastPopulationIdx = -1
-        solutionsWithPopulNum = []
-        for solution in solutions:
-            popul = GeneticInfo.population_to(solution)
-            if popul >= 0:
-                solutionsWithPopulNum.append(solution)
-            else:
-                print("Solution does not contain population_to key")
+        return population
 
-            lastPopulationIdx = max(lastPopulationIdx, popul)
+    def selection(self):
+        """ Return list of selected genoms from previous population."""
 
-        if lastPopulationIdx == -1:
-            # no previous population found, create initial one
-            print("no previous population found, create initial one")
-            self.lastPopulation = self.initialPopulationCreator.create(self.population_size)
-            self.modelSetManager.save_all(self.lastPopulation)
-            lastPopulationIdx = 0
-        else:
-            self.LastPopulation = []
-            for solution in solutionsWithPopulNum:
-                if GeneticInfo.population_to(solution) == lastPopulationIdx:
-                    self.LastPopulation.append(solution)
+        population = self.population(self.current_population_index - 1)
+        selected = self.selector.select(population)
+        print('Number of selected genoms: {0}/{1} (previous/selected)'.format(len(population), len(selected)))
 
-        return lastPopulationIdx
+        return selected
 
-    def oneStep(self):
-        print("starting step ", self.populationIdx)
-        models = self.modelSetManager.load_all()
-        lastPopulation = []
-        for model in models:
-            assert GeneticInfo.population_to(model) < self.populationIdx
-            if GeneticInfo.population_to(model) == self.populationIdx - 1:
-                lastPopulation.append(model)
-                print("pop before select: ", GeneticInfo.population_from(model), ", ", GeneticInfo.population_to(model), ", ", self.functionals.evaluate(model))
+    def mutation(self, population, number):
+        """Return mutants (list of mutated models).
+        
+        mutation(population)
+        
+        Keyword arguments:
+        population -- population for mutation
+        """
 
-        self.selector.recomended_population_size = self.population_size
-        population = self.selector.select(lastPopulation)
+        mutants = []
+        while len(mutants) < number:
+            original = self.random_member(population)
+            mutants.append(self.mutation_creator.mutate(original))
 
-        for model in population:
-            GeneticInfo.set_population_to(model, self.populationIdx)
-            print("pop after select: ", GeneticInfo.population_from(model), ", ", GeneticInfo.population_to(model), ", ", self.functionals.evaluate(model), " prior: ", model.priority)
+        return mutants
 
+    def crossover(self, population, number):
+        """Return crossbreeds (list of crossovered models).
+        
+        crossover(population)
+        
+        Keyword arguments:
+        population -- population for crossover
+        """
 
-        #print "best member of the population: ", self.findBest(population)
-
-        # Mutations
-        numMutations = (self.population_size - len(population)) / 2
-        # at least 1/5 of recomended population size
-        numMutations = max(numMutations, self.population_size / 5)
-        mutations = []
-        while len(mutations) < numMutations:
-            originalIdx = self.randomMemberIdx(population)
-            mutation = self.mutation.mutate(population[originalIdx])
-            GeneticInfo.set_population_from(mutation, self.populationIdx)
-            GeneticInfo.set_population_to(mutation, self.populationIdx)
-            if (not self.isContained(population, mutation)) and (not self.isContained(mutations, mutation)):                
-                mutations.append(mutation)
-            
-        # Crossovers
-        numCrossovers = self.population_size - len(population) - len(mutations)
-        numCrossovers = max(numCrossovers, self.population_size / 4)
-        crossovers = []
+        crossbreeds = []
         attempts = 0
-        while len(crossovers) < numCrossovers:
-            fatherIdx = self.randomMemberIdx(population)
-            motherIdx = self.randomMemberIdx(population)
-            while (motherIdx == fatherIdx):
-                motherIdx = self.randomMemberIdx(population)
-            
-            #print "fat and mat ", [fatherIdx, motherIdx]
-            crossover = self.crossover.cross(population[fatherIdx], population[motherIdx])
-            GeneticInfo.set_population_from(crossover, self.populationIdx)
-            GeneticInfo.set_population_to(crossover, self.populationIdx)
-            if (not self.isContained(population, crossover)) and (not self.isContained(mutations, crossover)) and (not self.isContained(crossovers, crossover)):                
-                crossovers.append(crossover)
+        while len(crossbreeds) < number:
+            father = self.random_member(population)
+            mother = self.random_member(population)
+
+            while (population.index(mother) == population.index(father)):
+                mother = self.random_member(population)
+
+            crossbreeds.append(self.crossover_creator.cross(father, mother))
+
             attempts += 1
             if (attempts > 5 * self.population_size):
                 print("Unable to create enough new crossovers. Population may have degenerated.")
                 break
-        
+
+        return crossbreeds
+
+    def create_population(self):
+        """Create new population and store in ModelDict."""
+
+        if (self.current_population_index != 0):
+            population = self.selection()
+            mutants = self.mutation(population, max((self.population_size - len(population)) / 2,
+                                                     self.population_size / 5))
+            crossbreeds = self.crossover(population, max(self.population_size - len(population) - len(mutants),
+                                                         self.population_size/4))
+
+            population += mutants + crossbreeds
+        else:
+            population = self.initial_population_creator.create(self.population_size)
+
+        for genom in population:
+            GeneticInfo.set_population_from(genom, self.current_population_index)
+            GeneticInfo.set_population_to(genom, self.current_population_index)
+
+            self.model_dict.add_model(genom)
+
+    def run(self, populations, resume=True):
+        """Run optimization.
+
+        run(populations, resume=True)
+
+        Keyword arguments:
+        populations -- number of computed populations
+        resume -- continue optimization from last population (default is True)
+        """
+
+        if resume:
+            # set self.current_population_index
+            pass
+
+        for index in range(self.current_population_index, populations):
+            self.current_population_index = index
+            self.create_population()
+
+            print('Number of genoms in population: {0}'.format(len(self.model_dict.models)))
+            self.model_dict.solve(save=False)
+            #self.model_dict.save()
             
-        print("in step {0} survived {1}, added {2} mutations and {3} crossovers".format(self.populationIdx, len(population), len(mutations), len(crossovers)))
-                
-        population.extend(mutations)
-        population.extend(crossovers)
-
-        for model in population:
-            print("pop after mutations: ", GeneticInfo.population_from(model), ", ", GeneticInfo.population_to(model)) #, ", ", model.functional)
-
-        self.modelSetManager.save_all(population)
-
-    def run(self, maxIters, resume = True):
-        self.modelSetManager.directory = self.directory
-
-        lastPopulationIdx = self.initialStep(resume)
-        self.modelSetManager.solve_all()
-
-        for self.populationIdx in range(lastPopulationIdx + 1, maxIters):
-            self.oneStep()
-            solved = self.modelSetManager.solve_all()
-            print("solved {0} ".format(solved))
-
+            print(self.find_best(self.model_dict.models))
 
 if __name__ == '__main__':
-    parameters = [ContinuousParameter('a', 0, 10),
-                    ContinuousParameter('b', 0, 10),
-                    ContinuousParameter('c', 0, 10),
-                    ContinuousParameter('d', 0, 10),
-                    ContinuousParameter('e', 0, 10)]
+    from test_suite.optilab.examples import booths_function
 
-    functionals = Functionals([Functional("Func1", "max")])
+    parameters = [ContinuousParameter('x', -10, 10), ContinuousParameter('y', -10, 10)]
+    functionals = Functionals([Functional("F", "min")])
 
-    self_optimization = GeneticOptimization(parameters, functionals)
-    self_optimization.directory = pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions/')
-    self_optimization.modelSetManager.solver = pythonlab.datadir('agros2d_solver')
-    self_optimization.population_size = 15
-    self_optimization.run(15, False)
+    optimization = GeneticOptimization(parameters, functionals,
+                                       booths_function.BoothsFunction)
+
+    optimization.population_size = 100
+    optimization.run(15, False)
