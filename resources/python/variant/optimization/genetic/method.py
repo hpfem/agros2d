@@ -1,11 +1,13 @@
 from variant import ModelBase
+from variant.optimization import *
 
-from variant.optimization import OptimizationMethod, ContinuousParameter, DiscreteParameter, Functionals, Functional
-from variant.optimization.genetic_elements import ImplicitInitialPopulationCreator, SingleCriteriaSelector, MultiCriteriaSelector, ImplicitMutation,\
-                                                  RandomCrossover, GeneticInfo
+from variant.optimization.genetic.info import GeneticInfo
+from variant.optimization.genetic.initial_population import ImplicitInitialPopulationCreator
+from variant.optimization.genetic.selector import SingleCriteriaSelector, MultiCriteriaSelector
+from variant.optimization.genetic.mutation import ImplicitMutation
+from variant.optimization.genetic.crossover import ImplicitCrossover
 
 import random as rnd
-import pythonlab
 
 class GeneticOptimization(OptimizationMethod):
     def __init__(self, parameters, functionals, model_class = ModelBase):
@@ -20,7 +22,7 @@ class GeneticOptimization(OptimizationMethod):
             self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
 
         self.mutation_creator = ImplicitMutation(self.parameters)
-        self.crossover_creator = RandomCrossover()
+        self.crossover_creator = ImplicitCrossover()
 
     @property
     def population_size(self):
@@ -149,7 +151,7 @@ class GeneticOptimization(OptimizationMethod):
         """
 
         if resume:
-            # set self.current_population_index
+            # TODO: Set self.current_population_index!
             pass
 
         for index in range(self.current_population_index, populations):

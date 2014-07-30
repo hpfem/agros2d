@@ -1,4 +1,4 @@
-__all__ = ["basic_classes"]
+__all__ = ["optimization", "genetic"]
 
-from test_suite.optilab.optimization import basic_classes
-#from test_suite.optilab.optimization import genetic
+from test_suite.optilab.optimization import optimization
+from test_suite.optilab.optimization import genetic
