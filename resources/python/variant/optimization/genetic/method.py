@@ -111,7 +111,7 @@ class GeneticOptimization(OptimizationMethod):
             while (population.index(mother) == population.index(father)):
                 mother = self.random_member(population)
 
-            crossbreeds.append(self.crossover_creator.cross(father, mother))
+            crossbreeds.append(self.crossover_creator.cross(mother, father))
 
             attempts += 1
             if (attempts > 5 * self.population_size):

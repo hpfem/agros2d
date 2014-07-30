@@ -10,10 +10,17 @@ class GeneralCrossover:
 class ImplicitCrossover(GeneralCrossover):
     """Each gene is randomly chosen from father or mother."""
 
-    def cross(self, father, mother):
+    def cross(self, mother, father):
         son = deepcopy(mother)
-        for name in son.parameters.keys():
-            son.parameters[name] = rnd.choice([mother.parameters[name],
-                                               father.parameters[name]])
+
+        mother_gens = {}
+        father_gens = {}
+        mother_gens.update(mother.parameters)
+
+        while len(mother_gens) >= len(father_gens):
+            key = rnd.choice(list(mother_gens.keys()))
+            son.parameters[key] = father.parameters[key]
+            father_gens[key] = father.parameters[key]
+            del(mother_gens[key])
 
         return son
