@@ -3,13 +3,16 @@ from variant.optimization.parameter import OptimizationParameter
 from variant.optimization.functional import Functionals
 
 class OptimizationMethod:
-    def __init__(self, parameters, functionals):
+    def __init__(self, parameters, functionals, model_class):
         self._parameters = list()
         self.parameters = parameters
+        # TODO: Parameters is really bad name!
+
         self._functionals = None
         self.functionals = functionals
 
         self.model_dict = ModelDict()
+        self.model_class = model_class
 
     @property
     def parameters(self):
