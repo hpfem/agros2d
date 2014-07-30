@@ -17,10 +17,30 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef OPTILABDATA_H
-#define OPTILABDATA_H
+#ifndef OPTILABSINGLE_H
+#define OPTILABSINGLE_H
 
-#include "util.h"
+#include "../util/util.h"
+#include "optilab.h"
 
+class OptilabSingle : public QWidget
+{
+    Q_OBJECT
+public:
+    OptilabSingle(OptilabWindow *parent = 0);
 
-#endif // OPTILABDATA_H
+    void variantInfo(const QString &key);
+    void welcomeInfo();
+
+public slots:
+    void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void linkClicked(const QUrl &url);
+
+private:
+    OptilabWindow *optilabMain;
+    QWebView *webView;
+
+    QString m_cascadeStyleSheet;
+};
+
+#endif // OPTILABSINGLE_H

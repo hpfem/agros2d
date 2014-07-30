@@ -30,14 +30,14 @@
 #endif
 
 #include "optilab.h"
+#include "optilab_single.h"
+#include "optilab_multi.h"
 
 #include "util/constants.h"
 #include "gui/lineeditdouble.h"
 #include "gui/common.h"
 #include "gui/systemoutput.h"
 #include "gui/about.h"
-
-#include "ctemplate/template.h"
 
 #include <fstream>
 #include <string>
@@ -64,7 +64,7 @@ OptilabWindow::OptilabWindow(PythonEditorAgrosDialog *scriptEditorDialog) : QMai
     // set recent files
     setRecentFiles();
 
-    welcomeInfo();
+    optilabSingle->welcomeInfo();
 }
 
 OptilabWindow::~OptilabWindow()
@@ -299,6 +299,13 @@ void OptilabWindow::createMain()
 {
     console = new PythonScriptingConsole(currentPythonEngine(), this);
 
+    optilabSingle = new OptilabSingle(this);
+    optilabMulti = new OptilabMulti(this);
+
+    tbxAnalysis = new QTabWidget();
+    tbxAnalysis->addTab(optilabSingle, icon(""), tr("Single"));
+    tbxAnalysis->addTab(optilabMulti, icon(""), tr("Multi"));
+
     chart = new QCustomPlot(this);
     chart->setMinimumHeight(300);
     chart->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
@@ -356,22 +363,6 @@ void OptilabWindow::createMain()
     layoutChart->addWidget(chart, 1, 0, 1, 2);
     layoutChart->addLayout(layoutChartButtons, 2, 0, 1, 2);
 
-    // problem information
-    webView = new QWebView();
-    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
-    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-
-    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
-
-    // stylesheet
-    std::string style;
-    ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize()).toStdString()));
-
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_common.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
-    m_cascadeStyleSheet = QString::fromStdString(style);
-
     trvVariants = new QTreeWidget(this);
     trvVariants->setMouseTracking(true);
     trvVariants->setColumnCount(2);
@@ -383,6 +374,7 @@ void OptilabWindow::createMain()
 
     connect(trvVariants, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     connect(trvVariants, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+    connect(trvVariants, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), optilabSingle, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
     btnSolveInSolver = new QPushButton(tr("Solve"));
     btnSolveInSolver->setToolTip(tr("Solve in Solver"));
@@ -411,7 +403,7 @@ void OptilabWindow::createMain()
     layoutChartConsole->addLayout(layoutChart);
 
     QHBoxLayout *layoutRight = new QHBoxLayout();
-    layoutRight->addWidget(webView);
+    layoutRight->addWidget(tbxAnalysis);
     layoutRight->addLayout(layoutChartConsole);
 
     QHBoxLayout *layout = new QHBoxLayout();
@@ -445,17 +437,9 @@ void OptilabWindow::scriptEditor()
 }
 
 void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-    webView->setHtml("");
-
+{    
     btnOpenInAgros2D->setEnabled(false);
     btnSolveInSolver->setEnabled(false);
-
-    if (current)
-    {
-        variantInfo(current->data(0, Qt::UserRole).toString());
-        refreshChart();
-    }
 }
 
 void OptilabWindow::doItemDoubleClicked(QTreeWidgetItem *item, int column)
@@ -501,8 +485,11 @@ void OptilabWindow::documentOpen(const QString &fileName)
         m_problemDir = QFileInfo(fileNameDocument).absolutePath();
         settings.setValue("General/LastProblemDir", m_problemDir);
 
-        webView->setHtml("");
+        optilabSingle->doItemChanged(NULL, NULL);
         actOpenAgros2D->setEnabled(true);
+
+        btnOpenInAgros2D->setEnabled(true);
+        btnSolveInSolver->setEnabled(true);
 
         // set recent files
         setRecentFiles();
@@ -523,14 +510,12 @@ void OptilabWindow::documentClose()
 
     // clear listview
     trvVariants->clear();
-    // clear cache
-    outputVariables.clear();
 
     actOpenAgros2D->setEnabled(false);
 
-    currentPythonEngine()->runExpression("del md; del m");
+    currentPythonEngine()->runExpression("del variant.optilab_interface._md; del agros2d_model");
 
-    welcomeInfo();
+    optilabSingle->welcomeInfo();
 
     refreshVariants();
     refreshChartWithAxes();
@@ -551,9 +536,8 @@ void OptilabWindow::showDialog()
 
 void OptilabWindow::refreshVariants()
 {
-    QString str = QString("agros2d_variants = variant.optilab_interface._md_problems('%1/models/')").arg(m_problemDir);
+    QString str = QString("agros2d_variants = variant.optilab_interface._md_models('%1/models/')").arg(m_problemDir);
     currentPythonEngine()->runExpression(str);
-    qDebug() << str;
 
     trvVariants->setUpdatesEnabled(false);
 
@@ -567,8 +551,6 @@ void OptilabWindow::refreshVariants()
 
     // clear listview
     trvVariants->clear();
-    // clear cache
-    outputVariables.clear();
 
     int count = 0;
     int countSolved = 0;
@@ -638,35 +620,15 @@ void OptilabWindow::refreshVariants()
 
     qDebug() << "refresh" << time.elapsed();
 
-    // set Python variables
-    setPythonVariables();
-
     // plot chart
     refreshChartWithAxes();
-}
-
-void OptilabWindow::setPythonVariables()
-{
-    foreach (QString name, outputVariables.names())
-    {
-        QVector<double> values = outputVariables.values(name);
-
-        QString lst;
-        lst = "[";
-        for (int j = 0; j < values.size(); j++)
-            lst += QString::number(values[j]) + ", ";
-        lst += "]";
-
-        QString str = QString("%1 = %2").arg(name).arg(lst);
-
-        currentPythonEngine()->runExpression(str);
-    }
 }
 
 void OptilabWindow::refreshChart()
 {
     return;
 
+    /*
     chart->graph(0)->clearData();
     chart->graph(1)->clearData();
 
@@ -701,7 +663,7 @@ void OptilabWindow::refreshChart()
 
                 chart->graph(1)->setData(x, y);
             }
-            */
+
         }
     }
     else if (radChartLine->isChecked())
@@ -733,11 +695,12 @@ void OptilabWindow::refreshChart()
 
                 chart->graph(1)->setData(x, y);
             }
-            */
+
         }
     }
 
     chart->replot();
+    */
 }
 
 void OptilabWindow::refreshChartWithAxes()
@@ -749,11 +712,13 @@ void OptilabWindow::refreshChartWithAxes()
     cmbX->clear();
     cmbY->clear();
 
+    /*
     foreach (QString name, outputVariables.names(true))
     {
         cmbX->addItem(name);
         cmbY->addItem(name);
     }
+    */
 
     if (!selectedX.isEmpty())
         cmbX->setCurrentIndex(cmbX->findText(selectedX));
@@ -782,208 +747,6 @@ void OptilabWindow::refreshChartControls()
     chart->yAxis->setLabel(cmbY->currentText());
 }
 
-void OptilabWindow::variantInfo(const QString &key)
-{
-    qDebug() << key;
-    QString str = QString("agros2d_model = variant.optilab_interface._md_model('%1')").arg(key);
-    currentPythonEngine()->runExpression(str);
-
-    // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_model");
-    if (result)
-    {
-        Py_INCREF(result);
-
-        // template
-        ctemplate::TemplateDictionary variant("model");
-
-        // problem info
-        variant.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
-
-        variant.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-        variant.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-        variant.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
-
-        variant.SetValue("NAME_LABEL", tr("Name:").toStdString());
-        variant.SetValue("NAME", QFileInfo(key).baseName().toStdString());
-
-        variant.SetValue("IMAGES_LABEL", tr("Geometry:").toStdString());
-
-        // input parameters
-        PyObject *input = PyObject_GetAttrString(result, "parameters");
-        if (input)
-        {
-            Py_INCREF(input);
-            variant.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
-
-            PyObject *key, *value;
-            Py_ssize_t pos = 0;
-
-            while (PyDict_Next(input, &pos, &key, &value))
-            {
-                QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
-                double val = PyFloat_AsDouble(value);
-
-                ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("PARAM_SECTION");
-
-                paramSection->SetValue("PARAM_LABEL", name.toStdString());
-                paramSection->SetValue("PARAM_VALUE", QString::number(val).toStdString());
-                // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
-            }
-            Py_XDECREF(input);
-        }
-
-        // info
-        PyObject *info = PyObject_GetAttrString(result, "info");
-        if (info)
-        {
-            Py_INCREF(info);
-            variant.SetValue("INFO_LABEL", tr("Variant info").toStdString());
-
-            PyObject *key, *value;
-            Py_ssize_t pos = 0;
-
-            while (PyDict_Next(info, &pos, &key, &value))
-            {
-                QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
-                double val = PyFloat_AsDouble(value);
-
-                ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("INFO_SECTION");
-
-                paramSection->SetValue("INFO_LABEL", name.toStdString());
-                paramSection->SetValue("INFO_VALUE", QString::number(val).toStdString());
-            }
-            Py_XDECREF(info);
-        }
-
-        QString templateName = "variant.tpl";
-        std::string output;
-        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &variant, &output);
-
-        // setHtml(...) doesn't work
-        // webView->setHtml(QString::fromStdString(info));
-
-        // load(...) works
-        writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(output));
-        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
-
-        btnOpenInAgros2D->setEnabled(true);
-        btnSolveInSolver->setEnabled(true);
-
-        Py_XDECREF(result);
-    }
-
-    /*
-    // TODO: more images
-    QDomElement eleGeometry = nodeImages.childNodes().at(0).toElement();
-    QString geometry = eleGeometry.attribute("source");
-    if (!geometry.isEmpty())
-        info.SetValue("IMAGE", geometry.toStdString());
-
-    info.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
-
-    // output
-    info.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
-    for (unsigned int i = 0; i < nodeOutput.childNodes().count(); i++)
-    {
-        QDomElement eleVariable = nodeOutput.childNodes().at(i).toElement();
-
-        OutputVariable result(eleVariable.attribute("name"),
-                              eleVariable.attribute("value"));
-
-        if (result.isNumber())
-        {
-            ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_VALUE_SECTION");
-
-            // double value
-            varSection->SetValue("VAR_LABEL", result.name().toStdString());
-            varSection->SetValue("VAR_VALUE", QString::number(result.number()).toStdString());
-            // varSection->SetValue("VAR_UNIT", variable.var_unit());
-        }
-        else
-        {
-            ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_CHART_SECTION");
-
-            QString chartData = "[";
-            for (int j = 0; j < result.size(); j++)
-                chartData += QString("[%1, %2], ").arg(result.x().at(j)).arg(result.y().at(j));
-            chartData += "]";
-
-            // chart time step vs. steps
-            QString chart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'N' } ], yaxes: [ { axisLabel: '%3' } ] });});</script>").
-                    arg(i).
-                    arg(chartData).
-                    arg(result.name());
-
-            varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
-            varSection->SetValue("VAR_CHART", chart.toStdString());
-        }
-    }
-
-    // info
-    info.SetValue("INFO_LABEL", tr("Variant info").toStdString());
-    for (unsigned int i = 0; i < nodeInfo.childNodes().count(); i++)
-    {
-        ctemplate::TemplateDictionary *infoSection = info.AddSectionDictionary("INFO_SECTION");
-
-        QDomElement eleInfo = nodeInfo.childNodes().at(i).toElement();
-
-        infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name").toStdString());
-        infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value").toStdString());
-    }
-    */
-}
-
-void OptilabWindow::welcomeInfo()
-{
-    // template
-    std::string info;
-    ctemplate::TemplateDictionary variants("variants");
-
-    variants.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
-
-    variants.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-    variants.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-
-    // recent problem files
-    variants.SetValue("RECENT_PROBLEMS_LABEL", tr("Recent Problems").toStdString());
-    for (int i = 0; i < qMin(10, recentFiles.count()); i++)
-    {
-        ctemplate::TemplateDictionary *recent = variants.AddSectionDictionary("RECENT_PROBLEM_SECTION");
-        recent->SetValue("PROBLEM_FILENAME", QUrl::fromUserInput(recentFiles.at(i)).toString().toStdString());
-        recent->SetValue("PROBLEM_FILENAME_LABEL", QFileInfo(recentFiles.at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
-        recent->SetValue("PROBLEM_BASE", QFileInfo(recentFiles.at(i)).baseName().toStdString());
-    }
-
-    // links
-    variants.SetValue("LINKS_LABEL", tr("Links").toStdString());
-
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/optilab.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &variants, &info);
-
-    // setHtml(...) doesn't work
-    // webView->setHtml(QString::fromStdString(info));
-
-    // load(...) works
-    writeStringContent(tempProblemDir() + "/variants.html", QString::fromStdString(info));
-    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variants.html"));
-}
-
-void OptilabWindow::linkClicked(const QUrl &url)
-{
-    QString search = "/open?";
-    if (url.toString().contains(search))
-    {
-#if QT_VERSION < 0x050000
-        QString fileName = url.queryItemValue("filename");
-#else
-        QString fileName = QUrlQuery(url).queryItemValue("filename");
-#endif
-
-        if (QFile::exists(QUrl(fileName + "/problem.py").toLocalFile()))
-            documentOpen(QUrl(fileName + "/problem.py").toLocalFile());
-    }
-}
-
 void OptilabWindow::setRecentFiles()
 {
     // recent files
@@ -1008,6 +771,7 @@ void OptilabWindow::setRecentFiles()
 
 void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event)
 {
+    /*
     double x = chart->xAxis->pixelToCoord(event->pos().x());
     double y = chart->yAxis->pixelToCoord(event->pos().y());
 
@@ -1048,5 +812,5 @@ void OptilabWindow::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *e
 
         variantInfo(trvVariants->topLevelItem(index)->data(0, Qt::UserRole).toString());
     }
-
+    */
 }

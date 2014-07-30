@@ -3,6 +3,10 @@ _empty_svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="
 import pickle
 import os
 
+class BBB:
+    def __init__(self):
+        self.a = 1
+        
 class Parameters(dict):
     def __init__(self, defaults):
         dict.__init__(self)

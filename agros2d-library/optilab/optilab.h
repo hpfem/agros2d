@@ -28,6 +28,8 @@
 class SystemOutputWidget;
 class PythonScriptingConsole;
 class PythonEditorAgrosDialog;
+class OptilabSingle;
+class OptilabMulti;
 
 class OptilabWindow : public QMainWindow
 {
@@ -61,9 +63,6 @@ private slots:
     void processSolveError(QProcess::ProcessError error);
     void processSolveFinished(int exitCode);
 
-    void linkClicked(const QUrl &url);
-
-    void setPythonVariables();
     void refreshChart();
     void refreshChartWithAxes();
     void refreshChartControls();
@@ -81,11 +80,12 @@ private:
     QMenu *mnuRecentFiles;
     QActionGroup *actDocumentOpenRecentGroup;
 
-    QWebView *webView;
-    QString m_cascadeStyleSheet;
-
     QTreeWidget *trvVariants;
     QLabel *lblProblems;
+
+    QTabWidget *tbxAnalysis;
+    OptilabSingle *optilabSingle;
+    OptilabMulti *optilabMulti;
 
     // chart
     QComboBox *cmbX;
@@ -108,17 +108,15 @@ private:
 
     PythonScriptingConsole *console;
 
-    OutputVariablesAnalysis outputVariables;
-
-    void variantInfo(const QString &key);
-    void welcomeInfo();
-
     void createActions();
     void createMenus();
     void createToolBars();
     void createMain();
 
     void setRecentFiles();
+
+    friend class OptilabSingle;
+    friend class OptilabMulti;
 };
 
 #endif // OPTILABDIALOG_H

@@ -3,7 +3,7 @@ from variant import ModelBase
 
 _md = None
 
-def _md_problems(problem_dir):        
+def _md_models(problem_dir):        
     global _md
     
     _md = ModelDict()

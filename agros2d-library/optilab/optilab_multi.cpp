@@ -17,10 +17,9 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef OPTILABDATA_H
-#define OPTILABDATA_H
+#include "optilab_multi.h"
 
-#include "util.h"
+OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain(parent)
+{
 
-
-#endif // OPTILABDATA_H
+}
