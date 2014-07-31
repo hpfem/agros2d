@@ -4,10 +4,8 @@ from copy import deepcopy
 class SurvivorsSelector:
     """General class for selection of genoms that should be kept into the new population."""
 
-    def __init__(self, parameters, functionals):
-        self.parameters = parameters
+    def __init__(self, functionals):
         self.functionals = functionals
-
         self.recomended_population_size = 0
 
     def select(population):

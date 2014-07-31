@@ -17,9 +17,9 @@ class GeneticOptimization(OptimizationMethod):
         self.initial_population_creator = ImplicitInitialPopulationCreator(self.model_class, self.parameters)
 
         if self.functionals.multicriteria():
-            self.selector = MultiCriteriaSelector(self.parameters, self.functionals)
+            self.selector = MultiCriteriaSelector(self.functionals)
         else:
-            self.selector = SingleCriteriaSelector(self.parameters, self.functionals)
+            self.selector = SingleCriteriaSelector(self.functionals)
 
         self.mutation_creator = ImplicitMutation(self.parameters)
         self.crossover_creator = ImplicitCrossover()
@@ -125,12 +125,10 @@ class GeneticOptimization(OptimizationMethod):
 
         if (self.current_population_index != 0):
             population = self.selection()
-            mutants = self.mutation(population, max((self.population_size - len(population)) / 2,
-                                                     self.population_size / 5))
-            crossbreeds = self.crossover(population, max(self.population_size - len(population) - len(mutants),
+            population += self.mutation(population, max((self.population_size - len(population)) / 2,
+                                                        self.population_size / 5))
+            population += self.crossover(population, max(self.population_size - len(population) - len(population),
                                                          self.population_size/4))
-
-            population += mutants + crossbreeds
         else:
             population = self.initial_population_creator.create(self.population_size)
 
@@ -167,7 +165,7 @@ class GeneticOptimization(OptimizationMethod):
 if __name__ == '__main__':
     from test_suite.optilab.examples import booths_function
 
-    parameters = [ContinuousParameter('x', -10, 10), ContinuousParameter('y', -10, 10)]
+    parameters = Parameters([ContinuousParameter('x', -10, 10), ContinuousParameter('y', -10, 10)])
     functionals = Functionals([Functional("F", "min")])
 
     optimization = GeneticOptimization(parameters, functionals,

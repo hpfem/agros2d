@@ -1,12 +1,11 @@
 from variant import ModelDict
-from variant.optimization.parameter import OptimizationParameter
+from variant.optimization.parameter import Parameters
 from variant.optimization.functional import Functionals
 
 class OptimizationMethod:
     def __init__(self, parameters, functionals, model_class):
-        self._parameters = list()
+        self._parameters = None
         self.parameters = parameters
-        # TODO: Parameters is really bad name!
 
         self._functionals = None
         self.functionals = functionals
@@ -19,19 +18,12 @@ class OptimizationMethod:
         """List of parameters for optimization."""
         return self._parameters
 
-    def _add_parameter(self, parameter):
-        if (parameter.__class__.__base__ == OptimizationParameter):
-            self._parameters.append(parameter)
-        else:
-            raise TypeError('Parameter must be instance of variant.optimization.OptimizationParameter class.')
-
     @parameters.setter
     def parameters(self, value):
-        if isinstance(value, list):
-            for item in value:
-              self._add_parameter(item)
+        if isinstance(value, Parameters):
+            self._parameters = value
         else:
-            raise TypeError('Parameters must be collected in list.')
+            raise TypeError('Parameters must be instance of variant.optimization.Parameters class.')
 
     @property
     def functionals(self):

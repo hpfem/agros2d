@@ -83,6 +83,42 @@ class DiscreteParameter(OptimizationParameter):
 
         return self.options[new_index]
 
+class Parameters:
+    def __init__(self, parameters):
+        self._parameters = list()
+        self.parameters = parameters
+
+    @property
+    def parameters(self):
+        """Optimized parameters."""
+        return self._parameters
+
+    def _add_parameter(self, parameter):
+        if (parameter.__class__.__base__ == OptimizationParameter):
+            self._parameters.append(parameter)
+        else:
+            raise TypeError('Parameter must be instance or inherited from variant.optimization.OptimizationParameter class.')
+
+    @parameters.setter
+    def parameters(self, value):
+        if isinstance(value, list):
+            for item in value:
+                self._add_parameter(item)
+        else:
+            self._add_parameter(value)
+
+    def parameter(self, name):
+        """Find and return parameter by name.
+
+        parameter(name)
+
+        Keyword arguments:
+        name -- parameter name
+        """
+
+        for parameter in self.parameters:
+            if (parameter.name == name): return parameter
+
 if __name__ == '__main__':
     cp = ContinuousParameter("cp", 2, 5.2)
     dp = DiscreteParameter("dp", [4, 6, 77, 44, 99, 11])

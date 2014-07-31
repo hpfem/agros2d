@@ -23,7 +23,7 @@ class ImplicitInitialPopulationCreator(InitialPopulationCreator):
         population = []
         for index in range(number):
             genom = self.model_class()
-            for parameter in self.parameters:
+            for parameter in self.parameters.parameters:
                 genom.parameters[parameter.name] = parameter.random_value()
 
             population.append(genom)
