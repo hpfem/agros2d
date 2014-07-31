@@ -16,18 +16,17 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
     def select(self, population):
         assert not self.functionals.multicriteria()
-        signF = self.functionals.functional().direction_sign()
-
-        print('0.5*self.recomended_population_size: {0}'.format(int(0.5 * self.recomended_population_size)))
-
-        survivorsNum = min(len(population), int(0.5*self.recomended_population_size))
+        direction = self.functionals.functional().direction_sign()
 
         scores = []
         for genom in population:
             scores.append(self.functionals.evaluate(genom))
-        scores.sort(reverse=bool(signF == 1))
+        scores.sort(reverse=bool(direction != 1))
 
-        priority_tresholds = [scores[survivorsNum-1], scores[int(survivorsNum*0.8)-1], scores[int(survivorsNum*0.5)-1]]
+        survivors_number = min(len(population), int(self.recomended_population_size/2))
+        priority_tresholds = [scores[survivors_number-1],
+                              scores[int(survivors_number*0.8)-1],
+                              scores[int(survivors_number*0.5)-1]]
 
         survivors = []
         for genom in population:
@@ -36,12 +35,11 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
             priority = 0
             for index in range(len(priority_tresholds)):
-                if signF * score <= signF * priority_tresholds[index]:
+                if direction * score <= direction * priority_tresholds[index]:
                     priority = index + 1
 
             if priority > 0:
                 GeneticInfo.set_priority(new_genom, priority)
-                GeneticInfo.set_population_to(new_genom, GeneticInfo.population_to(new_genom) + 1)
                 survivors.append(new_genom)
 
         return survivors
