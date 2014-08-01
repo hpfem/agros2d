@@ -76,6 +76,7 @@ class ModelBase:
     @solved.setter
     def solved(self, value):
         self._data.solved = value
+        if not value: self._data.variables.clear()
 
     def create(self):
         """Method creates model from parameters."""

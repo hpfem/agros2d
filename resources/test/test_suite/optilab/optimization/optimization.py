@@ -1,10 +1,11 @@
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
+from variant import ModelBase
+
 from variant.optimization import ContinuousParameter, DiscreteParameter
 from variant.optimization import Functional, Functionals
 from variant.optimization import OptimizationMethod
-
 
 from test_suite.optilab.examples import booths_function
 from test_suite.optilab.examples import binh_korn_function
@@ -110,7 +111,7 @@ class TestMethod(Agros2DTestCase):
         parameters = [ContinuousParameter('x', 0, 1), DiscreteParameter('y', range(10))]
         functionals = Functionals([Functional('F', 'min'), Functional('G', 'max')])
 
-        method = OptimizationMethod(parameters, functionals)
+        method = OptimizationMethod(parameters, functionals, ModelBase)
         self.assertEqual(method.parameters, parameters)
         self.assertEqual(method.functionals, functionals)
 

@@ -1,74 +1,11 @@
-from variant.model import ModelBase
-from variant.optimization import ContinuousParameter, DiscreteParameter
-
-import random as rnd
+from variant.optimization.genetic.info import GeneticInfo
 from copy import deepcopy
-
-class GeneticInfo:
-    @staticmethod
-    def population_from(genom):
-        return int(genom.info["_population_from"])
-
-    @staticmethod
-    def set_population_from(genom, value):
-        genom.info["_population_from"] = value
-
-    @staticmethod
-    def population_to(genom):
-        return int(genom.info["_population_to"])
-
-    @staticmethod
-    def set_population_to(genom, value):
-        genom.info["_population_to"] = value
-
-    @staticmethod
-    def priority(genom):
-        return int(genom.info["_priority"])
-
-    @staticmethod
-    def set_priority(genom, value):
-        genom.info["_priority"] = value
-
-class InitialPopulationCreator:
-    def __init__(self, model_class, parameters):
-        self.parameters = parameters
-        self.model_class = model_class
-
-    def create(self, number):
-        """Return new population as list of genoms (models).
-        
-        create(number)
-        
-        Keyword arguments:
-        number -- number of genoms in population
-        """
-        pass
-
-class ImplicitInitialPopulationCreator(InitialPopulationCreator):
-    """Implicitly used initial population creator. All optimizated parameters are taken randomly."""
-
-    def __init__(self, model_class, parameters):
-        InitialPopulationCreator.__init__(self, model_class, parameters)
-
-    def create(self, number):
-        population = []
-        for index in range(number):
-            genom = self.model_class()
-            for parameter in self.parameters:
-                genom.parameters[parameter.name] = parameter.random_value()
-
-            population.append(genom)
-
-        return population
-
 
 class SurvivorsSelector:
     """General class for selection of genoms that should be kept into the new population."""
 
-    def __init__(self, parameters, functionals):
-        self.parameters = parameters
+    def __init__(self, functionals):
         self.functionals = functionals
-
         self.recomended_population_size = 0
 
     def select(population):
@@ -79,18 +16,17 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
     def select(self, population):
         assert not self.functionals.multicriteria()
-        signF = self.functionals.functional().direction_sign()
-
-        print('0.5*self.recomended_population_size: {0}'.format(int(0.5 * self.recomended_population_size)))
-
-        survivorsNum = min(len(population), int(0.5*self.recomended_population_size))
+        direction = self.functionals.functional().direction_sign()
 
         scores = []
         for genom in population:
             scores.append(self.functionals.evaluate(genom))
-        scores.sort(reverse=bool(signF == 1))
+        scores.sort(reverse=bool(direction != 1))
 
-        priority_tresholds = [scores[survivorsNum-1], scores[int(survivorsNum*0.8)-1], scores[int(survivorsNum*0.5)-1]]
+        survivors_number = min(len(population), int(self.recomended_population_size/2))
+        priority_tresholds = [scores[survivors_number-1],
+                              scores[int(survivors_number*0.8)-1],
+                              scores[int(survivors_number*0.5)-1]]
 
         survivors = []
         for genom in population:
@@ -99,12 +35,11 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
             priority = 0
             for index in range(len(priority_tresholds)):
-                if signF * score <= signF * priority_tresholds[index]:
+                if direction * score <= direction * priority_tresholds[index]:
                     priority = index + 1
 
             if priority > 0:
                 GeneticInfo.set_priority(new_genom, priority)
-                GeneticInfo.set_population_to(new_genom, GeneticInfo.population_to(new_genom) + 1)
                 survivors.append(new_genom)
 
         return survivors
@@ -262,105 +197,3 @@ class MultiCriteriaSelector(SurvivorsSelector):
                 survivors.append(population_copy[i])        
                 
         return survivors
-    
-
-
-class MutationCreator:
-    """General class for creation of mutations."""
-
-    def __init__(self, parameters):
-        self.parameters = parameters
-
-    def mutate(self, original):
-        pass
-
-class GeneralMutation(MutationCreator):
-    """General mutation, user can select how many parameters is changed and whether they are large or small changes."""
-
-    def __init__(self, parameters, number, strength):
-        """ If mutationStrength == 1, use any random value from bounds.
-            If mutationStrength < 1, change in parameter at most mutationStrength * (bound_max - bound_min)."""
-        MutationCreator.__init__(self, parameters)
-        self.number = number
-        self.strength = strength
-
-    def mutate(self, original):
-        mutant = deepcopy(original)
-        assert (len(mutant.parameters) == len(self.parameters))
-
-        parameters_names = list(mutant.parameters.keys())
-        mutated_parameters = []
-        for mutation in range(self.number):
-            name = rnd.choice(parameters_names)
-            while name in mutated_parameters:
-                name = rnd.choice(parameters_names)
-
-            index = 0
-            for parameter in self.parameters:
-                if (parameter.name == name):
-                    index = self.parameters.index(parameter)
-
-            if (self.strength == 1):
-                mutant.parameters[name] = self.parameters[index].random_value()
-            elif (self.strength < 1) and (self.strength > 0):
-                mutant.parameters[name] = self.parameters[index].perturbation(mutant.parameters[name], self.strength)
-            else:
-                pass
-
-            mutated_parameters.append(name)
-
-        return mutant
-
-class ImplicitMutation(MutationCreator):
-    """Implicit mutation, randomly select one of standard types of mutations."""
-
-    def __init__(self, parameters):
-        MutationCreator.__init__(self, parameters)
-        self.mutation_creators = [GeneralMutation(self.parameters, 1, 1.0),
-                                  GeneralMutation(self.parameters, 2, 1.0),
-                                  GeneralMutation(self.parameters, 1, 0.25),
-                                  GeneralMutation(self.parameters, 1, 0.1),
-                                  GeneralMutation(self.parameters, 2, 0.1)]
-
-
-    def mutate(self, original):
-        creator = rnd.choice(self.mutation_creators)
-        return creator.mutate(original)
-
-class GeneralCrossover:
-    """General class for definition of crossovers."""
-
-    def cross(self, father, mother):
-        pass
-
-class RandomCrossover(GeneralCrossover):
-    """Each gene randomly chosen from father or mother."""
-
-    def cross(self, father, mother):
-        son = deepcopy(mother)
-        for name in son.parameters.keys():
-            son.parameters[name] = rnd.choice([mother.parameters[name],
-                                               father.parameters[name]])
-
-        return son
-
-if __name__ == '__main__':
-    parameters = [ContinuousParameter("A", -5, -1),
-                  ContinuousParameter("B", 6, 8),
-                  DiscreteParameter("C", [1,3,6,88,2])]
-
-    population_creator = ImplicitInitialPopulationCreator(ModelBase, parameters)
-    population = population_creator.create(5)
-
-    mutation_creator = ImplicitMutation(parameters)
-    for genom in population:
-        mutant = mutation_creator.mutate(genom)
-        print("original: {0}".format(genom.parameters))
-        print("mutant: {0}".format(genom.parameters))
-
-    crossover_creator = RandomCrossover()
-    print("father: {0}".format(population[0].parameters))
-    print("mother: {0}".format(population[1].parameters))
-    print("son: {0}".format(crossover_creator.cross(population[0], population[1]).parameters))
-    print("son: {0}".format(crossover_creator.cross(population[0], population[1]).parameters))
-    print("son: {0}".format(crossover_creator.cross(population[0], population[1]).parameters))
