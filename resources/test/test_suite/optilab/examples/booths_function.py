@@ -13,3 +13,10 @@ class BoothsFunction(ModelBase):
 
     def process(self):
         self.variables['F'] = self.F
+
+if __name__ == '__main__':
+    model = HolderTableFunction()
+    model.parameters['x'] = 1
+    model.parameters['y'] = 3
+    model.solve()
+    print(model.F, 0)

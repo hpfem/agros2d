@@ -6,6 +6,7 @@ from test_suite.scenario import Agros2DTestResult
 
 from test_suite.optilab.examples import quadratic_function
 from test_suite.optilab.examples import booths_function
+from test_suite.optilab.examples import holder_table_function
 
 from variant import ModelBase, ModelDict
 
@@ -122,8 +123,22 @@ class TestBoothsFunctionOptimization(Agros2DTestCase):
         optimization.population_size = 250
         optimization.run(25, False)
 
-        optimum = optimization.find_best(optimization.model_dict.models)[0]
-        self.assertAlmostEqual(optimum, 0, 1)
+        optimum = optimization.find_best(optimization.model_dict.models)
+        self.assertAlmostEqual(round(optimum[0], 1), 0, 1)
+
+class TestHolderTableFunction(Agros2DTestCase):
+    def test_optimization(self):
+        parameters = Parameters([ContinuousParameter('x', -10, 10), ContinuousParameter('y', -10, 10)])
+        functionals = Functionals([Functional("F", "min")])
+
+        optimization = GeneticOptimization(parameters, functionals,
+                                           holder_table_function.HolderTableFunction)
+
+        optimization.population_size = 250
+        optimization.run(25, False)
+
+        optimum = optimization.find_best(optimization.model_dict.models)
+        self.assertAlmostEqual(round(optimum[0], 1), -19.2, 1)
 
 if __name__ == '__main__':
     import unittest as ut
@@ -133,4 +148,5 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMutation))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestSingleCriteriaSelector))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestBoothsFunctionOptimization))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestHolderTableFunction))
     suite.run(result)
