@@ -87,19 +87,19 @@ void OptilabSingle::variantInfo(const QString &key)
         variant.SetValue("NAME_LABEL", tr("Name:").toStdString());
         variant.SetValue("NAME", QFileInfo(key).baseName().toStdString());
 
-        variant.SetValue("IMAGES_LABEL", tr("Geometry:").toStdString());
+        variant.SetValue("GEOMETRY_LABEL", tr("Geometry:").toStdString());
 
         // input parameters
-        PyObject *input = PyObject_GetAttrString(result, "parameters");
-        if (input)
+        PyObject *parameters = PyObject_GetAttrString(result, "parameters");
+        if (parameters)
         {
-            Py_INCREF(input);
+            Py_INCREF(parameters);
             variant.SetValue("PARAMETER_LABEL", tr("Input parameters").toStdString());
 
             PyObject *key, *value;
             Py_ssize_t pos = 0;
 
-            while (PyDict_Next(input, &pos, &key, &value))
+            while (PyDict_Next(parameters, &pos, &key, &value))
             {
                 QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
                 double val = PyFloat_AsDouble(value);
@@ -147,9 +147,87 @@ void OptilabSingle::variantInfo(const QString &key)
                 */
                 // paramSection->SetValue("PARAM_UNIT", parameter.param_unit());
             }
-            Py_XDECREF(input);
+            Py_XDECREF(parameters);
         }
-        /*
+
+        // input parameters
+        PyObject *variables = PyObject_GetAttrString(result, "variables");
+        if (variables)
+        {
+            Py_INCREF(variables);
+            variant.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
+
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
+
+            while (PyDict_Next(variables, &pos, &key, &value))
+            {
+                QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
+
+                ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("VAR_VALUE_SECTION");
+
+                paramSection->SetValue("VAR_LABEL", name.toStdString());
+                // varSection->SetValue("VAR_UNIT", variable.var_unit());
+
+                QString tp = QString(value->ob_type->tp_name);
+                // qDebug() << tp;
+                // variable value
+                if (tp == "bool")
+                {
+                    paramSection->SetValue("VAR_VALUE", PyLong_AsLong(value) ? "True" : "False");
+                }
+                else if (tp == "int")
+                {
+                    paramSection->SetValue("VAR_VALUE", QString::number((int) PyLong_AsLong(value)).toStdString());
+                }
+                else if (tp == "float" || tp == "numpy.float64")
+                {
+                    paramSection->SetValue("VAR_VALUE", QString::number(PyFloat_AsDouble(value)).toStdString());
+                }
+                else if (tp == "str")
+                {
+                    paramSection->SetValue("VAR_VALUE", QString::fromWCharArray(PyUnicode_AsUnicode(value)).toStdString());
+                }
+                else if (tp == "list")
+                {
+                    paramSection->SetValue("PARAM_VALUE", QString::number((int) PyList_Size(value)).toStdString());
+                }
+                else if (tp == "tuple")
+                {
+                    paramSection->SetValue("PARAM_VALUE", QString::number((int) PyTuple_Size(value)).toStdString());
+                }
+                else if (tp == "dict")
+                {
+                    paramSection->SetValue("PARAM_VALUE", QString::number((int) PyDict_Size(value)).toStdString());
+                }
+                else
+                {
+                    qDebug() << "Unknown type:" << tp;
+                }
+
+                /*
+                {
+                    ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_CHART_SECTION");
+
+                    QString chartData = "[";
+                    for (int j = 0; j < result.size(); j++)
+                        chartData += QString("[%1, %2], ").arg(result.x().at(j)).arg(result.y().at(j));
+                    chartData += "]";
+
+                    // chart time step vs. steps
+                    QString chart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'N' } ], yaxes: [ { axisLabel: '%3' } ] });});</script>").
+                            arg(i).
+                            arg(chartData).
+                            arg(result.name());
+
+                    varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
+                    varSection->SetValue("VAR_CHART", chart.toStdString());
+                }
+                */
+            }
+            Py_XDECREF(variables);
+        }
+
         // info
         PyObject *info = PyObject_GetAttrString(result, "info");
         if (info)
@@ -163,16 +241,19 @@ void OptilabSingle::variantInfo(const QString &key)
             while (PyDict_Next(info, &pos, &key, &value))
             {
                 QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
-                double val = PyFloat_AsDouble(value);
 
-                ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("INFO_SECTION");
-
-                paramSection->SetValue("INFO_LABEL", name.toStdString());
-                paramSection->SetValue("INFO_VALUE", QString::number(val).toStdString());
+                // keywords
+                if (name == "_geometry")
+                {
+                    QString geometry = QString::fromWCharArray(PyUnicode_AsUnicode(value));
+                    if (!geometry.isEmpty())
+                        variant.SetValue("GEOMETRY_IMAGE", geometry.toStdString());
+                }
+                // ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("INFO_SECTION");
             }
             Py_XDECREF(info);
         }
-        */
+
         QString templateName = "variant.tpl";
         std::string output;
         ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &variant, &output);
@@ -182,7 +263,7 @@ void OptilabSingle::variantInfo(const QString &key)
 
         // load(...) works
         writeStringContent(tempProblemDir() + "/variant.html", QString::fromStdString(output));
-        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));        
+        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variant.html"));
 
         Py_XDECREF(result);
     }

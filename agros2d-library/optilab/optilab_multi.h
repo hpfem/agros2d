@@ -31,6 +31,20 @@ public:
 
 private:
     OptilabWindow *optilabMain;
+
+    // chart
+    QComboBox *cmbX;
+    QComboBox *cmbY;
+    QCustomPlot *chart;
+    QRadioButton *radChartLine;
+    QRadioButton *radChartXY;
+
+private slots:
+    void refreshChart();
+    void refreshChartWithAxes();
+    void refreshChartControls();
+
+    void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
 };
 
 #endif // OPTILABMULTI_H

@@ -63,12 +63,6 @@ private slots:
     void processSolveError(QProcess::ProcessError error);
     void processSolveFinished(int exitCode);
 
-    void refreshChart();
-    void refreshChartWithAxes();
-    void refreshChartControls();
-
-    void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
-
 private:
     // script editor
     PythonEditorAgrosDialog *m_scriptEditorDialog;
@@ -86,13 +80,6 @@ private:
     QTabWidget *tbxAnalysis;
     OptilabSingle *optilabSingle;
     OptilabMulti *optilabMulti;
-
-    // chart
-    QComboBox *cmbX;
-    QComboBox *cmbY;
-    QCustomPlot *chart;
-    QRadioButton *radChartLine;
-    QRadioButton *radChartXY;
 
     QAction *actScriptEditor;
     QAction *actExit;
