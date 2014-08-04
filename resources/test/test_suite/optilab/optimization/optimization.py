@@ -3,7 +3,7 @@ from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase
 
-from variant.optimization import ContinuousParameter, DiscreteParameter
+from variant.optimization import ContinuousParameter, DiscreteParameter, Parameters
 from variant.optimization import Functional, Functionals
 from variant.optimization import OptimizationMethod
 
@@ -108,7 +108,7 @@ class TestFunctionals(Agros2DTestCase):
 
 class TestMethod(Agros2DTestCase):
     def test_method_init(self):
-        parameters = [ContinuousParameter('x', 0, 1), DiscreteParameter('y', range(10))]
+        parameters = Parameters([ContinuousParameter('x', 0, 1), DiscreteParameter('y', range(10))])
         functionals = Functionals([Functional('F', 'min'), Functional('G', 'max')])
 
         method = OptimizationMethod(parameters, functionals, ModelBase)

@@ -197,3 +197,27 @@ class MultiCriteriaSelector(SurvivorsSelector):
                 survivors.append(population_copy[i])        
                 
         return survivors
+
+if __name__ == '__main__':
+    from variant import ModelDict
+    from variant.optimization import Functionals, Functional
+
+    from test_suite.optilab.examples import quadratic_function
+
+    md = ModelDict()
+    variants = range(1000)
+    for x in variants:
+        model = quadratic_function.QuadraticFunction()
+        model.parameters['x'] = x
+        GeneticInfo.set_population_from(model, 0)
+        GeneticInfo.set_population_to(model, 0)
+        md.add_model(model)
+
+    md.solve(save=False)
+
+    functionals = Functionals(Functional('F', 'min'))
+    selector = SingleCriteriaSelector(functionals)
+    selector.recomended_population_size = len(variants)
+
+    selected = selector.select(md.models)
+    print(len(selected))

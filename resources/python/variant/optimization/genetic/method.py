@@ -38,8 +38,9 @@ class GeneticOptimization(OptimizationMethod):
         direction = self.functionals.functional().direction_sign()
         optimum = direction * 1e99
 
+        evaluate = self.functionals.evaluate
         for genom in population:
-            score = self.functionals.evaluate(genom)
+            score = evaluate(genom)
             if direction * score < direction * optimum:
                 optimum = score
                 optimal_parameters = genom.parameters
@@ -49,12 +50,13 @@ class GeneticOptimization(OptimizationMethod):
     def random_member(self, population):
         """Return random genom of the population. Takes into account its priority."""
         genoms = []
+        priority = GeneticInfo.priority
         for genom in population:
-            genoms += [genom] * GeneticInfo.priority(genom)
+            genoms += [genom] * priority(genom)
 
         return rnd.choice(genoms)
 
-    def population(self, index):
+    def population(self, index=-1):
         """Find and return population (list of models) by index.
         
         population(index)
@@ -62,21 +64,24 @@ class GeneticOptimization(OptimizationMethod):
         Keyword arguments:
         index -- population index
         """
+        if (index == -1):
+            for genom in self.model_dict.solved_models:
+                population_number = GeneticInfo.population_to(genom)
+                if (population_number > index):
+                    index = population_number
+        
         population = []
+        population_to = GeneticInfo.population_to
         for model in self.model_dict.models:
-            if GeneticInfo.population_to(model) == index:
+            if population_to(model) == index:
                 population.append(model)
 
         return population
 
-    def selection(self):
+    def selection(self, population):
         """ Return list of selected genoms from previous population."""
 
-        population = self.population(self.current_population_index - 1)
-        selected = self.selector.select(population)
-        #print('Number of selected genoms: {0}/{1} (previous/selected)'.format(len(population), len(selected)))
-
-        return selected
+        return self.selector.select(population)
 
     def crossover(self, population, number):
         """Return crossbreeds (list of crossovered models).
@@ -90,18 +95,16 @@ class GeneticOptimization(OptimizationMethod):
         crossbreeds = []
         attempts = 0
         while len(crossbreeds) < number:
-            father = self.random_member(population)
             mother = self.random_member(population)
-
-            while (population.index(mother) == population.index(father)):
-                mother = self.random_member(population)
+            population.pop(population.index(mother))
+            father = self.random_member(population)
 
             son = self.crossover_creator.cross(mother, father)
             son.solved = False
             crossbreeds.append(son)
 
             attempts += 1
-            if (attempts > 5 * self.population_size):
+            if (attempts > 5 * self._population_size):
                 print("Unable to create enough new crossovers. Population may have degenerated.")
                 break
 
@@ -129,17 +132,19 @@ class GeneticOptimization(OptimizationMethod):
         """Create new population and store in ModelDict."""
 
         if (self.current_population_index != 0):
-            population = self.selection()
-            population += self.crossover(population, max(self.population_size - len(population) - len(population),
-                                                         self.population_size/4))
-            population += self.mutation(population, max((self.population_size - len(population)) / 2,
-                                                        self.population_size / 5))
+            population = self.selection(self.population())
+            population += self.crossover(population, max(self._population_size - len(population) - len(population),
+                                                         self._population_size/4))
+            population += self.mutation(population, max((self._population_size - len(population)) / 2,
+                                                        self._population_size / 5))
         else:
-            population = self.initial_population_creator.create(self.population_size)
+            population = self.initial_population_creator.create(self._population_size)
 
+        set_population_from = GeneticInfo.set_population_from
+        set_population_to = GeneticInfo.set_population_to
         for genom in population:
-            GeneticInfo.set_population_from(genom, self.current_population_index)
-            GeneticInfo.set_population_to(genom, self.current_population_index)
+            set_population_from(genom, self.current_population_index)
+            set_population_to(genom, self.current_population_index)
 
             self.model_dict.add_model(genom)
 
@@ -164,3 +169,21 @@ class GeneticOptimization(OptimizationMethod):
 
             #self.model_dict.save()
             #print(self.find_best(self.model_dict.solved_models))
+
+if __name__ == '__main__':
+    from test_suite.optilab.examples import holder_table_function
+    parameters = Parameters([ContinuousParameter('x', -10, 10), ContinuousParameter('y', -10, 10)])
+    functionals = Functionals([Functional("F", "min")])
+
+    optimization = GeneticOptimization(parameters, functionals,
+                                       holder_table_function.HolderTableFunction)
+
+    optimization.population_size = 250
+    optimization.run(25, False)
+
+    """
+    optimization.run(1, False)
+    population = optimization.selection(optimization.population())
+    optimization.crossover(population, 100)
+    optimization.mutation(population, 100)
+    """

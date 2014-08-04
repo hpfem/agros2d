@@ -70,13 +70,13 @@ class ModelBase:
 
     @property
     def solved(self):
-        """Solution state of model."""
+        """Solution state of the model."""
         return self._data.solved
 
     @solved.setter
     def solved(self, value):
         self._data.solved = value
-        if not value: self._data.variables.clear()
+        if not value: self._data.variables = {}
 
     def create(self):
         """Method creates model from parameters."""

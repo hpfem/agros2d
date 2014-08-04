@@ -5,7 +5,7 @@ import re
 class ModelDict:
     def __init__(self):
         self._dict = dict()
-        self._directory = os.getcwd() + '/models/'
+        self._directory = '{0}/models/'.format(os.getcwd())
 
     @property
     def dict(self):
@@ -46,7 +46,7 @@ class ModelDict:
         self._directory = os.path.abspath(value)
 
     def _model_file_name(self, name):
-        return '{0}/{1}.pickle'.format(self.directory, name)
+        return '{0}/{1}.pickle'.format(self._directory, name)
 
     def add_model(self, model, name=''):
         """Add new model to dictionary.
@@ -64,7 +64,7 @@ class ModelDict:
             else:
                 self._name_index = 0
                 """
-                files = self.find_files('{0}/model_.*.pickle'.format(self.directory))
+                files = self.find_files('{0}/model_.*.pickle'.format(self._directory))
                 for file_name in files:
                     name, extension = os.path.basename(file_name).split(".")
                     index = int(name.split("_")[1])
@@ -117,8 +117,10 @@ class ModelDict:
         if os.path.isdir(mask):
             files = os.listdir(mask)
         else:
-            for file_name in os.listdir(os.path.dirname(mask)):
-                if bool(re.match(r'^{0}$'.format(os.path.basename(mask)), file_name)): files.append(file_name)
+            files_list = os.listdir(os.path.dirname(mask))
+            expression  = r'^{0}$'.format(os.path.basename(mask))
+            for file_name in files_list:
+                if bool(re.match(expression, file_name)): files.append(file_name)
 
         return files
 
@@ -133,17 +135,17 @@ class ModelDict:
         """
 
         if not mask:
-            mask = self.directory
+            mask = self._directory
         elif not os.path.dirname(mask):
-            mask = '{0}/{1}'.format(self.directory, mask)
-        elif (os.path.abspath(os.path.dirname(mask)) != self.directory and
+            mask = '{0}/{1}'.format(self._directory, mask)
+        elif (os.path.abspath(os.path.dirname(mask)) != self._directory and
               len(self.models)):
             raise RuntimeError('Mask do not match with current working directory.')
 
         files = self.find_files(mask)
         for file_name in files:
             model = model_class()
-            model.load('{0}/{1}'.format(self.directory, file_name))
+            model.load('{0}/{1}'.format(self._directory, file_name))
             name, extension = os.path.basename(file_name).split(".")
             self._dict[name] = model
 
@@ -166,8 +168,9 @@ class ModelDict:
         if not mask:
             models = self._dict
         else:
+            expression  = r'^{0}$'.format(mask)
             for name, model in self._dict.items():
-                if bool(re.match(r'^{0}$'.format(mask), name)): models[name] = model
+                if bool(re.match(expression, name)): models[name] = model
 
         for name, model in models.items():
             solve_model = recalculate or not model.solved
@@ -214,20 +217,34 @@ class ModelDictExternal(ModelDict):
         if not mask:
             models = self._dict
         else:
+            expression  = r'^{0}$'.format(mask)
             for name, model in self._dict.items():
-                if bool(re.match(r'^{0}$'.format(mask), name)): models[name] = model
+                if bool(re.match(expression, name)): models[name] = model
 
         for name, model in models.items():
             solve_model = recalculate or not model.solved
             if not solve_model: continue
 
-            code = "import sys; sys.path.insert(0, '{0}');".format(os.path.dirname(self.directory))
+            code = "import sys; sys.path.insert(0, '{0}');".format(os.path.dirname(self._directory))
             code += "from problem import {0}; model = {0}();".format(type(model).__name__)
-            code += "model.load('{0}/{1}.pickle');".format(self.directory, name)
+            code += "model.load('{0}/{1}.pickle');".format(self._directory, name)
             code += "model.create(); model.solve(); model.process();"
-            code += "model.save('{0}/{1}.pickle')".format(self.directory, name)
+            code += "model.save('{0}/{1}.pickle')".format(self._directory, name)
             command = ['{0}'.format(self.solver)] + self.solver_parameters + ['{0}'.format(code)]
 
             process = subprocess.Popen(command, stdout=subprocess.PIPE)
             self._output.append(process.communicate())
-            model.load('{0}/{1}.pickle'.format(self.directory, name))
+            model.load('{0}/{1}.pickle'.format(self._directory, name))
+
+if __name__ == '__main__':
+    from test_suite.optilab.examples import quadratic_function
+    md = ModelDict()
+    for x in range(10000):
+        model = quadratic_function.QuadraticFunction()
+        model.parameters['x'] = x
+        md.add_model(model)
+
+    md.save()
+    md.clear()
+    md.load(quadratic_function.QuadraticFunction)
+    md.solve(save=True)

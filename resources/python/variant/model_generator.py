@@ -79,10 +79,10 @@ class ModelGenerator:
 
 if __name__ == '__main__':
     mg = ModelGenerator()
-    mg.add_parameter('a', [1, 2, 3, 4, 5])
-    mg.add_parameter('b', [0.01, 0.02])
-    mg.add_parameter('c', [100, 200, 300])
+    mg.add_parameter('a', range(20))
+    mg.add_parameter('b', range(20))
+    mg.add_parameter('c', range(20))
 
-    mg.combination()
-    #mg.random_selection(5)
+    #mg.combination()
+    mg.random_selection(10000)
     mg.save('models')
