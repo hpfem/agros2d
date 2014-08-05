@@ -3,10 +3,6 @@ _empty_svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="
 import pickle
 import os
 
-class BBB:
-    def __init__(self):
-        self.a = 1
-        
 class Parameters(dict):
     def __init__(self, defaults):
         dict.__init__(self)
@@ -119,5 +115,5 @@ class ModelBase:
             pickle.dump(self._data, outfile, pickle.HIGHEST_PROTOCOL)
 
     def clear(self):
-        """Clear model data"""
+        """Clear model data."""
         self._data = ModelData()

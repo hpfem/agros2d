@@ -3,9 +3,30 @@ import subprocess
 import re
 
 class ModelDict:
-    def __init__(self):
+    def __init__(self, models=None, directory=None):
+        """ModelDict class create colection of models.
+        
+        ModelDict(models=None, directory=None)
+        
+        Keyword arguments:
+        models -- list or dictionary (style {name : model}) contain models (default is None)
+        directory -- current working directory (default is None)
+        """
+
         self._dict = dict()
-        self._directory = '{0}/models/'.format(os.getcwd())
+
+        if (models and isinstance(models, dict)):
+            for name, model in models.items():
+                self.add_model(model, name)
+
+        if (models and isinstance(models, list)):
+            for model in models:
+                self.add_model(model)
+        
+        if not directory:
+            self.directory = '{0}/models/'.format(os.getcwd())
+        else:
+            self.directory = directory
 
     @property
     def dict(self):
@@ -32,11 +53,6 @@ class ModelDict:
 
     @directory.setter
     def directory(self, value):
-        """
-        if len(self.models):
-            raise RuntimeError('Current working directory can not be changed (dictionary is not empty).')
-        """
-
         if not os.path.isdir(value):
             try:
                 os.makedirs(value)
@@ -48,36 +64,34 @@ class ModelDict:
     def _model_file_name(self, name):
         return '{0}/{1}.pickle'.format(self._directory, name)
 
-    def add_model(self, model, name=''):
+    def _find_last_model_index(self):
+        files = self.find_files('{0}/model_.*.pickle'.format(self._directory))
+        for file_name in files:
+            name, extension = os.path.basename(file_name).split(".")
+            index = int(name.split("_")[1])
+            if (index >= self._name_index):
+                self._model_index = index
+
+    def add_model(self, model, name=None, resume=False):
         """Add new model to dictionary.
 
-        add_model(model, name='')
+        add_model(model, name=None, resume=False)
 
         Keyword arguments:
         model -- model object inherited from ModelBase class
-        name -- name of model used as dictionary key and file name (default is automatic model name)
+        name -- name of model used as dictionary key and file name (default means automatic model name)
+        resume -- resume in model index counting for model name (default is False)
         """
+
+        if (resume and not name):
+            self._model_index = self._find_last_model_index() + 1
 
         if not name:
-            if hasattr(self, '_name_index'):
-                self._name_index += 1
+            if hasattr(self, '_model_index'):
+                self._model_index += 1
             else:
-                self._name_index = 0
-                """
-                files = self.find_files('{0}/model_.*.pickle'.format(self._directory))
-                for file_name in files:
-                    name, extension = os.path.basename(file_name).split(".")
-                    index = int(name.split("_")[1])
-                    if (index >= self._name_index):
-                        self._name_index = index + 1
-                """
-
-            name = 'model_{0:06d}'.format(self._name_index)
-
-        """
-        if os.path.isfile(self._model_file_name(name)):
-            raise KeyError('Model file "{0}" already exist.'.format(self._model_file_name(name)))
-        """
+                self._model_index = 0
+            name = 'model_{0:06d}'.format(self._model_index)
 
         self._dict[name] = model
 
@@ -92,20 +106,8 @@ class ModelDict:
         if name in self._dict.keys():
             del self._dict[name]
 
-    def find_model_by_parameters(self, parameters):
-        """Find and return model in dictionary by parameters.
-
-        find_model_by_parameters(parameters)
-
-        Keyword arguments:
-        parameters -- list of model parameters
-        """
-
-        for name, model in self._dict.items():
-            if (model.parameters == parameters): return model
-
     def find_files(self, mask):
-        """Find and return model files in directory.
+        """Find and return list of model files in directory.
 
         find_files(mask)
 
@@ -181,6 +183,18 @@ class ModelDict:
             model.process()
 
             if save: model.save(self._model_file_name(name))
+
+    def find_model_by_parameters(self, parameters):
+        """Find and return model in dictionary by parameters.
+
+        find_model_by_parameters(parameters)
+
+        Keyword arguments:
+        parameters -- list of model parameters
+        """
+
+        for name, model in self._dict.items():
+            if (model.parameters == parameters): return model
 
     def update(self):
         """Update dictionary from models in current working dictionary."""
