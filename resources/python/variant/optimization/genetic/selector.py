@@ -4,8 +4,9 @@ from copy import deepcopy
 class SurvivorsSelector:
     """General class for selection of genoms that should be kept into the new population."""
 
-    def __init__(self, functionals):
+    def __init__(self, functionals, model_class):
         self.functionals = functionals
+        self.model_class = model_class
         self.recomended_population_size = 0
 
     def select(population):
@@ -30,7 +31,8 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
         survivors = []
         for genom in population:
-            new_genom = deepcopy(genom)
+            new_genom = self.model_class()
+            new_genom._data = deepcopy(genom.data)
             score = self.functionals.evaluate(genom)
 
             priority = 0

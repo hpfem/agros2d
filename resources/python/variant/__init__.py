@@ -1,4 +1,5 @@
-__all__ = ["ModelBase", "ModelDict", "ModelDictExternal", "ModelGenerator"]
+__all__ = ["ModelBase", "ModelDict", "ModelDictExternal", "ModelGenerator",
+           "optimization"]
 
 from variant.model import ModelBase
 from variant.model_dict import ModelDict

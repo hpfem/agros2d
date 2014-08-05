@@ -17,9 +17,9 @@ class GeneticOptimization(OptimizationMethod):
         self.initial_population_creator = ImplicitInitialPopulationCreator(self.model_class, self.parameters)
 
         if self.functionals.multicriteria():
-            self.selector = MultiCriteriaSelector(self.functionals)
+            self.selector = MultiCriteriaSelector(self.functionals, self.model_class)
         else:
-            self.selector = SingleCriteriaSelector(self.functionals)
+            self.selector = SingleCriteriaSelector(self.functionals, self.model_class)
 
         self.mutation_creator = ImplicitMutation(self.parameters)
         self.crossover_creator = ImplicitCrossover()
@@ -36,16 +36,17 @@ class GeneticOptimization(OptimizationMethod):
 
     def find_best(self, population):
         direction = self.functionals.functional().direction_sign()
-        optimum = direction * 1e99
+        best_score = direction * 1e99
+        best_genom = None
 
         evaluate = self.functionals.evaluate
         for genom in population:
             score = evaluate(genom)
-            if direction * score < direction * optimum:
-                optimum = score
-                optimal_parameters = genom.parameters
+            if direction * score < direction * best_score:
+                best_score = score
+                best_genom = genom
 
-        return optimum, optimal_parameters
+        return best_genom
 
     def random_member(self, population):
         """Return random genom of the population. Takes into account its priority."""
@@ -168,7 +169,6 @@ class GeneticOptimization(OptimizationMethod):
             self.model_dict.solve(save=False)
 
             #self.model_dict.save()
-            #print(self.find_best(self.model_dict.solved_models))
 
 if __name__ == '__main__':
     from test_suite.optilab.examples import holder_table_function

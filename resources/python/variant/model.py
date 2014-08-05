@@ -29,6 +29,11 @@ class ModelBase:
         self._data = ModelData()
 
     @property
+    def data(self):
+        """Return model data object."""
+        return self._data
+
+    @property
     def parameters(self):
         """Model parameters dictionary."""
         return self._data.parameters

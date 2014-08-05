@@ -9,6 +9,7 @@ class Model(ModelBase):
         self.defaults['d'] = 1e-3
         self.defaults['t'] = 0.5e-4
         self.defaults['epsr'] = 2.6285
+        self.defaults['Z0'] = 75
 
         self.U = 1
         self.I = 1
@@ -70,7 +71,6 @@ class Model(ModelBase):
         geometry.add_edge(-W/2.0, d/2.0+t, -W/2.0, d/2.0, boundaries={"electrostatic" : "Source electrode"})
         geometry.add_label(0, d/2.0+t/2.0, materials={"magnetic" : "Conductor (source)"})
 
-
         # source electrode
         geometry.add_edge(-N*W/2.0, -d/2.0, -N*W/2.0, -d/2.0-t, boundaries={"electrostatic" : "Ground electrode"})
         geometry.add_edge(-N*W/2.0, -d/2.0-t, N*W/2.0, -d/2.0-t, boundaries={"electrostatic" : "Ground electrode"})
@@ -80,10 +80,6 @@ class Model(ModelBase):
         # boundary
         geometry.add_circle(0, 0, 2*N*W, boundaries={"electrostatic" : "Zero charge", "magnetic" : "A = 0"})
         geometry.add_label(0, 2*N*W/2.0, materials={"electrostatic" : "Air", "magnetic" : "Air"})
-
-        a2d.view.zoom_best_fit()
-        a2d.view.mesh.disable()
-        a2d.view.post2d.disable()
 
     def solve(self):
         try:
@@ -96,6 +92,7 @@ class Model(ModelBase):
         C = 2 * self.electrostatic.volume_integrals()['We'] / self.U**2
         L = 2 * self.magnetic.volume_integrals()['Wm'] / self.I**2
         self.variables['Z0'] = sqrt(L/C)
+        self.variables['F'] = abs(self.parameters['Z0'] - self.variables['Z0'])
 
 if __name__ == '__main__':
     model = Model()

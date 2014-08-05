@@ -3,16 +3,16 @@ from itertools import product
 from random import choice
 
 class ModelGenerator:
-    def __init__(self):
+    def __init__(self, model_class=ModelBase):
         self._dict = ModelDict()
 
-        self._model_class = ModelBase
+        self._model_class = model_class
         self._parameters = dict()
 
     @property
     def parameters(self):
         """Parameters of the model."""
-        return list(self._parameters)
+        return self._parameters
 
     @property
     def dict(self):
@@ -34,6 +34,24 @@ class ModelGenerator:
         values -- list of parameter values
         """
         self._parameters[name] = values
+
+    def add_parameter(self, name, start, stop, step):
+        """Add new model parameter.
+
+        add_parameter(name, start, stop, step)
+
+        Keyword arguments:
+        name -- parameter name
+        start -- start of interval
+        stop -- end of interval
+        step -- spacing between values
+        """
+
+        number = int(round((stop - start)/float(step)))
+        if (number > 1):
+            self._parameters[name] = [start + step*i for i in range(number + 1)]
+        else:
+            pass
 
     def remove_parameter(self, name):
         """Remove model parameter.
