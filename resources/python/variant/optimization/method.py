@@ -23,7 +23,7 @@ class OptimizationMethod:
         if isinstance(value, Parameters):
             self._parameters = value
         else:
-            raise TypeError('Parameters must be instance of variant.optimization.Parameters class.')
+            raise TypeError('Parameters must be instance of Parameters class.')
 
     @property
     def functionals(self):
@@ -36,22 +36,3 @@ class OptimizationMethod:
             self._functionals = value
         else:
             raise TypeError('Functionals must be instance of variant.optimization.Functionals class.')
-
-    """
-    def find_existing_model(self, model):
-        Check whether model is allready contained in model dictionary
-        contained = False
-        for oldModel in population:
-            allSame = True
-            for key in oldModel.parameters.keys():
-                # non equality test should be done differently
-                # but even this should be better than nothing
-                if oldModel.parameters[key] != newModel.parameters[key]:
-                    allSame = False
-                    break
-            if allSame:
-                contained = True
-                break
-                
-        return contained
-    """

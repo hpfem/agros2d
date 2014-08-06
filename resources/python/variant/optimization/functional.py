@@ -1,13 +1,23 @@
 class Functional:
-    def __init__(self, name, direction):
-        self.name = name
+    """General class for optimization functional."""
 
+    def __init__(self, name, direction):
+        """Initialization of functional object.
+        
+        Functional(name, direction)
+        
+        Keyword arguments:
+        name -- functional name
+        direction -- optimization direction ("min" or "max")
+        """
+
+        self.name = name
         self._direction = str()
         self.direction = direction
 
     @property
     def direction(self):
-        """Direction of functional ("min", "max")."""
+        """Direction of functional ("min" or "max")."""
         return self._direction
 
     @direction.setter
@@ -15,7 +25,7 @@ class Functional:
         if value in ["min", "max"]:
             self._direction = value
         else:
-            raise ValueError('Direction "{0}" is not defined. Allowed directions are "min" and "max".'.format(value))
+            raise ValueError('Direction "{0}" is not defined. Allowed values are "min" and "max".'.format(value))
         
     def direction_sign(self):
         """Return sign of functional direction."""
@@ -25,20 +35,30 @@ class Functional:
             return -1
             
 class Functionals:
-    def __init__(self, functionals):
+    """General class collected functionals."""
+
+    def __init__(self, functionals=None):
+        """Initialization of functionals object.
+        
+        Functionals(functionals)
+        
+        Keyword arguments:
+        functionals -- one Functional object or list (default is None)
+        """
+
         self._functionals = list()
         self.functionals = functionals
 
     @property
     def functionals(self):
-        """Functionals for optimization."""
+        """List of functionals for optimization."""
         return self._functionals
 
     def _add_functional(self, functional):
         if isinstance(functional, Functional):
             self._functionals.append(functional)
         else:
-            raise TypeError('Functional must be instance of variant.optimization.Functional class.')
+            raise TypeError('Functional must be instance of Functional class.')
 
     @functionals.setter
     def functionals(self, value):
@@ -48,27 +68,38 @@ class Functionals:
         else:
             self._add_functional(value)
 
-    def functional(self, index = 0):
-        """Return functional for multicriteria optimization can be called with index 0 or 1."""
-        return self.functionals[index]
+    def functional(self, name):
+        """Find and return functional by name.
+
+        parameter(name)
+
+        Keyword arguments:
+        name -- functional name
+        """
+
+        for functional in self.functionals:
+            if (functional.name == name): return functional
 
     def multicriteria(self):
-        """Functional, for multicriteria optimization can be called with index 0 or 1."""
+        """Return True if more functionals are defined."""
         if len(self.functionals) >= 2:
             return True
         else:
             return False
 
     def evaluate(self, model):
-        """For one criteria returns value of functional, for multicriteria list [F1, F2] for given instance of model.
+        """For one criteria returns value of functional, for multicriteria list [F1, F2, ..., Fn] for given instance of model.
         
         evaluate(model)
 
         Keyword arguments:
         model -- instance of the model
         """
+
         if self.multicriteria():
-            return [model.variables[self.functional().name],
-                    model.variables[self.functional(index = 1).name]]
+            scores = []
+            for functional in self.functionals:
+                scores.append(model.variables[functional.name])
+            return scores
         else:
-            return model.variables[self.functional().name]
+            return model.variables[self.functionals[0].name]

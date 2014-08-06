@@ -102,7 +102,7 @@ class ModelGenerator:
         for index in range(count):
             model = self._model_class()
             for key, value in self._parameters.items():
-                model.parameters[key] = choice(value)
+                model.parameters[key] = rnd.choice(value)
 
             self._dict.add_model(model)
 

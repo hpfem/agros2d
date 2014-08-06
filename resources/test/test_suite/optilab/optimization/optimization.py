@@ -55,6 +55,24 @@ class TestDiscreteParameter(Agros2DTestCase):
         with self.assertRaises(ValueError):
             self.dp.perturbation(-1, 0.1)
 
+class TestParameters(Agros2DTestCase):
+    def test_parameters(self):
+        parameters = Parameters([ContinuousParameter("cp", 0, 1),
+                                 DiscreteParameter("dp", range(10))])
+
+        self.assertEqual(len(parameters.parameters), 2)
+        self.assertTrue(parameters.parameter("cp"))
+        self.assertTrue(parameters.parameter("dp"))
+
+    def test_add_parameters(self):
+        parameters = Parameters()
+        parameters.parameters = [ContinuousParameter("cp", 0, 1),
+                                 DiscreteParameter("dp", range(10))]
+
+        parameters = Parameters()
+        parameters.parameters.append(ContinuousParameter("cp", 0, 1))
+        self.assertTrue(parameters.parameter("cp"))
+
 class TestFunctional(Agros2DTestCase):
     def setUp(self):
         self.F = Functional('F', 'min')
@@ -135,6 +153,7 @@ if __name__ == '__main__':
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestContinuousParameter))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestDiscreteParameter))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestParameters))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFunctional))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFunctionals))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestMethod))

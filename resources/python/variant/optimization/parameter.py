@@ -1,10 +1,12 @@
 import random as rnd
 
 class OptimizationParameter:
+    """General class for optimization parameter."""
     def __init__(self, name):
         self.name = name
 
     def continues(self):
+        """Return True if parameter is continue."""
         pass
         
     def random_value(self):
@@ -14,7 +16,19 @@ class OptimizationParameter:
         pass
 
 class ContinuousParameter(OptimizationParameter):
+    """Class for parameters with continue interval."""
+
     def __init__(self, name, min, max):
+        """Initialization of parameter object.
+        
+        ContinuousParameter(name, min, max)
+        
+        Keyword arguments:
+        name -- parameter name
+        min -- minimum of parameter value interval
+        max -- maximum of parameter value interval
+        """
+
         OptimizationParameter.__init__(self, name)
         self.min = min
         self.max = max
@@ -29,27 +43,37 @@ class ContinuousParameter(OptimizationParameter):
     def perturbation(self, original, ratio):
         """Change original value within +-ratio*(max - min).
 
-        perturbation(self, original, ratio)
+        perturbation(original, ratio)
 
         Keyword arguments:
         original -- original value
-        ration -- maximum ration for change
+        ration -- maximum ration for parameter value change
         """
 
         if (self.min > original or  self.max < original):
             raise ValueError('Original must be in the range from {0} to {1}.'.format(self.min, self.max))
 
-        diff =  ratio * self.interval()
-        act_min = max(self.min, original - diff)
-        act_max = min(self.max, original + diff)
+        difference =  ratio * self.interval()
+        value_min = max(self.min, original - difference)
+        value_max = min(self.max, original + difference)
 
-        return act_min + rnd.random() * (act_max - act_min)
+        return value_min + rnd.random() * (value_max - value_min)
         
     def interval(self):
+        """Return minimum and maximum value of defined interval."""
         return self.max - self.min
 
 class DiscreteParameter(OptimizationParameter):
     def __init__(self, name, options):
+        """Initialization of parameter object.
+        
+        DiscreteParameter(name, options)
+        
+        Keyword arguments:
+        name -- parameter name
+        options -- list of parameter values
+        """
+
         OptimizationParameter.__init__(self, name)
         self.options = options
 
@@ -76,28 +100,39 @@ class DiscreteParameter(OptimizationParameter):
         original_index = self.options.index(original)
         min_index = max(0, original_index - max_shift)
         max_index = min(len(self.options) - 1, original_index + max_shift)
-        new_index = original_index
 
+        new_index = original_index
         while new_index == original_index:
             new_index = rnd.randrange(min_index, max_index + 1)
 
         return self.options[new_index]
 
 class Parameters:
-    def __init__(self, parameters):
+    """General class collected parameters."""
+
+    def __init__(self, parameters=None):
+        """Initialization of parameters object.
+        
+        Parameters(parameters=None)
+        
+        Keyword arguments:
+        parameters -- list of parameters (default is None)
+        """
+
         self._parameters = list()
-        self.parameters = parameters
+        if parameters:
+            self.parameters = parameters
 
     @property
     def parameters(self):
-        """Optimized parameters."""
+        """List of optimized parameters."""
         return self._parameters
 
     def _add_parameter(self, parameter):
         if (parameter.__class__.__base__ == OptimizationParameter):
             self._parameters.append(parameter)
         else:
-            raise TypeError('Parameter must be instance or inherited from variant.optimization.OptimizationParameter class.')
+            raise TypeError('Parameter must be instance or inherited object from OptimizationParameter class.')
 
     @parameters.setter
     def parameters(self, value):
