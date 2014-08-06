@@ -1,11 +1,21 @@
 from variant import ModelBase, ModelDict
 from itertools import product
-from random import choice
+
+import random as rnd
 
 class ModelGenerator:
-    def __init__(self, model_class=ModelBase):
-        self._dict = ModelDict()
+    """General class for models set generation (combination, random selection, etc.)."""
 
+    def __init__(self, model_class=ModelBase):
+        """Initialization of model generator.
+        
+        ModelGenerator(model_class=ModelBase)
+        
+        Keyword arguments:
+        model_class -- model class inherited from ModelBase (default is ModelBase)
+        """
+
+        self._dict = ModelDict()
         self._model_class = model_class
         self._parameters = dict()
 
@@ -19,13 +29,12 @@ class ModelGenerator:
         """Models dictionary."""
         return self._dict
 
-    @property
     def models(self):
         """List of models in dictionary."""
-        return self._dict.models
+        return self._dict.models()
 
     def add_parameter(self, name, values):
-        """Add new model parameter.
+        """Add new model parameter defined by list of values.
 
         add_parameter(name, values)
 
@@ -33,10 +42,11 @@ class ModelGenerator:
         name -- parameter name
         values -- list of parameter values
         """
+
         self._parameters[name] = values
 
-    def add_parameter(self, name, start, stop, step):
-        """Add new model parameter.
+    def add_parameter_by_interval(self, name, start, stop, step):
+        """Add new model parameter by interval and step value.
 
         add_parameter(name, start, stop, step)
 
@@ -51,7 +61,7 @@ class ModelGenerator:
         if (number > 1):
             self._parameters[name] = [start + step*i for i in range(number + 1)]
         else:
-            pass
+            raise RuntimeError('Interval is not correctly defined.')
 
     def remove_parameter(self, name):
         """Remove model parameter.
@@ -61,6 +71,7 @@ class ModelGenerator:
         Keyword arguments:
         name -- parameter name
         """
+
         del self._parameters[name]
 
     def save(self, directory):
@@ -75,7 +86,7 @@ class ModelGenerator:
         self._dict.save()
 
     def combination(self):
-        """Generate models by combination of parameters values."""
+        """Generate models by combination of all parameters values."""
         combinations = [[{key: value} for (key, value) in zip(self._parameters, values)] 
                        for values in product(*self._parameters.values())]
 
@@ -101,6 +112,6 @@ if __name__ == '__main__':
     mg.add_parameter('b', range(20))
     mg.add_parameter('c', range(20))
 
-    #mg.combination()
-    mg.random_selection(10000)
-    mg.save('models')
+    mg.combination()
+    #mg.random_selection(10000)
+    #mg.save('models')

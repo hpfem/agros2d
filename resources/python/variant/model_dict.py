@@ -3,13 +3,15 @@ import subprocess
 import re
 
 class ModelDict:
+    """General class for management of models set."""
+
     def __init__(self, models=None, directory=None):
-        """ModelDict class create colection of models.
+        """Initialization of model dictionary.
         
         ModelDict(models=None, directory=None)
         
         Keyword arguments:
-        models -- list or dictionary (style {name : model}) contain models (default is None)
+        models -- list or dictionary in style {name : model} placed models (default is None)
         directory -- current working directory (default is None)
         """
 
@@ -22,7 +24,7 @@ class ModelDict:
         if (models and isinstance(models, list)):
             for model in models:
                 self.add_model(model)
-        
+
         if not directory:
             self.directory = '{0}/models/'.format(os.getcwd())
         else:
@@ -30,21 +32,8 @@ class ModelDict:
 
     @property
     def dict(self):
-        """Return models dictionary."""
+        """Return dictionary of placed models."""
         return self._dict
-
-    @property
-    def models(self):
-        """Return list of models in dictionary."""
-        return list(self._dict.values())
-
-    @property
-    def solved_models(self):
-        """Return list of solved models in dictionary."""
-        models = []
-        for model in list(self._dict.values()):
-            if model.solved: models.append(model)
-        return models
 
     @property
     def directory(self):
@@ -61,10 +50,21 @@ class ModelDict:
 
         self._directory = os.path.abspath(value)
 
-    def _model_file_name(self, name):
+    def models(self):
+        """Return list of models."""
+        return list(self._dict.values())
+
+    def solved_models(self):
+        """Return list of solved models."""
+        models = []
+        for model in list(self._dict.values()):
+            if model.solved: models.append(model)
+        return models
+
+    def model_file_name(self, name):
         return '{0}/{1}.pickle'.format(self._directory, name)
 
-    def _find_last_model_index(self):
+    def find_last_model_index(self):
         files = self.find_files('{0}/model_.*.pickle'.format(self._directory))
         for file_name in files:
             name, extension = os.path.basename(file_name).split(".")
@@ -83,14 +83,18 @@ class ModelDict:
         resume -- resume in model index counting for model name (default is False)
         """
 
+        if name in self._dict.keys():
+            raise KeyError('Model with key "{0}" already exist.'.format(name))
+
         if (resume and not name):
-            self._model_index = self._find_last_model_index() + 1
+            self._model_index = self.find_last_model_index() + 1
 
         if not name:
             if hasattr(self, '_model_index'):
                 self._model_index += 1
             else:
                 self._model_index = 0
+
             name = 'model_{0:06d}'.format(self._model_index)
 
         self._dict[name] = model
@@ -103,11 +107,12 @@ class ModelDict:
         Keyword arguments:
         name -- name of model used as dictionary key
         """
+
         if name in self._dict.keys():
             del self._dict[name]
 
     def find_files(self, mask):
-        """Find and return list of model files in directory.
+        """Find and return list of model files in working directory.
 
         find_files(mask)
 
@@ -127,7 +132,7 @@ class ModelDict:
         return files
 
     def load(self, model_class, mask=''):
-        """Load models from directory to dictionary.
+        """Load models from directory.
 
         load(model_class, mask='')
 
@@ -141,7 +146,7 @@ class ModelDict:
         elif not os.path.dirname(mask):
             mask = '{0}/{1}'.format(self._directory, mask)
         elif (os.path.abspath(os.path.dirname(mask)) != self._directory and
-              len(self.models)):
+              len(self.models())):
             raise RuntimeError('Mask do not match with current working directory.')
 
         files = self.find_files(mask)
@@ -152,9 +157,9 @@ class ModelDict:
             self._dict[name] = model
 
     def save(self):
-        """Save models from dictionary to current working directory."""
+        """Save models to current working directory."""
         for name, model in self._dict.items():
-            model.save(self._model_file_name(name))
+            model.save(self.model_file_name(name))
 
     def solve(self, mask='', recalculate=False, save=True):
         """Solve model in directory.
@@ -164,6 +169,7 @@ class ModelDict:
         Keyword arguments:
         mask -- regular expression for model keys (in default solve all models)
         recalculate -- recalculate solved models (default is False)
+        save -- save solved models to current working directory
         """
 
         models = {}
@@ -182,7 +188,7 @@ class ModelDict:
             model.solve()
             model.process()
 
-            if save: model.save(self._model_file_name(name))
+            if save: model.save(self.model_file_name(name))
 
     def find_model_by_parameters(self, parameters):
         """Find and return model in dictionary by parameters.
@@ -199,13 +205,15 @@ class ModelDict:
     def update(self):
         """Update dictionary from models in current working dictionary."""
         for name in list(self._dict.keys()):
-            self._dict[name].load(self._model_file_name(name))
+            self._dict[name].load(self.model_file_name(name))
 
     def clear(self):
         """Clear dictionary."""
         self._dict.clear()
 
 class ModelDictExternal(ModelDict):
+    """Class inherited from ModelDict allows use external solver for models (default solver is agros2d_solver)."""
+
     def __init__(self):
         ModelDict.__init__(self)
         self.solver = "agros2d_solver"
@@ -218,7 +226,7 @@ class ModelDictExternal(ModelDict):
         return self._output
 
     def solve(self, mask='', recalculate=False):
-        """Solve model in directory.
+        """Solve model placed in current working directory.
 
         solve(mask='', recalculate=False)
 
@@ -226,6 +234,9 @@ class ModelDictExternal(ModelDict):
         mask -- regular expression for model keys (in default solve all models)
         recalculate -- recalculate solved models (default is False)
         """
+
+        if not len(self._dict):
+            self._dict.save()
 
         models = {}
         if not mask:

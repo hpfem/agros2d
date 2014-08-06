@@ -5,21 +5,22 @@ from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase, ModelDict, ModelDictExternal
 from test_suite.optilab.examples import quadratic_function
+
 from shutil import copyfile
+import os
 
 class TestModelDict(Agros2DTestCase):
     def setUp(self):
         self.md = ModelDict()
         self.md.directory = '{0}/models'.format(pythonlab.tempname())
 
-    """
     def test_set_directory(self):
         model = ModelBase()
-        self.md.add_model(model)
+        path = '{0}/models'.format(pythonlab.tempname())
+        self.md.directory = path
 
-        with self.assertRaises(RuntimeError):
-            self.md.directory = '{0}/models'.format(pythonlab.tempname())
-    """
+        self.assertTrue(os.path.isdir(path))
+        self.assertEqual(self.md.directory, path)
 
     def test_set_wrong_directory(self):
         with self.assertRaises(IOError):
@@ -28,37 +29,13 @@ class TestModelDict(Agros2DTestCase):
     def test_add_model(self):
         model = ModelBase()
         self.md.add_model(model)
-        self.assertTrue(len(self.md.models))
+        self.assertTrue(len(self.md.models()))
 
-    """
     def test_add_model_with_existing_name(self):
         model = ModelBase()
         self.md.add_model(model, 'model')
-        self.md.save()
-        self.md.clear()
-
         with self.assertRaises(KeyError):
             self.md.add_model(model, 'model')
-    """
-
-    """
-    def test_add_model_with_automatic_name(self):
-        model = ModelBase()
-        indexes = [0, 1, 3]
-        for index in indexes:
-            self.md.add_model(model, name='model_{0:06d}'.format(index))
-        self.md.save()
-
-        self.md.add_model(model)
-        self.md.save()
-        self.md.clear()
-
-        self.md.load(ModelBase)
-        self.assertEqual(len(indexes)+1, len(self.md.models))
-
-        self.md.load(ModelBase, mask='model_000002.pickle')
-        self.assertEqual(len(indexes)+1, len(self.md.models))
-    """
 
     def test_save_and_load(self):
         model = ModelBase()
@@ -70,7 +47,7 @@ class TestModelDict(Agros2DTestCase):
 
         self.md.clear()
         self.md.load(ModelBase)
-        self.assertEqual(N, len(self.md.models))
+        self.assertEqual(N, len(self.md.models()))
 
     def test_load_files_with_wrong_directory(self):
         model = ModelBase()
@@ -100,8 +77,8 @@ class TestModelDict(Agros2DTestCase):
             self.md.add_model(model)
 
         self.md.solve(mask='model_00000[0, 2]')
-        self.assertEqual(len(self.md.models), 3)
-        self.assertEqual(len(self.md.solved_models), 2)
+        self.assertEqual(len(self.md.models()), 3)
+        self.assertEqual(len(self.md.solved_models()), 2)
 
         for a, x in [(1, 2), (3, 4)]:
             model = self.md.find_model_by_parameters({'a' : a, 'x' : x})
@@ -126,7 +103,7 @@ class TestModelDictExternal(Agros2DTestCase):
         self.md.save()
 
         self.md.solve()
-        self.assertEqual(2*2**2, self.md.models[-1].variables['F'])
+        self.assertEqual(2*2**2, self.md.models()[-1].variables['F'])
 
 if __name__ == '__main__':
     import unittest as ut

@@ -4,6 +4,8 @@ import pickle
 import os
 
 class Parameters(dict):
+    """General class collected model parameters."""
+
     def __init__(self, defaults):
         dict.__init__(self)
         self._defaults = defaults
@@ -17,6 +19,8 @@ class Parameters(dict):
             raise KeyError(key)
 
 class ModelData:
+    """General class collected all model data."""
+
     def __init__(self):
         self.defaults = dict()
         self.parameters = Parameters(self.defaults)
@@ -25,6 +29,8 @@ class ModelData:
         self.solved = False
 
 class ModelBase:
+    """General model class."""
+
     def __init__(self):
         self._data = ModelData()
 
@@ -80,7 +86,7 @@ class ModelBase:
         if not value: self._data.variables = {}
 
     def create(self):
-        """Method creates model from parameters."""
+        """Method creates model from defined parameters."""
         pass
 
     def solve(self):
