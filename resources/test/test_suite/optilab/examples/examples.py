@@ -1,7 +1,7 @@
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-from variant import ModelBase, ModelDict, ModelGenerator
+from variant import ModelDict, ModelGenerator
 from test_suite.optilab.examples import booths_function
 
 import numpy as np
@@ -27,7 +27,7 @@ class TestBoothsFunction(Agros2DTestCase):
         md.load(booths_function.BoothsFunction)
         md.solve()
 
-        self.assertEqual(len(md.solved_models), n**k)
+        self.assertEqual(len(md.solved_models()), n**k)
 
     def test_optimization(self):
         pass

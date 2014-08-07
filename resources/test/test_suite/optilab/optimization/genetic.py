@@ -1,4 +1,3 @@
-import pythonlab
 import random as rnd
 
 from test_suite.scenario import Agros2DTestCase
@@ -82,8 +81,8 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
 
         md.solve(save=False)
 
-        self.functionals = Functionals(Functional('F', 'min'))
-        self.selector = SingleCriteriaSelector(self.functionals)
+        self.functionals = Functionals([Functional('F', 'min')])
+        self.selector = SingleCriteriaSelector(self.functionals, ModelBase)
         self.selector.recomended_population_size = len(variants)
         self.population = md.models
 
@@ -123,7 +122,7 @@ class TestBoothsFunctionOptimization(Agros2DTestCase):
         optimization.population_size = 250
         optimization.run(25, False)
 
-        optimum = optimization.find_best(optimization.model_dict.models)
+        optimum = optimization.find_best(optimization.model_dict.models())
         self.assertAlmostEqual(round(optimum[0], 1), 0, 1)
 
 class TestHolderTableFunction(Agros2DTestCase):

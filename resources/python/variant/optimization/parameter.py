@@ -120,27 +120,20 @@ class Parameters:
         """
 
         self._parameters = list()
-        if parameters:
-            self.parameters = parameters
+        if isinstance(parameters, list):
+            for parameter in parameters:
+                self.add_parameter(parameter)
 
     @property
     def parameters(self):
         """List of optimized parameters."""
         return self._parameters
 
-    def _add_parameter(self, parameter):
+    def add_parameter(self, parameter):
         if (parameter.__class__.__base__ == OptimizationParameter):
             self._parameters.append(parameter)
         else:
             raise TypeError('Parameter must be instance or inherited object from OptimizationParameter class.')
-
-    @parameters.setter
-    def parameters(self, value):
-        if isinstance(value, list):
-            for item in value:
-                self._add_parameter(item)
-        else:
-            self._add_parameter(value)
 
     def parameter(self, name):
         """Find and return parameter by name.

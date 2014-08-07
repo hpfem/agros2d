@@ -47,26 +47,20 @@ class Functionals:
         """
 
         self._functionals = list()
-        self.functionals = functionals
+        if isinstance(functionals, list):
+            for functional in functionals:
+                self.add_functional(functional)
 
     @property
     def functionals(self):
         """List of functionals for optimization."""
         return self._functionals
 
-    def _add_functional(self, functional):
+    def add_functional(self, functional):
         if isinstance(functional, Functional):
             self._functionals.append(functional)
         else:
             raise TypeError('Functional must be instance of Functional class.')
-
-    @functionals.setter
-    def functionals(self, value):
-        if isinstance(value, list):
-            for item in value:
-                self._add_functional(item)
-        else:
-            self._add_functional(value)
 
     def functional(self, name):
         """Find and return functional by name.

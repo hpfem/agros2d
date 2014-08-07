@@ -64,14 +64,16 @@ class TestParameters(Agros2DTestCase):
         self.assertTrue(parameters.parameter("cp"))
         self.assertTrue(parameters.parameter("dp"))
 
-    def test_add_parameters(self):
         parameters = Parameters()
-        parameters.parameters = [ContinuousParameter("cp", 0, 1),
-                                 DiscreteParameter("dp", range(10))]
+        parameters.add_parameter(ContinuousParameter("cp", 0, 1))
+        parameters.add_parameter(DiscreteParameter("dp", range(10)))
 
-        parameters = Parameters()
-        parameters.parameters.append(ContinuousParameter("cp", 0, 1))
+        self.assertEqual(len(parameters.parameters), 2)
         self.assertTrue(parameters.parameter("cp"))
+        self.assertTrue(parameters.parameter("dp"))
+
+        with self.assertRaises(TypeError):
+            Parameters([Parameters('p', 0, 1), 'P'])
 
 class TestFunctional(Agros2DTestCase):
     def setUp(self):
@@ -87,7 +89,7 @@ class TestFunctional(Agros2DTestCase):
 
 class TestFunctionals(Agros2DTestCase):
     def test_functionals(self):
-        self.assertEqual(len(Functionals(Functional('F', 'min')).functionals), 1)
+        self.assertEqual(len(Functionals([Functional('F', 'min')]).functionals), 1)
         self.assertEqual(len(Functionals([Functional('F', 'min'),
                                           Functional('G', 'max')]).functionals), 2)
 
@@ -112,7 +114,7 @@ class TestFunctionals(Agros2DTestCase):
         model.solve()
         model.process()
 
-        self.assertEqual(Functionals(Functional('F', 'min')).evaluate(model), 0)
+        self.assertEqual(Functionals([Functional('F', 'min')]).evaluate(model), 0)
 
     def test_evaluate_two_functional(self):
         model = binh_korn_function.BinhKornFunction()
