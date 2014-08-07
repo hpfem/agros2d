@@ -22,7 +22,7 @@ def test_population(genoms):
                              DiscreteParameter("g", [21, 75, 25, 88, 11]),
                              DiscreteParameter("h", [85, 12, -147])])
 
-    population_creator = ImplicitInitialPopulationCreator(ModelBase, parameters)
+    population_creator = ImplicitInitialPopulationCreator(parameters, ModelBase)
     return population_creator.create(genoms), parameters
 
 class TestCrossover(Agros2DTestCase):
@@ -84,7 +84,7 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
         self.functionals = Functionals([Functional('F', 'min')])
         self.selector = SingleCriteriaSelector(self.functionals, ModelBase)
         self.selector.recomended_population_size = len(variants)
-        self.population = md.models
+        self.population = md.models()
 
     def test_selection(self):
         selected = self.selector.select(self.population)
@@ -122,8 +122,8 @@ class TestBoothsFunctionOptimization(Agros2DTestCase):
         optimization.population_size = 250
         optimization.run(25, False)
 
-        optimum = optimization.find_best(optimization.model_dict.models())
-        self.assertAlmostEqual(round(optimum[0], 1), 0, 1)
+        star = optimization.find_best(optimization.model_dict.models())
+        self.assertAlmostEqual(round(star.variables['F'], 1), 0, 1)
 
 class TestHolderTableFunction(Agros2DTestCase):
     def test_optimization(self):

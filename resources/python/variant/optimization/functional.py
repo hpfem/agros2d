@@ -62,7 +62,7 @@ class Functionals:
         else:
             raise TypeError('Functional must be instance of Functional class.')
 
-    def functional(self, name):
+    def functional(self, name=None):
         """Find and return functional by name.
 
         parameter(name)
@@ -70,6 +70,9 @@ class Functionals:
         Keyword arguments:
         name -- functional name
         """
+
+        if not name:
+            name = self.functionals[0].name
 
         for functional in self.functionals:
             if (functional.name == name): return functional

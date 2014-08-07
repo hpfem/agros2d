@@ -1,5 +1,16 @@
 class InitialPopulationCreator:
-    def __init__(self, model_class, parameters):
+    """General class for initial population creator."""
+
+    def __init__(self, parameters, model_class):
+        """Initialization of population creator.
+        
+        InitialPopulationCreator(parameters, model_class)
+        
+        Keyword arguments:
+        parameters -- optimization parameters
+        model_class -- model class inherited from ModelBase class (default is ModelBase)
+        """
+
         self.parameters = parameters
         self.model_class = model_class
 
@@ -16,8 +27,8 @@ class InitialPopulationCreator:
 class ImplicitInitialPopulationCreator(InitialPopulationCreator):
     """Implicitly used initial population creator. All optimizated parameters are taken randomly."""
 
-    def __init__(self, model_class, parameters):
-        InitialPopulationCreator.__init__(self, model_class, parameters)
+    def __init__(self, parameters, model_class):
+        InitialPopulationCreator.__init__(self, parameters, model_class)
 
     def create(self, number):
         population = []

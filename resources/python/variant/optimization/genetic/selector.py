@@ -5,17 +5,35 @@ class SurvivorsSelector:
     """General class for selection of genoms that should be kept into the new population."""
 
     def __init__(self, functionals, model_class):
+        """Initialization of selector.
+        
+        SurvivorsSelector(functionals, model_class)
+        
+        Keyword arguments:
+        functionals -- functionals for optimization
+        model_class -- model class inherited from ModelBase class (default is ModelBase)
+        """
+
         self.functionals = functionals
         self.model_class = model_class
         self.recomended_population_size = 0
 
-    def select(population):
+    def select(population, number):
+        """Return list of selected genoms from population.
+        
+        select(population)
+        
+        Keyword arguments:
+        population -- list of considered models
+        number -- number of selected genoms
+        """
+
         pass
 
 class SingleCriteriaSelector(SurvivorsSelector):
     """Selector of genoms, that should be kept to next generation in the case of single criteria optimization."""
 
-    def select(self, population):
+    def select(self, population, number):
         assert not self.functionals.multicriteria()
         direction = self.functionals.functional().direction_sign()
 
@@ -24,22 +42,21 @@ class SingleCriteriaSelector(SurvivorsSelector):
             scores.append(self.functionals.evaluate(genom))
         scores.sort(reverse=bool(direction != 1))
 
-        survivors_number = min(len(population), int(self.recomended_population_size/2))
+        survivors_number = number
         priority_tresholds = [scores[survivors_number-1],
                               scores[int(survivors_number*0.8)-1],
                               scores[int(survivors_number*0.5)-1]]
 
         survivors = []
         for genom in population:
-            new_genom = self.model_class()
-            new_genom._data = deepcopy(genom.data)
             score = self.functionals.evaluate(genom)
-
             priority = 0
             for index in range(len(priority_tresholds)):
                 if direction * score <= direction * priority_tresholds[index]:
                     priority = index + 1
 
+            new_genom = self.model_class()
+            new_genom._data = deepcopy(genom.data)
             if priority > 0:
                 GeneticInfo.set_priority(new_genom, priority)
                 survivors.append(new_genom)
@@ -217,9 +234,9 @@ if __name__ == '__main__':
 
     md.solve(save=False)
 
-    functionals = Functionals(Functional('F', 'min'))
-    selector = SingleCriteriaSelector(functionals)
+    functionals = Functionals([Functional('F', 'min')])
+    selector = SingleCriteriaSelector(functionals, quadratic_function.QuadraticFunction)
     selector.recomended_population_size = len(variants)
 
-    selected = selector.select(md.models)
+    selected = selector.select(md.models())
     print(len(selected))

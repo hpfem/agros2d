@@ -147,6 +147,14 @@ class Parameters:
         for parameter in self.parameters:
             if (parameter.name == name): return parameter
 
+    def names(self):
+        """Return list of parameters names."""
+        names = []
+        for parameter in self.parameters:
+            names.append(parameter.name)
+
+        return names
+
 if __name__ == '__main__':
     cp = ContinuousParameter("cp", 2, 5.2)
     dp = DiscreteParameter("dp", [4, 6, 77, 44, 99, 11])

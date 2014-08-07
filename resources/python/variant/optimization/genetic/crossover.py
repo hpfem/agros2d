@@ -2,13 +2,22 @@ from copy import deepcopy
 import random as rnd
 
 class GeneralCrossover:
-    """General class for definition of crossovers."""
+    """General class for crossover creator."""
 
-    def cross(self, father, mother):
+    def cross(self, mother, father):
+        """Return crossed genom from parents.
+        
+        cross(mother, father)
+        
+        Keyword arguments:
+        mother -- mother genom
+        father -- father genom
+        """
+
         pass
 
 class ImplicitCrossover(GeneralCrossover):
-    """Each gene is randomly chosen from father or mother."""
+    """Crossover generator, that cross randomly chosed genes."""
 
     def cross(self, mother, father):
         son = deepcopy(mother)
