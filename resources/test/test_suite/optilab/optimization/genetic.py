@@ -83,17 +83,16 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
 
         self.functionals = Functionals([Functional('F', 'min')])
         self.selector = SingleCriteriaSelector(self.functionals, ModelBase)
-        self.selector.recomended_population_size = len(variants)
         self.population = md.models()
 
     def test_selection(self):
-        selected = self.selector.select(self.population)
+        selected = self.selector.select(self.population, int(len(self.population)/2))
         self.assertTrue(len(selected) < len(self.population))
         for genom in selected:
             self.assertTrue(self.functionals.evaluate(genom) < 1e-1)
 
     def test_priority(self):
-        selected = self.selector.select(self.population)
+        selected = self.selector.select(self.population, int(len(self.population)/2))
 
         minimum = 1
         maximum = 0
@@ -119,11 +118,11 @@ class TestBoothsFunctionOptimization(Agros2DTestCase):
         optimization = GeneticOptimization(parameters, functionals,
                                            booths_function.BoothsFunction)
 
-        optimization.population_size = 250
-        optimization.run(25, False)
+        optimization.population_size = 200
+        optimization.run(50, False)
 
         star = optimization.find_best(optimization.model_dict.models())
-        self.assertAlmostEqual(round(star.variables['F'], 1), 0, 1)
+        self.assertAlmostEqual(round(star.variables['F'], 1), 0, 0)
 
 class TestHolderTableFunction(Agros2DTestCase):
     def test_optimization(self):
@@ -133,11 +132,11 @@ class TestHolderTableFunction(Agros2DTestCase):
         optimization = GeneticOptimization(parameters, functionals,
                                            holder_table_function.HolderTableFunction)
 
-        optimization.population_size = 250
-        optimization.run(25, False)
+        optimization.population_size = 200
+        optimization.run(50, False)
 
-        optimum = optimization.find_best(optimization.model_dict.models)
-        self.assertAlmostEqual(round(optimum[0], 1), -19.2, 1)
+        star = optimization.find_best(optimization.model_dict.models())
+        self.assertAlmostEqual(round(star.variables['F'], 1), -19.2, 0)
 
 if __name__ == '__main__':
     import unittest as ut

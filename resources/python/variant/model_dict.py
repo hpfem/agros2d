@@ -235,8 +235,8 @@ class ModelDictExternal(ModelDict):
         recalculate -- recalculate solved models (default is False)
         """
 
-        if not len(self._dict):
-            self._dict.save()
+        if len(self._dict):
+            self.save()
 
         models = {}
         if not mask:

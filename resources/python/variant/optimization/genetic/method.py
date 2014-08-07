@@ -207,7 +207,7 @@ class GeneticOptimization(OptimizationMethod):
             self.current_population_index = index
             self.create_population()
 
-            if save or (self.model_dict.__class__.__base__ == ModelDictExternal):
+            if save or self.model_dict.__class__.__base__ == ModelDictExternal:
                 self.model_dict.solve()
             else:
                 self.model_dict.solve(save=False)
