@@ -516,8 +516,8 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
     QString outCommands;
     outCommands.append(QString("Mesh.CharacteristicLengthFromPoints = 1;\n"));
     outCommands.append(QString("Mesh.CharacteristicLengthFromCurvature = 1;\n"));
-    outCommands.append(QString("Mesh.CharacteristicLengthFactor = 1.2;\n"));
-    // outCommands.append(QString("Mesh.CharacteristicLengthMin = 0.1;\n"));
+    outCommands.append(QString("Mesh.CharacteristicLengthFactor = 2;\n"));
+        // outCommands.append(QString("Mesh.CharacteristicLengthMin = 0.1;\n"));
     // outCommands.append(QString("Mesh.CharacteristicLengthMax = %1;\n").arg(qMin(rect.width(), rect.height()) / 10));
     outCommands.append(QString("Mesh.MinimumCirclePoints = 10;\n"));
     outCommands.append(QString("Mesh.Optimize = 1;\n"));
@@ -527,7 +527,7 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
     }
     else if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Quad)
     {
-        outCommands.append(QString("Mesh.Algorithm = 2;\n"));
+        outCommands.append(QString("Mesh.Algorithm = 1;\n"));
         outCommands.append(QString("Mesh.SubdivisionAlgorithm = 1;\n"));
     }
     else if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_QuadDelaunay_Experimental)
@@ -566,15 +566,15 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
     QTime time;
     time.start();
     m->readGEO((tempProblemFileName() + ".geo").toStdString());
-    qDebug() << "readGEO" << time.elapsed();
+    // qDebug() << "readGEO" << time.elapsed();
     // create mesh
     time.start();
     m->mesh(2);
-    qDebug() << "mesh" << time.elapsed();
+    // qDebug() << "mesh" << time.elapsed();
     // write mesh
     time.start();
     m->writeMSH((tempProblemFileName() + ".msh").toStdString());
-    qDebug() << "writeMSH" << time.elapsed();
+    // qDebug() << "writeMSH" << time.elapsed();
 
     // Finalization.
     delete m;
