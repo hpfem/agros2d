@@ -50,6 +50,7 @@
 #define FORMAT_CELUM 41
 #define FORMAT_SU2   42
 #define FORMAT_MPEG_PREVIEW 43
+#define FORMAT_PGF   44
 
 // Element types
 #define TYPE_PNT     1
@@ -209,8 +210,9 @@
 #define MSH_TRI_SUB 135
 #define MSH_TET_SUB 136
 #define MSH_TET_16  137
+#define MSH_TRI_MINI 138
 
-#define MSH_NUM_TYPE 137
+#define MSH_NUM_TYPE 138
 
 // Geometric entities
 #define ENT_NONE     0

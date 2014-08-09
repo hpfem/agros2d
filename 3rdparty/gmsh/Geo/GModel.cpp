@@ -171,10 +171,12 @@ GModel *GModel::findByName(const std::string &name, const std::string &fileName)
   return 0;
 }
 
-void GModel::destroy()
+void GModel::destroy(bool keepName)
 {
-  _name.clear();
-  _fileNames.clear();
+  if(!keepName){
+    _name.clear();
+    _fileNames.clear();
+  }
 
   _maxVertexNum = _maxElementNum = 0;
   _checkPointedMaxVertexNum = _checkPointedMaxElementNum = 0;
@@ -430,7 +432,7 @@ int GModel::getMaxPhysicalNumber(int dim)
   getEntities(entities);
   int num = 0;
   for(unsigned int i = 0; i < entities.size(); i++)
-    if(entities[i]->dim() == dim)
+    if(dim < 0 || entities[i]->dim() == dim)
       for(unsigned int j = 0; j < entities[i]->physicals.size(); j++)
         num = std::max(num, std::abs(entities[i]->physicals[j]));
   return num;
@@ -1463,7 +1465,7 @@ void GModel::checkMeshCoherence(double tolerance)
     int num = 0;
     for(unsigned int i = 0; i < vertices.size(); i++)
       if(!vertices[i]->getIndex()){
-        Msg::Info("Duplicate vertex at (%.16g,%.16g,%.16g)",
+        Msg::Info("Duplicate vertex %d at (%.16g,%.16g,%.16g)", vertices[i]->getNum(),
                   vertices[i]->x(), vertices[i]->y(), vertices[i]->z());
         num++;
       }
@@ -2794,6 +2796,11 @@ GEntity *GModel::addCone(std::vector<double> p1, std::vector<double> p2,
 {
   if(_factory) return _factory->addCone(this, p1, p2,radius1, radius2);
   return 0;
+}
+
+void GModel::healGeometry(double tolerance)
+{
+  if(_factory) _factory->healGeometry(this, tolerance);
 }
 
 GModel *GModel::computeBooleanUnion(GModel *tool, int createNewModel)

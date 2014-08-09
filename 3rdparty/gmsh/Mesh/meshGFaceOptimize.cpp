@@ -911,6 +911,7 @@ static int _quadWithOneVertexOnBoundary (GFace *gf,
 // see paper from Bunin Guy Bunin (2006) Non-Local Topological Cleanup ,15th
 // International Meshing Roundtable. This is our interpretation of the
 // algorithm.
+/*
 static std::vector<MVertex*> closestPathBetweenTwoDefects (v2t_cont &adj,
                                                            v2t_cont :: iterator it)
 {
@@ -963,6 +964,7 @@ static std::vector<MVertex*> closestPathBetweenTwoDefects (v2t_cont &adj,
     }
   }
 }
+*/
 
 static MVertex * createNewVertex (GFace *gf, SPoint2 p){
   GPoint gp = gf->point(p);
@@ -1361,10 +1363,10 @@ struct  quadBlob {
   bool meshable (int iter)
   {
     int ncorners = 0;
-    MVertex *corners[5];
+    MVertex *corners[5] = {0, 0, 0, 0, 0};
     for (unsigned int i = 0; i < bnodes.size(); i++){
       if (topologicalAngle(bnodes[i]) > 0) ncorners ++;
-      if (ncorners > 5)return false;
+      if (ncorners > 5) return false;
     }
     if (ncorners != 3 && ncorners != 4 && ncorners != 5){
       return false;
@@ -1373,12 +1375,12 @@ struct  quadBlob {
 
     // look if it is possible to build a mesh with one defect only
     if (!orderBNodes () )return false;
-    int side = -1;
+    int side = 0;
     int count[5] = {0,0,0,0,0};
     for (unsigned int i = 0; i < bnodes.size(); i++){
       if (topologicalAngle(bnodes[i]) > 0){
-        side++;
         corners[side] = (bnodes[i]);
+        side++;
       }
       else count[side]++;
     }
@@ -1402,7 +1404,7 @@ struct  quadBlob {
       MVertex *v01 = bnodes[a1]; SPoint2 p01; reparamMeshVertexOnFace(v01, gf, p01);
       MVertex *v12 = bnodes[a1+a3+a2]; SPoint2 p12; reparamMeshVertexOnFace(v12, gf, p12);
       MVertex *v20 = bnodes[a1+a3+a2+a1+a3]; SPoint2 p20; reparamMeshVertexOnFace(v20, gf, p20);
-      SPoint2 p012 = (p01+p12+p20)*(1./3.0); MVertex *v012 = createNewVertex (gf, p012);
+      SPoint2 p012 = (p01+p12+p20)*(1./3.0);
 
       std::vector<MVertex*> e012_01 = saturateEdge (gf,p012,p01,a2);
       std::vector<MVertex*> e012_12 = saturateEdge (gf,p012,p12,a3);
@@ -1410,6 +1412,8 @@ struct  quadBlob {
       if (e012_01.size() == 0) return false;
       if (e012_12.size() == 0) return false;
       if (e012_20.size() == 0) return false;
+
+      MVertex *v012 = createNewVertex (gf, p012);
 
       std::vector<MVertex*> e0_01,e01_1,e1_12,e12_2,e2_20,e20_0;
       for (int i=0;i<a1-1;i++)e0_01.push_back(bnodes[i+1]);
@@ -1521,8 +1525,6 @@ struct  quadBlob {
            v0      v01        v1
                a1       a3
 
-
-
      */
     else if (ncorners == 5){
       printBlob(iter,5);
@@ -1552,7 +1554,7 @@ struct  quadBlob {
       MVertex *v23 = bnodes[a1+a3+a2+a4+a3]; SPoint2 p23; reparamMeshVertexOnFace(v23, gf, p23);
       MVertex *v34 = bnodes[a1+a3+a2+a4+a3+a5+a4]; SPoint2 p34; reparamMeshVertexOnFace(v34, gf, p34);
       MVertex *v40 = bnodes[a1+a3+a2+a4+a3+a5+a4+a1+a5]; SPoint2 p40; reparamMeshVertexOnFace(v40, gf, p40);
-      SPoint2 p01234 = (p01+p12+p23+p34+p40)*(1./5.0); MVertex *v01234 = createNewVertex (gf, p01234);
+      SPoint2 p01234 = (p01+p12+p23+p34+p40)*(1./5.0);
 
       std::vector<MVertex*> e01234_01 = saturateEdge (gf,p01234,p01,a2);
       std::vector<MVertex*> e01234_12 = saturateEdge (gf,p01234,p12,a3);
@@ -1564,6 +1566,8 @@ struct  quadBlob {
       if (e01234_23.size() == 0) return false;
       if (e01234_34.size() == 0) return false;
       if (e01234_40.size() == 0) return false;
+
+      MVertex *v01234 = createNewVertex (gf, p01234);
 
       std::vector<MVertex*> e0_01,e01_1,e1_12,e12_2,e2_23,e23_3,e3_34,e34_4,e4_40,e40_0;
       for (int i=0;i<a1-1;i++)e0_01.push_back(bnodes[i+1]);
@@ -1652,10 +1656,12 @@ bool quadBlob::matricesDone = false;
 fullMatrix<double> quadBlob::M3;
 fullMatrix<double> quadBlob::M5;
 
+/*
 static int _defectsRemovalBunin(GFace *gf, int maxCavitySize)
 {
 
   if (maxCavitySize == 0)return 0;
+  printf("ARGH\n");
   v2t_cont adj;
   std::vector<MElement*> c;
   buildVertexToElement(gf->quadrangles, adj);
@@ -1700,6 +1706,7 @@ static int _defectsRemovalBunin(GFace *gf, int maxCavitySize)
 
   return iter;
 }
+*/
 
 // if a vertex (on boundary) is adjacent to one only quad
 // and if that quad is badly shaped, we split this
@@ -2830,7 +2837,6 @@ bool edgeSwap(std::set<swapquad> &configs, MTri3 *t1, GFace *gf, int iLocalEdge,
   MTriangle *t1b = new MTriangle(v2, v3, v4);
   MTriangle *t2b = new MTriangle(v4, v3, v1);
 
-
   //  const double v1b = surfaceTriangleUV(v2, v3, v4, data);
   //  const double v2b = surfaceTriangleUV(v4, v3, v1, data);
   //  const double volume = v1b + v2b;
@@ -2856,7 +2862,6 @@ bool edgeSwap(std::set<swapquad> &configs, MTri3 *t1, GFace *gf, int iLocalEdge,
 	  return false;
 	}
       }
-      //      printf("coucou\n");
       break;
     }
   case SWCR_DEL:
@@ -2879,6 +2884,8 @@ bool edgeSwap(std::set<swapquad> &configs, MTri3 *t1, GFace *gf, int iLocalEdge,
     break;
   default :
     Msg::Error("Unknown swapping criterion");
+    delete t1b;
+    delete t2b;
     return false;
   }
 
@@ -3162,7 +3169,7 @@ int recombineWithBlossom(GFace *gf, double dx, double dy,
   std::set<MElement*> touched;
   std::vector<std::pair<MElement*,MElement*> > toProcess;
 
-  if(CTX::instance()->mesh.algoRecombine == 1){
+  if(CTX::instance()->mesh.algoRecombine != 0){
 #if defined(HAVE_BLOSSOM)
     int ncount = gf->triangles.size();
     if (ncount % 2 == 0) {
@@ -3292,6 +3299,7 @@ static int _recombineIntoQuads(GFace *gf, int recur_level, bool cubicGraph = 1)
 {
   // never recombine a face that is part of a compound!
   if(gf->getCompound()) return 0;
+  if(gf->triangles.size() == 0) return 1;
 
   int success = 1;
 
@@ -3369,7 +3377,7 @@ static int _recombineIntoQuads(GFace *gf, int recur_level, bool cubicGraph = 1)
   std::set<MElement*> touched;
   std::vector<std::pair<MElement*,MElement*> > toProcess;
 
-  if(CTX::instance()->mesh.algoRecombine == 1){
+  if(CTX::instance()->mesh.algoRecombine != 0){
 #if defined(HAVE_BLOSSOM)
     int ncount = gf->triangles.size();
     if (ncount % 2 != 0) {
@@ -3584,15 +3592,16 @@ static double printStats(GFace *gf,const char *message)
     Qav += Q;
     Qmin = std::min(Q,Qmin);
   }
-  Msg::Info("%s : %5d quads %4d invalid quads %4d quads with Q < 0.1 "
-            "Avg Q = %12.5E Min %12.5E", message, gf->quadrangles.size(),
+  Msg::Info("%s : %5d quads %5d triangles %4d invalid quads %4d quads with Q < 0.1 "
+            "Avg Q = %12.5E Min %12.5E", message, gf->quadrangles.size(), gf->triangles.size(),
             nbInv, nbBad, Qav/gf->quadrangles.size(), Qmin);
   return Qmin;
 }
 
 void recombineIntoQuads(GFace *gf,
                         bool topologicalOpti,
-                        bool nodeRepositioning)
+                        bool nodeRepositioning,
+			double minqual)
 {
   double t1 = Cpu();
 
@@ -3606,7 +3615,7 @@ void recombineIntoQuads(GFace *gf,
   //    removeFourTrianglesNodes(gf, false);
 
   if (saveAll) gf->model()->writeMSH("before.msh");
-  int success = _recombineIntoQuads(gf, 0);
+  int success = _recombineIntoQuads(gf, minqual);
 
   if (saveAll) gf->model()->writeMSH("raw.msh");
   printStats (gf, "BEFORE OPTIMIZATION");
@@ -3614,35 +3623,32 @@ void recombineIntoQuads(GFace *gf,
     laplaceSmoothing(gf, CTX::instance()->mesh.nbSmoothing);
   }
   // blossom-quad algo
-  if(success && CTX::instance()->mesh.algoRecombine == 1){
+  if(success && CTX::instance()->mesh.algoRecombine != 0){
     if(topologicalOpti){
       if(haveParam){
         if (saveAll) gf->model()->writeMSH("smoothed.msh");
         int ITER=0;
-	int ITERB = 0;
-        int optistatus[6] = {0,0,0,0,0,0};
+	//        int optistatus[6] = {0,0,0,0,0,0};
 	std::set<MEdge,Less_Edge> prioritory;
+	double exbad = -100;
         while(1){
-          int maxCavitySize = CTX::instance()->mesh.bunin;
-	  optistatus[0] = (ITERB == 1) ?splitFlatQuads(gf, .01, prioritory) : 0;
-          optistatus[1] = removeTwoQuadsNodes(gf);
-          optistatus[4] = _defectsRemovalBunin(gf,maxCavitySize);
-          optistatus[2] = removeDiamonds(gf) ;
-	  laplaceSmoothing(gf,CTX::instance()->mesh.nbSmoothing,true);
-	  optistatus[3] = edgeSwapQuadsForBetterQuality(gf,.01, prioritory);
-	  optistatus[5] = optiSmoothing(gf,CTX::instance()->mesh.nbSmoothing,true);
-	  optistatus[5] = (ITERB == 1) ?
-            untangleInvalidQuads(gf, CTX::instance()->mesh.nbSmoothing) : 0;
+	  //          int maxCavitySize = CTX::instance()->mesh.bunin;
+	  //	  optistatus[0] = (ITERB == 1) ?splitFlatQuads(gf, .01, prioritory) : 0;
+          //optistatus[1] =
+	  removeTwoQuadsNodes(gf);
+	  //optistatus[4] = _defectsRemovalBunin(gf,36);
+	  //optistatus[2] =
+	  removeDiamonds(gf) ;
+	  if(haveParam)laplaceSmoothing(gf,CTX::instance()->mesh.nbSmoothing,true);
+	  //optistatus[3] =
+	  edgeSwapQuadsForBetterQuality(gf,minqual, prioritory);
+	  //optistatus[5] =
+	  optiSmoothing(gf,CTX::instance()->mesh.nbSmoothing,true);
+	  //	  optistatus[5] = untangleInvalidQuads(gf, CTX::instance()->mesh.nbSmoothing);
 	  double bad = printStats(gf, "IN OPTIMIZATION");
-	  if (bad > .1) break;
-          if (ITER == 10){
-	    ITERB = 1;
-	  }
+	  if (bad > minqual || exbad == bad) break;
+	  exbad = bad;
 	  if (ITER > 20) break;
-	  int nb = 0;
-	  for (int i=0;i<6;i++) nb += optistatus[i];
-	  if (!nb && ITERB == 0) ITERB = 1;
-	  else if (!nb) break;
 	  ITER ++;
         }
       }
@@ -3654,10 +3660,9 @@ void recombineIntoQuads(GFace *gf,
     }
     double t2 = Cpu();
     Msg::Info("Blossom recombination algorithm completed (%g s)", t2 - t1);
-    quadsToTriangles(gf, .01);
+    quadsToTriangles(gf, minqual);
     if(haveParam) {
       laplaceSmoothing(gf,CTX::instance()->mesh.nbSmoothing);
-      // optiSmoothing(gf,CTX::instance()->mesh.nbSmoothing,true);
     }
     // removeDiamonds(gf);
     // removeTwoQuadsNodes(gf);

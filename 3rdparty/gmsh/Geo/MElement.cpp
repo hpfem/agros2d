@@ -309,6 +309,13 @@ std::string MElement::getInfoString()
   return std::string(tmp);
 }
 
+const nodalBasis* MElement::getFunctionSpace(int order, bool serendip) const
+{
+  if (order == -1) return BasisFactory::getNodalBasis(getTypeForMSH());
+  int tag = ElementType::getTag(getType(), order, serendip);
+  return tag ? BasisFactory::getNodalBasis(tag) : NULL;
+}
+
 static double _computeDeterminantAndRegularize(const MElement *ele, double jac[3][3])
 {
   double dJ = 0;
@@ -461,11 +468,11 @@ void MElement::getSignedJacobian(fullVector<double> &jacobian, int o)
   getJacobianFuncSpace(o)->getSignedJacobian(nodesXYZ,jacobian);
 }
 
-void MElement::getNodesCoord(fullMatrix<double> &nodesXYZ)
+void MElement::getNodesCoord(fullMatrix<double> &nodesXYZ) const
 {
   const int numNodes = getNumShapeFunctions();
   for (int i = 0; i < numNodes; i++) {
-    MVertex *v = getShapeFunctionNode(i);
+    const MVertex *v = getShapeFunctionNode(i);
     nodesXYZ(i,0) = v->x();
     nodesXYZ(i,1) = v->y();
     nodesXYZ(i,2) = v->z();
@@ -1559,4 +1566,20 @@ MElement *MElementFactory::create(int num, int type, const std::vector<int> &dat
   if(part) model->getMeshPartitions().insert(part);
 
   return element;
+}
+
+double MElement::skewness() {
+  double minsk = 1.0;
+  for (int i=0;i<getNumFaces();i++){
+    MFace f = getFace(i);
+    if (f.getNumVertices() == 3){
+      //      MTriangle t (f.getVertex(0),f.getVertex(1),f.getVertex(2));
+      //      minsk = std::min(minsk, t.etaShapeMeasure ());
+    }
+    else if (f.getNumVertices() == 4){
+      MQuadrangle q (f.getVertex(0),f.getVertex(1),f.getVertex(2),f.getVertex(3));
+      minsk = std::min(minsk, q.etaShapeMeasure ());
+    }
+  }
+  return minsk;
 }

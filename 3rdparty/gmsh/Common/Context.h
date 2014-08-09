@@ -70,7 +70,7 @@ struct contextGeometryOptions {
   double tolerance, snap[3], transform[3][3], offset[3];
   int occFixDegenerated, occFixSmallEdges, occFixSmallFaces;
   int occSewFaces, occConnectFaces;
-  int copyMeshingMethod, exactExtrusion;
+  int copyMeshingMethod, copyDisplayAttributes, exactExtrusion;
   int matchGeomAndMesh;
   int hideCompounds, orientedPhysicals;
 };
@@ -180,7 +180,8 @@ class CTX {
   int bgGradient;
   // draw background image?
   std::string bgImageFileName;
-  double bgImagePosition[2];
+  double bgImagePosition[2], bgImageSize[2];
+  int bgImage3d, bgImagePage;
   // fltk font size (and delta for palette windows)
   int fontSize, deltaFontSize;
   // font name, FLTK enum and size for opengl graphics
@@ -241,7 +242,7 @@ class CTX {
     std::string socketName;
     std::string name[NUM_SOLVERS], executable[NUM_SOLVERS], remoteLogin[NUM_SOLVERS];
     int autoSaveDatabase, autoArchiveOutputFiles, autoMesh, autoMergeFile;
-    int autoHideNewViews, autoShowLastStep, autoCheck, showInvisibleParameters;
+    int autoShowViews, autoShowLastStep, autoCheck, showInvisibleParameters;
   }solver;
   // print options
   struct{
@@ -255,6 +256,7 @@ class CTX {
     int compositeWindows, deleteTmpFiles, background;
     int width, height;
     double parameter, parameterFirst, parameterLast, parameterSteps;
+    int pgfTwoDim, pgfExportAxis, pgfHorizBar;
     std::string parameterCommand;
   } print;
   // color options

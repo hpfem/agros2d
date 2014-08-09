@@ -7,6 +7,8 @@ set(SRC
   Numeric.cpp
     fullMatrix.cpp
   BasisFactory.cpp
+  discreteFrechetDistance.cpp
+  miniBasis.cpp
     nodalBasis.cpp
 	polynomialBasis.cpp
 	pyramidalBasis.cpp
@@ -15,6 +17,7 @@ set(SRC
 	legendrePolynomials.cpp
     bezierBasis.cpp
     JacobianBasis.cpp
+    MetricBasis.cpp
     pointsGenerators.cpp
   ElementType.cpp
   GaussIntegration.cpp
@@ -27,7 +30,9 @@ set(SRC
     GaussQuadraturePyr.cpp
     GaussLegendreSimplex.cpp
   GaussJacobi1D.cpp
+  HilbertCurve.cpp
  robustPredicates.cpp
+ decasteljau.cpp
   mathEvaluator.cpp
   Iso.cpp
 )

@@ -74,7 +74,6 @@ class MLine : public MElement {
   {
     MVertex *tmp = _v[0]; _v[0] = _v[1]; _v[1] = tmp;
   }
-  virtual const nodalBasis* getFunctionSpace(int o=-1) const;
   virtual const JacobianBasis* getJacobianFuncSpace(int o=-1) const;
   virtual bool isInside(double u, double v, double w) const
   {
@@ -97,6 +96,7 @@ class MLine : public MElement {
     return SPoint3(0, 0, 0);
   }
   virtual void getIntegrationPoints(int pOrder, int *npts, IntPt **pts);
+  virtual void discretize(double tol, std::vector<SPoint3> &dpts, std::vector<double> &ts);
 };
 
 /*
@@ -150,6 +150,7 @@ class MLine3 : public MLine {
   {
     num < 2 ? MLine::getNode(num, u, v, w) : MElement::getNode(num, u, v, w);
   }
+  virtual void discretize(double tol, std::vector<SPoint3> &dpts, std::vector<double> &ts);
 };
 
 /*
@@ -209,6 +210,7 @@ class MLineN : public MLine {
   {
     num < 2 ? MLine::getNode(num, u, v, w) : MElement::getNode(num, u, v, w);
   }
+  virtual void discretize(double tol, std::vector<SPoint3> &dpts, std::vector<double> &ts);
 };
 
 struct compareMLinePtr {

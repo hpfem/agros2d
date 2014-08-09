@@ -173,6 +173,8 @@ SMetric3 intersection_conserve_mostaniso_2d (const SMetric3 &m1, const SMetric3 
 // compute the largest inscribed ellipsoid...
 SMetric3 intersection (const SMetric3 &m1,
                        const SMetric3 &m2);
+SMetric3 intersection_alauzet (const SMetric3 &m1,
+                       const SMetric3 &m2);
 SMetric3 interpolation (const SMetric3 &m1,
                         const SMetric3 &m2,
                         const double t);
@@ -339,6 +341,15 @@ class STensor3 {
           val = fabs(_val[i]);
     return val;
   };
+  double norm2()const{
+    double sqr = 0;
+    for (int i=0; i<3; i++){
+      for (int j =0; j<3; j++){
+	sqr += this->operator()(i,j)*this->operator()(i,j);
+      }
+    }
+    return sqrt(sqr);
+  }
 };
 
 // tensor product

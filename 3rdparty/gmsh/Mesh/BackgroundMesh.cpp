@@ -472,6 +472,7 @@ void backgroundMesh::unset()
   _current = 0;
 }
 
+double backgroundMesh::sizeFactor = 1.0;
 backgroundMesh::backgroundMesh(GFace *_gf, bool cfd)
 #if defined(HAVE_ANN)
   : _octree(0), uv_kdtree(0), nodes(0), angle_nodes(0), angle_kdtree(0)
@@ -503,7 +504,7 @@ backgroundMesh::backgroundMesh(GFace *_gf, bool cfd)
         _vertices.push_back(newv);
         _3Dto2D[v] = newv;
         _2Dto3D[newv] = v;
-	if(v->onWhat()->dim()<2) myBCNodes.insert(p);
+        if(v->onWhat()->dim()<2) myBCNodes.insert(p);
       }
       else newv = it->second;
       news[j] = newv;
@@ -513,20 +514,20 @@ backgroundMesh::backgroundMesh(GFace *_gf, bool cfd)
 
 #if defined(HAVE_ANN)
   //printf("creating uv kdtree %d \n", myBCNodes.size());
-    index = new ANNidx[2];
-    dist  = new ANNdist[2];
-    nodes = annAllocPts(myBCNodes.size(), 3);
-    std::set<SPoint2>::iterator itp = myBCNodes.begin();
-    int ind = 0;
-    while (itp != myBCNodes.end()){
-      SPoint2 pt = *itp;
-      //fprintf(of, "SP(%g,%g,%g){%g};\n", pt.x(), pt.y(), 0.0, 10000);
-      nodes[ind][0] = pt.x();
-      nodes[ind][1] = pt.y();
-      nodes[ind][2] = 0.0;
-      itp++; ind++;
-    }
-    uv_kdtree = new ANNkd_tree(nodes, myBCNodes.size(), 3);
+  index = new ANNidx[2];
+  dist  = new ANNdist[2];
+  nodes = annAllocPts(myBCNodes.size(), 3);
+  std::set<SPoint2>::iterator itp = myBCNodes.begin();
+  int ind = 0;
+  while (itp != myBCNodes.end()){
+    SPoint2 pt = *itp;
+    //fprintf(of, "SP(%g,%g,%g){%g};\n", pt.x(), pt.y(), 0.0, 10000);
+    nodes[ind][0] = pt.x();
+    nodes[ind][1] = pt.y();
+    nodes[ind][2] = 0.0;
+    itp++; ind++;
+  }
+  uv_kdtree = new ANNkd_tree(nodes, myBCNodes.size(), 3);
 #endif
 
   // build a search structure
@@ -568,8 +569,8 @@ backgroundMesh::~backgroundMesh()
 }
 
 static void propagateValuesOnFace(GFace *_gf,
-                                  std::map<MVertex*,double> &dirichlet,
-				  bool in_parametric_plane = false)
+    std::map<MVertex*,double> &dirichlet,
+    bool in_parametric_plane = false)
 {
 #if defined(HAVE_SOLVER)
   linearSystem<double> *_lsys = 0;
@@ -655,19 +656,19 @@ void backgroundMesh::propagate1dMesh(GFace *_gf)
       for(unsigned int i = 0; i < (*it)->lines.size(); i++ ){
         MVertex *v1 = (*it)->lines[i]->getVertex(0);
         MVertex *v2 = (*it)->lines[i]->getVertex(1);
-	if (v1 != v2){
-	  double d = sqrt((v1->x() - v2->x()) * (v1->x() - v2->x()) +
-			  (v1->y() - v2->y()) * (v1->y() - v2->y()) +
-			  (v1->z() - v2->z()) * (v1->z()  -v2->z()));
-	  for (int k=0;k<2;k++){
-	    MVertex *v = (*it)->lines[i]->getVertex(k);
-	    std::map<MVertex*, double>::iterator itv = sizes.find(v);
-	    if (itv == sizes.end())
-	      sizes[v] = log(d);
-	    else
-	      itv->second = 0.5 * (itv->second + log(d));
-	  }
-	}
+        if (v1 != v2){
+          double d = sqrt((v1->x() - v2->x()) * (v1->x() - v2->x()) +
+              (v1->y() - v2->y()) * (v1->y() - v2->y()) +
+              (v1->z() - v2->z()) * (v1->z()  -v2->z()));
+          for (int k=0;k<2;k++){
+            MVertex *v = (*it)->lines[i]->getVertex(k);
+            std::map<MVertex*, double>::iterator itv = sizes.find(v);
+            if (itv == sizes.end())
+              sizes[v] = log(d);
+            else
+              itv->second = 0.5 * (itv->second + log(d));
+          }
+        }
       }
     }
   }
@@ -714,14 +715,14 @@ void backgroundMesh::propagateCrossFieldByDistance(GFace *_gf)
         v[1] = (*it)->lines[i]->getVertex(1);
         SPoint2 p1,p2;
         reparamMeshEdgeOnFace(v[0],v[1],_gf,p1,p2);
-	/* a correct way of computing angles  */
-	Pair<SVector3, SVector3> der = _gf->firstDer((p1+p2)*.5);
-	SVector3 t1 = der.first();
-	SVector3 t2 (v[1]->x()-v[0]->x(),v[1]->y()-v[0]->y(),v[1]->z()-v[0]->z());
-	t1.normalize();
-	t2.normalize();
-	double _angle = angle (t1,t2);
-	//        double angle = atan2 ( p1.y()-p2.y() , p1.x()-p2.x() );
+        /* a correct way of computing angles  */
+        Pair<SVector3, SVector3> der = _gf->firstDer((p1+p2)*.5);
+        SVector3 t1 = der.first();
+        SVector3 t2 (v[1]->x()-v[0]->x(),v[1]->y()-v[0]->y(),v[1]->z()-v[0]->z());
+        t1.normalize();
+        t2.normalize();
+        double _angle = angle (t1,t2);
+        //        double angle = atan2 ( p1.y()-p2.y() , p1.x()-p2.x() );
         crossField2d::normalizeAngle (_angle);
         for (int i=0;i<2;i++){
           std::map<MVertex*,double>::iterator itc = _cosines4.find(v[i]);
@@ -731,7 +732,7 @@ void backgroundMesh::propagateCrossFieldByDistance(GFace *_gf)
             its->second  = 0.5*(its->second + sin(4*_angle));
           }
           else {
-	    _param[v[i]] = (i==0) ? p1 : p2;
+            _param[v[i]] = (i==0) ? p1 : p2;
             _cosines4[v[i]] = cos(4*_angle);
             _sines4[v[i]] = sin(4*_angle);
           }
@@ -789,15 +790,15 @@ void backgroundMesh::propagateCrossField(GFace *_gf)
         v[1] = (*it)->lines[i]->getVertex(1);
         SPoint2 p1,p2;
         reparamMeshEdgeOnFace(v[0],v[1],_gf,p1,p2);
-	Pair<SVector3, SVector3> der = _gf->firstDer((p1+p2)*.5);
-	SVector3 t1 = der.first();
-	SVector3 t2 = der.second();
-	SVector3 n = crossprod(t1,t2);
-	n.normalize();
-	SVector3 d1(v[1]->x()-v[0]->x(),v[1]->y()-v[0]->y(),v[1]->z()-v[0]->z());
-	t1.normalize();
-	d1.normalize();
-	double _angle = myAngle (t1,d1,n);
+        Pair<SVector3, SVector3> der = _gf->firstDer((p1+p2)*.5);
+        SVector3 t1 = der.first();
+        SVector3 t2 = der.second();
+        SVector3 n = crossprod(t1,t2);
+        n.normalize();
+        SVector3 d1(v[1]->x()-v[0]->x(),v[1]->y()-v[0]->y(),v[1]->z()-v[0]->z());
+        t1.normalize();
+        d1.normalize();
+        double _angle = myAngle (t1,d1,n);
         crossField2d::normalizeAngle (_angle);
         for (int i=0;i<2;i++){
           std::map<MVertex*,double>::iterator itc = _cosines4.find(v[i]);
@@ -836,21 +837,21 @@ void backgroundMesh::updateSizes(GFace *_gf)
     MVertex *v = _2Dto3D[itv->first];
     double lc;
     if (v->onWhat()->dim() == 0){
-      lc = BGM_MeshSize(v->onWhat(), 0,0,v->x(),v->y(),v->z());
+      lc = sizeFactor * BGM_MeshSize(v->onWhat(), 0,0,v->x(),v->y(),v->z());
     }
     else if (v->onWhat()->dim() == 1){
       double u;
       v->getParameter(0, u);
-      lc = BGM_MeshSize(v->onWhat(), u, 0, v->x(), v->y(), v->z());
+      lc = sizeFactor * BGM_MeshSize(v->onWhat(), u, 0, v->x(), v->y(), v->z());
     }
     else{
       reparamMeshVertexOnFace(v, _gf, p);
-      lc = BGM_MeshSize(_gf, p.x(), p.y(), v->x(), v->y(), v->z());
+      lc = sizeFactor * BGM_MeshSize(_gf, p.x(), p.y(), v->x(), v->y(), v->z());
     }
     // printf("2D -- %g %g 3D -- %g %g\n",p.x(),p.y(),v->x(),v->y());
     itv->second = std::min(lc,itv->second);
-    itv->second = std::max(itv->second, CTX::instance()->mesh.lcMin);
-    itv->second = std::min(itv->second, CTX::instance()->mesh.lcMax);
+    itv->second = std::max(itv->second,  sizeFactor * CTX::instance()->mesh.lcMin);
+    itv->second = std::min(itv->second,  sizeFactor * CTX::instance()->mesh.lcMax);
   }
   // do not allow large variations in the size field
   // (Int. J. Numer. Meth. Engng. 43, 1143-1165 (1998) MESH GRADATION
@@ -979,7 +980,7 @@ double backgroundMesh::getAngle(double u, double v, double w) const
 }
 
 void backgroundMesh::print(const std::string &filename, GFace *gf,
-                           const std::map<MVertex*,double> &_whatToPrint) const
+    const std::map<MVertex*,double> &_whatToPrint) const
 {
   FILE *f = Fopen (filename.c_str(),"w");
   fprintf(f,"View \"Background Mesh\"{\n");
@@ -992,9 +993,9 @@ void backgroundMesh::print(const std::string &filename, GFace *gf,
     std::map<MVertex*,double>::const_iterator itv3 = _whatToPrint.find(v3);
     if (!gf){
       fprintf(f,"ST(%g,%g,%g,%g,%g,%g,%g,%g,%g) {%g,%g,%g};\n",
-              v1->x(),v1->y(),v1->z(),
-              v2->x(),v2->y(),v2->z(),
-              v3->x(),v3->y(),v3->z(),itv1->second,itv2->second,itv3->second);
+          v1->x(),v1->y(),v1->z(),
+          v2->x(),v2->y(),v2->z(),
+          v3->x(),v3->y(),v3->z(),itv1->second,itv2->second,itv3->second);
     }
     else {
 
@@ -1002,9 +1003,9 @@ void backgroundMesh::print(const std::string &filename, GFace *gf,
       GPoint p2 = gf->point(SPoint2(v2->x(),v2->y()));
       GPoint p3 = gf->point(SPoint2(v3->x(),v3->y()));
       fprintf(f,"ST(%g,%g,%g,%g,%g,%g,%g,%g,%g) {%g,%g,%g};\n",
-              p1.x(),p1.y(),p1.z(),
-              p2.x(),p2.y(),p2.z(),
-              p3.x(),p3.y(),p3.z(),itv1->second,itv2->second,itv3->second);
+          p1.x(),p1.y(),p1.z(),
+          p2.x(),p2.y(),p2.z(),
+          p3.x(),p3.y(),p3.z(),itv1->second,itv2->second,itv3->second);
     }
   }
   fprintf(f,"};\n");
@@ -1013,6 +1014,15 @@ void backgroundMesh::print(const std::string &filename, GFace *gf,
 
 MElementOctree* backgroundMesh::get_octree(){
   return _octree;
+}
+
+MElement *backgroundMesh::getMeshElementByCoord(double u, double v, double w, bool strict)
+{
+  if(!_octree){
+    Msg::Debug("Rebuilding BackgroundMesh element octree");
+    _octree = new MElementOctree(_triangles);
+  }
+  return _octree->find(u,v,w, 2, strict);
 }
 
 backgroundMesh* backgroundMesh::_current = 0;

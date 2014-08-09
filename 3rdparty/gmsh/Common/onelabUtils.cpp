@@ -234,7 +234,7 @@ namespace onelabUtils {
     PView *view = 0;
 
     for(unsigned int i = 0; i < PView::list.size(); i++){
-      if(PView::list[i]->getData()->getFileName() == "OneLab" + graphNum){
+      if(PView::list[i]->getData()->getFileName() == "ONELAB" + graphNum){
         view = PView::list[i];
         break;
       }
@@ -273,7 +273,7 @@ namespace onelabUtils {
       }
       else{
         view = new PView(xName, yName, x, y);
-        view->getData()->setFileName("OneLab" + graphNum);
+        view->getData()->setFileName("ONELAB" + graphNum);
         view->getOptions()->intervalsType = PViewOptions::Discrete;
         view->getOptions()->autoPosition = num / 2 + 2;
       }
@@ -291,15 +291,22 @@ namespace onelabUtils {
   void setFirstComputationFlag(bool val){ _firstComputation = val; }
   bool getFirstComputationFlag(){ return _firstComputation; }
 
-  bool runGmshClient(const std::string &action, bool meshAuto)
+  bool runGmshClient(const std::string &action, int meshAuto)
   {
     bool redraw = false;
+
+    // do nothing in case of a python metamodel
+    std::vector<onelab::number> pn;
+    onelab::server::instance()->get(pn, "IsPyMetamodel");
+    if(pn.size() && pn[0].getValue()) return redraw;
 
     onelab::server::citer it = onelab::server::instance()->findClient("Gmsh");
     if(it == onelab::server::instance()->lastClient()) return redraw;
 
     onelab::client *c = it->second;
     std::string mshFileName = onelabUtils::getMshFileName(c);
+
+    Msg::SetGmshOnelabAction(action);
 
     static std::string modelName = GModel::current()->getName();
 
@@ -313,8 +320,8 @@ namespace onelabUtils {
     else if(action == "check"){
       if(onelab::server::instance()->getChanged("Gmsh") ||
          modelName != GModel::current()->getName()){
-        // reload geometry if Gmsh parameters have been modified or if the model
-        // name has changed
+        // reload geometry if Gmsh parameters have been modified or
+        // if the model name has changed
         modelName = GModel::current()->getName();
         redraw = true;
         OpenProject(GModel::current()->getFileName(), false);
@@ -328,8 +335,9 @@ namespace onelabUtils {
         modelName = GModel::current()->getName();
         redraw = true;
         OpenProject(GModel::current()->getFileName(), false);
-        if(getFirstComputationFlag() && !StatFile(mshFileName)){
-          Msg::Info("Skipping mesh generation: assuming '%s' is up-to-date",
+        if(getFirstComputationFlag() && !StatFile(mshFileName) && meshAuto != 2){
+          Msg::Info("Skipping mesh generation: assuming '%s' is up-to-date "
+                    "(use Solver.AutoMesh=2 to force mesh generation)",
                     mshFileName.c_str());
         }
         else if(!GModel::current()->empty() && meshAuto){
@@ -348,6 +356,8 @@ namespace onelabUtils {
       setFirstComputationFlag(false);
       onelab::server::instance()->setChanged(false, "Gmsh");
     }
+
+    Msg::SetGmshOnelabAction("");
 
     return redraw;
   }

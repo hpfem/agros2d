@@ -842,7 +842,9 @@ void PrintOptionsDoc()
       GMSH_Plugin *p = it->second;
       if(p->getType() == GMSH_Plugin::GMSH_POST_PLUGIN) {
         fprintf(file, "@item Plugin(%s)\n", p->getName().c_str());
-        fprintf(file, "%s\n", p->getHelp().c_str());
+        std::string help = p->getHelp();
+        Sanitize_String_Texi(help);
+        fprintf(file, "%s\n", help.c_str());
         int m = p->getNbOptionsStr();
         if(m){
           fprintf(file, "String options:\n");
@@ -1088,8 +1090,17 @@ std::string opt_general_display(OPT_ARGS_STR)
 
 std::string opt_general_background_image_filename(OPT_ARGS_STR)
 {
-  if(action & GMSH_SET)
+  if(action & GMSH_SET){
+#if defined(HAVE_FLTK)
+    if(CTX::instance()->bgImageFileName != val && FlGui::available()){
+      for(unsigned int i = 0; i < FlGui::instance()->graph.size(); i++)
+        for(unsigned int j = 0; j < FlGui::instance()->graph[i]->gl.size(); j++)
+          FlGui::instance()->graph[i]->gl[j]->getDrawContext()->
+            invalidateBgImageTexture();
+    }
+#endif
     CTX::instance()->bgImageFileName = val;
+  }
   return CTX::instance()->bgImageFileName;
 }
 
@@ -2794,6 +2805,11 @@ double opt_general_zmax(OPT_ARGS_NUM)
   return bb.empty() ? 0. : bb.max().z();
 }
 
+double opt_general_lc(OPT_ARGS_NUM)
+{
+  return CTX::instance()->lc;
+}
+
 double opt_general_axes(OPT_ARGS_NUM)
 {
   if(action & GMSH_SET){
@@ -3199,7 +3215,7 @@ double opt_general_background_gradient(OPT_ARGS_NUM)
 {
   if(action & GMSH_SET){
     CTX::instance()->bgGradient = (int)val;
-    if(CTX::instance()->bgGradient < 0 || CTX::instance()->bgGradient > 4)
+    if(CTX::instance()->bgGradient < 0 || CTX::instance()->bgGradient > 3)
       CTX::instance()->bgGradient = 0;
   }
 #if defined(HAVE_FLTK)
@@ -3222,6 +3238,34 @@ double opt_general_background_image_position1(OPT_ARGS_NUM)
   if(action & GMSH_SET)
     CTX::instance()->bgImagePosition[1] = val;
   return CTX::instance()->bgImagePosition[1];
+}
+
+double opt_general_background_image_size0(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->bgImageSize[0] = val;
+  return CTX::instance()->bgImageSize[0];
+}
+
+double opt_general_background_image_size1(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->bgImageSize[1] = val;
+  return CTX::instance()->bgImageSize[1];
+}
+
+double opt_general_background_image_3d(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->bgImage3d = (int)val;
+  return CTX::instance()->bgImage3d;
+}
+
+double opt_general_background_image_page(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->bgImagePage = (int)val;
+  return CTX::instance()->bgImagePage;
 }
 
 double opt_general_trackball(OPT_ARGS_NUM)
@@ -4397,8 +4441,9 @@ double opt_geometry_occ_fix_small_faces(OPT_ARGS_NUM)
 
 double opt_geometry_occ_sew_faces(OPT_ARGS_NUM)
 {
-  if(action & GMSH_SET)
+  if(action & GMSH_SET){
     CTX::instance()->geom.occSewFaces = val ? 1 : 0;
+  }
 #if defined(HAVE_FLTK)
   if(FlGui::available() && (action & GMSH_GUI)) {
     FlGui::instance()->options->geo.butt[13]->value
@@ -4531,6 +4576,13 @@ double opt_geometry_copy_meshing_method(OPT_ARGS_NUM)
   if(action & GMSH_SET)
     CTX::instance()->geom.copyMeshingMethod = (int)val;
   return CTX::instance()->geom.copyMeshingMethod;
+}
+
+double opt_geometry_copy_display_attributes(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->geom.copyDisplayAttributes = (int)val;
+  return CTX::instance()->geom.copyDisplayAttributes;
 }
 
 double opt_geometry_exact_extrusion(OPT_ARGS_NUM)
@@ -5672,13 +5724,6 @@ double opt_mesh_second_order_experimental(OPT_ARGS_NUM)
   return CTX::instance()->mesh.secondOrderExperimental;
 }
 
-double opt_mesh_multiple_passes(OPT_ARGS_NUM)
-{
-  if(action & GMSH_SET)
-    CTX::instance()->mesh.multiplePasses = (int)val;
-  return CTX::instance()->mesh.multiplePasses;
-}
-
 double opt_mesh_second_order_linear(OPT_ARGS_NUM)
 {
   if(action & GMSH_SET)
@@ -6173,11 +6218,11 @@ double opt_solver_auto_merge_file(OPT_ARGS_NUM)
   return CTX::instance()->solver.autoMergeFile;
 }
 
-double opt_solver_auto_hide_new_views(OPT_ARGS_NUM)
+double opt_solver_auto_show_views(OPT_ARGS_NUM)
 {
   if(action & GMSH_SET)
-    CTX::instance()->solver.autoHideNewViews = (int)val;
-  return CTX::instance()->solver.autoHideNewViews;
+    CTX::instance()->solver.autoShowViews = (int)val;
+  return CTX::instance()->solver.autoShowViews;
 }
 
 double opt_solver_auto_show_last_step(OPT_ARGS_NUM)
@@ -8614,6 +8659,25 @@ double opt_print_background(OPT_ARGS_NUM)
   if(action & GMSH_SET)
     CTX::instance()->print.background = (int)val;
   return CTX::instance()->print.background;
+}
+
+double opt_print_pgf_two_dim(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->print.pgfTwoDim= (int)val;
+  return CTX::instance()->print.pgfTwoDim;
+}
+double opt_print_pgf_export_axis(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->print.pgfExportAxis= (int)val;
+  return CTX::instance()->print.pgfExportAxis;
+}
+double opt_print_pgf_horiz_bar(OPT_ARGS_NUM)
+{
+  if(action & GMSH_SET)
+    CTX::instance()->print.pgfHorizBar = (int)val;
+  return CTX::instance()->print.pgfHorizBar;
 }
 
 double opt_print_text(OPT_ARGS_NUM)

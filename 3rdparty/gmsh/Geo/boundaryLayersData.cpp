@@ -22,7 +22,7 @@
 
 BoundaryLayerField* getBLField(GModel *gm){ return 0; }
 bool buildAdditionalPoints2D (GFace *gf ) { return false; }
-BoundaryLayerColumns * buildAdditionalPoints3D (GRegion *gr) { return 0; }
+bool buildAdditionalPoints3D (GRegion *gr) { return false; }
 void buildMeshMetric(GFace *gf, double *uv, SMetric3 &m, double metric[3]) {}
 faceColumn BoundaryLayerColumns::getColumns(GFace *gf, MVertex *v1, MVertex *v2,
                                             MVertex *v3, int side)
@@ -33,6 +33,7 @@ edgeColumn BoundaryLayerColumns::getColumns(MVertex *v1, MVertex *v2 , int side)
 {
   return edgeColumn(BoundaryLayerData(),BoundaryLayerData());
 }
+
 #else
 
 #include "Field.h"
@@ -145,14 +146,17 @@ void buildMeshMetric(GFace *gf, double *uv, SMetric3 &m, double metric[3])
   metric[2] = res[1][1];
 }
 
-const BoundaryLayerData & BoundaryLayerColumns::getColumn(MVertex *v, MFace f)
+const BoundaryLayerData & BoundaryLayerColumns::getColumn(MVertex *v, MFace f) const
 {
   int N = getNbColumns(v) ;
   if (N == 1) return getColumn(v, 0);
-  GFace *gf = _inverse_classification[f];
-  for (int i=0;i<N;i++){
-    const BoundaryLayerData & c = getColumn(v, i);
-    if (std::find(c._joint.begin(),c._joint.end(),gf) != c._joint.end())return c;
+  std::map<MFace, GFace*, Less_Face>::const_iterator it = _inverse_classification.find(f);
+  if (it != _inverse_classification.end()) {
+    GFace *gf = it->second;
+    for (int i=0;i<N;i++){
+      const BoundaryLayerData & c = getColumn(v, i);
+      if (std::find(c._joint.begin(),c._joint.end(),gf) != c._joint.end())return c;
+    }
   }
   static BoundaryLayerData error;
   return error;
@@ -317,41 +321,41 @@ static void treat2Connections(GFace *gf, MVertex *_myVert, MEdge &e1, MEdge &e2,
       }
       else if (fan){
 
-	if (USEFANS__){
-	  int fanSize = FANSIZE__;
-	  // if the angle is greater than PI, than reverse the sense
-	  double alpha1 = atan2(N1[SIDE].y(),N1[SIDE].x());
-	  double alpha2 = atan2(N2[SIDE].y(),N2[SIDE].x());
-	  double AMAX = std::max(alpha1,alpha2);
-	  double AMIN = std::min(alpha1,alpha2);
-	  MEdge ee[2];
-	  if (alpha1 > alpha2){
-	    ee[0] = e2;ee[1] = e1;
-	  }
-	  else {
-	    ee[0] = e1;ee[1] = e2;
-	  }
-	  if ( AMAX - AMIN >= M_PI){
-	    double temp = AMAX;
-	    AMAX = AMIN + 2*M_PI;
-	    AMIN = temp;
-	    MEdge eee0 = ee[0];
-	    ee[0] = ee[1];ee[1] = eee0;
-	  }
-	  _columns->addFan (_myVert,ee[0],ee[1],true);
-	  for (int i=-1; i<=fanSize; i++){
-	    double t = (double)(i+1)/ (fanSize+1);
-	    double alpha = t * AMAX + (1.-t)* AMIN;
-	    SVector3 x (cos(alpha),sin(alpha),0);
-	    x.normalize();
-	    _dirs.push_back(x);
-	  }
+	int fanSize = FANSIZE__;
+	// if the angle is greater than PI, than reverse the sense
+	double alpha1 = atan2(N1[SIDE].y(),N1[SIDE].x());
+	double alpha2 = atan2(N2[SIDE].y(),N2[SIDE].x());
+	double AMAX = std::max(alpha1,alpha2);
+	double AMIN = std::min(alpha1,alpha2);
+	MEdge ee[2];
+	if (alpha1 > alpha2){
+	  ee[0] = e2;ee[1] = e1;
 	}
 	else {
-	  _dirs.push_back(N1[SIDE]);
-	  _dirs.push_back(N2[SIDE]);
+	  ee[0] = e1;ee[1] = e2;
+	}
+	if ( AMAX - AMIN >= M_PI){
+	  double temp = AMAX;
+	  AMAX = AMIN + 2*M_PI;
+	  AMIN = temp;
+	  MEdge eee0 = ee[0];
+	  ee[0] = ee[1];ee[1] = eee0;
+	}
+	_columns->addFan (_myVert,ee[0],ee[1],true);
+	for (int i=-1; i<=fanSize; i++){
+	  double t = (double)(i+1)/ (fanSize+1);
+	  double alpha = t * AMAX + (1.-t)* AMIN;
+	  SVector3 x (cos(alpha),sin(alpha),0);
+	  x.normalize();
+	  _dirs.push_back(x);
 	}
       }
+      /*
+      else {
+	_dirs.push_back(N1[SIDE]);
+	_dirs.push_back(N2[SIDE]);
+	}
+      */
     }
   }
 }
@@ -965,6 +969,45 @@ fanTopology :: fanTopology (GRegion * gr, const std::set<GEdge*> &detectedFans, 
   }
 }
 
+// This is the tricky part
+// We have to find a vector N that has the following properties
+// V = (x,y,z) / (x^2+y^2+z^2)^{1/2} is a point on the unit sphere
+// the n[i]'s are points on the unit sphere
+// V maximizes  min_i (V * n[i])
+// This means I'd like to find point V that is
+
+/*
+static void filterVectors(std::vector<SVector3> &n)
+{
+  std::vector<SVector3> temp;
+  temp.push_back(n[0]);
+  for (unsigned int i = 1 ; i<n.size() ; i++){
+    bool found = false;
+    for (unsigned int j = 0 ; j<temp.size() ; j++){
+      double d = dot(n[i],temp[j]);
+      if (d < 0.98)found = true;
+    }
+    if (found) temp.push_back(n[i]);
+  }
+  n = temp;
+}
+*/
+
+static SVector3 computeBestNormal(std::vector<SVector3> &n)
+{
+  //  filterVectors (n);
+  SVector3 V;
+  if (n.size() == 1)V = n[0];
+  else if (n.size() == 2)V = n[0]+n[1];
+  else if (n.size() == 3)circumCenterXYZ(n[0],n[1],n[2],V);
+  else {
+    Msg::Warning("suboptimal choice for exterior normal: %d vectors to average",n.size());
+    for (unsigned int i = 0 ; i<n.size() ; i++)V+=n[i];
+  }
+  V.normalize();
+  return V;
+}
+
 
 static int createColumnsBetweenFaces(GRegion *gr,
 				     MVertex *myV,
@@ -976,7 +1019,6 @@ static int createColumnsBetweenFaces(GRegion *gr,
 				     fanTopology &ft)
 {
   SVector3 n[256];
-  SPoint3 c[256];
   int count = 0;
   GFace *gfs[256];
 
@@ -987,8 +1029,8 @@ static int createColumnsBetweenFaces(GRegion *gr,
 	   _faces.lower_bound(*it);
 	 itm != _faces.upper_bound(*it); ++itm){
 
-      n[count] += _normals[itm->second->getFace(0)];
-      c[count] = itm->second->getFace(0).barycenter();
+      SVector3 N = _normals[itm->second->getFace(0)];
+      n[count] += N;
     }
     gfs[count] = *it;
     n[count].normalize();
@@ -1013,15 +1055,22 @@ static int createColumnsBetweenFaces(GRegion *gr,
 
 
   for (std::set<int>::iterator it = gs.begin(); it != gs.end() ; ++it){
-    std::pair<std::multimap<int, GFace*>::iterator, std::multimap<int, GFace*>::iterator> range = lGroup.equal_range(*it);
+    std::pair<std::multimap<int, GFace*>::iterator,
+              std::multimap<int, GFace*>::iterator> range = lGroup.equal_range(*it);
     std::vector<GFace*> joint;
-    for (std::multimap<int, GFace*>::iterator itm =  range.first ; itm !=  range.second ; itm++)
+    for (std::multimap<int, GFace*>::iterator itm =  range.first ;
+         itm !=  range.second ; itm++)
       joint.push_back(itm->second);
     joints.push_back(joint);
-    SVector3 avg (0,0,0);
+    //    SVector3 avg (0,0,0);
+    std::vector<SVector3> ns;
+
     for (unsigned int i=0;i<joint.size(); i++){
-      avg += n[inv[joint[i]]];
+      ns.push_back( n[inv[joint[i]]] );
+      //      avg += n[inv[joint[i]]];
     }
+    SVector3 avg = computeBestNormal(ns);
+
     std::vector<MVertex*> _column;
     std::vector<SMetric3> _metrics;
     avg.normalize();
@@ -1033,7 +1082,6 @@ static int createColumnsBetweenFaces(GRegion *gr,
   //  if (myV->onWhat()->dim() == 0 && myV->onWhat()->tag() == 6){
   //    printf("%d %d\n",gs.size(),joints.size());
   //  }
-
 
   // create wedges
   if (joints.size() > 1){
@@ -1083,7 +1131,7 @@ static void createColumnsOnSymmetryPlane(MVertex *myV,
       //	  printf("%d columns\n",N);
       std::set<GFace*>::iterator itff = _allGFaces.begin();
       GFace *g1 = *itff ; ++itff; GFace *g2 = *itff;
-      int sense = 1;
+      bool sense = true;
       std::vector<GFace*> _joint;
 
       const BoundaryLayerFan *fan = _face_columns->getFan(myV);
@@ -1096,19 +1144,18 @@ static void createColumnsOnSymmetryPlane(MVertex *myV,
 	if (v11 == myV){
 	  if (v12->onWhat()->dim() == 1){
 	    GEdge *ge1 = (GEdge*)v12->onWhat();
-	    //		printf("COUCOU %d %d %d\n",fan->sense,std::find(l1.begin(),l1.end(),ge1) != l1.end(),std::find(l2.begin(),l2.end(),ge1) != l2.end());
 	    if (std::find(l1.begin(),l1.end(),ge1) != l1.end())sense = fan->sense;
-	    else if (std::find(l2.begin(),l2.end(),ge1) != l2.end())sense = -fan->sense;
-	    //else printf("strange1 %d %d \n");
+	    else if (std::find(l2.begin(),l2.end(),ge1) != l2.end())sense = !fan->sense;
 	  }
-	  else Msg::Error("Cannot choose between directions in a BL (dim = %d)",v12->onWhat()->dim());
+	  else
+            Msg::Error("Cannot choose between directions in a BL (dim = %d)",
+                       v12->onWhat()->dim());
 	}
 	else {
 	  if (v11->onWhat()->dim() == 1){
 	    GEdge *ge1 = (GEdge*)v11->onWhat();
 	    if (std::find(l1.begin(),l1.end(),ge1) != l1.end())sense = fan->sense;
-	    else if (std::find(l2.begin(),l2.end(),ge1) != l2.end())sense = -fan->sense;
-	    //else printf("strange2 %d %d \n");
+	    else if (std::find(l2.begin(),l2.end(),ge1) != l2.end())sense = !fan->sense;
 	  }
 	  else Msg::Error("Cannot choose between directions in a BL");
 	}
@@ -1117,13 +1164,13 @@ static void createColumnsOnSymmetryPlane(MVertex *myV,
 	Msg::Error("No fan on the outgoing BL");
       }
       _joint.push_back(g1);
-      const BoundaryLayerData & c0 = _face_columns->getColumn(myV,sense==1 ? 0 : N-1);
+      const BoundaryLayerData & c0 = _face_columns->getColumn(myV,sense ? 0 : N-1);
       _columns->addColumn(c0._n,myV, c0._column, c0._metrics,_joint);
       _joint.clear();
       _joint.push_back(g2);
-      const BoundaryLayerData & cN = _face_columns->getColumn(myV,sense==1 ? N-1 : 0);
+      const BoundaryLayerData & cN = _face_columns->getColumn(myV,sense ? N-1 : 0);
       _columns->addColumn(cN._n,myV, cN._column, cN._metrics,_joint);
-      if (sense==1){
+      if (sense){
 	for (int k=1;k<N-1;k++){
 	  const BoundaryLayerData & c = _face_columns->getColumn(myV,k);
 	  _columns->addColumn(c._n,myV, c._column, c._metrics);
@@ -1161,15 +1208,15 @@ static bool preprocessVertex (MVertex *v,
   return onSymmetryPlane;
 }
 
-BoundaryLayerColumns *buildAdditionalPoints3D(GRegion *gr)
+bool buildAdditionalPoints3D(GRegion *gr)
 {
   BoundaryLayerField *blf = getBLField (gr->model());
 
-  if (!blf)return 0;
+  if (!blf) return false;
 
   blf->setupFor3d();
 
-  BoundaryLayerColumns * _columns = new BoundaryLayerColumns;
+  BoundaryLayerColumns *_columns = gr->getColumns();
 
   std::list<GFace*> faces = gr->faces();
   std::list<GFace*>::iterator itf = faces.begin();
@@ -1299,7 +1346,7 @@ BoundaryLayerColumns *buildAdditionalPoints3D(GRegion *gr)
 
   // END OF DEBUG STUFF
 
-  return _columns;
+  return true;
 }
 
 #endif

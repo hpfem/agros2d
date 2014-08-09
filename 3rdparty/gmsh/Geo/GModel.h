@@ -158,10 +158,6 @@ class GModel
   std::set<int> meshPartitions;
   int partitionSize[2];
 
-  // boundary layer columns i.e. list of vertices that form columns
-  // in boundary layers
-  BoundaryLayerColumns _columns;
-
  public:
   GModel(std::string name="");
   virtual ~GModel();
@@ -182,8 +178,8 @@ class GModel
   // *not* have a link to the fileName
   static GModel *findByName(const std::string &name, const std::string &fileName="");
 
-  // delete everything in a GModel
-  void destroy();
+  // delete everything in a GModel (optionally keep name and fileName)
+  void destroy(bool keepName=false);
 
   // get/set global vertex/element num
   int getMaxVertexNumber(){ return _maxVertexNum; }
@@ -304,7 +300,7 @@ class GModel
   void deletePhysicalGroup(int dim, int num);
 
   // return the highest number associated with a physical entity of a
-  // given dimension
+  // given dimension (or highest for all dimenions if dim < 0)
   int getMaxPhysicalNumber(int dim);
 
   // elementary/physical name iterator
@@ -524,6 +520,9 @@ class GModel
   GEntity *add3DBlock(std::vector<double> p1, double dx, double dy , double dz);
   GEntity *addCone(std::vector<double> p1, std::vector<double> p2, double radius1,
                    double radius2);
+
+  // heal geometry using the factory
+  void healGeometry(double tolerance = -1);
 
   // boolean operators acting on 2 models
   GModel *computeBooleanUnion(GModel *tool, int createNewModel=0);

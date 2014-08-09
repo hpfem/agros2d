@@ -179,6 +179,7 @@ class MElement
   double maxDistToStraight();
 
   // get the quality measures
+  double skewness();
   virtual double rhoShapeMeasure();
   virtual double gammaShapeMeasure(){ return 0.; }
   virtual double etaShapeMeasure(){ return 0.; }
@@ -225,7 +226,7 @@ class MElement
   virtual std::string getInfoString();
 
   // get the function space for the element
-  virtual const nodalBasis* getFunctionSpace(int order=-1) const { return 0; }
+  virtual const nodalBasis* getFunctionSpace(int order=-1, bool serendip=false) const;
 
   // get the function space for the jacobian of the element
   virtual const JacobianBasis* getJacobianFuncSpace(int order=-1) const { return 0; }
@@ -271,7 +272,7 @@ class MElement
     double jac[3][3]; return getJacobian(u, v, w, jac);
   }
   void getSignedJacobian(fullVector<double> &jacobian, int o = -1);
-  void getNodesCoord(fullMatrix<double> &nodesXYZ);
+  void getNodesCoord(fullMatrix<double> &nodesXYZ) const;
   virtual int getNumShapeFunctions() const{ return getNumVertices(); }
   virtual int getNumPrimaryShapeFunctions() { return getNumPrimaryVertices(); }
   virtual const MVertex *getShapeFunctionNode(int i) const{ return getVertex(i); }

@@ -14,9 +14,10 @@
 #include "MLine.h"
 #include "GaussLegendre1D.h"
 #include "Context.h"
+#include "closestPoint.h"
 
 GEdge::GEdge(GModel *model, int tag, GVertex *_v0, GVertex *_v1)
-  : GEntity(model, tag), _tooSmall(false), v0(_v0), v1(_v1), compound(0)
+  : GEntity(model, tag), _tooSmall(false), _cp(0), v0(_v0), v1(_v1), compound(0)
 {
   if(v0) v0->addEdge(this);
   if(v1 && v1 != v0) v1->addEdge(this);
@@ -28,7 +29,7 @@ GEdge::~GEdge()
 {
   if(v0) v0->delEdge(this);
   if(v1 && v1 != v0) v1->delEdge(this);
-
+  if (_cp)delete _cp;
   deleteMesh();
 }
 
@@ -177,10 +178,19 @@ std::string GEdge::getAdditionalInfoString()
   std::ostringstream sstream;
   if(v0 && v1) sstream << "{" << v0->tag() << " " << v1->tag() << "}";
 
-  if(meshAttributes.method == MESH_TRANSFINITE)
-    sstream << " transfinite";
+  if(meshAttributes.method == MESH_TRANSFINITE){
+    sstream << " transfinite (" << meshAttributes.nbPointsTransfinite;
+    int type = meshAttributes.typeTransfinite;
+    if(std::abs(type) == 1)
+      sstream << ", progression " << sign(type) * meshAttributes.coeffTransfinite;
+    else if(std::abs(type) == 2)
+      sstream << ", bump " << meshAttributes.coeffTransfinite;
+    sstream << ")";
+  }
   if(meshAttributes.extrude)
     sstream << " extruded";
+  if(meshAttributes.reverseMesh)
+    sstream << " reversed";
 
   return sstream.str();
 }
@@ -367,49 +377,6 @@ GPoint GEdge::closestPoint(const SPoint3 &q, double &t) const
   return point(t);
 }
 
-bool GEdge::computeDistanceFromMeshToGeometry (double &d2, double &dmax)
-{
-  d2 = 0.0; dmax = 0.0;
-  if (geomType() == Line) return true;
-  if (!lines.size())return false;
-  IntPt *pts;
-  int npts;
-  lines[0]->getIntegrationPoints(2*lines[0]->getPolynomialOrder(), &npts, &pts);
-
-  for (unsigned int i = 0; i < lines.size(); i++){
-    MLine *l = lines[i];
-    double t[256];
-
-    for (int j=0; j< l->getNumVertices();j++){
-      MVertex *v = l->getVertex(j);
-      if (v->onWhat() == getBeginVertex()){
-	t[j] = getLowerBound();
-      }
-      else if (v->onWhat() == getEndVertex()){
-	t[j] = getUpperBound();
-      }
-      else {
-	v->getParameter(0,t[j]);
-      }
-    }
-    for (int j=0;j<npts;j++){
-      SPoint3 p;
-      l->pnt(pts[j].pt[0],0,0,p);
-      double tinit = l->interpolate(t,pts[j].pt[0],0,0);
-      GPoint pc = closestPoint(p, tinit);
-      if (!pc.succeeded())continue;
-      double dsq =
-	(pc.x()-p.x())*(pc.x()-p.x()) +
-	(pc.y()-p.y())*(pc.y()-p.y()) +
-	(pc.z()-p.z())*(pc.z()-p.z());
-      d2 += pts[i].weight * fabs(l->getJacobianDeterminant(pts[j].pt[0],0,0)) * dsq;
-      dmax = std::max(dmax,sqrt(dsq));
-    }
-  }
-  d2 = sqrt(d2);
-  return true;
-}
-
 double GEdge::parFromPoint(const SPoint3 &P) const
 {
   double t;
@@ -515,5 +482,72 @@ void GEdge::relocateMeshVertices()
       v->y() = p.y();
       v->z() = p.z();
     }
+  }
+}
+
+SPoint3 GEdge :: closestPoint (SPoint3 &p, double tolerance)
+{
+  if (!_cp || _cp->tol() != tolerance)    {
+    if(_cp)printf("coucou %12.15E %22.15E \n",tolerance,_cp->tol());
+    else printf("coucou %12.5E \n",tolerance);
+    if (_cp) delete _cp;
+    _cp = new closestPointFinder (this, tolerance);
+  }
+  return (*_cp)(p);
+}
+
+
+typedef struct {
+  SPoint3 p;
+  double t;
+  int next;
+} sortedPoint;
+
+static double sqDistPointSegment(const SPoint3 &p, const SPoint3 &s0, const SPoint3 &s1)
+{
+  SVector3 d(s1 - s0);
+  SVector3 d0(p - s0);
+  SVector3 d1(p - s1);
+  double dn2 = crossprod(d, d0).normSq();
+  double dt2 = std::max(0., std::max(-dot(d, d0), dot(d, d1)));
+  dt2 *= dt2;
+  return (dt2 + dn2) / d.normSq();
+}
+
+static void _discretize(double tol, GEdge * edge, std::vector<sortedPoint> &upts, int pos0)
+{
+  const int pos1 = upts[pos0].next;
+  const SPoint3 & p0 = upts[pos0].p;
+  const double t0 = upts[pos0].t;
+  const SPoint3 & p1 = upts[pos1].p;
+  const double t1 = upts[pos1].t;
+  const double tmid = 0.5 * (t0 + t1);
+  const SPoint3 pmid(edge->position(tmid));
+  const double d2 = sqDistPointSegment(pmid, p0, p1);
+  if (d2 < tol * tol)
+    return;
+  sortedPoint pnt = {pmid, tmid, pos1};
+  upts.push_back(pnt);
+  const int posmid = upts.size() - 1;
+  upts[pos0].next = posmid;
+  _discretize(tol, edge, upts, pos0);
+  _discretize(tol, edge, upts, posmid);
+}
+
+void GEdge::discretize(double tol, std::vector<SPoint3> &dpts, std::vector<double> &ts)
+{
+  std::vector<sortedPoint> upts;
+  sortedPoint pnt1 = {getBeginVertex()->xyz(), 0., 1};
+  upts.push_back(pnt1);
+  sortedPoint pnt2 = {getEndVertex()->xyz(), 1., -1};
+  upts.push_back(pnt2);
+  _discretize(tol, this, upts, 0);
+  dpts.clear();
+  dpts.reserve(upts.size());
+  ts.clear();
+  ts.reserve(upts.size());
+  for (int p = 0; p != -1; p = upts[p].next) {
+    dpts.push_back(upts[p].p);
+    ts.push_back(upts[p].t);
   }
 }

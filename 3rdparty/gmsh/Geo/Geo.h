@@ -155,6 +155,10 @@ class Curve{
     Color.type = 1;
     Color.geom = Color.mesh = value;
   }
+  bool degenerate() const{
+    if (beg == end && Typ ==  MSH_SEGM_LINE)return true;
+    return false;
+  }
 };
 
 class EdgeLoop{
@@ -214,6 +218,7 @@ class Surface{
       }
     }
   }
+  bool degenerate() const;
 };
 
 class SurfaceLoop{
@@ -392,6 +397,7 @@ int Extrude_ProtudeSurface(int type, int is,
 void ProtudeXYZ(double &x, double &y, double &z, ExtrudeParams *e);
 
 void ReplaceAllDuplicates();
+void ReplaceAllDuplicatesNew(double tol = -1.);
 
 bool ProjectPointOnSurface(Surface *s, Vertex &p, double uv[2]);
 

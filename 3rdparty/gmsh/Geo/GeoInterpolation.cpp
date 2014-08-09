@@ -135,12 +135,14 @@ SPoint2 InterpolateCubicSpline(Vertex *v[4], double t, double mat[4][4],
   }
   return p;
 }
+
 // Bezier
 static Vertex InterpolateBezier(Curve *Curve, double u, int derivee)
 {
   int NbCurves = (List_Nbr(Curve->Control_Points) - 1) / 3;
   int iCurve = (int)floor(u * (double)NbCurves);
-  if(iCurve == NbCurves) iCurve -= 1; // u = 1
+  if(iCurve >= NbCurves) iCurve = NbCurves - 1; // u = 1
+  if(iCurve <= 0) iCurve = 0;
   double t1 = (double)(iCurve) / (double)(NbCurves);
   double t2 = (double)(iCurve+1) / (double)(NbCurves);
   double t = (u - t1) / (t2 - t1);
@@ -545,6 +547,9 @@ static Vertex TransfiniteTri(Vertex c1, Vertex c2, Vertex c3,
 // u = v = 1 --> f(1,1) = s3 + s3 - s3     = s3
 // u = 1 ; v = 0 --> f(1,1) = s2 + s2 - s2 = s2
 // v = 0 --> (1-u)c1(u) + u c1(u) = c1(u) --> COOL
+
+// FIXME: but what happens when v > u ? You interpolate the curves outside
+// ubeg/uend... Argh.
 
 #define TRAN_TRIB(c1,c1b,c2,c2b,c3,c3b,s1,s2,s3,u,v)\
       (1.-u)*(c1+c3b-s1)+(u-v)*(c2+c1b-s2)+v*(c3+c2b-s3);

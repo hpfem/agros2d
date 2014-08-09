@@ -3,7 +3,7 @@
 // See the LICENSE.txt file for license information. Please report all
 // bugs and problems to the public mailing list <gmsh@geuz.org>.
 
-#ifndef  _GMSHPOPPLERWRAPPER_PDF_H_
+#ifndef _GMSHPOPPLERWRAPPER_PDF_H_
 #define _GMSHPOPPLERWRAPPER_PDF_H_
 
 #include "GmshConfig.h"
@@ -24,26 +24,28 @@
 
 class gmshPopplerWrapper {
 private:
-  static int _current_page;
-  static poppler::document *_current_doc;
+  static int _currentPage;
+  static poppler::document *_currentDoc;
   static gmshPopplerWrapper *_instance;
-  static int _w,_h;
+  static int _w, _h;
 #if defined(HAVE_OPENGL)
   static std::map<int,GLuint> _pages2textures; // map pages to textures
 #endif
 
 public:
   static gmshPopplerWrapper *instance();
-  static int load_from_file (const std::string &file_name,
-			     const std::string &owner_password=std::string(),
-			     const std::string &user_password=std::string());
-  static int width() {return _w;}
-  static int height() {return _h;}
-  static void setCurrentPageUp () {_current_page++;}
-  static void setCurrentPageDown () {if(_current_page > 0) _current_page--;}
+  static int loadFromFile(const std::string &file_name,
+                          const std::string &owner_password=std::string(),
+                          const std::string &user_password=std::string());
+  static int width(){ return _w; }
+  static int height(){ return _h; }
+  static int getNumPages();
+  static void setCurrentPage(int num){ _currentPage = num; }
+  static int getCurrentPage(){ return _currentPage; }
+  static void setCurrentPageUp(){ if(_currentPage < getNumPages()) _currentPage++; }
+  static void setCurrentPageDown(){ if(_currentPage > 0) _currentPage--; }
 #if defined(HAVE_OPENGL)
-  static GLuint getTextureForPage(double xres,
-				  double yres) ;
+  static GLuint getTextureForPage(double xres, double yres);
 #endif
 };
 

@@ -409,17 +409,24 @@ int GModel::_readMSH2(const std::string &name)
             }
           }
           int *indices = new int[numVertices];
-          for(int j = 0; j < numVertices; j++)
-            if(fscanf(fp, "%d", &indices[j]) != 1){ fclose(fp); return 0; }
+          for(int j = 0; j < numVertices; j++){
+            if(fscanf(fp, "%d", &indices[j]) != 1){
+              delete [] indices;
+              fclose(fp);
+              return 0;
+            }
+          }
           std::vector<MVertex*> vertices;
           if(vertexVector.size()){
             if(!getVertices(numVertices, indices, vertexVector, vertices, minVertex)){
+              delete [] indices;
               fclose(fp);
               return 0;
             }
           }
           else{
             if(!getVertices(numVertices, indices, vertexMap, vertices)){
+              delete [] indices;
               fclose(fp);
               return 0;
             }
@@ -487,6 +494,8 @@ int GModel::_readMSH2(const std::string &name)
               Msg::Error("Domain element %d not found for element %d", dom2, num);
 #endif
 	  }
+          delete [] indices;
+
           if (CTX::instance()->mesh.ignorePartBound && elementary<0) continue;
           MElement *e = createElementMSH2(this, num, type, physical, elementary,
                                           partition, vertices, elements, physicals,
@@ -502,7 +511,6 @@ int GModel::_readMSH2(const std::string &name)
             _ghostCells.insert(std::pair<MElement*, short>(e, ghosts[j]));
           if(numElements > 100000)
             Msg::ProgressMeter(i + 1, numElements, true, "Reading elements");
-          delete [] indices;
         }
       }
       else{
@@ -518,7 +526,11 @@ int GModel::_readMSH2(const std::string &name)
           unsigned int n = 1 + numTags + numVertices;
           int *data = new int[n];
           for(int i = 0; i < numElms; i++) {
-            if(fread(data, sizeof(int), n, fp) != n){ fclose(fp); return 0; }
+            if(fread(data, sizeof(int), n, fp) != n){
+              delete [] data;
+              fclose(fp);
+              return 0;
+            }
             if(swap) SwapBytes((char*)data, sizeof(int), n);
             int num = data[0];
             int physical = (numTags > 0) ? data[1] : 0;
@@ -534,12 +546,14 @@ int GModel::_readMSH2(const std::string &name)
             std::vector<MVertex*> vertices;
             if(vertexVector.size()){
               if(!getVertices(numVertices, indices, vertexVector, vertices, minVertex)){
+                delete [] data;
                 fclose(fp);
                 return 0;
               }
             }
             else{
               if(!getVertices(numVertices, indices, vertexMap, vertices)){
+                delete [] data;
                 fclose(fp);
                 return 0;
               }
@@ -841,6 +855,7 @@ int GModel::_writeMSH2(const std::string &name, double version, bool binary,
                        bool saveAll, bool saveParametric, double scalingFactor,
                        int elementStartNum, int saveSinglePartition, bool multipleView)
 {
+
   FILE *fp;
   if(multipleView)
     fp = Fopen(name.c_str(), binary ? "ab" : "a");

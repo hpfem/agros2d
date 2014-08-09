@@ -5,6 +5,7 @@
 
 #include "GmshDefines.h"
 #include "GmshMessage.h"
+#include "miniBasis.h"
 #include "polynomialBasis.h"
 #include "pyramidalBasis.h"
 #include "pointsGenerators.h"
@@ -13,7 +14,9 @@
 
 std::map<int, nodalBasis*> BasisFactory::fs;
 std::map<int, JacobianBasis*> BasisFactory::js;
+std::map<int, MetricBasis*> BasisFactory::ms;
 BasisFactory::Cont_bezierBasis BasisFactory::bs;
+BasisFactory::Cont_gradBasis BasisFactory::gs;
 
 const nodalBasis* BasisFactory::getNodalBasis(int tag)
 {
@@ -24,30 +27,36 @@ const nodalBasis* BasisFactory::getNodalBasis(int tag)
   }
   // Get the parent type to see which kind of basis
   // we want to create
-  int parentType = ElementType::ParentTypeFromTag(tag);
   nodalBasis* F = NULL;
-
-  switch(parentType) {
-    case(TYPE_PNT):
-    case(TYPE_LIN):
-    case(TYPE_TRI):
-    case(TYPE_QUA):
-    case(TYPE_PRI):
-    case(TYPE_TET):
-    case(TYPE_HEX):
-      F = new polynomialBasis(tag);
-      break;
-    case(TYPE_PYR):
-      F = new pyramidalBasis(tag);
-      break;
-    default:
-      Msg::Error("Unknown type of element %d (in BasisFactory)", tag);
-      return NULL;
+  if (tag == MSH_TRI_MINI) {
+    F = new miniBasis();
+  }
+  else {
+    int parentType = ElementType::ParentTypeFromTag(tag);
+    switch(parentType) {
+      case(TYPE_PNT):
+      case(TYPE_LIN):
+      case(TYPE_TRI):
+      case(TYPE_QUA):
+      case(TYPE_PRI):
+      case(TYPE_TET):
+      case(TYPE_HEX):
+        F = new polynomialBasis(tag);
+        break;
+      case(TYPE_PYR):
+        F = new pyramidalBasis(tag);
+        break;
+      default:
+        Msg::Error("Unknown type of element %d (in BasisFactory)", tag);
+        return NULL;
+    }
   }
 
   std::pair<std::map<int, nodalBasis*>::const_iterator, bool> inserted;
 
+#if defined(_OPENMP)
   #pragma omp critical
+#endif
     {
       inserted = fs.insert(std::make_pair(tag, F));
 
@@ -69,14 +78,38 @@ const JacobianBasis* BasisFactory::getJacobianBasis(int tag)
   return J;
 }
 
+const MetricBasis* BasisFactory::getMetricBasis(int tag)
+{
+  std::map<int, MetricBasis*>::const_iterator it = ms.find(tag);
+  if (it != ms.end())
+    return it->second;
+
+  MetricBasis* M = new MetricBasis(tag);
+  ms.insert(std::make_pair(tag, M));
+  return M;
+}
+
+const GradientBasis* BasisFactory::getGradientBasis(int tag, int order)
+{
+  std::pair<int, int> key(tag, order);
+  Cont_gradBasis::const_iterator it = gs.find(key);
+  if (it != gs.end())
+    return it->second;
+
+  GradientBasis* G = new GradientBasis(tag, order);
+  gs.insert(std::make_pair(key, G));
+  return G;
+}
+
 const bezierBasis* BasisFactory::getBezierBasis(int parentType, int order)
 {
-  Cont_bezierBasis::iterator it = bs.find(std::make_pair(parentType, order));
+  std::pair<int, int> key(parentType, order);
+  Cont_bezierBasis::iterator it = bs.find(key);
   if (it != bs.end())
     return it->second;
 
   bezierBasis* B = new bezierBasis(parentType, order);
-  bs.insert(std::make_pair(std::make_pair(parentType, order), B));
+  bs.insert(std::make_pair(key, B));
   return B;
 }
 

@@ -4,6 +4,7 @@
 // See the LICENSE.txt file for license information. Please report all
 // bugs and problems to the public mailing list <gmsh@geuz.org>.
 
+#include <sstream>
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
@@ -70,7 +71,7 @@ static int curPhysDim = 0;
 static gmshSurface *myGmshSurface = 0;
 #define MAX_RECUR_LOOPS 100
 static int ImbricatedLoop = 0;
-static fpos_t yyposImbricatedLoopsTab[MAX_RECUR_LOOPS];
+static gmshfpos_t yyposImbricatedLoopsTab[MAX_RECUR_LOOPS];
 static int yylinenoImbricatedLoopsTab[MAX_RECUR_LOOPS];
 static double LoopControlVariablesTab[MAX_RECUR_LOOPS][3];
 static const char *LoopControlVariablesNameTab[MAX_RECUR_LOOPS];
@@ -80,7 +81,13 @@ static std::map<std::string, std::vector<std::string> > charOptions;
 void yyerror(const char *s);
 void yymsg(int level, const char *fmt, ...);
 void skip_until(const char *skip, const char *until);
+void assignVariable(const std::string &name, int index, int assignType,
+                    double value);
+void assignVariables(const std::string &name, List_T *indices, int assignType,
+                     List_T *values);
+void incrementVariable(const std::string &name, int index, double value);
 int PrintListOfDouble(char *format, List_T *list, char *buffer);
+void PrintParserSymbols(std::vector<std::string> &vec);
 fullMatrix<double> ListOfListOfDouble2Matrix(List_T *list);
 
 struct doubleXstring{
@@ -110,9 +117,11 @@ struct doubleXstring{
 %token tPrintf tError tStr tSprintf tStrCat tStrPrefix tStrRelative tStrReplace
 %token tStrFind tStrCmp
 %token tTextAttributes
-%token tBoundingBox tDraw tSetChanged tToday tCpu tMemory tSyncModel
+%token tBoundingBox tDraw tSetChanged tToday tOnelabAction tSyncModel
+%token tCpu tMemory tTotalMemory
 %token tCreateTopology tCreateTopologyNoHoles
 %token tDistanceFunction tDefineConstant tUndefineConstant
+%token tDefineNumber tDefineString
 %token tPoint tCircle tEllipse tLine tSphere tPolarSphere tSurface tSpline tVolume
 %token tCharacteristic tLength tParametric tElliptic tRefineMesh tAdaptMesh
 %token tRelocateMesh
@@ -128,7 +137,7 @@ struct doubleXstring{
 %token tBSpline tBezier tNurbs tNurbsOrder tNurbsKnots
 %token tColor tColorTable tFor tIn tEndFor tIf tEndIf tExit tAbort
 %token tField tReturn tCall tFunction tShow tHide tGetValue tGetEnv tGetString
-%token tHomology tCohomology tBetti tSetOrder
+%token tHomology tCohomology tBetti tSetOrder tExists tFileExists
 %token tGMSH_MAJOR_VERSION tGMSH_MINOR_VERSION tGMSH_PATCH_VERSION
 
 %type <d> FExpr FExpr_Single
@@ -137,6 +146,7 @@ struct doubleXstring{
 %type <i> TransfiniteArrangement RecombineAngle
 %type <u> ColorExpr
 %type <c> StringExpr StringExprVar SendToFile HomologyCommand
+%type <c> LP RP
 %type <c> StringIndex String__Index
 %type <l> RecursiveListOfStringExprVar
 %type <l> FExpr_Multi ListOfDouble ListOfDoubleOrAll RecursiveListOfDouble
@@ -631,13 +641,18 @@ NumericIncrement :
   | tMINUSMINUS    { $$ = -1; }
 ;
 
+// these are for either compatibility with getdp syntax (square brackets instead
+// of parentheses)
+
+LP : '(' { $$ = (char*)"("; } | '[' { $$ = (char*)"["; } ;
+RP : ')' { $$ = (char*)")"; } | ']' { $$ = (char*)"]"; } ;
+
 Affectation :
 
   // Variables
+
     tDefineConstant '[' DefineConstants ']' tEND
-
   | tUndefineConstant '[' UndefineConstants ']' tEND
-
   | String__Index NumericAffectation ListOfDouble tEND
     {
       if(!gmsh_yysymbols.count($1) && $2 && List_Nbr($3) == 1){
@@ -698,7 +713,6 @@ Affectation :
       Free($1);
       List_Delete($3);
     }
-
   // This variant can be used to force the variable type to "list"
   | tSTRING '[' ']' NumericAffectation ListOfDouble tEND
     {
@@ -729,171 +743,35 @@ Affectation :
       Free($1);
       List_Delete($5);
     }
-
   | tSTRING '[' FExpr ']' NumericAffectation FExpr tEND
     {
-      int index = (int)$3;
-      if(!gmsh_yysymbols.count($1)){
-	if(!$5){
-          gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-          s.list = true;
-	  s.value.resize(index + 1, 0.);
-	  s.value[index] = $6;
-	}
-	else
-	  yymsg(0, "Unknown variable '%s'", $1);
-      }
-      else{
-        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-        if(s.list){
-          if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
-          switch($5){
-          case 0 : s.value[index] = $6; break;
-          case 1 : s.value[index] += $6; break;
-          case 2 : s.value[index] -= $6; break;
-          case 3 : s.value[index] *= $6; break;
-          case 4 :
-            if($6) s.value[index] /= $6;
-            else yymsg(0, "Division by zero in '%s[%d] /= %g'", $1, index, $6);
-            break;
-          }
-        }
-        else
-          yymsg(0, "Variable '%s' is not a list", $1);
-      }
+      assignVariable($1, (int)$3, $5, $6);
       Free($1);
     }
-
-  // for compatibility with GetDP
   | tSTRING '(' FExpr ')' NumericAffectation FExpr tEND
     {
-      int index = (int)$3;
-      if(!gmsh_yysymbols.count($1)){
-	if(!$5){
-          gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-          s.list = true;
-	  s.value.resize(index + 1, 0.);
-	  s.value[index] = $6;
-	}
-	else
-	  yymsg(0, "Unknown variable '%s'", $1);
-      }
-      else{
-        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-        if(s.list){
-          if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
-          switch($5){
-          case 0 : s.value[index] = $6; break;
-          case 1 : s.value[index] += $6; break;
-          case 2 : s.value[index] -= $6; break;
-          case 3 : s.value[index] *= $6; break;
-          case 4 :
-            if($6) s.value[index] /= $6;
-            else yymsg(0, "Division by zero in '%s[%d] /= %g'", $1, index, $6);
-            break;
-          }
-        }
-        else
-          yymsg(0, "Variable '%s' is not a list", $1);
-      }
+      assignVariable($1, (int)$3, $5, $6);
       Free($1);
     }
-
-  | tSTRING '[' '{' RecursiveListOfDouble '}' ']' NumericAffectation ListOfDouble tEND
+  | StringIndex '[' FExpr ']' NumericAffectation FExpr tEND
     {
-      if(List_Nbr($4) != List_Nbr($8)){
-	yymsg(0, "Incompatible array dimensions in affectation");
-      }
-      else{
-	if(!gmsh_yysymbols.count($1)){
-	  if(!$7){
-            gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-            s.list = true;
-	    for(int i = 0; i < List_Nbr($4); i++){
-	      int index = (int)(*(double*)List_Pointer($4, i));
-	      s.value.resize(index + 1, 0.);
-	      s.value[index] = *(double*)List_Pointer($8, i);
-	    }
-	  }
-	  else
-	    yymsg(0, "Unknown variable '%s'", $1);
-	}
-	else{
-          gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-          if(s.list){
-            for(int i = 0; i < List_Nbr($4); i++){
-              int index = (int)(*(double*)List_Pointer($4, i));
-              double d = *(double*)List_Pointer($8, i);
-              if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
-              switch($7){
-              case 0 : s.value[index] = d; break;
-              case 1 : s.value[index] += d; break;
-              case 2 : s.value[index] -= d; break;
-              case 3 : s.value[index] *= d; break;
-              case 4 :
-                if($8) s.value[index] /= d;
-                else yymsg(0, "Division by zero in '%s[%d] /= %g'", $1, index, d);
-                break;
-              }
-            }
-          }
-          else
-            yymsg(0, "Variable '%s' is not a list", $1);
-        }
-      }
+      assignVariable($1, (int)$3, $5, $6);
+      Free($1);
+    }
+  | tSTRING LP '{' RecursiveListOfDouble '}' RP NumericAffectation ListOfDouble tEND
+    {
+      assignVariables($1, $4, $7, $8);
       Free($1);
       List_Delete($4);
       List_Delete($8);
     }
-
-  // for compatibility with GetDP
-  | tSTRING '(' '{' RecursiveListOfDouble '}' ')' NumericAffectation ListOfDouble tEND
+  | StringIndex '(' '{' RecursiveListOfDouble '}' ')' NumericAffectation ListOfDouble tEND
     {
-      if(List_Nbr($4) != List_Nbr($8)){
-	yymsg(0, "Incompatible array dimensions in affectation");
-      }
-      else{
-	if(!gmsh_yysymbols.count($1)){
-	  if(!$7){
-            gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-            s.list = true;
-	    for(int i = 0; i < List_Nbr($4); i++){
-	      int index = (int)(*(double*)List_Pointer($4, i));
-	      s.value.resize(index + 1, 0.);
-	      s.value[index] = *(double*)List_Pointer($8, i);
-	    }
-	  }
-	  else
-	    yymsg(0, "Unknown variable '%s'", $1);
-	}
-	else{
-          gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-          if(s.list){
-            for(int i = 0; i < List_Nbr($4); i++){
-              int index = (int)(*(double*)List_Pointer($4, i));
-              double d = *(double*)List_Pointer($8, i);
-              if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
-              switch($7){
-              case 0 : s.value[index] = d; break;
-              case 1 : s.value[index] += d; break;
-              case 2 : s.value[index] -= d; break;
-              case 3 : s.value[index] *= d; break;
-              case 4 :
-                if($8) s.value[index] /= d;
-                else yymsg(0, "Division by zero in '%s[%d] /= %g'", $1, index, d);
-                break;
-              }
-            }
-          }
-          else
-            yymsg(0, "Variable '%s' is not a list", $1);
-        }
-      }
+      assignVariables($1, $4, $7, $8);
       Free($1);
       List_Delete($4);
       List_Delete($8);
     }
-
   | String__Index NumericIncrement tEND
     {
       if(!gmsh_yysymbols.count($1))
@@ -911,18 +789,12 @@ Affectation :
     }
   | tSTRING '[' FExpr ']' NumericIncrement tEND
     {
-      if(!gmsh_yysymbols.count($1))
-	yymsg(0, "Unknown variable '%s'", $1);
-      else{
-        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-        if(s.list){
-          int index = (int)$3;
-          if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
-          s.value[index] += $5;
-        }
-        else
-          yymsg(0, "Variable '%s' is not a list", $1);
-      }
+      incrementVariable($1, $3, $5);
+      Free($1);
+    }
+  | StringIndex '[' FExpr ']' NumericIncrement tEND
+    {
+      incrementVariable($1, $3, $5);
       Free($1);
     }
   | String__Index tAFFECT StringExpr tEND
@@ -1623,7 +1495,8 @@ Shape :
       $$.Type = MSH_SEGM_BEZIER;
       $$.Num = num;
     }
-  | tNurbs  '(' FExpr ')' tAFFECT ListOfDouble tNurbsKnots ListOfDouble tNurbsOrder FExpr tEND
+  | tNurbs  '(' FExpr ')' tAFFECT ListOfDouble tNurbsKnots ListOfDouble
+      tNurbsOrder FExpr tEND
     {
       int num = (int)$3;
       if(List_Nbr($6) + (int)$10 + 1 != List_Nbr($8)){
@@ -2604,7 +2477,7 @@ Delete :
         ClearProject();
       }
       else if(!strcmp($2, "Model")){
-	GModel::current()->destroy();
+	GModel::current()->destroy(true); // destroy, but keep name/filename
 	GModel::current()->getGEOInternals()->destroy();
       }
       else if(!strcmp($2, "Physicals")){
@@ -2754,14 +2627,22 @@ Command :
         std::string tmp = FixRelativePath(gmsh_yyname, $2);
 	MergeFile(tmp, true);
       }
-      else if(!strcmp($1, "NonBlockingSystemCall"))
+      else if(!strcmp($1, "NonBlockingSystemCall")){
 	SystemCall($2);
-      else if(!strcmp($1, "System") || !strcmp($1, "SystemCall"))
+      }
+      else if(!strcmp($1, "System") || !strcmp($1, "SystemCall")){
 	SystemCall($2, true);
-      else if(!strcmp($1, "SetName"))
+      }
+      else if(!strcmp($1, "SetName")){
 	GModel::current()->setName($2);
-      else
+      }
+      else if(!strcmp($1, "CreateDir")){
+        std::string tmp = FixRelativePath(gmsh_yyname, $2);
+	CreateSingleDir(tmp);
+      }
+      else{
 	yymsg(0, "Unknown command '%s'", $1);
+      }
       Free($1); Free($2);
     }
   | tSTRING tSTRING '[' FExpr ']' StringExprVar tEND
@@ -2979,7 +2860,7 @@ Loop :
       LoopControlVariablesTab[ImbricatedLoop][1] = $5;
       LoopControlVariablesTab[ImbricatedLoop][2] = 1.0;
       LoopControlVariablesNameTab[ImbricatedLoop] = NULL;
-      fgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
+      gmshgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
       yylinenoImbricatedLoopsTab[ImbricatedLoop] = gmsh_yylineno;
       if($3 > $5)
 	skip_until("For", "EndFor");
@@ -2996,7 +2877,7 @@ Loop :
       LoopControlVariablesTab[ImbricatedLoop][1] = $5;
       LoopControlVariablesTab[ImbricatedLoop][2] = $7;
       LoopControlVariablesNameTab[ImbricatedLoop] = NULL;
-      fgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
+      gmshgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
       yylinenoImbricatedLoopsTab[ImbricatedLoop] = gmsh_yylineno;
       if(($7 > 0. && $3 > $5) || ($7 < 0. && $3 < $5))
 	skip_until("For", "EndFor");
@@ -3017,7 +2898,7 @@ Loop :
       s.list = false;
       s.value.resize(1);
       s.value[0] = $5;
-      fgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
+      gmshgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
       yylinenoImbricatedLoopsTab[ImbricatedLoop] = gmsh_yylineno;
       if($5 > $7)
 	skip_until("For", "EndFor");
@@ -3038,7 +2919,7 @@ Loop :
       s.list = false;
       s.value.resize(1);
       s.value[0] = $5;
-      fgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
+      gmshgetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop]);
       yylinenoImbricatedLoopsTab[ImbricatedLoop] = gmsh_yylineno;
       if(($9 > 0. && $5 > $7) || ($9 < 0. && $5 < $7))
 	skip_until("For", "EndFor");
@@ -3077,7 +2958,7 @@ Loop :
 	double x0 = LoopControlVariablesTab[ImbricatedLoop - 1][0];
 	double x1 = LoopControlVariablesTab[ImbricatedLoop - 1][1];
         if((step > 0. && x0 <= x1) || (step < 0. && x0 >= x1)){
-	  fsetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop - 1]);
+	  gmshsetpos(gmsh_yyin, &yyposImbricatedLoopsTab[ImbricatedLoop - 1]);
 	  gmsh_yylineno = yylinenoImbricatedLoopsTab[ImbricatedLoop - 1];
 	}
 	else
@@ -3446,12 +3327,11 @@ ExtrudeParameter :
       List_Delete($5);
       List_Delete($7);
     }
-//Added by Trevor Strickler 07/07/2013
+  //Added by Trevor Strickler 07/07/2013
   | tScaleLast tEND
     {
       extr.mesh.ScaleLast = true;
     }
-
   | tRecombine tEND
     {
       extr.mesh.Recombine = true;
@@ -3466,11 +3346,15 @@ ExtrudeParameter :
     }
   | tQuadTriDbl tEND
     {
-      yymsg(0, "Method 'QuadTriDbl' deprecated. Use 'QuadTriAddVerts' instead, which has no requirement for the number of extrusion layers and meshes with body-centered vertices.");
+      yymsg(0, "Method 'QuadTriDbl' deprecated. Use 'QuadTriAddVerts' instead, "
+            "which has no requirement for the number of extrusion layers and meshes "
+            "with body-centered vertices.");
     }
   | tQuadTriDbl tRecombLaterals tEND
     {
-      yymsg(0, "Method 'QuadTriDbl' deprecated. Use 'QuadTriAddVerts' instead, which has no requirement for the number of extrusion layers and meshes with body-centered vertices.");
+      yymsg(0, "Method 'QuadTriDbl' deprecated. Use 'QuadTriAddVerts' instead, "
+            "which has no requirement for the number of extrusion layers and meshes "
+            "with body-centered vertices.");
     }
   | tQuadTriAddVerts tEND
     {
@@ -4332,14 +4216,14 @@ Homology :
 //  G E N E R A L
 
 FExpr :
-    FExpr_Single                     { $$ = $1;           }
-  | '(' FExpr ')'                    { $$ = $2;           }
-  | '-' FExpr %prec UNARYPREC        { $$ = -$2;          }
-  | '+' FExpr %prec UNARYPREC        { $$ = $2;           }
-  | '!' FExpr                        { $$ = !$2;          }
-  | FExpr '-' FExpr                  { $$ = $1 - $3;      }
-  | FExpr '+' FExpr                  { $$ = $1 + $3;      }
-  | FExpr '*' FExpr                  { $$ = $1 * $3;      }
+    FExpr_Single                  { $$ = $1;           }
+  | '(' FExpr ')'                 { $$ = $2;           }
+  | '-' FExpr %prec UNARYPREC     { $$ = -$2;          }
+  | '+' FExpr %prec UNARYPREC     { $$ = $2;           }
+  | '!' FExpr                     { $$ = !$2;          }
+  | FExpr '-' FExpr               { $$ = $1 - $3;      }
+  | FExpr '+' FExpr               { $$ = $1 + $3;      }
+  | FExpr '*' FExpr               { $$ = $1 * $3;      }
   | FExpr '/' FExpr
     {
       if(!$3)
@@ -4347,63 +4231,39 @@ FExpr :
       else
 	$$ = $1 / $3;
     }
-  | FExpr '%' FExpr                  { $$ = (int)$1 % (int)$3;  }
-  | FExpr '^' FExpr                  { $$ = pow($1, $3);  }
-  | FExpr '<' FExpr                  { $$ = $1 < $3;      }
-  | FExpr '>' FExpr                  { $$ = $1 > $3;      }
-  | FExpr tLESSOREQUAL FExpr         { $$ = $1 <= $3;     }
-  | FExpr tGREATEROREQUAL FExpr      { $$ = $1 >= $3;     }
-  | FExpr tEQUAL FExpr               { $$ = $1 == $3;     }
-  | FExpr tNOTEQUAL FExpr            { $$ = $1 != $3;     }
-  | FExpr tAND FExpr                 { $$ = $1 && $3;     }
-  | FExpr tOR FExpr                  { $$ = $1 || $3;     }
-  | FExpr '?' FExpr tDOTS FExpr      { $$ = $1 ? $3 : $5; }
-  | tExp    '(' FExpr ')'            { $$ = exp($3);      }
-  | tLog    '(' FExpr ')'            { $$ = log($3);      }
-  | tLog10  '(' FExpr ')'            { $$ = log10($3);    }
-  | tSqrt   '(' FExpr ')'            { $$ = sqrt($3);     }
-  | tSin    '(' FExpr ')'            { $$ = sin($3);      }
-  | tAsin   '(' FExpr ')'            { $$ = asin($3);     }
-  | tCos    '(' FExpr ')'            { $$ = cos($3);      }
-  | tAcos   '(' FExpr ')'            { $$ = acos($3);     }
-  | tTan    '(' FExpr ')'            { $$ = tan($3);      }
-  | tAtan   '(' FExpr ')'            { $$ = atan($3);     }
-  | tAtan2  '(' FExpr ',' FExpr ')'  { $$ = atan2($3, $5);}
-  | tSinh   '(' FExpr ')'            { $$ = sinh($3);     }
-  | tCosh   '(' FExpr ')'            { $$ = cosh($3);     }
-  | tTanh   '(' FExpr ')'            { $$ = tanh($3);     }
-  | tFabs   '(' FExpr ')'            { $$ = fabs($3);     }
-  | tFloor  '(' FExpr ')'            { $$ = floor($3);    }
-  | tCeil   '(' FExpr ')'            { $$ = ceil($3);     }
-  | tRound  '(' FExpr ')'            { $$ = floor($3 + 0.5); }
-  | tFmod   '(' FExpr ',' FExpr ')'  { $$ = fmod($3, $5); }
-  | tModulo '(' FExpr ',' FExpr ')'  { $$ = fmod($3, $5); }
-  | tHypot  '(' FExpr ',' FExpr ')'  { $$ = sqrt($3 * $3 + $5 * $5); }
-  | tRand   '(' FExpr ')'            { $$ = $3 * (double)rand() / (double)RAND_MAX; }
-
-  // for compatibility with GetDP
-  | tExp    '[' FExpr ']'            { $$ = exp($3);      }
-  | tLog    '[' FExpr ']'            { $$ = log($3);      }
-  | tLog10  '[' FExpr ']'            { $$ = log10($3);    }
-  | tSqrt   '[' FExpr ']'            { $$ = sqrt($3);     }
-  | tSin    '[' FExpr ']'            { $$ = sin($3);      }
-  | tAsin   '[' FExpr ']'            { $$ = asin($3);     }
-  | tCos    '[' FExpr ']'            { $$ = cos($3);      }
-  | tAcos   '[' FExpr ']'            { $$ = acos($3);     }
-  | tTan    '[' FExpr ']'            { $$ = tan($3);      }
-  | tAtan   '[' FExpr ']'            { $$ = atan($3);     }
-  | tAtan2  '[' FExpr ',' FExpr ']'  { $$ = atan2($3, $5);}
-  | tSinh   '[' FExpr ']'            { $$ = sinh($3);     }
-  | tCosh   '[' FExpr ']'            { $$ = cosh($3);     }
-  | tTanh   '[' FExpr ']'            { $$ = tanh($3);     }
-  | tFabs   '[' FExpr ']'            { $$ = fabs($3);     }
-  | tFloor  '[' FExpr ']'            { $$ = floor($3);    }
-  | tCeil   '[' FExpr ']'            { $$ = ceil($3);     }
-  | tRound  '[' FExpr ']'            { $$ = floor($3 + 0.5);    }
-  | tFmod   '[' FExpr ',' FExpr ']'  { $$ = fmod($3, $5); }
-  | tModulo '[' FExpr ',' FExpr ']'  { $$ = fmod($3, $5); }
-  | tHypot  '[' FExpr ',' FExpr ']'  { $$ = sqrt($3 * $3 + $5 * $5); }
-  | tRand   '[' FExpr ']'            { $$ = $3 * (double)rand() / (double)RAND_MAX; }
+  | FExpr '%' FExpr                { $$ = (int)$1 % (int)$3;  }
+  | FExpr '^' FExpr                { $$ = pow($1, $3);  }
+  | FExpr '<' FExpr                { $$ = $1 < $3;      }
+  | FExpr '>' FExpr                { $$ = $1 > $3;      }
+  | FExpr tLESSOREQUAL FExpr       { $$ = $1 <= $3;     }
+  | FExpr tGREATEROREQUAL FExpr    { $$ = $1 >= $3;     }
+  | FExpr tEQUAL FExpr             { $$ = $1 == $3;     }
+  | FExpr tNOTEQUAL FExpr          { $$ = $1 != $3;     }
+  | FExpr tAND FExpr               { $$ = $1 && $3;     }
+  | FExpr tOR FExpr                { $$ = $1 || $3;     }
+  | FExpr '?' FExpr tDOTS FExpr    { $$ = $1 ? $3 : $5; }
+  | tExp    LP FExpr RP            { $$ = exp($3);      }
+  | tLog    LP FExpr RP            { $$ = log($3);      }
+  | tLog10  LP FExpr RP            { $$ = log10($3);    }
+  | tSqrt   LP FExpr RP            { $$ = sqrt($3);     }
+  | tSin    LP FExpr RP            { $$ = sin($3);      }
+  | tAsin   LP FExpr RP            { $$ = asin($3);     }
+  | tCos    LP FExpr RP            { $$ = cos($3);      }
+  | tAcos   LP FExpr RP            { $$ = acos($3);     }
+  | tTan    LP FExpr RP            { $$ = tan($3);      }
+  | tAtan   LP FExpr RP            { $$ = atan($3);     }
+  | tAtan2  LP FExpr ',' FExpr RP  { $$ = atan2($3, $5);}
+  | tSinh   LP FExpr RP            { $$ = sinh($3);     }
+  | tCosh   LP FExpr RP            { $$ = cosh($3);     }
+  | tTanh   LP FExpr RP            { $$ = tanh($3);     }
+  | tFabs   LP FExpr RP            { $$ = fabs($3);     }
+  | tFloor  LP FExpr RP            { $$ = floor($3);    }
+  | tCeil   LP FExpr RP            { $$ = ceil($3);     }
+  | tRound  LP FExpr RP            { $$ = floor($3 + 0.5); }
+  | tFmod   LP FExpr ',' FExpr RP  { $$ = fmod($3, $5); }
+  | tModulo LP FExpr ',' FExpr RP  { $$ = fmod($3, $5); }
+  | tHypot  LP FExpr ',' FExpr RP  { $$ = sqrt($3 * $3 + $5 * $5); }
+  | tRand   LP FExpr RP            { $$ = $3 * (double)rand() / (double)RAND_MAX; }
 ;
 
 // FIXME: add +=, -=, *= et /=
@@ -4421,9 +4281,18 @@ FExpr_Single :
   | tGMSH_PATCH_VERSION { $$ = GetGmshPatchVersion(); }
   | tCpu { $$ = Cpu(); }
   | tMemory { $$ = GetMemoryUsage()/1024./1024.; }
+  | tTotalMemory { $$ = TotalRam(); }
 
   // Variables
 
+  | tDefineNumber LP FExpr
+    { floatOptions.clear(); charOptions.clear(); }
+    FloatParameterOptions RP
+    {
+      std::vector<double> val(1, $3);
+      Msg::ExchangeOnelabParameter("", val, floatOptions, charOptions);
+      $$ = val[0];
+    }
   | String__Index
     {
       if(!gmsh_yysymbols.count($1)){
@@ -4441,7 +4310,6 @@ FExpr_Single :
       }
       Free($1);
     }
-
   | tSTRING '[' FExpr ']'
     {
       int index = (int)$3;
@@ -4460,7 +4328,36 @@ FExpr_Single :
       }
       Free($1);
     }
-  | '#' tSTRING '[' ']'
+  | StringIndex '[' FExpr ']'
+    {
+      int index = (int)$3;
+      if(!gmsh_yysymbols.count($1)){
+	yymsg(0, "Unknown variable '%s'", $1);
+	$$ = 0.;
+      }
+      else{
+        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
+        if((int)s.value.size() < index + 1){
+          yymsg(0, "Uninitialized variable '%s[%d]'", $1, index);
+          $$ = 0.;
+        }
+        else
+          $$ = s.value[index];
+      }
+      Free($1);
+    }
+  | tExists '(' String__Index ')'
+    {
+      $$ = gmsh_yysymbols.count($3);
+      Free($3);
+    }
+  | tFileExists '(' StringExpr ')'
+    {
+      std::string tmp = FixRelativePath(gmsh_yyname, $3);
+      $$ = !StatFile(tmp);
+      Free($3);
+    }
+  | '#' String__Index '[' ']'
     {
       if(!gmsh_yysymbols.count($2)){
 	yymsg(0, "Unknown variable '%s'", $2);
@@ -4490,6 +4387,24 @@ FExpr_Single :
       Free($1);
     }
   | tSTRING '[' FExpr ']' NumericIncrement
+    {
+      int index = (int)$3;
+      if(!gmsh_yysymbols.count($1)){
+	yymsg(0, "Unknown variable '%s'", $1);
+	$$ = 0.;
+      }
+      else{
+        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
+        if((int)s.value.size() < index + 1){
+          yymsg(0, "Uninitialized variable '%s[%d]'", $1, index);
+          $$ = 0.;
+        }
+        else
+          $$ = (s.value[index] += $5);
+      }
+      Free($1);
+    }
+  | StringIndex '[' FExpr ']' NumericIncrement
     {
       int index = (int)$3;
       if(!gmsh_yysymbols.count($1)){
@@ -4898,20 +4813,7 @@ FExpr_Multi :
       }
       List_Delete($1);
     }
-  | tSTRING '[' ']'
-    {
-      $$ = List_Create(2, 1, sizeof(double));
-      if(!gmsh_yysymbols.count($1))
-	yymsg(0, "Unknown variable '%s'", $1);
-      else{
-        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-	for(unsigned int i = 0; i < s.value.size(); i++)
-	  List_Add($$, &s.value[i]);
-      }
-      Free($1);
-    }
-  // for compatibility with GetDP
-  | tSTRING '(' ')'
+  | tSTRING LP RP
     {
       $$ = List_Create(2, 1, sizeof(double));
       if(!gmsh_yysymbols.count($1))
@@ -4935,26 +4837,7 @@ FExpr_Multi :
       }
       Free($3);
     }
-  | tSTRING '[' '{' RecursiveListOfDouble '}' ']'
-    {
-      $$ = List_Create(2, 1, sizeof(double));
-      if(!gmsh_yysymbols.count($1))
-	yymsg(0, "Unknown variable '%s'", $1);
-      else{
-        gmsh_yysymbol &s(gmsh_yysymbols[$1]);
-	for(int i = 0; i < List_Nbr($4); i++){
-	  int index = (int)(*(double*)List_Pointer_Fast($4, i));
-	  if((int)s.value.size() < index + 1)
-	    yymsg(0, "Uninitialized variable '%s[%d]'", $1, index);
-	  else
-	    List_Add($$, &s.value[index]);
-	}
-      }
-      Free($1);
-      List_Delete($4);
-    }
-  // for compatibility with GetDP
-  | tSTRING '(' '{' RecursiveListOfDouble '}' ')'
+  | tSTRING LP '{' RecursiveListOfDouble '}' RP
     {
       $$ = List_Create(2, 1, sizeof(double));
       if(!gmsh_yysymbols.count($1))
@@ -5112,6 +4995,12 @@ StringExpr :
       strcpy($$, ctime(&now));
       $$[strlen($$) - 1] = '\0';
     }
+  | tOnelabAction
+    {
+      std::string action = Msg::GetGmshOnelabAction();
+      $$ = (char *)Malloc(action.size() + 1);
+      strcpy($$, action.c_str());
+    }
   | tGetEnv '(' StringExprVar ')'
     {
       const char *env = GetEnvironmentVar($3);
@@ -5128,16 +5017,7 @@ StringExpr :
       Free($3);
       Free($5);
     }
-  | tStrCat '(' StringExprVar ',' StringExprVar ')'
-    {
-      $$ = (char *)Malloc((strlen($3) + strlen($5) + 1) * sizeof(char));
-      strcpy($$, $3);
-      strcat($$, $5);
-      Free($3);
-      Free($5);
-    }
-  // for compatibility with GetDP
-  | tStrCat '[' StringExprVar ',' StringExprVar ']'
+  | tStrCat LP StringExprVar ',' StringExprVar RP
     {
       $$ = (char *)Malloc((strlen($3) + strlen($5) + 1) * sizeof(char));
       strcpy($$, $3);
@@ -5185,7 +5065,7 @@ StringExpr :
       Free($5);
       Free($7);
     }
-  | tStr '(' RecursiveListOfStringExprVar ')'
+  | tStr LP RecursiveListOfStringExprVar RP
     {
       int size = 0;
       for(int i = 0; i < List_Nbr($3); i++)
@@ -5201,33 +5081,11 @@ StringExpr :
       }
       List_Delete($3);
     }
-  // for compatibility with GetDP
-  | tStr '[' RecursiveListOfStringExprVar ']'
-    {
-      int size = 0;
-      for(int i = 0; i < List_Nbr($3); i++)
-        size += strlen(*(char**)List_Pointer($3, i)) + 1;
-      $$ = (char*)Malloc(size * sizeof(char));
-      $$[0] = '\0';
-      for(int i = 0; i < List_Nbr($3); i++){
-        char *s;
-        List_Read($3, i, &s);
-        strcat($$, s);
-        Free(s);
-        if(i != List_Nbr($3) - 1) strcat($$, "\n");
-      }
-      List_Delete($3);
-    }
-  | tSprintf '(' StringExprVar ')'
+  | tSprintf LP StringExprVar RP
     {
       $$ = $3;
     }
-  // for compatibility with GetDP
-  | tSprintf '[' StringExprVar ']'
-    {
-      $$ = $3;
-    }
-  | tSprintf '(' StringExprVar ',' RecursiveListOfDouble ')'
+  | tSprintf LP StringExprVar ',' RecursiveListOfDouble RP
     {
       char tmpstring[5000];
       int i = PrintListOfDouble($3, $5, tmpstring);
@@ -5246,25 +5104,15 @@ StringExpr :
       }
       List_Delete($5);
     }
-  // for compatibility with GetDP
-  | tSprintf '[' StringExprVar ',' RecursiveListOfDouble ']'
+  | tDefineString LP StringExpr
+    { floatOptions.clear(); charOptions.clear(); }
+    CharParameterOptions RP
     {
-      char tmpstring[5000];
-      int i = PrintListOfDouble($3, $5, tmpstring);
-      if(i < 0){
-	yymsg(0, "Too few arguments in Sprintf");
-	$$ = $3;
-      }
-      else if(i > 0){
-	yymsg(0, "%d extra argument%s in Sprintf", i, (i > 1) ? "s" : "");
-	$$ = $3;
-      }
-      else{
-	$$ = (char*)Malloc((strlen(tmpstring) + 1) * sizeof(char));
-	strcpy($$, tmpstring);
-	Free($3);
-      }
-      List_Delete($5);
+      std::string val($3);
+      Msg::ExchangeOnelabParameter("", val, floatOptions, charOptions);
+      $$ = (char*)Malloc((val.size() + 1) * sizeof(char));
+      strcpy($$, val.c_str());
+      Free($3);
     }
 ;
 
@@ -5311,6 +5159,100 @@ String__Index :
  ;
 
 %%
+
+void assignVariable(const std::string &name, int index, int assignType,
+                    double value)
+{
+  if(!gmsh_yysymbols.count(name)){
+    if(!assignType){
+      gmsh_yysymbol &s(gmsh_yysymbols[name]);
+      s.list = true;
+      s.value.resize(index + 1, 0.);
+      s.value[index] = value;
+    }
+    else
+      yymsg(0, "Unknown variable '%s'", name.c_str());
+  }
+  else{
+    gmsh_yysymbol &s(gmsh_yysymbols[name]);
+    if(s.list){
+      if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
+      switch(assignType){
+      case 0 : s.value[index] = value; break;
+      case 1 : s.value[index] += value; break;
+      case 2 : s.value[index] -= value; break;
+      case 3 : s.value[index] *= value; break;
+      case 4 :
+        if(value) s.value[index] /= value;
+        else yymsg(0, "Division by zero in '%s[%d] /= %g'",
+                   name.c_str(), index, value);
+        break;
+      }
+    }
+    else
+      yymsg(0, "Variable '%s' is not a list", name.c_str());
+  }
+}
+
+void assignVariables(const std::string &name, List_T *indices, int assignType,
+                     List_T *values)
+{
+  if(List_Nbr(indices) != List_Nbr(values)){
+    yymsg(0, "Incompatible array dimensions in affectation");
+  }
+  else{
+    if(!gmsh_yysymbols.count(name)){
+      if(!assignType){
+        gmsh_yysymbol &s(gmsh_yysymbols[name]);
+        s.list = true;
+        for(int i = 0; i < List_Nbr(indices); i++){
+          int index = (int)(*(double*)List_Pointer(indices, i));
+          s.value.resize(index + 1, 0.);
+          s.value[index] = *(double*)List_Pointer(values, i);
+        }
+      }
+      else
+        yymsg(0, "Unknown variable '%s'", name.c_str());
+    }
+    else{
+      gmsh_yysymbol &s(gmsh_yysymbols[name]);
+      if(s.list){
+        for(int i = 0; i < List_Nbr(indices); i++){
+          int index = (int)(*(double*)List_Pointer(indices, i));
+          double d = *(double*)List_Pointer(values, i);
+          if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
+          switch(assignType){
+          case 0 : s.value[index] = d; break;
+          case 1 : s.value[index] += d; break;
+          case 2 : s.value[index] -= d; break;
+          case 3 : s.value[index] *= d; break;
+          case 4 :
+            if(d) s.value[index] /= d;
+            else yymsg(0, "Division by zero in '%s[%d] /= %g'", name.c_str(), index, d);
+            break;
+          }
+        }
+      }
+      else
+        yymsg(0, "Variable '%s' is not a list", name.c_str());
+    }
+  }
+}
+
+void incrementVariable(const std::string &name, int index, double value)
+{
+  if(!gmsh_yysymbols.count(name))
+    yymsg(0, "Unknown variable '%s'", name.c_str());
+  else{
+    gmsh_yysymbol &s(gmsh_yysymbols[name]);
+    if(s.list){
+      if((int)s.value.size() < index + 1) s.value.resize(index + 1, 0.);
+      s.value[index] += value;
+    }
+    else
+      yymsg(0, "Variable '%s' is not a list", name.c_str());
+  }
+}
 
 int PrintListOfDouble(char *format, List_T *list, char *buffer)
 {
@@ -5360,6 +5302,42 @@ int PrintListOfDouble(char *format, List_T *list, char *buffer)
   if(j != (int)strlen(format))
     return -1;
   return 0;
+}
+
+void PrintParserSymbols(bool help, std::vector<std::string> &vec)
+{
+  if(help){
+    vec.push_back("//");
+    vec.push_back("// Numbers");
+    vec.push_back("//");
+  }
+  for(std::map<std::string, gmsh_yysymbol>::iterator it = gmsh_yysymbols.begin();
+      it != gmsh_yysymbols.end(); it++){
+    gmsh_yysymbol s(it->second);
+    std::ostringstream sstream;
+    sstream << it->first;
+    if(s.list){
+      sstream << "[] = {";
+      for(unsigned int i = 0; i < s.value.size(); i++){
+        if(i) sstream << ", ";
+        sstream << s.value[i];
+      }
+      sstream << "}";
+    }
+    else
+      sstream << " = " << s.value[0];
+    sstream << ";";
+    vec.push_back(sstream.str());
+  }
+  if(help){
+    vec.push_back("//");
+    vec.push_back("// Strings");
+    vec.push_back("//");
+  }
+  for(std::map<std::string, std::string>::iterator it = gmsh_yystringsymbols.begin();
+      it != gmsh_yystringsymbols.end(); it++){
+    vec.push_back(it->first + " = \"" + it->second + "\";");
+  }
 }
 
 fullMatrix<double> ListOfListOfDouble2Matrix(List_T *list)

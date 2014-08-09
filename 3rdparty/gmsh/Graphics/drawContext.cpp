@@ -17,6 +17,7 @@
 #include "PView.h"
 #include "PViewOptions.h"
 #include "VertexArray.h"
+#include "StringUtils.h"
 #include "gl2ps.h"
 
 #if defined(HAVE_FLTK)
@@ -28,7 +29,6 @@
 #if defined(HAVE_POPPLER)
 #include "gmshPopplerWrapper.h"
 #endif
-
 
 drawContextGlobal *drawContext::_global = 0;
 
@@ -52,7 +52,7 @@ drawContext::drawContext(drawTransform *transform)
   vxmin = vymin = vxmax = vymax = 0.;
   pixel_equiv_x = pixel_equiv_y = 0.;
 
-  _bgImageSize[0] = _bgImageSize[1] = 0;
+  _bgImageTexture = _bgImageW = _bgImageH = 0;
 
   _quadric = 0; // cannot create it here: needs valid opengl context
   _displayLists = 0;
@@ -283,6 +283,7 @@ void drawContext::draw3d()
   if(!CTX::instance()->camera) initPosition();
   drawAxes();
   drawGeom();
+  drawBackgroundImage(true);
   drawMesh();
   drawPost();
 }
@@ -353,87 +354,140 @@ void drawContext::drawBackgroundGradient()
     }
     glEnd();
   }
-#if defined(HAVE_POPPLER)
-  else if(CTX::instance()->bgGradient == 4){ // PDF @ background
-    // FIXME: this should move to drawBackgroundImage below!
-    GLuint texture = gmshPopplerWrapper::getTextureForPage(800,600);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,texture);
-    glBegin(GL_QUADS);
-    glColor4ubv((GLubyte *) & CTX::instance()->color.bg);
-
-    int dw =viewport[2] - viewport[0];
-    int dh =viewport[3] - viewport[1];
-
-    int dw_im = gmshPopplerWrapper::width();
-    int dh_im = gmshPopplerWrapper::height();
-
-    // conserve aspect ratio : dw / dh = dw_im / dh_im
-    //    dw = dh * dw_im / dh_im;
-    dh = dw * dh_im / dw_im;
-
-    glTexCoord2f(1.0f,1.0f);glVertex2i(viewport[2],    viewport[3]-dh);
-    glTexCoord2f(1.0f,0.0f);glVertex2i(viewport[2],    viewport[3]);
-    glTexCoord2f(0.0f,0.0f);glVertex2i(viewport[2]-dw, viewport[3]);
-    glTexCoord2f(0.0f,1.0f);glVertex2i(viewport[2]-dw, viewport[3]-dh);
-    glEnd();
-  }
-#endif
-
 }
 
-void drawContext::drawBackgroundImage()
+void drawContext::invalidateBgImageTexture()
 {
-#if defined(HAVE_FLTK)
-  if(CTX::instance()->bgImageFileName.empty()) return;
+  if(_bgImageTexture) glDeleteTextures(1, &_bgImageTexture);
+  _bgImageTexture = 0;
+}
 
-  if(_bgImage.empty()){
-    int idot = CTX::instance()->bgImageFileName.find_last_of('.');
-    std::string ext;
-    if(idot > 0 && idot < (int)CTX::instance()->bgImageFileName.size())
-      ext = CTX::instance()->bgImageFileName.substr(idot + 1);
-    Fl_RGB_Image *img = 0;
-    if(ext == "jpg" || ext == "JPG" || ext == "jpeg" || ext == "JPEG")
-      img = new Fl_JPEG_Image(CTX::instance()->bgImageFileName.c_str());
-    else if(ext == "png" || ext == "PNG")
-      img = new Fl_PNG_Image(CTX::instance()->bgImageFileName.c_str());
-    if(img && img->d() >= 3){
-      const unsigned char *data = img->array;
-      for(int j = img->h() - 1; j >= 0; j--) {
-        for(int i = 0; i < img->w(); i++) {
-          int idx = j * img->w() * img->d() + i * img->d();
-          _bgImage.push_back((GLfloat)data[idx] / 255.F);
-          _bgImage.push_back((GLfloat)data[idx + 1] / 255.F);
-          _bgImage.push_back((GLfloat)data[idx + 2] / 255.F);
-        }
-      }
-      _bgImageSize[0] = img->w();
-      _bgImageSize[1] = img->h();
-    }
-    if(!_bgImageSize[0] || !_bgImageSize[1]){
-      Msg::Error("Could not load valid background image");
-      // make sure we don't try to load it again
-      for(int i = 0; i < 3; i++) _bgImage.push_back(0);
-      _bgImageSize[0] = _bgImageSize[1] = 1;
-    }
-    if(img) delete img;
-  }
+void drawContext::drawBackgroundImage(bool threeD)
+{
+  if(CTX::instance()->bgImageFileName.empty() ||
+     (CTX::instance()->bgImage3d && !threeD) ||
+     (!CTX::instance()->bgImage3d && threeD)) return;
+
+  std::string name = FixRelativePath(GModel::current()->getFileName(),
+                                     CTX::instance()->bgImageFileName);
+  std::string ext = SplitFileName(CTX::instance()->bgImageFileName)[2];
 
   double x = CTX::instance()->bgImagePosition[0];
   double y = CTX::instance()->bgImagePosition[1];
-  int c = fix2dCoordinates(&x, &y);
-  if(c & 1) x -= _bgImageSize[0] / 2.;
-  if(c & 2) y -= _bgImageSize[1] / 2.;
-  if(x < viewport[0]) x = viewport[0];
-  if(y < viewport[1]) y = viewport[1];
-  glRasterPos2d(x, y);
-  glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glDrawPixels(_bgImageSize[0], _bgImageSize[1], GL_RGB, GL_FLOAT,
-               (void*)&_bgImage[0]);
-  gl2psDrawPixels(_bgImageSize[0], _bgImageSize[1], 0, 0, GL_RGB, GL_FLOAT,
-                  (void*)&_bgImage[0]);
+  double w = CTX::instance()->bgImageSize[0];
+  double h = CTX::instance()->bgImageSize[1];
+
+  if(ext == ".pdf" || ext == ".PDF"){
+#if defined(HAVE_POPPLER)
+    if(!_bgImageTexture){
+      if(!gmshPopplerWrapper::instance()->loadFromFile(name)){
+        Msg::Error("Could not load PDF file '%s'", name.c_str());
+        CTX::instance()->bgImageFileName.clear();
+        return;
+      }
+    }
+    gmshPopplerWrapper::instance()->setCurrentPage(CTX::instance()->bgImagePage);
+    _bgImageTexture = gmshPopplerWrapper::instance()->getTextureForPage(300, 300);
+    _bgImageW = gmshPopplerWrapper::instance()->width();
+    _bgImageH = gmshPopplerWrapper::instance()->height();
+#else
+    Msg::Error("Gmsh must be compiled with Poppler support to load PDFs");
+    CTX::instance()->bgImageFileName.clear();
+    return;
 #endif
+  }
+  else{
+#if defined(HAVE_FLTK)
+    if(!_bgImageTexture){
+      Fl_RGB_Image *img = 0;
+      if(ext == ".jpg" || ext == ".JPG" || ext == ".jpeg" || ext == ".JPEG")
+        img = new Fl_JPEG_Image(name.c_str());
+      else if(ext == ".png" || ext == ".PNG")
+        img = new Fl_PNG_Image(name.c_str());
+      if(!img){
+        Msg::Error("Could not load background image '%s'", name.c_str());
+        CTX::instance()->bgImageFileName.clear();
+        return;
+      }
+      Fl_RGB_Image *img2 = (Fl_RGB_Image*)img->copy(2048, 2048);
+      glGenTextures(1, &_bgImageTexture);
+      glBindTexture(GL_TEXTURE_2D, _bgImageTexture);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img2->w(), img2->h(), 0,
+                   (img2->d() == 4) ? GL_RGBA : GL_RGB,
+                   GL_UNSIGNED_BYTE, img2->array);
+      _bgImageW = img->w();
+      _bgImageH = img->h();
+      delete img;
+      delete img2;
+    }
+#else
+    Msg::Error("Gmsh must be compiled with FLTK support to load JPEGs or PNGs");
+    CTX::instance()->bgImageFileName.clear();
+    return;
+#endif
+  }
+
+  if(!_bgImageTexture) return;
+
+  if(w < 0 && h < 0){
+    w = viewport[2] - viewport[0];
+    h = viewport[3] - viewport[1];
+  }
+  else if(w < 0 && h == 0){
+    w = viewport[2] - viewport[0];
+    h = w * _bgImageH / _bgImageW;
+  }
+  else if(w < 0){
+    w = viewport[2] - viewport[0];
+  }
+  else if(w == 0 && h < 0){
+    h = viewport[3] - viewport[1];
+    w = h * _bgImageW / _bgImageH;
+  }
+  else if(h < 0){
+    h = viewport[3] - viewport[1];
+  }
+  else if(w == 0 && h == 0){
+    w = _bgImageW;
+    h = _bgImageH;
+  }
+  else if(h == 0){
+    h = w * _bgImageH / _bgImageW;
+  }
+  else if(w == 0){
+    w = h * _bgImageW / _bgImageH;
+  }
+
+  Msg::Debug("Background image: x=%g y=%g w=%g h=%g", x, y, w, h);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, _bgImageTexture);
+  glBegin(GL_QUADS);
+  glColor4ubv((GLubyte *) & CTX::instance()->color.bg);
+  if(threeD){
+    glTexCoord2f(1.0f, 1.0f); glVertex2d(x+w, y);
+    glTexCoord2f(1.0f, 0.0f); glVertex2d(x+w, y+h);
+    glTexCoord2f(0.0f, 0.0f); glVertex2d(x, y+h);
+    glTexCoord2f(0.0f, 1.0f); glVertex2d(x, y);
+  }
+  else{
+    int c = fix2dCoordinates(&x, &y); // y=0 now means top
+    if(c & 1) x -= w / 2.;
+    if(c & 2) y += h / 2.;
+    if(x < viewport[0]) x = viewport[0];
+    if(y < viewport[1]) y = viewport[1];
+    glTexCoord2f(1.0f, 1.0f); glVertex2d(x+w, y-h);
+    glTexCoord2f(1.0f, 0.0f); glVertex2d(x+w, y);
+    glTexCoord2f(0.0f, 0.0f); glVertex2d(x, y);
+    glTexCoord2f(0.0f, 1.0f); glVertex2d(x, y-h);
+  }
+  glEnd();
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND);
 }
 
 void drawContext::initProjection(int xpick, int ypick, int wpick, int hpick)
@@ -541,7 +595,7 @@ void drawContext::initProjection(int xpick, int ypick, int wpick, int hpick)
       // hack for GL2PS (to make sure that the image is in front of the
       // gradient)
       glTranslated(0., 0., 0.01 * clip_far);
-      drawBackgroundImage();
+      drawBackgroundImage(false);
       glPopMatrix();
       glEnable(GL_DEPTH_TEST);
     }
