@@ -368,7 +368,7 @@ void PythonEngine::deleteUserModules()
     // files to be sure that changes made in imported modules were taken into account.
 
     QStringList filter_name;
-    filter_name << "pythonlab" << "agros2d" << "sys" << "test_suite";
+    filter_name << "pythonlab" << "agros2d" << "variant" << "sys" << "test_suite";
 
     QList<PythonVariable> list = variableList();
 

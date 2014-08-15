@@ -174,10 +174,10 @@ void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
 {
-    QPixmap p = QPixmap::fromImage(grabFrameBuffer(false));
-    p = renderPixmap(width() * 3, height() * 3);
-
-    return p;
+    // QPixmap p = QPixmap::fromImage(grabFrameBuffer(false));
+    // p = renderPixmap(width() * 3, height() * 3);
+    // return p;
+    return QPixmap::fromImage(grabFrameBuffer(false));
 }
 
 void SceneViewCommon::loadProjectionViewPort()

@@ -163,13 +163,13 @@ void OptilabSingle::variantInfo(const QString &key)
             while (PyDict_Next(variables, &pos, &key, &value))
             {
                 QString name = QString::fromWCharArray(PyUnicode_AsUnicode(key));
+                QString tp = QString(value->ob_type->tp_name);
 
                 ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("VAR_VALUE_SECTION");
 
                 paramSection->SetValue("VAR_LABEL", name.toStdString());
                 // varSection->SetValue("VAR_UNIT", variable.var_unit());
 
-                QString tp = QString(value->ob_type->tp_name);
                 // qDebug() << tp;
                 // variable value
                 if (tp == "bool")
@@ -190,19 +190,19 @@ void OptilabSingle::variantInfo(const QString &key)
                 }
                 else if (tp == "list")
                 {
-                    paramSection->SetValue("PARAM_VALUE", QString::number((int) PyList_Size(value)).toStdString());
+                    paramSection->SetValue("VAR_VALUE", QString::number((int) PyList_Size(value)).toStdString());
                 }
                 else if (tp == "tuple")
                 {
-                    paramSection->SetValue("PARAM_VALUE", QString::number((int) PyTuple_Size(value)).toStdString());
+                    paramSection->SetValue("VAR_VALUE", QString::number((int) PyTuple_Size(value)).toStdString());
                 }
                 else if (tp == "dict")
                 {
-                    paramSection->SetValue("PARAM_VALUE", QString::number((int) PyDict_Size(value)).toStdString());
+                    paramSection->SetValue("VAR_VALUE", QString::number((int) PyDict_Size(value)).toStdString());
                 }
                 else
                 {
-                    qDebug() << "Unknown type:" << tp;
+                    qDebug() << "Unknown VARIABLE '" << name << "' type:" << tp;
                 }
 
                 /*
@@ -233,7 +233,7 @@ void OptilabSingle::variantInfo(const QString &key)
         if (info)
         {
             Py_INCREF(info);
-            variant.SetValue("INFO_LABEL", tr("Variant info").toStdString());
+            variant.SetValue("INFORMATION_LABEL", tr("Variant info").toStdString());
 
             PyObject *key, *value;
             Py_ssize_t pos = 0;
@@ -248,8 +248,49 @@ void OptilabSingle::variantInfo(const QString &key)
                     QString geometry = QString::fromWCharArray(PyUnicode_AsUnicode(value));
                     if (!geometry.isEmpty())
                         variant.SetValue("GEOMETRY_IMAGE", geometry.toStdString());
+
+                    continue;
                 }
-                // ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("INFO_SECTION");
+
+                ctemplate::TemplateDictionary *paramSection = variant.AddSectionDictionary("INFO_SECTION");
+
+                paramSection->SetValue("INFO_LABEL", name.toStdString());
+
+                // variable value
+                // info value
+                QString tp = QString(value->ob_type->tp_name);
+                if (tp == "bool")
+                {
+                    paramSection->SetValue("INFO_VALUE", PyLong_AsLong(value) ? "True" : "False");
+                }
+                else if (tp == "int")
+                {
+                    paramSection->SetValue("INFO_VALUE", QString::number((int) PyLong_AsLong(value)).toStdString());
+                }
+                else if (tp == "float" || tp == "numpy.float64")
+                {
+                    paramSection->SetValue("INFO_VALUE", QString::number(PyFloat_AsDouble(value)).toStdString());
+                }
+                else if (tp == "str")
+                {
+                    paramSection->SetValue("INFO_VALUE", QString::fromWCharArray(PyUnicode_AsUnicode(value)).toStdString());
+                }
+                else if (tp == "list")
+                {
+                    paramSection->SetValue("INFO_VALUE", QString::number((int) PyList_Size(value)).toStdString());
+                }
+                else if (tp == "tuple")
+                {
+                    paramSection->SetValue("INFO_VALUE", QString::number((int) PyTuple_Size(value)).toStdString());
+                }
+                else if (tp == "dict")
+                {
+                    paramSection->SetValue("INFO_VALUE", QString::number((int) PyDict_Size(value)).toStdString());
+                }
+                else
+                {
+                    qDebug() << "Unknown type:" << tp;
+                }
             }
             Py_XDECREF(info);
         }

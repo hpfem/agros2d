@@ -89,6 +89,9 @@ class Model(ModelBase):
             self.solved = False
 
     def process(self):
+        # store geometry
+        self.info['_geometry'] = a2d.geometry.export_svg_image()
+        # variables            
         C = 2 * self.electrostatic.volume_integrals()['We'] / self.U**2
         L = 2 * self.magnetic.volume_integrals()['Wm'] / self.I**2
         self.variables['Z0'] = sqrt(L/C)

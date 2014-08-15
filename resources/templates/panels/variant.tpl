@@ -71,7 +71,7 @@
 	</div>
 
 	<div class="section">
-	<h2>{{INFO_LABEL}}</h2>
+	<h2>{{INFORMATION_LABEL}}</h2>
 	<hr/>
 	<table>
 	{{#INFO_SECTION}}

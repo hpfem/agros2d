@@ -98,7 +98,7 @@ class ModelBase:
         pass    
         
     def load(self, file_name):
-        """Unpickle model and save binary file (marshalling of model object).
+        """Unpickle model and load binary file (marshalling of model object).
 
         load(file_name)
 
@@ -117,13 +117,16 @@ class ModelBase:
         Keyword arguments:
         file_name -- file name of binary file for write
         """
+        
+        protocol = pickle.HIGHEST_PROTOCOL
+        # protocol = 0 # human-readable
 
         directory = os.path.dirname(file_name)
         if not os.path.isdir(directory):
             os.makedirs(directory)
 
         with open(file_name, 'wb') as outfile:
-            pickle.dump(self._data, outfile, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self._data, outfile, protocol)
 
     def clear(self):
         """Clear model data."""
