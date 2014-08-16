@@ -3,8 +3,6 @@ from variant import optimization
 from variant.optimization import genetic
 from problem import Model
 
-#import pythonlab
-
 parameters = optimization.Parameters([optimization.ContinuousParameter('W', 1e-4, 1e-3),
                                       optimization.ContinuousParameter('d', 1e-4, 1e-3)])
 

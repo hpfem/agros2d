@@ -77,9 +77,29 @@ OptilabWindow::~OptilabWindow()
     removeDirectory(tempProblemDir());
 }
 
-void OptilabWindow::variantOpenInAgros2D()
+void OptilabWindow::processOpenError(QProcess::ProcessError error)
 {
-    QString fileName = QString("%1/models/%2").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
+    qDebug() << tr("Could not start Agros2D");
+}
+
+void OptilabWindow::processOpenFinished(int exitCode)
+{
+    if (exitCode == 0)
+    {
+    }
+    else
+    {
+        QString errorMessage = readFileContent(tempProblemDir() + "/solver.err");
+        errorMessage.insert(0, "\n");
+        errorMessage.append("\n");
+        qDebug() << "Agros2D";
+        qDebug() << errorMessage;
+    }
+}
+
+void OptilabWindow::variantOpenInExternalAgros2D()
+{
+    QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
@@ -112,29 +132,22 @@ void OptilabWindow::variantOpenInAgros2D()
     }
 }
 
-void OptilabWindow::processOpenError(QProcess::ProcessError error)
+void OptilabWindow::variantOpenInAgros2D()
 {
-    qDebug() << tr("Could not start Agros2D");
-}
+    QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
-void OptilabWindow::processOpenFinished(int exitCode)
-{
-    if (exitCode == 0)
+    if (QFile::exists(fileName))
     {
-    }
-    else
-    {
-        QString errorMessage = readFileContent(tempProblemDir() + "/solver.err");
-        errorMessage.insert(0, "\n");
-        errorMessage.append("\n");
-        qDebug() << "Agros2D";
-        qDebug() << errorMessage;
+        QString str = QString("variant.optilab_interface._open_in_agros2d('%1')").arg(fileName);
+        // qDebug() << str;
+
+        currentPythonEngine()->runScript(str);
     }
 }
 
-void OptilabWindow::variantSolveInSolver()
+void OptilabWindow::variantSolveInExternalSolver()
 {
-    QString fileName = QString("%1/models/%2").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
+    QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
     {
@@ -157,6 +170,20 @@ void OptilabWindow::variantSolveInSolver()
         SystemOutputWidget *systemOutput = new SystemOutputWidget(this);
         connect(systemOutput, SIGNAL(finished(int)), this, SLOT(processSolveFinished(int)));
         systemOutput->execute(command);
+    }
+}
+
+void OptilabWindow::variantSolveInAgros2D()
+{
+    QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
+
+    if (QFile::exists(fileName))
+    {
+        QString str = QString("variant.optilab_interface._solve_in_agros2d('%1')").arg(fileName);
+        // qDebug() << str;
+
+        currentPythonEngine()->runScript(str);
+        refreshVariants();
     }
 }
 
@@ -228,9 +255,9 @@ void OptilabWindow::createActions()
     actDocumentClose->setShortcuts(QKeySequence::Close);
     connect(actDocumentClose, SIGNAL(triggered()), this, SLOT(documentClose()));
 
-    actOpenAgros2D = new QAction(icon("agros2d"), tr("Open Agros2D"), this);
-    actOpenAgros2D->setEnabled(false);
-    connect(actOpenAgros2D, SIGNAL(triggered()), this, SLOT(openProblemAgros2D()));
+    // actOpenAgros2D = new QAction(icon("agros2d"), tr("Open Agros2D"), this);
+    // actOpenAgros2D->setEnabled(false);
+    // connect(actOpenAgros2D, SIGNAL(triggered()), this, SLOT(openProblemAgros2D()));
 }
 
 void OptilabWindow::createMenus()
@@ -291,7 +318,7 @@ void OptilabWindow::createToolBars()
     tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
     tlbTools->addSeparator();
-    tlbTools->addAction(actOpenAgros2D);
+    // tlbTools->addAction(actOpenAgros2D);
     tlbTools->addAction(actScriptEditor);
 }
 
@@ -319,20 +346,31 @@ void OptilabWindow::createMain()
     connect(trvVariants, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
     connect(trvVariants, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), optilabSingle, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
-    btnSolveInSolver = new QPushButton(tr("Solve"));
-    btnSolveInSolver->setToolTip(tr("Solve in Solver"));
-    btnSolveInSolver->setEnabled(false);
-    connect(btnSolveInSolver, SIGNAL(clicked()), this, SLOT(variantSolveInSolver()));
+    btnOpenInExternalAgros2D = new QPushButton(tr("Open in external Agros2D"));
+    btnOpenInExternalAgros2D->setToolTip(tr("Open in external Agros2D"));
+    btnOpenInExternalAgros2D->setEnabled(false);
+    connect(btnOpenInExternalAgros2D, SIGNAL(clicked()), this, SLOT(variantOpenInExternalAgros2D()));
 
-    btnOpenInAgros2D = new QPushButton(tr("Open"));
+    btnSolveInExternalSolver = new QPushButton(tr("Solve in external solver"));
+    btnSolveInExternalSolver->setToolTip(tr("Solve in external solver"));
+    btnSolveInExternalSolver->setEnabled(false);
+    connect(btnSolveInExternalSolver, SIGNAL(clicked()), this, SLOT(variantSolveInExternalSolver()));
+
+    btnOpenInAgros2D = new QPushButton(tr("Open in Agros2D"));
     btnOpenInAgros2D->setToolTip(tr("Open in Agros2D"));
     btnOpenInAgros2D->setEnabled(false);
     connect(btnOpenInAgros2D, SIGNAL(clicked()), this, SLOT(variantOpenInAgros2D()));
 
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
-    layoutButtons->addWidget(btnSolveInSolver);
-    layoutButtons->addWidget(btnOpenInAgros2D);
+    btnSolveInAgros2D = new QPushButton(tr("Solve in Agros2D"));
+    btnSolveInAgros2D->setToolTip(tr("Solve in Agros2D"));
+    btnSolveInAgros2D->setEnabled(false);
+    connect(btnSolveInAgros2D, SIGNAL(clicked()), this, SLOT(variantSolveInAgros2D()));
+
+    QGridLayout *layoutButtons = new QGridLayout();
+    layoutButtons->addWidget(btnOpenInExternalAgros2D, 0, 0);
+    layoutButtons->addWidget(btnSolveInExternalSolver, 1, 0);
+    layoutButtons->addWidget(btnOpenInAgros2D, 0, 1);
+    layoutButtons->addWidget(btnSolveInAgros2D, 1, 1);
 
     lblProblems = new QLabel("");
 
@@ -377,8 +415,10 @@ void OptilabWindow::scriptEditor()
 
 void OptilabWindow::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {    
-    btnOpenInAgros2D->setEnabled(false);
-    btnSolveInSolver->setEnabled(false);
+    btnOpenInAgros2D->setEnabled(current);
+    btnSolveInAgros2D->setEnabled(current);
+    btnOpenInExternalAgros2D->setEnabled(current);
+    btnSolveInExternalSolver->setEnabled(current);
 }
 
 void OptilabWindow::doItemDoubleClicked(QTreeWidgetItem *item, int column)
@@ -425,10 +465,6 @@ void OptilabWindow::documentOpen(const QString &fileName)
         settings.setValue("General/LastProblemDir", m_problemDir);
 
         optilabSingle->doItemChanged(NULL, NULL);
-        actOpenAgros2D->setEnabled(true);
-
-        btnOpenInAgros2D->setEnabled(true);
-        btnSolveInSolver->setEnabled(true);
 
         // set recent files
         setRecentFiles();
@@ -450,7 +486,7 @@ void OptilabWindow::documentClose()
     // clear listview
     trvVariants->clear();
 
-    actOpenAgros2D->setEnabled(false);
+    // actOpenAgros2D->setEnabled(false);
 
     currentPythonEngine()->runExpression("del variant.optilab_interface._md; del agros2d_model");
 
@@ -504,7 +540,7 @@ void OptilabWindow::refreshVariants()
             Py_INCREF(d);
 
             QString name = QString::fromWCharArray(PyUnicode_AsUnicode(PyDict_GetItemString(d, "key")));
-            bool isSolved = PyDict_GetItemString(d, "solved");
+            bool isSolved = PyLong_AsLong(PyDict_GetItemString(d, "solved"));
 
             QTreeWidgetItem *variantItem = new QTreeWidgetItem(trvVariants->invisibleRootItem());
             if (isSolved)

@@ -55,8 +55,11 @@ private slots:
 
     void refreshVariants();
 
+    void variantOpenInExternalAgros2D();
+    void variantSolveInExternalSolver();
+
     void variantOpenInAgros2D();
-    void variantSolveInSolver();
+    void variantSolveInAgros2D();
 
     void processOpenError(QProcess::ProcessError error);
     void processOpenFinished(int exitCode);
@@ -88,10 +91,11 @@ private:
     QAction *actDocumentNew;
     QAction *actDocumentOpen;
     QAction *actDocumentClose;
-    QAction *actOpenAgros2D;
 
-    QPushButton *btnSolveInSolver;
     QPushButton *btnOpenInAgros2D;
+    QPushButton *btnSolveInAgros2D;
+    QPushButton *btnSolveInExternalSolver;
+    QPushButton *btnOpenInExternalAgros2D;
 
     PythonScriptingConsole *console;
 

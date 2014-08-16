@@ -74,7 +74,7 @@ class ModelGenerator:
 
         del self._parameters[name]
 
-    def save(self, directory):
+    def save(self, directory = "models"):
         """Save models to directory.
 
         save(directory)

@@ -4,7 +4,7 @@ from math import sqrt, log, pi
 
 class Model(ModelBase):
     def create(self):
-        # defaults and paramters
+        # defaults and parameters
         self.defaults['W'] = 5e-4
         self.defaults['d'] = 1e-3
         self.defaults['t'] = 0.5e-4
@@ -18,6 +18,10 @@ class Model(ModelBase):
         self.problem.coordinate_type = "planar"
         self.problem.mesh_type = "triangle"
 
+        # disable view
+        a2d.view.mesh.disable()
+        a2d.view.post2d.disable()
+        
         # electrostic field        
         self.electrostatic = a2d.field("electrostatic")
         self.electrostatic.analysis_type = "steadystate"

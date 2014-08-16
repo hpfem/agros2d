@@ -308,66 +308,6 @@ void OptilabSingle::variantInfo(const QString &key)
 
         Py_XDECREF(result);
     }
-
-    /*
-    // TODO: more images
-    QDomElement eleGeometry = nodeImages.childNodes().at(0).toElement();
-    QString geometry = eleGeometry.attribute("source");
-    if (!geometry.isEmpty())
-        info.SetValue("IMAGE", geometry.toStdString());
-
-    info.SetValue("SOLVED", (nodeSolution.toElement().attribute("solved").toInt() == 1) ? "YES" : "NO");
-
-    // output
-    info.SetValue("VARIABLE_LABEL", tr("Output variables").toStdString());
-    for (unsigned int i = 0; i < nodeOutput.childNodes().count(); i++)
-    {
-        QDomElement eleVariable = nodeOutput.childNodes().at(i).toElement();
-
-        OutputVariable result(eleVariable.attribute("name"),
-                              eleVariable.attribute("value"));
-
-        if (result.isNumber())
-        {
-            ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_VALUE_SECTION");
-
-            // double value
-            varSection->SetValue("VAR_LABEL", result.name().toStdString());
-            varSection->SetValue("VAR_VALUE", QString::number(result.number()).toStdString());
-            // varSection->SetValue("VAR_UNIT", variable.var_unit());
-        }
-        else
-        {
-            ctemplate::TemplateDictionary *varSection = info.AddSectionDictionary("VAR_CHART_SECTION");
-
-            QString chartData = "[";
-            for (int j = 0; j < result.size(); j++)
-                chartData += QString("[%1, %2], ").arg(result.x().at(j)).arg(result.y().at(j));
-            chartData += "]";
-
-            // chart time step vs. steps
-            QString chart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'N' } ], yaxes: [ { axisLabel: '%3' } ] });});</script>").
-                    arg(i).
-                    arg(chartData).
-                    arg(result.name());
-
-            varSection->SetValue("VAR_CHART_DIV", QString("chart_%1").arg(i).toStdString());
-            varSection->SetValue("VAR_CHART", chart.toStdString());
-        }
-    }
-
-    // info
-    info.SetValue("INFO_LABEL", tr("Variant info").toStdString());
-    for (unsigned int i = 0; i < nodeInfo.childNodes().count(); i++)
-    {
-        ctemplate::TemplateDictionary *infoSection = info.AddSectionDictionary("INFO_SECTION");
-
-        QDomElement eleInfo = nodeInfo.childNodes().at(i).toElement();
-
-        infoSection->SetValue("INFO_LABEL", eleInfo.attribute("name").toStdString());
-        infoSection->SetValue("INFO_VALUE", eleInfo.attribute("value").toStdString());
-    }
-    */
 }
 
 void OptilabSingle::welcomeInfo()

@@ -10,3 +10,5 @@ function mp = agros_colormap(N, rm, gm, bm)
   mp((mp > 1)) = 1;
   mp((mp < 0)) = 0;
 end
+
+
