@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_VECTOR_HPP_
 #define PARALUTION_VECTOR_HPP_
@@ -78,6 +83,11 @@ public:
   /// Write vector to ASCII file
   virtual void WriteFileASCII(const std::string) const = 0;
 
+  /// Read vector from binary file
+  virtual void ReadFileBinary(const std::string) = 0;
+
+  /// Write vector to binary file
+  virtual void WriteFileBinary(const std::string) const = 0;
 
   /// Perform vector update of type this = this + alpha*x
   virtual void AddScale(const LocalVector<ValueType> &x, const ValueType alpha);

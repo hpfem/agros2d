@@ -40,12 +40,12 @@ public:
     {
     }
 
-    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }
 
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomSurf<double> *e, double* result)
     {
         int labelIdx = atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str());
         int edgeIdx = atoi(m_fieldInfo->initialMesh()->get_boundary_markers_conversion().get_user_marker(e->edge_marker).marker.c_str());
@@ -126,8 +126,8 @@ void {{CLASS}}SurfaceIntegral::calculate()
             Module::updateTimeFunctions(timeLevels[m_timeStep]);
         }
 
-        Hermes::vector<std::string> boundaryMarkers;
-        Hermes::vector<std::string> internalMarkers;
+        std::vector<std::string> boundaryMarkers;
+        std::vector<std::string> internalMarkers;
         for (int i = 0; i < Agros2D::scene()->edges->count(); i++)
         {
             SceneEdge *edge = Agros2D::scene()->edges->at(i);

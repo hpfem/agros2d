@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "gmres.hpp"
 #include "../iter_ctrl.hpp"
@@ -42,6 +47,9 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 GMRES<OperatorType, VectorType, ValueType>::GMRES() {
 
+  LOG_DEBUG(this, "GMRES::GMRES()",
+            "default constructor");
+
   this->size_basis_ = 30;
 
 }
@@ -49,6 +57,9 @@ GMRES<OperatorType, VectorType, ValueType>::GMRES() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 GMRES<OperatorType, VectorType, ValueType>::~GMRES() {
+
+  LOG_DEBUG(this, "GMRES::~GMRES()",
+            "destructor");
 
   this->Clear();
 
@@ -108,6 +119,10 @@ void GMRES<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "GMRES::Build()",
+            this->build_ <<
+            " #*# begin");
+
   if (this->build_ == true)
     this->Clear();
 
@@ -135,11 +150,19 @@ void GMRES<OperatorType, VectorType, ValueType>::Build(void) {
     this->v_[i]->Allocate("v", this->op_->get_nrow());
   }
 
+  LOG_DEBUG(this, "GMRES::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "GMRES::Clear()",
+            this->build_);
+
 
   if (this->build_ == true) {
 
@@ -167,6 +190,10 @@ void GMRES<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "GMRES::MoveToHostLocalData_()",
+            this->build_);  
+
+
   if (this->build_ == true) {
 
     this->w_.MoveToHost();
@@ -186,6 +213,9 @@ void GMRES<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "GMRES::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -208,6 +238,9 @@ void GMRES<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(voi
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::SetBasisSize(const int size_basis) {
 
+  LOG_DEBUG(this, "GMRES:SetBasisSize()",
+            size_basis);
+
   assert(size_basis > 0);
   this->size_basis_ = size_basis;
 
@@ -220,6 +253,9 @@ void GMRES<OperatorType, VectorType, ValueType>::SetBasisSize(const int size_bas
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                                         VectorType *x) {
+
+  LOG_DEBUG(this, "GMRES::SolveNonPrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -346,6 +382,9 @@ void GMRES<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorTy
 
   }
 
+  LOG_DEBUG(this, "GMRES::SolveNonPrecond_()",
+            " #*# end");
+
 }
 
 
@@ -355,6 +394,9 @@ void GMRES<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorTy
 template <class OperatorType, class VectorType, typename ValueType>
 void GMRES<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                                      VectorType *x) {
+
+  LOG_DEBUG(this, "GMRES::SolvePrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -491,6 +533,9 @@ void GMRES<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType 
     }
 
   }
+
+  LOG_DEBUG(this, "GMRES::SolvePrecond_()",
+            " #*# end");
 
 }
 

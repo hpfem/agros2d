@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "gpu_matrix_csr.hpp"
 #include "gpu_matrix_coo.hpp"
@@ -50,12 +55,16 @@ template <typename ValueType>
 GPUAcceleratorMatrixCOO<ValueType>::GPUAcceleratorMatrixCOO() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 GPUAcceleratorMatrixCOO<ValueType>::GPUAcceleratorMatrixCOO(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixCOO::GPUAcceleratorMatrixCOO()",
+            "constructor with local_backend");
 
   this->mat_.row = NULL;  
   this->mat_.col = NULL;  
@@ -69,6 +78,9 @@ GPUAcceleratorMatrixCOO<ValueType>::GPUAcceleratorMatrixCOO(const Paralution_Bac
 
 template <typename ValueType>
 GPUAcceleratorMatrixCOO<ValueType>::~GPUAcceleratorMatrixCOO() {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixCOO::~GPUAcceleratorMatrixCOO()",
+            "destructor");
 
   this->Clear();
 
@@ -194,9 +206,9 @@ void GPUAcceleratorMatrixCOO<ValueType>::CopyFromHost(const HostMatrix<ValueType
 
   if (this->get_nnz() > 0) {
 
-      assert((this->get_nnz()  == src.get_nnz())  &&
-             (this->get_nrow() == src.get_nrow()) &&
-             (this->get_ncol() == src.get_ncol()) );
+      assert(this->get_nnz()  == src.get_nnz());
+      assert(this->get_nrow()  == src.get_nrow());
+      assert(this->get_ncol()  == src.get_ncol());
       
       cudaMemcpy(this->mat_.row,     // dst
                  cast_mat->mat_.row, // src
@@ -246,9 +258,9 @@ void GPUAcceleratorMatrixCOO<ValueType>::CopyToHost(HostMatrix<ValueType> *dst) 
 
   if (this->get_nnz() > 0) {
 
-      assert((this->get_nnz()  == dst->get_nnz())  &&
-             (this->get_nrow() == dst->get_nrow()) &&
-             (this->get_ncol() == dst->get_ncol()) );
+      assert(this->get_nnz()  == dst->get_nnz());
+      assert(this->get_nrow() == dst->get_nrow());
+      assert(this->get_ncol() == dst->get_ncol());
       
       cudaMemcpy(cast_mat->mat_.row, // dst
                  this->mat_.row,     // src
@@ -295,9 +307,9 @@ void GPUAcceleratorMatrixCOO<ValueType>::CopyFrom(const BaseMatrix<ValueType> &s
   if (this->get_nnz() == 0)
     this->AllocateCOO(src.get_nnz(), src.get_nrow(), src.get_ncol() );
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
     if (this->get_nnz() > 0) {
 
@@ -357,9 +369,9 @@ void GPUAcceleratorMatrixCOO<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
   if (this->get_nnz() == 0)
     gpu_cast_mat->AllocateCOO(dst->get_nnz(), dst->get_nrow(), dst->get_ncol() );
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     if (this->get_nnz() > 0) {
 
@@ -388,6 +400,231 @@ void GPUAcceleratorMatrixCOO<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
     if ((host_cast_mat = dynamic_cast<HostMatrix<ValueType>*> (dst)) != NULL) {
       
       this->CopyToHost(host_cast_mat);
+
+    } else {
+      
+      LOG_INFO("Error unsupported GPU matrix type");
+      this->info();
+      dst->info();
+      FATAL_ERROR(__FILE__, __LINE__);
+      
+    }
+
+  }
+
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixCOO<ValueType>::CopyFromHostAsync(const HostMatrix<ValueType> &src) {
+
+  const HostMatrixCOO<ValueType> *cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == src.get_mat_format());
+
+  // CPU to GPU copy
+  if ((cast_mat = dynamic_cast<const HostMatrixCOO<ValueType>*> (&src)) != NULL) {
+    
+  if (this->get_nnz() == 0)
+    this->AllocateCOO(src.get_nnz(), src.get_nrow(), src.get_ncol() );
+
+  if (this->get_nnz() > 0) {
+
+      assert(this->get_nnz()  == src.get_nnz());
+      assert(this->get_nrow()  == src.get_nrow());
+      assert(this->get_ncol()  == src.get_ncol());
+      
+      cudaMemcpyAsync(this->mat_.row,     // dst
+                      cast_mat->mat_.row, // src
+                      (this->get_nnz())*sizeof(int), // size
+                      cudaMemcpyHostToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(this->mat_.col,     // dst
+                      cast_mat->mat_.col, // src
+                      this->get_nnz()*sizeof(int), // size
+                      cudaMemcpyHostToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(this->mat_.val,     // dst
+                      cast_mat->mat_.val, // src
+                      this->get_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyHostToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+    
+  } else {
+    
+    LOG_INFO("Error unsupported GPU matrix type");
+    this->info();
+    src.info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixCOO<ValueType>::CopyToHostAsync(HostMatrix<ValueType> *dst) const {
+
+  HostMatrixCOO<ValueType> *cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == dst->get_mat_format());
+
+  // GPU to CPU copy
+  if ((cast_mat = dynamic_cast<HostMatrixCOO<ValueType>*> (dst)) != NULL) {
+
+    cast_mat->set_backend(this->local_backend_);   
+
+  if (dst->get_nnz() == 0)
+    cast_mat->AllocateCOO(this->get_nnz(), this->get_nrow(), this->get_ncol() );
+
+  if (this->get_nnz() > 0) {
+
+      assert(this->get_nnz()  == dst->get_nnz());
+      assert(this->get_nrow() == dst->get_nrow());
+      assert(this->get_ncol() == dst->get_ncol());
+      
+      cudaMemcpyAsync(cast_mat->mat_.row, // dst
+                      this->mat_.row,     // src
+                      this->get_nnz()*sizeof(int), // size           
+                      cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(cast_mat->mat_.col, // dst
+                      this->mat_.col,     // src
+                      this->get_nnz()*sizeof(int), // size
+                      cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(cast_mat->mat_.val, // dst
+                      this->mat_.val,     // src
+                      this->get_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyDeviceToHost);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+    
+  } else {
+    
+    LOG_INFO("Error unsupported GPU matrix type");
+    this->info();
+    dst->info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixCOO<ValueType>::CopyFromAsync(const BaseMatrix<ValueType> &src) {
+
+  const GPUAcceleratorMatrixCOO<ValueType> *gpu_cast_mat;
+  const HostMatrix<ValueType> *host_cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == src.get_mat_format());
+
+  // GPU to GPU copy
+  if ((gpu_cast_mat = dynamic_cast<const GPUAcceleratorMatrixCOO<ValueType>*> (&src)) != NULL) {
+    
+  if (this->get_nnz() == 0)
+    this->AllocateCOO(src.get_nnz(), src.get_nrow(), src.get_ncol() );
+
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
+
+    if (this->get_nnz() > 0) {
+
+      cudaMemcpy(this->mat_.row,         // dst
+                 gpu_cast_mat->mat_.row, // src
+                 (this->get_nnz())*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(this->mat_.col,         // dst
+                 gpu_cast_mat->mat_.col, // src
+                 this->get_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(this->mat_.val,         // dst
+                 gpu_cast_mat->mat_.val, // src
+                 this->get_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+
+  } else {
+
+    //CPU to GPU
+    if ((host_cast_mat = dynamic_cast<const HostMatrix<ValueType>*> (&src)) != NULL) {
+      
+      this->CopyFromHostAsync(*host_cast_mat);
+      
+    } else {
+      
+      LOG_INFO("Error unsupported GPU matrix type");
+      this->info();
+      src.info();
+      FATAL_ERROR(__FILE__, __LINE__);
+      
+    }
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixCOO<ValueType>::CopyToAsync(BaseMatrix<ValueType> *dst) const {
+
+  GPUAcceleratorMatrixCOO<ValueType> *gpu_cast_mat;
+  HostMatrix<ValueType> *host_cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == dst->get_mat_format());
+
+  // GPU to GPU copy
+  if ((gpu_cast_mat = dynamic_cast<GPUAcceleratorMatrixCOO<ValueType>*> (dst)) != NULL) {
+
+    gpu_cast_mat->set_backend(this->local_backend_);       
+
+  if (this->get_nnz() == 0)
+    gpu_cast_mat->AllocateCOO(dst->get_nnz(), dst->get_nrow(), dst->get_ncol() );
+
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
+
+    if (this->get_nnz() > 0) {
+
+      cudaMemcpy(gpu_cast_mat->mat_.row, // dst
+                 this->mat_.row,         // src
+                 (this->get_nnz())*sizeof(int), // size
+                 cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(gpu_cast_mat->mat_.col, // dst
+                 this->mat_.col,         // src
+                 this->get_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(gpu_cast_mat->mat_.val, // dst
+                 this->mat_.val,         // src
+                 this->get_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToHost);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+    
+  } else {
+
+    //GPU to CPU
+    if ((host_cast_mat = dynamic_cast<HostMatrix<ValueType>*> (dst)) != NULL) {
+      
+      this->CopyToHostAsync(host_cast_mat);
 
     } else {
       
@@ -516,9 +753,6 @@ void GPUAcceleratorMatrixCOO<ValueType>::Apply(const BaseVector<ValueType> &in, 
     //  LOG_INFO("WARP_SIZE =" << WARP_SIZE);
     //  LOG_INFO("WARP_SIZE =" << this->local_backend_.GPU_wrap);
 
-    cudaDeviceSynchronize();
-    CHECK_CUDA_ERROR(__FILE__, __LINE__);     
-    
     // TODO 
     // BLOCK_SIZE == 256 
     // WARP_SIZE == 32
@@ -612,9 +846,6 @@ void GPUAcceleratorMatrixCOO<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     allocate_gpu(active_warps, &temp_vals);
 
     
-    cudaDeviceSynchronize();
-    CHECK_CUDA_ERROR(__FILE__, __LINE__);     
-    
     // TODO 
     // BLOCK_SIZE == 256 
     // WARP_SIZE == 32
@@ -656,8 +887,8 @@ bool GPUAcceleratorMatrixCOO<ValueType>::Permute(const BaseVector<int> &permutat
   assert(&permutation != NULL);
 
   // symmetric permutation only
-  assert( (permutation.get_size() == this->get_nrow()) &&
-          (permutation.get_size() == this->get_ncol()) );
+  assert(permutation.get_size() == this->get_nrow());
+  assert(permutation.get_size() == this->get_ncol());
 
   if (this->get_nnz() > 0) {
 
@@ -675,8 +906,6 @@ bool GPUAcceleratorMatrixCOO<ValueType>::Permute(const BaseVector<int> &permutat
 
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(s / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     kernel_coo_permute<ValueType, int> <<<GridSize, BlockSize>>> (nnz,
                                                                   src.mat_.row, src.mat_.col,
@@ -697,8 +926,8 @@ bool GPUAcceleratorMatrixCOO<ValueType>::PermuteBackward(const BaseVector<int> &
   assert(&permutation != NULL);
 
   // symmetric permutation only
-  assert( (permutation.get_size() == this->get_nrow()) &&
-          (permutation.get_size() == this->get_ncol()) );
+  assert(permutation.get_size() == this->get_nrow());
+  assert(permutation.get_size() == this->get_ncol());
 
   if (this->get_nnz() > 0) {
 
@@ -711,8 +940,6 @@ bool GPUAcceleratorMatrixCOO<ValueType>::PermuteBackward(const BaseVector<int> &
     int n = this->get_nrow();
     dim3 BlockSize1(this->local_backend_.GPU_block_size);
     dim3 GridSize1(n / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     kernel_reverse_index<int> <<<GridSize1, BlockSize1>>> (n,
                                                            cast_perm->vec_,
@@ -730,8 +957,6 @@ bool GPUAcceleratorMatrixCOO<ValueType>::PermuteBackward(const BaseVector<int> &
 
     dim3 BlockSize2(this->local_backend_.GPU_block_size);
     dim3 GridSize2(s / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     kernel_coo_permute<ValueType, int> <<<GridSize2, BlockSize2>>> (nnz,
                                                                     src.mat_.row, src.mat_.col,

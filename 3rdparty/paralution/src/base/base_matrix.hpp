@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_BASE_MATRIX_HPP_
 #define PARALUTION_BASE_MATRIX_HPP_
@@ -118,17 +123,19 @@ public:
   virtual ~BaseMatrix();
 
   /// Return the number of rows in the matrix
-  inline int get_nrow(void) const { return this->nrow_; }
+  int get_nrow(void) const;
   /// Return the number of columns in the matrix
-  inline int get_ncol(void) const { return this->ncol_; }
+  int get_ncol(void) const;
   /// Return the non-zeros of the matrix
-  inline int get_nnz(void) const { return this->nnz_; }
+  int get_nnz(void) const;
   /// Shows simple info about the object
   virtual void info(void) const = 0;
   /// Return the matrix format id (see matrix_formats.hpp)
   virtual unsigned int get_mat_format(void) const = 0 ;
   /// Copy the backend descriptor information
   virtual void set_backend(const Paralution_Backend_Descriptor local_backend);
+
+  virtual bool Check(void) const;
 
   /// Allocate CSR Matrix
   virtual void AllocateCSR(const int nnz, const int nrow, const int ncol);
@@ -169,6 +176,21 @@ public:
   /// Set all the values to zero
   virtual void Zeros(void);
 
+  /// Assembling
+  virtual void Assemble(const int *i, const int *j, const ValueType *v,
+                        const int size, const int n, const int m,
+                        int **pp_assembly_rank,
+                        int **pp_assembly_irank,
+                        int **pp_assembly_loop_start,
+                        int **pp_assembly_loop_end,
+                        int &nThreads);
+  virtual void AssembleUpdate(const ValueType *v,
+                              const int *assembly_rank,
+                              const int *assembly_irank,
+                              const int *assembly_loop_start,
+                              const int *assembly_loop_end,
+                              const int nThreads);
+
   /// Scale all values
   virtual bool Scale(const ValueType alpha);
   /// Scale the diagonal entries of the matrix with alpha
@@ -208,6 +230,10 @@ public:
   /// Perform (backward) permutation of the matrix
   virtual bool PermuteBackward(const BaseVector<int> &permutation);
 
+  /// Create permutation vector for CMK reordering of the matrix
+  virtual bool CMK(BaseVector<int> *permutation) const;
+  /// Create permutation vector for reverse CMK reordering of the matrix
+  virtual bool RCMK(BaseVector<int> *permutation) const;
 
   /// Perform multi-coloring decomposition of the matrix; Returns number of 
   /// colors, the corresponding sizes (the array is allocated in the function) 
@@ -232,8 +258,15 @@ public:
 
   /// Copy from another matrix
   virtual void CopyFrom(const BaseMatrix<ValueType> &mat) = 0;
+
   /// Copy to another matrix
   virtual void CopyTo(BaseMatrix<ValueType> *mat) const = 0;
+
+  /// Async copy from another matrix
+  virtual void CopyFromAsync(const BaseMatrix<ValueType> &mat);
+
+  /// Copy to another matrix
+  virtual void CopyToAsync(BaseMatrix<ValueType> *mat) const;
 
   /// Copy from CSR array (the matrix has to be allocated)
   virtual void CopyFromCSR(const int *row_offsets, const int *col, const ValueType *val);
@@ -293,7 +326,7 @@ public:
   virtual void ILUpFactorizeNumeric(const int p, const BaseMatrix<ValueType> &mat);
 
   /// Perform IC(0) factorization
-  virtual bool IC0Factorize(void);
+  virtual bool ICFactorize(BaseVector<ValueType> *inv_diag);
 
   /// Analyse the structure (level-scheduling)
   virtual void LUAnalyse(void);
@@ -309,7 +342,9 @@ public:
   virtual void LLAnalyseClear(void);
   /// Solve LL^T out = in; if level-scheduling algorithm is provided then the graph 
   // traversing is performed in parallel
-  virtual bool LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
+  virtual bool LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+  virtual bool LLSolve(const BaseVector<ValueType> &in, const BaseVector<ValueType> &inv_diag,
+                       BaseVector<ValueType> *out) const;
 
   /// Analyse the structure (level-scheduling) L-part
   /// diag_unit == true the diag is 1;
@@ -319,7 +354,7 @@ public:
   virtual void LAnalyseClear(void);
   /// Solve L out = in; if level-scheduling algorithm is provided then the 
   /// graph traversing is performed in parallel
-  virtual bool LSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
+  virtual bool LSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
 
   /// Analyse the structure (level-scheduling) U-part;
   /// diag_unit == true the diag is 1;
@@ -419,8 +454,15 @@ public:
 
   /// Copy (accelerator matrix) from host matrix
   virtual void CopyFromHost(const HostMatrix<ValueType> &src) = 0;
+
+  /// Async copy (accelerator matrix) from host matrix
+  virtual void CopyFromHostAsync(const HostMatrix<ValueType> &src);
+
   /// Copy (accelerator matrix) to host matrix
   virtual void CopyToHost(HostMatrix<ValueType> *dst) const = 0;
+
+  /// Async opy (accelerator matrix) to host matrix
+  virtual void CopyToHostAsync(HostMatrix<ValueType> *dst) const;
 
 };
 

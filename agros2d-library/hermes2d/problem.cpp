@@ -130,7 +130,7 @@ int Problem::numAdaptiveFields() const
 {
     int num = 0;
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+        if (fieldInfo->adaptivityType() != AdaptivityMethod_None)
             num++;
     return num;
 }
@@ -341,7 +341,7 @@ void Problem::createStructure()
     foreach (Block* block, m_blocks)
     {
         // todo: is released?
-        block->setWeakForm(new WeakFormAgros<double>(block));
+        block->setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double>(new WeakFormAgros<double>(block)));
         block->weakForm()->registerForms();
     }
 }
@@ -808,7 +808,7 @@ void Problem::solveAction()
             else if(!skipThisTimeStep(block))
             {
                 stepMessage(block);
-                if (block->adaptivityType() == AdaptivityType_None)
+                if (block->adaptivityType() == AdaptivityMethod_None)
                 {
                     // no adaptivity
                     solvers[block]->solveSimple(actualTimeStep(), 0);
@@ -952,7 +952,7 @@ void Problem::stepMessage(Block* block)
 
 void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGenerator> meshGenerator)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
+    std::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
     QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> meshes;
 
     if (!meshGenerator)

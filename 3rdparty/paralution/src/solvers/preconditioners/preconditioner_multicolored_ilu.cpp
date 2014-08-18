@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "preconditioner_multicolored_ilu.hpp"
 #include "preconditioner_multicolored.hpp"
@@ -41,15 +46,24 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 MultiColoredILU<OperatorType, VectorType, ValueType>::MultiColoredILU() {
 
+  LOG_DEBUG(this, "MultiColoredILU::MultiColoredILU()",
+            "default constructor");
+
   this->q_ = 1 ;
   this->p_ = 0 ;
   this->level_ = true;
   this->nnz_ = 0 ;
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 MultiColoredILU<OperatorType, VectorType, ValueType>::~MultiColoredILU() {
+
+  LOG_DEBUG(this, "MultiColoredILU::~MultiColoredILU()",
+            "destructor");
+
   this->Clear();
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -64,7 +78,11 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::Print(void) const {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void MultiColoredILU<OperatorType, VectorType, ValueType>::Init(const int p) {
+void MultiColoredILU<OperatorType, VectorType, ValueType>::Set(const int p) {
+
+  LOG_DEBUG(this, "MultiColoredILU::Set()",
+            p);
+
 
   assert(this->build_ == false);
   assert(p >= 0);
@@ -75,7 +93,12 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::Init(const int p) {
 } 
 
 template <class OperatorType, class VectorType, typename ValueType>
-void MultiColoredILU<OperatorType, VectorType, ValueType>::Init(const int p, const int q, const bool level) {
+void MultiColoredILU<OperatorType, VectorType, ValueType>::Set(const int p, const int q, const bool level) {
+
+  LOG_DEBUG(this, "MultiColoredILU::Set()",
+            "p=" << p <<
+            " q=" << q <<
+            " level=" << level);
 
   assert(this->build_ == false);
   assert(p >= 0);
@@ -89,7 +112,10 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::Init(const int p, con
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::Build_Analyser_(void) {
-  
+
+  LOG_DEBUG(this, "MultiColoredILU::Build_Analyser_()",
+            this->build_);  
+
   assert(this->op_ != NULL);
 
 
@@ -116,6 +142,10 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::Build_Analyser_(void)
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::PostAnalyse_(void) {
 
+  LOG_DEBUG(this, "MultiColoredILU::PostAnalyse_()",
+            this->build_);
+
+
   assert(this->build_ == true);
   this->preconditioner_->LUAnalyse();
 
@@ -124,6 +154,10 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::PostAnalyse_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::Factorize_(void) {
+
+  LOG_DEBUG(this, "MultiColoredILU::Factorize_()",
+            this->build_);
+
 
   if (this->p_ == 0) {
     this->preconditioner_->ILU0Factorize();
@@ -137,6 +171,10 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::Factorize_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) {
+
+  LOG_DEBUG(this, "MultiColoredILU::ReBuildNumeric()",
+            this->build_);
+
 
   if (this->decomp_ == false) {
 
@@ -195,6 +233,9 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::SolveL_(void) {
 
+  LOG_DEBUG(this, "MultiColoredILU::SolveL_()",
+            "");
+
   assert(this->build_ == true);
 
   for (int i=0; i<this->num_blocks_; ++i){
@@ -213,6 +254,9 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::SolveD_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::SolveR_(void) {
+
+  LOG_DEBUG(this, "MultiColoredILU::SolveR_()",
+            "");
 
   assert(this->build_ == true);
   
@@ -234,6 +278,9 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::SolveR_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredILU<OperatorType, VectorType, ValueType>::Solve_(const VectorType &rhs,
                                                               VectorType *x) {
+
+  LOG_DEBUG(this, "MultiColoredILU::Solve_()",
+            "");
 
     x->CopyFromPermute(rhs,
                        this->permutation_);   

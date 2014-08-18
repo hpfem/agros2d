@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "ocl_matrix_csr.hpp"
 #include "ocl_matrix_coo.hpp"
@@ -46,6 +51,7 @@ template <typename ValueType>
 OCLAcceleratorMatrixDIA<ValueType>::OCLAcceleratorMatrixDIA() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -53,6 +59,9 @@ OCLAcceleratorMatrixDIA<ValueType>::OCLAcceleratorMatrixDIA() {
 
 template <typename ValueType>
 OCLAcceleratorMatrixDIA<ValueType>::OCLAcceleratorMatrixDIA(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixDIA::OCLAcceleratorMatrixDIA()",
+            "constructor with local_backend");
 
   this->mat_.val      = NULL;
   this->mat_.offset   = NULL;
@@ -64,6 +73,9 @@ OCLAcceleratorMatrixDIA<ValueType>::OCLAcceleratorMatrixDIA(const Paralution_Bac
 
 template <typename ValueType>
 OCLAcceleratorMatrixDIA<ValueType>::~OCLAcceleratorMatrixDIA() {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixDIA::~OCLAcceleratorMatrixDIA()",
+            "destructor");
 
   this->Clear();
 
@@ -426,9 +438,11 @@ void OCLAcceleratorMatrixDIA<ValueType>::Apply(const BaseVector<ValueType> &in, 
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
     localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
-    localWorkSize[0] /= 0.5;
     globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
+	  // Nathan Bell and Michael Garland
+	  // Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+    // NVR-2008-004 / NVIDIA Technical Report
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
                                   CL_KERNEL_DIA_SPMV,
                                   1,
@@ -489,9 +503,11 @@ void OCLAcceleratorMatrixDIA<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
     localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
-    localWorkSize[0] /= 0.5;
     globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
+	  // Nathan Bell and Michael Garland
+	  // Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+    // NVR-2008-004 / NVIDIA Technical Report
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
                                   CL_KERNEL_DIA_ADD_SPMV,
                                   1,

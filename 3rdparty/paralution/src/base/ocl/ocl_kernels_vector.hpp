@@ -1,30 +1,35 @@
+// *************************************************************************
+//
+//    PARALUTION   www.paralution.com
+//
+//    Copyright (C) 2012-2014 Dimitar Lukarski
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_OCL_KERNELS_VECTOR_HPP_
 #define PARALUTION_OCL_KERNELS_VECTOR_HPP_
 
 namespace paralution {
 
 const char *ocl_kernels_vector =
-	"// *************************************************************************\n"
-	"//\n"
-	"//    PARALUTION   www.paralution.com\n"
-	"//\n"
-	"//    Copyright (C) 2012-2013 Dimitar Lukarski\n"
-	"//\n"
-	"//    This program is free software: you can redistribute it and/or modify\n"
-	"//    it under the terms of the GNU General Public License as published by\n"
-	"//    the Free Software Foundation, either version 3 of the License, or\n"
-	"//    (at your option) any later version.\n"
-	"//\n"
-	"//    This program is distributed in the hope that it will be useful,\n"
-	"//    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-	"//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-	"//    GNU General Public License for more details.\n"
-	"//\n"
-	"//    You should have received a copy of the GNU General Public License\n"
-	"//    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
-	"//\n"
-	"// *************************************************************************\n"
-	"\n"
 	"__kernel void kernel_scale(const int size, const ValueType alpha, __global ValueType *x) {\n"
 	"\n"
 	"  int gid = get_global_id(0);\n"
@@ -33,7 +38,6 @@ const char *ocl_kernels_vector =
 	"    x[gid] *= alpha;\n"
 	"\n"
 	"}\n"
-	"\n"
 	"\n"
 	"__kernel void kernel_scaleadd(const int size, const ValueType alpha,\n"
 	"                              __global const ValueType *x, __global ValueType *out) {\n"
@@ -45,7 +49,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_scaleaddscale(const int size, const ValueType alpha, const ValueType beta, \n"
 	"                                   __global const ValueType *x, __global ValueType *out) {\n"
 	"\n"
@@ -56,6 +59,16 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
+	"__kernel void kernel_scaleaddscale_offset(const int size, const int src_offset, const int dst_offset, \n"
+	"                                          const ValueType alpha, const ValueType beta, \n"
+	"                                          __global const ValueType *x, __global ValueType *out) {\n"
+	"\n"
+	"  int gid = get_global_id(0);\n"
+	"\n"
+	"  if (gid < size)\n"
+	"    out[gid+dst_offset] = alpha * out[gid+dst_offset] + beta * x[gid+src_offset];\n"
+	"\n"
+	"}\n"
 	"\n"
 	"__kernel void kernel_scaleadd2(const int size, const ValueType alpha, const ValueType beta, const ValueType gamma,\n"
 	"                               __global const ValueType *x, __global const ValueType *y, __global ValueType *out) {\n"
@@ -67,7 +80,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_pointwisemult(const int size, __global const ValueType *x, __global ValueType *out) {\n"
 	"\n"
 	"  int gid = get_global_id(0);\n"
@@ -76,7 +88,6 @@ const char *ocl_kernels_vector =
 	"    out[gid] = out[gid] * x[gid];\n"
 	"\n"
 	"}\n"
-	"\n"
 	"\n"
 	"__kernel void kernel_pointwisemult2(const int size, __global const ValueType *x, __global const ValueType *y,\n"
 	"                                    __global ValueType *out) {\n"
@@ -88,7 +99,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_copy_offset_from(const int size, const int src_offset, const int dst_offset,\n"
 	"                                      __global const ValueType *in, __global ValueType *out) {\n"
 	"\n"
@@ -98,7 +108,6 @@ const char *ocl_kernels_vector =
 	"    out[gid+dst_offset] = in[gid+src_offset];\n"
 	"\n"
 	"}\n"
-	"\n"
 	"\n"
 	"__kernel void kernel_permute(const int size, __global const int *permute,\n"
 	"                             __global const ValueType *in, __global ValueType *out) {\n"
@@ -110,7 +119,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_permute_backward(const int size, __global const int *permute,\n"
 	"                                      __global const ValueType *in, __global ValueType *out) {\n"
 	"\n"
@@ -121,7 +129,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_dot(const       int  size,\n"
 	"                         __global const ValueType *x, __global const ValueType *y,\n"
 	"                         __global       ValueType *out, __local        ValueType *sdata,\n"
@@ -131,9 +138,7 @@ const char *ocl_kernels_vector =
 	"\n"
 	"    sdata[tid] = 0;\n"
 	"\n"
-	"    // get group\n"
 	"    int group_id = GROUP_SIZE * get_group_id(0);\n"
-	"    // get global id\n"
 	"    int gid = group_id + tid;\n"
 	"\n"
 	"    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {\n"
@@ -160,7 +165,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_axpy(const int size, const ValueType alpha,\n"
 	"                          __global const ValueType *x, __global ValueType *out) {\n"
 	"\n"
@@ -171,7 +175,6 @@ const char *ocl_kernels_vector =
 	"  }\n"
 	"\n"
 	"}\n"
-	"\n"
 	"\n"
 	"__kernel void kernel_reduce(         const       int  size,\n"
 	"                            __global const ValueType *data,\n"
@@ -184,7 +187,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"    sdata[tid] = 0;\n"
 	"\n"
-	"    // get global id\n"
 	"    int gid = GROUP_SIZE * get_group_id(0) + tid;\n"
 	"\n"
 	"    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {\n"
@@ -223,7 +225,6 @@ const char *ocl_kernels_vector =
 	"\n"
 	"    sdata[tid] = (ValueType)(0);\n"
 	"\n"
-	"    // get global id\n"
 	"    int gid = GROUP_SIZE * get_group_id(0) + tid;\n"
 	"\n"
 	"    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {\n"
@@ -265,7 +266,6 @@ const char *ocl_kernels_vector =
 	"    sdata[tid] = (ValueType)(0);\n"
 	"    idata[tid] = 0;\n"
 	"\n"
-	"    // get global id\n"
 	"    int gid = GROUP_SIZE * get_group_id(0) + tid;\n"
 	"\n"
 	"    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {\n"
@@ -303,7 +303,8 @@ const char *ocl_kernels_vector =
 	"\n"
 	"}\n"
 	"\n"
-	"\n";
+	"\n"
+;
 }
 
 #endif // PARALUTION_OCL_KERNELS_VECTOR_HPP_

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_PRECONDITIONER_BLOCKPRECOND_HPP_
 #define PARALUTION_PRECONDITIONER_BLOCKPRECOND_HPP_
@@ -41,9 +46,9 @@ public:
   virtual void Print(void) const;  
   virtual void Clear(void);  
 
-  virtual void Init(const int n,
-                    const int *size,
-                    Solver<OperatorType, VectorType, ValueType> **D_solver);
+  virtual void Set(const int n,
+                   const int *size,
+                   Solver<OperatorType, VectorType, ValueType> **D_solver);
 
   virtual void SetDiagonalSolver(void);
   virtual void SetLSolver(void);

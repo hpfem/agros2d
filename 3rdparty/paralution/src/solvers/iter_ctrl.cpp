@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,8 +19,14 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "iter_ctrl.hpp"
 #include "../utils/log.hpp"
+#include "../utils/math_functions.hpp"
 
 #include <math.h>
 #include <cstdlib>
@@ -158,7 +164,7 @@ bool IterationControl<ValueType>::CheckResidual(const ValueType res) {
   if (this->rec_ == true) 
     this->residual_history_.push_back(res);
   
-  if (( res == std::numeric_limits<ValueType>::infinity()) || // infinity
+  if (( paralution_abs(res) == std::numeric_limits<ValueType>::infinity()) || // infinity
       ( res != res ) ) { // not a number (NaN)
 
     LOG_INFO("Resdual = " << res << " !!!");

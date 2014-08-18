@@ -30,7 +30,7 @@
 #include "hermes2d/plugin_interface.h"
 
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                           Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
+                                           std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                            const QString &variable,
                                            PhysicFieldVariableComp physicFieldVariableComp)
     : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType),
@@ -43,9 +43,9 @@
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
     {{/SPECIAL_FUNCTION_SOURCE}}
 
-    value = new double*[this->num];
-    dudx = new double*[this->num];
-    dudy = new double*[this->num];
+    value = new double*[this->solutions.size()];
+    dudx = new double*[this->solutions.size()];
+    dudy = new double*[this->solutions.size()];
 
     m_coordinateType = Agros2D::problem()->config()->coordinateType();
     m_labels = Agros2D::scene()->labels;
@@ -68,20 +68,20 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     Hermes::Hermes2D::Quad2D* quad = this->quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());
     
-    for (int k = 0; k < this->num; k++)
+    for (int k = 0; k < this->solutions.size(); k++)
     {
-        this->sln[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_DEFAULT);
+        this->solutions[k]->set_quad_order(order, Hermes::Hermes2D::H2D_FN_DEFAULT);
         /// \todo Find out why Qt & OpenGL renders the outputs color-less if dudx, dudy, valus are 'const double*'.
-        dudx[k] = const_cast<double*>(this->sln[k]->get_dx_values());
-        dudy[k] = const_cast<double*>(this->sln[k]->get_dy_values());
-        value[k] = const_cast<double*>(this->sln[k]->get_fn_values());
+        dudx[k] = const_cast<double*>(this->solutions[k]->get_dx_values());
+        dudy[k] = const_cast<double*>(this->solutions[k]->get_dy_values());
+        value[k] = const_cast<double*>(this->solutions[k]->get_fn_values());
     }
 
     this->update_refmap();
 
-    double *x = this->refmap->get_phys_x(order);
-    double *y = this->refmap->get_phys_y(order);
-    Hermes::Hermes2D::Element *e = this->refmap->get_active_element();
+    double *x = this->refmap.get_phys_x(order);
+    double *y = this->refmap.get_phys_y(order);
+    Hermes::Hermes2D::Element *e = this->refmap.get_active_element();
 
     // set material
     SceneMaterial *material = m_labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
@@ -103,10 +103,10 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 
 {{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone() const
 {
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
 
-    for (int i = 0; i < this->num; i++)
-        slns.push_back(this->sln[i]->clone());
+    for (int i = 0; i < this->solutions.size(); i++)
+        slns.push_back(this->solutions[i]->clone());
 
     {{CLASS}}ViewScalarFilter *filter = new {{CLASS}}ViewScalarFilter(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType, slns, m_variable, m_physicFieldVariableComp);
 

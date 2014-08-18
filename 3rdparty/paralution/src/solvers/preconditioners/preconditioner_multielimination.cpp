@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "preconditioner_multielimination.hpp"
 #include "preconditioner.hpp"
@@ -40,6 +45,10 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 MultiElimination<OperatorType, VectorType, ValueType>::MultiElimination() {
 
+  LOG_DEBUG(this, "MultiElimination::MultiElimination()",
+            "default constructor");
+
+
   this->diag_solver_init_ = false;
   this->level_ = -1;
   this->drop_off_ = ValueType(0.0);
@@ -53,10 +62,15 @@ MultiElimination<OperatorType, VectorType, ValueType>::MultiElimination() {
 
   this->op_mat_format_ = false;
   this->precond_mat_format_ = CSR;
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 MultiElimination<OperatorType, VectorType, ValueType>::~MultiElimination() {
+
+  LOG_DEBUG(this, "MultiElimination::~MultiElimination()",
+            "destructor");
+
 
   this->Clear();
 
@@ -64,6 +78,9 @@ MultiElimination<OperatorType, VectorType, ValueType>::~MultiElimination() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiElimination<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "MultiElimination::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -140,8 +157,12 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Print(void) const {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void MultiElimination<OperatorType, VectorType, ValueType>::Init(Solver<OperatorType, VectorType, ValueType> &AA_Solver,
-                                                                 const int level, const ValueType drop_off) {
+void MultiElimination<OperatorType, VectorType, ValueType>::Set(Solver<OperatorType, VectorType, ValueType> &AA_Solver,
+                                                                const int level, const ValueType drop_off) {
+
+  LOG_DEBUG(this, "MultiElimination::Set()",
+            "level=" << level <<
+            " drop_off=" << drop_off);
   
   assert(level >= 0);
 
@@ -154,6 +175,10 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Init(Solver<Operator
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiElimination<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(const unsigned int mat_format) {
 
+  LOG_DEBUG(this, "MultiElimination::SetPrecondMatrixFormat()",
+            mat_format);
+
+
   this->op_mat_format_ = true;
   this->precond_mat_format_ = mat_format;
 
@@ -162,6 +187,11 @@ void MultiElimination<OperatorType, VectorType, ValueType>::SetPrecondMatrixForm
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiElimination<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "MultiElimination::Build()",
+            this->build_ <<
+            " #*# begin");
+
 
   assert(this->build_ == false);
   this->build_ = true ;
@@ -247,9 +277,9 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Build(void) {
 
     this->AA_me_ = new MultiElimination<OperatorType, VectorType, ValueType>;
     this->AA_me_->SetOperator(this->AA_);
-    this->AA_me_->Init(*this->AA_solver_,
-                       this->level_-1,
-                       this->drop_off_);
+    this->AA_me_->Set(*this->AA_solver_,
+                      this->level_-1,
+                      this->drop_off_);
 
     this->AA_me_->Build();
 
@@ -309,16 +339,27 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Build(void) {
     //    AA_.ConvertTo(this->precond_mat_format_);
   }
 
+  LOG_DEBUG(this, "MultiElimination::Build()",
+            this->build_ <<
+            " #*# end");
+
+
 }
 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiElimination<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                                   VectorType *x) {
+
+  LOG_DEBUG(this, "MultiElimination::Solve()",
+            " #*# begin");
+
   
   assert(this->build_ == true);
 
-  //  LOG_INFO("Level = " << this->get_level() << " with size=" << this->get_size_diag_block() );
+
+  LOG_DEBUG(this, "MultiElimination::Solve()",
+            "level = " << this->get_level() << " with size=" << this->get_size_diag_block() );
 
 
   this->rhs_.CopyFromPermute(rhs,
@@ -340,8 +381,8 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Solve(const VectorTy
 
 
   // Solve R
-  this->AA_solver_->Solve(this->rhs_2_,
-                          &this->x_2_);
+  this->AA_solver_->SolveZeroSol(this->rhs_2_,
+                                 &this->x_2_);
 
 
   this->F_.ApplyAdd(this->x_2_, ValueType(-1.0), &this->x_1_);
@@ -363,10 +404,17 @@ void MultiElimination<OperatorType, VectorType, ValueType>::Solve(const VectorTy
   x->CopyFromPermuteBackward(this->x_,
                              this->permutation_);
 
+  LOG_DEBUG(this, "MultiElimination::Solve()",
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiElimination<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "MultiElimination::MoveToHostLocalData_()",
+            this->build_);  
 
   this->A_.MoveToHost();
   this->D_.MoveToHost();
@@ -398,6 +446,9 @@ void MultiElimination<OperatorType, VectorType, ValueType>::MoveToHostLocalData_
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiElimination<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "MultiElimination::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   this->A_.MoveToAccelerator();
   this->D_.MoveToAccelerator();

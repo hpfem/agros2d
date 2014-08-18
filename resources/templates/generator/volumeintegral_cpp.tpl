@@ -42,14 +42,14 @@ public:
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
         {{#SPECIAL_FUNCTION_SOURCE}}
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomVol<double> *e, double* result)
     {
         SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
         SceneMaterial *material = label->marker(m_fieldInfo);
@@ -116,14 +116,14 @@ public:
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
         {{#SPECIAL_FUNCTION_SOURCE}}
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomVol<double> *e, double* result)
     {
         SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
         SceneMaterial *material = label->marker(m_fieldInfo);
@@ -207,7 +207,7 @@ void {{CLASS}}VolumeIntegral::calculate()
             Module::updateTimeFunctions(timeLevels[m_timeStep]);
         }
 
-        Hermes::vector<std::string> markers;
+        std::vector<std::string> markers;
         for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
         {
             SceneLabel *label = Agros2D::scene()->labels->at(i);
@@ -230,7 +230,7 @@ void {{CLASS}}VolumeIntegral::calculate()
 
         if ({{INTEGRAL_COUNT_EGGSHELL}} > 0)
         {
-            Hermes::vector<std::string> markersInverted;
+            std::vector<std::string> markersInverted;
             for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
             {
                 SceneLabel *label = Agros2D::scene()->labels->at(i);
@@ -245,7 +245,7 @@ void {{CLASS}}VolumeIntegral::calculate()
                   return;
                 Hermes::Hermes2D::MeshFunctionSharedPtr<double> eggShell(new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
 
-                Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
+                std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
                 for (int i = 0; i < ma.solutions().size(); i++)
                     slns.push_back(ma.solutions().at(i));
                 slns.push_back(eggShell);

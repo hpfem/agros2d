@@ -47,13 +47,21 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 DPCG<OperatorType, VectorType, ValueType>::DPCG() {
 
+  LOG_DEBUG(this, "DPCG::DPCG()",
+            "default constructor");
+
   this->novecni_ = 2; 
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 DPCG<OperatorType, VectorType, ValueType>::~DPCG() {
+
+  LOG_DEBUG(this, "DPCG::~DPCG()",
+            "destructor");
+
   this->Clear();
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -108,6 +116,9 @@ void DPCG<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::SetNVectors(const int novecni) {
 
+  LOG_DEBUG(this, "DPCG::SetNVectors()",
+            novecni);
+
   assert(novecni > 0);
   this->novecni_ = novecni;
 
@@ -115,6 +126,9 @@ void DPCG<OperatorType, VectorType, ValueType>::SetNVectors(const int novecni) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::MakeZ_COO(void) {
+
+  LOG_DEBUG(this, "DPCG::MakeZ_COO()",
+            "");
 
   int ncol = novecni_*novecni_*novecni_ - 1; 
   int nrow = this->op_->get_nrow();
@@ -158,6 +172,9 @@ void DPCG<OperatorType, VectorType, ValueType>::MakeZ_COO(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::MakeZ_CSR(void) {
+
+  LOG_DEBUG(this, "DPCG::MakeZ_CSR()",
+            "");
 
   int ncol = novecni_*novecni_*novecni_ - 1; 
   int nrow = this->op_->get_nrow();
@@ -209,6 +226,11 @@ void DPCG<OperatorType, VectorType, ValueType>::MakeZ_CSR(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::Build(void) {
+  
+  LOG_DEBUG(this, "DPCG::Build()",
+            this->build_ <<
+            " #*# begin");
+
 
   if (this->build_ == true)
     this->Clear();
@@ -293,10 +315,17 @@ void DPCG<OperatorType, VectorType, ValueType>::Build(void) {
   // E_ goes back to the original backend
   this->E_.CloneBackend(*this->op_);
 
+  LOG_DEBUG(this, "DPCG::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "DPCG::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -332,6 +361,9 @@ void DPCG<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "DPCG::MoveToHostLocalData_()",
+            this->build_);
+
   if (this->build_ == true) {
 
     this->r_.MoveToHost();
@@ -361,6 +393,10 @@ void DPCG<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "DPCG::MoveToAcceleratorLocalData__()",
+            this->build_);
+
 
   if (this->build_ == true) {
 
@@ -393,6 +429,9 @@ void DPCG<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void
 template <class OperatorType, class VectorType, typename ValueType>
 void DPCG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                               VectorType *x) {
+
+  LOG_DEBUG(this, "DPCG::SolveNonPrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -563,6 +602,9 @@ void DPCG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorTyp
   x->AddScale(*Ptx, ValueType(-1.0));
   x->AddScale(*Qb, ValueType(1.0));
 
+  LOG_DEBUG(this, "DPCG::SolveNonPrecond_()",
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -574,6 +616,8 @@ void DPCG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &
   assert(this->op_  != NULL);
   assert(this->precond_ != NULL);
   assert(this->build_ == true);
+
+  FATAL_ERROR(__FILE__, __LINE__);
 
 }
 

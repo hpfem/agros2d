@@ -481,9 +481,9 @@ void WeakFormAgros<Scalar>::registerForms()
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const
+std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const
 {
-    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > result;
+    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > result;
 
     XMLModule::field* module = fieldInfo->plugin()->module();
     ProblemID problemId;
@@ -589,9 +589,9 @@ Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<S
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const
+std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const
 {
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
 
     assert(m_bdf2Table);
 
@@ -616,9 +616,9 @@ Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<S
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
+std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
 {
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
 
     FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Finer);
 
@@ -637,8 +637,8 @@ void WeakFormAgros<Scalar>::updateExtField()
         m_positionInfos[i] = PositionInfo();
 
     // register two types of external functions. Quantities and special functions of all fields go to externalUSlns
-    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
-    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > fieldUExt;
+    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
+    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > fieldUExt;
 
     // first push external functions related to source fields (source fields weakly coupled to some of the field in the block)
     foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
@@ -673,8 +673,8 @@ void WeakFormAgros<Scalar>::updateExtField()
     // register second type of external functions. Weak coupling sources and previous time solutions go to externalSlns
     // the numbering, however, have to be done together, since in ext field in forms, no difference is made
     // by Hermes convention, USlns go first, than go Slns
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > fieldExt;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > fieldExt;
 
     // push external solutions for previous time levels
     // for each field, we add all field components of previous time level, than all components of time level -2, than all
@@ -1125,13 +1125,13 @@ AGROS_LIBRARY_API void Module::updateTimeFunctions(double time)
                         boundary->evaluate(variable.id(), time);
 }
 
-Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
+std::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
 {
     // save locale
     // char *plocale = setlocale (LC_NUMERIC, "");
     // setlocale (LC_NUMERIC, "C");
 
-    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
+    std::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
     for(int i = 0; i < numMeshes; i++)
     {
@@ -1157,9 +1157,9 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(cons
     return meshes;
 }
 
-Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileName)
+std::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileName)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
+    std::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
     for(int i = 0; i < numMeshes; i++)
     {
@@ -1186,7 +1186,7 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(con
     return meshes;
 }
 
-void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
+void Module::writeMeshToFileXML(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
     // save locale
     // char *plocale = setlocale (LC_NUMERIC, "");
@@ -1200,7 +1200,7 @@ void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<Hermes::
     // setlocale(LC_NUMERIC, plocale);
 }
 
-void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
+void Module::writeMeshToFileBSON(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
     Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);

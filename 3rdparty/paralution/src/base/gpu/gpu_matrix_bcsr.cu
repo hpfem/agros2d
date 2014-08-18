@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "gpu_matrix_csr.hpp"
 #include "gpu_matrix_coo.hpp"
@@ -50,12 +55,16 @@ template <typename ValueType>
 GPUAcceleratorMatrixBCSR<ValueType>::GPUAcceleratorMatrixBCSR() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 GPUAcceleratorMatrixBCSR<ValueType>::GPUAcceleratorMatrixBCSR(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixBCSR::GPUAcceleratorMatrixBCSR()",
+            "constructor with local_backend");
 
   this->set_backend(local_backend); 
 
@@ -68,6 +77,9 @@ GPUAcceleratorMatrixBCSR<ValueType>::GPUAcceleratorMatrixBCSR(const Paralution_B
 
 template <typename ValueType>
 GPUAcceleratorMatrixBCSR<ValueType>::~GPUAcceleratorMatrixBCSR() {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixBCSR::~GPUAcceleratorMatrixBCSR()",
+            "destructor");
 
   this->Clear();
 
@@ -126,9 +138,9 @@ void GPUAcceleratorMatrixBCSR<ValueType>::CopyFromHost(const HostMatrix<ValueTyp
   if (this->get_nnz() == 0)
     this->AllocateBCSR(src.get_nnz(), src.get_nrow(), src.get_ncol() );
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
     cast_mat->get_nnz();
 
@@ -161,9 +173,9 @@ void GPUAcceleratorMatrixBCSR<ValueType>::CopyToHost(HostMatrix<ValueType> *dst)
   if (dst->get_nnz() == 0)
     cast_mat->AllocateBCSR(this->get_nnz(), this->get_nrow(), this->get_ncol() );
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     FATAL_ERROR(__FILE__, __LINE__);    
    
@@ -194,9 +206,9 @@ void GPUAcceleratorMatrixBCSR<ValueType>::CopyFrom(const BaseMatrix<ValueType> &
   if (this->get_nnz() == 0)
     this->AllocateBCSR(src.get_nnz(), src.get_nrow(), src.get_ncol() );  
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
     gpu_cast_mat->get_nnz();
 
@@ -240,9 +252,9 @@ void GPUAcceleratorMatrixBCSR<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) con
   if (this->get_nnz() == 0)
     gpu_cast_mat->AllocateBCSR(dst->get_nnz(), dst->get_nrow(), dst->get_ncol() );
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     FATAL_ERROR(__FILE__, __LINE__);    
     

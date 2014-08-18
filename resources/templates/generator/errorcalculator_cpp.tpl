@@ -37,7 +37,7 @@ public:
     {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}}<Scalar>(const FieldInfo *fieldInfo, int i, int j)
         : Hermes::Hermes2D::NormFormVol<Scalar>(i, j), m_fieldInfo(fieldInfo) {}
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u, Hermes::Hermes2D::Func<Scalar> *v, Hermes::Hermes2D::Geom<double> *e) const
+    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u, Hermes::Hermes2D::Func<Scalar> *v, Hermes::Hermes2D::GeomVol<double> *e) const
     {
         SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
         SceneMaterial *material = label->marker(m_fieldInfo);

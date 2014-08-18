@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "bicgstab.hpp"
 #include "../iter_ctrl.hpp"
@@ -40,10 +45,17 @@ namespace paralution {
 
 template <class OperatorType, class VectorType, typename ValueType>
 BiCGStab<OperatorType, VectorType, ValueType>::BiCGStab() {
+
+  LOG_DEBUG(this, "BiCGStab::BiCGStab()",
+            "default constructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 BiCGStab<OperatorType, VectorType, ValueType>::~BiCGStab() {
+
+  LOG_DEBUG(this, "BiCGStab::~BiCGStab()",
+            "destructor");
 
   this->Clear();
 
@@ -101,6 +113,11 @@ void BiCGStab<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void BiCGStab<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "BiCGStab::Build()",
+            this->build_ <<
+            " #*# begin");
+
+
   if (this->build_ == true)
     this->Clear();
 
@@ -142,10 +159,18 @@ void BiCGStab<OperatorType, VectorType, ValueType>::Build(void) {
   this->t_.CloneBackend(*this->op_);
   this->t_.Allocate("t", this->op_->get_nrow());
 
+  LOG_DEBUG(this, "BiCGStab::Build()",
+            this->build_ <<
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void BiCGStab<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "BiCGStab::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -176,7 +201,10 @@ void BiCGStab<OperatorType, VectorType, ValueType>::Clear(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void BiCGStab<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
-  
+
+  LOG_DEBUG(this, "BiCGStab::MoveToHostLocalData_()",
+            this->build_);  
+
   if (this->build_ == true) {
 
     this->r_ .MoveToHost();
@@ -195,6 +223,9 @@ void BiCGStab<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void BiCGStab<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "BiCGStab::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -216,6 +247,9 @@ void BiCGStab<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(
 template <class OperatorType, class VectorType, typename ValueType>
 void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                                      VectorType *x) {
+
+  LOG_DEBUG(this, "BiCGStab::SolveNonPrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -285,8 +319,9 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vecto
   
   // r = r - omega*t
   r->AddScale(*t, ValueType(-1.0)*omega);      
+  ValueType res = this->Norm(*r);
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     rho_old   = rho;
 
@@ -332,8 +367,12 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vecto
     
     // r = r - omega*t
     r->AddScale(*t, ValueType(-1.0)*omega);      
+    res = this->Norm(*r);
 
   }
+
+  LOG_DEBUG(this, "BiCGStab::SolveNonPrecond_()",
+            " #*# end");
 
 
 }
@@ -341,6 +380,9 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vecto
 template <class OperatorType, class VectorType, typename ValueType>
 void BiCGStab<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                                   VectorType *x) {
+
+  LOG_DEBUG(this, "BiCGStab::SolvePrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -419,8 +461,9 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorTy
     
   // r = r - omega*t
   r->AddScale(*t, ValueType(-1.0)*omega);      
-  
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
+  ValueType res = this->Norm(*r);
+
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     rho_old   = rho;
 
@@ -472,8 +515,12 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorTy
   
     // r = r - omega*t
     r->AddScale(*t, ValueType(-1.0)*omega);      
+    res = this->Norm(*r);
 
   }
+
+  LOG_DEBUG(this, "BiCGStab::SolvePrecond_()",
+            " #*# end");
 
 }
 

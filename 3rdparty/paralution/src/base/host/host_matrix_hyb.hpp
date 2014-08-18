@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_HOST_MATRIX_HYB_HPP_
 #define PARALUTION_HOST_MATRIX_HYB_HPP_
 
@@ -30,7 +35,7 @@ namespace paralution {
 
 template <typename ValueType>
 class HostMatrixHYB : public HostMatrix<ValueType> {
-  
+
 public:
 
   HostMatrixHYB();
@@ -45,7 +50,7 @@ public:
   virtual unsigned int get_mat_format(void) const { return  HYB; }
 
   virtual void Clear(void);
-  virtual void AllocateHYB(const int ell_nnz, const int coo_nnz, const int ell_max_row, 
+  virtual void AllocateHYB(const int ell_nnz, const int coo_nnz, const int ell_max_row,
                            const int nrow, const int ncol);
 
   virtual bool ConvertFrom(const BaseMatrix<ValueType> &mat);
@@ -53,21 +58,21 @@ public:
   virtual void CopyFrom(const BaseMatrix<ValueType> &mat);
   virtual void CopyTo(BaseMatrix<ValueType> *mat) const;
 
-  virtual void Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
-  virtual void ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar, 
-                        BaseVector<ValueType> *out) const; 
-  
+  virtual void Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+  virtual void ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
+                        BaseVector<ValueType> *out) const;
+
 private:
-  
+
   MatrixHYB<ValueType, int> mat_;
   int ell_nnz_;
   int coo_nnz_;
 
-  friend class BaseVector<ValueType>;  
-  friend class HostVector<ValueType>;  
+  friend class BaseVector<ValueType>;
+  friend class HostVector<ValueType>;
   friend class HostMatrixCSR<ValueType>;
   friend class HostMatrixCOO<ValueType>;
-  friend class HostMatrixELL<ValueType>;  
+  friend class HostMatrixELL<ValueType>;
   friend class HostMatrixDENSE<ValueType>;
 
   friend class GPUAcceleratorMatrixHYB<ValueType>;

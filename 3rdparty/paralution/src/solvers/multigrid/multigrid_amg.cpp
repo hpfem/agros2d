@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "multigrid_amg.hpp"
 
@@ -48,6 +53,9 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 AMG<OperatorType, VectorType, ValueType>::AMG() {
 
+  LOG_DEBUG(this, "AMG::AMG()",
+            "default constructor");
+
   // TODO also assuming 1 dof per node
 
   // parameter for strong couplings in smoothed aggregation
@@ -76,6 +84,9 @@ AMG<OperatorType, VectorType, ValueType>::AMG() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 AMG<OperatorType, VectorType, ValueType>::~AMG() {
+
+  LOG_DEBUG(this, "AMG::AMG()",
+            "destructor");
 
   this->Clear();
 
@@ -140,6 +151,10 @@ void AMG<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetCoarsestLevel(const int coarseSize) {
 
+  LOG_DEBUG(this, "AMG::SetCoarsestLevel()",
+            coarseSize);
+
+
   assert(this->build_ == false);
   assert(this->hierarchy_ == false);
 
@@ -150,6 +165,9 @@ void AMG<OperatorType, VectorType, ValueType>::SetCoarsestLevel(const int coarse
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetManualSmoothers(const bool sm_manual) {
 
+  LOG_DEBUG(this, "AMG::SetManualSmoothers()",
+            sm_manual);
+
   assert(this->build_ == false);
 
   this->set_sm_ = sm_manual;
@@ -158,6 +176,9 @@ void AMG<OperatorType, VectorType, ValueType>::SetManualSmoothers(const bool sm_
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetManualSolver(const bool s_manual) {
+
+  LOG_DEBUG(this, "AMG::SetManualSolver()",
+            s_manual);
 
   assert(this->build_ == false);
 
@@ -168,6 +189,9 @@ void AMG<OperatorType, VectorType, ValueType>::SetManualSolver(const bool s_manu
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetDefaultSmootherFormat(const unsigned int op_format) {
 
+  LOG_DEBUG(this, "AMG::SetDefaultSmootherFormat()",
+            op_format);
+
   assert(this->build_ == false);
 
   this->sm_format_ = op_format;
@@ -176,6 +200,9 @@ void AMG<OperatorType, VectorType, ValueType>::SetDefaultSmootherFormat(const un
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetOperatorFormat(const unsigned int op_format) {
+
+  LOG_DEBUG(this, "AMG::SetOperatorFormat()",
+            op_format);
 
   this->op_format_ = op_format;
 
@@ -200,6 +227,9 @@ void AMG<OperatorType, VectorType, ValueType>::SetInterpolation(_interp interpTy
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetInterpRelax(const ValueType relax) {
 
+  LOG_DEBUG(this, "AMG::SetInterpRelax()",
+            relax);
+
   this->relax_ = relax;
 
 }
@@ -207,12 +237,19 @@ void AMG<OperatorType, VectorType, ValueType>::SetInterpRelax(const ValueType re
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetOverInterp(const ValueType overInterp) {
 
+  LOG_DEBUG(this, "AMG::SetOverInterp()",
+            overInterp);
+
   this->over_interp_ = overInterp;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "AMG::Build()",
+            this->build_ <<
+            " #*# begin");
 
   if (this->build_ == true)
     this->Clear();
@@ -222,6 +259,9 @@ void AMG<OperatorType, VectorType, ValueType>::Build(void) {
   this->BuildHierarchy();
 
   this->build_ = true;
+
+  LOG_DEBUG(this, "AMG::Build()",
+            "#*# allocate data");
 
   this->d_level_ = new VectorType*[this->levels_];
   this->r_level_ = new VectorType*[this->levels_];
@@ -283,6 +323,9 @@ void AMG<OperatorType, VectorType, ValueType>::Build(void) {
     }
   }
 
+  LOG_DEBUG(this, "AMG::Build()",
+            "#*# setup smoothers");
+
   // Setup and build smoothers
   if (this->set_sm_ == false) {
 
@@ -327,6 +370,9 @@ void AMG<OperatorType, VectorType, ValueType>::Build(void) {
     this->smoother_level_[i]->Build();
   }
 
+  LOG_DEBUG(this, "AMG::Build()",
+            "#*# setup coarse solver");
+
   // Setup and build coarse grid solver
   if (this->set_s_ == false) {
     
@@ -343,16 +389,26 @@ void AMG<OperatorType, VectorType, ValueType>::Build(void) {
   this->solver_coarse_->SetOperator(*this->op_level_[this->levels_-2]);
   this->solver_coarse_->Build();
 
+  LOG_DEBUG(this, "AMG::Build()",
+            "#*# convert operators");
+
   // Convert operator to op_format
   if (this->op_format_ != CSR)
     for (int i=0; i<this->levels_-1;++i)
       this->op_level_[i]->ConvertTo(this->op_format_);
+
+  LOG_DEBUG(this, "AMG::Build()",
+            this->build_ <<
+            " #*# end");
 
 }
 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "AMG::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -431,10 +487,15 @@ void AMG<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
 
+  LOG_DEBUG(this, "AMG::BuildHierarchy()",
+            " #*# begin");
+
   if (this->hierarchy_ == false) {
 
     assert(this->build_ == false);
     this->hierarchy_ = true;
+
+    ValueType eps = this->eps_;
 
     // AMG will use operators for inter grid transfers
     this->InitOperator(true);
@@ -461,15 +522,15 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
     switch(this->interp_type_) {
 
       case Aggregation:
-        this->Connect(*this->op_, connections_type_);
+        this->Connect(*this->op_, eps, connections_type_);
         this->Aggregate(*this->op_, *connections_type_, aggregates_type_);
         this->Aggr(*this->op_, *aggregates_type_, prolong_list_.back(), restrict_list_.back());
         break;
 
       case SmoothedAggregation:
-        this->Connect(*this->op_, connections_type_);
+        this->Connect(*this->op_, eps, connections_type_);
         this->Aggregate(*this->op_, *connections_type_, aggregates_type_);
-        this->eps_ *= 0.5;
+        eps *= 0.5;
         this->SmoothedAggr(*this->op_, *aggregates_type_, *connections_type_, 
                            prolong_list_.back(), restrict_list_.back());
         break;
@@ -501,15 +562,15 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
       switch(this->interp_type_) {
 
         case Aggregation:
-          this->Connect(*op_list_.back(), connections_type_);
+          this->Connect(*op_list_.back(), eps, connections_type_);
           this->Aggregate(*op_list_.back(), *connections_type_, aggregates_type_);
           this->Aggr(*op_list_.back(), *aggregates_type_, prolong_list_.back(), restrict_list_.back());
           break;
 
         case SmoothedAggregation:
-          this->Connect(*op_list_.back(), connections_type_);
+          this->Connect(*op_list_.back(), eps, connections_type_);
           this->Aggregate(*op_list_.back(), *connections_type_, aggregates_type_);
-          this->eps_ *= 0.5;
+          eps *= 0.5;
           this->SmoothedAggr(*op_list_.back(), *aggregates_type_, *connections_type_, 
                              prolong_list_.back(), restrict_list_.back());
           break;
@@ -566,10 +627,18 @@ void AMG<OperatorType, VectorType, ValueType>::BuildHierarchy(void) {
 
   }
 
+  LOG_DEBUG(this, "AMG::BuildHierarchy()",
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::SetCouplingStrength(const ValueType eps) {
+
+  LOG_DEBUG(this, "AMG::SetCouplingStrength()",
+            eps);
+
 
   this->eps_ = eps;
 
@@ -581,6 +650,9 @@ void AMG<OperatorType, VectorType, ValueType>::SmoothedAggr(const OperatorType &
                                                             const LocalVector<int> &connections,
                                                             OperatorType *prolong,
                                                             OperatorType *restrict) const {
+
+  LOG_DEBUG(this, "AMG::SmoothedAggr()",
+            this->build_);
 
   assert(&op != NULL);
   assert(&aggregates != NULL);
@@ -595,7 +667,10 @@ void AMG<OperatorType, VectorType, ValueType>::Aggr(const OperatorType &op,
                                                     const LocalVector<int> &aggregates,
                                                           OperatorType *prolong,
                                                           OperatorType *restrict) const {
+  LOG_DEBUG(this, "AMG::Aggr()",
+            this->build_);
 
+ 
   assert(&op != NULL);
   assert(&aggregates != NULL);
 
@@ -606,11 +681,15 @@ void AMG<OperatorType, VectorType, ValueType>::Aggr(const OperatorType &op,
 
 template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::Connect(const OperatorType &op,
+                                                       const ValueType eps,
                                                              LocalVector<int> *connections) const {
+
+  LOG_DEBUG(this, "AMG::Connect()",
+            this->build_);
 
   assert(&op != NULL);
 
-  op.AMGConnect(this->eps_, connections);
+  op.AMGConnect(eps, connections);
 
 }
 
@@ -619,6 +698,9 @@ template <class OperatorType, class VectorType, typename ValueType>
 void AMG<OperatorType, VectorType, ValueType>::Aggregate(const OperatorType &op,
                                                          const LocalVector<int> &connections,
                                                                LocalVector<int> *aggregates) const {
+
+  LOG_DEBUG(this, "AMG::Aggregate()",
+            this->build_);
 
   assert(&op != NULL);
   assert(&connections != NULL);
@@ -632,6 +714,9 @@ void AMG<OperatorType, VectorType, ValueType>::CoarsenOperator(const OperatorTyp
                                                                const OperatorType &prolong,
                                                                const OperatorType &op_fine,
                                                                      OperatorType *op_coarse) {
+
+  LOG_DEBUG(this, "AMG::CoarsenOperator()",
+            this->build_);
 
   assert(this->op_ != NULL);
   assert(&op_fine  != NULL);

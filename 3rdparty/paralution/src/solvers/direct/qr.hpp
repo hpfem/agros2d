@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,13 +19,49 @@
 //
 // *************************************************************************
 
-#include <iostream>
 
 
-int main() {
+// PARALUTION version 0.7.0 
 
-//  std::cout <<"\nHi. I'am the CUDA hardware parameter checker.\n\n";
 
-  return 0;
+#ifndef PARALUTION_DIRECT_QR_HPP_
+#define PARALUTION_DIRECT_QR_HPP_
+
+#include "../solver.hpp"
+
+namespace paralution {
+
+template <class OperatorType, class VectorType, typename ValueType>
+class QR : public DirectLinearSolver<OperatorType, VectorType, ValueType> {
+  
+public:
+
+  QR();
+  virtual ~QR();
+
+  virtual void Print(void) const;
+
+  virtual void Build(void);
+  virtual void Clear(void);
+
+protected:
+
+  virtual void Solve_(const VectorType &rhs, VectorType *x);
+
+  virtual void PrintStart_(void) const;
+  virtual void PrintEnd_(void) const;
+
+  virtual void MoveToHostLocalData_(void);
+  virtual void MoveToAcceleratorLocalData_(void);
+
+private:
+
+  OperatorType qr_;
+
+};
+
 
 }
+
+#endif // PARAQRTION_DIRECT_QR_HPP_
+

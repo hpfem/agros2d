@@ -157,7 +157,7 @@ void PyViewMeshAndPost::setActiveSolutionType(const std::string &solutionType)
     if (!solutionTypeStringKeys().contains(QString::fromStdString(solutionType)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-    if (currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivityType() == AdaptivityType_None)
+    if (currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivityType() == AdaptivityMethod_None)
         throw logic_error(QObject::tr("Field '%1' was not solved with space adaptivity.").
                           arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).toStdString());
 
@@ -271,7 +271,7 @@ void PyViewPost::setField(const std::string &fieldId)
     SolutionMode solutionType = currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType();
     int timeStep = currentPythonEngineAgros()->postHermes()->activeTimeStep();
 
-    if (fieldInfo->adaptivityType() == AdaptivityType_None)
+    if (fieldInfo->adaptivityType() == AdaptivityMethod_None)
         solutionType = SolutionMode_Normal;
 
     if (!Agros2D::solutionStore()->timeLevels(fieldInfo).contains(Agros2D::problem()->timeStepToTotalTime(timeStep)))

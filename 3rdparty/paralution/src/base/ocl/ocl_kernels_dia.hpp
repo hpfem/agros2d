@@ -1,33 +1,38 @@
+// *************************************************************************
+//
+//    PARALUTION   www.paralution.com
+//
+//    Copyright (C) 2012-2014 Dimitar Lukarski
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_OCL_KERNELS_DIA_HPP_
 #define PARALUTION_OCL_KERNELS_DIA_HPP_
 
 namespace paralution {
 
 const char *ocl_kernels_dia =
-	"// *************************************************************************\n"
-	"//\n"
-	"//    PARALUTION   www.paralution.com\n"
-	"//\n"
-	"//    Copyright (C) 2012-2013 Dimitar Lukarski\n"
-	"//\n"
-	"//    This program is free software: you can redistribute it and/or modify\n"
-	"//    it under the terms of the GNU General Public License as published by\n"
-	"//    the Free Software Foundation, either version 3 of the License, or\n"
-	"//    (at your option) any later version.\n"
-	"//\n"
-	"//    This program is distributed in the hope that it will be useful,\n"
-	"//    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-	"//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-	"//    GNU General Public License for more details.\n"
-	"//\n"
-	"//    You should have received a copy of the GNU General Public License\n"
-	"//    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
-	"//\n"
-	"// *************************************************************************\n"
-	"\n"
-	"// Nathan Bell and Michael Garland\n"
-	"// Efficient Sparse Matrix-Vector Multiplication on {CUDA}\n"
-	"// NVR-2008-004 / NVIDIA Technical Report\n"
+// Nathan Bell and Michael Garland
+// Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+// NVR-2008-004 / NVIDIA Technical Report
 	"__kernel void kernel_dia_spmv(const int num_rows, \n"
 	"                              const int num_cols, \n"
 	"                              const int num_diags,\n"
@@ -59,10 +64,9 @@ const char *ocl_kernels_dia =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
-	"// Nathan Bell and Michael Garland\n"
-	"// Efficient Sparse Matrix-Vector Multiplication on {CUDA}\n"
-	"// NVR-2008-004 / NVIDIA Technical Report\n"
+// Nathan Bell and Michael Garland
+// Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+// NVR-2008-004 / NVIDIA Technical Report
 	"__kernel void kernel_dia_add_spmv(const int num_rows,\n"
 	"                                  const int num_cols,\n"
 	"                                  const int num_diags,\n"
@@ -95,7 +99,8 @@ const char *ocl_kernels_dia =
 	"\n"
 	"}\n"
 	"\n"
-	"\n";
+	"\n"
+;
 }
 
 #endif // PARALUTION_OCL_KERNELS_DIA_HPP_

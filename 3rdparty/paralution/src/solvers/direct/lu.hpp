@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,20 +19,49 @@
 //
 // *************************************************************************
 
-__kernel void kernel_dense_spmv(const int nrow, const int ncol, __global const ValueType *val,
-                                __global const ValueType *in, __global ValueType *out) {
 
-  int ai = get_global_id(0);
 
-  if (ai < nrow) {
+// PARALUTION version 0.7.0 
 
-    ValueType sum = (ValueType)(0.0);
 
-    for (int aj=0; aj<ncol; ++aj)
-      sum += val[ai+aj*nrow] * in[aj];
+#ifndef PARALUTION_DIRECT_LU_HPP_
+#define PARALUTION_DIRECT_LU_HPP_
 
-    out[ai] = sum;
+#include "../solver.hpp"
 
-  }
+namespace paralution {
+
+template <class OperatorType, class VectorType, typename ValueType>
+class LU : public DirectLinearSolver<OperatorType, VectorType, ValueType> {
+  
+public:
+
+  LU();
+  virtual ~LU();
+
+  virtual void Print(void) const;
+
+  virtual void Build(void);
+  virtual void Clear(void);
+
+protected:
+
+  virtual void Solve_(const VectorType &rhs, VectorType *x);
+
+  virtual void PrintStart_(void) const;
+  virtual void PrintEnd_(void) const;
+
+  virtual void MoveToHostLocalData_(void);
+  virtual void MoveToAcceleratorLocalData_(void);
+
+private:
+
+  OperatorType lu_;
+
+};
+
 
 }
+
+#endif // PARALUTION_DIRECT_LU_HPP_
+

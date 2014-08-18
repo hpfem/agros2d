@@ -340,7 +340,7 @@ QString createPythonFromModel()
                 arg(fieldInfo->fieldId()).
                 arg(adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
 
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+        if (fieldInfo->adaptivityType() != AdaptivityMethod_None)
         {
             // TODO: Quick FIX - must be more general
 

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "idr.hpp"
 #include "../iter_ctrl.hpp"
@@ -44,6 +49,9 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 IDR<OperatorType, VectorType, ValueType>::IDR() {
 
+  LOG_DEBUG(this, "IDR::IDR()",
+            "default constructor");
+
   this->s_ = 4;
   this->kappa_ = ValueType(0.7);
 
@@ -58,6 +66,9 @@ IDR<OperatorType, VectorType, ValueType>::IDR() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 IDR<OperatorType, VectorType, ValueType>::~IDR() {
+
+  LOG_DEBUG(this, "IDR::~IDR()",
+            "destructor");
 
   this->Clear();
 
@@ -112,6 +123,11 @@ void IDR<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "IDR::Build()",
+            this->build_ <<
+            " #*# begin");
+
 
   if (this->build_ == true)
     this->Clear();
@@ -176,11 +192,18 @@ void IDR<OperatorType, VectorType, ValueType>::Build(void) {
       this->P_[k]->AddScale(*this->P_[j] , ValueType(-1.0)*this->P_[j]->Dot(*this->P_[k]));
     this->P_[k]->Scale(ValueType(1.0) / this->P_[k]->Norm());
   }
+  
+  LOG_DEBUG(this, "IDR::Build()",
+            this->build_ <<
+            " #*# end");
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "IDR::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -223,8 +246,12 @@ void IDR<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::SetShadowSpace(const int s) {
 
+  LOG_DEBUG(this, "IDR:SetShadowSpace()",
+            s);
+
   assert(this->build_ == false);
   assert(s > 0);
+  assert(this->op_ != NULL);
   assert(s <= this->op_->get_nrow());
 
   this->s_ = s;
@@ -233,7 +260,10 @@ void IDR<OperatorType, VectorType, ValueType>::SetShadowSpace(const int s) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
-  
+
+  LOG_DEBUG(this, "IDR::MoveToHostLocalData_()",
+            this->build_);  
+
   if (this->build_ == true) {
 
     this->r_.MoveToHost();
@@ -260,6 +290,9 @@ void IDR<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "IDR::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -288,6 +321,9 @@ void IDR<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void)
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                                       VectorType *x) {
+
+  LOG_DEBUG(this, "IDR::SolveNonPrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -320,8 +356,8 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
   r->ScaleAdd(ValueType(-1.0), rhs);
 
   // use for |b-Ax0|
-  ValueType res_norm = this->Norm(*r);
-  this->iter_ctrl_.InitResidual(res_norm);
+  ValueType res = this->Norm(*r);
+  this->iter_ctrl_.InitResidual(res);
 
   // g = u = v = 0, M = I
   for (int i=0; i<s*s; ++i)
@@ -333,7 +369,7 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
     Mhost[DENSE_IND(i,i,s,s)] = ValueType(1.0);
   }
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     // f = P^T * r
     for (int i=0; i<s; ++i)
@@ -430,10 +466,10 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
       x->AddScale(*u[k], beta);
 
       // Residual norm
-      res_norm = this->Norm(*r);
+      res = this->Norm(*r);
 
       // Check inner loop for convergence
-      if (this->iter_ctrl_.CheckResidual(res_norm), this->index_)
+      if (this->iter_ctrl_.CheckResidual(res), this->index_)
         break;
 
       // f_i = f_i - beta * M_i_k
@@ -448,7 +484,7 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
     // omega = (r,t) / ||t||^2
     ValueType rt = r->Dot(*t);
     ValueType nt = t->Norm();
-    rho = fabs(rt / (nt * res_norm));
+    rho = fabs(rt / (nt * res));
     omega = rt / (nt*nt);
 
     if (rho < kappa)
@@ -466,15 +502,22 @@ void IDR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType
     x->AddScale(*r, omega);
 
     // Residual norm to check outer loop convergence
-    res_norm = this->Norm(*r);
+    res = this->Norm(*r);
 
   }
+
+  LOG_DEBUG(this, "IDR::SolveNonPrecond_()",
+            " #*# end");
+
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IDR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                                    VectorType *x) {
+
+  LOG_DEBUG(this, "IDR::SolvePrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -508,8 +551,8 @@ void IDR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &r
   r->ScaleAdd(ValueType(-1.0), rhs);
 
   // use for |b-Ax0|
-  ValueType res_norm = this->Norm(*r);
-  this->iter_ctrl_.InitResidual(res_norm);
+  ValueType res = this->Norm(*r);
+  this->iter_ctrl_.InitResidual(res);
 
   // g = u = v = 0, M = I
   for (int i=0; i<s*s; ++i)
@@ -521,7 +564,7 @@ void IDR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &r
     Mhost[DENSE_IND(i,i,s,s)] = ValueType(1.0);
   }
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     // f = P^T * r
     for (int i=0; i<s; ++i)
@@ -621,10 +664,10 @@ void IDR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &r
       x->AddScale(*u[k], beta);
 
       // Residual norm
-      res_norm = this->Norm(*r);
+      res = this->Norm(*r);
 
       // Check inner loop for convergence
-      if (this->iter_ctrl_.CheckResidual(res_norm))
+      if (this->iter_ctrl_.CheckResidual(res, this->index_))
         break;
 
       // f_i = f_i - beta * M_i_k
@@ -642,7 +685,7 @@ void IDR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &r
     // omega = (r,t) / ||t||^2
     ValueType rt = r->Dot(*t);
     ValueType nt = t->Norm();
-    rho = fabs(rt / (nt * res_norm));
+    rho = fabs(rt / (nt * res));
     omega = rt / (nt*nt);
 
     if (rho < kappa)
@@ -660,9 +703,12 @@ void IDR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &r
     x->AddScale(*v, omega);
 
     // Residual norm to check outer loop convergence
-    res_norm = this->Norm(*r);
+    res = this->Norm(*r);
 
   }
+
+  LOG_DEBUG(this, "::SolvePrecond_()",
+            " #*# end");
 
 }
 

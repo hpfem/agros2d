@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,21 +19,41 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_UTILS_LOG_HPP_
 #define PARALUTION_UTILS_LOG_HPP_
 
 #include <iostream>
 #include <stdlib.h>
 
-// Uncomment this to define verbose level
+// Uncomment to define verbose level
 #define VERBOSE_LEVEL 2
 
+// Uncomment for debug mode
+// #define DEBUG_MODE
 
+
+
+// Do not edit
+#ifdef DEBUG_MODE
+
+#undef VERBOSE_LEVEL
+#define VERBOSE_LEVEL 10
+
+#endif
+
+
+// LOG INFO
 #define LOG_INFO(stream) {            \
     std::cout << stream << std::endl; \
   }
 
 
+// LOG ERROR
 #define FATAL_ERROR(file, line) {                                \
   LOG_INFO("Fatal error - the program will be terminated ");     \
   LOG_INFO("File: " << file << "; line: " << line);              \
@@ -41,6 +61,7 @@
 }
 
 
+// LOG VERBOSE
 #ifdef VERBOSE_LEVEL
 
 #define LOG_VERBOSE_INFO(level, stream) {                       \
@@ -53,6 +74,23 @@
 #define LOG_VERBOSE_INFO(level, stream) ;
 
 #endif
+
+
+// LOG DEBUG
+#ifdef DEBUG_MODE
+
+#define LOG_DEBUG(obj, fct, stream) {                            \
+    std::cout << "# Obj addr: " << obj                           \
+              << "; fct: " << fct                                \
+              << " " << stream << std::endl;             \
+  }
+
+#else
+
+#define LOG_DEBUG(obj, fct, stream) ;
+
+#endif
+
 
 
 #endif // PARALUTION_UTILS_LOG_HPP_

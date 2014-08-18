@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "ocl_allocate_free.hpp"
 #include "../../utils/log.hpp"
 #include "ocl_utils.hpp"
@@ -32,6 +37,9 @@ namespace paralution {
 // Allocate memory on device
 template <typename DataType>
 void allocate_ocl(const int size, cl_context ocl_context, cl_mem **ptr) {
+
+  LOG_DEBUG(0, "allocate_ocl()",
+            size);
 
   if (size > 0) {
 
@@ -58,6 +66,9 @@ void allocate_ocl(const int size, cl_context ocl_context, cl_mem **ptr) {
 // Free memory on device
 void free_ocl(cl_mem **ptr) {
 
+  LOG_DEBUG(0, "free_ocl()",
+            "");
+
   cl_int err;
 
   // Free memory on device
@@ -81,6 +92,9 @@ void ocl_set_to(cl_kernel ocl_kernel,
                 const int size,
                 const DataType val,
                 cl_mem *ptr ) {
+
+  LOG_DEBUG(0, "ocl_set_to()",
+            size);
 
   assert(ptr != NULL);
 
@@ -117,6 +131,9 @@ void ocl_set_to(cl_kernel ocl_kernel,
 template <typename DataType>
 void ocl_host2dev(const int size, const DataType *src, cl_mem *dst, cl_command_queue ocl_cmdQueue) {
 
+  LOG_DEBUG(0, "ocl_host2dev()",
+            size);
+
   if (size > 0) {
 
     assert(src != NULL);
@@ -144,6 +161,9 @@ void ocl_host2dev(const int size, const DataType *src, cl_mem *dst, cl_command_q
 template<typename DataType>
 void ocl_dev2host(const int size, cl_mem *src, DataType *dst, cl_command_queue ocl_cmdQueue ) {
 
+  LOG_DEBUG(0, "ocl_dev2host()",
+            size);
+
   if (size > 0) {
 
     assert(*src != NULL);
@@ -169,6 +189,9 @@ void ocl_dev2host(const int size, cl_mem *src, DataType *dst, cl_command_queue o
 // Copy object from device to device memory (internal copy)
 template<typename DataType>
 void ocl_dev2dev(const int size, cl_mem *src, cl_mem *dst, cl_command_queue ocl_cmdQueue) {
+
+  LOG_DEBUG(0, "ocl_dev2dev()",
+            size);
 
   if (size > 0) {
 

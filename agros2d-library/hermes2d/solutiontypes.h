@@ -34,9 +34,9 @@ class BlockSolutionID;
 class FieldSolutionID;
 
 //template <typename Scalar>
-//Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > castConst(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > space)
+//std::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > castConst(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > space)
 //{
-//    Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > out;
+//    std::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > out;
 //    for (int i = 0; i < space.size(); i++)
 //        out.push_back(const_cast<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> >(space.at(i)));
 
@@ -44,9 +44,9 @@ class FieldSolutionID;
 //}
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
+std::vector<Hermes::Hermes2D::MeshSharedPtr> spacesMeshes(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
+    std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
     foreach (Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, spaces)
         meshes.push_back(space->get_mesh());
 
@@ -54,9 +54,9 @@ Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> spacesMeshes(Hermes::vector<Herm
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
+std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > slns;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > slns;
     foreach (Hermes::Hermes2D::MeshSharedPtr mesh, meshes)
     {
         slns.push_back(Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar>(new Hermes::Hermes2D::Solution<double>(mesh)));
@@ -70,20 +70,20 @@ class AGROS_LIBRARY_API MultiArray
 {
 public:
     MultiArray();
-    MultiArray(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
-               Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions) : m_spaces(spaces), m_solutions(solutions) {}
+    MultiArray(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
+               std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions) : m_spaces(spaces), m_solutions(solutions) {}
     ~MultiArray();
 
     void clear();
 
     // add next component
     void append(Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> solution);
-    void append(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
+    void append(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
 
-    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
+    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
 
-    //Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
+    //std::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiArray<Scalar> fieldPart(const Block *block, const FieldInfo *fieldInfo);
@@ -93,8 +93,8 @@ public:
     void createEmpty(int numComp);
 
 private:
-    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_spaces;
-    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > m_solutions;
+    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_spaces;
+    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > m_solutions;
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;

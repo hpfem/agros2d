@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "solver.hpp"
 #include "../base/global_matrix.hpp"
@@ -38,6 +43,9 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 Solver<OperatorType, VectorType, ValueType>::Solver() {
 
+  LOG_DEBUG(this, "Solver::Solver()",
+            "default constructor");
+
   this->res_norm_ = 2;
   this->index_ = -1;
 
@@ -51,6 +59,9 @@ Solver<OperatorType, VectorType, ValueType>::Solver() {
 template <class OperatorType, class VectorType, typename ValueType>
 Solver<OperatorType, VectorType, ValueType>::~Solver() {
 
+  LOG_DEBUG(this, "Solver::~Solver()",
+            "destructor");
+
   // the preconditioner is defined outsite
   this->op_  = NULL;
   this->precond_   = NULL;
@@ -62,6 +73,9 @@ Solver<OperatorType, VectorType, ValueType>::~Solver() {
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::SetOperator(const OperatorType &op) {
 
+  LOG_DEBUG(this, "Solver::SetOperator()",
+            "");
+
   assert(this->build_ == false);
 
   this->op_  = &op;
@@ -70,6 +84,9 @@ void Solver<OperatorType, VectorType, ValueType>::SetOperator(const OperatorType
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::ResetOperator(const OperatorType &op) {
+
+  LOG_DEBUG(this, "Solver::ResetOperator()",
+            "");
 
   // TODO
   //  assert(this->build_ != false);
@@ -83,6 +100,9 @@ template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::SolveZeroSol(const VectorType &rhs,
                                                                VectorType *x) {
 
+  LOG_DEBUG(this, "Solver::SolveZeroSol()",
+            "");
+
   x->Zeros();
   this->Solve(rhs, x);
 
@@ -90,6 +110,9 @@ void Solver<OperatorType, VectorType, ValueType>::SolveZeroSol(const VectorType 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "Solver::Build()",
+            "");
 
   // by default - nothing to build
 
@@ -103,6 +126,9 @@ void Solver<OperatorType, VectorType, ValueType>::Build(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) {
 
+  LOG_DEBUG(this, "Solver::ReBuildNumeric()",
+            "");
+
   // by default - just reBuild everything
   this->Clear();
   this->Build();
@@ -112,6 +138,9 @@ void Solver<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "Solver::Clear()",
+            "");
 
   if (this->precond_ != NULL)
     delete this->precond_;
@@ -127,6 +156,9 @@ void Solver<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::MoveToHost(void) {
 
+  LOG_DEBUG(this, "Solver::MoveToHost()",
+            "");
+
   if ( this->permutation_.get_size() > 0)
     this->permutation_.MoveToHost();
 
@@ -140,6 +172,9 @@ void Solver<OperatorType, VectorType, ValueType>::MoveToHost(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::MoveToAccelerator(void) {
+
+  LOG_DEBUG(this, "Solver::MoveToAccelerator()",
+            "");
 
   if ( this->permutation_.get_size() > 0)
     this->permutation_.MoveToAccelerator();
@@ -155,12 +190,19 @@ void Solver<OperatorType, VectorType, ValueType>::MoveToAccelerator(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::Verbose(const int verb) {
 
+  LOG_DEBUG(this, "Solver::Verbose()",
+            verb);
+
   this->verb_ = verb; 
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Solver<OperatorType, VectorType, ValueType>::SetResidualNorm(const int resnorm) {
+
+  LOG_DEBUG(this, "Solver::SetResidualNorm()",
+            resnorm);
+
 
   assert(resnorm == 1 || resnorm == 2 || resnorm == 3);
 
@@ -170,6 +212,9 @@ void Solver<OperatorType, VectorType, ValueType>::SetResidualNorm(const int resn
 
 template <class OperatorType, class VectorType, typename ValueType>
 ValueType Solver<OperatorType, VectorType, ValueType>::Norm(const VectorType &vec) {
+
+  LOG_DEBUG(this, "Solver::Norm()",
+            this->res_norm_);
 
   // L1 norm
   if (this->res_norm_ == 1)
@@ -195,12 +240,19 @@ ValueType Solver<OperatorType, VectorType, ValueType>::Norm(const VectorType &ve
 template <class OperatorType, class VectorType, typename ValueType>
 IterativeLinearSolver<OperatorType, VectorType, ValueType>::IterativeLinearSolver() {
 
+  LOG_DEBUG(this, "IterativeLinearSolver::IterativeLinearSolver()",
+            "default constructor");
+
   this->verb_ = 1 ;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 IterativeLinearSolver<OperatorType, VectorType, ValueType>::~IterativeLinearSolver() {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::~IterativeLinearSolver()",
+            "");
+
 }
 
 
@@ -210,12 +262,21 @@ void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Init(const Valu
                                                              const ValueType div_tol,
                                                              const int max_iter) {
 
+  LOG_DEBUG(this, "IterativeLinearSolver::Init()",
+            "abs_tol=" << abs_tol <<
+            " rel_tol=" << rel_tol <<
+            " div_tol=" << div_tol <<
+            " max_iter=" << max_iter);
+
   this->iter_ctrl_.Init(abs_tol, rel_tol, div_tol, max_iter);
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::InitMaxIter(const int max_iter) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::InitMaxIter()",
+            max_iter);
 
   this->iter_ctrl_.InitMaximumIterations(max_iter);
 
@@ -225,11 +286,22 @@ template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::InitTol(const ValueType abs,
                                                                 const ValueType rel,
                                                                 const ValueType div) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::Init()",
+            "abs_tol=" << abs <<
+            " rel_tol=" << rel <<
+            " div_tol=" << div);
+
+
   this->iter_ctrl_.InitTolerance(abs, rel, div);
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetIterationCount(void) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::GetIterationCount()",
+            "");
 
   return this->iter_ctrl_.GetIterationCount();
 
@@ -238,12 +310,18 @@ int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetIterationCoun
 template <class OperatorType, class VectorType, typename ValueType>
 ValueType IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetCurrentResidual(void) {
 
+  LOG_DEBUG(this, "IterativeLinearSolver::GetCurrentResidual()",
+            "");
+
   return this->iter_ctrl_.GetCurrentResidual();
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetSolverStatus(void) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::GetSolverStatus()",
+            "");
 
   return this->iter_ctrl_.GetSolverStatus();
 
@@ -252,15 +330,23 @@ int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetSolverStatus(
 template <class OperatorType, class VectorType, typename ValueType>
 int IterativeLinearSolver<OperatorType, VectorType, ValueType>::GetAmaxResidualIndex(void) {
 
+  int ind = this->iter_ctrl_.GetAmaxResidualIndex();
+  LOG_DEBUG(this, "IterativeLinearSolver::GetAmaxResidualIndex()",
+            ind);
+
   if (this->res_norm_ != 3)
     LOG_INFO("Absolute maximum index of residual vector is only available when using Linf norm");
 
-  return this->iter_ctrl_.GetAmaxResidualIndex();
+  return ind;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::RecordResidualHistory(void) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::RecordResidualHistory()",
+            "");
+
 
   this->iter_ctrl_.RecordHistory();
 
@@ -269,12 +355,20 @@ void IterativeLinearSolver<OperatorType, VectorType, ValueType>::RecordResidualH
 template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::RecordHistory(std::string filename) const {
 
+  LOG_DEBUG(this, "IterativeLinearSolver::RecordHistory()",
+            filename);
+
+
   this->iter_ctrl_.WriteHistoryToFile(filename);
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Verbose(const int verb) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::Verbose()",
+            verb);
+
 
   this->verb_ = verb; 
   this->iter_ctrl_.Verbose(verb);
@@ -284,6 +378,9 @@ void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Verbose(const i
 template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                               VectorType *x) {
+
+  LOG_DEBUG(this, "IterativeLinearSolver::Solve()",
+            "");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -315,6 +412,9 @@ void IterativeLinearSolver<OperatorType, VectorType, ValueType>::Solve(const Vec
 template <class OperatorType, class VectorType, typename ValueType>
 void IterativeLinearSolver<OperatorType, VectorType, ValueType>::SetPreconditioner(Solver<OperatorType, VectorType, ValueType> &precond){
 
+    LOG_DEBUG(this, "IterativeLinearSolver::SetPreconditioner()",
+            "");
+
   assert(this != &precond);
   this->precond_ = &precond;
 
@@ -332,17 +432,30 @@ void IterativeLinearSolver<OperatorType, VectorType, ValueType>::SetPrecondition
 template <class OperatorType, class VectorType, typename ValueType>
 FixedPoint<OperatorType, VectorType, ValueType>::FixedPoint() {
 
+  LOG_DEBUG(this, "FixedPoint::FixedPoint()",
+            "default constructor");
+
   this->omega_ = 1.0;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 FixedPoint<OperatorType, VectorType, ValueType>::~FixedPoint() {
+
+  LOG_DEBUG(this, "FixedPoint::~FixedPoint()",
+            "destructor");
+
+
   this->Clear();
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::SetRelaxation(const ValueType omega) {
+
+  LOG_DEBUG(this, "FixedPoint::SetRelaxation()",
+            omega);
+
 
   this->omega_ = omega;
 
@@ -384,6 +497,10 @@ void FixedPoint<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) {
 
+  LOG_DEBUG(this, "FixedPoint::ReBuildNumeric()",
+            this->build_);
+
+
   if (this->build_ == true) {
 
     this->x_old_.Zeros();
@@ -406,6 +523,10 @@ void FixedPoint<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::Clear(void) {
 
+  LOG_DEBUG(this, "FixedPoint::Clear()",
+            this->build_);
+
+
   if (this->build_ == true) {
 
     if (this->precond_ != NULL) {
@@ -426,6 +547,10 @@ void FixedPoint<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "FixedPoint::Build()",
+            this->build_ <<
+            " #*# begin");
+
   if (this->build_ == true)
     this->Clear();
 
@@ -436,15 +561,27 @@ void FixedPoint<OperatorType, VectorType, ValueType>::Build(void) {
 
   this->build_ = true;
 
+  LOG_DEBUG(this, "FixedPoint::Build()",
+            "allocating data");
+
+
   this->x_old_.CloneBackend(*this->op_);
   this->x_old_.Allocate("x_old", this->op_->get_nrow());
 
   this->x_res_.CloneBackend(*this->op_);
   this->x_res_.Allocate("x_res", this->op_->get_nrow());
 
+  LOG_DEBUG(this, "FixedPoint::Build()",
+            "building the preconditioner");
+
+
   this->precond_->SetOperator(*this->op_);
   
   this->precond_->Build();
+
+  LOG_DEBUG(this, "FixedPoint::Build()",
+            this->build_ <<
+            " #*# end");
 
 }
 
@@ -459,6 +596,9 @@ template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                                     VectorType *x) {
 
+  LOG_DEBUG(this, "FixedPoint::SolvePrecond_()",
+            " #*# begin");
+
   assert(x != NULL);
   assert(x != &rhs);
   assert(this->op_  != NULL);
@@ -471,7 +611,8 @@ void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const Vector
     this->op_->Apply(*x, &this->x_res_);
     this->x_res_.ScaleAdd(ValueType(-1.0), rhs);
 
-    this->iter_ctrl_.InitResidual(this->Norm(this->x_res_));
+    ValueType res = this->Norm(this->x_res_);
+    this->iter_ctrl_.InitResidual(res);
     
     // Solve M x_old = x_res
     this->precond_->SolveZeroSol(this->x_res_, &this->x_old_);
@@ -483,7 +624,8 @@ void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const Vector
     this->op_->Apply(*x, &this->x_res_);
     this->x_res_.ScaleAdd(ValueType(-1.0), rhs); 
 
-    while (!this->iter_ctrl_.CheckResidual(this->Norm(this->x_res_), this->index_)) {
+    res = this->Norm(this->x_res_);
+    while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
       
       // Solve M x_old = x_res
       this->precond_->SolveZeroSol(this->x_res_, &this->x_old_);
@@ -498,10 +640,18 @@ void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const Vector
     }
   }
 
+  LOG_DEBUG(this, "FixedPoint::SolvePrecond_()",
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "FixedPoint::MoveToHostLocalData_()",
+            this->build_);
+
 
   if (this->build_ == true) {
 
@@ -515,12 +665,71 @@ void FixedPoint<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void)
 template <class OperatorType, class VectorType, typename ValueType>
 void FixedPoint<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
 
+  LOG_DEBUG(this, "FixedPoint::MoveToAcceleratorLocalData__()",
+            this->build_);
+
+
   if (this->build_ == true) {
 
     this->x_old_.MoveToAccelerator();
     this->x_res_.MoveToAccelerator();
 
   }
+
+}
+
+
+
+
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+DirectLinearSolver<OperatorType, VectorType, ValueType>::DirectLinearSolver() {
+
+  LOG_DEBUG(this, "DirectLinearSolver::DirectLinearSolver()",
+            "default constructor");
+
+  this->verb_ = 1 ;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+DirectLinearSolver<OperatorType, VectorType, ValueType>::~DirectLinearSolver() {
+
+  LOG_DEBUG(this, "DirectLinearSolver::~DirectLinearSolver()",
+            "");
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void DirectLinearSolver<OperatorType, VectorType, ValueType>::Verbose(const int verb) {
+
+  LOG_DEBUG(this, "DirectLinearSolver::Verbose()",
+            verb);
+
+  this->verb_ = verb; 
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void DirectLinearSolver<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
+                                                              VectorType *x) {
+
+  LOG_DEBUG(this, "DirectLinearSolver::Solve()",
+            "");
+
+  assert(x != NULL);
+  assert(x != &rhs);
+  assert(this->op_ != NULL);
+  assert(this->build_ == true);
+
+  if (this->verb_ > 0)
+    this->PrintStart_();
+
+  this->Solve_(rhs, x);
+
+  if (this->verb_ > 0)
+    this->PrintEnd_();
 
 }
 
@@ -562,6 +771,19 @@ template class FixedPoint< GlobalMatrix<float>,  GlobalVector<float>, float >;
 
 template class FixedPoint< GlobalStencil<double>, GlobalVector<double>, double >;
 template class FixedPoint< GlobalStencil<float>,  GlobalVector<float>, float >;
+
+
+template class DirectLinearSolver< LocalMatrix<double>, LocalVector<double>, double >;
+template class DirectLinearSolver< LocalMatrix<float>,  LocalVector<float>, float >;
+
+template class DirectLinearSolver< LocalStencil<double>, LocalVector<double>, double >;
+template class DirectLinearSolver< LocalStencil<float>,  LocalVector<float>, float >;
+
+template class DirectLinearSolver< GlobalMatrix<double>, GlobalVector<double>, double >;
+template class DirectLinearSolver< GlobalMatrix<float>,  GlobalVector<float>, float >;
+
+template class DirectLinearSolver< GlobalStencil<double>, GlobalVector<double>, double >;
+template class DirectLinearSolver< GlobalStencil<float>,  GlobalVector<float>, float >;
 
 }
 

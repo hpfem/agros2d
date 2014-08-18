@@ -293,7 +293,7 @@ void InfoWidget::showInfo()
             field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
             field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
 
-            if (fieldInfo->adaptivityType() != AdaptivityType_None)
+            if (fieldInfo->adaptivityType() != AdaptivityMethod_None)
             {
                 field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->value(FieldInfo::AdaptivitySteps).toInt()).toStdString());
@@ -389,7 +389,7 @@ void InfoWidget::showInfo()
                     field->SetValue("NEWTON_RESIDUAL_CHART", commandResidual.toStdString());
                 }
 
-                if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
+                if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityMethod_None))
                 {
                     QString solutionMeshNodesAll = QString::number(solutionMeshNodes.at(0));
                     QString solutionMeshElementsAll = QString::number(solutionMeshElements.at(0));

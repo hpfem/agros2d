@@ -32,7 +32,7 @@
 
 
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
-    m_couplings(couplings), m_wf(NULL)
+    m_couplings(couplings)
 {
     foreach (FieldInfo *fi, fieldInfos)
     {
@@ -60,7 +60,7 @@ Block::~Block()
     // clear boundary conditions
     foreach (Hermes::Hermes2D::EssentialBCs<double> *bc, m_bcs)
     {
-        for (Hermes::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
+        for (std::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
         {
             // delete bc
             delete *it;
@@ -69,11 +69,6 @@ Block::~Block()
         delete bc;
     }
     m_bcs.clear();
-
-    // delete weakform
-    if (m_wf)
-        delete m_wf;
-    m_wf = NULL;
 }
 
 QList<FieldInfo* > Block::sourceFieldInfosCoupling() const
@@ -157,10 +152,13 @@ void Block::updateExactSolutionFunctions()
     }
 }
 
-void Block::setWeakForm(WeakFormAgros<double> *wf)
+WeakFormAgros<double> *Block::weakForm()
 {
-    if (m_wf)
-        delete m_wf;
+    return dynamic_cast<WeakFormAgros<double> *>(m_wf.get());
+}
+
+void Block::setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double> wf)
+{
     m_wf = wf;
 }
 
@@ -208,9 +206,9 @@ double Block::timeSkip() const
     return skip;
 }
 
-AdaptivityType Block::adaptivityType() const
+AdaptivityMethod Block::adaptivityType() const
 {
-    AdaptivityType at = m_fields.at(0)->fieldInfo()->adaptivityType();
+    AdaptivityMethod at = m_fields.at(0)->fieldInfo()->adaptivityType();
 
     foreach (Field *field, m_fields)
     {
@@ -655,9 +653,9 @@ QList<FieldInfo*> Block::fieldInfos() const
     return result;
 }
 
-Hermes::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const
+std::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const
 {
-    Hermes::vector<Hermes::Hermes2D::NormType> vec;
+    std::vector<Hermes::Hermes2D::NormType> vec;
 
     foreach (Field* field, m_fields)
     {

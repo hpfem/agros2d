@@ -389,8 +389,8 @@ void ValueDataTableDialog::doPlot()
     // points
     int count = m_table.size();
 
-    Hermes::vector<double> pointsVector = m_table.pointsVector();
-    Hermes::vector<double> valuesVector = m_table.valuesVector();
+    std::vector<double> pointsVector = m_table.pointsVector();
+    std::vector<double> valuesVector = m_table.valuesVector();
 
     if (chkMarkers->isChecked())
     {

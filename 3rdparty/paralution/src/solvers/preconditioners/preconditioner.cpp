@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "preconditioner.hpp"
 #include "../solver.hpp"
@@ -39,10 +44,18 @@ namespace paralution {
 
 template <class OperatorType, class VectorType, typename ValueType>
 Preconditioner<OperatorType, VectorType, ValueType>::Preconditioner() {
+
+  LOG_DEBUG(this, "Preconditioner::Preconditioner()",
+            "default constructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 Preconditioner<OperatorType, VectorType, ValueType>::~Preconditioner() {
+
+  LOG_DEBUG(this, "Preconditioner::~Preconditioner()",
+            "destructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -59,6 +72,9 @@ template <class OperatorType, class VectorType, typename ValueType>
 void Preconditioner<OperatorType, VectorType, ValueType>::SolveZeroSol(const VectorType &rhs,
                                                                        VectorType *x) {
 
+  LOG_DEBUG(this, "Preconditioner::SolveZeroSol()",
+            "calling this->Solve()");
+
   this->Solve(rhs, x);
 
 }
@@ -66,10 +82,17 @@ void Preconditioner<OperatorType, VectorType, ValueType>::SolveZeroSol(const Vec
 
 template <class OperatorType, class VectorType, typename ValueType>
 Jacobi<OperatorType, VectorType, ValueType>::Jacobi() {
+
+  LOG_DEBUG(this, "Jacobi::Jacobi()",
+            "default constructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 Jacobi<OperatorType, VectorType, ValueType>::~Jacobi() {
+
+  LOG_DEBUG(this, "Jacobi::~Jacobi()",
+            "destructor");
 
   this->Clear();
 
@@ -85,6 +108,10 @@ void Jacobi<OperatorType, VectorType, ValueType>::Print(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void Jacobi<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "Jacobi::Build()",
+            this->build_ <<
+            " #*# begin");
+
   if (this->build_ == true)
     this->Clear();
 
@@ -96,10 +123,18 @@ void Jacobi<OperatorType, VectorType, ValueType>::Build(void) {
   this->inv_diag_entries_.CloneBackend(*this->op_);
   this->op_->ExtractInverseDiagonal(&this->inv_diag_entries_);
 
+  LOG_DEBUG(this, "Jacobi::Build()",
+            this->build_ <<
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Jacobi<OperatorType, VectorType, ValueType>::ResetOperator(const OperatorType &op) {
+
+  LOG_DEBUG(this, "Jacobi::ResetOperator()",
+            this->build_);
 
   assert(this->op_ != NULL);
 
@@ -113,6 +148,9 @@ void Jacobi<OperatorType, VectorType, ValueType>::ResetOperator(const OperatorTy
 template <class OperatorType, class VectorType, typename ValueType>
 void Jacobi<OperatorType, VectorType, ValueType>::Clear(void) {
 
+  LOG_DEBUG(this, "Jacobi::Clear()",
+            this->build_);
+
   this->inv_diag_entries_.Clear();
   this->build_ = false;
 
@@ -121,6 +159,9 @@ void Jacobi<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void Jacobi<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                         VectorType *x) {
+
+  LOG_DEBUG(this, "Jacobi::Solve()",
+            " #*# begin");
 
   assert(this->build_ == true);
   assert(x != NULL);
@@ -136,10 +177,17 @@ void Jacobi<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
 
   }
 
+  LOG_DEBUG(this, "Jacobi::Solve()",
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Jacobi<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "Jacobi::MoveToHostLocalData_()",
+            this->build_);  
 
   this->inv_diag_entries_.MoveToHost();
 
@@ -148,11 +196,277 @@ void Jacobi<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void Jacobi<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
 
+  LOG_DEBUG(this, "Jacobi::MoveToAcceleratorLocalData_()",
+            this->build_);
+
+
   this->inv_diag_entries_.MoveToAccelerator();
 
 }
 
 
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+GS<OperatorType, VectorType, ValueType>::GS() {
+
+  LOG_DEBUG(this, "GS::GS()",
+            "default constructor");
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+GS<OperatorType, VectorType, ValueType>::~GS() {
+
+  LOG_DEBUG(this, "GS::~GS()",
+            "destructor");
+
+  this->Clear();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::Print(void) const {
+
+  LOG_INFO("Gauss-Seidel (GS) preconditioner");
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "GS::Build()",
+            this->build_ <<
+            " #*# begin");
+
+  if (this->build_ == true)
+    this->Clear();
+
+  assert(this->build_ == false);
+  this->build_ = true;
+
+  assert(this->op_ != NULL);
+
+  this->GS_.CloneFrom(*this->op_);
+  this->GS_.LAnalyse(false);
+  this->GS_.UAnalyse(false);
+
+  LOG_DEBUG(this, "GS::Build()",
+            this->build_ <<
+            " #*# end");
+
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::ResetOperator(const OperatorType &op) {
+
+  LOG_DEBUG(this, "GS::ResetOperator()",
+            this->build_);
+
+  assert(this->op_ != NULL);
+
+  this->GS_.Clear();
+  this->GS_.CloneFrom(*this->op_);
+  this->GS_.LAnalyse(false);
+  this->GS_.UAnalyse(false);
+
+}
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "GS::Clear()",
+            this->build_);
+
+  this->GS_.Clear();
+
+  this->build_ = false;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
+                                                        VectorType *x) {
+
+  LOG_DEBUG(this, "GS::Solve()",
+            " #*# begin");
+
+  assert(this->build_ == true);
+  assert(x != NULL);
+
+  this->GS_.LSolve(rhs, x);
+
+  LOG_DEBUG(this, "GS::Solve()",
+            " #*# end");
+
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "GS::MoveToHostLocalData_()",
+            this->build_);
+
+  this->GS_.MoveToHost();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void GS<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "GS::MoveToAcceleratorLocalData_()",
+            this->build_);
+
+  this->GS_.MoveToAccelerator();
+
+}
+
+
+
+
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+SGS<OperatorType, VectorType, ValueType>::SGS() {
+
+  LOG_DEBUG(this, "SGS::SGS()",
+            "default constructor");
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+SGS<OperatorType, VectorType, ValueType>::~SGS() {
+
+  LOG_DEBUG(this, "SGS::~SGS()",
+            "destructor");
+
+  this->Clear();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::Print(void) const {
+
+  LOG_INFO("Symmetric Gauss-Seidel (SGS) preconditioner");
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "SGS::Build()",
+            this->build_ <<
+            " #*# begin");
+
+  if (this->build_ == true)
+    this->Clear();
+
+  assert(this->build_ == false);
+  this->build_ = true;
+
+  assert(this->op_ != NULL);
+
+  this->SGS_.CloneFrom(*this->op_);
+  this->SGS_.LAnalyse(false);
+  this->SGS_.UAnalyse(false);
+
+  this->diag_entries_.CloneBackend(*this->op_);
+  this->SGS_.ExtractInverseDiagonal(&this->diag_entries_);
+
+  this->v_.CloneBackend(*this->op_);
+  this->v_.Allocate("v", this->op_->get_nrow());
+
+  LOG_DEBUG(this, "SGS::Build()",
+            this->build_ <<
+            " #*# end");
+
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::ResetOperator(const OperatorType &op) {
+
+  LOG_DEBUG(this, "SGS::ResetOperator()",
+            this->build_);
+
+  assert(this->op_ != NULL);
+
+  this->SGS_.Clear();
+  this->SGS_.CloneFrom(*this->op_);
+  this->SGS_.LAnalyse(false);
+  this->SGS_.UAnalyse(false);
+
+  this->diag_entries_.Clear();
+  this->diag_entries_.CloneBackend(*this->op_);
+  this->SGS_.ExtractDiagonal(&this->diag_entries_);
+
+  this->v_.Clear();
+  this->v_.CloneBackend(*this->op_);
+  this->v_.Allocate("v", this->op_->get_nrow());
+
+}
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "SGS::Clear()",
+            this->build_);
+
+  this->SGS_.Clear();
+  this->diag_entries_.Clear();
+  this->v_.Clear();
+
+  this->build_ = false;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
+                                                     VectorType *x) {
+
+  LOG_DEBUG(this, "SGS::Solve()",
+            " #*# begin");
+
+  assert(this->build_ == true);
+  assert(x != NULL);
+
+  this->SGS_.LSolve(rhs, &this->v_);
+  this->v_.PointWiseMult(this->diag_entries_);
+  this->SGS_.USolve(this->v_, x);
+
+  LOG_DEBUG(this, "SGS::Solve()",
+            " #*# end");
+
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "SGS::MoveToHostLocalData_()",
+            this->build_);
+
+  this->SGS_.MoveToHost();
+  this->diag_entries_.MoveToHost();
+  this->v_.MoveToHost();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SGS<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "SGS::MoveToAcceleratorLocalData_()",
+            this->build_);
+
+  this->SGS_.MoveToAccelerator();
+  this->diag_entries_.MoveToAccelerator();
+  this->v_.MoveToAccelerator();
+
+}
 
 
 
@@ -163,6 +477,9 @@ void Jacobi<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(vo
 template <class OperatorType, class VectorType, typename ValueType>
 ILU<OperatorType, VectorType, ValueType>::ILU() {
 
+  LOG_DEBUG(this, "ILU::ILU()",
+            "default constructor");
+
   this->p_ = 0;
   this->level_ = true;
 
@@ -170,6 +487,9 @@ ILU<OperatorType, VectorType, ValueType>::ILU() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 ILU<OperatorType, VectorType, ValueType>::~ILU() {
+
+  LOG_DEBUG(this, "ILU::ILU()",
+            "destructor");
 
   this->Clear();
 
@@ -187,7 +507,12 @@ void ILU<OperatorType, VectorType, ValueType>::Print(void) const {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void ILU<OperatorType, VectorType, ValueType>::Init(const int p, const bool level) {
+void ILU<OperatorType, VectorType, ValueType>::Set(const int p, const bool level) {
+
+  LOG_DEBUG(this, "ILU::Set()",
+            "p=" << p <<
+            " level=" << level);
+
 
   assert(p >= 0);
   assert(this->build_ == false);
@@ -199,6 +524,10 @@ void ILU<OperatorType, VectorType, ValueType>::Init(const int p, const bool leve
 
 template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "ILU::Build()",
+            this->build_ <<
+            " #*# begin");
 
   if (this->build_ == true)
     this->Clear();
@@ -221,10 +550,17 @@ void ILU<OperatorType, VectorType, ValueType>::Build(void) {
 
   this->ILU_.LUAnalyse();
 
+  LOG_DEBUG(this, "ILU::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "ILU::Clear()",
+            this->build_);
 
   this->ILU_.Clear();
   this->ILU_.LUAnalyseClear();
@@ -235,6 +571,9 @@ void ILU<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "ILU::MoveToHostLocalData_()",
+            this->build_);  
+
   this->ILU_.MoveToHost();
   this->ILU_.LUAnalyse();
 
@@ -242,6 +581,9 @@ void ILU<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "ILU::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   this->ILU_.MoveToAccelerator();
   this->ILU_.LUAnalyse();
@@ -253,12 +595,17 @@ template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                      VectorType *x) {
 
+  LOG_DEBUG(this, "ILU::Solve()",
+            " #*# begin");
+
   assert(this->build_ == true);
   assert(x != NULL);
   assert(x != &rhs);
 
   this->ILU_.LUSolve(rhs, x);
 
+  LOG_DEBUG(this, "ILU::Solve()",
+            " #*# end");
 }
 
 
@@ -270,6 +617,10 @@ void ILU<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
 template <class OperatorType, class VectorType, typename ValueType>
 ILUT<OperatorType, VectorType, ValueType>::ILUT() {
 
+  LOG_DEBUG(this, "ILUT::ILUT()",
+            "default constructor");
+
+
   this->t_ = ValueType(0.05);
   this->max_row_ = 100;
 
@@ -277,6 +628,9 @@ ILUT<OperatorType, VectorType, ValueType>::ILUT() {
 
 template <class OperatorType, class VectorType, typename ValueType>
 ILUT<OperatorType, VectorType, ValueType>::~ILUT() {
+
+  LOG_DEBUG(this, "ILUT::~ILUT()",
+            "destructor");
 
   this->Clear();
 
@@ -294,7 +648,11 @@ void ILUT<OperatorType, VectorType, ValueType>::Print(void) const {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void ILUT<OperatorType, VectorType, ValueType>::Init(const ValueType t) {
+void ILUT<OperatorType, VectorType, ValueType>::Set(const ValueType t) {
+
+  LOG_DEBUG(this, "ILUT::Set()",
+            t);
+
 
   assert(t >= 0);
   assert(this->build_ == false);
@@ -304,7 +662,12 @@ void ILUT<OperatorType, VectorType, ValueType>::Init(const ValueType t) {
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void ILUT<OperatorType, VectorType, ValueType>::Init(const ValueType t, const int maxrow) {
+void ILUT<OperatorType, VectorType, ValueType>::Set(const ValueType t, const int maxrow) {
+
+  LOG_DEBUG(this, "ILUT::Set()",
+            "t=" << t <<
+            " maxrow=" << maxrow);
+
 
   assert(t >= 0);
   assert(this->build_ == false);
@@ -316,6 +679,11 @@ void ILUT<OperatorType, VectorType, ValueType>::Init(const ValueType t, const in
 
 template <class OperatorType, class VectorType, typename ValueType>
 void ILUT<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "ILUT::Build()",
+            this->build_ <<
+            " #*# begin");
+
 
   if (this->build_ == true)
     this->Clear();
@@ -329,10 +697,17 @@ void ILUT<OperatorType, VectorType, ValueType>::Build(void) {
   this->ILUT_.ILUTFactorize(this->t_, this->max_row_);
   this->ILUT_.LUAnalyse();
 
+  LOG_DEBUG(this, "ILUT::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void ILUT<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "ILUT::Clear()",
+            this->build_);
 
   this->ILUT_.Clear();
   this->ILUT_.LUAnalyseClear();
@@ -343,12 +718,18 @@ void ILUT<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void ILUT<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "ILUT::MoveToHostLocalData_()",
+            this->build_);  
+
   this->ILUT_.MoveToHost();
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void ILUT<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "ILUT::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   this->ILUT_.MoveToAccelerator();
 
@@ -359,11 +740,18 @@ template <class OperatorType, class VectorType, typename ValueType>
 void ILUT<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                      VectorType *x) {
 
+  LOG_DEBUG(this, "ILUT::Solve()",
+            " #*# begin");
+
   assert(this->build_ == true);
   assert(x != NULL);
   assert(x != &rhs);
 
   this->ILUT_.LUSolve(rhs, x);
+
+  LOG_DEBUG(this, "ILUT::Solve()",
+            " #*# begin");
+
 
 }
 
@@ -376,10 +764,16 @@ void ILUT<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
 template <class OperatorType, class VectorType, typename ValueType>
 IC<OperatorType, VectorType, ValueType>::IC() {
 
+  LOG_DEBUG(this, "IC::IC()",
+            "default constructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 IC<OperatorType, VectorType, ValueType>::~IC() {
+
+  LOG_DEBUG(this, "IC::IC()",
+            "destructor");
 
   this->Clear();
 
@@ -388,7 +782,7 @@ IC<OperatorType, VectorType, ValueType>::~IC() {
 template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::Print(void) const {
 
-  LOG_INFO("IC(0) preconditioner");
+  LOG_INFO("IC preconditioner");
 
   if (this->build_ == true) {
     LOG_INFO("IC nnz = " << this->IC_.get_nnz());
@@ -400,6 +794,11 @@ void IC<OperatorType, VectorType, ValueType>::Print(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "IC::Build()",
+            this->build_ <<
+            " #*# begin");
+
+
   if (this->build_ == true)
     this->Clear();
 
@@ -408,15 +807,26 @@ void IC<OperatorType, VectorType, ValueType>::Build(void) {
 
   assert(this->op_ != NULL);
 
-  this->IC_.CloneFrom(*this->op_);
-  this->IC_.IC0Factorize();
+  this->IC_.CloneBackend(*this->op_);
+  this->inv_diag_entries_.CloneBackend(*this->op_);
+
+  this->op_->ExtractL(&this->IC_, true);
+  this->IC_.ICFactorize(&this->inv_diag_entries_);
   this->IC_.LLAnalyse();
+
+  LOG_DEBUG(this, "IC::Build()",
+            this->build_ <<
+            " #*# end");
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::Clear(void) {
 
+  LOG_DEBUG(this, "IC::Clear()",
+            this->build_);
+
+  this->inv_diag_entries_.Clear();
   this->IC_.Clear();
   this->IC_.LLAnalyseClear();
   this->build_ = false;
@@ -426,6 +836,10 @@ void IC<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "IC::MoveToHostLocalData_()",
+            this->build_);  
+
+  // this->inv_diag_entries_ is NOT needed on accelerator!
   this->IC_.MoveToHost();
 
 }
@@ -433,6 +847,10 @@ void IC<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
 
+  LOG_DEBUG(this, "IC::MoveToAcceleratorLocalData_()",
+            this->build_);
+
+  // this->inv_diag_entries_ is NOT needed on accelerator!
   this->IC_.MoveToAccelerator();
 
 }
@@ -442,407 +860,17 @@ template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                     VectorType *x) {
 
-  assert(this->build_ == true);
-  assert(x != NULL);
-  assert(x != &rhs);
-
-  this->IC_.LLSolve(rhs, x);
-
-}
-
-
-
-
-
-template <class OperatorType, class VectorType, typename ValueType>
-AIChebyshev<OperatorType, VectorType, ValueType>::AIChebyshev() {
-
-  this->p_ = 0;
-  this->lambda_min_ = 0;
-  this->lambda_max_ = 0;
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-AIChebyshev<OperatorType, VectorType, ValueType>::~AIChebyshev() {
-
-  this->Clear();
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::Print(void) const {
-
-  LOG_INFO("Approximate Inverse Chebyshev(" << this->p_ <<") preconditioner");
-
-  if (this->build_ == true) {
-    LOG_INFO("AI matrix nnz = " << this->AIChebyshev_.get_nnz());
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::Init(const int p, const ValueType lambda_min, const ValueType lambda_max) {
-
-  assert(p > 0);
-  assert(lambda_min != ValueType(0.0));
-  assert(lambda_max != ValueType(0.0));
-  assert(this->build_ == false);
-
-  this->p_ = p;
-  this->lambda_min_ = lambda_min;
-  this->lambda_max_ = lambda_max;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::Build(void) {
-
-  if (this->build_ == true)
-    this->Clear();
-
-  assert(this->build_ == false);
-  this->build_ = true;
-
-  assert(this->op_ != NULL);
-
-  this->AIChebyshev_.CloneFrom(*this->op_);
-
-  const ValueType q = (1 - sqrt(this->lambda_min_/this->lambda_max_))/(1 + sqrt(this->lambda_min_/this->lambda_max_));
-  ValueType c = 1 / sqrt(this->lambda_min_ * this->lambda_max_);
-
-  // Shifting
-  // Z = 2/(beta-alpha) [A-(beta+alpha)/2]
-  OperatorType Z;
-  Z.CloneFrom(*this->op_);
-
-  Z.AddScalarDiagonal(ValueType(-1.0)*(this->lambda_max_ + this->lambda_min_)/(ValueType(2.0)));
-  Z.ScaleDiagonal(ValueType(2.0)/(this->lambda_max_ - this->lambda_min_));
-
-
-  // Chebyshev formula/series
-  // ai = I c_0 / 2 + sum c_k T_k
-  // Tk = 2 Z T_k-1 - T_k-2
-
-  // 1st term
-  // T_0 = I
-  // ai = I c_0 / 2
-  this->AIChebyshev_.AddScalarDiagonal(c/ValueType(2.0));
-
-  OperatorType Tkm2;
-  Tkm2.CloneFrom(Z);
-  // 2nd term
-  // T_1 = Z
-  // ai = ai + c_1 Z
-  c = c * ValueType(-1.0)*q;
-  this->AIChebyshev_.MatrixAdd(Tkm2, ValueType(1.0),
-                               c, true);
-
-  // T_2 = 2*Z*Z - I
-  // + c (2*Z*Z - I)
-  OperatorType Tkm1;
-  Tkm1.CloneBackend(*this->op_);
-  Tkm1.MatrixMult(Z, Z);
-  Tkm1.Scale(2.0);
-  Tkm1.AddScalarDiagonal(ValueType(-1.0));
-
-  c = c * ValueType(-1.0)*q;
-  this->AIChebyshev_.MatrixAdd(Tkm1, ValueType(1.0),
-                               c, true);
-
-
-  // T_k = 2 Z T_k-1 - T_k-2     
-  OperatorType Tk;
-  Tk.CloneBackend(*this->op_);
-
-  for (int i=2; i<=this->p_; ++i){
-
-    Tk.MatrixMult(Z, Tkm1);
-    Tk.MatrixAdd(Tkm2, ValueType(2.0),
-                 ValueType(-1.0), true);
-    
-    c = c * ValueType(-1.0)*q;
-    this->AIChebyshev_.MatrixAdd(Tk, ValueType(1.0),
-                                 c, true);
-    
-    if (i+1 <= this->p_) {
-      Tkm2.CloneFrom(Tkm1);
-      Tkm1.CloneFrom(Tk);
-    }
-
-  }
-
-
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::Clear(void) {
-
-  this->AIChebyshev_.Clear();
-  this->build_ = false;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
-
-  this->AIChebyshev_.MoveToHost();
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
-
-  this->AIChebyshev_.MoveToAccelerator();
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void AIChebyshev<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
-                                                    VectorType *x) {
+  LOG_DEBUG(this, "IC::Solve()",
+            " #*# begin");
 
   assert(this->build_ == true);
   assert(x != NULL);
   assert(x != &rhs);
 
-
-  this->AIChebyshev_.Apply(rhs, x);
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-FSAI<OperatorType, VectorType, ValueType>::FSAI() {
-
-  this->op_mat_format_ = false;
-  this->precond_mat_format_ = CSR;
-
-  this->matrix_power_ = 1;
-  this->external_pattern_ = false;
-  this->matrix_pattern_ = NULL;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-FSAI<OperatorType, VectorType, ValueType>::~FSAI() {
-
-  this->Clear();
-  this->matrix_pattern_ = NULL;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::Print(void) const {
-
-  LOG_INFO("Factorized Sparse Approximate Inverse preconditioner");
-
-  if (this->build_ == true) {
-    LOG_INFO("FSAI matrix nnz = " << this->FSAI_L_.get_nnz()
-                                   + this->FSAI_LT_.get_nnz()
-                                   - this->FSAI_L_.get_nrow());
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::Init(const int power) {
-
-  assert(this->build_ == false);
-  assert(power > 0);
-
-  this->matrix_power_ = power;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::Init(const OperatorType &pattern) {
-
-  assert(this->build_ == false);
-  assert(&pattern != NULL);
-
-  this->matrix_pattern_ = &pattern;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::Build(void) {
-
-  if (this->build_ == true)
-    this->Clear();
-
-  assert(this->build_ == false);
-  this->build_ = true;
-
-  assert(this->op_ != NULL);
-
-  this->FSAI_L_.CloneFrom(*this->op_);
-  this->FSAI_L_.FSAI(this->matrix_power_, this->matrix_pattern_);
-
-  this->FSAI_LT_.CloneFrom(this->FSAI_L_);
-  this->FSAI_LT_.Transpose();
-
-  this->t_.CloneBackend(*this->op_);
-  this->t_.Allocate("temporary", this->op_->get_nrow());
-
-  if (this->op_mat_format_ == true) {
-    this->FSAI_L_.ConvertTo(this->precond_mat_format_);
-    this->FSAI_LT_.ConvertTo(this->precond_mat_format_);
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::Clear(void) {
-
-  if (this->build_ == true) {
-
-    this->FSAI_L_.Clear();
-    this->FSAI_LT_.Clear();
-
-    this->t_.Clear();
-
-    this->op_mat_format_ = false;
-    this->precond_mat_format_ = CSR;
-
-    this->build_ = false;
-
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(const unsigned int mat_format) {
-
-  this->op_mat_format_ = true;
-  this->precond_mat_format_ = mat_format;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
-
-  this->FSAI_L_.MoveToHost();
-  this->FSAI_LT_.MoveToHost();
-
-  this->t_.MoveToHost();
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
-
-  this->FSAI_L_.MoveToAccelerator();
-  this->FSAI_LT_.MoveToAccelerator();
-
-  this->t_.MoveToAccelerator();
-
-}
-
-
-template <class OperatorType, class VectorType, typename ValueType>
-void FSAI<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs, VectorType *x) {
-
-  assert(this->build_ == true);
-  assert(x != NULL);
-  assert(x != &rhs);
-
-  this->FSAI_L_.Apply(rhs, &this->t_);
-  this->FSAI_LT_.Apply(this->t_, x);
-
-}
-
-
-template <class OperatorType, class VectorType, typename ValueType>
-SPAI<OperatorType, VectorType, ValueType>::SPAI() {
-
-  this->op_mat_format_ = false;
-  this->precond_mat_format_ = CSR;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-SPAI<OperatorType, VectorType, ValueType>::~SPAI() {
-
-  this->Clear();
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::Print(void) const {
-
-  LOG_INFO("SParse Approximate Inverse preconditioner");
-
-  if (this->build_ == true) {
-    LOG_INFO("SPAI matrix nnz = " << this->SPAI_.get_nnz());
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::Build(void) {
-
-  if (this->build_ == true)
-    this->Clear();
-
-  assert(this->build_ == false);
-  this->build_ = true;
-
-  assert(this->op_ != NULL);
-
-  this->SPAI_.CloneFrom(*this->op_);
-  this->SPAI_.SPAI();
-
-  if (this->op_mat_format_ == true)
-    this->SPAI_.ConvertTo(this->precond_mat_format_);
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::Clear(void) {
-
-  if (this->build_ == true) {
-
-    this->SPAI_.Clear();
-
-    this->op_mat_format_ = false;
-    this->precond_mat_format_ = CSR;
-
-    this->build_ = false;
-
-  }
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(const unsigned int mat_format) {
-
-  this->op_mat_format_ = true;
-  this->precond_mat_format_ = mat_format;
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
-
-  this->SPAI_.MoveToHost();
-
-}
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
-
-  this->SPAI_.MoveToAccelerator();
-
-}
-
-
-template <class OperatorType, class VectorType, typename ValueType>
-void SPAI<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs, VectorType *x) {
-
-  assert(this->build_ == true);
-  assert(x != NULL);
-  assert(x != &rhs);
-
-  this->SPAI_.Apply(rhs, x);
+  this->IC_.LLSolve(rhs, this->inv_diag_entries_, x);
+  
+  LOG_DEBUG(this, "IC::Solve()",
+            " #*# end");
 
 }
 
@@ -863,6 +891,12 @@ template class Preconditioner< GlobalStencil<float>,  GlobalVector<float>, float
 template class Jacobi< LocalMatrix<double>, LocalVector<double>, double >;
 template class Jacobi< LocalMatrix<float>,  LocalVector<float>, float >;
 
+template class GS< LocalMatrix<double>, LocalVector<double>, double >;
+template class GS< LocalMatrix<float>,  LocalVector<float>, float >;
+
+template class SGS< LocalMatrix<double>, LocalVector<double>, double >;
+template class SGS< LocalMatrix<float>,  LocalVector<float>, float >;
+
 template class ILU< LocalMatrix<double>, LocalVector<double>, double >;
 template class ILU< LocalMatrix<float>,  LocalVector<float>, float >;
 
@@ -871,15 +905,6 @@ template class ILUT< LocalMatrix<float>,  LocalVector<float>, float >;
 
 template class IC< LocalMatrix<double>, LocalVector<double>, double >;
 template class IC< LocalMatrix<float>,  LocalVector<float>, float >;
-
-template class AIChebyshev< LocalMatrix<double>, LocalVector<double>, double >;
-template class AIChebyshev< LocalMatrix<float>,  LocalVector<float>, float >;
-
-template class FSAI< LocalMatrix<double>, LocalVector<double>, double >;
-template class FSAI< LocalMatrix<float>,  LocalVector<float>, float >;
-
-template class SPAI< LocalMatrix<double>, LocalVector<double>, double >;
-template class SPAI< LocalMatrix<float>,  LocalVector<float>, float >;
 
 }
 

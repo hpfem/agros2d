@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_HOST_MATRIX_CSR_HPP_
 #define PARALUTION_HOST_MATRIX_CSR_HPP_
@@ -40,6 +45,7 @@ public:
   virtual void info(void) const;
   virtual unsigned int get_mat_format(void) const {  return CSR; }
 
+  virtual bool Check(void) const;
   virtual void AllocateCSR(const int nnz, const int nrow, const int ncol);
   virtual void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
                              const int nnz, const int nrow, const int ncol);
@@ -47,6 +53,20 @@ public:
 
   virtual void Clear(void);
   virtual void Zeros(void);
+
+  virtual void Assemble(const int *i, const int *j, const ValueType *v,
+                        const int size, const int n, const int m,
+                        int **pp_assembly_rank,
+                        int **pp_assembly_irank,
+                        int **pp_assembly_loop_start,
+                        int **pp_assembly_loop_end,
+                        int &nThreads);
+  virtual void AssembleUpdate(const ValueType *v,
+                              const int *assembly_rank,
+                              const int *assembly_irank,
+                              const int *assembly_loop_start,
+                              const int *assembly_loop_end,
+                              const int nThreads);
 
   virtual bool Scale(const ValueType alpha);
   virtual bool ScaleDiagonal(const ValueType alpha);
@@ -93,6 +113,9 @@ public:
 
   virtual bool Permute(const BaseVector<int> &permutation);
 
+  virtual bool CMK(BaseVector<int> *permutation) const;
+  virtual bool RCMK(BaseVector<int> *permutation) const;
+
   virtual bool ConvertFrom(const BaseMatrix<ValueType> &mat);
 
   virtual void CopyFrom(const BaseMatrix<ValueType> &mat);
@@ -107,7 +130,7 @@ public:
 
   virtual bool CreateFromMap(const BaseVector<int> &map, const int n, const int m);
 
-  virtual bool IC0Factorize(void);
+  virtual bool ICFactorize(BaseVector<ValueType> *inv_diag);
 
   virtual bool ILU0Factorize(void);
   virtual void ILUpFactorizeNumeric(const int p, const BaseMatrix<ValueType> &mat);
@@ -119,7 +142,9 @@ public:
 
   virtual void LLAnalyse(void);
   virtual void LLAnalyseClear(void);
-  virtual bool LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
+  virtual bool LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+  virtual bool LLSolve(const BaseVector<ValueType> &in, const BaseVector<ValueType> &inv_diag,
+                       BaseVector<ValueType> *out) const;
 
   virtual void LAnalyse(const bool diag_unit=false);
   virtual void LAnalyseClear(void);

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "local_matrix.hpp"
 #include "local_vector.hpp"
 #include "base_vector.hpp"
@@ -27,6 +32,8 @@
 #include "host/host_matrix_coo.hpp"
 #include "backend_manager.hpp"
 #include "../utils/log.hpp"
+#include "../utils/math_functions.hpp"
+#include "../utils/allocate_free.hpp"
 
 #include <assert.h>
 #include <algorithm>
@@ -42,6 +49,10 @@ namespace paralution {
 
 template <typename ValueType>
 LocalMatrix<ValueType>::LocalMatrix() {
+
+  LOG_DEBUG(this, "LocalMatrix::LocalMatrix()",
+            "default constructor");
+
   
   this->object_name_ = "";
   this->local_backend_ = _Backend_Descriptor;
@@ -52,11 +63,22 @@ LocalMatrix<ValueType>::LocalMatrix() {
 
   this->matrix_accel_= NULL;
   this->matrix_ = this->matrix_host_ ;
- 
+
+  // Assembling data
+  this->assembly_rank =  NULL;
+  this->assembly_irank = NULL;
+  this->assembly_loop_start = NULL;
+  this->assembly_loop_end   = NULL;
+  this->assembly_threads = 0;
+
 }
 
 template <typename ValueType>
 LocalMatrix<ValueType>::~LocalMatrix() {
+
+  LOG_DEBUG(this, "LocalMatrix::~LocalMatrix()",
+            "default destructor");
+
 
   this->Clear();
   delete this->matrix_;
@@ -66,12 +88,18 @@ LocalMatrix<ValueType>::~LocalMatrix() {
 template <typename ValueType>
 void LocalMatrix<ValueType>::Clear(void) {
 
-  this->matrix_->Clear();
+  LOG_DEBUG(this, "LocalMatrix::Clear()",
+            "");
 
+  this->matrix_->Clear();
+  this->free_assembly_data();
 }
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::Zeros(void) {
+
+  LOG_DEBUG(this, "LocalMatrix::Zeros()",
+            "");
 
   this->matrix_->Zeros();
 
@@ -80,6 +108,10 @@ void LocalMatrix<ValueType>::Zeros(void) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateCSR(const std::string name, const int nnz, const int nrow, const int ncol) {
+
+  LOG_DEBUG(this, "LocalMatrix::AllocateCSR()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol);
+
 
   this->Clear();
   this->object_name_ = name;
@@ -120,6 +152,10 @@ void LocalMatrix<ValueType>::AllocateCSR(const std::string name, const int nnz, 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateCOO(const std::string name, const int nnz, const int nrow, const int ncol) {
 
+  LOG_DEBUG(this, "LocalMatrix::AllocateCOO()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol);
+            
+
   this->Clear();
   this->object_name_ = name;
   this->ConvertToCOO();
@@ -158,6 +194,10 @@ void LocalMatrix<ValueType>::AllocateCOO(const std::string name, const int nnz, 
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateDIA(const std::string name, const int nnz, const int nrow, const int ncol, const int ndiag) {
+
+  LOG_DEBUG(this, "LocalMatrix::AllocateDIA()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol << " ndiag=" << ndiag);
+            
 
   this->Clear();
   this->object_name_ = name;
@@ -198,6 +238,10 @@ void LocalMatrix<ValueType>::AllocateDIA(const std::string name, const int nnz, 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateMCSR(const std::string name, const int nnz, const int nrow, const int ncol) {
 
+  LOG_DEBUG(this, "LocalMatrix::AllocateMCSR()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol);
+
+
   this->Clear();
   this->object_name_ = name;
   this->ConvertToMCSR();
@@ -236,6 +280,9 @@ void LocalMatrix<ValueType>::AllocateMCSR(const std::string name, const int nnz,
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateELL(const std::string name, const int nnz, const int nrow, const int ncol, const int max_row) {
+
+  LOG_DEBUG(this, "LocalMatrix::AllocateELL()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol << " max_row=" << max_row);
 
   this->Clear();
   this->object_name_ = name;
@@ -278,6 +325,11 @@ template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateHYB(const std::string name, const int ell_nnz, const int coo_nnz, const int ell_max_row,
                                          const int nrow, const int ncol) {
 
+    LOG_DEBUG(this, "LocalMatrix::AllocateHYB()",
+            "name=" << name << " ell_nnz=" << ell_nnz << " coo_nnz=" << coo_nnz 
+              << " nrow=" << nrow << " ncol=" << ncol 
+              << " ell_max_row=" << ell_max_row);
+
   this->Clear();
   this->object_name_ = name;
   this->ConvertToHYB();
@@ -318,6 +370,9 @@ void LocalMatrix<ValueType>::AllocateHYB(const std::string name, const int ell_n
 template <typename ValueType>
 void LocalMatrix<ValueType>::AllocateDENSE(const std::string name, const int nrow, const int ncol) {
 
+  LOG_DEBUG(this, "LocalMatrix::AllocateDENSE()",
+            "name=" << name << " nrow=" << nrow << " ncol=" << ncol);
+
   this->Clear();
   this->object_name_ = name;
   this->ConvertToDENSE();
@@ -351,11 +406,38 @@ void LocalMatrix<ValueType>::AllocateDENSE(const std::string name, const int nro
 
 }
 
+template <typename ValueType>
+bool LocalMatrix<ValueType>::Check(void) const {
+
+  bool check = false;
+  
+  if (this->is_accel() == true) {
+    
+    LocalMatrix<ValueType> mat; 
+    
+    mat.CopyFrom(*this);
+    
+    // host check
+    check = mat.Check();
+
+  } else {
+    // Host
+
+    check = this->matrix_->Check();
+
+  }
+
+  return check;
+}
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::SetDataPtrCOO(int **row, int **col, ValueType **val,
                                            std::string name, 
                                            const int nnz, const int nrow, const int ncol) {
+
+  LOG_DEBUG(this, "LocalMatrix::SetDataPtrCOO()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol);
+
 
   assert(*row != NULL);
   assert(*col != NULL);
@@ -374,10 +456,17 @@ void LocalMatrix<ValueType>::SetDataPtrCOO(int **row, int **col, ValueType **val
   this->matrix_->SetDataPtrCOO(row, col, val,
                                nnz, nrow, ncol);
 
+  *row = NULL ; 
+  *col = NULL ; 
+  *val = NULL ; 
+
 }
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::LeaveDataPtrCOO(int **row, int **col, ValueType **val) {
+
+  LOG_DEBUG(this, "LocalMatrix::LeaveDataPtrCOO()",
+            "");
 
   assert(*row == NULL);
   assert(*col == NULL);
@@ -398,6 +487,11 @@ void LocalMatrix<ValueType>::SetDataPtrCSR(int **row_offset, int **col, ValueTyp
                                            std::string name, 
                                            const int nnz, const int nrow, const int ncol) {
 
+  LOG_DEBUG(this, "LocalMatrix::SetDataPtrCSR()",
+            "name=" << name << " nnz=" << nnz << " nrow=" << nrow << " ncol=" << ncol);
+
+
+
   assert(*row_offset != NULL);
   assert(*col != NULL);
   assert(*val != NULL);
@@ -415,10 +509,17 @@ void LocalMatrix<ValueType>::SetDataPtrCSR(int **row_offset, int **col, ValueTyp
   this->matrix_->SetDataPtrCSR(row_offset, col, val,
                                nnz, nrow, ncol);
 
+  *row_offset = NULL ; 
+  *col = NULL ; 
+  *val = NULL ; 
+
 }
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val) {
+
+  LOG_DEBUG(this, "LocalMatrix::LeaveDataPtrCSR()",
+            "");
 
   assert(*row_offset == NULL);
   assert(*col == NULL);
@@ -438,6 +539,10 @@ template <typename ValueType>
 void LocalMatrix<ValueType>::SetDataPtrDENSE(ValueType **val, std::string name,
                                              const int nrow, const int ncol) {
 
+  LOG_DEBUG(this, "LocalMatrix::SetDataPtrDENSE()",
+            "name=" << name << " nrow=" << nrow << " ncol=" << ncol);
+
+
   assert(*val != NULL);
   assert(nrow > 0);
   assert(ncol > 0);
@@ -451,10 +556,14 @@ void LocalMatrix<ValueType>::SetDataPtrDENSE(ValueType **val, std::string name,
   
   this->matrix_->SetDataPtrDENSE(val, nrow, ncol);
 
+  *val = NULL ; 
 }
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::LeaveDataPtrDENSE(ValueType **val) {
+
+  LOG_DEBUG(this, "LocalMatrix::LeaveDataPtrDENSE()",
+            "");
 
   assert(*val == NULL);
   assert(this->get_nrow() > 0);
@@ -472,6 +581,10 @@ void LocalMatrix<ValueType>::LeaveDataPtrDENSE(ValueType **val) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::CopyFromCSR(const int *row_offsets, const int *col, const ValueType *val) {
 
+  LOG_DEBUG(this, "LocalMatrix::CopyFromCSR()",
+            "");
+
+
   assert(row_offsets != NULL);
   assert(col != NULL);
   assert(val != NULL);
@@ -488,7 +601,73 @@ void LocalMatrix<ValueType>::CopyFromCSR(const int *row_offsets, const int *col,
 }
 
 template <typename ValueType>
+void LocalMatrix<ValueType>::Assemble(const int *i, const int *j, const ValueType *v,
+                                      const int size, std::string name, const int n, const int m) {
+  LOG_DEBUG(this, "LocalMatrix::Assemble()",
+            "");
+
+  assert(i != NULL);
+  assert(j != NULL);
+  assert(size > 0);
+  assert(n >= 0);
+
+  // Host, CSR
+  this->Clear();
+
+  bool on_host = this->is_host();
+  if (on_host == false)
+    this->MoveToHost();
+
+  this->MoveToHost();
+  this->object_name_ = name;
+  this->ConvertToCSR();
+
+  this->free_assembly_data();
+
+  this->matrix_->Assemble(i, j, v,
+                          size, n, m,
+                          &this->assembly_rank,
+                          &this->assembly_irank,
+                          &this->assembly_loop_start,
+                          &this->assembly_loop_end,
+                          this->assembly_threads);
+
+  if (on_host == false)
+    this->MoveToAccelerator();
+
+}
+
+template <typename ValueType>
+void LocalMatrix<ValueType>::AssembleUpdate(const ValueType *v) {
+
+  LOG_DEBUG(this, "LocalMatrix::AssembleUpdate()",
+            "");
+  assert(v != NULL);
+
+  // CSR  
+  assert(this->get_format() == CSR);
+
+  bool on_host = this->is_host();
+  if (on_host == false)
+    this->MoveToHost();
+
+  this->matrix_->AssembleUpdate(v,
+                                this->assembly_rank,
+                                this->assembly_irank,
+                                this->assembly_loop_start,
+                                this->assembly_loop_end,
+                                this->assembly_threads);
+
+  if (on_host == false)
+    this->MoveToAccelerator();
+
+}
+
+template <typename ValueType>
 void LocalMatrix<ValueType>::CopyToCSR(int *row_offsets, int *col, ValueType *val) const {
+
+  LOG_DEBUG(this, "LocalMatrix::CopyToCSR()",
+            "");
 
   assert(row_offsets != NULL);
   assert(col != NULL);
@@ -515,6 +694,9 @@ void LocalMatrix<ValueType>::CopyToCSR(int *row_offsets, int *col, ValueType *va
 template <typename ValueType>
 void LocalMatrix<ValueType>::CopyFromCOO(const int *row, const int *col, const ValueType *val) {
 
+  LOG_DEBUG(this, "LocalMatrix::CopyFromCOO()",
+            "");
+
   assert(row != NULL);
   assert(col != NULL);
   assert(val != NULL);
@@ -534,6 +716,9 @@ void LocalMatrix<ValueType>::CopyFromCOO(const int *row, const int *col, const V
 template <typename ValueType>
 void LocalMatrix<ValueType>::ReadFileMTX(const std::string filename) {
 
+  LOG_DEBUG(this, "LocalMatrix::ReadFileMTX()",
+            filename);
+
   // Only COO host can read
 
   this->Clear();
@@ -547,6 +732,9 @@ void LocalMatrix<ValueType>::ReadFileMTX(const std::string filename) {
   this->matrix_host_->ReadFileMTX(filename);
   this->ConvertTo(mat_format);
 
+  if (this->get_format() == CSR)
+    this->Check();
+
   this->object_name_ = filename; 
 
   if (on_host == false)
@@ -556,6 +744,9 @@ void LocalMatrix<ValueType>::ReadFileMTX(const std::string filename) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::WriteFileMTX(const std::string filename) const {
+
+  LOG_DEBUG(this, "LocalMatrix::WriteFileMTX()",
+            filename);
 
   // only COO on host can write to file
 
@@ -578,6 +769,9 @@ void LocalMatrix<ValueType>::WriteFileMTX(const std::string filename) const {
 template <typename ValueType>
 void LocalMatrix<ValueType>::ReadFileCSR(const std::string filename) {
 
+  LOG_DEBUG(this, "LocalMatrix::ReadFileCSR()",
+            filename);
+
   // Only CSR host can read
 
   this->Clear();
@@ -592,6 +786,7 @@ void LocalMatrix<ValueType>::ReadFileCSR(const std::string filename) {
   this->ConvertTo(mat_format);
 
   this->object_name_ = filename; 
+  this->Check();
 
   if (on_host == false)
     this->MoveToAccelerator();
@@ -600,6 +795,10 @@ void LocalMatrix<ValueType>::ReadFileCSR(const std::string filename) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::WriteFileCSR(const std::string filename) const {
+
+  LOG_DEBUG(this, "LocalMatrix::WriteFileCSR()",
+            filename);
+
 
   // only CSR on host can write to file
 
@@ -622,6 +821,9 @@ void LocalMatrix<ValueType>::WriteFileCSR(const std::string filename) const {
 template <typename ValueType>
 void LocalMatrix<ValueType>::CopyFrom(const LocalMatrix<ValueType> &src) {
 
+  LOG_DEBUG(this, "LocalMatrix::CopyFrom()",
+            "");
+
   assert(&src != NULL);
   assert(this != &src);
 
@@ -630,7 +832,27 @@ void LocalMatrix<ValueType>::CopyFrom(const LocalMatrix<ValueType> &src) {
 }
 
 template <typename ValueType>
+void LocalMatrix<ValueType>::CopyFromAsync(const LocalMatrix<ValueType> &src) {
+
+  LOG_DEBUG(this, "LocalMatrix::CopyFromAsync()",
+            "");
+
+  assert(this->asyncf == false);
+  assert(&src != NULL);
+  assert(this != &src);
+
+  this->matrix_->CopyFromAsync(*src.matrix_);
+
+  this->asyncf = true;
+
+}
+
+template <typename ValueType>
 void LocalMatrix<ValueType>::CloneFrom(const LocalMatrix<ValueType> &src) {
+
+  LOG_DEBUG(this, "LocalMatrix::CloneFrom()",
+            "");
+
 
   assert(&src != NULL);
   assert(this != &src);
@@ -665,6 +887,48 @@ void LocalMatrix<ValueType>::CloneFrom(const LocalMatrix<ValueType> &src) {
 }
 
 template <typename ValueType>
+void LocalMatrix<ValueType>::UpdateValuesCSR(ValueType *val) {
+
+  LOG_DEBUG(this, "LocalMatrix::UpdateValues()",
+            "");
+
+  assert(val != NULL);
+
+  // CSR only
+  assert(this->get_format() == CSR);
+
+  int *mat_row_offset = NULL;
+  int *mat_col = NULL;
+  ValueType *mat_val = NULL;
+
+  int nrow = this->get_nrow();
+  int ncol = this->get_ncol();
+  int nnz  = this->get_nnz();
+
+  // Extract matrix pointers
+  this->matrix_->LeaveDataPtrCSR(&mat_row_offset, &mat_col, &mat_val);
+
+  // Dummy vector to follow the correct backend
+  LocalVector<ValueType> vec;
+  vec.MoveToHost();
+
+  vec.SetDataPtr(&val, "dummy", nnz);
+
+  vec.CloneBackend(*this);
+
+  vec.LeaveDataPtr(&mat_val);
+
+  // Set matrix pointers
+  this->matrix_->SetDataPtrCSR(&mat_row_offset, &mat_col, &mat_val, nnz, nrow, ncol);
+
+  mat_row_offset = NULL;
+  mat_col = NULL;
+  mat_val = NULL;
+  val = NULL;
+
+}
+
+template <typename ValueType>
 bool LocalMatrix<ValueType>::is_host(void) const {
   return (this->matrix_ == this->matrix_host_);
 }
@@ -686,7 +950,15 @@ void LocalMatrix<ValueType>::info(void) const {
     assert(this->matrix_ == this->matrix_accel_);
     current_backend_name = _paralution_backend_name[this->local_backend_.backend];
   }
-  
+
+  std::string assembling_info = "no";
+
+  if ((this->assembly_rank !=  NULL) ||
+      (this->assembly_irank != NULL) ||
+      (this->assembly_loop_start != NULL) ||
+      (this->assembly_loop_end   != NULL))
+    assembling_info = "yes";
+
   
   LOG_INFO("LocalMatrix" 
            << " name=" << this->object_name_ << ";" 
@@ -694,6 +966,7 @@ void LocalMatrix<ValueType>::info(void) const {
            << " cols=" << this->get_ncol() << ";" 
            << " nnz=" << this->get_nnz() << ";"
            << " prec=" << 8*sizeof(ValueType) << "bit;"
+           << " asm=" << assembling_info << ";"
            << " format=" << _matrix_format_names[this->get_format()] << ";"
            << " host backend={" << _paralution_host_name[0] << "};" 
            << " accelerator backend={" << _paralution_backend_name[this->local_backend_.backend] << "};"
@@ -705,8 +978,12 @@ void LocalMatrix<ValueType>::info(void) const {
 template <typename ValueType>
 void LocalMatrix<ValueType>::MoveToAccelerator(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::MoveToAccelerator()",
+            "");
+
+
   if (_paralution_available_accelerator() == false)
-    LOG_VERBOSE_INFO(4,"*** info: LocalMatrix:MoveToAccelerator() no accelerator available - doing nothing");  
+    LOG_VERBOSE_INFO(4,"*** info: LocalMatrix::MoveToAccelerator() no accelerator available - doing nothing");  
 
   if ( (_paralution_available_accelerator()) && 
        (this->matrix_ == this->matrix_host_)) {
@@ -719,7 +996,7 @@ void LocalMatrix<ValueType>::MoveToAccelerator(void) {
     delete this->matrix_host_;
     this->matrix_host_ = NULL;
 
-    LOG_VERBOSE_INFO(4, "*** info: LocalMatrix:MoveToAccelerator() host to accelerator transfer");        
+    LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::MoveToAccelerator() host to accelerator transfer");        
   }
   // if on accelerator - do nothing
 
@@ -728,7 +1005,11 @@ void LocalMatrix<ValueType>::MoveToAccelerator(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::MoveToHost(void) {
 
-  if (this->matrix_ == this->matrix_accel_) {
+  LOG_DEBUG(this, "LocalMatrix::MoveToHost()",
+            "");
+
+  if ( (_paralution_available_accelerator()) && 
+       (this->matrix_ == this->matrix_accel_)) {
 
     
     this->matrix_host_ = _paralution_init_base_host_matrix<ValueType>(this->local_backend_,
@@ -739,11 +1020,109 @@ void LocalMatrix<ValueType>::MoveToHost(void) {
     delete this->matrix_accel_;
     this->matrix_accel_ = NULL;
 
-    LOG_VERBOSE_INFO(4, "*** info: LocalMatrix:MoveToHost() accelerator to host transfer");    
+    LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::MoveToHost() accelerator to host transfer");    
   }
   // if on host - do nothing
 
 }
+
+
+template <typename ValueType>
+void LocalMatrix<ValueType>::MoveToAcceleratorAsync(void) {
+
+  LOG_DEBUG(this, "LocalMatrix::MoveToAcceleratorAsync()",
+            "");
+
+  if (_paralution_available_accelerator() == false)
+    LOG_VERBOSE_INFO(4,"*** info: LocalMatrix::MoveToAcceleratorAsync() no accelerator available - doing nothing");  
+
+  if ( (_paralution_available_accelerator()) && 
+       (this->matrix_ == this->matrix_host_)) {
+
+    this->matrix_accel_ = _paralution_init_base_backend_matrix<ValueType>(this->local_backend_,
+                                                                           this->get_format());
+    this->matrix_accel_->CopyFromAsync(*this->matrix_host_); 
+    this->asyncf = true;
+    
+    LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::MoveToAcceleratorAsync() host to accelerator transfer (started)");        
+  }
+  // if on accelerator - do nothing
+
+}
+
+template <typename ValueType>
+void LocalMatrix<ValueType>::MoveToHostAsync(void) {
+
+  LOG_DEBUG(this, "LocalMatrix::MoveToHostAsync()",
+            "");
+
+  if ( (_paralution_available_accelerator()) && 
+       (this->matrix_ == this->matrix_accel_)) {
+
+    
+    this->matrix_host_ = _paralution_init_base_host_matrix<ValueType>(this->local_backend_,
+                                                                      this->get_format());   
+    this->matrix_host_->CopyFromAsync(*this->matrix_accel_); 
+    this->asyncf = true;
+
+    LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::MoveToHostAsync() accelerator to host transfer (started)");    
+  }
+  // if on host - do nothing
+
+}
+
+template <typename ValueType>
+void LocalMatrix<ValueType>::Sync(void) {
+
+  LOG_DEBUG(this, "LocalMatrix::Sync()",
+            "");
+
+  // check for active async transfer
+  if (this->asyncf == true) {
+
+    // The Move*Async function is active
+    if ( (this->matrix_accel_ != NULL) &&
+         (this->matrix_host_  != NULL)) {
+      
+      // MoveToHostAsync();
+      if ( (_paralution_available_accelerator() == true) && 
+           (this->matrix_ == this->matrix_accel_)) {
+        
+        _paralution_sync();
+        
+        this->matrix_ = this->matrix_host_;
+        delete this->matrix_accel_;
+        this->matrix_accel_ = NULL;
+        
+        LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::MoveToHostAsync() accelerator to host transfer (synced)");        
+      }
+      
+      // MoveToAcceleratorAsync();
+      if ( (_paralution_available_accelerator() == true) && 
+           (this->matrix_ == this->matrix_host_)) {
+        
+        _paralution_sync();      
+        
+        this->matrix_ = this->matrix_accel_;
+        delete this->matrix_host_;
+        this->matrix_host_ = NULL;
+        LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::MoveToAcceleratorAsync() host to accelerator transfer (synced)");        
+      }
+      
+    } else {
+      // The Copy*Async function is active
+      
+      _paralution_sync();
+      LOG_VERBOSE_INFO(4, "*** info: LocalMatrix::Copy*Async() transfer (synced)");        
+    }
+
+  }
+
+  this->asyncf = false;
+
+}
+
+
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::ConvertToCSR(void) {
@@ -788,6 +1167,9 @@ void LocalMatrix<ValueType>::ConvertToDENSE(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::ConvertTo(const unsigned int matrix_format) {
 
+  LOG_DEBUG(this, "LocalMatrix::ConvertTo()",
+            "");
+
   assert((matrix_format == DENSE) ||
          (matrix_format == CSR) ||
          (matrix_format == MCSR) ||
@@ -797,6 +1179,7 @@ void LocalMatrix<ValueType>::ConvertTo(const unsigned int matrix_format) {
          (matrix_format == ELL) ||
          (matrix_format == HYB));
 
+  this->free_assembly_data();
 
   //  LOG_INFO("Convert " << _matrix_format_names[matrix_format] << " <- " << _matrix_format_names[this->get_format()] );      
 
@@ -863,6 +1246,10 @@ void LocalMatrix<ValueType>::ConvertTo(const unsigned int matrix_format) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::Apply(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const {
 
+  LOG_DEBUG(this, "LocalMatrix::Apply()",
+            "");
+
+
   assert(&in != NULL);
   assert(out != NULL);
 
@@ -877,6 +1264,9 @@ template <typename ValueType>
 void LocalMatrix<ValueType>::ApplyAdd(const LocalVector<ValueType> &in, const ValueType scalar, 
                                       LocalVector<ValueType> *out) const {
 
+  LOG_DEBUG(this, "LocalMatrix::ApplyAdd()",
+            "");
+
   assert(&in != NULL);
   assert(out != NULL);
 
@@ -890,6 +1280,9 @@ void LocalMatrix<ValueType>::ApplyAdd(const LocalVector<ValueType> &in, const Va
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::ExtractDiagonal(LocalVector<ValueType> *vec_diag) const {
+
+  LOG_DEBUG(this, "LocalMatrix::ExtractDiagonal()",
+            "");
 
   assert(vec_diag != NULL);
 
@@ -933,6 +1326,9 @@ void LocalMatrix<ValueType>::ExtractDiagonal(LocalVector<ValueType> *vec_diag) c
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::ExtractInverseDiagonal(LocalVector<ValueType> *vec_inv_diag) const {
+
+  LOG_DEBUG(this, "LocalMatrix::ExtractInverseDiagonal()",
+            "");
 
   assert(vec_inv_diag != NULL);
 
@@ -981,6 +1377,11 @@ void LocalMatrix<ValueType>::ExtractSubMatrix(const int row_offset,
                                               const int row_size,
                                               const int col_size,
                                               LocalMatrix<ValueType> *mat) const {
+
+  LOG_DEBUG(this, "LocalMatrix::ExtractSubMatrix()",
+            "row_offset=" <<  row_offset << " col_offset=" << col_offset
+            << " row_size=" << row_size << " col_size=" << col_size);
+
   assert(this != mat);
   assert(mat != NULL);
   assert(row_size > 0 && col_size > 0);
@@ -1048,6 +1449,9 @@ void LocalMatrix<ValueType>::ExtractSubMatrices(const int row_num_blocks,
                                                 const int *col_offset,
                                                 LocalMatrix<ValueType> ***mat) const {
 
+  LOG_DEBUG(this, "LocalMatrix::ExtractSubMatrices()",
+            "row_num_blocks=" << row_num_blocks << " col_num_blocks=" << col_num_blocks);
+
   assert(row_num_blocks > 0);
   assert(col_num_blocks > 0);
   assert(row_offset != NULL);
@@ -1073,6 +1477,9 @@ void LocalMatrix<ValueType>::ExtractSubMatrices(const int row_num_blocks,
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::ExtractU(LocalMatrix<ValueType> *U, const bool diag) const {
+
+  LOG_DEBUG(this, "LocalMatrix::ExtractU()",
+            diag);
 
   if (this->get_nnz() > 0) {
     
@@ -1123,6 +1530,10 @@ void LocalMatrix<ValueType>::ExtractU(LocalMatrix<ValueType> *U, const bool diag
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::ExtractL(LocalMatrix<ValueType> *L, const bool diag) const {
+
+  LOG_DEBUG(this, "LocalMatrix::ExtractL()",
+            diag);
+
 
   if (this->get_nnz() > 0) {
 
@@ -1175,6 +1586,9 @@ void LocalMatrix<ValueType>::ExtractL(LocalMatrix<ValueType> *L, const bool diag
 template <typename ValueType>
 void LocalMatrix<ValueType>::LUAnalyse(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::LUAnalyse()",
+            "");
+
   if (this->get_nnz() > 0) {
     this->matrix_->LUAnalyse();
   }
@@ -1184,6 +1598,9 @@ void LocalMatrix<ValueType>::LUAnalyse(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::LUAnalyseClear(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::LUAnalyseClear()",
+            "");
+
   if (this->get_nnz() > 0) {
     this->matrix_->LUAnalyseClear();
   }
@@ -1192,6 +1609,10 @@ void LocalMatrix<ValueType>::LUAnalyseClear(void) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::LUSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const {
+
+  LOG_DEBUG(this, "LocalMatrix::LUSolve()",
+            "");
+
 
   if (this->get_nnz() > 0) {
 
@@ -1240,6 +1661,9 @@ void LocalMatrix<ValueType>::LUSolve(const LocalVector<ValueType> &in, LocalVect
 template <typename ValueType>
 void LocalMatrix<ValueType>::LLAnalyse(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::LLAnalyse()",
+            "");
+
   if (this->get_nnz() > 0) {
     this->matrix_->LLAnalyse();
   }
@@ -1249,15 +1673,21 @@ void LocalMatrix<ValueType>::LLAnalyse(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::LLAnalyseClear(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::LLAnalyseClear()",
+            "");
+
   if (this->get_nnz() > 0) {
     this->matrix_->LLAnalyseClear();
   }
 
 }
 
-
 template <typename ValueType>
 void LocalMatrix<ValueType>::LLSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const {
+
+  LOG_DEBUG(this, "LocalMatrix::LLSolve()",
+            "");
+
 
   if (this->get_nnz() > 0) {
     
@@ -1303,7 +1733,68 @@ void LocalMatrix<ValueType>::LLSolve(const LocalVector<ValueType> &in, LocalVect
 }
 
 template <typename ValueType>
+void LocalMatrix<ValueType>::LLSolve(const LocalVector<ValueType> &in, const LocalVector<ValueType> &inv_diag,
+                                     LocalVector<ValueType> *out) const {
+
+  LOG_DEBUG(this, "LocalMatrix::LLSolve()",
+            "");
+
+
+  if (this->get_nnz() > 0) {
+    
+    assert(&in != NULL);
+    assert(out != NULL);
+    
+    assert( ( (this->matrix_ == this->matrix_host_)  && (in.vector_ == in.vector_host_)  &&
+              (inv_diag.vector_ == inv_diag.vector_host_)  && (out->vector_ == out->vector_host_)) ||
+            ( (this->matrix_ == this->matrix_accel_) && (in.vector_ == in.vector_accel_) &&
+              (inv_diag.vector_ == inv_diag.vector_accel_) && (out->vector_ == out->vector_accel_)));
+    
+    bool err = this->matrix_->LLSolve(*in.vector_, *inv_diag.vector_, out->vector_);
+    
+    if ((err == false) && (this->is_host() == true)) {
+      LOG_INFO("Computation of LocalMatrix::LLSolve() fail");
+      this->info();
+      FATAL_ERROR(__FILE__, __LINE__);    
+    }
+    
+    
+    if (err == false) {
+      
+      LocalMatrix<ValueType> tmp_mat;
+      tmp_mat.CloneFrom(*this);
+      
+      LocalVector<ValueType> tmp_vec;
+      tmp_vec.CloneFrom(in);
+
+      LocalVector<ValueType> tmp_inv;
+      tmp_inv.CloneFrom(inv_diag);
+      
+      tmp_mat.MoveToHost();
+      tmp_vec.MoveToHost();
+      tmp_inv.MoveToHost();
+      out->MoveToHost();
+      
+      if (tmp_mat.matrix_->LLSolve(*tmp_vec.vector_, *tmp_inv.vector_, out->vector_) ==  false) {
+        LOG_INFO("Computation of LocalMatrix::LLSolve() fail");
+        this->info();
+        FATAL_ERROR(__FILE__, __LINE__);
+      }
+      
+      LOG_VERBOSE_INFO(2, "*** warning: LocalMatrix::LLSolve() is performed on the host");
+      
+      out->MoveToAccelerator();
+      
+    }  
+  }
+}
+
+template <typename ValueType>
 void LocalMatrix<ValueType>::LAnalyse(const bool diag_unit) {
+
+  LOG_DEBUG(this, "LocalMatrix::LAnalyse()",
+            diag_unit);
+
 
   if (this->get_nnz() > 0) {
     this->matrix_->LAnalyse(diag_unit);
@@ -1314,6 +1805,10 @@ void LocalMatrix<ValueType>::LAnalyse(const bool diag_unit) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::LAnalyseClear(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::LAnalyseClear()",
+            "");
+
+
   if (this->get_nnz() > 0) {
     this->matrix_->LAnalyseClear();
   }
@@ -1322,6 +1817,10 @@ void LocalMatrix<ValueType>::LAnalyseClear(void) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::LSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const {
+
+  LOG_DEBUG(this, "LocalMatrix::LSolve()",
+            "");
+
 
   if (this->get_nnz() > 0) {
 
@@ -1371,6 +1870,10 @@ void LocalMatrix<ValueType>::LSolve(const LocalVector<ValueType> &in, LocalVecto
 template <typename ValueType>
 void LocalMatrix<ValueType>::UAnalyse(const bool diag_unit) {
 
+  LOG_DEBUG(this, "LocalMatrix::UAnalyse()",
+            "");
+
+
   if (this->get_nnz() > 0) {
     this->matrix_->UAnalyse(diag_unit);
   }
@@ -1380,6 +1883,10 @@ void LocalMatrix<ValueType>::UAnalyse(const bool diag_unit) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::UAnalyseClear(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::UAnalyseClear()",
+            "");
+
+
   if (this->get_nnz() > 0) {
     this->matrix_->UAnalyseClear();
   }
@@ -1388,6 +1895,10 @@ void LocalMatrix<ValueType>::UAnalyseClear(void) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::USolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const {
+
+  LOG_DEBUG(this, "LocalMatrix::USolve()",
+            "");
+
 
   if (this->get_nnz() > 0) {
     
@@ -1435,10 +1946,18 @@ void LocalMatrix<ValueType>::USolve(const LocalVector<ValueType> &in, LocalVecto
 template <typename ValueType>
 void LocalMatrix<ValueType>::ILU0Factorize(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::()",
+            "");
+
   assert(this->get_nnz() > 0);
 
-  // Only CSR factorization
-  this->ConvertToCSR();
+  // Only CSR and MCSR factorization
+  if (this->get_format() != CSR && this->get_format() != MCSR)
+    this->ConvertToCSR();
+
+  // Only CSR on accelerator
+  if (!this->is_host())
+    this->ConvertToCSR();
 
   bool err = this->matrix_->ILU0Factorize();
 
@@ -1470,7 +1989,12 @@ void LocalMatrix<ValueType>::ILU0Factorize(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::ILUTFactorize(const ValueType t, const int maxrow) {
 
+  LOG_DEBUG(this, "LocalMatrix::ILUTFactorize()",
+            "t=" << t << " maxrow=" << maxrow);
+
+
   assert(this->get_nnz() > 0);
+  this->free_assembly_data();
 
   // host only
   bool on_host = this->is_host();
@@ -1490,7 +2014,12 @@ void LocalMatrix<ValueType>::ILUTFactorize(const ValueType t, const int maxrow) 
 template <typename ValueType>
 void LocalMatrix<ValueType>::ILUpFactorize(const int p, const bool level) {
 
+  LOG_DEBUG(this, "LocalMatrix::ILUpFactorize()",
+            "p=" << p << " level=" << level);
+
+
   assert(this->get_nnz() > 0);
+  this->free_assembly_data();
 
   // host only
   bool on_host = this->is_host();
@@ -1535,17 +2064,22 @@ void LocalMatrix<ValueType>::ILUpFactorize(const int p, const bool level) {
 }
 
 template <typename ValueType>
-void LocalMatrix<ValueType>::IC0Factorize(void) {
+void LocalMatrix<ValueType>::ICFactorize(LocalVector<ValueType> *inv_diag) {
 
+  LOG_DEBUG(this, "LocalMatrix::ICFactorize()",
+            "");
+
+  assert(inv_diag != NULL);
   assert(this->get_nnz() > 0);
+  this->free_assembly_data();
 
   // Only CSR factorization
   this->ConvertToCSR();
 
-  bool err = this->matrix_->IC0Factorize();
+  bool err = this->matrix_->ICFactorize(inv_diag->vector_);
 
   if ((err == false) && (this->is_host() == true)) {
-    LOG_INFO("Computation of LocalMatrix::IC0Factorize() fail");
+    LOG_INFO("Computation of LocalMatrix::ICFactorize() fail");
     this->info();
     FATAL_ERROR(__FILE__, __LINE__);    
   }
@@ -1553,16 +2087,18 @@ void LocalMatrix<ValueType>::IC0Factorize(void) {
   if (err == false) {
 
     this->MoveToHost();
+    inv_diag->MoveToHost();
 
-    if (this->matrix_->IC0Factorize() ==  false) {
-      LOG_INFO("Computation of LocalMatrix::IC0Factorize() fail");
+    if (this->matrix_->ICFactorize(inv_diag->vector_) ==  false) {
+      LOG_INFO("Computation of LocalMatrix::ICFactorize() fail");
       this->info();
       FATAL_ERROR(__FILE__, __LINE__);
     }
 
-    LOG_VERBOSE_INFO(2, "*** warning: LocalMatrix::IC0Factorize() is performed on the host");
+    LOG_VERBOSE_INFO(2, "*** warning: LocalMatrix::ICFactorize() is performed on the host");
 
     this->MoveToAccelerator();
+    inv_diag->MoveToAccelerator();
 
   }  
 
@@ -1572,6 +2108,9 @@ template <typename ValueType>
 void LocalMatrix<ValueType>::MultiColoring(int &num_colors,
                                            int **size_colors,
                                            LocalVector<int> *permutation) const {
+
+  LOG_DEBUG(this, "LocalMatrix::MultiColoring()",
+            "");
 
   assert(permutation != NULL);
   assert(this->get_nrow() == this->get_ncol());
@@ -1614,6 +2153,9 @@ void LocalMatrix<ValueType>::MultiColoring(int &num_colors,
 template <typename ValueType>
 void LocalMatrix<ValueType>::MaximalIndependentSet(int &size,
                                                    LocalVector<int> *permutation) const {
+
+  LOG_DEBUG(this, "LocalMatrix::MaximalIndependentSet()",
+            "");
 
   assert(permutation != NULL);   
   assert(this->get_nrow() == this->get_ncol());
@@ -1658,6 +2200,9 @@ template <typename ValueType>
 void LocalMatrix<ValueType>::ZeroBlockPermutation(int &size,
                                                   LocalVector<int> *permutation) const {
 
+  LOG_DEBUG(this, "LocalMatrix::ZeroBlockPermutation()",
+            "");
+
   assert(permutation != NULL);
     
   assert(this->get_nrow() == this->get_ncol());
@@ -1700,7 +2245,11 @@ void LocalMatrix<ValueType>::ZeroBlockPermutation(int &size,
 template <typename ValueType>
 void LocalMatrix<ValueType>::Householder(const int idx, ValueType &beta, LocalVector<ValueType> *vec) {
 
+  LOG_DEBUG(this, "LocalMatrix::Householder()",
+            "");
+
   assert(vec != NULL);
+  this->free_assembly_data();
 
   // only DENSE, only on host
   if ((this->is_accel() == true)  ||
@@ -1733,7 +2282,11 @@ void LocalMatrix<ValueType>::Householder(const int idx, ValueType &beta, LocalVe
 template <typename ValueType>
 void LocalMatrix<ValueType>::QRDecompose(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::QRDecompose()",
+            "");
+
   assert(this->get_nnz() > 0);
+  this->free_assembly_data();
 
   // only DENSE, only on host
   if ((this->is_accel() == true)  ||
@@ -1764,6 +2317,9 @@ void LocalMatrix<ValueType>::QRDecompose(void) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::QRSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const {
+
+  LOG_DEBUG(this, "LocalMatrix::QRSolve()",
+            "");
 
   assert(&in != NULL);
   assert(out != NULL);
@@ -1804,9 +2360,14 @@ void LocalMatrix<ValueType>::QRSolve(const LocalVector<ValueType> &in, LocalVect
 template <typename ValueType>
 void LocalMatrix<ValueType>::Permute(const LocalVector<int> &permutation) {
 
+  LOG_DEBUG(this, "LocalMatrix::Permute()",
+            "");
+
+
   assert((permutation.get_size() == this->get_nrow()) ||
           (permutation.get_size() == this->get_ncol()));
   assert(permutation.get_size() > 0);
+  this->free_assembly_data();
 
   bool err = this->matrix_->Permute(*permutation.vector_);
 
@@ -1836,15 +2397,19 @@ void LocalMatrix<ValueType>::Permute(const LocalVector<int> &permutation) {
 
   }
 
-
 }
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::PermuteBackward(const LocalVector<int> &permutation) {
 
+  LOG_DEBUG(this, "LocalMatrix::PermuteBackward()",
+            "");
+
+
   assert((permutation.get_size() == this->get_nrow()) ||
          (permutation.get_size() == this->get_ncol()));
   assert(permutation.get_size() > 0);
+  this->free_assembly_data();
 
   // Only COO can permute (so far)
 
@@ -1881,16 +2446,98 @@ void LocalMatrix<ValueType>::PermuteBackward(const LocalVector<int> &permutation
     
     this->ConvertTo(mat_format);
   }
-  
 
 }
 
+template <typename ValueType>
+void LocalMatrix<ValueType>::CMK(LocalVector<int> *permutation) const {
+
+  LOG_DEBUG(this, "LocalMatrix::CMK()",
+            "");
+
+  assert(permutation != NULL);
+  assert(this->get_nnz() > 0);
+
+  // only CSR, only on host - for now
+  if ((this->is_accel() == true)  ||
+      (this->get_format() != CSR)) {
+
+    LocalMatrix<ValueType> mat_host;
+    mat_host.CloneFrom(*this);
+
+    if (this->is_accel() == true) {
+      mat_host.MoveToHost();
+      permutation->MoveToHost();
+    }
+
+    mat_host.ConvertToCSR();
+    mat_host.CMK(permutation);
+
+    if (this->is_accel() == true) {
+      permutation->MoveToAccelerator();
+
+      LOG_VERBOSE_INFO(2, "*** warning: LocalMatirx::CMK() is performed on the host");
+    }
+
+  } else {
+
+    std::string vec_name = "CMK permutation of " + this->object_name_;
+
+    this->matrix_->CMK(permutation->vector_);
+
+  }
+
+}
+
+template <typename ValueType>
+void LocalMatrix<ValueType>::RCMK(LocalVector<int> *permutation) const {
+
+  LOG_DEBUG(this, "LocalMatrix::RCMK()",
+            "");
+
+  assert(permutation != NULL);
+  assert(this->get_nnz() > 0);
+
+  // only CSR, only on host - for now
+  if ((this->is_accel() == true)  ||
+      (this->get_format() != CSR)) {
+
+    LocalMatrix<ValueType> mat_host;
+    mat_host.CloneFrom(*this);
+
+    if (this->is_accel() == true) {
+      mat_host.MoveToHost();
+      permutation->MoveToHost();
+    }
+
+    mat_host.ConvertToCSR();
+    mat_host.RCMK(permutation);
+
+    if (this->is_accel() == true) {
+      permutation->MoveToAccelerator();
+
+      LOG_VERBOSE_INFO(2, "*** warning: LocalMatirx::RCMK() is performed on the host");
+    }
+
+  } else {
+
+    std::string vec_name = "RCMK permutation of " + this->object_name_;
+
+    this->matrix_->RCMK(permutation->vector_);
+
+  }
+
+}
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::SymbolicPower(const int p) {
 
+  LOG_DEBUG(this, "LocalMatrix::SymbolicPower()",
+            p);
+
   assert(p >= 1);
   assert(this->get_nnz() > 0);
+  this->free_assembly_data();
 
   // CSR, host only
   bool on_host = this->is_host();
@@ -1913,11 +2560,16 @@ template <typename ValueType>
 void LocalMatrix<ValueType>::MatrixAdd(const LocalMatrix<ValueType> &mat, const ValueType alpha, 
                                        const ValueType beta, const bool structure) {
 
+  LOG_DEBUG(this, "LocalMatrix::MatrixAdd()",
+            "");
+
   assert(&mat != NULL);
   assert(&mat != this);
     
   assert( ( (this->matrix_ == this->matrix_host_)  && (mat.matrix_ == mat.matrix_host_)) ||
           ( (this->matrix_ == this->matrix_accel_) && (mat.matrix_ == mat.matrix_accel_) ) );
+
+  this->free_assembly_data();
 
   bool err = this->matrix_->MatrixAdd(*mat.matrix_,
                                       alpha, beta, 
@@ -1962,6 +2614,9 @@ void LocalMatrix<ValueType>::Gershgorin(ValueType &lambda_min,
                                         ValueType &lambda_max) const {
 
 
+  LOG_DEBUG(this, "LocalMatrix::Gershgorin()",
+            "");
+
   bool err = this->matrix_->Gershgorin(lambda_min, lambda_max);
 
   if ((err == false) && (this->is_host() == true)) {
@@ -1992,6 +2647,10 @@ void LocalMatrix<ValueType>::Gershgorin(ValueType &lambda_min,
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::Scale(const ValueType alpha) {
+
+  LOG_DEBUG(this, "LocalMatrix::Scale()",
+            alpha);
+
 
   if (this->get_nnz() > 0) {
 
@@ -2026,6 +2685,9 @@ void LocalMatrix<ValueType>::Scale(const ValueType alpha) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::ScaleDiagonal(const ValueType alpha) {
 
+  LOG_DEBUG(this, "LocalMatrix::ScaleDiagonal()",
+            alpha);
+
   if (this->get_nnz() > 0) {
     
     bool err = this->matrix_->ScaleDiagonal(alpha);
@@ -2059,6 +2721,9 @@ void LocalMatrix<ValueType>::ScaleDiagonal(const ValueType alpha) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::ScaleOffDiagonal(const ValueType alpha) {
 
+  LOG_DEBUG(this, "LocalMatrix::ScaleOffDiagonal()",
+            alpha);
+
   if (this->get_nnz() > 0) {
 
     bool err = this->matrix_->ScaleOffDiagonal(alpha);
@@ -2090,6 +2755,9 @@ void LocalMatrix<ValueType>::ScaleOffDiagonal(const ValueType alpha) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AddScalar(const ValueType alpha) {
+
+  LOG_DEBUG(this, "LocalMatrix::AddScalar()",
+            alpha);
 
   if (this->get_nnz() > 0) {
 
@@ -2125,6 +2793,10 @@ void LocalMatrix<ValueType>::AddScalar(const ValueType alpha) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::AddScalarDiagonal(const ValueType alpha) {
 
+  LOG_DEBUG(this, "LocalMatrix::AddScalarDiagonal()",
+            alpha);
+
+
   if (this->get_nnz() > 0) {
 
     bool err = this->matrix_->AddScalarDiagonal(alpha);
@@ -2157,6 +2829,10 @@ void LocalMatrix<ValueType>::AddScalarDiagonal(const ValueType alpha) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AddScalarOffDiagonal(const ValueType alpha) {
+
+  LOG_DEBUG(this, "LocalMatrix::AddScalarOffDiagonal()",
+            "");
+
 
   if (this->get_nnz() > 0) {
 
@@ -2191,6 +2867,9 @@ void LocalMatrix<ValueType>::AddScalarOffDiagonal(const ValueType alpha) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::MatrixMult(const LocalMatrix<ValueType> &A, const LocalMatrix<ValueType> &B) {
 
+  LOG_DEBUG(this, "LocalMatrix::AddScalarDiagonal()",
+            "");
+
   assert(&A != NULL);
   assert(&B != NULL);
   assert(&A != this);
@@ -2198,6 +2877,8 @@ void LocalMatrix<ValueType>::MatrixMult(const LocalMatrix<ValueType> &A, const L
     
   assert( ( (this->matrix_ == this->matrix_host_)  && (A.matrix_ == A.matrix_host_)  && (B.matrix_ == B.matrix_host_)) ||
           ( (this->matrix_ == this->matrix_accel_) && (A.matrix_ == A.matrix_accel_) && (B.matrix_ == B.matrix_accel_)) );
+
+  this->free_assembly_data();
 
   this->object_name_ = A.object_name_ + "x" + B.object_name_;
 
@@ -2243,6 +2924,9 @@ void LocalMatrix<ValueType>::MatrixMult(const LocalMatrix<ValueType> &A, const L
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::DiagonalMatrixMult(const LocalVector<ValueType> &diag) {
+
+  LOG_DEBUG(this, "LocalMatrix::DiagonalMatrixMult()",
+            "");
 
   assert(&diag != NULL);
 
@@ -2290,10 +2974,14 @@ void LocalMatrix<ValueType>::DiagonalMatrixMult(const LocalVector<ValueType> &di
 template <typename ValueType>
 void LocalMatrix<ValueType>::Compress(const ValueType drop_off) {
 
+  LOG_DEBUG(this, "LocalMatrix::Compress()",
+            "");
+
+  assert(paralution_abs(drop_off) >= ValueType(0.0));
+  this->free_assembly_data();
+
   if (this->get_nnz() > 0) {
 
-    assert(drop_off > ValueType(0.0));
-    
     bool err = this->matrix_->Compress(drop_off);
     
     if ((err == false) && (this->is_host() == true)) {
@@ -2337,6 +3025,11 @@ void LocalMatrix<ValueType>::Compress(const ValueType drop_off) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::Transpose(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::Transpose()",
+            "");
+
+  this->free_assembly_data();
+
   if (this->get_nnz() > 0) {
 
     bool err = this->matrix_->Transpose();
@@ -2369,6 +3062,9 @@ void LocalMatrix<ValueType>::Transpose(void) {
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AMGConnect(const ValueType eps, LocalVector<int> *connections) const {
+
+  LOG_DEBUG(this, "LocalMatrix::AMGConnect()",
+            eps);
 
   assert(eps > 0);
   assert(connections != NULL);
@@ -2407,6 +3103,9 @@ void LocalMatrix<ValueType>::AMGConnect(const ValueType eps, LocalVector<int> *c
 
 template <typename ValueType>
 void LocalMatrix<ValueType>::AMGAggregate(const LocalVector<int> &connections, LocalVector<int> *aggregates) const {
+
+  LOG_DEBUG(this, "LocalMatrix::AMGAggregate()",
+            "");
 
   assert(aggregates != NULL);
   assert(&connections != NULL);
@@ -2453,6 +3152,9 @@ void LocalMatrix<ValueType>::AMGSmoothedAggregation(const ValueType relax,
                                                     const LocalVector<int> &connections,
                                                           LocalMatrix<ValueType> *prolong,
                                                           LocalMatrix<ValueType> *restrict) const {
+
+  LOG_DEBUG(this, "LocalMatrix::AMGSmoothedAggregation()",
+            relax);
 
   assert(relax > 0);
   assert(&aggregates != NULL);
@@ -2509,6 +3211,9 @@ void LocalMatrix<ValueType>::AMGAggregation(const LocalVector<int> &aggregates,
                                                   LocalMatrix<ValueType> *prolong,
                                                   LocalMatrix<ValueType> *restrict) const {
 
+  LOG_DEBUG(this, "LocalMatrix::AMGAggregation()",
+            "");
+
   assert(&aggregates != NULL);
   assert(prolong != NULL);
   assert(restrict != NULL);
@@ -2557,10 +3262,14 @@ void LocalMatrix<ValueType>::AMGAggregation(const LocalVector<int> &aggregates,
 template <typename ValueType>
 void LocalMatrix<ValueType>::CreateFromMap(const LocalVector<int> &map, const int n, const int m) {
 
+  LOG_DEBUG(this, "LocalMatrix::CreateFromMap()",
+            n << " " << m);
+
   assert( ( (this->matrix_ == this->matrix_host_)  && (map.vector_ == map.vector_host_)) ||
           ( (this->matrix_ == this->matrix_accel_) && (map.vector_ == map.vector_accel_) ) );
 
   assert(map.get_size() == n);
+  this->free_assembly_data();
 
   bool err = this->matrix_->CreateFromMap(*map.vector_, n , m);
 
@@ -2597,6 +3306,11 @@ void LocalMatrix<ValueType>::CreateFromMap(const LocalVector<int> &map, const in
 template <typename ValueType>
 void LocalMatrix<ValueType>::LUFactorize(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::LUFactorize()",
+            "");
+
+  this->free_assembly_data();
+
   if (this->get_nnz() > 0) {
 
     // only DENSE, only on host
@@ -2630,7 +3344,12 @@ void LocalMatrix<ValueType>::LUFactorize(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::FSAI(const int power, const LocalMatrix<ValueType> *pattern) {
 
+  LOG_DEBUG(this, "LocalMatrix::FSAI()",
+            power);
+
+
   assert(power > 0);
+  this->free_assembly_data();
   
   if (this->get_nnz() > 0 ) {
 
@@ -2683,6 +3402,11 @@ void LocalMatrix<ValueType>::FSAI(const int power, const LocalMatrix<ValueType> 
 template <typename ValueType>
 void LocalMatrix<ValueType>::SPAI(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::SPAI()",
+            "");
+
+  this->free_assembly_data();
+
   if (this->get_nnz() > 0) {
 
     // only CSR, only on host
@@ -2716,6 +3440,10 @@ void LocalMatrix<ValueType>::SPAI(void) {
 template <typename ValueType>
 void LocalMatrix<ValueType>::Invert(void) {
 
+  LOG_DEBUG(this, "LocalMatrix::Invert()",
+            "");
+
+  this->free_assembly_data();
 
   if (this->get_nnz() > 0) {
 
@@ -2746,6 +3474,24 @@ void LocalMatrix<ValueType>::Invert(void) {
   }
 }
 
+template <typename ValueType>
+void LocalMatrix<ValueType>::free_assembly_data(void) {
+
+  if (this->assembly_loop_start != NULL)
+    free_host(&assembly_loop_start);
+  
+  if (this->assembly_loop_end != NULL)
+    free_host(&assembly_loop_end);
+
+  if (this->assembly_rank != NULL)
+    free_host(&this->assembly_rank);
+  
+  if (this->assembly_irank != NULL)
+    free_host(&this->assembly_irank);
+
+  assembly_threads = 0;
+
+}
 
 template class LocalMatrix<double>;
 template class LocalMatrix<float>;

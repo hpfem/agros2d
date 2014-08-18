@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "gpu_matrix_csr.hpp"
 #include "gpu_matrix_coo.hpp"
@@ -49,12 +54,16 @@ template <typename ValueType>
 GPUAcceleratorMatrixDENSE<ValueType>::GPUAcceleratorMatrixDENSE() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 GPUAcceleratorMatrixDENSE<ValueType>::GPUAcceleratorMatrixDENSE(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixDENSE::GPUAcceleratorMatrixDENSE()",
+            "constructor with local_backend");
 
   this->mat_.val = NULL;
   this->set_backend(local_backend); 
@@ -66,6 +75,9 @@ GPUAcceleratorMatrixDENSE<ValueType>::GPUAcceleratorMatrixDENSE(const Paralution
 
 template <typename ValueType>
 GPUAcceleratorMatrixDENSE<ValueType>::~GPUAcceleratorMatrixDENSE() {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixDENSE::~GPUAcceleratorMatrixDENSE()",
+            "destructor");
 
   this->Clear();
 
@@ -132,9 +144,9 @@ void GPUAcceleratorMatrixDENSE<ValueType>::CopyFromHost(const HostMatrix<ValueTy
   if (this->get_nnz() == 0)
     this->AllocateDENSE(src.get_nrow(), src.get_ncol() );
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
     if (this->get_nnz() > 0) {
 
@@ -172,9 +184,9 @@ void GPUAcceleratorMatrixDENSE<ValueType>::CopyToHost(HostMatrix<ValueType> *dst
   if (dst->get_nnz() == 0)
     cast_mat->AllocateDENSE(this->get_nrow(), this->get_ncol() );
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     if (this->get_nnz() > 0) {
       
@@ -211,9 +223,9 @@ void GPUAcceleratorMatrixDENSE<ValueType>::CopyFrom(const BaseMatrix<ValueType> 
   if (this->get_nnz() == 0)
     this->AllocateDENSE(src.get_nrow(), src.get_ncol() );
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
     if (this->get_nnz() > 0) { 
 
@@ -261,9 +273,9 @@ void GPUAcceleratorMatrixDENSE<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) co
   if (this->get_nnz() == 0)
     gpu_cast_mat->AllocateDENSE(dst->get_nrow(), dst->get_ncol() );
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     if (this->get_nnz() > 0) {
 
@@ -280,6 +292,184 @@ void GPUAcceleratorMatrixDENSE<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) co
     if ((host_cast_mat = dynamic_cast<HostMatrix<ValueType>*> (dst)) != NULL) {
       
       this->CopyToHost(host_cast_mat);
+
+    } else {
+      
+      LOG_INFO("Error unsupported GPU matrix type");
+      this->info();
+      dst->info();
+      FATAL_ERROR(__FILE__, __LINE__);
+      
+    }
+
+  }
+
+
+}
+
+
+template <typename ValueType>
+void GPUAcceleratorMatrixDENSE<ValueType>::CopyFromHostAsync(const HostMatrix<ValueType> &src) {
+
+  const HostMatrixDENSE<ValueType> *cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == src.get_mat_format());
+
+  // CPU to GPU copy
+  if ((cast_mat = dynamic_cast<const HostMatrixDENSE<ValueType>*> (&src)) != NULL) {
+    
+  if (this->get_nnz() == 0)
+    this->AllocateDENSE(src.get_nrow(), src.get_ncol() );
+
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
+
+    if (this->get_nnz() > 0) {
+
+      cudaMemcpyAsync(this->mat_.val,     // dst
+                      cast_mat->mat_.val, // src
+                      this->get_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyHostToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+    
+  } else {
+    
+    LOG_INFO("Error unsupported GPU matrix type");
+    this->info();
+    src.info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixDENSE<ValueType>::CopyToHostAsync(HostMatrix<ValueType> *dst) const {
+
+  HostMatrixDENSE<ValueType> *cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == dst->get_mat_format());
+
+  // GPU to CPU copy
+  if ((cast_mat = dynamic_cast<HostMatrixDENSE<ValueType>*> (dst)) != NULL) {
+
+    cast_mat->set_backend(this->local_backend_);   
+
+  if (dst->get_nnz() == 0)
+    cast_mat->AllocateDENSE(this->get_nrow(), this->get_ncol() );
+
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
+
+    if (this->get_nnz() > 0) {
+      
+      cudaMemcpyAsync(cast_mat->mat_.val, // dst
+                      this->mat_.val,     // src
+                      this->get_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyDeviceToHost);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+    
+  } else {
+    
+    LOG_INFO("Error unsupported GPU matrix type");
+    this->info();
+    dst->info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixDENSE<ValueType>::CopyFromAsync(const BaseMatrix<ValueType> &src) {
+
+  const GPUAcceleratorMatrixDENSE<ValueType> *gpu_cast_mat;
+  const HostMatrix<ValueType> *host_cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == src.get_mat_format());
+
+  // GPU to GPU copy
+  if ((gpu_cast_mat = dynamic_cast<const GPUAcceleratorMatrixDENSE<ValueType>*> (&src)) != NULL) {
+    
+  if (this->get_nnz() == 0)
+    this->AllocateDENSE(src.get_nrow(), src.get_ncol() );
+
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
+
+    if (this->get_nnz() > 0) { 
+
+      cudaMemcpy(this->mat_.val,         // dst
+                 gpu_cast_mat->mat_.val, // src
+                 this->get_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToDevice);    
+        CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      }
+
+  } else {
+
+    //CPU to GPU
+    if ((host_cast_mat = dynamic_cast<const HostMatrix<ValueType>*> (&src)) != NULL) {
+      
+      this->CopyFromHostAsync(*host_cast_mat);
+      
+    } else {
+      
+      LOG_INFO("Error unsupported GPU matrix type");
+      this->info();
+      src.info();
+      FATAL_ERROR(__FILE__, __LINE__);
+      
+    }
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixDENSE<ValueType>::CopyToAsync(BaseMatrix<ValueType> *dst) const {
+
+  GPUAcceleratorMatrixDENSE<ValueType> *gpu_cast_mat;
+  HostMatrix<ValueType> *host_cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == dst->get_mat_format());
+
+  // GPU to GPU copy
+  if ((gpu_cast_mat = dynamic_cast<GPUAcceleratorMatrixDENSE<ValueType>*> (dst)) != NULL) {
+
+    gpu_cast_mat->set_backend(this->local_backend_);       
+
+  if (this->get_nnz() == 0)
+    gpu_cast_mat->AllocateDENSE(dst->get_nrow(), dst->get_ncol() );
+
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
+
+    if (this->get_nnz() > 0) {
+
+        cudaMemcpy(gpu_cast_mat->mat_.val, // dst
+                   this->mat_.val,         // src
+                   this->get_nnz()*sizeof(ValueType), // size
+                   cudaMemcpyDeviceToHost);    
+        CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      }
+    
+  } else {
+
+    //GPU to CPU
+    if ((host_cast_mat = dynamic_cast<HostMatrix<ValueType>*> (dst)) != NULL) {
+      
+      this->CopyToHostAsync(host_cast_mat);
 
     } else {
       

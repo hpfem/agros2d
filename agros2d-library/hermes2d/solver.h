@@ -108,6 +108,7 @@ public:
     AgrosExternalSolverMUMPS(CSCMatrix<double> *m, SimpleVector<double> *rhs);
 
     virtual void setSolverCommand();
+    virtual void free();
 };
 
 class AgrosExternalSolverUMFPack : public AgrosExternalSolverExternal
@@ -116,6 +117,7 @@ public:
     AgrosExternalSolverUMFPack(CSCMatrix<double> *m, SimpleVector<double> *rhs);
 
     virtual void setSolverCommand();
+    virtual void free();
 };
 
 struct TimeStepInfo
@@ -133,8 +135,8 @@ public:
     virtual ~HermesSolverContainer() {}
 
     void projectPreviousSolution(Scalar* solutionVector,
-                                 Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
-                                 Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
+                                 std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
+                                 std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
 
     virtual void solve(Scalar* previousSolutionVector) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() = 0;
@@ -187,7 +189,7 @@ private:
 
     QSharedPointer<HermesSolverContainer<Scalar> > m_hermesSolverContainer;
 
-    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_actualSpaces;
+    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_actualSpaces;
 
     QString m_solverID;
     QString m_solverName;
@@ -199,14 +201,14 @@ private:
     // to be used in advanced time step adaptivity
     double m_averageErrorToLenghtRatio;
 
-    void initSelectors(Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
+    void initSelectors(std::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
 
-    Scalar *solveOneProblem(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
+    Scalar *solveOneProblem(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution = std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
 
     void clearActualSpaces();
-    void setActualSpaces(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces);
-    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
-    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, bool createReference);
+    void setActualSpaces(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces);
+    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
+    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, bool createReference);
 };
 
 #endif // SOLVER_H

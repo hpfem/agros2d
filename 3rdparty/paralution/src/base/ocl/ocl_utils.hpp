@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_OCL_OCL_UTILS_HPP_
 #define PARALUTION_OCL_OCL_UTILS_HPP_
 
@@ -27,9 +32,9 @@
 #include "backend_ocl.hpp"
 
 #if defined(__APPLE__) && defined(__MACH__)
-#include <OpenCL/cl.h>
+  #include <OpenCL/cl.h>
 #else
-#include <CL/cl.h>
+  #include <CL/cl.h>
 #endif
 
 
@@ -111,56 +116,66 @@ static const char *OCL_ERROR[] = {
   }                                                                                             \
 }
 
-#define CL_KERNEL_SET_TO_INT                        paralution_get_ocl_kernel<int>      ( 0)
-#define CL_KERNEL_SET_TO                            paralution_get_ocl_kernel<ValueType>( 1)
-#define CL_KERNEL_REVERSE_INDEX                     paralution_get_ocl_kernel<ValueType>( 3)
-#define CL_KERNEL_BUFFER_ADDSCALAR                  paralution_get_ocl_kernel<ValueType>( 5)
-#define CL_KERNEL_SCALEADD                          paralution_get_ocl_kernel<ValueType>( 8)
-#define CL_KERNEL_SCALEADDSCALE                     paralution_get_ocl_kernel<ValueType>(10)
-#define CL_KERNEL_SCALEADD2                         paralution_get_ocl_kernel<ValueType>(12)
-#define CL_KERNEL_POINTWISEMULT                     paralution_get_ocl_kernel<ValueType>(14)
-#define CL_KERNEL_POINTWISEMULT2                    paralution_get_ocl_kernel<ValueType>(16)
-#define CL_KERNEL_COPY_OFFSET_FROM                  paralution_get_ocl_kernel<ValueType>(18)
-#define CL_KERNEL_PERMUTE                           paralution_get_ocl_kernel<ValueType>(20)
-#define CL_KERNEL_PERMUTE_BACKWARD                  paralution_get_ocl_kernel<ValueType>(22)
-#define CL_KERNEL_DOT                               paralution_get_ocl_kernel<ValueType>(24)
-#define CL_KERNEL_AXPY                              paralution_get_ocl_kernel<ValueType>(26)
-#define CL_KERNEL_CSR_SPMV_SCALAR                   paralution_get_ocl_kernel<ValueType>(28)
-#define CL_KERNEL_CSR_ADD_SPMV_SCALAR               paralution_get_ocl_kernel<ValueType>(30)
-#define CL_KERNEL_CSR_SCALE_DIAGONAL                paralution_get_ocl_kernel<ValueType>(32)
-#define CL_KERNEL_CSR_SCALE_OFFDIAGONAL             paralution_get_ocl_kernel<ValueType>(34)
-#define CL_KERNEL_CSR_ADD_DIAGONAL                  paralution_get_ocl_kernel<ValueType>(36)
-#define CL_KERNEL_CSR_ADD_OFFDIAGONAL               paralution_get_ocl_kernel<ValueType>(38)
-#define CL_KERNEL_CSR_EXTRACT_DIAG                  paralution_get_ocl_kernel<ValueType>(40)
-#define CL_KERNEL_CSR_EXTRACT_INV_DIAG              paralution_get_ocl_kernel<ValueType>(42)
-#define CL_KERNEL_CSR_EXTRACT_SUBMATRIX_ROW_NNZ     paralution_get_ocl_kernel<ValueType>(44)
-#define CL_KERNEL_CSR_EXTRACT_SUBMATRIX_COPY        paralution_get_ocl_kernel<ValueType>(46)
-#define CL_KERNEL_CSR_DIAGMATMULT                   paralution_get_ocl_kernel<ValueType>(48)
-#define CL_KERNEL_CSR_ADD_CSR_SAME_STRUCT           paralution_get_ocl_kernel<ValueType>(50)
-#define CL_KERNEL_SCALE                             paralution_get_ocl_kernel<ValueType>(52)
-#define CL_KERNEL_MCSR_SPMV_SCALAR                  paralution_get_ocl_kernel<ValueType>(54)
-#define CL_KERNEL_MCSR_ADD_SPMV_SCALAR              paralution_get_ocl_kernel<ValueType>(56)
-#define CL_KERNEL_ELL_SPMV                          paralution_get_ocl_kernel<ValueType>(58)
-#define CL_KERNEL_ELL_ADD_SPMV                      paralution_get_ocl_kernel<ValueType>(60)
-#define CL_KERNEL_DIA_SPMV                          paralution_get_ocl_kernel<ValueType>(62)
-#define CL_KERNEL_DIA_ADD_SPMV                      paralution_get_ocl_kernel<ValueType>(64)
-#define CL_KERNEL_COO_PERMUTE                       paralution_get_ocl_kernel<ValueType>(66)
-#define CL_KERNEL_COO_SPMV_FLAT                     paralution_get_ocl_kernel<ValueType>(68)
-#define CL_KERNEL_COO_SPMV_REDUCE_UPDATE            paralution_get_ocl_kernel<ValueType>(70)
-#define CL_KERNEL_COO_SPMV_SERIAL                   paralution_get_ocl_kernel<ValueType>(72)
-#define CL_KERNEL_RED_RECURSE                       paralution_get_ocl_kernel<ValueType>(74)
-#define CL_KERNEL_RED_PARTIAL_SUM                   paralution_get_ocl_kernel<ValueType>(76)
-#define CL_KERNEL_RED_EXTRAPOLATE                   paralution_get_ocl_kernel<ValueType>(78)
-#define CL_KERNEL_CSR_PERMUTE_ROWS                  paralution_get_ocl_kernel<ValueType>(80)
-#define CL_KERNEL_CSR_PERMUTE_COLS                  paralution_get_ocl_kernel<ValueType>(82)
-#define CL_KERNEL_CSR_CALC_ROW_NNZ                  paralution_get_ocl_kernel<ValueType>(84)
-#define CL_KERNEL_CSR_PERMUTE_ROW_NNZ               paralution_get_ocl_kernel<ValueType>(86)
-#define CL_KERNEL_REDUCE                            paralution_get_ocl_kernel<ValueType>(88)
-#define CL_KERNEL_ELL_MAX_ROW                       paralution_get_ocl_kernel<ValueType>(92)
-#define CL_KERNEL_ELL_CSR_TO_ELL                    paralution_get_ocl_kernel<ValueType>(94)
-#define CL_KERNEL_ASUM                              paralution_get_ocl_kernel<ValueType>(100)
-#define CL_KERNEL_AMAX                              paralution_get_ocl_kernel<ValueType>(102)
-#define CL_KERNEL_DENSE_SPMV                        paralution_get_ocl_kernel<ValueType>(104)
+#define CL_KERNEL_SET_TO_INT                        paralution_get_kernel_ocl<int>      (  0)
+#define CL_KERNEL_SET_TO                            paralution_get_kernel_ocl<ValueType>(  1)
+#define CL_KERNEL_REVERSE_INDEX                     paralution_get_kernel_ocl<ValueType>(  3)
+#define CL_KERNEL_BUFFER_ADDSCALAR                  paralution_get_kernel_ocl<ValueType>(  5)
+#define CL_KERNEL_SCALEADD                          paralution_get_kernel_ocl<ValueType>(  7)
+#define CL_KERNEL_SCALEADDSCALE                     paralution_get_kernel_ocl<ValueType>(  9)
+#define CL_KERNEL_SCALEADD2                         paralution_get_kernel_ocl<ValueType>( 11)
+#define CL_KERNEL_POINTWISEMULT                     paralution_get_kernel_ocl<ValueType>( 13)
+#define CL_KERNEL_POINTWISEMULT2                    paralution_get_kernel_ocl<ValueType>( 15)
+#define CL_KERNEL_COPY_OFFSET_FROM                  paralution_get_kernel_ocl<ValueType>( 17)
+#define CL_KERNEL_PERMUTE                           paralution_get_kernel_ocl<ValueType>( 19)
+#define CL_KERNEL_PERMUTE_BACKWARD                  paralution_get_kernel_ocl<ValueType>( 21)
+#define CL_KERNEL_DOT                               paralution_get_kernel_ocl<ValueType>( 23)
+#define CL_KERNEL_AXPY                              paralution_get_kernel_ocl<ValueType>( 25)
+#define CL_KERNEL_CSR_SPMV_SCALAR                   paralution_get_kernel_ocl<ValueType>( 27)
+#define CL_KERNEL_CSR_ADD_SPMV_SCALAR               paralution_get_kernel_ocl<ValueType>( 29)
+#define CL_KERNEL_CSR_SCALE_DIAGONAL                paralution_get_kernel_ocl<ValueType>( 31)
+#define CL_KERNEL_CSR_SCALE_OFFDIAGONAL             paralution_get_kernel_ocl<ValueType>( 33)
+#define CL_KERNEL_CSR_ADD_DIAGONAL                  paralution_get_kernel_ocl<ValueType>( 35)
+#define CL_KERNEL_CSR_ADD_OFFDIAGONAL               paralution_get_kernel_ocl<ValueType>( 37)
+#define CL_KERNEL_CSR_EXTRACT_DIAG                  paralution_get_kernel_ocl<ValueType>( 39)
+#define CL_KERNEL_CSR_EXTRACT_INV_DIAG              paralution_get_kernel_ocl<ValueType>( 41)
+#define CL_KERNEL_CSR_EXTRACT_SUBMATRIX_ROW_NNZ     paralution_get_kernel_ocl<ValueType>( 43)
+#define CL_KERNEL_CSR_EXTRACT_SUBMATRIX_COPY        paralution_get_kernel_ocl<ValueType>( 45)
+#define CL_KERNEL_CSR_DIAGMATMULT                   paralution_get_kernel_ocl<ValueType>( 47)
+#define CL_KERNEL_CSR_ADD_CSR_SAME_STRUCT           paralution_get_kernel_ocl<ValueType>( 49)
+#define CL_KERNEL_SCALE                             paralution_get_kernel_ocl<ValueType>( 51)
+#define CL_KERNEL_MCSR_SPMV_SCALAR                  paralution_get_kernel_ocl<ValueType>( 53)
+#define CL_KERNEL_MCSR_ADD_SPMV_SCALAR              paralution_get_kernel_ocl<ValueType>( 55)
+#define CL_KERNEL_ELL_SPMV                          paralution_get_kernel_ocl<ValueType>( 57)
+#define CL_KERNEL_ELL_ADD_SPMV                      paralution_get_kernel_ocl<ValueType>( 59)
+#define CL_KERNEL_DIA_SPMV                          paralution_get_kernel_ocl<ValueType>( 61)
+#define CL_KERNEL_DIA_ADD_SPMV                      paralution_get_kernel_ocl<ValueType>( 63)
+#define CL_KERNEL_COO_PERMUTE                       paralution_get_kernel_ocl<ValueType>( 65)
+#define CL_KERNEL_COO_SPMV_FLAT                     paralution_get_kernel_ocl<ValueType>( 67)
+#define CL_KERNEL_COO_SPMV_REDUCE_UPDATE            paralution_get_kernel_ocl<ValueType>( 69)
+#define CL_KERNEL_COO_SPMV_SERIAL                   paralution_get_kernel_ocl<ValueType>( 71)
+#define CL_KERNEL_RED_RECURSE                       paralution_get_kernel_ocl<ValueType>( 73)
+#define CL_KERNEL_RED_PARTIAL_SUM                   paralution_get_kernel_ocl<ValueType>( 75)
+#define CL_KERNEL_RED_EXTRAPOLATE                   paralution_get_kernel_ocl<ValueType>( 77)
+#define CL_KERNEL_CSR_PERMUTE_ROWS                  paralution_get_kernel_ocl<ValueType>( 79)
+#define CL_KERNEL_CSR_PERMUTE_COLS                  paralution_get_kernel_ocl<ValueType>( 81)
+#define CL_KERNEL_CSR_CALC_ROW_NNZ                  paralution_get_kernel_ocl<ValueType>( 83)
+#define CL_KERNEL_CSR_PERMUTE_ROW_NNZ               paralution_get_kernel_ocl<ValueType>( 85)
+#define CL_KERNEL_REDUCE                            paralution_get_kernel_ocl<ValueType>( 87)
+#define CL_KERNEL_ELL_MAX_ROW                       paralution_get_kernel_ocl<ValueType>( 89)
+#define CL_KERNEL_ELL_CSR_TO_ELL                    paralution_get_kernel_ocl<ValueType>( 91)
+#define CL_KERNEL_ASUM                              paralution_get_kernel_ocl<ValueType>( 93)
+#define CL_KERNEL_AMAX                              paralution_get_kernel_ocl<ValueType>( 95)
+#define CL_KERNEL_DENSE_SPMV                        paralution_get_kernel_ocl<ValueType>( 97)
+#define CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR          paralution_get_kernel_ocl<ValueType>( 99)
+#define CL_KERNEL_CSR_SLOWER_NNZ_PER_ROW            paralution_get_kernel_ocl<ValueType>(101)
+#define CL_KERNEL_CSR_SUPPER_NNZ_PER_ROW            paralution_get_kernel_ocl<ValueType>(103)
+#define CL_KERNEL_CSR_LOWER_NNZ_PER_ROW             paralution_get_kernel_ocl<ValueType>(105)
+#define CL_KERNEL_CSR_UPPER_NNZ_PER_ROW             paralution_get_kernel_ocl<ValueType>(107)
+#define CL_KERNEL_CSR_COMPRESS_COUNT_NROW           paralution_get_kernel_ocl<ValueType>(109)
+#define CL_KERNEL_CSR_COMPRESS_COPY                 paralution_get_kernel_ocl<ValueType>(111)
+#define CL_KERNEL_SCALEADDSCALE_OFFSET              paralution_get_kernel_ocl<ValueType>(113)
+#define CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR          paralution_get_kernel_ocl<ValueType>(115)
 
 
 #endif // PARALUTION_OCL_OCL_UTILS_HPP_
+

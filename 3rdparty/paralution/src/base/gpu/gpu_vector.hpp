@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_GPU_VECTOR_HPP_
 #define PARALUTION_GPU_VECTOR_HPP_
@@ -50,6 +55,7 @@ public:
   virtual void SetValues(const ValueType val);
 
   virtual void CopyFrom(const BaseVector<ValueType> &src) ;
+  virtual void CopyFromAsync(const BaseVector<ValueType> &src) ;
   virtual void CopyFrom(const BaseVector<ValueType> &src,
                         const int src_offset,
                         const int dst_offset,
@@ -57,8 +63,11 @@ public:
 
 
   virtual void CopyTo(BaseVector<ValueType> *dst) const;
+  virtual void CopyToAsync(BaseVector<ValueType> *dst) const;
 
+  virtual void CopyFromHostAsync(const HostVector<ValueType> &src);
   virtual void CopyFromHost(const HostVector<ValueType> &src);
+  virtual void CopyToHostAsync(HostVector<ValueType> *dst) const;
   virtual void CopyToHost(HostVector<ValueType> *dst) const;
 
   virtual void CopyFromPermute(const BaseVector<ValueType> &src,
@@ -76,6 +85,8 @@ public:
   virtual void ScaleAdd(const ValueType alpha, const BaseVector<ValueType> &x);
   // this = alpha*this + x*beta
   virtual void ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta);
+  virtual void ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta,
+                             const int src_offset, const int dst_offset,const int size);
   // this = alpha*this + x*beta + y*gamma
   virtual void ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta, const BaseVector<ValueType> &y, const ValueType gamma) ;
   // this = alpha*this

@@ -116,7 +116,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             {
                 // load the mesh file
                 QString fn = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName());
-                Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
+                std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
                 if (QFileInfo(fn).suffix() == "msh")
                     meshes = Module::readMeshFromFileXML(fn);
                 else
@@ -232,7 +232,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
     {
         if (fileNames[i].meshFileName().isEmpty())
         {
-            Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
+            std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
             foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             {
                 if (fieldInfo == solutionID.group)

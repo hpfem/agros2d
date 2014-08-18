@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_OCL_MATRIX_CSR_HPP_
 #define PARALUTION_OCL_MATRIX_CSR_HPP_
@@ -74,6 +79,17 @@ public:
 
   virtual bool ExtractDiagonal(BaseVector<ValueType> *vec_diag) const;
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
+  virtual bool ExtractL(BaseMatrix<ValueType> *L) const;
+  virtual bool ExtractLDiagonal(BaseMatrix<ValueType> *L) const;
+
+  virtual bool ExtractU(BaseMatrix<ValueType> *U) const;
+  virtual bool ExtractUDiagonal(BaseMatrix<ValueType> *U) const;
+
+  virtual bool MaximalIndependentSet(int &size,
+                                     BaseVector<int> *permutation) const;
+  virtual bool MultiColoring(int &num_colors,
+                             int **size_colors,
+                             BaseVector<int> *permutation) const;
 
   virtual bool DiagonalMatrixMult(const BaseVector<ValueType> &diag);
 
@@ -86,10 +102,6 @@ public:
   virtual bool MatrixAdd(const BaseMatrix<ValueType> &mat, const ValueType alpha, 
                          const ValueType beta, const bool structure);
 
-  virtual bool MultiColoring(int &num_colors,
-                             int **size_colors,
-                             BaseVector<int> *permutation) const;
-
   virtual bool ILU0Factorize(void);
 
   virtual bool IC0Factorize(void);
@@ -101,7 +113,9 @@ public:
 
   virtual void LLAnalyse(void);
   virtual void LLAnalyseClear(void);
-  virtual bool LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
+  virtual bool LLSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+  virtual bool LLSolve(const BaseVector<ValueType> &in, const BaseVector<ValueType> &inv_diag,
+                       BaseVector<ValueType> *out) const;
 
   virtual void LAnalyse(const bool diag_unit=false);
   virtual void LAnalyseClear(void);

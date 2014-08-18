@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_HOST_MATRIX_BCSR_HPP_
 #define PARALUTION_HOST_MATRIX_BCSR_HPP_
 
@@ -30,7 +35,7 @@ namespace paralution {
 
 template <typename ValueType>
 class HostMatrixBCSR : public HostMatrix<ValueType> {
-  
+
 public:
 
   HostMatrixBCSR();
@@ -48,19 +53,19 @@ public:
   virtual void CopyFrom(const BaseMatrix<ValueType> &mat);
   virtual void CopyTo(BaseMatrix<ValueType> *mat) const;
 
-  virtual void Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
-  virtual void ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar, 
-                        BaseVector<ValueType> *out) const; 
-  
+  virtual void Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+  virtual void ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
+                        BaseVector<ValueType> *out) const;
+
 private:
-  
+
   MatrixBCSR<ValueType, int> mat_;
 
-  friend class BaseVector<ValueType>;  
-  friend class HostVector<ValueType>;  
+  friend class BaseVector<ValueType>;
+  friend class HostVector<ValueType>;
   friend class HostMatrixCSR<ValueType>;
-  friend class HostMatrixCOO<ValueType>;  
-  friend class HostMatrixHYB<ValueType>;  
+  friend class HostMatrixCOO<ValueType>;
+  friend class HostMatrixHYB<ValueType>;
   friend class HostMatrixDENSE<ValueType>;
 
   friend class GPUAcceleratorMatrixBCSR<ValueType>;

@@ -63,8 +63,8 @@ void AgrosSpecialExtFunction::createOneTable(int hermesMarker)
     double constantValue = -123456;
     double extrapolationLow = -123456;
     double extrapolationHi = -123456;
-    Hermes::vector<double> points;
-    Hermes::vector<double> values;
+    std::vector<double> points;
+    std::vector<double> values;
 
     if(m_type == SpecialFunctionType_Constant)
         constantValue = calculateValue(hermesMarker, 0);

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_LOCAL_MATRIX_HPP_
 #define PARALUTION_LOCAL_MATRIX_HPP_
@@ -57,6 +62,10 @@ public:
   /// Return the number of non-zeros in the matrix
   int get_nnz(void) const { return this->matrix_->get_nnz(); }
 
+  /// Return true if the matrix is ok (empty matrix is also ok)
+  //  and false if there is something wrong with the strcture or some of values are NaN
+  bool Check(void) const;
+
   /// Allocate CSR Matrix
   void AllocateCSR(const std::string name, const int nnz, const int nrow, const int ncol);
   /// Allocate BCSR Matrix - not implemented
@@ -95,6 +104,12 @@ public:
 
   /// Set all the values to zero
   void Zeros(void);
+
+  /// Assembling
+  void Assemble(const int *i, const int *j, const ValueType *v, int size, 
+                std::string name, const int n=0, const int m=0);
+
+  void AssembleUpdate(const ValueType *v);
 
   /// Scale all the values in the matrix 
   void Scale(const ValueType alpha);
@@ -143,6 +158,11 @@ public:
   /// Perform (backward) permutation of the matrix
   void PermuteBackward(const LocalVector<int> &permutation);
 
+  /// Create permutation vector for CMK reordering of the matrix
+  void CMK(LocalVector<int> *permutation) const;
+  /// Create permutation vector for reverse CMK reordering of the matrix
+  void RCMK(LocalVector<int> *permutation) const;
+
   /// Perform multi-coloring decomposition of the matrix; Returns 
   /// number of colors, the corresponding sizes (the array is allocated in 
   /// the function) and the permutation
@@ -186,7 +206,7 @@ public:
   void LUSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const; 
 
   /// Perform IC(0) factorization
-  void IC0Factorize(void);  
+  void ICFactorize(LocalVector<ValueType> *inv_diag);
 
   /// Analyse the structure (level-scheduling)
   void LLAnalyse(void);
@@ -194,7 +214,9 @@ public:
   void LLAnalyseClear(void);
   /// Solve LL^T out = in; if level-scheduling algorithm is provided then the 
   /// graph traversing is performed in parallel
-  void LLSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const; 
+  void LLSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const;
+  void LLSolve(const LocalVector<ValueType> &in, const LocalVector<ValueType> &inv_diag,
+               LocalVector<ValueType> *out) const;
 
   /// Analyse the structure (level-scheduling) L-part
   /// diag_unit == true the diag is 1;
@@ -237,14 +259,23 @@ public:
   void WriteFileCSR(const std::string filename) const;
   
   virtual void MoveToAccelerator(void);
+  virtual void MoveToAcceleratorAsync(void);
   virtual void MoveToHost(void);
+  virtual void MoveToHostAsync(void);
+  virtual void Sync(void);
 
   /// Copy matrix (values and structure) from another LocalMatrix
   void CopyFrom(const LocalMatrix<ValueType> &src);
 
+  /// Async copy matrix (values and structure) from another LocalMatrix
+  void CopyFromAsync(const LocalMatrix<ValueType> &src);
+
   /// Clone the entire matrix (values,structure+backend descr) 
   /// from another LocalMatrix
   void CloneFrom(const LocalMatrix<ValueType> &src);
+
+  /// Update CSR matrix entries only, structure will remain the same
+  void UpdateValuesCSR(ValueType *val);
 
   /// Copy (import) CSR matrix described in three arrays (offsets, columns, values). 
   /// The object data has to be allocated (call AllocateCSR first)
@@ -349,6 +380,14 @@ private:
 
   /// Accelerator Matrix
   AcceleratorMatrix<ValueType> *matrix_accel_;
+
+  int *assembly_rank;
+  int *assembly_irank;
+  int *assembly_loop_start;
+  int *assembly_loop_end;
+  int assembly_threads;
+
+  void free_assembly_data(void);
 
   friend class LocalVector<ValueType>;  
   friend class GlobalVector<ValueType>;  

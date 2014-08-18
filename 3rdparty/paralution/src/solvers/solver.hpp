@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_SOLVER_HPP_
 #define PARALUTION_SOLVER_HPP_
@@ -230,6 +235,27 @@ protected:
 
   virtual void MoveToHostLocalData_(void);
   virtual void MoveToAcceleratorLocalData_(void);
+
+};
+
+/// Base class for all linear (direct) solvers
+template <class OperatorType, class VectorType, typename ValueType>
+class DirectLinearSolver : public Solver<OperatorType, VectorType, ValueType> {
+
+public:
+
+  DirectLinearSolver();
+  virtual ~DirectLinearSolver();
+
+  virtual void Verbose(const int verb=1);
+
+  virtual void Solve(const VectorType &rhs,
+                     VectorType *x);
+
+protected:
+
+  /// Solution procedure
+  virtual void Solve_(const VectorType &rhs, VectorType *x) = 0;
 
 };
 

@@ -300,7 +300,7 @@ void FieldInfo::clear()
 
     m_analysisType = AnalysisType_Undefined;
     m_linearityType = LinearityType_Linear;
-    m_adaptivityType = AdaptivityType_None;
+    m_adaptivityType = AdaptivityMethod_None;
     // m_matrixSolver = Hermes::SOLVER_UMFPACK;
     m_matrixSolver = Hermes::SOLVER_MUMPS;
 }

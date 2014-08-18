@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "ocl_matrix_csr.hpp"
 #include "ocl_matrix_coo.hpp"
@@ -47,6 +52,7 @@ template <typename ValueType>
 OCLAcceleratorMatrixELL<ValueType>::OCLAcceleratorMatrixELL() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -54,6 +60,9 @@ OCLAcceleratorMatrixELL<ValueType>::OCLAcceleratorMatrixELL() {
 
 template <typename ValueType>
 OCLAcceleratorMatrixELL<ValueType>::OCLAcceleratorMatrixELL(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixELL::OCLAcceleratorMatrixELL()",
+            "constructor with local_backend");
 
   this->mat_.val = NULL;
   this->mat_.col = NULL;
@@ -65,6 +74,9 @@ OCLAcceleratorMatrixELL<ValueType>::OCLAcceleratorMatrixELL(const Paralution_Bac
 
 template <typename ValueType>
 OCLAcceleratorMatrixELL<ValueType>::~OCLAcceleratorMatrixELL() {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixELL::~OCLAcceleratorMatrixELL()",
+            "destructor");
 
   this->Clear();
 
@@ -386,16 +398,16 @@ bool OCLAcceleratorMatrixELL<ValueType>::ConvertFrom(const BaseMatrix<ValueType>
     size_t    localWorkSize[1];
     size_t    globalWorkSize[1];
 
-    allocate_ocl<int>(this->local_backend_.OCL_computeUnits * 4,
+    allocate_ocl<int>(int(this->local_backend_.OCL_computeUnits) * 4,
                       OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context,
                       &d_buffer);
 
     localWorkSize[0] = this->local_backend_.OCL_max_work_group_size;
     globalWorkSize[0] = this->local_backend_.OCL_computeUnits * 4 * localWorkSize[0];
 
-    GROUP_SIZE = ( size_t( ( size_t( nrow / ( this->local_backend_.OCL_computeUnits * 4 ) ) + 1 ) 
-                 / localWorkSize[0] ) + 1 ) * localWorkSize[0];
-    LOCAL_SIZE = GROUP_SIZE / localWorkSize[0];
+    GROUP_SIZE = ( ( ( ( nrow / ( int(this->local_backend_.OCL_computeUnits) * 4 ) ) + 1 ) 
+                 / int(localWorkSize[0]) ) + 1 ) * int(localWorkSize[0]);
+    LOCAL_SIZE = GROUP_SIZE / int(localWorkSize[0]);
 
     err  = clSetKernelArg( CL_KERNEL_ELL_MAX_ROW, 0, sizeof(int),    (void *) &nrow );
     err |= clSetKernelArg( CL_KERNEL_ELL_MAX_ROW, 1, sizeof(cl_mem), (void *) cast_mat_csr->mat_.row_offset );
@@ -421,7 +433,7 @@ bool OCLAcceleratorMatrixELL<ValueType>::ConvertFrom(const BaseMatrix<ValueType>
     err = clReleaseEvent( ocl_event );
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
-    FinalReduceSize = this->local_backend_.OCL_computeUnits * 4;
+    FinalReduceSize = int(this->local_backend_.OCL_computeUnits) * 4;
     allocate_host(FinalReduceSize, &h_buffer);
 
     ocl_dev2host<int>(FinalReduceSize, d_buffer, h_buffer,
@@ -535,9 +547,11 @@ void OCLAcceleratorMatrixELL<ValueType>::Apply(const BaseVector<ValueType> &in, 
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
     localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
-    localWorkSize[0] /= 0.5;
     globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
+	  // Nathan Bell and Michael Garland
+	  // Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+    // NVR-2008-004 / NVIDIA Technical Report
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
                                   CL_KERNEL_ELL_SPMV,
                                   1,
@@ -599,9 +613,11 @@ void OCLAcceleratorMatrixELL<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
     localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
-    localWorkSize[0] /= 0.5;
     globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
+	  // Nathan Bell and Michael Garland
+	  // Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+    // NVR-2008-004 / NVIDIA Technical Report
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
                                   CL_KERNEL_ELL_ADD_SPMV,
                                   1,

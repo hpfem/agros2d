@@ -130,7 +130,7 @@ void PyField::setPicardAndersonNumberOfLastVectors(int number)
 void PyField::setAdaptivityType(const std::string &adaptivityType)
 {
     if (adaptivityTypeStringKeys().contains(QString::fromStdString(adaptivityType)))
-        m_fieldInfo->setAdaptivityType((AdaptivityType) adaptivityTypeFromStringKey(QString::fromStdString(adaptivityType)));
+        m_fieldInfo->setAdaptivityType((AdaptivityMethod) adaptivityTypeFromStringKey(QString::fromStdString(adaptivityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
@@ -742,7 +742,7 @@ void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vect
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    if (m_fieldInfo->adaptivityType() == AdaptivityType_None)
+    if (m_fieldInfo->adaptivityType() == AdaptivityMethod_None)
         throw logic_error(QObject::tr("Solution is not adaptive.").toStdString());
 
     SolutionMode solutionMode = getSolutionMode(QString::fromStdString(solutionType));
@@ -764,7 +764,7 @@ SolutionMode PyField::getSolutionMode(const QString &solutionType) const
     if (!solutionTypeStringKeys().contains(solutionType))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-    if (solutionType == solutionTypeToStringKey(SolutionMode_Reference) && m_fieldInfo->adaptivityType() == AdaptivityType_None)
+    if (solutionType == solutionTypeToStringKey(SolutionMode_Reference) && m_fieldInfo->adaptivityType() == AdaptivityMethod_None)
         throw logic_error(QObject::tr("Reference solution does not exist.").toStdString());
 
     return solutionTypeFromStringKey(solutionType);

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_PRECONDITIONER_MULTIELIMINATION_HPP_
 #define PARALUTION_PRECONDITIONER_MULTIELIMINATION_HPP_
@@ -53,8 +58,8 @@ public:
   /// Initialize (recursively) ME-ILU with level (defines the depth of recursion);
   /// AA_Solvers - defines the last-block solver;
   /// drop_off - defines drop-off tolerance
-  virtual void Init(Solver<OperatorType, VectorType, ValueType> &AA_Solver,
-                    const int level, const ValueType drop_off=ValueType(0.0));
+  virtual void Set(Solver<OperatorType, VectorType, ValueType> &AA_Solver,
+                   const int level, const ValueType drop_off=ValueType(0.0));
 
   /// Set a specific matrix type of the decomposed block matrices;
   /// if not set, CSR matrix format will be used

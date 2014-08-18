@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "ocl_matrix_csr.hpp"
 #include "ocl_matrix_coo.hpp"
 #include "ocl_matrix_dia.hpp"
@@ -34,13 +39,12 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
-#include "../../utils/HardwareParameters.hpp"
 #include "ocl_utils.hpp"
 #include "ocl_allocate_free.hpp"
 #include "../matrix_formats_ind.hpp"
 
 #include <assert.h>
-
+#include <algorithm>
 
 namespace paralution {
 
@@ -49,6 +53,7 @@ template <typename ValueType>
 OCLAcceleratorMatrixHYB<ValueType>::OCLAcceleratorMatrixHYB() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -56,6 +61,9 @@ OCLAcceleratorMatrixHYB<ValueType>::OCLAcceleratorMatrixHYB() {
 
 template <typename ValueType>
 OCLAcceleratorMatrixHYB<ValueType>::OCLAcceleratorMatrixHYB(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixHYB::OCLAcceleratorMatrixHYB()",
+            "constructor with local_backend");
 
   this->mat_.ELL.val = NULL;
   this->mat_.ELL.col = NULL;
@@ -79,6 +87,9 @@ OCLAcceleratorMatrixHYB<ValueType>::OCLAcceleratorMatrixHYB(const Paralution_Bac
 
 template <typename ValueType>
 OCLAcceleratorMatrixHYB<ValueType>::~OCLAcceleratorMatrixHYB() {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixHYB::~OCLAcceleratorMatrixHYB()",
+            "destructor");
 
   this->Clear();
 
@@ -578,7 +589,6 @@ void OCLAcceleratorMatrixHYB<ValueType>::Apply(const BaseVector<ValueType> &in, 
       CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
       localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
-      localWorkSize[0] /= 0.5;
       globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
       err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
@@ -604,7 +614,7 @@ void OCLAcceleratorMatrixHYB<ValueType>::Apply(const BaseVector<ValueType> &in, 
     if (this->get_coo_nnz() > 0) {
 
       // do not support super small matrices
-      assert(this->get_coo_nnz() > OPENCL_WARPSIZE); 
+      assert(this->get_coo_nnz() > this->local_backend_.OCL_warp_size); 
       
       // ----------------------------------------------------------
       // Modified and adopted from CUSP 0.3.1, 
@@ -617,22 +627,22 @@ void OCLAcceleratorMatrixHYB<ValueType>::Apply(const BaseVector<ValueType> &in, 
       // - adopted interface
       // ----------------------------------------------------------  
 
-      const unsigned int BLOCK_SIZE = this->local_backend_.OCL_max_work_group_size;
+      const int BLOCK_SIZE = int(this->local_backend_.OCL_max_work_group_size);
       //    const unsigned int MAX_BLOCKS = this->local_backend_.GPU_max_blocks;
       
       const unsigned int MAX_BLOCKS = 32; //  cusp::detail::device::arch::max_active_blocks(spmv_coo_flat_kernel<IndexType, ValueType, BLOCK_SIZE, UseCache>, BLOCK_SIZE, (size_t) 0);
       
-      const unsigned int WARPS_PER_BLOCK = BLOCK_SIZE / OPENCL_WARPSIZE;
+      const unsigned int WARPS_PER_BLOCK = BLOCK_SIZE / this->local_backend_.OCL_warp_size;
       
       
-      const unsigned int num_units  = this->get_coo_nnz() / OPENCL_WARPSIZE; 
+      const unsigned int num_units  = this->get_coo_nnz() / this->local_backend_.OCL_warp_size; 
       const unsigned int num_warps  = std::min(num_units, WARPS_PER_BLOCK * MAX_BLOCKS);
       const unsigned int num_blocks = (num_warps + (WARPS_PER_BLOCK-1)) / WARPS_PER_BLOCK; // (N + (granularity - 1)) / granularity
       const unsigned int num_iters  = (num_units +  (num_warps-1)) / num_warps;
       
-      const unsigned int interval_size = OPENCL_WARPSIZE * num_iters;
+      const unsigned int interval_size = this->local_backend_.OCL_warp_size * num_iters;
       
-      const int tail = num_units * OPENCL_WARPSIZE; // do the last few nonzeros separately (fewer than this->local_backend_.GPU_wrap elements)
+      const int tail = num_units * this->local_backend_.OCL_warp_size; // do the last few nonzeros separately (fewer than this->local_backend_.GPU_wrap elements)
       
       const unsigned int active_warps = (interval_size == 0) ? 0 : ((tail + (interval_size-1))/interval_size);
 

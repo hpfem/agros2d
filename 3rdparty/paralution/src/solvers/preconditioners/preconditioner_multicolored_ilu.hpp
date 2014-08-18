@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_PRECONDITIONER_MULTICOLORED_ILU_HPP_
 #define PARALUTION_PRECONDITIONER_MULTICOLORED_ILU_HPP_
@@ -47,12 +52,12 @@ public:
   virtual void ReBuildNumeric(void);
   
   /// Initialize a multi-colored ILU(p,p+1) preconditioner
-  virtual void Init(const int p);
+  virtual void Set(const int p);
 
   /// Initialize a multi-colored ILU(p,q) preconditioner;
   /// level==true will perform the factorization with levels; 
   /// level==false will perform the factorization only on the power(q)-pattern 
-  virtual void Init(const int p, const int q, const bool level=true);
+  virtual void Set(const int p, const int q, const bool level=true);
 
   
 protected:
