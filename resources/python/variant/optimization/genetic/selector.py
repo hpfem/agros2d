@@ -42,10 +42,9 @@ class SingleCriteriaSelector(SurvivorsSelector):
             scores.append(self.functionals.evaluate(genom))
         scores.sort(reverse=bool(direction != 1))
 
-        survivors_number = number
-        priority_tresholds = [scores[survivors_number-1],
-                              scores[int(survivors_number*0.8)-1],
-                              scores[int(survivors_number*0.5)-1]]
+        priority_tresholds = [scores[number-1],
+                              scores[int(number*0.8)-1],
+                              scores[int(number*0.5)-1]]
 
         survivors = []
         for genom in population:
@@ -57,6 +56,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
 
             new_genom = self.model_class()
             new_genom._data = deepcopy(genom.data)
+
             if priority > 0:
                 GeneticInfo.set_priority(new_genom, priority)
                 survivors.append(new_genom)

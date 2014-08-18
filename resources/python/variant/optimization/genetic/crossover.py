@@ -24,11 +24,12 @@ class ImplicitCrossover(GeneralCrossover):
 
         mother_gens = {}
         father_gens = {}
-        mother_gens.update(mother.parameters)
 
-        while len(mother_gens) >= len(father_gens):
+        mother_gens.update(mother.parameters)
+        while len(mother_gens) > len(father_gens):
             key = rnd.choice(list(mother_gens.keys()))
             son.parameters[key] = father.parameters[key]
+
             father_gens[key] = father.parameters[key]
             del(mother_gens[key])
 

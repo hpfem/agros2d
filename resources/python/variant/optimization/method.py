@@ -1,6 +1,7 @@
 from variant import ModelDict
 from variant.optimization.parameter import Parameters
 from variant.optimization.functional import Functionals
+#from variant.optimization.stoping_criterion import ImplicitStopingCriterion
 
 class OptimizationMethod:
     def __init__(self, parameters, functionals, model_class):
@@ -12,6 +13,8 @@ class OptimizationMethod:
 
         self.model_dict = ModelDict()
         self.model_class = model_class
+
+        #self.stopping_criterion = ImplicitStopingCriterion()
 
     @property
     def parameters(self):
