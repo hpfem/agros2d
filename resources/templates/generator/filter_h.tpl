@@ -46,7 +46,7 @@ public:
 
 protected:
 
-    void precalculate(int order, int mask);
+    void precalculate(unsigned short order, unsigned short mask);
 
 private:
     const FieldInfo *m_fieldInfo;

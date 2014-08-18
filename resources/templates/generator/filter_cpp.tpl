@@ -60,7 +60,7 @@ Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x
     return NULL;
 }
 
-void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
+void {{CLASS}}ViewScalarFilter::precalculate(unsigned short order, unsigned short mask)
 {
     Hermes::Hermes2D::Quad2D* quad = this->quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());

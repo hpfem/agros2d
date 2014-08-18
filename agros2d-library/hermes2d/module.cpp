@@ -1182,6 +1182,11 @@ std::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(const 
         qDebug() << e.info().c_str();
         throw;
     }
+    catch (Hermes::Exceptions::Exception& e)
+    {
+        qDebug() << e.info().c_str();
+        throw;
+    }
 
     return meshes;
 }

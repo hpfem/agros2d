@@ -382,10 +382,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     {
         if (e->cm != nullptr)
         {
-            if (e->area < 0)
-                throw AgrosMeshException(tr("Mesh is corrupted (some areas have a negative area)"));
-
-            e->cm->update_refmap_coeffs(e);
+                e->cm->update_refmap_coeffs(e);
         }
     }
 }
