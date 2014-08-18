@@ -140,7 +140,7 @@ public:
 
     virtual void solve(Scalar* previousSolutionVector) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() = 0;
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) = 0;
+    virtual void setWeakFormulation(Hermes::Hermes2D::WeakFormSharedPtr<Scalar> wf) = 0;
 
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
     void setMatrixRhsOutputGen(Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);

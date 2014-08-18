@@ -342,7 +342,7 @@ void Problem::createStructure()
     {
         // todo: is released?
         block->setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double>(new WeakFormAgros<double>(block)));
-        block->weakForm()->registerForms();
+        block->weakFormInternal()->registerForms();
     }
 }
 

@@ -152,9 +152,14 @@ void Block::updateExactSolutionFunctions()
     }
 }
 
-WeakFormAgros<double> *Block::weakForm()
+WeakFormAgros<double> *Block::weakFormInternal()
 {
     return dynamic_cast<WeakFormAgros<double> *>(m_wf.get());
+}
+
+Hermes::Hermes2D::WeakFormSharedPtr<double> Block::weakForm()
+{
+    return m_wf;
 }
 
 void Block::setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double> wf)

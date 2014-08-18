@@ -53,9 +53,6 @@
 
 {{CLASS}}ViewScalarFilter::~{{CLASS}}ViewScalarFilter()
 {
-    delete [] value;
-    delete [] dudx;
-    delete [] dudy;
 }
 
 Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, bool use_MeshHashGrid, Hermes::Hermes2D::Element* e)

@@ -49,7 +49,8 @@ public:
     QSharedPointer<ProblemSolver<double> > prepareSolver();
     void createBoundaryConditions();
 
-    WeakFormAgros<double> *weakForm();
+    WeakFormAgros<double> *weakFormInternal();
+    Hermes::Hermes2D::WeakFormSharedPtr<double> weakForm();
     void setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double> wf);
 
     int numSolutions() const;

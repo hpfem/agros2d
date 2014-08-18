@@ -528,15 +528,15 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     if (m_block->isTransient())
     {
         int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
-        bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
+        bool matrixUnchanged = m_block->weakFormInternal()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
         m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
 
         // update timedep values
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     }
 
-    m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->updateExtField();
+    m_block->weakFormInternal()->set_current_time(Agros2D::problem()->actualTime());
+    m_block->weakFormInternal()->updateExtField();
 
     try
     {
@@ -596,12 +596,12 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     }
 
     int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
-    bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(previouslyUsedOrder - 1, Agros2D::problem()->timeStepLengths());
+    bool matrixUnchanged = m_block->weakFormInternal()->bdf2Table()->setOrderAndPreviousSteps(previouslyUsedOrder - 1, Agros2D::problem()->timeStepLengths());
     // using different order
     assert(matrixUnchanged == false);
     m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
-    m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->updateExtField();
+    m_block->weakFormInternal()->set_current_time(Agros2D::problem()->actualTime());
+    m_block->weakFormInternal()->updateExtField();
 
     // solutions obtained by time method of higher order in the original calculation
     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > timeReferenceSolution;
@@ -814,12 +814,12 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     if (m_block->isTransient())
     {
         int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
-        bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
+        bool matrixUnchanged = m_block->weakFormInternal()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
         m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
     }
 
-    m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->updateExtField();
+    m_block->weakFormInternal()->set_current_time(Agros2D::problem()->actualTime());
+    m_block->weakFormInternal()->updateExtField();
 
     // create reference spaces
     std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
