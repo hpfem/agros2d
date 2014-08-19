@@ -571,7 +571,6 @@ endif(LINUX_JOYSTICK_H)
 if(MSVC)
   add_definitions(-D_USE_MATH_DEFINES -DNOMINMAX 
                   -D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
-  set(GMSH_SRC ${GMSH_SRC};Fltk/Win32Icon.rc)
 endif(MSVC)
 
 if(WIN32 OR CYGWIN)
@@ -775,7 +774,7 @@ if(WIN32 AND NOT MSVC OR CYGWIN)
     set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
   endif(ENABLE_BUILD_DYNAMIC)
 elseif(MSVC)
-  set_target_properties(gmsh PROPERTIES LINK_FLAGS "/STACK:16777216")
+  set_target_properties(${GMSH_LIBRARY} PROPERTIES LINK_FLAGS "/STACK:16777216")
 endif(WIN32 AND NOT MSVC OR CYGWIN)
 
 # parser target

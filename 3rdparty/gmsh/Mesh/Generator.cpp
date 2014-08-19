@@ -361,7 +361,7 @@ static void Mesh2D(GModel *m)
 #if defined(_OPENMP)
 #pragma omp parallel for schedule (dynamic)
 #endif
-      for(size_t K = 0 ; K < temp.size() ; K++){
+      for(int K = 0 ; K < temp.size() ; K++){
 	if (temp[K]->meshStatistics.status == GFace::PENDING){
           backgroundMesh::current()->unset();
 	  meshGFace mesher(true);

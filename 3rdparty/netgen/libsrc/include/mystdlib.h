@@ -1,6 +1,8 @@
 #ifndef FILE_MYSTDLIB
 #define FILE_MYSTDLIB
 
+#define NO_PARALLEL_THREADS
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

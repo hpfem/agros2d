@@ -8,6 +8,7 @@
 #include "decasteljau.h"
 #include "SPoint3.h"
 #include "SVector3.h"
+#include <algorithm>
 
 typedef struct {
   SPoint3 p;

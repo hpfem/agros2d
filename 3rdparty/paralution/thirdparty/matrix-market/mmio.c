@@ -6,6 +6,10 @@
 *
 */
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__WIN64) && !defined(__CYGWIN__)
+#define _CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -74,7 +78,7 @@ int mm_read_unsymmetric_sparse(const char *fname, int *M_, int *N_, int *nz_,
  
     for (i=0; i<nz; i++)
     {
-        fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val[i]);
+        (void) fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val[i]);
         I[i]--;  /* adjust from 1-based to 0-based */
         J[i]--;
     }
@@ -447,7 +451,7 @@ int mm_write_mtx_crd(char fname[], int M, int N, int nz, int I[], int J[],
 */
 char *mm_strdup(const char *s)
 {
-	int len = strlen(s);
+	int len = (int)(strlen(s));
 	char *s2 = (char *) malloc((len+1)*sizeof(char));
 	return strcpy(s2, s);
 }
@@ -456,14 +460,11 @@ char  *mm_typecode_to_str(MM_typecode matcode)
 {
     char buffer[MM_MAX_LINE_LENGTH];
     char *types[4];
-	char *mm_strdup(const char *);
-    int error =0;
+    char *mm_strdup(const char *);
 
     /* check for MTX type */
     if (mm_is_matrix(matcode)) 
         types[0] = MM_MTX_STR;
-    else
-        error=1;
 
     /* check for CRD or ARR matrix */
     if (mm_is_sparse(matcode))
