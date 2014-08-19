@@ -49,7 +49,7 @@ PlainTextEditParenthesis::PlainTextEditParenthesis(QWidget *parent)
 
 void PlainTextEditParenthesis::matchParentheses(char left, char right)
 {
-    QList<QTextEdit::ExtraSelection> selections;
+    QList<QTextEdit::ExtraSelection> selections = extraSelections();
     setExtraSelections(selections);
 
     TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
@@ -121,12 +121,12 @@ bool PlainTextEditParenthesis::matchRightParenthesis(char left, char right, QTex
     for (; i > -1 && parentheses.size() > 0; --i)
     {
         ParenthesisInfo *info = parentheses.at(i);
-        if (info->character == right)
+        if (info->character == left)
         {
             ++numRightParentheses;
             continue;
         }
-        if (info->character == left && numRightParentheses == 0)
+        if (info->character == right && numRightParentheses == 0)
         {
             createParenthesisSelection(docPos + info->position);
             return true;
@@ -150,9 +150,7 @@ void PlainTextEditParenthesis::createParenthesisSelection(int pos)
 
     QTextEdit::ExtraSelection selection;
     QTextCharFormat format = selection.format;
-    format.setForeground(Qt::red);
-    format.setFontWeight(QFont::Bold);
-    // format.setBackground(Qt::lightGray);
+    format.setBackground(Qt::green);
     selection.format = format;
 
     QTextCursor cursor = textCursor();

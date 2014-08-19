@@ -17,8 +17,6 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonengine.h"
-
 #include "pythoneditor.h"
 #include "pythonhighlighter.h"
 #include "pythonconsole.h"
@@ -114,6 +112,7 @@ void PythonEditorWidget::createControls()
     trvPyLint->setColumnCount(1);
     trvPyLint->setIndentation(12);
     trvPyLint->setMaximumHeight(150);
+    trvPyLint->setVisible(false);
     connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
 
     splitter->addWidget(trvPyLint);
@@ -134,6 +133,7 @@ void PythonEditorWidget::createControls()
 void PythonEditorWidget::pyLintAnalyse()
 {
     trvPyLint->clear();
+    trvPyLint->setVisible(true);
 
     QProcess processPyLint;
     processPyLint.setStandardOutputFile(tempProblemFileName() + ".pylint.out");
@@ -669,9 +669,12 @@ void PythonEditorDialog::createControls()
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
 
+    errorWidget = new ErrorWidget(tabWidget, this);
+
     // main widget
-    QHBoxLayout *layout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabWidget);
+    layout->addWidget(errorWidget);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -731,6 +734,9 @@ void PythonEditorDialog::doRunPython()
 {
     if (pythonEngine->isScriptRunning())
         return;
+
+    // hide pyLint
+    scriptEditorWidget()->trvPyLint->setVisible(false);
 
     if (!scriptEditorWidget()->fileName().isEmpty())
         fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
@@ -806,12 +812,19 @@ void PythonEditorDialog::doRunPython()
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
             consoleView->console()->stdErr("\nStacktrace:\n");
-            consoleView->console()->stdErr(result.traceback());
+            consoleView->console()->stdErr(result.tracebackToString());
         }
 
         if (!txtEditor->textCursor().hasSelection() && result.line() >= 0)
             txtEditor->gotoLine(result.line(), true);
+
+        errorWidget->showError(result);
     }
+    else
+    {
+        errorWidget->setVisible(false);
+    }
+
     consoleView->console()->appendCommandPrompt();
 
     scriptFinish();
@@ -1675,6 +1688,7 @@ void ScriptEditor::highlightCurrentLine(bool isError)
     if (!isReadOnly())
     {
         QTextEdit::ExtraSelection selection;
+
         QColor lineColor = QColor(Qt::yellow).lighter(180);
         if (isError)
             lineColor = QColor(Qt::red).lighter(180);
@@ -1697,6 +1711,7 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     // line numbers
     const QBrush bookmarkBrushPyFlakes(QColor(Qt::red).lighter());
+    const QBrush bookmarkBrushError(QColor(Qt::red));
 
     int timesWidth = 0;
     int callWidth = 0;
@@ -1706,8 +1721,8 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         callWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedCall()).length() + 1;
     }
 
-    QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    QPainter painterLineArea(lineNumberArea);
+    painterLineArea.fillRect(event->rect(), Qt::lightGray);
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -1721,14 +1736,19 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
             // line number
             QString lineNumber = QString::number(blockNumber + 1);
 
-            // draw rect
+            // draw rect - pyFlakes
             if (errorMessagesPyFlakes.contains(blockNumber + 1))
-                painter.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
+                painterLineArea.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
                                  bookmarkBrushPyFlakes);
 
+            // draw rect - error
+            if (errorMessagesError.contains(blockNumber + 1))
+                painterLineArea.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
+                                 bookmarkBrushError);
+
             // draw line number
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+            painterLineArea.setPen(Qt::black);
+            painterLineArea.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
                              Qt::AlignRight, lineNumber);
 
             // draw profiler number
@@ -1737,14 +1757,14 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
                 if (profilerAccumulatedTimes().value(blockNumber + 1) > 0)
                 {
                     QString number = QString::number(profilerAccumulatedTimes().value(blockNumber + 1));
-                    painter.setPen(Qt::darkBlue);
-                    painter.drawText(0, top, timesWidth,
+                    painterLineArea.setPen(Qt::darkBlue);
+                    painterLineArea.drawText(0, top, timesWidth,
                                      fontMetrics().height(),
                                      Qt::AlignRight, number);
 
                     number = QString::number(profilerAccumulatedLines().value(blockNumber + 1));
-                    painter.setPen(Qt::darkGreen);
-                    painter.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
+                    painterLineArea.setPen(Qt::darkGreen);
+                    painterLineArea.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
                                      Qt::AlignRight, number);
                 }
             }
@@ -1768,6 +1788,9 @@ void ScriptEditor::lineNumberAreaMouseMoveEvent(QMouseEvent *event)
     {
         if (errorMessagesPyFlakes.contains(line))
             QToolTip::showText(event->globalPos(), errorMessagesPyFlakes[line]);
+
+        if (errorMessagesError.contains(line))
+            QToolTip::showText(event->globalPos(), errorMessagesError[line]);
     }
 }
 
@@ -1957,4 +1980,101 @@ void SearchWidget::hideWidget()
 {
     hide();
     txtEditor->setFocus();
+}
+
+// *********************************************************************************************
+
+ErrorWidget::ErrorWidget(QTabWidget *tabWidget, QWidget *parent)
+    : QWidget(parent), tabWidget(tabWidget)
+{
+    setVisible(false);
+
+    trvErrors = new QTreeWidget(this);
+    trvErrors->setHeaderHidden(false);
+    trvErrors->setMouseTracking(true);
+    trvErrors->setColumnCount(3);
+    trvErrors->setColumnWidth(1, 150);
+    trvErrors->setIndentation(12);
+    connect(trvErrors, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLineError(QTreeWidgetItem *, int)));
+
+    QStringList headers;
+    headers << tr("Line") << tr("Name") << tr("Filename");
+    trvErrors->setHeaderLabels(headers);
+
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, Qt::red);
+
+    errorLabel = new QLabel(this);
+    errorLabel->setPalette(palette);
+
+    QVBoxLayout *layoutError = new QVBoxLayout();
+    layoutError->addWidget(errorLabel, 0);
+    layoutError->addWidget(trvErrors, 1);
+
+    setMaximumHeight(200);
+    setMinimumHeight(200);
+
+    setLayout(layoutError);
+}
+
+void ErrorWidget::showError(ErrorResult result)
+{
+    trvErrors->clear();
+    setVisible(true);
+
+    PythonEditorWidget *scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->currentWidget());
+    scriptEditorWidget->txtEditor->errorMessagesError.clear();
+
+    errorLabel->setText(result.error());
+
+    foreach (ErrorResult::ErrorTraceback trace, result.traceback())
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(trvErrors);
+
+        item->setIcon(0, icon("check-error"));
+        item->setText(0, QString::number(trace.line));
+        item->setData(0, Qt::UserRole, trace.line);
+        item->setText(1, trace.name);
+        item->setData(1, Qt::UserRole, trace.name);
+        item->setText(2, trace.fileName);
+        item->setData(2, Qt::UserRole, trace.fileName);
+
+        // lines
+        int line = item->data(0, Qt::UserRole).value<int>();
+        QString name = item->data(1, Qt::UserRole).toString();
+        QString fileName = item->data(2, Qt::UserRole).toString();
+
+        if (scriptEditorWidget->fileName() == fileName)
+        {
+            scriptEditorWidget->txtEditor->errorMessagesError.insert(line, name);
+        }
+    }
+}
+
+void ErrorWidget::doHighlightLineError(QTreeWidgetItem *item, int role)
+{
+    if (item)
+    {
+        int line = item->data(0, Qt::UserRole).value<int>();
+        QString fileName = item->data(2, Qt::UserRole).toString();
+
+        PythonEditorWidget *scriptEditorWidget = NULL;
+        for (int i = 0; i < tabWidget->count(); i++)
+        {
+            scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->widget(i));
+
+            if (scriptEditorWidget->fileName() == fileName)
+            {
+                tabWidget->setCurrentIndex(i);
+                break;
+            }
+            else
+            {
+                scriptEditorWidget = NULL;
+            }
+        }
+
+        if (scriptEditorWidget)
+            scriptEditorWidget->txtEditor->gotoLine(line, true);
+    }
 }

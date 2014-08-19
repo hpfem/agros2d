@@ -74,22 +74,44 @@ private:
 class ErrorResult
 {
 public:
-    ErrorResult() : m_error(""), m_traceback(""), m_line(-1) {}
+    struct ErrorTraceback
+    {
+        ErrorTraceback(const QString &fileName = "", int line = -1, const QString &name = "")
+        {
+            this->fileName = fileName;
+            this->line = line;
+            this->name = name;
+        }
 
-    ErrorResult(const QString &error, const QString &traceback, int line = -1)
+        QString fileName;
+        int line;
+        QString name;
+    };
+
+    ErrorResult() : m_error(""), m_traceback(QList<ErrorTraceback>()), m_line(-1) {}
+
+    ErrorResult(const QString &error, const QList<ErrorTraceback> &traceback, int line = -1)
     {
         this->m_error = error;
         this->m_traceback = traceback;
         this->m_line = line;
     }
 
-    inline QString error() { return m_error; }
-    inline QString traceback() { return m_traceback; }
-    inline int line() { return m_line; }
+    inline QString error() const { return m_error; }
+    QString tracebackToString() const
+    {
+        QString str;
+        foreach (ErrorTraceback trace, m_traceback)
+            str += QString("File '%1', line %2, in %3\n").arg(trace.fileName).arg(trace.line).arg(trace.name);
+
+        return str;
+    }
+    inline QList<ErrorTraceback> traceback() const { return m_traceback; }
+    inline int line() const { return m_line; }
 
 private:
     QString m_error;
-    QString m_traceback;
+    QList<ErrorTraceback> m_traceback;
     int m_line;
 };
 

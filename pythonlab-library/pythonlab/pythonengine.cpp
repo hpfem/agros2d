@@ -669,7 +669,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 
 ErrorResult PythonEngine::parseError()
 {
-    QString traceback;
+    QList<ErrorResult::ErrorTraceback> traceback;
     QString text;
     int line = -1;
 
@@ -685,23 +685,27 @@ ErrorResult PythonEngine::parseError()
         {
             PyFrameObject *frame = tb->tb_frame;
 
-            if (frame && frame->f_code) {
+            QString fileName;
+            int errorLine = -1;
+            QString name;
+
+            if (frame && frame->f_code)
+            {
                 PyCodeObject* codeObject = frame->f_code;
                 if (PyString_Check(codeObject->co_filename))
-                    traceback.append(QString("File '%1'").arg(QString::fromWCharArray(PyUnicode_AsUnicode(codeObject->co_filename))));
+                    fileName = QString::fromWCharArray(PyUnicode_AsUnicode(codeObject->co_filename));
 
-                int errorLine = PyCode_Addr2Line(codeObject, frame->f_lasti);
-                traceback.append(QString(", line %1").arg(errorLine));
+                errorLine = PyCode_Addr2Line(codeObject, frame->f_lasti);
 
                 if (PyString_Check(codeObject->co_name))
-                    traceback.append(QString(", in %1").arg(QString::fromWCharArray(PyUnicode_AsUnicode(codeObject->co_name))));
+                    name = QString::fromWCharArray(PyUnicode_AsUnicode(codeObject->co_name));
             }
-            traceback.append(QString("\n"));
+
+            traceback.append(ErrorResult::ErrorTraceback(fileName, errorLine, name));
 
             tb = tb->tb_next;
         }
     }
-    traceback = traceback.trimmed();
 
     PyObject *errorString = NULL;
     if (errorType != NULL && (errorString = PyObject_Str(errorType)) != NULL && (PyString_Check(errorString)))
@@ -736,7 +740,7 @@ ErrorResult PythonEngine::parseError()
 
     PyErr_Clear();
 
-    return ErrorResult(text, traceback, line);
+    return ErrorResult(text.trimmed(), traceback, line);
 }
 
 void PythonEngine::addCustomExtensions()

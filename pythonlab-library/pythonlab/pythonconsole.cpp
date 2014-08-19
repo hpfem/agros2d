@@ -208,7 +208,7 @@ void PythonScriptingConsole::executeCode(const QString& code)
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
             stdErr("\nStacktrace:\n");
-            stdErr(result.traceback());
+            stdErr(result.tracebackToString());
         }
     }
 

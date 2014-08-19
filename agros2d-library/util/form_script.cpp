@@ -775,7 +775,7 @@ void FormScript::acceptForm()
             ErrorResult result = currentPythonEngineAgros()->parseError();
 
             errorMessage->setVisible(true);
-            errorMessage->setText(result.error() + "\n" + result.traceback());
+            errorMessage->setText(result.error() + "\n" + result.tracebackToString());
 
             consoleView->console()->stdErr(result.error());
             consoleView->console()->appendCommandPrompt();

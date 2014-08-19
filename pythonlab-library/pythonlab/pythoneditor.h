@@ -26,6 +26,8 @@
 #include "util.h"
 #include "gui/textedit.h"
 
+#include "pythonengine.h"
+
 class PythonEngine;
 class PythonScriptingConsole;
 class PythonScriptingConsoleView;
@@ -40,8 +42,7 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 class SearchWidget;
-
-class ErrorResult;
+class ErrorWidget;
 
 #ifdef Q_WS_X11
     const QFont FONT = QFont("Monospace", 9);
@@ -145,6 +146,7 @@ protected:
     PythonScriptingHistoryView *consoleHistoryView;
     PythonBrowserView *variablesView;
     QDockWidget *fileBrowserView;
+    ErrorWidget *errorWidget;
 
     QLabel *lblCurrentPosition;
 
@@ -242,6 +244,7 @@ class AGROS_PYTHONLAB_API ScriptEditor : public PlainTextEditParenthesis
 
 public:
     QMap<int, QString> errorMessagesPyFlakes;
+    QMap<int, QString> errorMessagesError;
 
     ScriptEditor(PythonEngine *pythonEngine, QWidget *parent = 0);
     ~ScriptEditor();
@@ -360,6 +363,25 @@ private:
     QPushButton *btnFind, *btnReplace, *btnHide;
 
     bool startFromBeginning;
+};
+
+
+// ************************************************************************************************************
+
+class AGROS_PYTHONLAB_API ErrorWidget: public QWidget
+{
+    Q_OBJECT
+public:
+    ErrorWidget(QTabWidget *tabWidget, QWidget *parent = 0);
+
+public slots:
+    void doHighlightLineError(QTreeWidgetItem *item, int role);
+    void showError(ErrorResult result);
+
+private:
+    QLabel *errorLabel;
+    QTreeWidget *trvErrors;
+    QTabWidget *tabWidget;
 };
 
 #endif // SCRIPTEDITORDIALOG_H

@@ -39,7 +39,7 @@ class CGInfo:
         member.info["change"] = value
 
 class CGOptimization(OptimizationMethod):
-    
+       
     def findState(self, models):
         maxIter = -1
         for model in models:
@@ -52,8 +52,7 @@ class CGOptimization(OptimizationMethod):
         return state
         
                 
-    def gradient(self):
-        
+    def gradient(self):        
         models = self.modelSetManager.load_all()
         state = self.findState(models)
 

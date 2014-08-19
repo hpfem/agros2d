@@ -8,6 +8,7 @@ from variant.optimization.genetic.mutation import ImplicitMutation
 from variant.optimization.genetic.crossover import ImplicitCrossover
 
 import random as rnd
+import collections
 
 class GeneticOptimization(OptimizationMethod):
     """Genetic optimization method class."""
@@ -26,7 +27,7 @@ class GeneticOptimization(OptimizationMethod):
         OptimizationMethod.__init__(self, parameters, functionals, model_class)
 
         self.current_population_index = 0
-        self.cache = list()
+        self.cache = collections.OrderedDict()
 
         self.initial_population_creator = ImplicitInitialPopulationCreator(self.parameters, self.model_class)
 
@@ -92,7 +93,7 @@ class GeneticOptimization(OptimizationMethod):
         index = indices[rnd.randrange(len(indices))]
         return population[index], index
 
-    def population(self, index=-1):
+    def population(self, index = -1):
         """Find and return population (list of models) by index.
         
         population(index=-1)
@@ -102,8 +103,10 @@ class GeneticOptimization(OptimizationMethod):
         """
 
         if (index == -1):
-            return self.cache
-        
+            return next(reversed(self.cache))
+        else:
+            return self.cache[index]
+        """
         population = []
         population_to = GeneticInfo.population_to
         for model in self.model_dict.models():
@@ -111,6 +114,7 @@ class GeneticOptimization(OptimizationMethod):
                 population.append(model)
 
         return population
+        """
 
     def crossover(self, population, number):
         """Return crossbreeds (list of crossovered models).
