@@ -8,6 +8,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <algorithm>
 #include "GmshConfig.h"
 #include "GmshMessage.h"
 

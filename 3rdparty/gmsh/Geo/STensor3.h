@@ -8,6 +8,7 @@
 
 #include "SVector3.h"
 #include "fullMatrix.h"
+#include <algorithm>
 #include "Numeric.h"
 
 // concrete class for symmetric positive definite 3x3 matrix

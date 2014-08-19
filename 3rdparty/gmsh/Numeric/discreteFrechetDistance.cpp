@@ -5,6 +5,7 @@
 
 #include "discreteFrechetDistance.h"
 #include "fullMatrix.h"
+#include <algorithm>
 
 static double distance (const SPoint3 &p1, const SPoint3 &p2){
   return p1.distance(p2);
