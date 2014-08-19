@@ -1,0 +1,7 @@
+SET(WITH_QT5 YES)
+SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.3.1\\5.3\\msvc2013_opengl\\")
+SET(PYTHON_LIBRARY "c:\\Python34\\libs\\python34.lib")
+SET(PYTHON_INCLUDE_DIR "c:\\Python34\\include\\Python.h" )
+SET(BLAS_LIBRARY "c:\\hpfem\\hermes\\dependencies\\lib\\blas.lib")
+SET(LAPACK_LIBRARY "c:\\hpfem\\hermes\\dependencies\\lib\\lapack.lib")
+SET(BLAS_LAPACK_LIBRARIES "${BLAS_LIBRARY}\n${LAPACK_LIBRARY}")
