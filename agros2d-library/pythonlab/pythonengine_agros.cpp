@@ -17,17 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifdef _MSC_VER
-# ifdef _DEBUG
-#  undef _DEBUG
-#  include <Python.h>
-#  define _DEBUG
-# else
-#  include <Python.h>
-# endif
-#else
-#  include <Python.h>
-#endif
+#include <Python.h>
 
 #include "../resources_source/python/agros2d.cpp"
 
