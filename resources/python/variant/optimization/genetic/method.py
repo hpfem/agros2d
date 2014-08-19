@@ -28,6 +28,10 @@ class GeneticOptimization(OptimizationMethod):
 
         self.current_population_index = 0
         self.cache = collections.OrderedDict()
+        self.selection_ratio = 4.0/5.0
+        self.elitism_ratio = 1.0/100.0
+        self.crossover_ratio = 1.0
+        self.mutation_ratio = 1.0/10.0
 
         self.initial_population_creator = ImplicitInitialPopulationCreator(self.parameters, self.model_class)
 
@@ -48,6 +52,21 @@ class GeneticOptimization(OptimizationMethod):
     def population_size(self, value):
         self._population_size = value
         self.selector.recomended_population_size = value
+
+    def duplicity(self, genom, population):
+        duplicity = False
+        for other in population:
+            sameness = True
+            for key in genom.parameters.keys():
+                if (genom.parameters[key] != other.parameters[key]):
+                    sameness = False
+                    break
+
+            if sameness:
+                duplicity = True
+                break
+
+        return duplicity
 
     def find_best(self, population):
         """Return best genom from population.
@@ -73,7 +92,7 @@ class GeneticOptimization(OptimizationMethod):
             return best_genom
 
         else:
-            #TODO: Pareto front.
+            #TODO: Multicriteria.
             pass
 
     def random_member(self, population):
@@ -90,7 +109,7 @@ class GeneticOptimization(OptimizationMethod):
         for index in range(len(population)):
             indices += [index] * priority(population[index])
 
-        index = indices[rnd.randrange(len(indices))]
+        index = indices[rnd.choice(indices)]
         return population[index], index
 
     def population(self, index = -1):
@@ -116,6 +135,28 @@ class GeneticOptimization(OptimizationMethod):
         return population
         """
 
+    def _functional_as_key(self, genom):
+        return self.functionals.evaluate(genom)
+
+    def sorted_population(self, index=-1):
+        """Find and return sorted population (list of models) by index.
+        
+        population(index=-1)
+        
+        Keyword arguments:
+        index -- population index (default is last population)
+        """
+        direction = self.functionals.functional().direction_sign()
+        population = self.population(index)
+        return sorted(population, key=self._functional_as_key, reverse=bool(direction != 1))
+
+    def selection(self, population, selections, elitists):
+        direction = self.functionals.functional().direction_sign()
+        selected = self.selector.select(population, selections)
+
+        selected = sorted(selected, key=self._functional_as_key, reverse=bool(direction != 1))        
+        return selected, selected[0:elitists]
+
     def crossover(self, population, number):
         """Return crossbreeds (list of crossovered models).
         
@@ -130,10 +171,18 @@ class GeneticOptimization(OptimizationMethod):
         attempts = 0
         while len(crossbreeds) < number:
             mother, mother_index = self.random_member(population)
-            population.pop(mother_index)
             father, father_index = self.random_member(population)
 
+            while mother_index == father_index:
+                father, father_index = self.random_member(population)
+
             son = self.crossover_creator.cross(mother, father)
+            # TODO: Duplicity!
+            """
+            if self.duplicity(son, crossbreeds):
+                continue
+            """
+
             son.solved = False
             crossbreeds.append(son)
 
@@ -157,12 +206,13 @@ class GeneticOptimization(OptimizationMethod):
         mutants = []
         while len(mutants) < number:
             original, index = self.random_member(population)
+            population.pop(index)
+
             mutant = self.mutation_creator.mutate(original)
             mutant.solved = False
-            population[index] = mutant
             mutants.append(mutant)
 
-        return population
+        return population + mutants
 
     def create_population(self):
         """Create new population and placed it to model dictionary."""
@@ -170,18 +220,22 @@ class GeneticOptimization(OptimizationMethod):
         if (self.current_population_index != 0):
             last_population = self.population()
 
-            selected = min(int(3*self._population_size/5), len(last_population))
-            population = self.selector.select(last_population, selected)
-            #print('Selection: {0}'.format(selected))
+            # selection
+            selections = min(int(self.selection_ratio * self._population_size),
+                             len(last_population))
+            elitists = max(int(self.elitism_ratio * self._population_size), 1)
+            selected, elite = self.selection(last_population, selections, elitists)
 
-            crossbreeds = max(int((self._population_size - len(population))/2), int(2*self._population_size/5))
-            population += self.crossover(population, crossbreeds)
-            #print('Crossover: {0}'.format(crossbreeds))
+            # crossover
+            crossbreeds = max(int(self.crossover_ratio * self._population_size),
+                              int(self._population_size/2))
+            crossed = self.crossover(selected + elite, crossbreeds)
 
-            mutants = int(self._population_size/10)
-            population = self.mutation(population, mutants)
-            #print('Mutants: {0}'.format(mutants))
-            #print('Number of genoms (population {1}): {0}'.format(len(population), self.current_population_index))
+            # mutation
+            mutants = int(self.mutation_ratio * self._population_size)
+            population = self.mutation(crossed, mutants)
+
+            population += elite
         else:
             population = self.initial_population_creator.create(self._population_size)
 
