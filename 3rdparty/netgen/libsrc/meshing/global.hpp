@@ -17,7 +17,7 @@ namespace netgen
 
   ///
   DLL_HEADER extern double GetTime ();
-  extern void ResetTime ();
+  DLL_HEADER extern void ResetTime();
 
   ///
   extern int testmode;

@@ -19,11 +19,11 @@ namespace {
   {
     double A = q*q/4 + p*p*p/27;
     if (A > 0) {
-      double sq = std::sqrt(A);
+      double sq = std::sqrt((double)A);
       return std::pow(-q/2+sq, 1/3.) + std::pow(-q/2-sq, 1/3.);
     }
     else {
-      double module = std::sqrt(-p*p*p/27);
+      double module = std::sqrt((double)-p*p*p/27);
       double ang = std::acos(-q/2/module);
       return 2 * std::pow(module, 1/3.) * std::cos(ang/3);
     }
@@ -173,13 +173,13 @@ double MetricBasis::getMinR(MElement *el, MetricData *&md, int deg) const
       {
         /*const */double phi = std::acos(.5*(minK-maxa3*maxa3*maxa3+3*maxa3))/3;
         RminBezOpt = (maxa3+2*std::cos(phi+2*M_PI/3))/(maxa3+2*std::cos(phi));
-        RminBezOpt = std::sqrt(RminBezOpt);
+        RminBezOpt = std::sqrt((double)RminBezOpt);
 
         double RminBez0 = (mina+2*std::cos(phip+M_PI/3))/(mina+2*std::cos(phip-M_PI/3));
-        RminBez0 = std::sqrt(RminBez0);
+        RminBez0 = std::sqrt((double)RminBez0);
         double curmina = mina;
         double curmaxa = maxa3;
-        while (std::min(RminLag, RminBez0)-RminBezOpt > MetricBasis::_tol) {
+        while (std::min((double)RminLag, RminBez0)-RminBezOpt > MetricBasis::_tol) {
           minaOpt = (curmina + curmaxa) / 2;
           maxaOpt = curmina;
           while (maxaOpt < minaOpt) {
@@ -200,8 +200,8 @@ double MetricBasis::getMinR(MElement *el, MetricData *&md, int deg) const
           RminBezOpt = (curmaxa+2*std::cos(phi+2*M_PI/3))/(curmaxa+2*std::cos(phi));
           phi = std::acos(.5*(minK-curmina*curmina*curmina+3*curmina))/3;
           RminBez0 = (curmina+2*std::cos(phi+2*M_PI/3))/(curmina+2*std::cos(phi));
-          RminBezOpt = std::sqrt(RminBezOpt);
-          RminBez0 = std::sqrt(RminBez0);
+          RminBezOpt = std::sqrt((double)RminBezOpt);
+          RminBez0 = std::sqrt((double)RminBez0);
         }
       }
 
@@ -230,14 +230,14 @@ double MetricBasis::getMinR(MElement *el, MetricData *&md, int deg) const
   uvw[2] = samplingPoints(0, 2);
 
   interpolate(el, md, uvw, minmaxQ, write);
-  double min, max = min = std::sqrt(minmaxQ[0]/minmaxQ[1]);
+  double min, max = min = std::sqrt((double)minmaxQ[0]/minmaxQ[1]);
   for (int i = 1; i < samplingPoints.size1(); ++i) {
     uvw[0] = samplingPoints(i, 0);
     uvw[1] = samplingPoints(i, 1);
     uvw[2] = samplingPoints(i, 2);
     interpolate(el, md, uvw, minmaxQ, write);
-    double tmp = std::sqrt(minmaxQ[0]/minmaxQ[1]);
-    min = std::min(min, tmp);
+    double tmp = std::sqrt((double)minmaxQ[0]/minmaxQ[1]);
+    min = std::min((double)min, tmp);
     max = std::max(max, tmp);
     //Msg::Info("%g (%g, %g)", tmp, min, max);
   }
@@ -291,14 +291,14 @@ bool MetricBasis::notStraight(MElement *el, double &metric, int deg) const
   uvw[2] = samplingPoints(0, 2);
 
   interpolate(el, md, uvw, minmaxQ);
-  double min, max = min = std::sqrt(minmaxQ[0]/minmaxQ[1]);
+  double min, max = min = std::sqrt((double)minmaxQ[0]/minmaxQ[1]);
   for (int i = 1; i < samplingPoints.size1(); ++i) {
     uvw[0] = samplingPoints(i, 0);
     uvw[1] = samplingPoints(i, 1);
     uvw[2] = samplingPoints(i, 2);
     interpolate(el, md, uvw, minmaxQ);
-    double tmp = std::sqrt(minmaxQ[0]/minmaxQ[1]);
-    min = std::min(min, tmp);
+    double tmp = std::sqrt((double)minmaxQ[0]/minmaxQ[1]);
+    min = std::min((double)min, tmp);
     max = std::max(max, tmp);
     //Msg::Info("%g (%g, %g)", tmp, min, max);
   }
@@ -349,7 +349,7 @@ double MetricBasis::getBoundRmin(MElement *el, MetricData *&md, fullMatrix<doubl
         metCoeffLag(i, 1) = dvxdX - metCoeffLag(i, 0);
         metCoeffLag(i, 2) = dvxdY - metCoeffLag(i, 0);
         metCoeffLag(i, 3) = dvxdZ - metCoeffLag(i, 0);
-        const double fact = std::sqrt(2);
+        const double fact = std::sqrt((double)2);
         metCoeffLag(i, 4) = fact * (dxdX*dxdY + dydX*dydY + dzdX*dzdY);
         metCoeffLag(i, 5) = fact * (dxdZ*dxdY + dydZ*dydY + dzdZ*dzdY);
         metCoeffLag(i, 6) = fact * (dxdX*dxdZ + dydX*dydZ + dzdX*dzdZ);
@@ -701,7 +701,7 @@ void MetricBasis::interpolate(const MElement *el, const MetricData *md, const do
   {
     double tmp = pow(terms[1], 2);
     tmp += pow(terms[2], 2);
-    tmp = std::sqrt(tmp);
+    tmp = std::sqrt((double)tmp);
     minmaxQ[0] = terms[0] - tmp;
     minmaxQ[1] = terms[0] + tmp;
   }
@@ -715,8 +715,8 @@ void MetricBasis::interpolate(const MElement *el, const MetricData *md, const do
     tmp += pow(terms[4], 2);
     tmp += pow(terms[5], 2);
     tmp += pow(terms[6], 2);
-    tmp = std::sqrt(tmp);
-    double factor = std::sqrt(6)/3;
+    tmp = std::sqrt((double)tmp);
+    double factor = std::sqrt((double)6)/3;
     if (tmp < 1e-3*terms[0]) {
       minmaxQ[0] = terms[0] - factor * tmp;
       minmaxQ[1] = terms[0] + factor * tmp;
@@ -736,13 +736,13 @@ void MetricBasis::interpolate(const MElement *el, const MetricData *md, const do
       phi -= terms[0]*terms[0]*terms[0];
       phi += .5*terms[0]*tmp*tmp;
       phi /= tmp*tmp*tmp;
-      phi *= 3*std::sqrt(6);
+      phi *= 3*std::sqrt((double)6);
       if (phi >  1) phi =  1;
       if (phi < -1) phi = -1;
       phi = std::acos(phi)/3;
       minmaxQ[0] = terms[0] + factor * tmp * std::cos(phi + 2*M_PI/3);
       minmaxQ[1] = terms[0] + factor * tmp * std::cos(phi);
-      ((MetricBasis*)this)->file << terms[0] << " " << tmp/std::sqrt(6) << " " << result(0, 0) << std::endl;
+      ((MetricBasis*)this)->file << terms[0] << " " << tmp/std::sqrt((double)6) << " " << result(0, 0) << std::endl;
     }
   }
   break;
@@ -791,10 +791,10 @@ void MetricBasis::_computeRmin(
     for (int k = 1; k < 7; ++k) {
       p += pow_int(coeff(i, k), 2);
     }
-    p = std::sqrt(p/6);
+    p = std::sqrt((double)p/6);
     const double a = q/p;
     if (a > 1e4) {
-      RminLag = std::min(RminLag, std::sqrt((a - std::sqrt(3)) / (a + std::sqrt(3))));
+      RminLag = std::min((double)RminLag, std::sqrt((double)(a - std::sqrt((double)3)) / (a + std::sqrt((double)3))));
     }
     else {
       const double x = .5 * (jac(i)/p/p*jac(i)/p - a*a*a + 3*a);
@@ -818,11 +818,11 @@ void MetricBasis::_computeRmin(
       }
       if (tmpR < 0) {
         if (tmpR < -1e-7) Msg::Fatal("3 s normal ? %g (%g, %g, %g) or (%g, %g)",
-            tmpR, p/std::sqrt(6), q, jac(i)*jac(i),
-            q/p*std::sqrt(6), jac(i)*jac(i)/p/p/p*6*std::sqrt(6));
+            tmpR, p/std::sqrt((double)6), q, jac(i)*jac(i),
+            q/p*std::sqrt((double)6), jac(i)*jac(i)/p/p/p*6*std::sqrt((double)6));
         else tmpR = 0;
       }
-      RminLag = std::min(RminLag, std::sqrt(tmpR));
+      RminLag = std::min((double)RminLag, std::sqrt((double)tmpR));
     }
   }
 
@@ -919,7 +919,7 @@ void MetricBasis::_computeRmin(
         RminBez = _Rsafe(am, minK);
         //Msg::Info("cpt 1: %d (%g, %g, %g)", _chkaKR(am, minK, RminBez), am, minK, RminBez);
         if (_chkaKR(am, minK, RminBez)) Msg::Error("cpt 1: %d (%g, %g, %g)", _chkaKR(am, minK, RminBez), am, minK, RminBez);
-        RminBez = std::sqrt(RminBez);
+        RminBez = std::sqrt((double)RminBez);
         return;
       }
     }
@@ -927,14 +927,14 @@ void MetricBasis::_computeRmin(
     RminBez = _Rsafe(maxa, minK);
     //Msg::Info("cpt 2: %d (%g, %g, %g)", _chkaKR(maxa, minK, RminBez), maxa, minK, RminBez);
     if (_chkaKR(maxa, minK, RminBez)) Msg::Error("cpt 2: %d (%g, %g, %g)", _chkaKR(maxa, minK, RminBez), maxa, minK, RminBez);
-    RminBez = std::sqrt(RminBez);
+    RminBez = std::sqrt((double)RminBez);
 
     /*double RminBez0 = (mina+2*std::cos(phip+M_PI/3))/(mina+2*std::cos(phip-M_PI/3));
-    RminBez0 = std::sqrt(RminBez0);
+    RminBez0 = std::sqrt((double)RminBez0);
     double curmina = mina;
     double curmaxa = maxa;
       //Msg::Info(" ");
-    while (std::min(RminLag, RminBez0)-RminBez > MetricBasis::_tol) {
+    while (std::min((double)RminLag, RminBez0)-RminBez > MetricBasis::_tol) {
       //Msg::Info("%g vs %g", RminBez0, RminBez);
       double a = (curmina + curmaxa) / 2;
       double newa = curmina;
@@ -956,8 +956,8 @@ void MetricBasis::_computeRmin(
       RminBez = (curmaxa+2*std::cos(phi+2*M_PI/3))/(curmaxa+2*std::cos(phi));
       phi = std::acos(.5*(minK-curmina*curmina*curmina+3*curmina))/3;
       RminBez0 = (curmina+2*std::cos(phi+2*M_PI/3))/(curmina+2*std::cos(phi));
-      RminBez = std::sqrt(RminBez);
-      RminBez0 = std::sqrt(RminBez0);
+      RminBez = std::sqrt((double)RminBez);
+      RminBez0 = std::sqrt((double)RminBez0);
     }*/
     return;
   }
@@ -1001,14 +1001,14 @@ void MetricBasis::_computeRmin(
       check = _chkaKR(mina, Kphimin, RminBez);
       if (check) Msg::Error("cpt 3.2: %d (%g, %g, %g)", check, mina, Kphimin, RminBez);
     }
-    RminBez = std::sqrt(RminBez);
+    RminBez = std::sqrt((double)RminBez);
     return;
   }
   else {
     RminBez = (mina+2*std::cos(phip+M_PI/3))/(mina+2*std::cos(phip-M_PI/3));
     //Msg::Info("cpt 4: %d", _chkaKR(mina, minK, RminBez));
     if (_chkaKR(mina, minK, RminBez)) Msg::Error("cpt 4: %d (%g, %g, %g) dRda %g", _chkaKR(mina, minK, RminBez), mina, minK, RminBez, dRda);
-    RminBez = std::sqrt(RminBez);
+    RminBez = std::sqrt((double)RminBez);
     return;
   }
 }
@@ -1025,10 +1025,10 @@ void MetricBasis::_computeRmax(
     for (int k = 1; k < 7; ++k) {
       p += pow_int(coeff(i, k), 2);
     }
-    p = std::sqrt(p/6);
+    p = std::sqrt((double)p/6);
     const double a = q/p;
     if (a > 1e4) {
-      RmaxLag = std::max(RmaxLag, std::sqrt((a - std::sqrt(3)) / (a + std::sqrt(3))));
+      RmaxLag = std::max(RmaxLag, std::sqrt((double)(a - std::sqrt((double)3)) / (a + std::sqrt((double)3))));
     }
     else {
       const double x = .5 * (jac(i)/p/p*jac(i)/p - a*a*a + 3*a);
@@ -1044,11 +1044,11 @@ void MetricBasis::_computeRmax(
       }
       if (tmpR < 0) {
         if (tmpR < -1e-7) Msg::Fatal("3 s normal ? %g (%g, %g, %g) or (%g, %g)",
-            tmpR, p/std::sqrt(6), q, jac(i)*jac(i),
-            q/p*std::sqrt(6), jac(i)*jac(i)/p/p/p*6*std::sqrt(6));
+            tmpR, p/std::sqrt((double)6), q, jac(i)*jac(i),
+            q/p*std::sqrt((double)6), jac(i)*jac(i)/p/p/p*6*std::sqrt((double)6));
         else tmpR = 0;
       }
-      RmaxLag = std::max(RmaxLag, std::sqrt(tmpR));
+      RmaxLag = std::max(RmaxLag, std::sqrt((double)tmpR));
     }
   }
 }
@@ -1106,7 +1106,7 @@ double MetricBasis::_subdivideForRmin(
       double minLag, minBez;
       _computeRmin(*coeff, *jac, minLag, minBez, depth+1);
       //Msg::Info("new RminBez %g", minBez);
-      RminLag = std::min(RminLag, minLag);
+      RminLag = std::min((double)RminLag, minLag);
       int newNum = num + (i+1) * pow_int(10, depth);
       MetricData *metData = new MetricData(coeff, jac, minBez, depth+1, newNum);
 
@@ -1164,7 +1164,7 @@ void MetricBasis::_computeTermBeta(double &a, double &K,
     x0 = 1;
     phip = M_PI / 3;
     term1 = 1 + .5 * a;
-    sin = std::sqrt(3) / 2;
+    sin = std::sqrt((double)3) / 2;
     sqrt = 0;
   }
   else if (x0 < -1) {
@@ -1173,14 +1173,14 @@ void MetricBasis::_computeTermBeta(double &a, double &K,
     x0 = -1;
     phip = 2 * M_PI / 3;
     term1 = 1 - .5 * a;
-    sin = std::sqrt(3) / 2;
+    sin = std::sqrt((double)3) / 2;
     sqrt = 0;
   }
   else {
     phip = (std::acos(x0) + M_PI) / 3;
     term1 = 1 + a * std::cos(phip);
     sin = std::sin(phip);
-    sqrt = std::sqrt(1-x0*x0);
+    sqrt = std::sqrt((double)1-x0*x0);
   }
   dRda = sin * sqrt + .5 * term1 * (1-a*a);
 }
@@ -1221,7 +1221,7 @@ void MetricBasis::_getMetricData(MElement *el, MetricData *&md) const
         metCoeffLag(i, 1) = dvxdX - metCoeffLag(i, 0);
         metCoeffLag(i, 2) = dvxdY - metCoeffLag(i, 0);
         metCoeffLag(i, 3) = dvxdZ - metCoeffLag(i, 0);
-        const double fact = std::sqrt(2);
+        const double fact = std::sqrt((double)2);
         metCoeffLag(i, 4) = fact * (dxdX*dxdY + dydX*dydY + dzdX*dzdY);
         metCoeffLag(i, 5) = fact * (dxdZ*dxdY + dydZ*dydY + dzdZ*dzdY);
         metCoeffLag(i, 6) = fact * (dxdX*dxdZ + dydX*dydZ + dzdX*dzdZ);
@@ -1258,11 +1258,11 @@ double MetricBasis::_minp2(const fullMatrix<double> &coeff) const
       }
       val += it->second[k].val * tmp;
     }
-    min = std::min(val, min);
+    min = std::min((double)val, min);
     ++it;
   }
 
-  return min > 0 ? std::sqrt(min/6) : 0;
+  return min > 0 ? std::sqrt((double)min/6) : 0;
 }
 
 double MetricBasis::_minp(const fullMatrix<double> &coeff) const
@@ -1275,7 +1275,7 @@ double MetricBasis::_minp(const fullMatrix<double> &coeff) const
 
   for (int i = 1; i < coeff.size1(); ++i) {
     for (int j = 0; j < 6; ++j) {
-      minmaxCoeff(0, j) = std::min(coeff(i, j+1), minmaxCoeff(0, j));
+      minmaxCoeff(0, j) = std::min((double)coeff(i, j+1), minmaxCoeff(0, j));
       minmaxCoeff(1, j) = std::max(coeff(i, j+1), minmaxCoeff(1, j));
     }
   }
@@ -1288,7 +1288,7 @@ double MetricBasis::_minp(const fullMatrix<double> &coeff) const
           pow_int(minmaxCoeff(1, j), 2);
     }
   }
-  return std::sqrt(ans/6);
+  return std::sqrt((double)ans/6);
 }
 
 double MetricBasis::_minq(const fullMatrix<double> &coeff) const
@@ -1310,7 +1310,7 @@ double MetricBasis::_maxp(const fullMatrix<double> &coeff) const
     }
     ans = std::max(ans, tmp);
   }
-  return std::sqrt(ans/6);
+  return std::sqrt((double)ans/6);
 }
 
 double MetricBasis::_maxq(const fullMatrix<double> &coeff) const
@@ -1342,15 +1342,15 @@ void MetricBasis::_minMaxA(
       num += it->second[k].val * coeff(i, 0) * coeff(j, 0);
     }
     double val = num/den;
-    min = std::min(val, min);
+    min = std::min((double)val, min);
     max = std::max(val, max);
     ++it;
   }
   min *= 6;
   max *= 6;
 
-  min = min > 1 ? std::sqrt(min) : 1;
-  max = std::sqrt(max);
+  min = min > 1 ? std::sqrt((double)min) : 1;
+  max = std::sqrt((double)max);
 }
 
 void MetricBasis::_minMaxJacobianSqr(
@@ -1398,7 +1398,7 @@ void MetricBasis::_minJ2P3(const fullMatrix<double> &coeff,
     for (int l = 1; l < 7; ++l) {
       r(i) += coeff(i, l) * coeff(i, l);
     }
-    r(i) = std::sqrt(r(i)/6);
+    r(i) = std::sqrt((double)r(i)/6);
   }
 
   min = 1e10;
@@ -1433,7 +1433,7 @@ void MetricBasis::_minJ2P3(const fullMatrix<double> &coeff,
       den += itP->second[l].val * r(i) * r(j) * r(k);
     }
     //Msg::Info("%g/%g = %g", num, den, num/den);
-    min = std::min(min, num/den);
+    min = std::min((double)min, num/den);
     ++itJ;
     ++itP;
     ++count;
@@ -1450,7 +1450,7 @@ void MetricBasis::_maxAstKpos(const fullMatrix<double> &coeff,
     for (int l = 1; l < 7; ++l) {
       P(i) += coeff(i, l) * coeff(i, l);
     }
-    P(i) = std::sqrt(P(i)/6);
+    P(i) = std::sqrt((double)P(i)/6);
   }
 
   double min = 1e10;
@@ -1474,7 +1474,7 @@ void MetricBasis::_maxAstKpos(const fullMatrix<double> &coeff,
       num -= itP->second[l].val * coeff(i, 0) * coeff(j, 0) * coeff(k, 0);
       den += itP->second[l].val * P(i) * P(j) * P(k);
     }
-    min = std::min(min, num/den);
+    min = std::min((double)min, num/den);
     ++itJ;
     ++itP;
   }
@@ -1492,7 +1492,7 @@ void MetricBasis::_maxAstKneg(const fullMatrix<double> &coeff,
     for (int l = 1; l < 7; ++l) {
       P(i) += coeff(i, l) * coeff(i, l);
     }
-    P(i) = std::sqrt(P(i)/6);
+    P(i) = std::sqrt((double)P(i)/6);
     for (int j = 0; j < coeff.size1(); ++j) {
       Q(i, j) = 0;
       for (int l = 1; l < 7; ++l) {
@@ -1522,11 +1522,11 @@ void MetricBasis::_maxAstKneg(const fullMatrix<double> &coeff,
       const int k = itP->second[l].k;
       num -= itP->second[l].val * coeff(i, 0) * coeff(j, 0) * coeff(k, 0);
       double tmp = P(i) * Q(j, k);
-      tmp = std::min(tmp, P(j) * Q(i, k));
-      tmp = std::min(tmp, P(k) * Q(i, j));
+      tmp = std::min((double)tmp, P(j) * Q(i, k));
+      tmp = std::min((double)tmp, P(k) * Q(i, j));
       den += itP->second[l].val * tmp;
     }
-    min = std::min(min, num/den);
+    min = std::min((double)min, num/den);
     ++itJ;
     ++itP;
   }
@@ -1543,7 +1543,7 @@ void MetricBasis::_maxKstAfast(const fullMatrix<double> &coeff,
     for (int l = 1; l < 7; ++l) {
       r(i) += coeff(i, l) * coeff(i, l);
     }
-    r(i) = std::sqrt(r(i)/6);
+    r(i) = std::sqrt((double)r(i)/6);
   }
 
   double min = 1e10;
@@ -1567,7 +1567,7 @@ void MetricBasis::_maxKstAfast(const fullMatrix<double> &coeff,
       num += itP->second[l].val * coeff(i, 0) * coeff(j, 0) * coeff(k, 0);
       den += itP->second[l].val * r(i) * r(j) * r(k);
     }
-    min = std::min(min, num/den);
+    min = std::min((double)min, num/den);
     ++itJ;
     ++itP;
   }
@@ -1585,7 +1585,7 @@ void MetricBasis::_maxKstAsharp(const fullMatrix<double> &coeff,
     for (int l = 1; l < 7; ++l) {
       P(i) += coeff(i, l) * coeff(i, l);
     }
-    P(i) = std::sqrt(P(i)/6);
+    P(i) = std::sqrt((double)P(i)/6);
     for (int j = 0; j < coeff.size1(); ++j) {
       Q(i, j) = 0;
       for (int l = 1; l < 7; ++l) {
@@ -1619,7 +1619,7 @@ void MetricBasis::_maxKstAsharp(const fullMatrix<double> &coeff,
       else
         den += itP->second[l].val * 1/3*(Q(i,j)*P(k)+Q(i,k)*P(j)+Q(k,j)*P(i));
     }
-    min = std::min(min, num/den);
+    min = std::min((double)min, num/den);
     ++itJ;
     ++itP;
   }

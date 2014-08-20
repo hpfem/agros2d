@@ -8,6 +8,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # do not warn about non-definition of WIN32 on cygwin
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) 
 
+SET(ENABLE_BUILD_SHARED NO)
+SET(ENABLE_BUILD_LIB YES)
+
 # if CMAKE_BUILD_TYPE is specified use it; otherwise set the default
 # build type to "RelWithDebInfo" ("-O2 -g" with gcc) prior to calling
 # project()
@@ -700,22 +703,21 @@ endforeach(DIR)
 
 # static library target
 if(ENABLE_BUILD_LIB)
-  add_library(lib STATIC ${GMSH_SRC})
-  set_target_properties(lib PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+  add_library(${PROJECT_NAME} STATIC ${GMSH_SRC})
+  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
   if(MSVC)
-    set_target_properties(lib PROPERTIES DEBUG_POSTFIX d) 
+    set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX d) 
     if(ENABLE_MSVC_STATIC_RUNTIME)
-      set_target_properties(lib PROPERTIES LINK_FLAGS_RELEASE "/nodefaultlib:LIBCMT")
+      set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "/nodefaultlib:LIBCMT")
     endif(ENABLE_MSVC_STATIC_RUNTIME)
   endif(MSVC)
-  TARGET_LINK_LIBRARIES(lib ${PROJECT_NAME} ${LINK_LIBRARIES})
+  TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${PROJECT_NAME} ${LINK_LIBRARIES})
 endif(ENABLE_BUILD_LIB)
 
 # shared library target
 if(ENABLE_BUILD_SHARED OR ENABLE_BUILD_DYNAMIC OR 
    ENABLE_WRAP_PYTHON OR ENABLE_WRAP_JAVA)
   add_library(${PROJECT_NAME} SHARED ${GMSH_SRC})
-  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
   set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${GMSH_MAJOR_VERSION}.${GMSH_MINOR_VERSION}.${GMSH_PATCH_VERSION}
     SOVERSION ${GMSH_MAJOR_VERSION}.${GMSH_MINOR_VERSION})
@@ -774,7 +776,7 @@ if(WIN32 AND NOT MSVC OR CYGWIN)
     set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
   endif(ENABLE_BUILD_DYNAMIC)
 elseif(MSVC)
-  set_target_properties(${GMSH_LIBRARY} PROPERTIES LINK_FLAGS "/STACK:16777216")
+  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/STACK:16777216")
 endif(WIN32 AND NOT MSVC OR CYGWIN)
 
 # parser target
@@ -866,7 +868,7 @@ endif(WIN32 OR CYGWIN)
 # (e.g. "make lib" or "make shared" followed by "make install/fast")
 # install(TARGETS gmsh DESTINATION ${GMSH_BIN} OPTIONAL)
 if(ENABLE_BUILD_LIB)
-  install(TARGETS lib DESTINATION ${GMSH_LIB} OPTIONAL)
+  install(TARGETS ${PROJECT_NAME} DESTINATION ${GMSH_LIB} OPTIONAL)
 endif(ENABLE_BUILD_LIB)
 if(ENABLE_BUILD_SHARED OR ENABLE_BUILD_DYNAMIC)
   if(WIN32 AND NOT MSVC OR CYGWIN)
