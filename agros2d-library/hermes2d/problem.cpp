@@ -756,6 +756,12 @@ void Problem::solve(bool commandLine)
         m_isSolving = false;
         return;
     }
+    catch (std::exception& e)
+    {
+      Agros2D::log()->printError(QObject::tr("Solver"), e.what());
+      m_isSolving = false;
+      return;
+    }
     catch (...)
     {
         // todo: dangerous

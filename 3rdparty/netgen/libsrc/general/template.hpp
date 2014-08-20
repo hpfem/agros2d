@@ -38,7 +38,7 @@ DLL_HEADER extern void MyError (const char * ch);
 
 /** Rings the bell.
   Produces nr beeps. */
-extern void MyBeep (int nr = 1);
+DLL_HEADER extern void MyBeep(int nr = 1);
 
 
 template <class T>

@@ -47,7 +47,7 @@ namespace netgen
 
 namespace netgen
 {
-  int id = 0, ntasks = 1;
+  DLL_HEADER int id = 0, ntasks = 1;
 }
 
 
@@ -1200,7 +1200,7 @@ namespace netgen
 
 
 
-   void ResetTime ()
+   DLL_HEADER void ResetTime()
    {
       ;
    }
@@ -1208,7 +1208,7 @@ namespace netgen
 
 
 
-   void MyBeep (int i)
+   DLL_HEADER void MyBeep(int i)
    {
       ;
    }
@@ -1216,7 +1216,7 @@ namespace netgen
 
 
 
-   void Render()
+   DLL_HEADER void Render()
    {
       ; 
    }
