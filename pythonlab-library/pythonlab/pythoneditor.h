@@ -109,7 +109,7 @@ public slots:
     void doFilePrint();
 
     void doFind();
-    void doFindNext(bool fromBegining = false);
+    void doFindNext();
     void doReplace();
 
     void doDataChanged();
@@ -347,8 +347,7 @@ public:
     void showReplaceAll(const QString &text = "");
 
 public slots:
-    void find();
-    void findNext(bool fromBegining);
+    void findNext();
     void replaceAll();
     void hideWidget();
 
@@ -361,8 +360,6 @@ private:
     QLabel *lblFind, *lblReplace;
     QLineEdit *txtFind, *txtReplace;
     QPushButton *btnFind, *btnReplace, *btnHide;
-
-    bool startFromBeginning;
 };
 
 
@@ -372,7 +369,7 @@ class AGROS_PYTHONLAB_API ErrorWidget: public QWidget
 {
     Q_OBJECT
 public:
-    ErrorWidget(QTabWidget *tabWidget, QWidget *parent = 0);
+    ErrorWidget(QTabWidget *tabWidget, QWidget *parent);
 
 public slots:
     void doHighlightLineError(QTreeWidgetItem *item, int role);
@@ -381,6 +378,8 @@ public slots:
 private:
     QLabel *errorLabel;
     QTreeWidget *trvErrors;
+
+    PythonEditorDialog *dialog;
     QTabWidget *tabWidget;
 };
 

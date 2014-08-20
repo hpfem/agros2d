@@ -2,7 +2,8 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelDict, ModelGenerator
-from test_suite.optilab.examples import booths_function
+from variant.test_functions import booths_function
+from variant.optimization.genetic import ModelGenetic
 
 import numpy as np
 import pythonlab
@@ -11,8 +12,8 @@ class TestBoothsFunction(Agros2DTestCase):
     def setUp(self):
         self.model = booths_function.BoothsFunction()
 
-    def test_parameteric_study(self):
-        mg = ModelGenerator()
+    def test_parametric_study(self):
+        mg = ModelGenerator(ModelGenetic)
         n = 50
         k = 2
         mg.add_parameter('x', np.linspace(-10, 10, n))

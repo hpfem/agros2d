@@ -15,7 +15,7 @@
 	{{#ITEM}}
 	<tr>
 		<td><b>{{CLS}}</b></td>
-		<td>{{MODULE}}</td>
+		<td><a href="test?module={{MODULE}}" class="example">{{MODULE}}</a></td>  
 		<td><b>{{NAME}}</b></td>
 		<td>{{TIME}}</td>
 		<td><b>{{STATUS}}</b></td>

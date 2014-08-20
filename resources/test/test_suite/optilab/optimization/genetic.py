@@ -3,14 +3,18 @@ import random as rnd
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-from test_suite.optilab.examples import quadratic_function
-from test_suite.optilab.examples import booths_function
-from test_suite.optilab.examples import holder_table_function
+from variant.test_functions import quadratic_function
+from variant.test_functions import booths_function
+from variant.test_functions import holder_table_function
 
 from variant import ModelBase, ModelDict
 
 from variant.optimization import *
-from variant.optimization.genetic import *
+from variant.optimization.genetic import ImplicitInitialPopulationCreator
+from variant.optimization.genetic import SingleCriteriaSelector
+from variant.optimization.genetic import ImplicitMutation
+from variant.optimization.genetic import ImplicitCrossover
+from variant.optimization.genetic import GeneticOptimization
 
 def test_population(genoms):
     parameters = Parameters([ContinuousParameter("a", -5, -1),
@@ -27,7 +31,7 @@ def test_population(genoms):
 
 class TestCrossover(Agros2DTestCase):
     def setUp(self):
-        self.population, self.parameters = test_population(10)
+        self.population, self.parameters = test_population(20)
         self.crossover_creator = ImplicitCrossover()
 
     def test_crossover(self):
@@ -75,8 +79,8 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
         for x in variants:
             model = quadratic_function.QuadraticFunction()
             model.parameters['x'] = x
-            GeneticInfo.set_population_from(model, 0)
-            GeneticInfo.set_population_to(model, 0)
+            model.population_from = 0
+            model.population_to = 0
             md.add_model(model)
 
         md.solve(save=False)
@@ -104,11 +108,11 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
         for genom in selected:
             score = self.functionals.evaluate(genom)
             if (score == minimum):
-                self.assertTrue(GeneticInfo.priority(genom) == 3)
+                self.assertTrue(genom.priority == 3)
             elif (score == maximum):
-                self.assertTrue(GeneticInfo.priority(genom) == 1)
+                self.assertTrue(genom.priority == 1)
             else:
-                self.assertTrue(GeneticInfo.priority(genom) == 2)
+                self.assertTrue(genom.priority == 2)
 
 class TestBoothsFunctionOptimization(Agros2DTestCase):
     def test_optimization(self):
@@ -118,8 +122,8 @@ class TestBoothsFunctionOptimization(Agros2DTestCase):
         optimization = GeneticOptimization(parameters, functionals,
                                            booths_function.BoothsFunction)
 
-        optimization.population_size = 200
-        optimization.run(50, False)
+        optimization.population_size = 150
+        optimization.run(8, False)
 
         star = optimization.find_best(optimization.model_dict.models())
         self.assertAlmostEqual(round(star.variables['F'], 1), 0, 0)
@@ -132,8 +136,8 @@ class TestHolderTableFunction(Agros2DTestCase):
         optimization = GeneticOptimization(parameters, functionals,
                                            holder_table_function.HolderTableFunction)
 
-        optimization.population_size = 200
-        optimization.run(50, False)
+        optimization.population_size = 150
+        optimization.run(8, False)
 
         star = optimization.find_best(optimization.model_dict.models())
         self.assertAlmostEqual(round(star.variables['F'], 1), -19.2, 0)

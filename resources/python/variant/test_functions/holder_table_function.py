@@ -1,7 +1,9 @@
 from variant import ModelBase
+from variant.optimization.genetic.method import ModelGenetic
+
 from math import sin, cos, exp, sqrt, pi
 
-class HolderTableFunction(ModelBase):
+class HolderTableFunction(ModelGenetic):
     """ f(x,y) = -(sin(x) * cos(y) * exp((1 - (sqrt(x**2 + y**2)(pi))))) """
     def solve(self):
         try:

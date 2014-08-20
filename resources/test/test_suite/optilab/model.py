@@ -4,7 +4,7 @@ from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelBase
-from test_suite.optilab.examples import quadratic_function
+from variant.test_functions import quadratic_function
 
 class TestModel(Agros2DTestCase):
     def test_defaults(self):

@@ -50,6 +50,8 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     webView->setMinimumSize(200, 200);
 
+    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
+
     logWidget = new LogWidget(this);
     logWidget->setMemoryLabelVisible(false);
 
@@ -315,38 +317,47 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
     QString str = QString("from test_suite.scenario import run_test; agros2d_result_report = run_test(%1.%2)").
             arg(module).arg(cls);
 
-    currentPythonEngine()->runScript(str);
-
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_result_report");
-    if (result)
+    bool successfulRun = currentPythonEngine()->runScript(str);
+    if (successfulRun)
     {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
+        PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_result_report");
+        if (result)
         {
-            PyObject *list = PyList_GetItem(result, i);
-            Py_INCREF(list);
+            Py_INCREF(result);
+            for (int i = 0; i < PyList_Size(result); i++)
+            {
+                PyObject *list = PyList_GetItem(result, i);
+                Py_INCREF(list);
 
-            QString tmodule = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 0)));
-            QString tcls = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 1)));
-            QString ttest = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 2)));
-            double telapsedTime = PyFloat_AsDouble(PyList_GetItem(list, 3));
-            QString tstatus = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 4)));
-            QString terror = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 5)));
+                QString tmodule = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 0)));
+                QString tcls = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 1)));
+                QString ttest = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 2)));
+                double telapsedTime = PyFloat_AsDouble(PyList_GetItem(list, 3));
+                QString tstatus = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 4)));
+                QString terror = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 5)));
 
-            // add to the file
-            XMLTest::item item(ttest.toStdString(),
-                               tmodule.toStdString(),
-                               tcls.toStdString(),
-                               telapsedTime,
-                               tstatus == "OK",
-                               terror.toStdString());
+                // add to the file
+                XMLTest::item item(ttest.toStdString(),
+                                   tmodule.toStdString(),
+                                   tcls.toStdString(),
+                                   telapsedTime,
+                                   tstatus == "OK",
+                                   terror.toStdString());
 
-            m_test.tests().item().push_back(item);
+                m_test.tests().item().push_back(item);
 
-            Py_XDECREF(list);
+                Py_XDECREF(list);
 
+            }
+            Py_XDECREF(result);
         }
-        Py_XDECREF(result);
+    }
+    else
+    {
+        // parse error
+        ErrorResult result = currentPythonEngine()->parseError();
+        qDebug() << result.error();
+        qDebug() << result.tracebackToString();
     }
 
     currentPythonEngine()->runExpression("del agros2d_result; del agros2d_result_report");
@@ -654,3 +665,18 @@ void UnitTestsWidget::doReject()
     reject();
 }
 
+void UnitTestsWidget::linkClicked(const QUrl &url)
+{
+    if (url.toString().contains("test?"))
+    {
+#if QT_VERSION < 0x050000
+        QString module = url.queryItemValue("module");
+#else
+        QString module = QUrlQuery(url).queryItemValue("module");
+#endif
+        QString fileName = QString("%1/resources/test/%2.py").arg(datadir()).arg(module.replace(".", "/"));
+
+        emit openInPythonLab(fileName);
+        doAccept();
+    }
+}

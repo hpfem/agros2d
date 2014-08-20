@@ -1,7 +1,6 @@
 from variant import ModelBase, ModelDictExternal
 from variant.optimization import *
 
-from variant.optimization.genetic.info import GeneticInfo
 from variant.optimization.genetic.initial_population import ImplicitInitialPopulationCreator
 from variant.optimization.genetic.selector import SingleCriteriaSelector, MultiCriteriaSelector
 from variant.optimization.genetic.mutation import ImplicitMutation
@@ -9,6 +8,28 @@ from variant.optimization.genetic.crossover import ImplicitCrossover
 
 import random as rnd
 import collections
+
+class ModelGenetic(ModelBase):
+    def __init__(self):
+        ModelBase.__init__(self)
+        
+        self.priority = -1
+        self.population_from = -1
+        self.population_to = -1
+
+    def load(self, file_name):       
+        ModelBase.load(self, file_name)
+
+        self.population_from = self.info["_population_from"]
+        self.population_to = self.info["_population_to"]
+        self.priority = self.info["_priority"]
+        
+    def save(self, file_name):
+        self.info["_population_from"] = self.population_from
+        self.info["_population_to"] = self.population_to
+        self.info["_priority"] = self.priority
+        
+        ModelBase.save(self, file_name)
 
 class GeneticOptimization(OptimizationMethod):
     """Genetic optimization method class."""
@@ -104,10 +125,9 @@ class GeneticOptimization(OptimizationMethod):
         population -- list of considered models
         """
 
-        priority = GeneticInfo.priority
         indices = []
         for index in range(len(population)):
-            indices += [index] * priority(population[index])
+            indices += [index] * population[index].priority 
 
         index = indices[rnd.choice(indices)]
         return population[index], index
@@ -122,19 +142,10 @@ class GeneticOptimization(OptimizationMethod):
         """
 
         if (index == -1):
-            return next(reversed(self.cache))
+            return self.cache[len(self.cache)]
         else:
             return self.cache[index]
-        """
-        population = []
-        population_to = GeneticInfo.population_to
-        for model in self.model_dict.models():
-            if population_to(model) == index:
-                population.append(model)
-
-        return population
-        """
-
+        
     def _functional_as_key(self, genom):
         return self.functionals.evaluate(genom)
 
@@ -239,16 +250,13 @@ class GeneticOptimization(OptimizationMethod):
         else:
             population = self.initial_population_creator.create(self._population_size)
 
-        set_population_from = GeneticInfo.set_population_from
-        set_population_to = GeneticInfo.set_population_to
-
         for genom in population:
-            set_population_from(genom, self.current_population_index)
-            set_population_to(genom, self.current_population_index)
+            genom.population_from = self.current_population_index
+            genom.population_to = self.current_population_index
 
             self.model_dict.add_model(genom)
 
-        self.cache = population
+        self.cache[len(self.cache) + 1] = population
 
     def run(self, populations, save=True):
         """Run optimization.
@@ -280,7 +288,7 @@ if __name__ == '__main__':
                                        holder_table_function.HolderTableFunction)
 
     optimization.population_size = 300
-    optimization.run(50, False)
+    optimization.run(5, False) # 50
     star = optimization.find_best(optimization.model_dict.models()) 
     print('Minimum F={0} was found with parameters: {1}'.format(star.variables['F'], star.parameters))
     print('Genuine minimum is F=-19.2085')

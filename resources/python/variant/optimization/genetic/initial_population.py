@@ -1,3 +1,5 @@
+from variant.optimization import *
+
 class InitialPopulationCreator:
     """General class for initial population creator."""
 

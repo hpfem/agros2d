@@ -1,6 +1,7 @@
 from variant import ModelBase
+from variant.optimization.genetic.method import ModelGenetic
 
-class BinhKornFunction(ModelBase):
+class BinhKornFunction(ModelGenetic):
     """ f1(x,y) = 4 * x**2 + 4 * y**2; f2(x,y) = (x - 5)**2 + (y - 5)**2 """
     def solve(self):
         try:

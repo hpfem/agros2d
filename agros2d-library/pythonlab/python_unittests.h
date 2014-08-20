@@ -38,6 +38,9 @@ public:
     UnitTestsWidget(QWidget *parent = 0);
     ~UnitTestsWidget();
 
+signals:
+    void openInPythonLab(const QString &fileName);
+
 protected:
 
 private:
@@ -82,6 +85,8 @@ private slots:
     void stopTest();
     void setEnabledControls(bool state);
     void readTestsSettingsFromScenario(QAction *action);
+
+    void linkClicked(const QUrl &url);
 };
 
 

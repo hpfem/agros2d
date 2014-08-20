@@ -737,6 +737,8 @@ void PythonEditorDialog::doRunPython()
 
     // hide pyLint
     scriptEditorWidget()->trvPyLint->setVisible(false);
+    // clear errors
+    scriptEditorWidget()->txtEditor->errorMessagesError.clear();
 
     if (!scriptEditorWidget()->fileName().isEmpty())
         fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
@@ -1127,9 +1129,9 @@ void PythonEditorDialog::doFind()
     scriptEditorWidget()->searchWidget->showFind(cursor.selectedText());
 }
 
-void PythonEditorDialog::doFindNext(bool fromBegining)
+void PythonEditorDialog::doFindNext()
 {
-    scriptEditorWidget()->searchWidget->findNext(false);
+    scriptEditorWidget()->searchWidget->findNext();
 }
 
 void PythonEditorDialog::doReplace()
@@ -1689,7 +1691,7 @@ void ScriptEditor::highlightCurrentLine(bool isError)
     {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::yellow).lighter(180);
+        QColor lineColor = QColor(253, 235, 227);
         if (isError)
             lineColor = QColor(Qt::red).lighter(180);
 
@@ -1718,7 +1720,7 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     if (isProfiled())
     {
         timesWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedTime()).length() + 1;
-        callWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedCall()).length() + 1;
+        callWidth = fontMetrics().width(QLatin1Char('9')) * (QString::number(profilerMaxAccumulatedCall()).length() + 1) + 1;
     }
 
     QPainter painterLineArea(lineNumberArea);
@@ -1739,17 +1741,17 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
             // draw rect - pyFlakes
             if (errorMessagesPyFlakes.contains(blockNumber + 1))
                 painterLineArea.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
-                                 bookmarkBrushPyFlakes);
+                                         bookmarkBrushPyFlakes);
 
             // draw rect - error
             if (errorMessagesError.contains(blockNumber + 1))
                 painterLineArea.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
-                                 bookmarkBrushError);
+                                         bookmarkBrushError);
 
             // draw line number
             painterLineArea.setPen(Qt::black);
             painterLineArea.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, lineNumber);
+                                     Qt::AlignRight, lineNumber);
 
             // draw profiler number
             if (isProfiled())
@@ -1759,13 +1761,13 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
                     QString number = QString::number(profilerAccumulatedTimes().value(blockNumber + 1));
                     painterLineArea.setPen(Qt::darkBlue);
                     painterLineArea.drawText(0, top, timesWidth,
-                                     fontMetrics().height(),
-                                     Qt::AlignRight, number);
+                                             fontMetrics().height(),
+                                             Qt::AlignRight, number);
 
-                    number = QString::number(profilerAccumulatedLines().value(blockNumber + 1));
+                    number = QString::number(profilerAccumulatedLines().value(blockNumber + 1)) + "x";
                     painterLineArea.setPen(Qt::darkGreen);
                     painterLineArea.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
-                                     Qt::AlignRight, number);
+                                             Qt::AlignRight, number);
                 }
             }
         }
@@ -1857,13 +1859,13 @@ SearchWidget::SearchWidget(ScriptEditor *txtEditor, QWidget *parent)
     lblReplace = new QLabel(tr("Replace with:"));
 
     txtFind = new QLineEdit();
-    connect(txtFind, SIGNAL(returnPressed()), this, SLOT(find()));
+    connect(txtFind, SIGNAL(returnPressed()), this, SLOT(findNext()));
     txtReplace = new QLineEdit();
     connect(txtReplace, SIGNAL(returnPressed()), this, SLOT(replaceAll()));
 
     btnFind = new QPushButton(tr("Find"), this);
     btnFind->setDefault(true);
-    connect(btnFind, SIGNAL(clicked()), this, SLOT(find()));
+    connect(btnFind, SIGNAL(clicked()), this, SLOT(findNext()));
 
     btnReplace = new QPushButton(tr("Replace all"), this);
     connect(btnReplace, SIGNAL(clicked()), this, SLOT(replaceAll()));
@@ -1915,8 +1917,6 @@ void SearchWidget::showFind(const QString &text)
     txtReplace->setVisible(false);
     btnReplace->setVisible(false);
 
-    startFromBeginning = true;
-
     show();
 }
 
@@ -1934,26 +1934,28 @@ void SearchWidget::showReplaceAll(const QString &text)
     show();
 }
 
-void SearchWidget::find()
-{
-    findNext(startFromBeginning);
-    startFromBeginning = false;
-}
-
-void SearchWidget::findNext(bool fromBegining)
+void SearchWidget::findNext()
 {
     if (!txtFind->text().isEmpty())
     {
-        // Search
-        QTextCursor cursor = txtEditor->textCursor();
-        if (fromBegining)
-            cursor = txtEditor->document()->find(txtFind->text());
-        else
-            cursor = txtEditor->document()->find(txtFind->text(), cursor);
+        // search
+        QTextCursor cursor = txtEditor->document()->find(txtFind->text(), txtEditor->textCursor());
 
-        if (cursor.position() >= 0)
+        if (cursor.isNull())
+        {
+            // restart from the beginning
+            cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+            if (!txtEditor->document()->find(txtFind->text(), cursor).isNull())
+            {
+                txtEditor->setTextCursor(cursor);
+                findNext();
+            }
+        }
+        else
+        {
             txtEditor->setTextCursor(cursor);
-        txtEditor->setFocus();
+            txtEditor->setFocus();
+        }
 
         if (isVisible())
             txtFind->setFocus();
@@ -1987,6 +1989,8 @@ void SearchWidget::hideWidget()
 ErrorWidget::ErrorWidget(QTabWidget *tabWidget, QWidget *parent)
     : QWidget(parent), tabWidget(tabWidget)
 {
+    dialog = dynamic_cast<PythonEditorDialog *>(parent);
+
     setVisible(false);
 
     trvErrors = new QTreeWidget(this);
@@ -2023,7 +2027,6 @@ void ErrorWidget::showError(ErrorResult result)
     setVisible(true);
 
     PythonEditorWidget *scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->currentWidget());
-    scriptEditorWidget->txtEditor->errorMessagesError.clear();
 
     errorLabel->setText(result.error());
 
@@ -2071,6 +2074,16 @@ void ErrorWidget::doHighlightLineError(QTreeWidgetItem *item, int role)
             else
             {
                 scriptEditorWidget = NULL;
+            }
+        }
+
+        // open existing file
+        if (!scriptEditorWidget)
+        {
+            if (QFile::exists(fileName))
+            {
+                dialog->doFileOpen(fileName);
+                scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->widget(tabWidget->count() - 1));
             }
         }
 

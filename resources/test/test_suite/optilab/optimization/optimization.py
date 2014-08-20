@@ -7,8 +7,8 @@ from variant.optimization import ContinuousParameter, DiscreteParameter, Paramet
 from variant.optimization import Functional, Functionals
 from variant.optimization import OptimizationMethod
 
-from test_suite.optilab.examples import booths_function
-from test_suite.optilab.examples import binh_korn_function
+from variant.test_functions import booths_function
+from variant.test_functions import binh_korn_function
 
 class TestContinuousParameter(Agros2DTestCase):
     def setUp(self):

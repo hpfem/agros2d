@@ -144,20 +144,30 @@ QStringList PythonEngineAgros::testSuiteScenarios()
     QStringList list;
 
     // run expression
-    currentPythonEngine()->runExpression(QString("from test_suite.scenario import find_all_scenarios; agros2d_scenarios = find_all_scenarios()"));
+    bool successfulRun = currentPythonEngine()->runExpression(QString("from test_suite.scenario import find_all_scenarios; agros2d_scenarios = find_all_scenarios()"));
 
-    // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
-    if (result)
+    if (successfulRun)
     {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
+        // extract values
+        PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
+        if (result)
         {
-            QString testName = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(result, i)));
+            Py_INCREF(result);
+            for (int i = 0; i < PyList_Size(result); i++)
+            {
+                QString testName = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(result, i)));
 
-            list.append(testName);
+                list.append(testName);
+            }
+            Py_XDECREF(result);
         }
-        Py_XDECREF(result);
+    }
+    else
+    {
+        // parse error
+        ErrorResult result = currentPythonEngine()->parseError();
+        qDebug() << result.error();
+        qDebug() << result.tracebackToString();
     }
 
     // remove variables
@@ -185,7 +195,7 @@ PythonEditorAgrosDialog::PythonEditorAgrosDialog(PythonEngine *pythonEngine, QSt
     mnuTools->addAction(actCreateFromModel);
 
     tlbTools->addSeparator();
-    tlbTools->addAction(actCreateFromModel);    
+    tlbTools->addAction(actCreateFromModel);
 
     mnuOptions->addSeparator();
     mnuOptions->addAction(actConsoleOutput);

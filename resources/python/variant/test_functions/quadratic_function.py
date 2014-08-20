@@ -1,6 +1,7 @@
 from variant import ModelBase
+from variant.optimization.genetic.method import ModelGenetic
 
-class QuadraticFunction(ModelBase):
+class QuadraticFunction(ModelGenetic):
     """ f(x) = a * x**2 + b * x + c """
     def create(self):
         self.defaults['a'] = 1

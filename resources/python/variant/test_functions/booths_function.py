@@ -1,6 +1,7 @@
 from variant import ModelBase
+from variant.optimization.genetic.method import ModelGenetic
 
-class BoothsFunction(ModelBase):
+class BoothsFunction(ModelGenetic):
     """ f(x,y) = (x + 2y - 7)**2 + (2x + y - 5)**2 """
     def solve(self):
         try:
@@ -15,7 +16,7 @@ class BoothsFunction(ModelBase):
         self.variables['F'] = self.F
 
 if __name__ == '__main__':
-    model = HolderTableFunction()
+    model = BoothsFunction()
     model.parameters['x'] = 1
     model.parameters['y'] = 3
     model.solve()

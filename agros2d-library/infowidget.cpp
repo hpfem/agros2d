@@ -516,7 +516,7 @@ void InfoWidget::showInfo()
 }
 
 void InfoWidget::linkClicked(const QUrl &url)
-{
+{    
     if (url.toString().contains("/example?"))
     {
 #if QT_VERSION < 0x050000

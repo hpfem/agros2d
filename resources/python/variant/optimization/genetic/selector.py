@@ -1,4 +1,3 @@
-from variant.optimization.genetic.info import GeneticInfo
 from copy import deepcopy
 
 class SurvivorsSelector:
@@ -58,7 +57,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
             new_genom._data = deepcopy(genom.data)
 
             if priority > 0:
-                GeneticInfo.set_priority(new_genom, priority)
+                new_genom.priority = priority
                 survivors.append(new_genom)
 
         return survivors
@@ -228,8 +227,8 @@ if __name__ == '__main__':
     for x in variants:
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
-        GeneticInfo.set_population_from(model, 0)
-        GeneticInfo.set_population_to(model, 0)
+        model.population_from = 0
+        model.population_to = 0
         md.add_model(model)
 
     md.solve(save=False)
@@ -238,5 +237,5 @@ if __name__ == '__main__':
     selector = SingleCriteriaSelector(functionals, quadratic_function.QuadraticFunction)
     selector.recomended_population_size = len(variants)
 
-    selected = selector.select(md.models())
+    selected = selector.select(md.models(), 0)
     print(len(selected))
