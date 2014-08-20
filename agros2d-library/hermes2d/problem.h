@@ -10,7 +10,7 @@
 class FieldInfo;
 class CouplingInfo;
 
-class Field;
+class FieldBlock;
 class Problem;
 class ProblemConfig;
 class ProblemSetting;

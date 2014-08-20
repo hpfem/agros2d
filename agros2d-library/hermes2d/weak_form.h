@@ -5,7 +5,7 @@
 
 class BDF2Table;
 class Block;
-class Field;
+class FieldBlock;
 class Marker;
 class Boundary;
 class Material;
@@ -132,7 +132,7 @@ private:
                                                 Material *markerSource, Marker *markerTarget);
 
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, Marker *marker);
+    void registerForm(WeakFormKind type, FieldBlock *field, QString area, FormInfo form, Marker *marker);
 
     // offsetCouplingExt defines position in Ext field where coupling solutions start
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, SceneMaterial *materialSource,

@@ -32,7 +32,7 @@ using namespace Hermes::Hermes2D;
 FieldSolutionID BlockSolutionID::fieldSolutionID(const FieldInfo *fieldInfo)
 {
     bool contains = false;
-    foreach(Field* field, group->fields())
+    foreach(FieldBlock* field, group->fields())
     {
         if(field->fieldInfo() == fieldInfo)
             contains = true;

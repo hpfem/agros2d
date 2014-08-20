@@ -189,7 +189,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
 MultiArray<double> SolutionStore::multiArray(BlockSolutionID solutionID)
 {
     MultiArray<double> ma;
-    foreach (Field *field, solutionID.group->fields())
+    foreach (FieldBlock *field, solutionID.group->fields())
     {
         MultiArray<double> maGroup = multiArray(solutionID.fieldSolutionID(field->fieldInfo()));
         ma.append(maGroup.spaces(), maGroup.solutions());
@@ -345,7 +345,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID, bool saveRunTime)
 
 void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
-    foreach (Field* field, blockSolutionID.group->fields())
+    foreach (FieldBlock* field, blockSolutionID.group->fields())
     {
         FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
         MultiArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
@@ -357,7 +357,7 @@ void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<doub
 
 void SolutionStore::removeSolution(BlockSolutionID solutionID)
 {
-    foreach(Field* field, solutionID.group->fields())
+    foreach(FieldBlock* field, solutionID.group->fields())
     {
         FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
         removeSolution(fieldSID);
@@ -390,7 +390,7 @@ int SolutionStore::lastTimeStep(const Block *block, SolutionMode solutionType) c
 {
     int timeStep = lastTimeStep(block->fields().at(0)->fieldInfo(), solutionType);
 
-    foreach(Field* field, block->fields())
+    foreach(FieldBlock* field, block->fields())
     {
         assert(lastTimeStep(field->fieldInfo(), solutionType) == timeStep);
     }
@@ -401,7 +401,7 @@ int SolutionStore::lastTimeStep(const Block *block, SolutionMode solutionType) c
 MultiArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID)
 {
     MultiArray<double> ma;
-    foreach(Field *field, solutionID.group->fields())
+    foreach(FieldBlock *field, solutionID.group->fields())
     {
         FieldSolutionID fieldSolutionID = solutionID.fieldSolutionID(field->fieldInfo());
         fieldSolutionID.timeStep = nearestTimeStep(field->fieldInfo(), solutionID.timeStep - 1);
@@ -465,7 +465,7 @@ double SolutionStore::lastTime(const Block *block)
 {
     double time = lastTime(block->fields().at(0)->fieldInfo());
 
-    foreach(Field* field, block->fields())
+    foreach(FieldBlock* field, block->fields())
     {
         assert(lastTime(field->fieldInfo()) == time);
     }
@@ -493,7 +493,7 @@ int SolutionStore::lastAdaptiveStep(const Block *block, SolutionMode solutionTyp
 {
     int adaptiveStep = lastAdaptiveStep(block->fields().at(0)->fieldInfo(), solutionType, timeStep);
 
-    foreach(Field* field, block->fields())
+    foreach(FieldBlock* field, block->fields())
     {
         assert(lastAdaptiveStep(field->fieldInfo(), solutionType, timeStep) == adaptiveStep);
     }
@@ -534,7 +534,7 @@ BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(const Block *block, S
     BlockSolutionID bsid = fsid.blockSolutionID(block);
 
 
-    foreach(Field* field, block->fields())
+    foreach(FieldBlock* field, block->fields())
     {
         assert(bsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType).blockSolutionID(block));
     }

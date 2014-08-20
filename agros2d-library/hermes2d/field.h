@@ -298,10 +298,10 @@ XMLModule::linearity_option findLinearityOption(XMLModule::field* module, Analys
 
 ostream& operator<<(ostream& output, FieldInfo& id);
 
-class Field
+class FieldBlock
 {
 public:
-    Field(FieldInfo* fieldInfo);
+    FieldBlock(FieldInfo* fieldInfo);
     bool solveInitVariables();
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }

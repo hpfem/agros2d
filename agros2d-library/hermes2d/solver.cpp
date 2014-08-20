@@ -251,7 +251,7 @@ template <typename Scalar>
 QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::factory(Block* block)
 {
     QString solverName;
-    QListIterator<Field*> iter(block->fields());
+    QListIterator<FieldBlock*> iter(block->fields());
     while (iter.hasNext())
     {
         solverName += iter.next()->fieldInfo()->fieldId();
@@ -335,7 +335,7 @@ void ProblemSolver<Scalar>::init(Block* block)
 {
     m_block = block;
 
-    QListIterator<Field*> iter(m_block->fields());
+    QListIterator<FieldBlock*> iter(m_block->fields());
     while (iter.hasNext())
     {
         QString str = iter.next()->fieldInfo()->fieldId();
@@ -411,7 +411,7 @@ std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::de
 {
     std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > newSpaces;
     int totalComp = 0;
-    foreach(Field* field, m_block->fields())
+    foreach(FieldBlock* field, m_block->fields())
     {
         bool refineMesh = false;
         int orderIncrease = 0;
@@ -683,7 +683,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
 
     m_block->createBoundaryConditions();
 
-    foreach(Field* field, m_block->fields())
+    foreach(FieldBlock* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
@@ -803,7 +803,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     }
 
     // update timedep values
-    foreach (Field* field, m_block->fields())
+    foreach (FieldBlock* field, m_block->fields())
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     m_block->updateExactSolutionFunctions();
 
@@ -909,7 +909,7 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     bool adapt = false;
 
     // update error in solution store
-    foreach (Field *field, m_block->fields())
+    foreach (FieldBlock *field, m_block->fields())
     {
         // error calculation & adaptivity.
         QSharedPointer<ErrorCalculator<double> > errorCalculator = QSharedPointer<ErrorCalculator<double> >(
@@ -980,7 +980,7 @@ void ProblemSolver<Scalar>::solveInitialTimeStep()
     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions;
 
     int totalComp = 0;
-    foreach(Field* field, m_block->fields())
+    foreach(FieldBlock* field, m_block->fields())
     {
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {

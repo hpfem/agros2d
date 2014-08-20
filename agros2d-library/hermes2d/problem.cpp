@@ -832,7 +832,7 @@ void Problem::solveAction()
                         doContinueAdaptivity = solvers[block]->createAdaptedSpace(actualTimeStep(), adaptStep);
 
                         // Python callback
-                        foreach (Field *field, block->fields())
+                        foreach (FieldBlock *field, block->fields())
                         {
                             QString command = QString("(agros2d.field(\"%1\").adaptivity_callback(%2) if (agros2d.field(\"%1\").adaptivity_callback is not None and hasattr(agros2d.field(\"%1\").adaptivity_callback, '__call__')) else True)").
                                 arg(field->fieldInfo()->fieldId()).
@@ -913,7 +913,7 @@ void Problem::stepMessage(Block* block)
 {
     // log analysis
     QString fields;
-    foreach(Field *field, block->fields())
+    foreach(FieldBlock *field, block->fields())
     {
         Agros2D::log()->addIcon(icon(QString("fields/%1").arg(field->fieldInfo()->fieldId())),
             QString("%1\n%2\n%3").

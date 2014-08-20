@@ -273,7 +273,7 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, Marker* marker)
+void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, FieldBlock *field, QString area, FormInfo form, Marker* marker)
 {
     ProblemID problemId;
 
@@ -341,7 +341,7 @@ void WeakFormAgros<Scalar>::registerForms()
     foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
         fieldInfo->createValuePointerTable();
 
-    foreach(Field* field, m_block->fields())
+    foreach(FieldBlock* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
@@ -442,8 +442,8 @@ void WeakFormAgros<Scalar>::registerForms()
     {
         if (couplingInfo->isHard())
         {
-            Field* sourceField = m_block->field(couplingInfo->sourceField());
-            Field* targetField = m_block->field(couplingInfo->targetField());
+            FieldBlock* sourceField = m_block->field(couplingInfo->sourceField());
+            FieldBlock* targetField = m_block->field(couplingInfo->targetField());
 
             for (int labelNum = 0; labelNum<Agros2D::scene()->labels->count(); labelNum++)
             {
@@ -655,7 +655,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     }
 
     // next push external functions related to fields contained in the block (if more, than hard - coupled)
-    foreach(Field* field, m_block->fields())
+    foreach(FieldBlock* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
@@ -679,7 +679,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     // push external solutions for previous time levels
     // for each field, we add all field components of previous time level, than all components of time level -2, than all
     // components of level -3, etc, depending of order of BDF used.
-    foreach(Field* field, m_block->fields())
+    foreach(FieldBlock* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if(fieldInfo->analysisType() == AnalysisType_Transient)

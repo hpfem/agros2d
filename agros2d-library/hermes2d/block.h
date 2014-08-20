@@ -25,7 +25,7 @@
 
 class FieldInfo;
 class CouplingInfo;
-class Field;
+class FieldBlock;
 class Problem;
 class SceneBoundary;
 
@@ -54,7 +54,7 @@ public:
     void setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double> wf);
 
     int numSolutions() const;
-    int offset(Field* field) const;
+    int offset(FieldBlock* field) const;
 
     LinearityType linearityType() const;
     bool isTransient() const;
@@ -118,9 +118,9 @@ public:
     int iterLinearSolverIters() const;
 
     bool contains(const FieldInfo *fieldInfo) const;
-    Field* field(const FieldInfo* fieldInfo) const;
+    FieldBlock* field(const FieldInfo* fieldInfo) const;
 
-    inline QList<Field*> fields() const { return m_fields; }
+    inline QList<FieldBlock*> fields() const { return m_fields; }
     QList<FieldInfo*> fieldInfos() const;
     inline QList<CouplingInfo*> couplings() const { return m_couplings; }
 
@@ -139,7 +139,7 @@ private:
 
     QMap<Hermes::Hermes2D::MeshFunctionSharedPtr<double>, SceneBoundary *> m_exactSolutionFunctions;
 
-    QList<Field*> m_fields;
+    QList<FieldBlock*> m_fields;
     QList<CouplingInfo*> m_couplings;
 };
 

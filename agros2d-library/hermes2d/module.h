@@ -90,7 +90,7 @@ class Material;
 class SceneMaterial;
 class SceneMaterialDialog;
 
-class Field;
+class FieldBlock;
 class Block;
 
 struct SceneViewSettings;

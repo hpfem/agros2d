@@ -31,12 +31,17 @@
 #include "../../resources_source/classes/module_xml.h"
 #include "../../resources_source/classes/problem_a2d_31_xml.h"
 
-Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
+FieldBlock::FieldBlock(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
 
 }
 
-bool Field::solveInitVariables()
+// Field::~Field()
+// {
+//     qDebug() << "Field::~Field()";
+// }
+
+bool FieldBlock::solveInitVariables()
 {
     if (!Agros2D::scene()->boundaries->filter(m_fieldInfo).evaluateAllVariables())
         return false;
