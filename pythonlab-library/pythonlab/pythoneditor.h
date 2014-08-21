@@ -123,6 +123,7 @@ public slots:
     void doRunPython();
 
     // message from another app
+    void doFileOpenAndFind(const QString &file, const QString &find);
     void onOtherInstanceMessage(const QString &msg);
 
 protected:

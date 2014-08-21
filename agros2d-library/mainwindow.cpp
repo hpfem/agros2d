@@ -1249,8 +1249,8 @@ void MainWindow::doOptions()
 void MainWindow::doUnitTests()
 {
     UnitTestsWidget unit(this);
-    connect(&unit, SIGNAL(openInPythonLab(QString)), scriptEditorDialog, SLOT(doFileOpen(QString)));
-    connect(&unit, SIGNAL(openInPythonLab(QString)), scriptEditorDialog, SLOT(show()));
+    connect(&unit, SIGNAL(openInPythonLab(QString, QString)), scriptEditorDialog, SLOT(doFileOpenAndFind(QString, QString)));
+    connect(&unit, SIGNAL(openInPythonLab(QString, QString)), scriptEditorDialog, SLOT(show()));
     unit.exec();
 }
 

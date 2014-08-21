@@ -661,12 +661,14 @@ void UnitTestsWidget::linkClicked(const QUrl &url)
     {
 #if QT_VERSION < 0x050000
         QString module = url.queryItemValue("module");
+        QString name = url.queryItemValue("name");
 #else
         QString module = QUrlQuery(url).queryItemValue("module");
+        QString name = QUrlQuery(url).queryItemValue("name");
 #endif
         QString fileName = QString("%1/resources/test/%2.py").arg(datadir()).arg(module.replace(".", "/"));
 
-        emit openInPythonLab(fileName);
+        emit openInPythonLab(fileName, QString("def %1").arg(name));
         doAccept();
     }
 }

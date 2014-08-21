@@ -1014,6 +1014,25 @@ void PythonEditorDialog::doFileOpen(const QString &file)
     }
 }
 
+void PythonEditorDialog::doFileOpenAndFind(const QString &file, const QString &find)
+{
+    doFileOpen(file);
+
+    // search
+    QTextCursor cursor = txtEditor->textCursor();
+    cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+    cursor = txtEditor->document()->find(find, txtEditor->textCursor());
+
+    if (!cursor.isNull())
+    {
+        cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+        txtEditor->setTextCursor(cursor);
+        txtEditor->ensureCursorVisible();
+        txtEditor->highlightCurrentLine(true);
+        setFocus();
+    }
+}
+
 void PythonEditorDialog::doFileOpenRecent(QAction *action)
 {
     QString fileName = action->text();

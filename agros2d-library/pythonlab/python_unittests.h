@@ -39,7 +39,7 @@ public:
     ~UnitTestsWidget();
 
 signals:
-    void openInPythonLab(const QString &fileName);
+    void openInPythonLab(const QString &fileName, const QString &find);
 
 protected:
 
