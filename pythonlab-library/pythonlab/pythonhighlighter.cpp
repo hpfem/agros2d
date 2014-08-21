@@ -154,6 +154,8 @@ void PythonHighlighter::highlightBlock(const QString &text)
     highlightBlockParenthesis(text, '(', ')');
     // highlightBlockParenthesis(text, '[', ']');
     // highlightBlockParenthesis(text, '{', '}');
+    // highlightBlockParenthesis(text, '\'', '\'');
+    // highlightBlockParenthesis(text, '"', '"');
 }
 
 void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
@@ -167,7 +169,7 @@ void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left
         info->character = left;
         info->position = leftPos;
 
-        data->insert(info);
+        data->insert(left, info);
         leftPos = text.indexOf(left, leftPos + 1);
     }
 
@@ -178,7 +180,7 @@ void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left
         info->character = right;
         info->position = rightPos;
 
-        data->insert(info);
+        data->insert(left, info);
         rightPos = text.indexOf(right, rightPos + 1);
     }
 

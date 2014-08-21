@@ -74,7 +74,7 @@ class ModelGenerator:
 
         del self._parameters[name]
 
-    def save(self, directory = "models"):
+    def save(self, directory):
         """Save models to directory.
 
         save(directory)
@@ -114,4 +114,4 @@ if __name__ == '__main__':
 
     mg.combination()
     #mg.random_selection(10000)
-    #mg.save('models')
+    #mg.save(pythonlab.tempname())

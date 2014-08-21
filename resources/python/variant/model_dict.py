@@ -2,10 +2,12 @@ import os
 import subprocess
 import re
 
+import pythonlab
+
 class ModelDict:
     """General class for management of models set."""
 
-    def __init__(self, models=None, directory=None):
+    def __init__(self, models=None):
         """Initialization of model dictionary.
         
         ModelDict(models=None, directory=None)
@@ -16,6 +18,7 @@ class ModelDict:
         """
 
         self._dict = dict()
+        self._directory = None
 
         if (models and isinstance(models, dict)):
             for name, model in models.items():
@@ -25,11 +28,6 @@ class ModelDict:
             for model in models:
                 self.add_model(model)
 
-        if not directory:
-            self.directory = '{0}/models/'.format(os.getcwd())
-        else:
-            self.directory = directory
-
     @property
     def dict(self):
         """Return dictionary of placed models."""
@@ -38,6 +36,10 @@ class ModelDict:
     @property
     def directory(self):
         """Current working directory."""
+
+        if (not self._directory):
+            raise RuntimeError('Temporary directory is not defined.')
+
         return self._directory
 
     @directory.setter
@@ -47,7 +49,7 @@ class ModelDict:
                 os.makedirs(value)
             except OSError:
                 raise IOError('Directory "{0}" can not be created.'.format(value))
-
+    
         self._directory = os.path.abspath(value)
 
     def models(self):
@@ -62,8 +64,12 @@ class ModelDict:
         return models
 
     def model_file_name(self, name):
+        if (not self._directory):
+            raise RuntimeError('Temporary directory is not defined.')
+            
         return '{0}/{1}.pickle'.format(self._directory, name)
 
+    """
     def find_last_model_index(self):
         files = self.find_files('{0}/model_.*.pickle'.format(self._directory))
         for file_name in files:
@@ -71,8 +77,9 @@ class ModelDict:
             index = int(name.split("_")[1])
             if (index >= self._name_index):
                 self._model_index = index
+    """
 
-    def add_model(self, model, name=None, resume=False):
+    def add_model(self, model, name=None):
         """Add new model to dictionary.
 
         add_model(model, name=None, resume=False)
@@ -86,8 +93,8 @@ class ModelDict:
         if name in self._dict.keys():
             raise KeyError('Model with key "{0}" already exist.'.format(name))
 
-        if (resume and not name):
-            self._model_index = self.find_last_model_index() + 1
+        # if (resume and not name):
+        #     self._model_index = self.find_last_model_index() + 1
 
         if not name:
             if hasattr(self, '_model_index'):
@@ -131,7 +138,7 @@ class ModelDict:
 
         return files
 
-    def load(self, model_class, mask=''):
+    def load(self, model_class, directory=None, mask=''):
         """Load models from directory.
 
         load(model_class, mask='')
@@ -140,6 +147,9 @@ class ModelDict:
         model_class -- class inherited from ModelBase class
         mask -- regular expression for directory or files
         """
+
+        # set directory
+        if directory: self._directory = directory
 
         if not mask:
             mask = self._directory
@@ -156,8 +166,12 @@ class ModelDict:
             name, extension = os.path.basename(file_name).split(".")
             self._dict[name] = model
 
-    def save(self):
+    def save(self, directory=None):
         """Save models to current working directory."""
+        
+        # set directory
+        if directory: self._directory = directory
+        
         for name, model in self._dict.items():
             model.save(self.model_file_name(name))
 
@@ -210,6 +224,17 @@ class ModelDict:
     def clear(self):
         """Clear dictionary."""
         self._dict.clear()
+    
+    def save_to_optilab(self, problem, filename):
+        from zipfile import ZipFile
+        
+        with ZipFile('/home/karban/pokus_1.zip', 'w') as myzip:
+            tempdir = pythonlab.tempname()
+            for name, model in self._dict.items():
+                tempname = '{0}/{1}.pickle'.format(tempdir, name)
+                model.save(tempname)
+                print(name + '.pickle')
+                myzip.write(tempname, arcname=name + '.pickle')
 
 class ModelDictExternal(ModelDict):
     """Class inherited from ModelDict allows use external solver for models (default solver is agros2d_solver)."""
@@ -262,14 +287,23 @@ class ModelDictExternal(ModelDict):
             model.load('{0}/{1}.pickle'.format(self._directory, name))
 
 if __name__ == '__main__':
-    from test_suite.optilab.examples import quadratic_function
+    from variant.test_functions import quadratic_function
+
     md = ModelDict()
-    for x in range(10000):
+    for x in range(10):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
         md.add_model(model)
 
-    md.save()
+    md.save(pythonlab.tempname())
     md.clear()
     md.load(quadratic_function.QuadraticFunction)
     md.solve(save=True)
+    
+    md.save_to_optilab(problem = pythonlab.datadir() + "resources/python/variant/test_functions/quadratic_function.py",
+                       filename = "/home/karban/pokus.opt")
+                       # file = pythonlab.tempname() + ".opt")
+
+    # remove solutions
+    import shutil
+    shutil.rmtree(md.directory)

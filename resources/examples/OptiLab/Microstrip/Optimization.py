@@ -1,4 +1,3 @@
-from variant import ModelDictExternal
 from variant import optimization
 from variant.optimization import genetic
 from problem import Model
@@ -10,6 +9,7 @@ functionals = optimization.Functionals([optimization.Functional("F", "min")])
 
 optimization = genetic.GeneticOptimization(parameters, functionals, Model)
 
+#from variant import ModelDictExternal
 #optimization.model_dict = ModelDictExternal()
 #optimization.model_dict.solver = '{0}/agros2d_solver'.format(pythonlab.datadir())
 

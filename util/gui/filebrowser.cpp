@@ -76,21 +76,24 @@ void FileBrowser::setDir(const QString &path)
     QStringList entries = dir.entryList();
     foreach(QString item, entries)
     {
-        if (dir.isRoot() && (item == "..")) continue;
-        if (item != ".")
+        if (dir.isRoot() && (item == ".."))
+            continue;
+        if (item == ".")
+            continue;
+        if (item == "__pycache__")
+            continue;
+
+        QFileInfo fileInfo(path + QDir::separator() + item);
+        if (QDir(path + QDir::separator() + item).exists())
         {
-            QFileInfo fileInfo(path + QDir::separator() + item);
-            if (QDir(path + QDir::separator() + item).exists())
-            {
-                addItem(new QListWidgetItem(icon("file-folder"), item));
-            }
+            addItem(new QListWidgetItem(icon("file-folder"), item));
+        }
+        else
+        {
+            if (fileInfo.suffix() == "py")
+                addItem(new QListWidgetItem(icon("file-python"), item));
             else
-            {
-                if (fileInfo.suffix() == "py")
-                    addItem(new QListWidgetItem(icon("file-python"), item));
-                else
-                    addItem(new QListWidgetItem(icon("file-text"), item));
-            }
+                addItem(new QListWidgetItem(icon("file-text"), item));
         }
     }
 

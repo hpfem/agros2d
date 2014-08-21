@@ -33,11 +33,11 @@ class AGROS_UTIL_API TextBlockData : public QTextBlockUserData
 public:
     TextBlockData();
 
-    QVector<ParenthesisInfo *> parentheses();
-    void insert(ParenthesisInfo *info);
+    QVector<ParenthesisInfo *> parentheses(const char &bracket);
+    void insert(const char &bracket, ParenthesisInfo *info);
 
 private:
-    QVector<ParenthesisInfo *> m_parentheses;
+    QMap<char, QVector<ParenthesisInfo *> > m_parentheses;
 };
 
 class AGROS_UTIL_API PlainTextEditParenthesis : public QPlainTextEdit
