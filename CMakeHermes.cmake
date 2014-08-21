@@ -4,7 +4,7 @@
 # Very important, telling Hermes that this build is for Agros.
 SET(AGROS_BUILD YES)
 
-set(HERMES_STATIC_LIBS YES)
+set(HERMES_STATIC_LIBS NO)
 set(H2D_WITH_GLUT NO)
 set(H2D_WITH_TEST_EXAMPLES  NO)
 set(WITH_BSON YES)
