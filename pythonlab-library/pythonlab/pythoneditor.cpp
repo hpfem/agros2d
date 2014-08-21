@@ -1713,7 +1713,7 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     // line numbers
     const QBrush bookmarkBrushPyFlakes(QColor(Qt::red).lighter());
-    const QBrush bookmarkBrushError(QColor(Qt::red));
+    const QBrush bookmarkBrushError(QColor(Qt::red).rgb());
 
     int timesWidth = 0;
     int callWidth = 0;
