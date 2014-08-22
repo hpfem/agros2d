@@ -508,11 +508,6 @@ void LocalMatrix<ValueType>::SetDataPtrCSR(int **row_offset, int **col, ValueTyp
   
   this->matrix_->SetDataPtrCSR(row_offset, col, val,
                                nnz, nrow, ncol);
-
-  *row_offset = NULL ; 
-  *col = NULL ; 
-  *val = NULL ; 
-
 }
 
 template <typename ValueType>

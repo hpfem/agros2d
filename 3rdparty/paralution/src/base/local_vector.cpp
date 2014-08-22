@@ -173,8 +173,6 @@ void LocalVector<ValueType>::SetDataPtr(ValueType **ptr, std::string name, const
   this->object_name_ = name;
 
   this->vector_->SetDataPtr(ptr, size);
-
-  *ptr = NULL;
 }
 
 template <typename ValueType>
