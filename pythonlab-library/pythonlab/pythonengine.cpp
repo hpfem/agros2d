@@ -37,14 +37,14 @@ static PythonEngine *pythonEngine = NULL;
 static bool m_silentMode = false;
 
 // create custom python engine
-void createPythonEngine(PythonEngine *custom)
+void createPythonEngine(int argc, char *argv[], PythonEngine *custom)
 {
     if (custom)
         pythonEngine = custom;
     else
         pythonEngine = new PythonEngine();
 
-    pythonEngine->init();
+    pythonEngine->init(argc, argv);
 }
 
 // current python engine
@@ -248,9 +248,13 @@ PythonEngine::~PythonEngine()
 
     if (Py_IsInitialized())
         Py_Finalize();
+
+    for(int i = 0; i < this->argc; i++)
+        delete [] this->argvw[i];
+    delete [] this->argvw;
 }
 
-void PythonEngine::init()
+void PythonEngine::init(int argc, char *argv[])
 {
     m_isScriptRunning = false;
 
@@ -260,12 +264,16 @@ void PythonEngine::init()
 
     // args
     /// \todo Better
-    int argc = 1;
-    wchar_t ** argv = new wchar_t*[1];
-    argv[0] = new wchar_t[1]();
-    PySys_SetArgv(argc, argv);
-    delete [] argv[0];
-    delete [] argv;
+    this->argc = argc;
+    this->argvw = new wchar_t* [this->argc];
+    for(int i = 0; i < this->argc; i++)
+    {
+        this->argvw[i] = new wchar_t[1000];
+        swprintf(argvw[i], 1000, L"%hs", argv[i]);
+    }
+
+    PySys_SetArgv(argc, argvw);
+
 
     // read pythonlab functions
     addFunctions(readFileContent(datadir() + "/resources/python/functions_pythonlab.py"));

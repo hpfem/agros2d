@@ -57,7 +57,7 @@
 
 #include "util/form_script.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(parent)
 {
     setWindowIcon(icon("agros2d"));
 
@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if (Agros2D::configComputer()->value(Config::Config_LogStdOut).toBool())
         logStdOut = new LogStdOut();
 
-    createPythonEngine(new PythonEngineAgros());
+    createPythonEngine(argc, argv, new PythonEngineAgros());
 
     // use maximum number of threads for PostHermes (linearizer)
     int threads = omp_get_max_threads();

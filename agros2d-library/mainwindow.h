@@ -56,7 +56,7 @@ class AGROS_LIBRARY_API MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(int argc, char *argv[], QWidget *parent = 0);
     ~MainWindow();
 
     inline void setStartupExecute(bool execute) { m_startupExecute = execute; }

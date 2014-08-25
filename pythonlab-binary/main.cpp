@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    createPythonEngine();
+    createPythonEngine(argc, argv);
     PythonEngine *pythonEngine = currentPythonEngine();
 
     PythonEditorDialog w(pythonEngine, QApplication::arguments());
