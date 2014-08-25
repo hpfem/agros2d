@@ -133,7 +133,7 @@ public:
         m_useGlobalDict(true), m_dictLocal(NULL), m_dictGlobal(NULL) {}
     ~PythonEngine();
 
-    void init();
+    void init(int argc, char *argv[]);
 
     // python commands
     void pythonClearCommand();
@@ -184,10 +184,14 @@ private:
     PyObject *errorType;
     PyObject *errorValue;
     PyObject *errorTraceback;
+
+    /// Converted argv to wchar_t for PySys_SetArgv.
+    wchar_t** argvw;
+    int argc;
 };
 
 // create custom python engine
-AGROS_PYTHONLAB_API void createPythonEngine(PythonEngine *custom = NULL);
+AGROS_PYTHONLAB_API void createPythonEngine(int argc, char *argv[], PythonEngine *custom = NULL);
 
 // current python engine
 AGROS_PYTHONLAB_API PythonEngine *currentPythonEngine();

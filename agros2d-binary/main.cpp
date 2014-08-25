@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)
         Indicator::init();
 
-        MainWindow w;
+        MainWindow w(argc, argv);
 
         // run remote server
         if (remoteArg.getValue())
