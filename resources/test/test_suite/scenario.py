@@ -14,7 +14,7 @@ class Agros2DTestCase(ut.TestCase):
                 
             return
             
-        test = abs((value - normal)/normal) < error
+        test = abs((value - normal)/value) < error
         str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
         self.assertTrue(test, str)
         
