@@ -9,7 +9,7 @@ from variant.model import ModelBase
 class ModelDict:
     """General class for management of models set."""
 
-    def __init__(self, model_class = ModelBase, models=None):
+    def __init__(self, model_class = ModelBase, models = None):
         """Initialization of model dictionary.
         
         ModelDict(models=None, directory=None)
@@ -21,7 +21,7 @@ class ModelDict:
 
         self._dict = dict()
         self._directory = None
-        self._model_class = model_class
+        self.model_class = model_class
 
         if (models and isinstance(models, dict)):
             for name, model in models.items():
@@ -30,7 +30,7 @@ class ModelDict:
         if (models and isinstance(models, list)):
             for model in models:
                 self.add_model(model)
-
+            
     @property
     def dict(self):
         """Return dictionary of placed models."""
@@ -141,7 +141,7 @@ class ModelDict:
 
         return files
 
-    def load(self, model_class, directory=None, mask=''):
+    def load(self, directory=None, mask=''):
         """Load models from directory.
 
         load(model_class, mask='')
@@ -150,9 +150,6 @@ class ModelDict:
         model_class -- class inherited from ModelBase class
         mask -- regular expression for directory or files
         """
-
-        # set model class
-        self._model_class = model_class
 
         # set directory
         if directory: self._directory = directory
@@ -167,7 +164,7 @@ class ModelDict:
 
         files = self.find_files(mask)
         for file_name in files:
-            model = self._model_class()
+            model = self.model_class()
             model.load('{0}/{1}'.format(self._directory, file_name))
             name, extension = os.path.basename(file_name).split(".")
             self._dict[name] = model
@@ -243,11 +240,11 @@ class ModelDict:
             problem = zipfile.read('problem.py').decode()
             exec(problem)
             
-            self._model_class = eval(desc["model"])
+            self.model_class = eval(desc["model"])
                                     
             for fn in sorted(zipfile.namelist()):
                 if (fn.endswith('pickle')):   
-                    model = self._model_class()
+                    model = self.model_class()
                     model.deserialize(zipfile.read(fn))
                     self._dict[os.path.splitext(fn)[0]] = model          
             
@@ -267,8 +264,8 @@ class ModelDict:
             
             # add description
             desc = dict()
-            desc["model"] = self._model_class.__name__
-            zipfile.writestr('problem.desc', json.dumps(desc)) # arcname='problem.json'
+            desc["model"] = self.model_class.__name__
+            zipfile.writestr('problem.desc', json.dumps(desc))
             
             zipfile.close()
                   
@@ -325,15 +322,15 @@ class ModelDictExternal(ModelDict):
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
 
-    md = ModelDict()
-    for x in range(100):
+    md = ModelDict(quadratic_function.QuadraticFunction)
+    for x in range(1):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
         md.add_model(model)
 
     md.save(pythonlab.tempname())
     md.clear()
-    md.load(quadratic_function.QuadraticFunction)
+    md.load()
     md.solve(save=True)    
     #print(md.dict)
     
@@ -346,7 +343,7 @@ if __name__ == '__main__':
     shutil.rmtree(md.directory)
     
     mdn = ModelDict()
-    mdn.load_from_zip("/home/karban/pokus.opt")
+    mdn.load_from_zip(fn)
     #print(mdn.dict)
 
     # remove temp opt

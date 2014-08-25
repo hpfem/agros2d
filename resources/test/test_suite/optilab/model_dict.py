@@ -45,7 +45,7 @@ class TestModelDict(Agros2DTestCase):
         self.md.save()
 
         self.md.clear()
-        self.md.load(ModelBase)
+        self.md.load()
         self.assertEqual(N, len(self.md.models()))
 
     def test_load_files_with_wrong_directory(self):

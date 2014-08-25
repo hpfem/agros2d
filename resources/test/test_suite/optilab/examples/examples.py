@@ -3,17 +3,13 @@ from test_suite.scenario import Agros2DTestResult
 
 from variant import ModelDict, ModelGenerator
 from variant.test_functions import booths_function
-from variant.optimization.genetic import ModelGenetic
 
 import numpy as np
 import pythonlab
 
 class TestBoothsFunction(Agros2DTestCase):
-    def setUp(self):
-        self.model = booths_function.BoothsFunction()
-
     def test_parametric_study(self):
-        mg = ModelGenerator(ModelGenetic)
+        mg = ModelGenerator(booths_function.BoothsFunction)
         n = 50
         k = 2
         mg.add_parameter('x', np.linspace(-10, 10, n))
@@ -23,9 +19,9 @@ class TestBoothsFunction(Agros2DTestCase):
         cwd = '{0}/models'.format(pythonlab.tempname())
         mg.save(cwd)
 
-        md = ModelDict()
+        md = ModelDict(booths_function.BoothsFunction)
         md.directory = cwd
-        md.load(booths_function.BoothsFunction)
+        md.load()
         md.solve()
 
         self.assertEqual(len(md.solved_models()), n**k)

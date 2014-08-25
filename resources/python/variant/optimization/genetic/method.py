@@ -16,6 +16,33 @@ class ModelGenetic(ModelBase):
         self.priority = -1
         self.population_from = -1
         self.population_to = -1
+        
+    @property
+    def priority(self):
+        return self._priority
+        
+    @priority.setter
+    def priority(self, value):
+        self._priority = value
+        self.info["_priority"] = value
+
+    @property
+    def population_from(self):
+        return self._population_from
+        
+    @population_from.setter
+    def population_from(self, value):
+        self._population_from = value
+        self.info["_population_from"] = value
+
+    @property
+    def population_to(self):
+        return self._population_to
+        
+    @population_to.setter
+    def population_to(self, value):
+        self._population_to = value
+        self.info["_population_to"] = value
 
     def load(self, file_name):       
         ModelBase.load(self, file_name)
@@ -24,25 +51,21 @@ class ModelGenetic(ModelBase):
         self.population_to = self.info["_population_to"]
         self.priority = self.info["_priority"]
         
-    def save(self, file_name):
-        self.info["_population_from"] = self.population_from
-        self.info["_population_to"] = self.population_to
-        self.info["_priority"] = self.priority
-        
+    def save(self, file_name):       
         ModelBase.save(self, file_name)
 
 class GeneticOptimization(OptimizationMethod):
     """Genetic optimization method class."""
 
-    def __init__(self, parameters, functionals, model_class=ModelBase):
+    def __init__(self, parameters, functionals, model_class):
         """Initialization of method object.
         
-        GeneticOptimization(parameters, functionals, model_class=ModelBase)
+        GeneticOptimization(parameters, functionals)
         
         Keyword arguments:
         parameters -- optimization parameters
         functionals -- functionals
-        model_class -- model class inherited from ModelBase class (default is ModelBase)
+        model_class -- model class
         """
 
         OptimizationMethod.__init__(self, parameters, functionals, model_class)
@@ -54,12 +77,12 @@ class GeneticOptimization(OptimizationMethod):
         self.crossover_ratio = 1.0
         self.mutation_ratio = 1.0/10.0
 
-        self.initial_population_creator = ImplicitInitialPopulationCreator(self.parameters, self.model_class)
+        self.initial_population_creator = ImplicitInitialPopulationCreator(self.parameters, self.model_dict.model_class)
 
         if self.functionals.multicriteria():
-            self.selector = MultiCriteriaSelector(self.functionals, self.model_class)
+            self.selector = MultiCriteriaSelector(self.functionals, self.model_dict.model_class)
         else:
-            self.selector = SingleCriteriaSelector(self.functionals, self.model_class)
+            self.selector = SingleCriteriaSelector(self.functionals, self.model_dict.model_class)
 
         self.mutation_creator = ImplicitMutation(self.parameters)
         self.crossover_creator = ImplicitCrossover()

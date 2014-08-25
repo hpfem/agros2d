@@ -1,7 +1,9 @@
 import agros2d as a2d
-from variant import ModelBase
+import pythonlab
 
-class Model(ModelBase):
+from variant import ModelBase, ModelDict, ModelGenerator
+
+class Capacitor(ModelBase):
     def create(self):
         # defaults and parameters
         self.defaults['R1'] = 0.01
@@ -87,10 +89,22 @@ class Model(ModelBase):
         # variables            
         self.variables['C'] = 2 * self.electrostatic.volume_integrals()['We'] / self.defaults['U']**2
 
-
 if __name__ == '__main__':
-    model = Model()
-    model.create()
-    model.solve()
-    model.process()
-    print('Capacity: C = {0}'.format(model.variables['C']))
+    tempdir = pythonlab.tempname()
+    
+    # create generator
+    mg = ModelGenerator(Capacitor)
+    # add parameters
+    mg.add_parameter_by_interval('w1', 0.02, 0.04, 0.01)
+    mg.add_parameter_by_interval('w2', 0.02, 0.04, 0.01)
+    mg.add_parameter_by_interval('l', 0.03, 0.07, 0.01)
+    # make combinations and save to the directory
+    mg.combination()
+    # mg.save(tempdir)
+    
+    # create model directory
+    md = ModelDict(models = mg.dict.models())
+    
+    # solve and save problems
+    md.solve(save = False)
+    md.save_to_zip(problem = 'Capacitor.py', filename = 'Capacitor.opt')

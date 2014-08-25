@@ -6,17 +6,13 @@ import random as rnd
 class ModelGenerator:
     """General class for models set generation (combination, random selection, etc.)."""
 
-    def __init__(self, model_class=ModelBase):
+    def __init__(self, model_class = ModelBase):
         """Initialization of model generator.
         
-        ModelGenerator(model_class=ModelBase)
-        
-        Keyword arguments:
-        model_class -- model class inherited from ModelBase (default is ModelBase)
+        ModelGenerator()
         """
 
-        self._dict = ModelDict()
-        self._model_class = model_class
+        self._dict = ModelDict(model_class)
         self._parameters = dict()
 
     @property
@@ -91,7 +87,7 @@ class ModelGenerator:
                        for values in product(*self._parameters.values())]
 
         for combination in combinations:
-            model = self._model_class()
+            model = self._dict.model_class()
             for parameter in combination:
                 model.parameters.update(parameter)
 
@@ -100,7 +96,7 @@ class ModelGenerator:
     def random_selection(self, count):
         """Generate models by random selection of parameters values."""
         for index in range(count):
-            model = self._model_class()
+            model = self._dict.model_class()
             for key, value in self._parameters.items():
                 model.parameters[key] = rnd.choice(value)
 
