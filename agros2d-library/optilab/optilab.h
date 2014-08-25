@@ -40,6 +40,13 @@ public:
 
     void showDialog();
 
+    QStringList *recentFiles() { return &m_recentFiles; }
+
+public slots:
+    void documentNew();
+    void documentOpen(const QString &fileName = "");
+    void documentClose();
+
 private slots:
     void openProblemAgros2D();
     void scriptEditor();
@@ -47,9 +54,6 @@ private slots:
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
-    void documentNew();
-    void documentOpen(const QString &fileName = "");
-    void documentClose();
     void documentOpenRecent(QAction *action);
     void doAbout();
 
@@ -70,10 +74,9 @@ private:
     // script editor
     PythonEditorAgrosDialog *m_scriptEditorDialog;
 
-    // problem
-    QString m_problemDir;
+    QString m_problem;
 
-    QStringList recentFiles;
+    QStringList m_recentFiles;
     QMenu *mnuRecentFiles;
     QActionGroup *actDocumentOpenRecentGroup;
 

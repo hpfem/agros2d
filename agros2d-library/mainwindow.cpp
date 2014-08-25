@@ -123,6 +123,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // OptiLab
     optilabWindow  = new OptilabWindow(scriptEditorDialog);
+    sceneInfoWidget->setRecentOptilabFiles(optilabWindow->recentFiles());
 
     createActions();
     createViews();
@@ -949,6 +950,14 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             // python script
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
+            return;
+        }
+
+        if (fileInfo.suffix() == "opt")
+        {
+            // OptiLab
+            optilabWindow->documentOpen(fileNameDocument);
+            optilabWindow->showDialog();
             return;
         }
 

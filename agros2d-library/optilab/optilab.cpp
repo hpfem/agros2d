@@ -39,7 +39,7 @@
 #include <QXmlSimpleReader>
 
 OptilabWindow::OptilabWindow(PythonEditorAgrosDialog *scriptEditorDialog) : QMainWindow(),
-    m_scriptEditorDialog(scriptEditorDialog), m_problemDir("")
+    m_scriptEditorDialog(scriptEditorDialog), m_problem("")
 {
     setWindowTitle(tr("Optilab"));
 
@@ -51,7 +51,7 @@ OptilabWindow::OptilabWindow(PythonEditorAgrosDialog *scriptEditorDialog) : QMai
     QSettings settings;
     restoreGeometry(settings.value("OptilabWindow/Geometry", saveGeometry()).toByteArray());
     restoreState(settings.value("OptilabWindow/State", saveState()).toByteArray());
-    recentFiles = settings.value("OptilabWindow/RecentFiles").value<QStringList>();
+    m_recentFiles = settings.value("OptilabWindow/RecentFiles").value<QStringList>();
 
     // set recent files
     setRecentFiles();
@@ -64,7 +64,7 @@ OptilabWindow::~OptilabWindow()
     QSettings settings;
     settings.setValue("OptilabWindow/Geometry", saveGeometry());
     settings.setValue("OptilabWindow/State", saveState());
-    settings.setValue("OptilabWindow/RecentFiles", recentFiles);
+    settings.setValue("OptilabWindow/RecentFiles", m_recentFiles);
 
     removeDirectory(tempProblemDir());
 }
@@ -91,6 +91,7 @@ void OptilabWindow::processOpenFinished(int exitCode)
 
 void OptilabWindow::variantOpenInExternalAgros2D()
 {
+    /*
     QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
@@ -122,10 +123,12 @@ void OptilabWindow::variantOpenInExternalAgros2D()
 
         process->start(command);
     }
+    */
 }
 
 void OptilabWindow::variantOpenInAgros2D()
 {
+    /*
     QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
@@ -135,10 +138,12 @@ void OptilabWindow::variantOpenInAgros2D()
 
         currentPythonEngine()->runScript(str);
     }
+    */
 }
 
 void OptilabWindow::variantSolveInExternalSolver()
 {
+    /*
     QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
@@ -163,10 +168,12 @@ void OptilabWindow::variantSolveInExternalSolver()
         connect(systemOutput, SIGNAL(finished(int)), this, SLOT(processSolveFinished(int)));
         systemOutput->execute(command);
     }
+    */
 }
 
 void OptilabWindow::variantSolveInAgros2D()
 {
+    /*
     QString fileName = QString("%1/models/%2.pickle").arg(m_problemDir).arg(trvVariants->currentItem()->data(0, Qt::UserRole).toString());
 
     if (QFile::exists(fileName))
@@ -177,6 +184,7 @@ void OptilabWindow::variantSolveInAgros2D()
         currentPythonEngine()->runScript(str);
         refreshVariants();
     }
+    */
 }
 
 void OptilabWindow::processSolveError(QProcess::ProcessError error)
@@ -386,18 +394,14 @@ void OptilabWindow::createMain()
 }
 
 void OptilabWindow::openProblemAgros2D()
-{
-    QString problem = QString("%1/problem.py").arg(m_problemDir);
-    if (QFile::exists(problem))
-    {
-        QProcess process;
+{   
+    QProcess process;
 
-        QString command = QString("\"%1/agros2d\" -s \"%2\"").
-                arg(QApplication::applicationDirPath()).
-                arg(problem);
+    QString command = QString("\"%1/agros2d\" -s \"%2\"").
+            arg(QApplication::applicationDirPath()).
+            arg(m_problem);
 
-        process.startDetached(command);
-    }
+    process.startDetached(command);
 }
 
 void OptilabWindow::scriptEditor()
@@ -424,7 +428,7 @@ void OptilabWindow::documentNew()
     QSettings settings;
 
     QString dir = settings.value("General/LastProblemDir", "data").toString();
-    QString fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (problem.py)"));
+    QString fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (*.opt)"));
 
     if (!fileNameDocument.isEmpty())
     {
@@ -440,7 +444,7 @@ void OptilabWindow::documentOpen(const QString &fileName)
     if (fileName.isEmpty())
     {
         QString dir = settings.value("General/LastProblemDir", "data").toString();
-        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (problem.py)"));
+        fileNameDocument = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("OptiLab files (*.opt)"));
     }
     else
     {
@@ -451,10 +455,10 @@ void OptilabWindow::documentOpen(const QString &fileName)
         return;
 
     QFileInfo fileInfo(fileNameDocument);
-    if (fileInfo.suffix() == "py")
+    if (fileInfo.suffix() == "opt")
     {
-        m_problemDir = QFileInfo(fileNameDocument).absolutePath();
-        settings.setValue("General/LastProblemDir", m_problemDir);
+        m_problem = fileInfo.absoluteFilePath();
+        settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
 
         optilabSingle->doItemChanged(NULL, NULL);
 
@@ -473,7 +477,7 @@ void OptilabWindow::documentOpenRecent(QAction *action)
 
 void OptilabWindow::documentClose()
 {
-    m_problemDir = "";
+    m_problem = "";
 
     // clear listview
     trvVariants->clear();
@@ -502,7 +506,7 @@ void OptilabWindow::showDialog()
 
 void OptilabWindow::refreshVariants()
 {
-    QString str = QString("agros2d_variants = variant.optilab_interface._md_models('%1/models/')").arg(m_problemDir);
+    QString str = QString("agros2d_variants = variant.optilab_interface._md_models_zip('%1')").arg(m_problem);
     currentPythonEngine()->runExpression(str);
 
     trvVariants->setUpdatesEnabled(false);
@@ -541,7 +545,7 @@ void OptilabWindow::refreshVariants()
                 variantItem->setIcon(0, icon("browser-class"));
             variantItem->setText(0, QFileInfo(name).baseName());
             variantItem->setText(1, QFileInfo(QString("%1/models/%2").
-                                              arg(m_problemDir).
+                                              arg(m_problem).
                                               arg(name)).lastModified().toString("yyyy-MM-dd hh:mm:ss"));
             variantItem->setData(0, Qt::UserRole, name);
 
@@ -590,20 +594,21 @@ void OptilabWindow::refreshVariants()
 void OptilabWindow::setRecentFiles()
 {
     // recent files
-    if (!m_problemDir.isEmpty())
+    if (!m_problem.isEmpty())
     {
-        if (recentFiles.indexOf(m_problemDir) == -1)
-            recentFiles.insert(0, m_problemDir);
+        QFileInfo fileInfo(m_problem);
+        if (m_recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
+            m_recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
-            recentFiles.move(recentFiles.indexOf(m_problemDir), 0);
+            m_recentFiles.move(m_recentFiles.indexOf(fileInfo.absoluteFilePath()), 0);
 
-        while (recentFiles.count() > 15) recentFiles.removeLast();
+        while (m_recentFiles.count() > 15) m_recentFiles.removeLast();
     }
 
     mnuRecentFiles->clear();
-    for (int i = 0; i<recentFiles.count(); i++)
+    for (int i = 0; i<m_recentFiles.count(); i++)
     {
-        QAction *actMenuRecentItem = new QAction(recentFiles[i], this);
+        QAction *actMenuRecentItem = new QAction(m_recentFiles[i], this);
         actDocumentOpenRecentGroup->addAction(actMenuRecentItem);
         mnuRecentFiles->addAction(actMenuRecentItem);
     }

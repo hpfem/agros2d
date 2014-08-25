@@ -4,7 +4,6 @@ from variant import ModelBase
 _md = None
 
 def _md_models(problem_dir):  
-    print(problem_dir)      
     global _md
     
     _md = ModelDict()
@@ -16,6 +15,18 @@ def _md_models(problem_dir):
         lst.append({ 'key' : k, 'solved' : m.solved })
                 
     return lst  
+    
+def _md_models_zip(filename):  
+    global _md
+    
+    _md = ModelDict()
+    _md.load_from_zip(filename)
+    
+    lst = []
+    for k, m in sorted(_md.dict.items()):
+        lst.append({ 'key' : k, 'solved' : m.solved })
+                
+    return lst      
     
 def _md_model(key):
     global _md

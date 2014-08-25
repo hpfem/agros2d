@@ -280,7 +280,7 @@ class GeneticOptimization(OptimizationMethod):
 
 
 if __name__ == '__main__':
-    from test_suite.optilab.examples import holder_table_function
+    from variant.test_functions import holder_table_function
     parameters = Parameters([ContinuousParameter('x', -10, 10), ContinuousParameter('y', -10, 10)])
     functionals = Functionals([Functional("F", "min")])
 

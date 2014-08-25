@@ -11,7 +11,7 @@ class OptimizationMethod:
         self._functionals = None
         self.functionals = functionals
 
-        self.model_dict = ModelDict()
+        self.model_dict = ModelDict(model_class = model_class)
         self.model_class = model_class
 
         #self.stopping_criterion = ImplicitStopingCriterion()

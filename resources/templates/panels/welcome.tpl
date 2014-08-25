@@ -100,6 +100,17 @@
 {{/RECENT_SCRIPT_SECTION}}
 </ul>
 </div>
+
+<div class="section">
+<h2>{{RECENT_OPTILAB_LABEL}}</h2>
+<hr/>
+<ul class="recent">
+{{#RECENT_OPTILAB_SECTION}}
+<li><a href="open?filename={{OPTILAB_FILENAME}}" class="recent_name">{{OPTILAB_BASE}}</a><br />
+	<span class="recent_filename">{{OPTILAB_FILENAME_LABEL}}</span></li>
+{{/RECENT_OPTILAB_SECTION}}
+</ul>
+</div>
 </td>
 </tr>
 </table>

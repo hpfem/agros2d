@@ -4,10 +4,12 @@ import re
 
 import pythonlab
 
+from variant.model import ModelBase
+
 class ModelDict:
     """General class for management of models set."""
 
-    def __init__(self, models=None):
+    def __init__(self, model_class = ModelBase, models=None):
         """Initialization of model dictionary.
         
         ModelDict(models=None, directory=None)
@@ -19,6 +21,7 @@ class ModelDict:
 
         self._dict = dict()
         self._directory = None
+        self._model_class = model_class
 
         if (models and isinstance(models, dict)):
             for name, model in models.items():
@@ -148,6 +151,9 @@ class ModelDict:
         mask -- regular expression for directory or files
         """
 
+        # set model class
+        self._model_class = model_class
+
         # set directory
         if directory: self._directory = directory
 
@@ -161,7 +167,7 @@ class ModelDict:
 
         files = self.find_files(mask)
         for file_name in files:
-            model = model_class()
+            model = self._model_class()
             model.load('{0}/{1}'.format(self._directory, file_name))
             name, extension = os.path.basename(file_name).split(".")
             self._dict[name] = model
@@ -224,18 +230,48 @@ class ModelDict:
     def clear(self):
         """Clear dictionary."""
         self._dict.clear()
-    
-    def save_to_optilab(self, problem, filename):
-        from zipfile import ZipFile
-        
-        with ZipFile('/home/karban/pokus_1.zip', 'w') as myzip:
-            tempdir = pythonlab.tempname()
-            for name, model in self._dict.items():
-                tempname = '{0}/{1}.pickle'.format(tempdir, name)
-                model.save(tempname)
-                print(name + '.pickle')
-                myzip.write(tempname, arcname=name + '.pickle')
 
+    def load_from_zip(self, filename):
+        import zipfile as zf
+        import json        
+                    
+        with zf.ZipFile(filename, 'r') as zipfile:
+            # read description
+            desc = json.loads(zipfile.read('problem.desc').decode())
+            
+            # read problem
+            problem = zipfile.read('problem.py').decode()
+            exec(problem)
+            
+            self._model_class = eval(desc["model"])
+                                    
+            for fn in sorted(zipfile.namelist()):
+                if (fn.endswith('pickle')):   
+                    model = self._model_class()
+                    model.deserialize(zipfile.read(fn))
+                    self._dict[os.path.splitext(fn)[0]] = model          
+            
+            zipfile.close()
+        
+    def save_to_zip(self, problem, filename):
+        import zipfile as zf
+        import json        
+                    
+        with zf.ZipFile(filename, 'w', zf.ZIP_DEFLATED) as zipfile:           
+            # add models
+            for name, model in self._dict.items():               
+                zipfile.writestr(name + '.pickle', model.serialize())
+                
+            # add problem
+            zipfile.write(problem, arcname='problem.py')
+            
+            # add description
+            desc = dict()
+            desc["model"] = self._model_class.__name__
+            zipfile.writestr('problem.desc', json.dumps(desc)) # arcname='problem.json'
+            
+            zipfile.close()
+                  
 class ModelDictExternal(ModelDict):
     """Class inherited from ModelDict allows use external solver for models (default solver is agros2d_solver)."""
 
@@ -290,7 +326,7 @@ if __name__ == '__main__':
     from variant.test_functions import quadratic_function
 
     md = ModelDict()
-    for x in range(10):
+    for x in range(100):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
         md.add_model(model)
@@ -298,12 +334,20 @@ if __name__ == '__main__':
     md.save(pythonlab.tempname())
     md.clear()
     md.load(quadratic_function.QuadraticFunction)
-    md.solve(save=True)
+    md.solve(save=True)    
+    #print(md.dict)
     
-    md.save_to_optilab(problem = pythonlab.datadir() + "resources/python/variant/test_functions/quadratic_function.py",
-                       filename = "/home/karban/pokus.opt")
-                       # file = pythonlab.tempname() + ".opt")
+    fn = pythonlab.tempname() + ".opt"
+    md.save_to_zip(problem = pythonlab.datadir() + "resources/python/variant/test_functions/quadratic_function.py",
+                   filename = fn)
 
     # remove solutions
     import shutil
     shutil.rmtree(md.directory)
+    
+    mdn = ModelDict()
+    mdn.load_from_zip("/home/karban/pokus.opt")
+    #print(mdn.dict)
+
+    # remove temp opt
+    os.remove(fn)

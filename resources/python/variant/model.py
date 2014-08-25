@@ -128,6 +128,12 @@ class ModelBase:
         with open(file_name, 'wb') as outfile:
             pickle.dump(self._data, outfile, protocol)
 
+    def serialize(self):
+        return pickle.dumps(self._data, pickle.HIGHEST_PROTOCOL)
+
+    def deserialize(self, dta):
+        self._data = pickle.loads(dta)
+
     def clear(self):
         """Clear model data."""
         self._data = ModelData()

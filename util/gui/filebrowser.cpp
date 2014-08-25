@@ -220,6 +220,8 @@ void FileBrowser::deleteObject(const QString &name)
         deleteDir(str);
     else
         deleteFile(str);
+
+    refresh();
 }
 
 void FileBrowser::renameDir(const QString &dirName)

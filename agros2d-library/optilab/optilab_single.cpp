@@ -303,52 +303,12 @@ void OptilabSingle::variantInfo(const QString &key)
 
 void OptilabSingle::welcomeInfo()
 {
-    // template
-    std::string info;
-    ctemplate::TemplateDictionary variants("variants");
-
-    variants.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
-
-    variants.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-    variants.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-
-    // recent problem files
-    variants.SetValue("RECENT_PROBLEMS_LABEL", tr("Recent Problems").toStdString());
-    for (int i = 0; i < qMin(10, optilabMain->recentFiles.count()); i++)
-    {
-        ctemplate::TemplateDictionary *recent = variants.AddSectionDictionary("RECENT_PROBLEM_SECTION");
-        recent->SetValue("PROBLEM_FILENAME", QUrl::fromUserInput(optilabMain->recentFiles.at(i)).toString().toStdString());
-        recent->SetValue("PROBLEM_FILENAME_LABEL", QFileInfo(optilabMain->recentFiles.at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
-        recent->SetValue("PROBLEM_BASE", QFileInfo(optilabMain->recentFiles.at(i)).baseName().toStdString());
-    }
-
-    // links
-    variants.SetValue("LINKS_LABEL", tr("Links").toStdString());
-
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/optilab.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &variants, &info);
-
-    // setHtml(...) doesn't work
-    // webView->setHtml(QString::fromStdString(info));
-
-    // load(...) works
-    writeStringContent(tempProblemDir() + "/variants.html", QString::fromStdString(info));
-    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/variants.html"));
+    webView->setHtml("");
 }
 
 void OptilabSingle::linkClicked(const QUrl &url)
 {
-    QString search = "/open?";
-    if (url.toString().contains(search))
-    {
-#if QT_VERSION < 0x050000
-        QString fileName = url.queryItemValue("filename");
-#else
-        QString fileName = QUrlQuery(url).queryItemValue("filename");
-#endif
 
-        if (QFile::exists(QUrl(fileName + "/problem.py").toLocalFile()))
-            optilabMain->documentOpen(QUrl(fileName + "/problem.py").toLocalFile());
-    }
 }
 
 void OptilabSingle::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
