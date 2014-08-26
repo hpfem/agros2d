@@ -7,7 +7,7 @@ class TestFlowPlanar(Agros2DTestCase):
         # problem
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "planar"
-        problem.mesh_type = "gmsh_quad_delaunay"        
+        problem.mesh_type = "triangle_quad_join"        
         
         # disable view
         agros2d.view.mesh.disable()
@@ -20,7 +20,8 @@ class TestFlowPlanar(Agros2DTestCase):
         self.flow.polynomial_order = 2
         
         self.flow.solver = "newton"
-        self.flow.solver_parameters['residual'] = 0.0001
+        self.flow.solver_parameters['residual'] = 1e-6
+        self.flow.solver_parameters['relative_change_of_solutions'] = 100
         self.flow.solver_parameters['damping'] = 'automatic'
         self.flow.solver_parameters['damping_factor'] = 1.0
         self.flow.solver_parameters['jacobian_reuse'] = False
@@ -37,14 +38,14 @@ class TestFlowPlanar(Agros2DTestCase):
         geometry = agros2d.geometry
         geometry.add_edge(-0.35, 0.05, 0.4, 0.05, boundaries = {"flow" : "Wall"})
         geometry.add_edge(0.4, 0.05, 0.4, 0.25, boundaries = {"flow" : "Wall"})
-        geometry.add_edge(-0.25, 0.1, -0.2, 0.1, boundaries = {"flow" : "Wall"}, angle = 90)
-        geometry.add_edge(-0.2, 0.1, -0.2, 0.2, boundaries = {"flow" : "Wall"}, angle = 90)
-        geometry.add_edge(-0.2, 0.2, -0.25, 0.2, boundaries = {"flow" : "Wall"}, angle = 90)
-        geometry.add_edge(-0.25, 0.2, -0.25, 0.1, boundaries = {"flow" : "Wall"}, angle = 90)
+        geometry.add_edge(-0.25, 0.1, -0.2, 0.1, boundaries = {"flow" : "Wall"}, angle = 90, segments = 6)
+        geometry.add_edge(-0.2, 0.1, -0.2, 0.2, boundaries = {"flow" : "Wall"}, angle = 90, segments = 6)
+        geometry.add_edge(-0.2, 0.2, -0.25, 0.2, boundaries = {"flow" : "Wall"}, angle = 90, segments = 6)
+        geometry.add_edge(-0.25, 0.2, -0.25, 0.1, boundaries = {"flow" : "Wall"}, angle = 90, segments = 6)
         geometry.add_edge(-0.35, 0.2, -0.05, 0.3, boundaries = {"flow" : "Wall"})
         geometry.add_edge(-0.05, 0.3, 0, 0.15, boundaries = {"flow" : "Wall"})
-        geometry.add_edge(0, 0.15, 0.05, 0.1, boundaries = {"flow" : "Wall"}, angle = 90)
-        geometry.add_edge(0.05, 0.1, 0.1, 0.15, boundaries = {"flow" : "Wall"}, angle = 90)
+        geometry.add_edge(0, 0.15, 0.05, 0.1, boundaries = {"flow" : "Wall"}, angle = 90, segments = 6)
+        geometry.add_edge(0.05, 0.1, 0.1, 0.15, boundaries = {"flow" : "Wall"}, angle = 90, segments = 6)
         geometry.add_edge(0.2, 0.3, 0.1, 0.15, boundaries = {"flow" : "Wall"})
         geometry.add_edge(0.3, 0.3, 0.3, 0.25, boundaries = {"flow" : "Wall"})
         geometry.add_edge(0.3, 0.25, 0.4, 0.25, boundaries = {"flow" : "Wall"})
@@ -55,7 +56,7 @@ class TestFlowPlanar(Agros2DTestCase):
         geometry.add_edge(-0.4, 0.1, -0.35, 0.1, boundaries = {"flow" : "Wall"})
         geometry.add_edge(-0.35, 0.1, -0.35, 0.05, boundaries = {"flow" : "Wall"})
         
-        geometry.add_label(-0.086153, 0.205999, materials = {"flow" : "Water"}, area = 0.00048)
+        geometry.add_label(-0.086153, 0.205999, materials = {"flow" : "Water"})
         geometry.add_label(-0.224921, 0.126655, materials = {"flow" : "none"})
         
         agros2d.view.zoom_best_fit()
