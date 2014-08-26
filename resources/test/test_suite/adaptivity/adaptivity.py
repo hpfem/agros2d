@@ -261,7 +261,7 @@ class TestAdaptivityRF_TE(Agros2DTestCase):
         self.rf_te.number_of_refinements = 0
         self.rf_te.polynomial_order = 1
         self.rf_te.adaptivity_type = "hp-adaptivity"
-        self.rf_te.adaptivity_parameters['steps'] = 6
+        self.rf_te.adaptivity_parameters['steps'] = 12
         self.rf_te.adaptivity_parameters['tolerance'] = 0
         self.rf_te.adaptivity_parameters['threshold'] = 0.7
         self.rf_te.adaptivity_parameters['stopping_criterion'] = "cumulative"
