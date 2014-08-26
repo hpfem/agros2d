@@ -382,8 +382,9 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     {
         if (e->cm != nullptr)
         {
-                e->cm->update_refmap_coeffs(e);
+            e->cm->update_refmap_coeffs(e);
         }
+        Hermes::Hermes2D::RefMap::set_element_iro_cache(e);
     }
 }
 
