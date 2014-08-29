@@ -16,14 +16,13 @@
 	<tr>
 		<td><b>{{CLS}}</b></td>
 		<td>{{MODULE}}</td>  
-		<td><b><a href="test?module={{MODULE}}&amp;name={{NAME}}" class="example">{{NAME}}</a></b></td>
+		<td><b><a href="test?module={{MODULE}}&amp;name={{NAME}}">{{NAME}}</a></b></td>
 		<td>{{TIME}}</td>
 		<td><b>{{STATUS}}</b></td>
 	</tr>
 	{{#ITEM_ERROR}}
 	<tr>
-		<td><b>&nbsp;</b></td>	
-		<td colspan="4"><span style="color: red; word-break: break-all;">{{ERROR}}</span></td>		
+		<td colspan="5"><span style="color: red; word-break: break-all;">{{ERROR}}</span></td>		
 	</tr>
 	{{/ITEM_ERROR}}	
 	{{/ITEM}}

@@ -28,7 +28,7 @@ class AGROS_UTIL_API FileBrowser : public QListWidget
 
 public:
     FileBrowser(QWidget *parent = 0);
-    void setDir(const QString &path);
+    void setDir(const QString &path, bool force = false);
     void setNameFilter(const QString &nameFilter);
     QString basePath();
     void refresh();

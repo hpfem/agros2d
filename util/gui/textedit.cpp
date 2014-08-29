@@ -44,7 +44,7 @@ void TextBlockData::insert(const char &bracket, ParenthesisInfo *info)
 
 PlainTextEditParenthesis::PlainTextEditParenthesis(QWidget *parent)
     : QPlainTextEdit(parent)
-{
+{    
 }
 
 void PlainTextEditParenthesis::matchParentheses(char left, char right)

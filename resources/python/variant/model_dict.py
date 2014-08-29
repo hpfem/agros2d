@@ -178,7 +178,7 @@ class ModelDict:
         for name, model in self._dict.items():
             model.save(self.model_file_name(name))
 
-    def solve(self, mask='', recalculate=False, save=True):
+    def solve(self, mask='', recalculate=False, save=False):
         """Solve model in directory.
 
         solve(mask='', recalculate=False)
@@ -323,7 +323,7 @@ if __name__ == '__main__':
     from variant.test_functions import quadratic_function
 
     md = ModelDict(quadratic_function.QuadraticFunction)
-    for x in range(1):
+    for x in range(10):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
         md.add_model(model)

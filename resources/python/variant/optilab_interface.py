@@ -1,5 +1,6 @@
 from variant import ModelDict
 from variant import ModelBase
+from variant import ModelPostprocessor
 
 _md = None
 
@@ -27,7 +28,23 @@ def _md_models_zip(filename):
         lst.append({ 'key' : k, 'solved' : m.solved })
                 
     return lst      
-    
+
+def _md_postprocessor_variables():
+    global _md
+
+    mp = ModelPostprocessor(_md)
+    keys = mp.variable_keys()
+    #values = list(next(iter(_md.dict.values())).data.variables.values())
+    #print(keys)
+    #print(values)
+    return mp.variable_keys()
+
+def _md_postprocessor_values(variable):
+    global _md
+
+    mp = ModelPostprocessor(_md)
+    return mp.variable(variable)
+        
 def _md_model(key):
     global _md
     

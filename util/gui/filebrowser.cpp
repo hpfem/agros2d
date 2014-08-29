@@ -62,9 +62,9 @@ QString FileBrowser::basePath()
     return QString(m_basePath);
 }
 
-void FileBrowser::setDir(const QString &path)
+void FileBrowser::setDir(const QString &path, bool force)
 {
-    if (path == m_basePath)
+    if (!force && (path == m_basePath))
         return;
 
     setUpdatesEnabled(false);
@@ -105,7 +105,7 @@ void FileBrowser::setDir(const QString &path)
 
 void FileBrowser::refresh()
 {
-    setDir(m_basePath);
+    setDir(m_basePath, true);
 }
 
 void FileBrowser::doFileItemActivated(QListWidgetItem *item)

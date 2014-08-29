@@ -29,22 +29,27 @@ class OptilabMulti : public QWidget
 public:
     OptilabMulti(OptilabWindow *parent = 0);
 
+public slots:
+    void refreshVariables();
+
 private:
     OptilabWindow *optilabMain;
 
     // chart
-    QComboBox *cmbX;
-    QComboBox *cmbY;
-    QCustomPlot *chart;
-    QRadioButton *radChartLine;
-    QRadioButton *radChartXY;
+    QComboBox *cmbChartLineX;
+    QComboBox *cmbChartXYX;
+    QComboBox *cmbChartXYY;
+    QCustomPlot *chartLine;
+    QCustomPlot *chartXY;
+    QTabWidget *tbxPlot;
 
 private slots:
-    void refreshChart();
-    void refreshChartWithAxes();
-    void refreshChartControls();
+    void refreshLineChart();
+    void refreshXYChart();
+    // void refreshChartWithAxes();
+    // void refreshChartControls();
 
-    void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
+    // void graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event);
 };
 
 #endif // OPTILABMULTI_H

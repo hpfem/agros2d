@@ -42,6 +42,7 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 class SearchWidget;
+class SelectionWidget;
 class ErrorWidget;
 
 #ifdef Q_WS_X11
@@ -63,7 +64,7 @@ public:
     SearchWidget *searchWidget;
     QSplitter *splitter;
 
-    PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent);
+    PythonEditorWidget(PythonEngine *m_pythonEngine, QWidget *parent);
     ~PythonEditorWidget();
 
     inline QString fileName() { return m_fileName; }
@@ -75,14 +76,12 @@ public slots:
 
 private:
     QString m_fileName;
-    PythonEngine *pythonEngine;
-
-    void createControls();
-    void createEngine();
+    PythonEngine *m_pythonEngine;
+    PythonScriptingConsole *m_console;
 
 private slots:
     void pyLintAnalyseStopped(int exitCode);
-    void doHighlightLine(QTreeWidgetItem *item, int role);
+    void doHighlightLine(QTreeWidgetItem *item, int role);       
 };
 
 class AGROS_PYTHONLAB_API PythonEditorDialog : public QMainWindow
@@ -114,9 +113,9 @@ public slots:
 
     void doDataChanged();
 
-    void doHelp();
-    void doHelpKeywordList();
-    void doAbout();
+    void doHelpOnWord();
+    void doGotoDefinition();
+    void doPrintSelection();
 
     void doCloseTab(int index);
 
@@ -187,6 +186,7 @@ protected:
     QAction *actUnindentSelection;
     QAction *actCommentAndUncommentSelection;
     QAction *actGotoLine;
+    QAction *actGotoToFileDirectory;
 
     QAction *actRunPython;
     QAction *actStopPython;
@@ -198,8 +198,9 @@ protected:
     QAction *actOptionsPrintStacktrace;
     QAction *actOptionsEnableUseProfiler;
 
-    QAction *actHelp;
-    QAction *actHelpKeywordList;
+    QAction *actHelpOnWord;
+    QAction *actGotoDefinition;
+    QAction *actPrintSelection;
     QAction *actAbout;
     QAction *actAboutQt;
 
@@ -219,6 +220,7 @@ private slots:
     void doStopScript();
     void doReplaceTabsWithSpaces();
     void doPyLintPython();
+    void doGotoFileDirectory();
     void doFileItemDoubleClick(const QString &path);
     void doPathChangeDir();
     void doCurrentDocumentChanged(bool changed);
@@ -231,6 +233,8 @@ private slots:
 
     void doStartedScript();
     void doExecutedScript();
+
+    void doAbout();
 
     void printHeading(const QString &message);
     void printMessage(const QString &module, const QString &message);
@@ -362,7 +366,6 @@ private:
     QLineEdit *txtFind, *txtReplace;
     QPushButton *btnFind, *btnReplace, *btnHide;
 };
-
 
 // ************************************************************************************************************
 

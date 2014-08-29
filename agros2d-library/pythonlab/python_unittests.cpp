@@ -116,7 +116,7 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() + 1).toStdString()));
 
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_results.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_common.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);
 
     // read tests from test_suite

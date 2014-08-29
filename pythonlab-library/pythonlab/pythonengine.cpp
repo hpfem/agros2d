@@ -150,11 +150,11 @@ static PyMethodDef pythonEngineFuntions[] =
 };
 
 static struct PyModuleDef pythonEngineDef = {
-        PyModuleDef_HEAD_INIT,
-        "pythonlab",
-        "pythonlab doc",
-        -1,
-        pythonEngineFuntions
+    PyModuleDef_HEAD_INIT,
+    "pythonlab",
+    "pythonlab doc",
+    -1,
+    pythonEngineFuntions
 };
 
 // ****************************************************************************
@@ -366,7 +366,7 @@ void PythonEngine::deleteUserModules()
     // files to be sure that changes made in imported modules were taken into account.
 
     QStringList filter_name;
-    filter_name << "pythonlab" << "agros2d" << "variant" << "sys" << "test_suite";
+    filter_name << "pythonlab" << "agros2d" << "variant" << "sys" << "test_suite" << "jedi" << "pylint" << "pyflakes";
 
     QList<PythonVariable> list = variableList();
 
@@ -444,7 +444,12 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
         Py_XDECREF(errorTraceback);
         PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
         if (errorTraceback)
+        {
             successfulRun = false;
+
+            ErrorResult result = parseError(false);
+            qDebug() << result.tracebackToString();
+        }
     }
 
     Py_XDECREF(code);
@@ -665,7 +670,77 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
     return out;
 }
 
-ErrorResult PythonEngine::parseError()
+PythonGotoDefinition PythonEngine::codeGotoDefinition(const QString& filename, int row, int column)
+{
+    PythonGotoDefinition out;
+
+#pragma omp critical(completion)
+    {
+        QString str = QString("agros2d_goto_definition = python_engine_goto_definition(path = '%1', line = %2, column = %3)").arg(filename).arg(row).arg(column);
+        runExpression(str);
+
+        // parse result
+        PyObject *result = PyDict_GetItemString(dict(), "agros2d_goto_definition");
+        if (result)
+        {
+            Py_INCREF(result);
+
+            PyObject *dmodule_path = PyList_GetItem(result, 0);
+            Py_INCREF(dmodule_path);
+            out.module_path = QString::fromWCharArray(PyUnicode_AsUnicode(dmodule_path));
+            Py_XDECREF(dmodule_path);
+
+            PyObject *dline = PyList_GetItem(result, 1);
+            Py_INCREF(dline);
+            out.line = PyInt_AsLong(dline);
+            Py_XDECREF(dline);
+
+            PyObject *dfull_name = PyList_GetItem(result, 2);
+            Py_INCREF(dfull_name);
+            out.full_name = QString::fromWCharArray(PyUnicode_AsUnicode(dfull_name));
+            Py_XDECREF(dfull_name);
+
+            PyObject *dname = PyList_GetItem(result, 3);
+            Py_INCREF(dname);
+            out.name = QString::fromWCharArray(PyUnicode_AsUnicode(dname));
+            Py_XDECREF(dname);
+
+            Py_XDECREF(result);
+        }
+
+        PyObject *del = PyRun_String("del agros2d_goto_definition", Py_single_input, dict(), dict());
+        Py_XDECREF(del);
+    }
+
+    return out;
+}
+
+QString PythonEngine::codeHelp(const QString& filename, int row, int column)
+{
+    QString help = "";
+
+#pragma omp critical(completion)
+    {
+        QString str = QString("agros2d_code_help = python_engine_code_help(path = '%1', line = %2, column = %3)").arg(filename).arg(row).arg(column);
+        runExpression(str);
+
+        // parse result
+        PyObject *result = PyDict_GetItemString(dict(), "agros2d_code_help");
+        if (result)
+        {
+            Py_INCREF(result);
+            help = QString::fromWCharArray(PyUnicode_AsUnicode(result));
+            Py_XDECREF(result);
+        }
+
+        PyObject *del = PyRun_String("del agros2d_code_help", Py_single_input, dict(), dict());
+        Py_XDECREF(del);
+    }
+
+    return help;
+}
+
+ErrorResult PythonEngine::parseError(bool clear)
 {
     QList<ErrorResult::ErrorTraceback> traceback;
     QString text;
@@ -729,14 +804,17 @@ ErrorResult PythonEngine::parseError()
         text.append("\n<unknown exception data>");
     }
 
-    Py_XDECREF(errorType);
-    errorType = NULL;
-    Py_XDECREF(errorValue);
-    errorValue = NULL;
-    Py_XDECREF(errorTraceback);
-    errorTraceback = NULL;
+    if (clear)
+    {
+        Py_XDECREF(errorType);
+        errorType = NULL;
+        Py_XDECREF(errorValue);
+        errorValue = NULL;
+        Py_XDECREF(errorTraceback);
+        errorTraceback = NULL;
 
-    PyErr_Clear();
+        PyErr_Clear();
+    }
 
     return ErrorResult(text.trimmed(), traceback, line);
 }

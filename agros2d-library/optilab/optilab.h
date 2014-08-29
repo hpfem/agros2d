@@ -83,7 +83,7 @@ private:
     QTreeWidget *trvVariants;
     QLabel *lblProblems;
 
-    QTabWidget *tbxAnalysis;
+    // QTabWidget *tbxAnalysis;
     OptilabSingle *optilabSingle;
     OptilabMulti *optilabMulti;
 

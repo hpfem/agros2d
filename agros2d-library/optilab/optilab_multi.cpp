@@ -17,77 +17,225 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include <Python.h>
+
 #include "optilab_multi.h"
+#include "pythonlab/pythonengine.h"
 
 OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain(parent)
 {
-    chart = new QCustomPlot(this);
-    chart->setMinimumHeight(300);
-    chart->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    // line
+    chartLine = new QCustomPlot(this);
+    chartLine->setMinimumHeight(300);
+    chartLine->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     // main chart
-    chart->addGraph();
+    chartLine->addGraph();
     // chart->graph(0)->setLineStyle(QCPGraph::lsLine);
     // chart->graph(0)->setPen(QColor(50, 50, 50, 255));
-    chart->graph(0)->setLineStyle(QCPGraph::lsNone);
-    chart->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
-    connect(chart, SIGNAL(plottableClick(QCPAbstractPlottable*, QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*, QMouseEvent*)));
+    chartLine->graph(0)->setLineStyle(QCPGraph::lsNone);
+    chartLine->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
+    //connect(chartLine, SIGNAL(plottableClick(QCPAbstractPlottable*, QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*, QMouseEvent*)));
     // highlight
-    chart->addGraph();
-    chart->graph(1)->setPen(QColor(255, 50, 50, 255));
-    chart->graph(1)->setLineStyle(QCPGraph::lsNone);
-    chart->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
+    chartLine->addGraph();
+    chartLine->graph(1)->setPen(QColor(255, 50, 50, 255));
+    chartLine->graph(1)->setLineStyle(QCPGraph::lsNone);
+    chartLine->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
 
-    radChartLine = new QRadioButton(tr("Line"));
-    radChartLine->setChecked(true);
-    radChartXY = new QRadioButton("X/Y");
+    cmbChartLineX = new QComboBox(this);
 
-    QButtonGroup *chartGroup = new QButtonGroup();
-    chartGroup->addButton(radChartLine);
-    chartGroup->addButton(radChartXY);
-    connect(chartGroup, SIGNAL(buttonClicked(int)), this, SLOT(refreshChartControls()));
+    QPushButton *btnPlotLine = new QPushButton(tr("Plot"), this);
+    connect(btnPlotLine, SIGNAL(clicked()), this, SLOT(refreshLineChart()));
 
-    QVBoxLayout *layoutChartType = new QVBoxLayout();
-    layoutChartType->addWidget(radChartLine);
-    layoutChartType->addWidget(radChartXY);
+    QGridLayout *layoutChartLineControls = new QGridLayout();
+    layoutChartLineControls->addWidget(new QLabel(tr("Variable")), 0, 0);
+    layoutChartLineControls->addWidget(cmbChartLineX, 0, 1);
+    layoutChartLineControls->addWidget(btnPlotLine, 1, 1);
+    layoutChartLineControls->addWidget(new QLabel(""), 10, 0);
+    layoutChartLineControls->setRowStretch(10, 1);
 
-    QGroupBox *grpChartType = new QGroupBox(tr("Chart type"));
-    grpChartType->setLayout(layoutChartType);
+    QHBoxLayout *layoutChartLine = new QHBoxLayout();
+    layoutChartLine->addLayout(layoutChartLineControls);
+    layoutChartLine->addWidget(chartLine);
 
-    cmbX = new QComboBox(this);
-    cmbY = new QComboBox(this);
-    QPushButton *btnPlot = new QPushButton(tr("Plot"), this);
-    connect(btnPlot, SIGNAL(clicked()), this, SLOT(refreshChartWithAxes()));
+    QWidget *widChartLine = new QWidget(this);
+    widChartLine->setLayout(layoutChartLine);
 
-    QHBoxLayout *layoutChartButtons = new QHBoxLayout();
-    layoutChartButtons->addStretch();
-    layoutChartButtons->addWidget(btnPlot);
+    // XY
+    chartXY = new QCustomPlot(this);
+    chartXY->setMinimumHeight(300);
+    chartXY->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    // main chart
+    chartXY->addGraph();
+    // chart->graph(0)->setLineStyle(QCPGraph::lsLine);
+    // chart->graph(0)->setPen(QColor(50, 50, 50, 255));
+    chartXY->graph(0)->setLineStyle(QCPGraph::lsNone);
+    chartXY->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
+    //connect(chartXY, SIGNAL(plottableClick(QCPAbstractPlottable*, QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*, QMouseEvent*)));
+    // highlight
+    chartXY->addGraph();
+    chartXY->graph(1)->setPen(QColor(255, 50, 50, 255));
+    chartXY->graph(1)->setLineStyle(QCPGraph::lsNone);
+    chartXY->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
 
-    QGridLayout *layoutChartCombo = new QGridLayout();
-    layoutChartCombo->setColumnStretch(1, 1);
-    layoutChartCombo->addWidget(new QLabel(tr("X:")), 0, 0);
-    layoutChartCombo->addWidget(cmbX, 0, 1);
-    layoutChartCombo->addWidget(new QLabel(tr("Y:")), 1, 0);
-    layoutChartCombo->addWidget(cmbY, 1, 1);
+    cmbChartXYX = new QComboBox(this);
+    cmbChartXYY = new QComboBox(this);
 
-    QGroupBox *grpChartCombo = new QGroupBox(tr("Variables"));
-    grpChartCombo->setLayout(layoutChartCombo);
+    QPushButton *btnPlotXY = new QPushButton(tr("Plot"), this);
+    connect(btnPlotXY, SIGNAL(clicked()), this, SLOT(refreshXYChart()));
 
-    QGridLayout *layout = new QGridLayout();
-    // layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(grpChartType, 0, 0);
-    layout->addWidget(grpChartCombo, 0, 1);
-    layout->addWidget(chart, 1, 0, 1, 2);
-    layout->addLayout(layoutChartButtons, 2, 0, 1, 2);
+    QGridLayout *layoutChartXYControls = new QGridLayout();
+    layoutChartXYControls->addWidget(new QLabel(tr("Variable X")), 0, 0);
+    layoutChartXYControls->addWidget(cmbChartXYX, 0, 1);
+    layoutChartXYControls->addWidget(new QLabel(tr("Variable Y")), 1, 0);
+    layoutChartXYControls->addWidget(cmbChartXYY, 1, 1);
+    layoutChartXYControls->addWidget(btnPlotXY, 2, 1);
+    layoutChartXYControls->addWidget(new QLabel(""), 10, 0);
+    layoutChartXYControls->setRowStretch(10, 1);
+
+    QHBoxLayout *layoutChartXY = new QHBoxLayout();
+    layoutChartXY->addLayout(layoutChartXYControls);
+    layoutChartXY->addWidget(chartXY);
+
+    QWidget *widChartXY = new QWidget(this);
+    widChartXY->setLayout(layoutChartXY);
+
+    // layout
+    tbxPlot = new QTabWidget();
+    tbxPlot->addTab(widChartLine, icon(""), tr("Line"));
+    tbxPlot->addTab(widChartXY, icon(""), tr("XY"));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(tbxPlot, 0, 0);
 
     setLayout(layout);
 }
 
+void OptilabMulti::refreshVariables()
+{
+    cmbChartLineX->clear();
+    cmbChartXYX->clear();
+    cmbChartXYY->clear();
 
+    QString str = QString("agros2d_postprocessor_variables = variant.optilab_interface._md_postprocessor_variables()");
+    currentPythonEngine()->runExpression(str);
+
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_variables");
+    if (result)
+    {
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
+        {
+            PyObject *d = PyList_GetItem(result, i);
+            Py_INCREF(d);
+
+            QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
+
+            cmbChartLineX->addItem(name, name);
+            cmbChartXYX->addItem(name, name);
+            cmbChartXYY->addItem(name, name);
+
+            Py_XDECREF(d);
+        }
+        Py_XDECREF(result);
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_postprocessor_variables");
+}
+
+void OptilabMulti::refreshLineChart()
+{
+    chartLine->clearPlottables();
+
+    QString str = QString("agros2d_postprocessor_values = variant.optilab_interface._md_postprocessor_values('%1')").arg(cmbChartLineX->currentText());
+    currentPythonEngine()->runExpression(str);
+
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_values");
+    if (result)
+    {
+        QVector<double> valuesX;
+        QVector<double> valuesY;
+
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
+        {
+            PyObject *d = PyList_GetItem(result, i);
+            Py_INCREF(d);
+
+            double val = PyFloat_AsDouble(d);
+
+            valuesX.append(i);
+            valuesY.append(val);
+
+            Py_XDECREF(d);
+        }
+        Py_XDECREF(result);
+
+        QCPBars *bar = new QCPBars(chartLine->xAxis, chartLine->yAxis);
+        chartLine->addPlottable(bar);
+        bar->setName("Bar");
+        bar->setData(valuesX, valuesY);
+
+        chartLine->rescaleAxes();
+        chartLine->replot();
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_postprocessor_values");
+}
+
+void OptilabMulti::refreshXYChart()
+{
+    QString str = QString("agros2d_postprocessor_values_x = variant.optilab_interface._md_postprocessor_values('%1'); agros2d_postprocessor_values_y = variant.optilab_interface._md_postprocessor_values('%2')")
+            .arg(cmbChartXYX->currentText())
+            .arg(cmbChartXYY->currentText());
+    currentPythonEngine()->runExpression(str);
+
+    // extract values
+    PyObject *resultX = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_values_x");
+    PyObject *resultY = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_values_y");
+    if (resultX && resultY)
+    {
+        QVector<double> valuesX;
+        QVector<double> valuesY;
+
+        Py_INCREF(resultX);
+        for (int i = 0; i < PyList_Size(resultX); i++)
+        {
+            PyObject *d = PyList_GetItem(resultX, i);
+            Py_INCREF(d);
+            valuesX.append(PyFloat_AsDouble(d));
+            Py_XDECREF(d);
+        }
+        Py_XDECREF(resultX);
+
+        Py_INCREF(resultY);
+        for (int i = 0; i < PyList_Size(resultY); i++)
+        {
+            PyObject *d = PyList_GetItem(resultY, i);
+            Py_INCREF(d);
+            valuesY.append(PyFloat_AsDouble(d));
+            Py_XDECREF(d);
+        }
+        Py_XDECREF(resultY);
+
+        chartXY->graph(0)->setData(valuesX, valuesY);
+        chartXY->rescaleAxes();
+        chartXY->replot();
+    }
+
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_postprocessor_values_x; del agros2d_postprocessor_values_y");
+}
+
+/*
 void OptilabMulti::refreshChart()
 {
     return;
 
-    /*
     chart->graph(0)->clearData();
     chart->graph(1)->clearData();
 
@@ -159,9 +307,10 @@ void OptilabMulti::refreshChart()
     }
 
     chart->replot();
-    */
-}
 
+}
+*/
+/*
 void OptilabMulti::refreshChartWithAxes()
 {
     // set chart variables
@@ -177,7 +326,7 @@ void OptilabMulti::refreshChartWithAxes()
         cmbX->addItem(name);
         cmbY->addItem(name);
     }
-    */
+
 
     if (!selectedX.isEmpty())
         cmbX->setCurrentIndex(cmbX->findText(selectedX));
@@ -190,7 +339,8 @@ void OptilabMulti::refreshChartWithAxes()
     chart->rescaleAxes();
     chart->replot();
 }
-
+*/
+/*
 void OptilabMulti::refreshChartControls()
 {
     // enable only for xy chart
@@ -205,7 +355,8 @@ void OptilabMulti::refreshChartControls()
     // ylabel
     chart->yAxis->setLabel(cmbY->currentText());
 }
-
+*/
+/*
 void OptilabMulti::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *event)
 {
     /*
@@ -249,5 +400,6 @@ void OptilabMulti::graphClicked(QCPAbstractPlottable *plottable, QMouseEvent *ev
 
         variantInfo(trvVariants->topLevelItem(index)->data(0, Qt::UserRole).toString());
     }
-    */
+
 }
+*/

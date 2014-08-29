@@ -66,30 +66,7 @@ int columnAt(const QString& text, int position)
 }
 
 PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent)
-    : QWidget(parent), pythonEngine(pythonEngine)
-{
-    m_fileName = "";
-
-    createControls();
-
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
-    timer->start(4000);
-
-    txtEditor->setAcceptDrops(false);
-}
-
-PythonEditorWidget::~PythonEditorWidget()
-{
-    QSettings settings;
-
-    settings.setValue("PythonEditorWidget/Geometry", saveGeometry());
-    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
-    settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
-    settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
-}
-
-void PythonEditorWidget::createControls()
+    : QWidget(parent), m_pythonEngine(pythonEngine), m_fileName("")
 {
     txtEditor = new ScriptEditor(pythonEngine, this);
     searchWidget = new SearchWidget(txtEditor, this);
@@ -128,6 +105,22 @@ void PythonEditorWidget::createControls()
     splitter->restoreState(settings.value("PythonEditorWidget/SplitterState").toByteArray());
     splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry").toByteArray());
     txtEditor->resize(txtEditor->height(), settings.value("PythonEditorWidget/EditorHeight").toInt());
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
+    timer->start(4000);
+
+    txtEditor->setAcceptDrops(false);
+}
+
+PythonEditorWidget::~PythonEditorWidget()
+{
+    QSettings settings;
+
+    settings.setValue("PythonEditorWidget/Geometry", saveGeometry());
+    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
+    settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
+    settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
 }
 
 void PythonEditorWidget::pyLintAnalyse()
@@ -250,13 +243,13 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
 
 void PythonEditorWidget::pyFlakesAnalyse()
 {
-    if (isVisible() && !pythonEngine->isScriptRunning())
+    if (isVisible() && !m_pythonEngine->isScriptRunning())
     {
         QString fn = tempProblemFileName() + ".pyflakes_str.py";
         QString str = txtEditor->toPlainText();
         writeStringContent(fn, &str);
 
-        QStringList messages = pythonEngine->codePyFlakes(fn);
+        QStringList messages = m_pythonEngine->codePyFlakes(fn);
 
         txtEditor->errorMessagesPyFlakes.clear();
         foreach (QString line, messages)
@@ -313,6 +306,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     connect(actStopPython, SIGNAL(triggered()), this, SLOT(doStopScript()));
     connect(actReplaceTabsWithSpaces, SIGNAL(triggered()), this, SLOT(doReplaceTabsWithSpaces()));
     connect(actCheckPyLint, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
+    connect(actGotoToFileDirectory, SIGNAL(triggered()), this, SLOT(doGotoFileDirectory()));
 
     connect(pythonEngine, SIGNAL(startedScript()), this, SLOT(doStartedScript()));
     connect(pythonEngine, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
@@ -475,6 +469,8 @@ void PythonEditorDialog::createActions()
     actGotoLine = new QAction(icon(""), tr("Goto line"), this);
     actGotoLine->setShortcut(tr("Alt+G"));
 
+    actGotoToFileDirectory = new QAction(icon("options-plugin"), tr("Goto file directory"), this);
+
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
@@ -512,15 +508,18 @@ void PythonEditorDialog::createActions()
     actExit->setShortcut(tr("Ctrl+Q"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
-    actHelp->setShortcut(QKeySequence::HelpContents);
-    actHelp->setEnabled(false);
-    connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+    actHelpOnWord = new QAction(icon("help-contents"), tr("&Help"), this);
+    actHelpOnWord->setShortcut(QKeySequence::HelpContents);
+    actHelpOnWord->setEnabled(true);
+    connect(actHelpOnWord, SIGNAL(triggered()), this, SLOT(doHelpOnWord()));
 
-    actHelpKeywordList = new QAction(icon("help-contents"), tr("&Keyword List"), this);
-    actHelpKeywordList->setShortcut(QKeySequence::HelpContents);
-    actHelpKeywordList->setEnabled(false);
-    connect(actHelpKeywordList, SIGNAL(triggered()), this, SLOT(doHelpKeywordList()));
+    actGotoDefinition = new QAction(icon(""), tr("Goto definition"), this);
+    actGotoDefinition->setShortcut(tr("F2"));
+    connect(actGotoDefinition, SIGNAL(triggered()), this, SLOT(doGotoDefinition()));
+
+    actPrintSelection = new QAction(icon(""), tr("Print selection"), this);
+    actPrintSelection->setShortcut(tr("F5"));
+    connect(actPrintSelection, SIGNAL(triggered()), this, SLOT(doPrintSelection()));
 
     actAbout = new QAction(icon("about"), tr("About &PythonLab"), this);
     actAbout->setMenuRole(QAction::AboutRole);
@@ -573,7 +572,13 @@ void PythonEditorDialog::createControls()
     mnuTools->addAction(actStopPython);
     mnuTools->addAction(actCheckPyLint);
     mnuTools->addSeparator();
+    mnuTools->addAction(actGotoToFileDirectory);
+    mnuTools->addSeparator();
     mnuTools->addAction(actReplaceTabsWithSpaces);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actHelpOnWord);
+    mnuTools->addAction(actGotoDefinition);
+    mnuTools->addAction(actPrintSelection);
 
     mnuOptions = menuBar()->addMenu(tr("&Options"));
     mnuOptions->addAction(actOptionsEnablePyFlakes);
@@ -584,8 +589,6 @@ void PythonEditorDialog::createControls()
     mnuOptions->addAction(actOptionsEnableUseProfiler);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
-    // mnuHelp->addAction(actHelp);
-    // mnuHelp->addAction(actHelpKeywordList);
     mnuHelp->addAction(actAbout);   // will be added to "PythonLab" MacOSX menu
     mnuHelp->addAction(actAboutQt); // will be added to "PythonLab" MacOSX menu
 
@@ -632,6 +635,7 @@ void PythonEditorDialog::createControls()
 #endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actCheckPyLint);
+    tlbTools->addAction(actGotoToFileDirectory);
 
     // path
     QLabel *lblPath = new QLabel();
@@ -902,6 +906,12 @@ void PythonEditorDialog::doPyLintPython()
     txtEditor->setFocus();
 }
 
+void PythonEditorDialog::doGotoFileDirectory()
+{
+    if (!scriptEditorWidget()->fileName().isEmpty())
+        fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
+}
+
 void PythonEditorDialog::doOptionsPrintStacktrace()
 {
     QSettings settings;
@@ -957,7 +967,8 @@ void PythonEditorDialog::doPathChangeDir()
 
 void PythonEditorDialog::doFileNew()
 {
-    tabWidget->addTab(new PythonEditorWidget(pythonEngine, this), tr("Untitled"));
+    PythonEditorWidget *editor = new PythonEditorWidget(pythonEngine, this);
+    tabWidget->addTab(editor, tr("Untitled"));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
     doCurrentPageChanged(tabWidget->count()-1);
 }
@@ -987,7 +998,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
             if (scriptEditorWidgetTmp->fileName() == fileName)
             {
                 tabWidget->setCurrentIndex(i);
-                QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
+                // QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
                 return;
             }
         }
@@ -1033,6 +1044,7 @@ void PythonEditorDialog::doFileOpenAndFind(const QString &file, const QString &f
     }
 }
 
+
 void PythonEditorDialog::doFileOpenRecent(QAction *action)
 {
     QString fileName = action->text();
@@ -1050,7 +1062,17 @@ void PythonEditorDialog::doFileSave()
 
     // save dialog
     if (scriptEditorWidget()->fileName().isEmpty())
-        scriptEditorWidget()->setFileName(QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)")));
+    {
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
+
+        if (!fileName.isEmpty())
+        {
+            if (QFileInfo(fileName).suffix() != "py")
+                fileName += ".py";
+
+            scriptEditorWidget()->setFileName(fileName);
+        }
+    }
 
     // write text
     if (!scriptEditorWidget()->fileName().isEmpty())
@@ -1149,7 +1171,7 @@ void PythonEditorDialog::doFind()
 }
 
 void PythonEditorDialog::doFindNext()
-{
+{        
     scriptEditorWidget()->searchWidget->findNext();
 }
 
@@ -1164,14 +1186,47 @@ void PythonEditorDialog::doDataChanged()
     actPaste->setEnabled(!QApplication::clipboard()->text().isEmpty());
 }
 
-void PythonEditorDialog::doHelp()
+void PythonEditorDialog::doHelpOnWord()
 {
-    showPage("scripting/commands.html");
+    QTextCursor tc = txtEditor->textCursor();
+    QString help = currentPythonEngine()->codeHelp(scriptEditorWidget()->fileName(),
+                                                   tc.blockNumber() + 1,
+                                                   tc.columnNumber() + 1);
+
+    if (!help.isEmpty())
+    {
+        consoleView->console()->consoleMessage(QString("\n%1").arg(help), Qt::darkMagenta);
+        consoleView->console()->appendCommandPrompt();
+    }
 }
 
-void PythonEditorDialog::doHelpKeywordList()
+void PythonEditorDialog::doGotoDefinition()
 {
-    showPage("scripting/keyword_list.html");
+    QTextCursor tc = txtEditor->textCursor();
+    PythonGotoDefinition out = currentPythonEngine()->codeGotoDefinition(scriptEditorWidget()->fileName(),
+                                                                         tc.blockNumber() + 1,
+                                                                         tc.columnNumber() + 1);
+
+    if (out.line != -1)
+    {
+        doFileOpen(out.module_path);
+        txtEditor->gotoLine(out.line);
+    }
+}
+
+void PythonEditorDialog::doPrintSelection()
+{
+    // connect stdout and set current path
+    consoleView->console()->connectStdOut();
+
+    consoleView->console()->stdOut(QString("%1: ").arg(txtEditor->textCursor().selectedText()));
+
+    QString str = QString("print(%1)").arg(txtEditor->textCursor().selectedText());
+    currentPythonEngine()->runScript(str);
+    consoleView->console()->appendCommandPrompt();
+
+    // disconnect stdout
+    consoleView->console()->disconnectStdOut();
 }
 
 void PythonEditorDialog::doAbout()
@@ -1252,6 +1307,13 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
     connect(actCommentAndUncommentSelection, SIGNAL(triggered()), txtEditor, SLOT(commentAndUncommentSelection()));
     actGotoLine->disconnect();
     connect(actGotoLine, SIGNAL(triggered()), txtEditor, SLOT(gotoLine()));
+
+    actHelpOnWord->disconnect();
+    connect(actHelpOnWord, SIGNAL(triggered()), this, SLOT(doHelpOnWord()));
+    actGotoDefinition->disconnect();
+    connect(actGotoDefinition, SIGNAL(triggered()), this, SLOT(doGotoDefinition()));
+    actPrintSelection->disconnect();
+    connect(actPrintSelection, SIGNAL(triggered()), this, SLOT(doPrintSelection()));
 
     txtEditor->document()->disconnect(actUndo);
     txtEditor->document()->disconnect(actRedo);
@@ -2016,7 +2078,7 @@ ErrorWidget::ErrorWidget(QTabWidget *tabWidget, QWidget *parent)
     trvErrors->setHeaderHidden(false);
     trvErrors->setMouseTracking(true);
     trvErrors->setColumnCount(3);
-    trvErrors->setColumnWidth(1, 150);
+    trvErrors->setColumnWidth(1, 200);
     trvErrors->setIndentation(12);
     connect(trvErrors, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLineError(QTreeWidgetItem *, int)));
 
@@ -2034,8 +2096,8 @@ ErrorWidget::ErrorWidget(QTabWidget *tabWidget, QWidget *parent)
     layoutError->addWidget(errorLabel, 0);
     layoutError->addWidget(trvErrors, 1);
 
-    setMaximumHeight(200);
-    setMinimumHeight(200);
+    setMaximumHeight(150);
+    setMinimumHeight(150);
 
     setLayout(layoutError);
 }

@@ -40,7 +40,36 @@ def python_engine_get_completion_interpreter(script):
         comps.append(completion.name)
         
     return comps
-            
+       
+def python_engine_goto_definition(path, line, column):
+    import jedi
+
+    script = jedi.Script(path = path, line = line, column = column)
+    d = script.goto_definitions()   
+
+    try:
+        if (len(d) > 0):
+            if (d[0].line):
+                return [d[0].module_path, d[0].line, d[0].full_name, d[0].name]
+    except:
+        pass
+    
+    return ["", -1, "", ""]
+
+def python_engine_code_help(path, line, column):
+    import jedi
+
+    script = jedi.Script(path = path, line = line, column = column)
+    d = script.goto_definitions()    
+    
+    try:
+        if (len(d) > 0):
+            return d[0].docstring()
+    except:
+        pass
+        
+    return ""
+          
 def python_engine_pyflakes_check(filename):
     f = open(filename, 'r')
     code = ''.join(f.readlines())

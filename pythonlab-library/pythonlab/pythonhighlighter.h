@@ -38,6 +38,8 @@ class PythonHighlighter : public QSyntaxHighlighter
 public:
     PythonHighlighter(QTextDocument *parent = 0);
 
+    void highlightWord(const QString &text);
+
 protected:
     void highlightBlock(const QString &text);
     void highlightBlockParenthesis(const QString &text, char left, char right);
@@ -48,6 +50,8 @@ private:
         QRegExp pattern;
         QTextCharFormat format;
     };
+
+    HighlightingRule *selectedWordRule;
     QVector<HighlightingRule> highlightingRules;
 
     QRegExp commentStartExpression;
@@ -61,6 +65,8 @@ private:
     QTextCharFormat functionFormat;
     QTextCharFormat operatorFormat;   
     QTextCharFormat numberFormat;
+    QTextCharFormat selfFormat;
+    QTextCharFormat internalFormat;
 };
 
 #endif // PYTHONHIGHLIGHTER_H

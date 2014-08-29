@@ -329,9 +329,13 @@ void OptilabWindow::createMain()
     optilabSingle = new OptilabSingle(this);
     optilabMulti = new OptilabMulti(this);
 
-    tbxAnalysis = new QTabWidget();
-    tbxAnalysis->addTab(optilabSingle, icon(""), tr("Single"));
-    tbxAnalysis->addTab(optilabMulti, icon(""), tr("Multi"));
+    // tbxAnalysis = new QTabWidget();
+    // tbxAnalysis->addTab(optilabSingle, icon(""), tr("Single"));
+    // tbxAnalysis->addTab(optilabMulti, icon(""), tr("Multi"));
+
+    QVBoxLayout *layoutSM = new QVBoxLayout();
+    layoutSM->addWidget(optilabSingle);
+    layoutSM->addWidget(optilabMulti);
 
     trvVariants = new QTreeWidget(this);
     trvVariants->setMouseTracking(true);
@@ -380,7 +384,8 @@ void OptilabWindow::createMain()
     layoutLeft->addWidget(lblProblems);
 
     QHBoxLayout *layoutRight = new QHBoxLayout();
-    layoutRight->addWidget(tbxAnalysis);
+    // layoutRight->addWidget(tbxAnalysis);
+    layoutRight->addLayout(layoutSM);
     layoutRight->addWidget(console);
 
     QHBoxLayout *layout = new QHBoxLayout();
@@ -587,6 +592,8 @@ void OptilabWindow::refreshVariants()
     }
 
     lblProblems->setText(tr("Solutions: %1/%2").arg(countSolved).arg(count));
+
+    optilabMulti->refreshVariables();
 
     qDebug() << "refresh" << time.elapsed();
 }

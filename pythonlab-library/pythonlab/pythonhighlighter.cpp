@@ -44,7 +44,7 @@ const int ErrorMarkerPropertyId = QTextFormat::UserProperty + 1;
 
 // ************************************************************************************************************
 
-PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent), selectedWordRule(NULL)
 {
     HighlightingRule rule;
 
@@ -70,6 +70,16 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
     classFormat.setForeground(Qt::darkMagenta);
     rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
     rule.format = classFormat;
+    highlightingRules.append(rule);
+
+    selfFormat.setForeground(QColor(121, 71, 0));
+    rule.pattern = QRegExp("\\bself\\b");
+    rule.format = selfFormat;
+    highlightingRules.append(rule);
+
+    internalFormat.setForeground(QColor(121, 71, 0));
+    rule.pattern = QRegExp("\\b._[A-Za-z_]+\\b");
+    rule.format = internalFormat;
     highlightingRules.append(rule);
 
     functionFormat.setForeground(Qt::darkMagenta);

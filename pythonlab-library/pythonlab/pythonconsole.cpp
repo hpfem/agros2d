@@ -684,7 +684,15 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
     setTextCursor(textCursor);
 
     // repaint widget
-    repaint();
+    // force run process events
+    static int printCounter = 0;
+    printCounter++;
+    if (printCounter == 8)
+    {
+        // reset counter and process events
+        printCounter = 0;
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
 
     // Reset all font modifications done by the html string
     setCurrentCharFormat(m_defaultTextCharacterFormat);

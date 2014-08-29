@@ -31,6 +31,23 @@ struct PythonVariable
     QVariant value;
 };
 
+struct PythonGotoDefinition
+{
+public:
+    PythonGotoDefinition()
+    {
+        module_path = "";
+        line = -1;
+        full_name = "";
+        name = "";
+    }
+
+    QString module_path;
+    int line;
+    QString full_name;
+    QString name;
+};
+
 class AGROS_PYTHONLAB_API PythonEngineProfiler
 {
 public:
@@ -144,7 +161,7 @@ public:
     bool runScript(const QString &script, const QString &fileName = "");
     bool runExpression(const QString &expression, double *value = NULL, const QString &command = QString());
     bool runExpressionConsole(const QString &expression);
-    ErrorResult parseError();
+    ErrorResult parseError(bool clear = true);
     inline bool isScriptRunning() { return m_isScriptRunning; }
 
     void deleteUserModules();
@@ -152,6 +169,8 @@ public:
     QStringList codeCompletionInterpreter(const QString& code);
     QStringList codeCompletion(const QString& command);
     QStringList codePyFlakes(const QString& fileName);
+    PythonGotoDefinition codeGotoDefinition(const QString& code, int row, int column);
+    QString codeHelp(const QString& code, int row, int column);
     QList<PythonVariable> variableList();
 
     inline void useProfiler(bool use = true) { m_useProfiler = use; }
