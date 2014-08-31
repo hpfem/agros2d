@@ -31,6 +31,7 @@
 
 #include "hermes2d/plugin_interface.h"
 
+const double internal_coeff = 0.5;
 
 class {{CLASS}}SurfaceIntegralCalculator : public Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>
 {
@@ -49,10 +50,29 @@ public:
     {
         int labelIdx = atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str());
         int edgeIdx = atoi(m_fieldInfo->initialMesh()->get_boundary_markers_conversion().get_user_marker(e->edge_marker).marker.c_str());
-        int labelIdxToIntegrate = Agros2D::scene()->edges->at(edgeIdx)->innerLabelIdx(m_fieldInfo);
 
-        if(labelIdx != labelIdxToIntegrate)
-            return;
+        // this was an attempt to allow proper integration of surface "flow-like" variables
+        // at the present moment, we integrate twice on each inner edge and the results are added, that
+        // is why there is internal_coeff = 0.5. The following three lines attempted to calculate each
+        // of such integrals only once, thus internal_coeff would be = 1. It is, however, very hard
+        // to determin, what is the inner or outer normal for inner edges, especially for coupled problems,
+        // where each field may have holes in diffrent places, etc.
+
+        // previous attempt
+        //int labelIdxToIntegrate = Agros2D::scene()->edges->at(edgeIdx)->innerLabelIdx(m_fieldInfo);
+        //if(labelIdx != labelIdxToIntegrate)
+        //    return;
+
+        // new idea: It might be possible to do it this way. We would distinguish two types of surface
+        // integral quantities, ordinary and flow-like. For the first group, nothing would change. For
+        // the second, we would use different threatment. They would be visible in the list in two cases
+        // only:
+        // 1) if only one edge is selected : than we can calculate the value correctly, but the
+        //    sign would be random (although we can indicate the "outer" normal graphicaly in the postprocessor)
+        //    and use convention, that, say, positive is in direction out and negative in.
+        // 2) if selected edges form a circle in whose interior all labes support given field. Than it is
+        //    clear what is interior and what is exterior and the value can be calculated
+        // In all other cases, integral of flow-like values would not be defined / visible in the list
 
         SceneMaterial *material = Agros2D::scene()->labels->at(labelIdx)->marker(m_fieldInfo);
 
@@ -148,7 +168,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
 
             {{#VARIABLE_SOURCE}}
             if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[QLatin1String("{{VARIABLE}}")] = 1 * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
+                m_values[QLatin1String("{{VARIABLE}}")] = internal_coeff * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
             {{/VARIABLE_SOURCE}}
 
             ::free(internalValues);
