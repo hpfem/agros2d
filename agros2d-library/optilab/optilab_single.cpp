@@ -55,9 +55,8 @@ OptilabSingle::OptilabSingle(OptilabWindow *parent) : QWidget(parent), optilabMa
 
 void OptilabSingle::variantInfo(const QString &key)
 {
-    QString str = QString("agros2d_model = variant.optilab_interface._md_model('%1')").arg(key);
+    QString str = QString("agros2d_model = variant.optilab_interface._optilab_mp.model_dict.dict['%1']").arg(key);
     currentPythonEngine()->runExpression(str);
-    // qDebug() << key << str << successfulRun;
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_model");

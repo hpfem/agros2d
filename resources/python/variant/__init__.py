@@ -6,4 +6,4 @@ from variant.model_dict import ModelDictExternal
 from variant.model_generator import ModelGenerator
 from variant.model_postprocessor import ModelPostprocessor
 
-from variant.optilab_interface import *
+from variant.optilab_interface import *   

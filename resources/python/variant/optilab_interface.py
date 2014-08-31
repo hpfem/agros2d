@@ -2,54 +2,23 @@ from variant import ModelDict
 from variant import ModelBase
 from variant import ModelPostprocessor
 
-_md = None
-
-def _md_models(problem_dir):  
-    global _md
+if __name__ != '__main__':
+    # global optilab model postprocessor
+    _optilab_mp =  None
+        
+def _models_zip(filename):  
+    md = ModelDict()
+    md.load_from_zip(filename)
     
-    _md = ModelDict()
-    _md.directory = problem_dir
-    _md.load(ModelBase)
-    
-    lst = []
-    for k, m in sorted(_md.dict.items()):
-        lst.append({ 'key' : k, 'solved' : m.solved })
-                
-    return lst  
-    
-def _md_models_zip(filename):  
-    global _md
-    
-    _md = ModelDict()
-    _md.load_from_zip(filename)
+    global _optilab_mp
+    _optilab_mp = ModelPostprocessor(md)
     
     lst = []
-    for k, m in sorted(_md.dict.items()):
+    for k, m in sorted(md.dict.items()):
         lst.append({ 'key' : k, 'solved' : m.solved })
                 
     return lst      
 
-def _md_postprocessor_variables():
-    global _md
-
-    mp = ModelPostprocessor(_md)
-    keys = mp.variable_keys()
-    #values = list(next(iter(_md.dict.values())).data.variables.values())
-    #print(keys)
-    #print(values)
-    return mp.variable_keys()
-
-def _md_postprocessor_values(variable):
-    global _md
-
-    mp = ModelPostprocessor(_md)
-    return mp.variable(variable)
-        
-def _md_model(key):
-    global _md
-    
-    return _md.dict[key]
-    
 def _open_in_agros2d(file_name):    
     import os.path    
     import sys; 

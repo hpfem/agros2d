@@ -7,21 +7,41 @@ class ModelPostprocessor():
     def __init__(self, model_dict):
         self._model_dict = model_dict
     
-    def variables(self):
-        super_dict = {}
+        # cache variables
+        self._variables = {}
         for val in self._model_dict.dict.values():
             for k, v in val.data.variables.items():
-                super_dict.setdefault(k, []).append(v)
-        
-        return super_dict
-        
-    def variable_keys(self):
+                self._variables.setdefault(k, []).append(v)
+
         # TODO: first item - do it better!
-        if (len(self._model_dict.dict.values()) > 0):
-            return list(next(iter(self._model_dict.dict.values())).data.variables.keys())
+        # if (len(self._model_dict.dict.values()) > 0):            
+        variables = next(iter(self._model_dict.dict.values())).data.variables
+        self._variable_keys = sorted(list(variables.keys()))
+        
+        self._variable_keys_scalar = []
+        for k in list(variables.keys()):
+            tp = type(variables[k])
+            if (tp is int or tp is float):
+                self._variable_keys_scalar.append(k)
+                
+        self._variable_keys_scalar = sorted(self._variable_keys_scalar)
+                
+    @property
+    def model_dict(self):
+        """Return model dict"""
+        return self._model_dict
+    
+    def variables(self):        
+        return self._variables
+        
+    def variable_keys(self, only_scalars = False):
+        if (only_scalars == True):
+            return self._variable_keys_scalar
+        else:
+            return self._variable_keys
     
     def variable(self, name):
-        return self.variables()[name]
+        return self._variables[name]
         
     def ploty(self, name, xlabel="", ylabel=""):
         var = mp.variable(name)        

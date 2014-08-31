@@ -116,7 +116,7 @@ void OptilabMulti::refreshVariables()
     cmbChartXYX->clear();
     cmbChartXYY->clear();
 
-    QString str = QString("agros2d_postprocessor_variables = variant.optilab_interface._md_postprocessor_variables()");
+    QString str = QString("agros2d_postprocessor_variables = variant.optilab_interface._optilab_mp.variable_keys(only_scalars = True)");
     currentPythonEngine()->runExpression(str);
 
     // extract values
@@ -148,7 +148,7 @@ void OptilabMulti::refreshLineChart()
 {
     chartLine->clearPlottables();
 
-    QString str = QString("agros2d_postprocessor_values = variant.optilab_interface._md_postprocessor_values('%1')").arg(cmbChartLineX->currentText());
+    QString str = QString("agros2d_postprocessor_values = variant.optilab_interface._optilab_mp.variable('%1')").arg(cmbChartLineX->currentText());
     currentPythonEngine()->runExpression(str);
 
     // extract values
@@ -188,7 +188,7 @@ void OptilabMulti::refreshLineChart()
 
 void OptilabMulti::refreshXYChart()
 {
-    QString str = QString("agros2d_postprocessor_values_x = variant.optilab_interface._md_postprocessor_values('%1'); agros2d_postprocessor_values_y = variant.optilab_interface._md_postprocessor_values('%2')")
+    QString str = QString("agros2d_postprocessor_values_x = variant.optilab_interface._optilab_mp.variable('%1'); agros2d_postprocessor_values_y = variant.optilab_interface._optilab_mp.variable('%2')")
             .arg(cmbChartXYX->currentText())
             .arg(cmbChartXYY->currentText());
     currentPythonEngine()->runExpression(str);

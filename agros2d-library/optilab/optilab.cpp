@@ -489,7 +489,7 @@ void OptilabWindow::documentClose()
 
     // actOpenAgros2D->setEnabled(false);
 
-    currentPythonEngine()->runExpression("del variant.optilab_interface._md; del agros2d_model");
+    currentPythonEngine()->runExpression("del variant.optilab_interface._optilab_mp; del agros2d_model");
 
     optilabSingle->welcomeInfo();
 
@@ -511,7 +511,7 @@ void OptilabWindow::showDialog()
 
 void OptilabWindow::refreshVariants()
 {
-    QString str = QString("agros2d_variants = variant.optilab_interface._md_models_zip('%1')").arg(m_problem);
+    QString str = QString("agros2d_variants = variant.optilab_interface._models_zip('%1')").arg(m_problem);
     currentPythonEngine()->runExpression(str);
 
     trvVariants->setUpdatesEnabled(false);
