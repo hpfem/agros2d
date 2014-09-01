@@ -5,6 +5,7 @@ import re
 import pythonlab
 
 from variant.model import ModelBase
+from collections import OrderedDict
 
 class ModelDict:
     """General class for management of models set."""
@@ -19,7 +20,7 @@ class ModelDict:
         directory -- current working directory (default is None)
         """
 
-        self._dict = dict()
+        self._dict = OrderedDict()
         self._directory = None
         self.model_class = model_class
 
