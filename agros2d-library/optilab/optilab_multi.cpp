@@ -24,42 +24,6 @@
 
 OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain(parent)
 {
-    // line
-    chartLine = new QCustomPlot(this);
-    chartLine->setMinimumHeight(300);
-    chartLine->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
-    // main chart
-    chartLine->addGraph();
-    // chart->graph(0)->setLineStyle(QCPGraph::lsLine);
-    // chart->graph(0)->setPen(QColor(50, 50, 50, 255));
-    chartLine->graph(0)->setLineStyle(QCPGraph::lsNone);
-    chartLine->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
-    //connect(chartLine, SIGNAL(plottableClick(QCPAbstractPlottable*, QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*, QMouseEvent*)));
-    // highlight
-    chartLine->addGraph();
-    chartLine->graph(1)->setPen(QColor(255, 50, 50, 255));
-    chartLine->graph(1)->setLineStyle(QCPGraph::lsNone);
-    chartLine->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
-
-    cmbChartLineX = new QComboBox(this);
-
-    QPushButton *btnPlotLine = new QPushButton(tr("Plot"), this);
-    connect(btnPlotLine, SIGNAL(clicked()), this, SLOT(refreshLineChart()));
-
-    QGridLayout *layoutChartLineControls = new QGridLayout();
-    layoutChartLineControls->addWidget(new QLabel(tr("Variable")), 0, 0);
-    layoutChartLineControls->addWidget(cmbChartLineX, 0, 1);
-    layoutChartLineControls->addWidget(btnPlotLine, 1, 1);
-    layoutChartLineControls->addWidget(new QLabel(""), 10, 0);
-    layoutChartLineControls->setRowStretch(10, 1);
-
-    QHBoxLayout *layoutChartLine = new QHBoxLayout();
-    layoutChartLine->addLayout(layoutChartLineControls);
-    layoutChartLine->addWidget(chartLine);
-
-    QWidget *widChartLine = new QWidget(this);
-    widChartLine->setLayout(layoutChartLine);
-
     // XY
     chartXY = new QCustomPlot(this);
     chartXY->setMinimumHeight(300);
@@ -77,20 +41,24 @@ OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain
     chartXY->graph(1)->setLineStyle(QCPGraph::lsNone);
     chartXY->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
 
-    cmbChartXYX = new QComboBox(this);
-    cmbChartXYY = new QComboBox(this);
+    cmbChartX = new QComboBox(this);
+    cmbChartY = new QComboBox(this);
 
     QPushButton *btnPlotXY = new QPushButton(tr("Plot"), this);
-    connect(btnPlotXY, SIGNAL(clicked()), this, SLOT(refreshXYChart()));
+    connect(btnPlotXY, SIGNAL(clicked()), this, SLOT(refreshChart()));
+
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
+    layoutButtons->addStretch(1);
+    layoutButtons->addWidget(btnPlotXY, 0, 0);
 
     QGridLayout *layoutChartXYControls = new QGridLayout();
-    layoutChartXYControls->addWidget(new QLabel(tr("Variable X")), 0, 0);
-    layoutChartXYControls->addWidget(cmbChartXYX, 0, 1);
-    layoutChartXYControls->addWidget(new QLabel(tr("Variable Y")), 1, 0);
-    layoutChartXYControls->addWidget(cmbChartXYY, 1, 1);
-    layoutChartXYControls->addWidget(btnPlotXY, 2, 1);
-    layoutChartXYControls->addWidget(new QLabel(""), 10, 0);
-    layoutChartXYControls->setRowStretch(10, 1);
+    layoutChartXYControls->addWidget(new QLabel(tr("Variable X:")), 0, 0);
+    layoutChartXYControls->addWidget(cmbChartX, 0, 1);
+    layoutChartXYControls->addWidget(new QLabel(tr("Variable Y:")), 1, 0);
+    layoutChartXYControls->addWidget(cmbChartY, 1, 1);
+    layoutChartXYControls->addWidget(new QLabel(""), 19, 0);
+    layoutChartXYControls->setRowStretch(19, 1);
+    layoutChartXYControls->addLayout(layoutButtons, 20, 0, 1, 2);
 
     QHBoxLayout *layoutChartXY = new QHBoxLayout();
     layoutChartXY->addLayout(layoutChartXYControls);
@@ -100,27 +68,22 @@ OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain
     widChartXY->setLayout(layoutChartXY);
 
     // layout
-    tbxPlot = new QTabWidget();
-    tbxPlot->addTab(widChartLine, icon(""), tr("Line"));
-    tbxPlot->addTab(widChartXY, icon(""), tr("XY"));
-
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tbxPlot, 0, 0);
+    layout->addWidget(widChartXY, 0, 0);
 
     setLayout(layout);
 }
 
 void OptilabMulti::refreshVariables()
 {
-    cmbChartLineX->clear();
-    cmbChartXYX->clear();
-    cmbChartXYY->clear();
+    cmbChartX->clear();
+    cmbChartY->clear();
 
-    QString str = QString("agros2d_postprocessor_variables = variant.optilab_interface._optilab_mp.variable_keys(only_scalars = True)");
+    QString str = QString("agros2d_post_variables = variant.optilab_interface._optilab_mp.variable_keys(only_scalars = True)");
     currentPythonEngine()->runExpression(str);
 
     // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_variables");
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_variables");
     if (result)
     {
         Py_INCREF(result);
@@ -131,9 +94,8 @@ void OptilabMulti::refreshVariables()
 
             QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
 
-            cmbChartLineX->addItem(name, name);
-            cmbChartXYX->addItem(name, name);
-            cmbChartXYY->addItem(name, name);
+            cmbChartX->addItem(name, name);
+            cmbChartY->addItem(name, name);
 
             Py_XDECREF(d);
         }
@@ -141,61 +103,19 @@ void OptilabMulti::refreshVariables()
     }
 
     // remove variables
-    currentPythonEngine()->runExpression("del agros2d_postprocessor_variables");
+    currentPythonEngine()->runExpression("del agros2d_post_variables");
 }
 
-void OptilabMulti::refreshLineChart()
+void OptilabMulti::refreshChart()
 {
-    chartLine->clearPlottables();
-
-    QString str = QString("agros2d_postprocessor_values = variant.optilab_interface._optilab_mp.variable('%1')").arg(cmbChartLineX->currentText());
+    QString str = QString("agros2d_post_values_x = variant.optilab_interface._optilab_mp.variable('%1'); agros2d_post_values_y = variant.optilab_interface._optilab_mp.variable('%2')")
+            .arg(cmbChartX->currentText())
+            .arg(cmbChartY->currentText());
     currentPythonEngine()->runExpression(str);
 
     // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_values");
-    if (result)
-    {
-        QVector<double> valuesX;
-        QVector<double> valuesY;
-
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
-        {
-            PyObject *d = PyList_GetItem(result, i);
-            Py_INCREF(d);
-
-            double val = PyFloat_AsDouble(d);
-
-            valuesX.append(i);
-            valuesY.append(val);
-
-            Py_XDECREF(d);
-        }
-        Py_XDECREF(result);
-
-        QCPBars *bar = new QCPBars(chartLine->xAxis, chartLine->yAxis);
-        chartLine->addPlottable(bar);
-        bar->setName("Bar");
-        bar->setData(valuesX, valuesY);
-
-        chartLine->rescaleAxes();
-        chartLine->replot();
-    }
-
-    // remove variables
-    currentPythonEngine()->runExpression("del agros2d_postprocessor_values");
-}
-
-void OptilabMulti::refreshXYChart()
-{
-    QString str = QString("agros2d_postprocessor_values_x = variant.optilab_interface._optilab_mp.variable('%1'); agros2d_postprocessor_values_y = variant.optilab_interface._optilab_mp.variable('%2')")
-            .arg(cmbChartXYX->currentText())
-            .arg(cmbChartXYY->currentText());
-    currentPythonEngine()->runExpression(str);
-
-    // extract values
-    PyObject *resultX = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_values_x");
-    PyObject *resultY = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_postprocessor_values_y");
+    PyObject *resultX = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_values_x");
+    PyObject *resultY = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_values_y");
     if (resultX && resultY)
     {
         QVector<double> valuesX;
@@ -228,7 +148,7 @@ void OptilabMulti::refreshXYChart()
 
 
     // remove variables
-    currentPythonEngine()->runExpression("del agros2d_postprocessor_values_x; del agros2d_postprocessor_values_y");
+    currentPythonEngine()->runExpression("del agros2d_post_values_x; del agros2d_post_values_y");
 }
 
 /*

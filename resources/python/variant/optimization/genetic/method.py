@@ -10,6 +10,10 @@ import random as rnd
 import collections
 
 class ModelGenetic(ModelBase):
+    def declare(self):
+        self.model_info.add_variable('_population', float)
+        self.model_info.add_variable('_priority', float)
+        
     def __init__(self):
         ModelBase.__init__(self)
         

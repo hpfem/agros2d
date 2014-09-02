@@ -4,6 +4,19 @@ import pythonlab
 from variant import ModelBase, ModelDict, ModelGenerator
 
 class Capacitor(ModelBase):
+    def declare(self):
+        self.model_info.add_parameter('R1', float)
+        self.model_info.add_parameter('w1', float)
+        self.model_info.add_parameter('w2', float)
+        self.model_info.add_parameter('l', float)
+        self.model_info.add_parameter('RB', float)        
+
+        self.model_info.add_parameter('U', float)
+        self.model_info.add_parameter('epsr1', float)
+        self.model_info.add_parameter('epsr2', float)
+        
+        self.model_info.add_variable('C', float)
+
     def create(self):
         # defaults and parameters
         self.defaults['R1'] = 0.01

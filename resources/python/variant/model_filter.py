@@ -20,7 +20,7 @@ class ModelFilter():
         self._variables[name] = [start, stop]
 
     def filter(self, model_dict):
-        md = ModelDict()
+        md = ModelDict(model_dict.model_class)
         for name, model in model_dict.dict.items():
             if self._test(model): md.add_model(model, name)
 

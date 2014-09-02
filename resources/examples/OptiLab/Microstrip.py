@@ -6,7 +6,17 @@ from variant.optimization.genetic.method import ModelGenetic
 
 from math import sqrt, log, pi
 
-class Microstrip(ModelGenetic):
+class Microstrip(ModelGenetic):       
+    def declare(self):
+        self.model_info.add_parameter('W', float)
+        self.model_info.add_parameter('d', float)
+        self.model_info.add_parameter('t', float)
+        self.model_info.add_parameter('epsr', float)
+        self.model_info.add_parameter('Z0', float)        
+
+        self.model_info.add_variable('Z0', float)
+        self.model_info.add_variable('F', float)
+        
     def create(self):
         # defaults and parameters
         self.defaults['W'] = 5e-4

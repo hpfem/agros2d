@@ -37,12 +37,14 @@ class ModelInfo:
     def add_parameter(self, name, type, description = ''):
         self._parameters[name] = [type, description]
 
+    @property
     def parameters(self):
         return self._parameters
 
     def add_variable(self, name, type, description = ''):
         self._variables[name] = [type, description]
 
+    @property
     def variables(self):
         return self._variables
 

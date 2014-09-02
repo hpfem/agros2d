@@ -36,16 +36,12 @@ private:
     OptilabWindow *optilabMain;
 
     // chart
-    QComboBox *cmbChartLineX;
-    QComboBox *cmbChartXYX;
-    QComboBox *cmbChartXYY;
-    QCustomPlot *chartLine;
-    QCustomPlot *chartXY;
-    QTabWidget *tbxPlot;
+    QComboBox *cmbChartX;
+    QComboBox *cmbChartY;
+    QCustomPlot *chartXY;  
 
 private slots:
-    void refreshLineChart();
-    void refreshXYChart();
+    void refreshChart();
     // void refreshChartWithAxes();
     // void refreshChartControls();
 

@@ -8,7 +8,10 @@ class ModelPostprocessor():
     def __init__(self, model_dict):
         self._model_dict = model_dict
 
-        # cache parameters
+        # model
+        m = self._model_dict.model_class()
+        print(m.model_info.variables)
+        print(m.model_info.parameters)
 
         # cache variables
         self._variables = {}
@@ -16,26 +19,33 @@ class ModelPostprocessor():
             for variable, value in model.variables.items():
                 self._variables.setdefault(variable, []).append(value)
 
-        # TODO: first item - do it better!
-        # if (len(self._model_dict.dict.values()) > 0):
-        variables = next(iter(self._model_dict.dict.values())).data.variables
-        self._variable_keys = sorted(list(variables.keys()))
-        
-        self._variable_keys_scalar = []
-        for k in list(variables.keys()):
-            tp = type(variables[k])
-            if (tp is int or tp is float):
-                self._variable_keys_scalar.append(k)
+        # cache parameters
+        parameters = m.model_info.parameters
+        self._parameter_keys = sorted(list(parameters.keys()))        
+        self._parameter_keys_scalar = self._parameter_keys
 
-        self._variable_keys_scalar = sorted(self._variable_keys_scalar)
-
-        # cache info
+        # cache variables
+        variables = m.model_info.variables
+        self._variable_keys = sorted(list(variables.keys()))        
+        self._variable_keys_scalar = self._variable_keys
 
     @property
     def model_dict(self):
         """Return model dict"""
         return self._model_dict
 
+    def parameters(self):        
+        return self._variables
+        
+    def parameter_keys(self, only_scalars = False):
+        if (only_scalars == True):
+            return self._parameter_keys_scalar
+        else:
+            return self._parameter_keys
+    
+    def parameter(self, name):
+        return self._parameters[name]
+        
     def variables(self):        
         return self._variables
         
@@ -46,7 +56,7 @@ class ModelPostprocessor():
             return self._variable_keys
     
     def variable(self, name):
-        return self._variables[name]
+        return self._variables[name]        
         
     def ploty(self, name, xlabel="", ylabel=""):
         var = mp.variable(name)        
@@ -79,21 +89,23 @@ if __name__ == '__main__':
 
     md.solve()
 
+    print("Dict")
     mp = ModelPostprocessor(md)
     print(mp.variable_keys())
     print(mp.variables())
     print(mp.variable('F'))
     
-    mp.ploty('F')
-    mp.bar('F')
+    # mp.ploty('F')
+    # mp.bar('F')
 
     mf = ModelFilter()
     mf.add_parameter_range('x', 1, 3)
 
+    print("Filter")
     mp = ModelPostprocessor(mf.filter(md))
     print(mp.variable_keys())
     print(mp.variables())
     print(mp.variable('F'))
     
-    mp.ploty('F')
-    mp.bar('F')
+    # mp.ploty('F')
+    # mp.bar('F')
