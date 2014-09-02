@@ -19,7 +19,7 @@ class TestBoothsFunction(Agros2DTestCase):
         cwd = '{0}/models'.format(pythonlab.tempname())
         mg.save(cwd)
 
-        md = ModelDict(booths_function.BoothsFunction)
+        md = ModelDict()
         md.directory = cwd
         md.load()
         md.solve()
