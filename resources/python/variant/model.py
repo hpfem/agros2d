@@ -19,16 +19,6 @@ class ModelValues(dict):
 
         dict.__setitem__(self, key, value)
 
-class ModelData:
-    """General class collected all model data."""
-
-    def __init__(self, model_info):
-        self.parameters = ModelValues(model_info.parameters())
-        self.variables = ModelValues(model_info.variables())
-
-        self.info = {'_geometry' : _empty_svg}
-        self.solved = False
-
 class ModelInfo:
     """General class stored informations about model parameters and variables."""
     def __init__(self):
@@ -48,6 +38,16 @@ class ModelInfo:
 
     def variables(self):
         return self._variables
+
+class ModelData:
+    """General class collected all model data."""
+
+    def __init__(self, model_info):
+        self.parameters = ModelValues(model_info.parameters())
+        self.variables = ModelValues(model_info.variables())
+
+        self.info = {'_geometry' : _empty_svg}
+        self.solved = False
 
 class ModelBase:
     """General model class."""

@@ -1,4 +1,3 @@
-from variant import ModelBase
 from variant.optimization.genetic.method import ModelGenetic
 
 class QuadraticFunction(ModelGenetic):
@@ -11,12 +10,6 @@ class QuadraticFunction(ModelGenetic):
         
         self.model_info.add_variable('F', float)
     
-    def create(self):
-        self.defaults['a'] = 1
-        self.defaults['b'] = 0
-        self.defaults['c'] = 0
-        self.defaults['x'] = 2
-
     def solve(self):
         try:
             self.F = self.parameters['a'] * self.parameters['x']**2 + \
@@ -27,4 +20,3 @@ class QuadraticFunction(ModelGenetic):
 
     def process(self):
         self.variables['F'] = self.F
-
