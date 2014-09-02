@@ -9,7 +9,15 @@ from variant import optimization
 from variant.optimization import genetic
 from variant.optimization.genetic.method import ModelGenetic
 
-class RosenbrockFunction(ModelGenetic):    
+class RosenbrockFunction(ModelGenetic):
+    def inform(self):
+        self.model_info.add_parameter('a', float)
+        self.model_info.add_parameter('b', float)
+        self.model_info.add_parameter('x', float)
+        self.model_info.add_parameter('y', float)
+
+        self.model_info.add_variable('F', float)
+
     def create(self):
         self.defaults['a'] = 1
         self.defaults['b'] = 100

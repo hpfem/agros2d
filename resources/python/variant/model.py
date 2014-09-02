@@ -28,10 +28,31 @@ class ModelData:
         self.info = {'_geometry' : _empty_svg}
         self.solved = False
 
+class ModelInfo:
+    """General class stored informations about model parameters and variables."""
+    def __init__(self):
+        self._parameters = dict()
+        self._variables = dict()
+
+    def add_parameter(self, name, type, description = ''):
+        self._parameters[name] = [type, description]
+
+    def parameters(self):
+        return self._parameters
+
+    def add_variable(self, name, type, description = ''):
+        self._variables[name] = [type, description]
+
+    def variables(self):
+        return self._variables
+
 class ModelBase:
     """General model class."""
 
     def __init__(self):
+        self.model_info = ModelInfo()
+        self.inform()
+
         self._data = ModelData()
 
     @property
@@ -84,6 +105,9 @@ class ModelBase:
     def solved(self, value):
         self._data.solved = value
         if not value: self._data.variables = {}
+
+    def inform(self):
+        raise RuntimeError('Method inform() must be redefined!')
 
     def create(self):
         """Method creates model from defined parameters."""
