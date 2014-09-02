@@ -16,6 +16,17 @@ from variant.optimization.genetic import ImplicitMutation
 from variant.optimization.genetic import ImplicitCrossover
 from variant.optimization.genetic import GeneticOptimization
 
+class Model(ModelBase):
+    def declare(self):
+        self.model_info.add_parameter('a', float)
+        self.model_info.add_parameter('b', float)
+        self.model_info.add_parameter('c', float)
+        self.model_info.add_parameter('d', float)
+        self.model_info.add_parameter('e', float)
+        self.model_info.add_parameter('f', float)
+        self.model_info.add_parameter('g', float)
+        self.model_info.add_parameter('h', float)
+
 def test_population(genoms):
     parameters = Parameters([ContinuousParameter("a", -5, -1),
                              ContinuousParameter("b", 6, 8),
@@ -26,7 +37,7 @@ def test_population(genoms):
                              DiscreteParameter("g", [21, 75, 25, 88, 11]),
                              DiscreteParameter("h", [85, 12, -147])])
 
-    population_creator = ImplicitInitialPopulationCreator(parameters, ModelBase)
+    population_creator = ImplicitInitialPopulationCreator(parameters, Model)
     return population_creator.create(genoms), parameters
 
 class TestCrossover(Agros2DTestCase):
@@ -78,6 +89,9 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
 
         for x in variants:
             model = quadratic_function.QuadraticFunction()
+            model.parameters['a'] = 1
+            model.parameters['b'] = 1
+            model.parameters['c'] = 1
             model.parameters['x'] = x
             model.population_from = 0
             model.population_to = 0
@@ -86,7 +100,7 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
         md.solve(save=False)
 
         self.functionals = Functionals([Functional('F', 'min')])
-        self.selector = SingleCriteriaSelector(self.functionals, ModelBase)
+        self.selector = SingleCriteriaSelector(self.functionals, quadratic_function.QuadraticFunction)
         self.population = md.models()
 
     def test_selection(self):

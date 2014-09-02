@@ -1,11 +1,19 @@
 from test_suite.scenario import Agros2DTestCase
 from test_suite.scenario import Agros2DTestResult
 
-from variant import ModelGenerator
+from variant import ModelBase, ModelGenerator
+
+class Model(ModelBase):
+    def declare(self):
+        self.n = 5
+        self.k = 2
+
+        for i in range(self.n):
+            self.model_info.add_parameter('p{0}'.format(i), int)
 
 class TestModelGenerator(Agros2DTestCase):
     def setUp(self):
-        self.mg = ModelGenerator()
+        self.mg = ModelGenerator(Model)
 
     def test_add_and_remove_parameter(self):
         self.mg.add_parameter('p', range(10))

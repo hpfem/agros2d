@@ -6,7 +6,6 @@ class BoothsFunction(ModelGenetic):
     def declare(self):
         self.model_info.add_parameter('x', float)
         self.model_info.add_parameter('y', float)
-
         self.model_info.add_variable('F', float)
     
     def solve(self):
@@ -26,4 +25,5 @@ if __name__ == '__main__':
     model.parameters['x'] = 1.0
     model.parameters['y'] = 3.0
     model.solve()
-    print(model.F, 0)
+    model.process()
+    print(model.variables['F'], 0)

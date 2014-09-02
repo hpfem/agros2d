@@ -6,7 +6,7 @@ import random as rnd
 class ModelGenerator:
     """General class for models set generation (combination, random selection, etc.)."""
 
-    def __init__(self, model_class = ModelBase):
+    def __init__(self, model_class):
         """Initialization of model generator.
         
         ModelGenerator()
