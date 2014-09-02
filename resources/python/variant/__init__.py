@@ -1,6 +1,8 @@
-__all__ = ["ModelBase", "ModelDict", "ModelDictExternal",
-           "ModelGenerator", "ModelPostprocessor", "ModelFilter"]
+__all__ = ["ModelInfo", "Modeldata", "ModelBase",
+           "ModelDict", "ModelDictExternal", "ModelGenerator", "ModelPostprocessor", "ModelFilter"]
 
+from variant.model import ModelInfo
+from variant.model import ModelData
 from variant.model import ModelBase
 from variant.model_dict import ModelDict
 from variant.model_dict import ModelDictExternal

@@ -7,6 +7,7 @@ from variant import ModelBase
 from variant.test_functions import quadratic_function
 
 class TestModel(Agros2DTestCase):
+    """
     def test_defaults(self):
         model = ModelBase()
         model.defaults['b'] = 0
@@ -23,6 +24,7 @@ class TestModel(Agros2DTestCase):
         model = ModelBase()
         with self.assertRaises(KeyError):
             model.parameters['b']
+    """
 
     def test_save_and_load(self):
         file_name = '{0}/model.pickle'.format('{0}'.format(pythonlab.tempname()))

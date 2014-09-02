@@ -3,30 +3,21 @@ _empty_svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="
 import pickle
 import os
 
-class Parameters(dict):
-    """General class collected model parameters."""
+class ModelValues(dict):
+    """General class for model parameters and variables."""
 
-    def __init__(self, defaults):
+    def __init__(self, declarations):
         dict.__init__(self)
-        self._defaults = defaults
+        self._declarations = declarations
 
-    def __getitem__(self, key):
-        if key in dict.keys(self):
-            return dict.__getitem__(self, key)
-        elif key in self._defaults.keys():
-            return self._defaults[key]
-        else:
-            raise KeyError(key)
+    def __setitem__(self, key, value):
+        if key not in self._declarations:
+            raise KeyError('Value with key "{0}" is not declared!'.format(key))
 
-class ModelData:
-    """General class collected all model data."""
+        if (type(value) != self._declarations[key]['type']):
+            raise TypeError('Value must be type {0} ({1} handed)!'.format(self._declarations[key]['type'], type(value)))
 
-    def __init__(self):
-        self.defaults = dict()
-        self.parameters = Parameters(self.defaults)
-        self.variables = dict()
-        self.info = {'_geometry' : _empty_svg}
-        self.solved = False
+        dict.__setitem__(self, key, value)
 
 class ModelInfo:
     """General class stored informations about model parameters and variables."""
@@ -35,18 +26,30 @@ class ModelInfo:
         self._variables = dict()
 
     def add_parameter(self, name, type, description = ''):
-        self._parameters[name] = [type, description]
+        self._parameters[name] = {'type' : type,
+                                  'description' : description}
 
     @property
     def parameters(self):
         return self._parameters
 
     def add_variable(self, name, type, description = ''):
-        self._variables[name] = [type, description]
+        self._variables[name] = {'type' : type,
+                                 'description' : description}
 
     @property
     def variables(self):
         return self._variables
+
+class ModelData:
+    """General class collected all model data."""
+
+    def __init__(self, model_info):
+        self.parameters = ModelValues(model_info.parameters())
+        self.variables = ModelValues(model_info.variables())
+
+        self.info = {'_geometry' : _empty_svg}
+        self.solved = False
 
 class ModelBase:
     """General model class."""
@@ -55,7 +58,7 @@ class ModelBase:
         self.model_info = ModelInfo()
         self.declare()
 
-        self._data = ModelData()
+        self._data = ModelData(self.model_info)
 
     @property
     def data(self):
@@ -70,15 +73,6 @@ class ModelBase:
     @parameters.setter
     def parameters(self, value):
         self._data.parameters = value
-
-    @property
-    def defaults(self):
-        """Default parameters dictionary used if key can not be find in model parameters."""
-        return self._data.defaults
-
-    @defaults.setter
-    def defaults(self, value):
-        self._data.defaults = value
 
     @property
     def variables(self):

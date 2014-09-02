@@ -23,7 +23,7 @@ class BoothsFunction(ModelGenetic):
 
 if __name__ == '__main__':
     model = BoothsFunction()
-    model.parameters['x'] = 1
-    model.parameters['y'] = 3
+    model.parameters['x'] = 1.0
+    model.parameters['y'] = 3.0
     model.solve()
     print(model.F, 0)

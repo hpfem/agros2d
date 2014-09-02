@@ -1,4 +1,4 @@
-from variant import ModelBase, ModelDictExternal
+from variant import ModelInfo, ModelData, ModelBase, ModelDictExternal
 from variant.optimization import *
 
 from variant.optimization.genetic.initial_population import ImplicitInitialPopulationCreator
@@ -15,11 +15,17 @@ class ModelGenetic(ModelBase):
         self.model_info.add_variable('_priority', float)
         
     def __init__(self):
-        ModelBase.__init__(self)
-        
-        self.priority = -1
+        self.model_info = ModelInfo()
+        self.declare()
+
+        self.model_info.add_variable('_population', int)
+        self.model_info.add_variable('_priority', int)
+
+        self._data = ModelData(self.model_info)
+
         self.population = -1
-        
+        self.priority = -1
+
     @property
     def priority(self):
         return self._priority

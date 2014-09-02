@@ -8,7 +8,6 @@ class HolderTableFunction(ModelGenetic):
     def declare(self):
         self.model_info.add_parameter('x', float)
         self.model_info.add_parameter('y', float)
-
         self.model_info.add_variable('F', float)
 
     def solve(self):

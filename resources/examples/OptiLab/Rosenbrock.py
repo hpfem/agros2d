@@ -5,27 +5,23 @@ import pylab as pl
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
-from variant import optimization
+from variant import optimization, ModelBase
 from variant.optimization import genetic
 from variant.optimization.genetic.method import ModelGenetic
 
-class RosenbrockFunction(ModelGenetic):
+class RosenbrockFunction(ModelBase):
     def declare(self):
-        self.model_info.add_parameter('a', float)
-        self.model_info.add_parameter('b', float)
         self.model_info.add_parameter('x', float)
         self.model_info.add_parameter('y', float)
-
         self.model_info.add_variable('F', float)
 
     def create(self):
-        self.defaults['a'] = 1
-        self.defaults['b'] = 100
+        self.a = 1
+        self.b = 100
 
     def solve(self):
         try:
-            self.F = (self.parameters['a'] - self.parameters['x'])**2 +\
-                     self.parameters['b']*(self.parameters['y'] - self.parameters['x']**2)**2
+            self.F = (self.a - self.parameters['x'])**2 + self.b * (self.parameters['y'] - self.parameters['x']**2)**2
             self.solved = True
         except:
             self.solved = False
@@ -34,6 +30,12 @@ class RosenbrockFunction(ModelGenetic):
         self.variables['F'] = self.F
 
 if __name__ == '__main__':
+    """
+    model = RosenbrockFunction()
+    model.parameters['x'] = 1.0
+    model.parameters['y'] = 1.0
+    """
+
     """ optimization """
     parameters = optimization.Parameters([optimization.ContinuousParameter('x', -2.0, 2.0),
                                           optimization.ContinuousParameter('y', -2.0, 5.0)])
@@ -56,7 +58,7 @@ if __name__ == '__main__':
     print('F = {0}; x = {1}, y = {2}'.format(star.variables['F'],
                                              star.parameters['x'], star.parameters['y']))
     print('F(a,a**2) = 0'.format((1 - 1)**2 + 100*(1 - 1**2)**2))
-    
+
     """ results """
     """
     pl.figure()
