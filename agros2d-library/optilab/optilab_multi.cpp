@@ -79,6 +79,9 @@ void OptilabMulti::refreshVariables()
     cmbChartX->clear();
     cmbChartY->clear();
 
+    cmbChartX->addItem("index", "system.index");
+    cmbChartY->addItem("index", "system.index");
+
     QString str = QString("agros2d_post_variables = variant.optilab_interface._optilab_mp.variable_keys(only_scalars = True)");
     currentPythonEngine()->runExpression(str);
 
@@ -94,8 +97,8 @@ void OptilabMulti::refreshVariables()
 
             QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
 
-            cmbChartX->addItem(name, name);
-            cmbChartY->addItem(name, name);
+            cmbChartX->addItem(name + " (var.)", "variable." + name);
+            cmbChartY->addItem(name + " (var.)", "variable." + name);
 
             Py_XDECREF(d);
         }
@@ -104,23 +107,81 @@ void OptilabMulti::refreshVariables()
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_post_variables");
+
+    str = QString("agros2d_post_parameters = variant.optilab_interface._optilab_mp.parameter_keys(only_scalars = True)");
+    qDebug() << str;
+    currentPythonEngine()->runExpression(str);
+
+    // extract values
+    result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_parameters");
+    if (result)
+    {
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
+        {
+            PyObject *d = PyList_GetItem(result, i);
+            Py_INCREF(d);
+
+            QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
+
+            cmbChartX->addItem(name + " (par.)", "parameter." + name);
+            cmbChartY->addItem(name + " (par.)", "parameter." + name);
+
+            Py_XDECREF(d);
+        }
+        Py_XDECREF(result);
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_post_parameters");
 }
 
 void OptilabMulti::refreshChart()
 {
-    QString str = QString("agros2d_post_values_x = variant.optilab_interface._optilab_mp.variable('%1'); agros2d_post_values_y = variant.optilab_interface._optilab_mp.variable('%2')")
-            .arg(cmbChartX->currentText())
-            .arg(cmbChartY->currentText());
-    currentPythonEngine()->runExpression(str);
+    QVector<double> valuesX;
+    QVector<double> valuesY;
+
+    QString typeX = cmbChartX->currentData().toString().split(".").at(0);
+    QString keyX = cmbChartX->currentData().toString().split(".").at(1);
+    QString strX;
+    if (typeX == "parameter")
+        strX = QString("agros2d_post_values_x = variant.optilab_interface._optilab_mp.parameter('%1')").arg(keyX);
+    else if (typeX == "variable")
+        strX = QString("agros2d_post_values_x = variant.optilab_interface._optilab_mp.variable('%1')").arg(keyX);
+    else if (typeX == "system")
+    {
+        if (keyX == "index")
+        {
+            for (int i = 0; i < optilabMain->trvVariants->topLevelItemCount(); i++)
+                valuesX.append(i);
+        }
+    }
+
+
+    QString typeY = cmbChartY->currentData().toString().split(".").at(0);
+    QString keyY = cmbChartY->currentData().toString().split(".").at(1);
+    QString strY;
+    if (typeY == "parameter")
+        strY = QString("agros2d_post_values_y = variant.optilab_interface._optilab_mp.parameter('%1')").arg(keyY);
+    else if (typeY == "variable")
+        strY = QString("agros2d_post_values_y = variant.optilab_interface._optilab_mp.variable('%1')").arg(keyY);
+    else if (typeY == "system")
+    {
+        if (keyY == "index")
+        {
+            for (int i = 0; i < optilabMain->trvVariants->topLevelItemCount(); i++)
+                valuesY.append(i);
+        }
+    }
+
+    currentPythonEngine()->runExpression(strX);
+    currentPythonEngine()->runExpression(strY);
 
     // extract values
     PyObject *resultX = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_values_x");
     PyObject *resultY = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_values_y");
-    if (resultX && resultY)
+    if (resultX)
     {
-        QVector<double> valuesX;
-        QVector<double> valuesY;
-
         Py_INCREF(resultX);
         for (int i = 0; i < PyList_Size(resultX); i++)
         {
@@ -130,7 +191,10 @@ void OptilabMulti::refreshChart()
             Py_XDECREF(d);
         }
         Py_XDECREF(resultX);
+    }
 
+    if (resultY)
+    {
         Py_INCREF(resultY);
         for (int i = 0; i < PyList_Size(resultY); i++)
         {
@@ -140,12 +204,11 @@ void OptilabMulti::refreshChart()
             Py_XDECREF(d);
         }
         Py_XDECREF(resultY);
-
-        chartXY->graph(0)->setData(valuesX, valuesY);
-        chartXY->rescaleAxes();
-        chartXY->replot();
     }
 
+    chartXY->graph(0)->setData(valuesX, valuesY);
+    chartXY->rescaleAxes();
+    chartXY->replot();
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_post_values_x; del agros2d_post_values_y");

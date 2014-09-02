@@ -9,7 +9,7 @@ from variant import optimization, ModelBase
 from variant.optimization import genetic
 from variant.optimization.genetic.method import ModelGenetic
 
-class RosenbrockFunction(ModelBase):
+class RosenbrockFunction(ModelGenetic):
     def declare(self):
         self.model_info.add_parameter('x', float)
         self.model_info.add_parameter('y', float)

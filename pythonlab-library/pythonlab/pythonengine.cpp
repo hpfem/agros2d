@@ -534,7 +534,12 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
         Py_XDECREF(errorTraceback);
         PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
         if (errorTraceback)
+        {
+            ErrorResult result = parseError(false);
+            qDebug() << result.tracebackToString();
+
             successfulRun = false;
+        }
     }
 
     Py_XDECREF(output);

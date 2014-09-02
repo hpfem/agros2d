@@ -512,6 +512,7 @@ void OptilabWindow::showDialog()
 void OptilabWindow::refreshVariants()
 {
     QString str = QString("agros2d_variants = variant.optilab_interface._models_zip('%1')").arg(m_problem);
+    qDebug() << str;
     currentPythonEngine()->runExpression(str);
 
     trvVariants->setUpdatesEnabled(false);

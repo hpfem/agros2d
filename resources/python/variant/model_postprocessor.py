@@ -10,8 +10,17 @@ class ModelPostprocessor():
 
         # model
         m = self._model_dict.model_class()
-        print(m.model_info.variables)
-        print(m.model_info.parameters)
+
+        # cache parameters
+        self._parameters = {}
+        for model in self._model_dict.models():
+            for parameter, value in model.parameters.items():
+                self._parameters.setdefault(parameter, []).append(value)
+
+        # cache parameters
+        parameters = m.model_info.parameters
+        self._parameter_keys = sorted(list(parameters.keys()))        
+        self._parameter_keys_scalar = sorted([key for key, value in parameters.items() if (value['type'] == int or value['type'] == float)])
 
         # cache variables
         self._variables = {}
@@ -19,15 +28,10 @@ class ModelPostprocessor():
             for variable, value in model.variables.items():
                 self._variables.setdefault(variable, []).append(value)
 
-        # cache parameters
-        parameters = m.model_info.parameters
-        self._parameter_keys = sorted(list(parameters.keys()))        
-        self._parameter_keys_scalar = self._parameter_keys
-
         # cache variables
         variables = m.model_info.variables
         self._variable_keys = sorted(list(variables.keys()))        
-        self._variable_keys_scalar = self._variable_keys
+        self._variable_keys_scalar = sorted([key for key, value in variables.items() if (value['type'] == int or value['type'] == float)])
 
     @property
     def model_dict(self):

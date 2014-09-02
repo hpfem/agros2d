@@ -150,7 +150,7 @@ class ModelBase:
             pickle.dump(self._data, outfile, protocol)
 
     def serialize(self):
-        return pickle.dumps(self._data, pickle.HIGHEST_PROTOCOL)
+        return pickle.dumps(self._data, 0) # pickle.HIGHEST_PROTOCOL)
 
     def deserialize(self, dta):
         self._data = pickle.loads(dta)
