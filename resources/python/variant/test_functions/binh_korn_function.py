@@ -3,7 +3,7 @@ from variant.optimization.genetic.method import ModelGenetic
 
 class BinhKornFunction(ModelGenetic):
     """ f1(x,y) = 4 * x**2 + 4 * y**2; f2(x,y) = (x - 5)**2 + (y - 5)**2 """
-    def inform(self):
+    def declare(self):
         self.model_info.add_parameter('x', float)
         self.model_info.add_parameter('y', float)
 

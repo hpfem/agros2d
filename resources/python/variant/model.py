@@ -51,7 +51,7 @@ class ModelBase:
 
     def __init__(self):
         self.model_info = ModelInfo()
-        self.inform()
+        self.declare()
 
         self._data = ModelData()
 
@@ -106,8 +106,8 @@ class ModelBase:
         self._data.solved = value
         if not value: self._data.variables = {}
 
-    def inform(self):
-        raise RuntimeError('Method inform() must be redefined!')
+    def declare(self):
+        raise RuntimeError('Method declare() must be overrided!')
 
     def create(self):
         """Method creates model from defined parameters."""

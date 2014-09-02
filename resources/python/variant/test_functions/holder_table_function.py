@@ -5,6 +5,12 @@ from math import sin, cos, exp, sqrt, pi
 
 class HolderTableFunction(ModelGenetic):
     """ f(x,y) = -(sin(x) * cos(y) * exp((1 - (sqrt(x**2 + y**2)(pi))))) """
+    def declare(self):
+        self.model_info.add_parameter('x', float)
+        self.model_info.add_parameter('y', float)
+
+        self.model_info.add_variable('F', float)
+
     def solve(self):
         try:
             self.F = -abs(sin(self.parameters['x']) * cos(self.parameters['y']) * \
