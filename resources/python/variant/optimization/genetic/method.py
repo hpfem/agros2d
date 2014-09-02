@@ -14,8 +14,7 @@ class ModelGenetic(ModelBase):
         ModelBase.__init__(self)
         
         self.priority = -1
-        self.population_from = -1
-        self.population_to = -1
+        self.population = -1
         
     @property
     def priority(self):
@@ -24,36 +23,23 @@ class ModelGenetic(ModelBase):
     @priority.setter
     def priority(self, value):
         self._priority = value
-        self.info["_priority"] = value
+        self.variables["_priority"] = value
 
     @property
-    def population_from(self):
-        return self._population_from
+    def population(self):
+        return self._population
         
-    @population_from.setter
-    def population_from(self, value):
-        self._population_from = value
-        self.info["_population_from"] = value
-
-    @property
-    def population_to(self):
-        return self._population_to
-        
-    @population_to.setter
-    def population_to(self, value):
-        self._population_to = value
-        self.info["_population_to"] = value
+    @population.setter
+    def population(self, value):
+        self._population = value
+        self.variables["_population"] = value
 
     def load(self, file_name):       
         ModelBase.load(self, file_name)
 
-        self.population_from = self.info["_population_from"]
-        self.population_to = self.info["_population_to"]
-        self.priority = self.info["_priority"]
+        self.population = self.variables["_population"]
+        self.priority = self.variables["_priority"]
         
-    def save(self, file_name):       
-        ModelBase.save(self, file_name)
-
 class GeneticOptimization(OptimizationMethod):
     """Genetic optimization method class."""
 
@@ -274,8 +260,7 @@ class GeneticOptimization(OptimizationMethod):
             population = self.initial_population_creator.create(self._population_size)
 
         for genom in population:
-            genom.population_from = self.current_population_index
-            genom.population_to = self.current_population_index
+            genom.population = self.current_population_index
 
             self.model_dict.add_model(genom)
 

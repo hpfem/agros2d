@@ -227,8 +227,7 @@ if __name__ == '__main__':
     for x in variants:
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
-        model.population_from = 0
-        model.population_to = 0
+        model.population = 0
         md.add_model(model)
 
     md.solve(save=False)
