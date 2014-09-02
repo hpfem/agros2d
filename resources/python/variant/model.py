@@ -14,8 +14,9 @@ class ModelValues(dict):
         if key not in self._declarations:
             raise KeyError('Value with key "{0}" is not declared!'.format(key))
 
-        if (type(value) != self._declarations[key]['type']):
-            raise TypeError('Value must be type {0} ({1} handed)!'.format(self._declarations[key]['type'], type(value)))
+        if (not (self._declarations[key]['type'] == float and type(value) == int)):
+            if (type(value) != self._declarations[key]['type']):
+                raise TypeError('Value must be type {0} ({1} handed)!'.format(self._declarations[key]['type'], type(value)))
 
         dict.__setitem__(self, key, value)
 
@@ -45,8 +46,8 @@ class ModelData:
     """General class collected all model data."""
 
     def __init__(self, model_info):
-        self.parameters = ModelValues(model_info.parameters())
-        self.variables = ModelValues(model_info.variables())
+        self.parameters = ModelValues(model_info.parameters)
+        self.variables = ModelValues(model_info.variables)
 
         self.info = {'_geometry' : _empty_svg}
         self.solved = False
