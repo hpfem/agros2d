@@ -1,4 +1,4 @@
-from variant import ModelBase
+from variant.model import ModelBase
 from variant.optimization.genetic.method import ModelGenetic
 
 from math import sin, cos, exp, sqrt, pi
@@ -6,9 +6,9 @@ from math import sin, cos, exp, sqrt, pi
 class HolderTableFunction(ModelGenetic):
     """ f(x,y) = -(sin(x) * cos(y) * exp((1 - (sqrt(x**2 + y**2)(pi))))) """
     def declare(self):
-        self.model_info.add_parameter('x', float)
-        self.model_info.add_parameter('y', float)
-        self.model_info.add_variable('F', float)
+        self.declare_parameter('x', float)
+        self.declare_parameter('y', float)
+        self.declare_variable('F', float)
 
     def solve(self):
         try:

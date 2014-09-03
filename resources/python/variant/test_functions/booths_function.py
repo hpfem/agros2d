@@ -1,12 +1,12 @@
-from variant import ModelBase
+from variant.model import ModelBase
 from variant.optimization.genetic.method import ModelGenetic
 
 class BoothsFunction(ModelGenetic):
     """ f(x,y) = (x + 2y - 7)**2 + (2x + y - 5)**2 """
     def declare(self):
-        self.model_info.add_parameter('x', float)
-        self.model_info.add_parameter('y', float)
-        self.model_info.add_variable('F', float)
+        self.declare_parameter('x', float)
+        self.declare_parameter('y', float)
+        self.declare_variable('F', float)
     
     def solve(self):
         try:

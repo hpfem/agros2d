@@ -1,4 +1,5 @@
-from variant import ModelInfo, ModelData, ModelBase, ModelDictExternal
+from variant.model import ModelData, ModelBase
+from variant.model_dictionary import ModelDictionaryExternal
 from variant.optimization import *
 
 from variant.optimization.genetic.initial_population import ImplicitInitialPopulationCreator
@@ -10,18 +11,16 @@ import random as rnd
 import collections
 
 class ModelGenetic(ModelBase):
-    def declare(self):
-        self.model_info.add_variable('_population', float)
-        self.model_info.add_variable('_priority', float)
-        
     def __init__(self):
-        self.model_info = ModelInfo()
+        self._declared_parameters = dict()
+        self._declared_variables = dict()
+
         self.declare()
+        self.declare_variable('_population', float)
+        self.declare_variable('_priority', float)
 
-        self.model_info.add_variable('_population', int)
-        self.model_info.add_variable('_priority', int)
-
-        self._data = ModelData(self.model_info)
+        self._data = ModelData(self._declared_parameters,
+                               self._declared_variables)
 
         self.population = -1
         self.priority = -1
@@ -291,7 +290,7 @@ class GeneticOptimization(OptimizationMethod):
             self.current_population_index = index
             self.create_population()
 
-            if save or self.model_dict.__class__.__base__ == ModelDictExternal:
+            if save or self.model_dict.__class__.__base__ == ModelDictionaryExternal:
                 self.model_dict.solve()
             else:
                 self.model_dict.solve(save=False)

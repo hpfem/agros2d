@@ -1,14 +1,13 @@
-from variant import ModelDict
-from variant import ModelBase
-from variant import ModelPostprocessor
+from variant.model_dictionary import ModelDictionary
+from variant.model_postprocessor import ModelPostprocessor
 
 if __name__ != '__main__':
     # global optilab model postprocessor
     _optilab_mp =  None
         
 def _models_zip(filename):  
-    md = ModelDict()
-    md.load_from_zip(filename)
+    md = ModelDictionary()
+    md.load(filename)
     
     global _optilab_mp
     _optilab_mp = ModelPostprocessor(md)

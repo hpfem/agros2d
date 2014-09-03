@@ -1,91 +1,70 @@
-import pythonlab
-import pylab as pl
-
-from variant.model_dict import ModelDict
-from variant.model_filter import ModelFilter
+from variant.model_dictionary import ModelDictionary
 
 class ModelPostprocessor():
-    def __init__(self, model_dict):
-        self._model_dict = model_dict
+    """General class for models postprocessing."""
 
-        # model
-        m = self._model_dict.model_class()
+    def __init__(self, model_dictionary):
+        """Initialization of model postprocessor.
+        
+        ModelGenerator(model_dictionary)
+        
+        model_dictionary -- ModelDictionary object with models
+        """
+
+        self._dict = model_dictionary
 
         # cache parameters
         self._parameters = {}
-        for model in self._model_dict.models():
+        for model in self._dict.models():
             for parameter, value in model.parameters.items():
                 self._parameters.setdefault(parameter, []).append(value)
 
-        # cache parameters
-        parameters = m.model_info.parameters
+        parameters = self._dict.model_class()._declared_parameters
         self._parameter_keys = sorted(list(parameters.keys()))        
         self._parameter_keys_scalar = sorted([key for key, value in parameters.items() if (value['type'] == int or value['type'] == float)])
 
         # cache variables
         self._variables = {}
-        for model in self._model_dict.models():
+        for model in self._dict.models():
             for variable, value in model.variables.items():
                 self._variables.setdefault(variable, []).append(value)
 
-        # cache variables
-        variables = m.model_info.variables
+        variables = self._dict.model_class()._declared_variables
         self._variable_keys = sorted(list(variables.keys()))        
         self._variable_keys_scalar = sorted([key for key, value in variables.items() if (value['type'] == int or value['type'] == float)])
 
     @property
-    def model_dict(self):
-        """Return model dict"""
-        return self._model_dict
+    def dictionary(self):
+        """Return model dictionary."""
+        return self._dict
 
-    def parameters(self):        
-        return self._variables
-        
-    def parameter_keys(self, only_scalars = False):
-        if (only_scalars == True):
+    def parameters(self):
+        """Return dictionary collected values of model parameters in lists."""
+        return self._parameters
+
+    def parameter_keys(self, only_scalars=False):
+        """Return keys of all model parameters."""
+        if only_scalars:
             return self._parameter_keys_scalar
         else:
             return self._parameter_keys
-    
-    def parameter(self, name):
-        return self._parameters[name]
-        
-    def variables(self):        
+
+    def variables(self):
+        """Return dictionary collected values of variables in lists."""
         return self._variables
-        
+
     def variable_keys(self, only_scalars = False):
+        """Return keys of all variables."""
         if (only_scalars == True):
             return self._variable_keys_scalar
         else:
             return self._variable_keys
-    
-    def variable(self, name):
-        return self._variables[name]        
-        
-    def ploty(self, name, xlabel="", ylabel=""):
-        var = mp.variable(name)        
-        pl.plot(range(len(var)), var)
-        pl.grid(True)
-                
-        chart_file = pythonlab.tempname("png")
-        pl.savefig(chart_file, dpi=60)
-        pl.close()
-        pythonlab.image(chart_file)    
-        
-    def bar(self, name, xlabel="", ylabel=""):
-        var = mp.variable(name)        
-        pl.bar(range(len(var)), var)
-        pl.grid(True)
-                
-        chart_file = pythonlab.tempname("png")
-        pl.savefig(chart_file, dpi=60)
-        pl.close()
-        pythonlab.image(chart_file)          
-    
+
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
+    from variant.model_filter import ModelFilter
 
-    md = ModelDict(quadratic_function.QuadraticFunction)
+    md = ModelDictionary(quadratic_function.QuadraticFunction)
     for x in range(10):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
@@ -93,23 +72,14 @@ if __name__ == '__main__':
 
     md.solve()
 
-    print("Dict")
     mp = ModelPostprocessor(md)
+    print(mp.parameter_keys())
+    print(mp.parameters()['x'])
     print(mp.variable_keys())
-    print(mp.variables())
-    print(mp.variable('F'))
-    
-    # mp.ploty('F')
-    # mp.bar('F')
+    print(mp.variables()['F'])
 
     mf = ModelFilter()
-    mf.add_parameter_range('x', 1, 3)
+    mf.add_parameter_range('x', 1, 9)
 
-    print("Filter")
     mp = ModelPostprocessor(mf.filter(md))
-    print(mp.variable_keys())
-    print(mp.variables())
-    print(mp.variable('F'))
-    
-    # mp.ploty('F')
-    # mp.bar('F')
+    print(mp.parameters()['x'])

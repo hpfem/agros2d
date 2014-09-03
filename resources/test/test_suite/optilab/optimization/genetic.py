@@ -7,7 +7,7 @@ from variant.test_functions import quadratic_function
 from variant.test_functions import booths_function
 from variant.test_functions import holder_table_function
 
-from variant import ModelBase, ModelDict
+from variant import ModelBase, ModelDictionary
 
 from variant.optimization import *
 from variant.optimization.genetic import ImplicitInitialPopulationCreator
@@ -18,14 +18,14 @@ from variant.optimization.genetic import GeneticOptimization
 
 class Model(ModelBase):
     def declare(self):
-        self.model_info.add_parameter('a', float)
-        self.model_info.add_parameter('b', float)
-        self.model_info.add_parameter('c', float)
-        self.model_info.add_parameter('d', float)
-        self.model_info.add_parameter('e', float)
-        self.model_info.add_parameter('f', float)
-        self.model_info.add_parameter('g', float)
-        self.model_info.add_parameter('h', float)
+        self.declare_parameter('a', float)
+        self.declare_parameter('b', float)
+        self.declare_parameter('c', float)
+        self.declare_parameter('d', float)
+        self.declare_parameter('e', float)
+        self.declare_parameter('f', float)
+        self.declare_parameter('g', float)
+        self.declare_parameter('h', float)
 
 def test_population(genoms):
     parameters = Parameters([ContinuousParameter("a", -5, -1),
@@ -83,18 +83,15 @@ class TestMutation(Agros2DTestCase):
 
 class TestSingleCriteriaSelector(Agros2DTestCase):
     def setUp(self):
-        md = ModelDict()
+        md = ModelDictionary()
         variants = [1e-3, 1e-2, 1e2, 1e-4, 1e-1, 
                     1e-5, 1e-8, 1e3, 1e6, 1e-8]
 
         for x in variants:
             model = quadratic_function.QuadraticFunction()
-            model.parameters['a'] = 1
-            model.parameters['b'] = 1
-            model.parameters['c'] = 1
+            model.parameters['c'] = 0
             model.parameters['x'] = x
-            model.population_from = 0
-            model.population_to = 0
+            model.population = 0
             md.add_model(model)
 
         md.solve(save=False)
@@ -107,7 +104,7 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
         selected = self.selector.select(self.population, int(len(self.population)/2))
         self.assertTrue(len(selected) < len(self.population))
         for genom in selected:
-            self.assertTrue(self.functionals.evaluate(genom) < 1e-1)
+            self.assertTrue(self.functionals.evaluate(genom) <= 1e-1)
 
     def test_priority(self):
         selected = self.selector.select(self.population, int(len(self.population)/2))

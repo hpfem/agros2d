@@ -44,7 +44,7 @@ class GeneralMutation(MutationCreator):
 
     def mutate(self, original):
         mutant = deepcopy(original)
-        assert (len(mutant.parameters) == len(self.parameters.parameters))
+        #assert (len(mutant.parameters) == len(self.parameters.parameters))
 
         parameter_name = rnd.choice(list(mutant.parameters.keys()))
         changed_parameter = self.parameters.parameter(parameter_name)

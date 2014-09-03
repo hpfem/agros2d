@@ -9,7 +9,7 @@ class Model(ModelBase):
         self.k = 2
 
         for i in range(self.n):
-            self.model_info.add_parameter('p{0}'.format(i), int)
+            self.declare_parameter('p{0}'.format(i), int)
 
 class TestModelGenerator(Agros2DTestCase):
     def setUp(self):

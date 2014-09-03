@@ -1,32 +1,34 @@
-from variant import ModelBase, ModelDict
+from variant.model_dictionary import ModelDictionary
 from itertools import product
 
 import random as rnd
 
-class ModelGenerator:
-    """General class for models set generation (combination, random selection, etc.)."""
+class ModelGenerator(object):
+    """General class for generation of model sets (combination, random selection, etc.)."""
 
     def __init__(self, model_class):
         """Initialization of model generator.
         
-        ModelGenerator()
+        ModelGenerator(model_class)
+        
+        model_class -- general class for models
         """
 
-        self._dict = ModelDict(model_class)
+        self._dict = ModelDictionary(model_class)
         self._parameters = dict()
 
     @property
     def parameters(self):
-        """Parameters of the model."""
+        """Return parameters of the model."""
         return self._parameters
 
     @property
-    def dict(self):
-        """Models dictionary."""
+    def dictionary(self):
+        """Return models dictionary."""
         return self._dict
 
     def models(self):
-        """List of models in dictionary."""
+        """Return list of models in dictionary."""
         return self._dict.models()
 
     def add_parameter(self, name, values):
@@ -57,7 +59,7 @@ class ModelGenerator:
         if (number > 1):
             self._parameters[name] = [start + step*i for i in range(number + 1)]
         else:
-            raise RuntimeError('Interval is not correctly defined.')
+            raise RuntimeError('Interval is not defined correctly.')
 
     def remove_parameter(self, name):
         """Remove model parameter.
@@ -69,17 +71,6 @@ class ModelGenerator:
         """
 
         del self._parameters[name]
-
-    def save(self, directory):
-        """Save models to directory.
-
-        save(directory)
-
-        Keyword arguments:
-        directory -- directory path
-        """
-        self._dict.directory = directory
-        self._dict.save()
 
     def combination(self):
         """Generate models by combination of all parameters values."""
@@ -103,11 +94,13 @@ class ModelGenerator:
             self._dict.add_model(model)
 
 if __name__ == '__main__':
-    mg = ModelGenerator()
-    mg.add_parameter('a', range(20))
-    mg.add_parameter('b', range(20))
-    mg.add_parameter('c', range(20))
+    from variant.test_functions import quadratic_function
+
+    mg = ModelGenerator(quadratic_function.QuadraticFunction)
+    mg.add_parameter('a', range(5))
+    mg.add_parameter('b', range(10))
+    mg.add_parameter('c', range(50))
+    mg.add_parameter('x', range(4))
 
     mg.combination()
     #mg.random_selection(10000)
-    #mg.save(pythonlab.tempname())

@@ -3,11 +3,11 @@ from variant.optimization.genetic.method import ModelGenetic
 class QuadraticFunction(ModelGenetic):
     """ f(x) = a * x**2 + b * x + c """
     def declare(self):
-        self.model_info.add_parameter('a', float)
-        self.model_info.add_parameter('b', float)
-        self.model_info.add_parameter('c', float)
-        self.model_info.add_parameter('x', float)
-        self.model_info.add_variable('F', float)
+        self.declare_parameter('a', float, default=1.0)
+        self.declare_parameter('b', float, default=1.0)
+        self.declare_parameter('c', float, default=1.0)
+        self.declare_parameter('x', float)
+        self.declare_variable('F', float)
 
     def solve(self):
         try:
@@ -19,3 +19,10 @@ class QuadraticFunction(ModelGenetic):
 
     def process(self):
         self.variables['F'] = self.F
+
+if __name__ == '__main__':
+    model = QuadraticFunction()
+    model.parameters['x'] = 3.0
+    model.solve()
+    model.process()
+    #print(model.variables['F'])
