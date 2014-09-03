@@ -1,4 +1,4 @@
-from variant import ModelInfo, ModelData, ModelBase, ModelDictExternal
+from variant import ModelData, ModelBase, ModelDictExternal
 from variant.optimization import *
 
 from variant.optimization.genetic.initial_population import ImplicitInitialPopulationCreator

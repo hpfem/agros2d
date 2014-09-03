@@ -138,6 +138,7 @@ void OptilabMulti::refreshVariables()
 
 void OptilabMulti::refreshChart()
 {
+    /*
     QVector<double> valuesX;
     QVector<double> valuesY;
 
@@ -212,6 +213,7 @@ void OptilabMulti::refreshChart()
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_post_values_x; del agros2d_post_values_y");
+    */
 }
 
 /*

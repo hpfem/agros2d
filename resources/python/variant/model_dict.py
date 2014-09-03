@@ -8,7 +8,7 @@ from variant.model import ModelBase
 from collections import OrderedDict
 
 class ModelDict:
-    """General class for management of models set."""
+    """General class for management of models."""
 
     def __init__(self, model_class = ModelBase, models = None):
         """Initialization of model dictionary.
