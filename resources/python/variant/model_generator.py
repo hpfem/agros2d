@@ -1,4 +1,4 @@
-from variant import ModelBase, ModelDict
+from variant.model_dictionary import ModelDictionary
 from itertools import product
 
 import random as rnd
@@ -12,7 +12,7 @@ class ModelGenerator:
         ModelGenerator()
         """
 
-        self._dict = ModelDict(model_class)
+        self._dict = ModelDictionary(model_class)
         self._parameters = dict()
 
     @property

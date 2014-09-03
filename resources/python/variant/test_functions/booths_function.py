@@ -1,4 +1,4 @@
-from variant import ModelBase
+from variant.model import ModelBase
 from variant.optimization.genetic.method import ModelGenetic
 
 class BoothsFunction(ModelGenetic):

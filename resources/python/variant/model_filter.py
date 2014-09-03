@@ -1,6 +1,6 @@
 import collections
 
-from variant.model_dict import ModelDict
+from variant.model_dict import ModelDictionary
 
 class ModelFilter():
     def __init__(self):
@@ -20,7 +20,7 @@ class ModelFilter():
         self._variables[name] = [start, stop]
 
     def filter(self, model_dict):
-        md = ModelDict(model_dict.model_class)
+        md = ModelDictionary(model_dict.model_class)
         for name, model in model_dict.dict.items():
             if self._test(model): md.add_model(model, name)
 
@@ -50,7 +50,7 @@ class ModelFilter():
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
 
-    md = ModelDict(quadratic_function.QuadraticFunction)
+    md = ModelDictionary(quadratic_function.QuadraticFunction)
     for x in range(10):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x

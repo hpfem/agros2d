@@ -7,7 +7,7 @@ from variant.test_functions import quadratic_function
 from variant.test_functions import booths_function
 from variant.test_functions import holder_table_function
 
-from variant import ModelBase, ModelDict
+from variant import ModelBase, ModelDictionary
 
 from variant.optimization import *
 from variant.optimization.genetic import ImplicitInitialPopulationCreator

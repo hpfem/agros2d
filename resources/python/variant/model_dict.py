@@ -2,22 +2,20 @@ import os
 import subprocess
 import re
 
-import pythonlab
-
 from variant.model import ModelBase
 from collections import OrderedDict
 
-class ModelDict:
+class ModelDictionary(object):
     """General class for management of models."""
 
-    def __init__(self, model_class = ModelBase, models = None):
+    def __init__(self, model_class=ModelBase, models=None):
         """Initialization of model dictionary.
         
         ModelDict(models=None, directory=None)
         
         Keyword arguments:
-        models -- list or dictionary in style {name : model} placed models (default is None)
-        directory -- current working directory (default is None)
+        model_class -- general class for managed models
+        models -- list or dictionary in style {name : model} (default is None)
         """
 
         self._dict = OrderedDict()
@@ -270,7 +268,7 @@ class ModelDict:
             
             zipfile.close()
                   
-class ModelDictExternal(ModelDict):
+class ModelDictExternal(ModelDictionary):
     """Class inherited from ModelDict allows use external solver for models (default solver is agros2d_solver)."""
 
     def __init__(self):
@@ -322,8 +320,9 @@ class ModelDictExternal(ModelDict):
 
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
+    import pythonlab
 
-    md = ModelDict(quadratic_function.QuadraticFunction)
+    md = ModelDictionary(quadratic_function.QuadraticFunction)
     for x in range(10):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x

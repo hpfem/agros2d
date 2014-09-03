@@ -1,7 +1,7 @@
 import pythonlab
 import pylab as pl
 
-from variant.model_dict import ModelDict
+from variant.model_dictionary import ModelDictionary
 from variant.model_filter import ModelFilter
 
 class ModelPostprocessor():
@@ -85,7 +85,7 @@ class ModelPostprocessor():
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
 
-    md = ModelDict(quadratic_function.QuadraticFunction)
+    md = ModelDictionary(quadratic_function.QuadraticFunction)
     for x in range(10):
         model = quadratic_function.QuadraticFunction()
         model.parameters['x'] = x
