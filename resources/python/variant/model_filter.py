@@ -1,6 +1,6 @@
-import collections
+from variant.model_dictionary import ModelDictionary
 
-from variant.model_dict import ModelDictionary
+import collections
 
 class ModelFilter():
     def __init__(self):
@@ -19,9 +19,9 @@ class ModelFilter():
     def add_variable_range(self, name, start, stop):
         self._variables[name] = [start, stop]
 
-    def filter(self, model_dict):
-        md = ModelDictionary(model_dict.model_class)
-        for name, model in model_dict.dict.items():
+    def filter(self, model_dictionary):
+        md = ModelDictionary(model_dictionary.model_class)
+        for name, model in model_dictionary.dictionary.items():
             if self._test(model): md.add_model(model, name)
 
         return md
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     mf = ModelFilter()
     #mf.add_parameter_value('x', 2)
-    #mf.add_variable_value('F', 4)
+    #mf.add_variable_value('F', 7)
     #mf.add_parameter_range('x', 3, 5)
     mf.add_variable_range('F', 1, 16)
-    print(mf.filter(md).dict)
+    print(len(mf.filter(md).dictionary))

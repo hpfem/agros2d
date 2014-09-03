@@ -7,7 +7,7 @@ if __name__ != '__main__':
         
 def _models_zip(filename):  
     md = ModelDictionary()
-    md.load_from_zip(filename)
+    md.load(filename)
     
     global _optilab_mp
     _optilab_mp = ModelPostprocessor(md)

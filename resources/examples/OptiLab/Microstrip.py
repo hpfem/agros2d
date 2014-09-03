@@ -6,22 +6,25 @@ from variant.optimization.genetic.method import ModelGenetic
 
 from math import sqrt, log, pi
 
-class Microstrip(ModelGenetic):       
+class Microstrip(ModelGenetic):
     def declare(self):
-        self.model_info.add_parameter('W', float)
-        self.model_info.add_parameter('d', float)
-        self.model_info.add_variable('Z0', float)
-        self.model_info.add_variable('F', float)
+        self.declare_parameter('U', float, 1)
+        self.declare_parameter('epsr', float, 2.6285)
+        self.declare_parameter('I', float, 1)
+        self.declare_parameter('Z0', float, 75)
+
+        self.declare_parameter('t', float, 0.5e-4)
+        self.declare_parameter('W', float)
+        self.declare_parameter('d', float)
+
+        self.declare_variable('Z0', float)
+        self.declare_variable('F', float)
         
     def create(self):
         self.problem = a2d.problem(clear = True)
         self.problem.coordinate_type = "planar"
         self.problem.mesh_type = "triangle"
 
-        # disable view
-        a2d.view.mesh.disable()
-        a2d.view.post2d.disable()
-        
         # electrostic field        
         self.electrostatic = a2d.field("electrostatic")
         self.electrostatic.analysis_type = "steadystate"
@@ -31,10 +34,10 @@ class Microstrip(ModelGenetic):
         self.electrostatic.adaptivity_type = "disabled"
         self.electrostatic.solver = "linear"
 
-        self.electrostatic.add_boundary("Source electrode", "electrostatic_potential", {"electrostatic_potential" : 1})
+        self.electrostatic.add_boundary("Source electrode", "electrostatic_potential", {"electrostatic_potential" : self.parameters['U']})
         self.electrostatic.add_boundary("Ground electrode", "electrostatic_potential", {"electrostatic_potential" : 0})
         self.electrostatic.add_boundary("Zero charge", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
-        self.electrostatic.add_material("Dielectric substrate", {"electrostatic_permittivity" : 2.6285})
+        self.electrostatic.add_material("Dielectric substrate", {"electrostatic_permittivity" : self.parameters['epsr']})
         self.electrostatic.add_material("Air", {"electrostatic_permittivity" : 1})
 
         # magnetic field
@@ -49,15 +52,15 @@ class Microstrip(ModelGenetic):
         self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
         self.magnetic.add_material("Dielectric substrate", {"magnetic_permeability" : 1})
         self.magnetic.add_material("Conductor (source)", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0,
-                                                          "magnetic_total_current_prescribed" : True, "magnetic_total_current_real" : 1})
+                                                          "magnetic_total_current_prescribed" : True, "magnetic_total_current_real" : self.parameters['I']})
         self.magnetic.add_material("Conductor (ground)", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0,
-                                                          "magnetic_total_current_prescribed" : True, "magnetic_total_current_real" : -1})
+                                                          "magnetic_total_current_prescribed" : True, "magnetic_total_current_real" : -self.parameters['I']})
         self.magnetic.add_material("Air", {"magnetic_permeability" : 1})
 
         geometry = a2d.geometry
         W = self.parameters['W']
         d = self.parameters['d']
-        t = 0.5e-4
+        t = self.parameters['t']
 
         # dielectric substrate
         N = 15
@@ -85,6 +88,10 @@ class Microstrip(ModelGenetic):
         geometry.add_circle(0, 0, 2*N*W, boundaries={"electrostatic" : "Zero charge", "magnetic" : "A = 0"})
         geometry.add_label(0, 2*N*W/2.0, materials={"electrostatic" : "Air", "magnetic" : "Air"})
 
+        # disable view
+        a2d.view.mesh.disable()
+        a2d.view.post2d.disable()
+
     def solve(self):
         try:
             self.problem.solve()
@@ -95,13 +102,16 @@ class Microstrip(ModelGenetic):
     def process(self):
         # store geometry
         self.info['_geometry'] = a2d.geometry.export_svg_image()
+
         # variables            
-        C = 2 * self.electrostatic.volume_integrals()['We'] / 1**2
-        L = 2 * self.magnetic.volume_integrals()['Wm'] / 1**2
+        C = 2 * self.electrostatic.volume_integrals()['We'] / self.parameters['U']**2
+        L = 2 * self.magnetic.volume_integrals()['Wm'] / self.parameters['I']**2
         self.variables['Z0'] = sqrt(L/C)
-        self.variables['F'] = abs(75 - self.variables['Z0'])
+        self.variables['F'] = abs(self.parameters['Z0'] - self.variables['Z0'])
 
 if __name__ == '__main__':
+    """
+    # numerical solution
     model = Microstrip()
     model.parameters['W'] = 5e-4
     model.parameters['d'] = 1e-3
@@ -121,24 +131,20 @@ if __name__ == '__main__':
     if (W/d > 1):
         Z0 = 120.0*pi/(sqrt(epse)*(W/d + 1.393 + 0.667*log(W/d + 1.444)))
         print('Analytical solution: Z0 = {0}'.format(Z0))
+    """
     
     # optimization
     parameters = optimization.Parameters([optimization.ContinuousParameter('W', 1e-4, 1e-3),
-                                            optimization.ContinuousParameter('d', 1e-4, 1e-3)])
+                                          optimization.ContinuousParameter('d', 1e-4, 1e-3)])
     
     functionals = optimization.Functionals([optimization.Functional("F", "min")])
-    
     optimization = genetic.GeneticOptimization(parameters, functionals, Microstrip)
     
-    #from variant import ModelDictExternal
-    #optimization.model_dict = ModelDictExternal()
-    #optimization.model_dict.solver = '{0}/agros2d_solver'.format(pythonlab.datadir())
-    
-    optimization.population_size = 20
-    optimization.run(5, save = False)
+    optimization.population_size = 10
+    optimization.run(2, save = False)
     
     star = optimization.find_best(optimization.model_dict.models())
     print('Z0 = {0} Ohm (required 75 Ohm)'.format(star.variables['Z0']))
     print('Best variant parameters: W={0}, d={1}'.format(star.parameters['W'], star.parameters['d']))
     
-    optimization.model_dict.save_to_zip(problem = 'Microstrip.py', filename = 'Microstrip.opt')
+    optimization.model_dict.save(file_name='Microstrip.opt', problem='Microstrip.py')

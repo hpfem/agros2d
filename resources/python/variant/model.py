@@ -105,7 +105,8 @@ class ModelBase(object):
         """
 
         if (default and type(default) != data_type):
-            raise TypeError('Data type of default value do not correspond with defined data type!')
+            if not (data_type == float and type(default) == int):
+                raise TypeError('Data type of default value do not correspond with defined data type!')
 
         self._declared_parameters[name] = {'type' : data_type, 'default' : default,
                                            'description' : description}
@@ -123,7 +124,8 @@ class ModelBase(object):
         """
 
         if (default and type(default) != data_type):
-            raise TypeError('Data type of default value do not correspond with defined data type!')
+            if not (data_type == float and type(default) == int):
+                raise TypeError('Data type of default value do not correspond with defined data type!')
 
         self._declared_variables[name] = {'type' : data_type, 'default' : default,
                                           'description' : description}

@@ -11,17 +11,19 @@ from variant.optimization.genetic.method import ModelGenetic
 
 class RosenbrockFunction(ModelGenetic):
     def declare(self):
-        self.model_info.add_parameter('x', float)
-        self.model_info.add_parameter('y', float)
-        self.model_info.add_variable('F', float)
+        self.declare_parameter('a', float, 1)
+        self.declare_parameter('b', float, 100)
+        self.declare_parameter('x', float)
+        self.declare_parameter('y', float)
+        self.declare_variable('F', float)
 
     def create(self):
-        self.a = 1
-        self.b = 100
+        pass
 
     def solve(self):
         try:
-            self.F = (self.a - self.parameters['x'])**2 + self.b * (self.parameters['y'] - self.parameters['x']**2)**2
+            self.F = (self.parameters['a'] - self.parameters['x'])**2 +\
+                     self.parameters['b'] * (self.parameters['y'] - self.parameters['x']**2)**2
             self.solved = True
         except:
             self.solved = False
@@ -30,12 +32,6 @@ class RosenbrockFunction(ModelGenetic):
         self.variables['F'] = self.F
 
 if __name__ == '__main__':
-    """
-    model = RosenbrockFunction()
-    model.parameters['x'] = 1.0
-    model.parameters['y'] = 1.0
-    """
-
     """ optimization """
     parameters = optimization.Parameters([optimization.ContinuousParameter('x', -2.0, 2.0),
                                           optimization.ContinuousParameter('y', -2.0, 5.0)])
@@ -43,7 +39,7 @@ if __name__ == '__main__':
     functionals = optimization.Functionals([optimization.Functional("F", "min")])
     optimization = genetic.GeneticOptimization(parameters, functionals, RosenbrockFunction)
     
-    optimization.population_size = 200
+    optimization.population_size = 20
     
     optimization.selection_ratio = 8.0/10.0
     optimization.elitism_ratio = 1.0/5.0
