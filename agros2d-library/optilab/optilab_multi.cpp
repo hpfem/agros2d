@@ -28,18 +28,13 @@ OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain
     chartXY = new QCustomPlot(this);
     chartXY->setMinimumHeight(300);
     chartXY->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
-    // main chart
-    chartXY->addGraph();
-    // chart->graph(0)->setLineStyle(QCPGraph::lsLine);
-    // chart->graph(0)->setPen(QColor(50, 50, 50, 255));
-    chartXY->graph(0)->setLineStyle(QCPGraph::lsNone);
-    chartXY->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
     //connect(chartXY, SIGNAL(plottableClick(QCPAbstractPlottable*, QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*, QMouseEvent*)));
+    // main chart
     // highlight
-    chartXY->addGraph();
-    chartXY->graph(1)->setPen(QColor(255, 50, 50, 255));
-    chartXY->graph(1)->setLineStyle(QCPGraph::lsNone);
-    chartXY->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
+    //chartXY->addGraph();
+    //chartXY->graph(0)->setPen(QColor(255, 50, 50, 255));
+    //chartXY->graph(0)->setLineStyle(QCPGraph::lsNone);
+    //chartXY->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 8));
 
     cmbChartX = new QComboBox(this);
     cmbChartY = new QComboBox(this);
@@ -57,12 +52,12 @@ OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain
     layoutChartXYControls->addWidget(new QLabel(tr("Variable Y:")), 1, 0);
     layoutChartXYControls->addWidget(cmbChartY, 1, 1);
     layoutChartXYControls->addWidget(new QLabel(""), 19, 0);
-    layoutChartXYControls->setRowStretch(19, 1);
+    layoutChartXYControls->setRowStretch(19, 1);   
     layoutChartXYControls->addLayout(layoutButtons, 20, 0, 1, 2);
 
     QHBoxLayout *layoutChartXY = new QHBoxLayout();
     layoutChartXY->addLayout(layoutChartXYControls);
-    layoutChartXY->addWidget(chartXY);
+    layoutChartXY->addWidget(chartXY, 1);
 
     QWidget *widChartXY = new QWidget(this);
     widChartXY->setLayout(layoutChartXY);
@@ -82,58 +77,69 @@ void OptilabMulti::refreshVariables()
     cmbChartX->addItem("index", "system.index");
     cmbChartY->addItem("index", "system.index");
 
-    QString str = QString("agros2d_post_variables = variant.optilab_interface._optilab_mp.variable_keys(only_scalars = True)");
-    currentPythonEngine()->runExpression(str);
+    // parameters
+    QString strParameters = QString("agros2d_post_parameters = variant.optilab_interface._optilab_mp.parameter_keys(only_numbers = True)");
+    currentPythonEngine()->runExpression(strParameters);
 
     // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_variables");
-    if (result)
+    PyObject *resultParameters = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_parameters");
+    if (resultParameters)
     {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
+        cmbChartX->addItem(tr("Parameters"));
+        cmbChartY->addItem(tr("Parameters"));
+        qobject_cast<QStandardItemModel *>(cmbChartX->model())->item(cmbChartX->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(cmbChartY->model())->item(cmbChartX->count() - 1)->setEnabled(false);
+
+        Py_INCREF(resultParameters);
+        for (int i = 0; i < PyList_Size(resultParameters); i++)
         {
-            PyObject *d = PyList_GetItem(result, i);
+            PyObject *d = PyList_GetItem(resultParameters, i);
             Py_INCREF(d);
 
             QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
 
-            cmbChartX->addItem(name + " (var.)", "variable." + name);
-            cmbChartY->addItem(name + " (var.)", "variable." + name);
+            cmbChartX->addItem(name, "parameter." + name);
+            cmbChartY->addItem(name, "parameter." + name);
 
             Py_XDECREF(d);
         }
-        Py_XDECREF(result);
-    }
-
-    // remove variables
-    currentPythonEngine()->runExpression("del agros2d_post_variables");
-
-    str = QString("agros2d_post_parameters = variant.optilab_interface._optilab_mp.parameter_keys(only_scalars = True)");
-    qDebug() << str;
-    currentPythonEngine()->runExpression(str);
-
-    // extract values
-    result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_parameters");
-    if (result)
-    {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
-        {
-            PyObject *d = PyList_GetItem(result, i);
-            Py_INCREF(d);
-
-            QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
-
-            cmbChartX->addItem(name + " (par.)", "parameter." + name);
-            cmbChartY->addItem(name + " (par.)", "parameter." + name);
-
-            Py_XDECREF(d);
-        }
-        Py_XDECREF(result);
+        Py_XDECREF(resultParameters);
     }
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_post_parameters");
+
+    // variables
+    QString strVariables = QString("agros2d_post_variables = variant.optilab_interface._optilab_mp.variable_keys(only_numbers = True)");
+    currentPythonEngine()->runExpression(strVariables);
+
+    // extract values
+    PyObject *resultVariables = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_post_variables");
+    if (resultVariables)
+    {
+        cmbChartX->addItem(tr("Variables"));
+        cmbChartY->addItem(tr("Variables"));
+        qobject_cast<QStandardItemModel *>(cmbChartX->model())->item(cmbChartX->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(cmbChartY->model())->item(cmbChartX->count() - 1)->setEnabled(false);
+
+        Py_INCREF(resultVariables);
+        for (int i = 0; i < PyList_Size(resultVariables); i++)
+        {
+            PyObject *d = PyList_GetItem(resultVariables, i);
+            Py_INCREF(d);
+
+            QString name = QString::fromWCharArray(PyUnicode_AsUnicode(d));
+
+            cmbChartX->addItem(name, "variable." + name);
+            cmbChartY->addItem(name, "variable." + name);
+
+            Py_XDECREF(d);
+        }
+        Py_XDECREF(resultVariables);
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_post_variables");
 }
 
 void OptilabMulti::refreshChart()
@@ -156,7 +162,6 @@ void OptilabMulti::refreshChart()
                 valuesX.append(i);
         }
     }
-
 
     QString typeY = cmbChartY->currentData().toString().split(".").at(0);
     QString keyY = cmbChartY->currentData().toString().split(".").at(1);
@@ -206,6 +211,13 @@ void OptilabMulti::refreshChart()
         Py_XDECREF(resultY);
     }
 
+    chartXY->clearGraphs();
+    chartXY->xAxis->setLabel(cmbChartX->currentText());
+    chartXY->yAxis->setLabel(cmbChartY->currentText());
+
+    chartXY->addGraph();
+    chartXY->graph(0)->setLineStyle(QCPGraph::lsNone);
+    chartXY->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 6));
     chartXY->graph(0)->setData(valuesX, valuesY);
     chartXY->rescaleAxes();
     chartXY->replot();

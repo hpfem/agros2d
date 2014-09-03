@@ -36,8 +36,6 @@
 
 #include "pythonlab/pythonengine_agros.h"
 
-#include <QXmlSimpleReader>
-
 OptilabWindow::OptilabWindow(PythonEditorAgrosDialog *scriptEditorDialog) : QMainWindow(),
     m_scriptEditorDialog(scriptEditorDialog), m_problem("")
 {
@@ -49,6 +47,8 @@ OptilabWindow::OptilabWindow(PythonEditorAgrosDialog *scriptEditorDialog) : QMai
     createMain();
 
     QSettings settings;
+    splitter->restoreState(settings.value("OptilabWindow/SplitterState").toByteArray());
+    splitter->restoreGeometry(settings.value("OptilabWindow/SplitterGeometry").toByteArray());
     restoreGeometry(settings.value("OptilabWindow/Geometry", saveGeometry()).toByteArray());
     restoreState(settings.value("OptilabWindow/State", saveState()).toByteArray());
     m_recentFiles = settings.value("OptilabWindow/RecentFiles").value<QStringList>();
@@ -64,6 +64,8 @@ OptilabWindow::~OptilabWindow()
     QSettings settings;
     settings.setValue("OptilabWindow/Geometry", saveGeometry());
     settings.setValue("OptilabWindow/State", saveState());
+    settings.setValue("OptilabWindow/SplitterState", splitter->saveState());
+    settings.setValue("OptilabWindow/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("OptilabWindow/RecentFiles", m_recentFiles);
 
     removeDirectory(tempProblemDir());
@@ -329,13 +331,13 @@ void OptilabWindow::createMain()
     optilabSingle = new OptilabSingle(this);
     optilabMulti = new OptilabMulti(this);
 
-    // tbxAnalysis = new QTabWidget();
-    // tbxAnalysis->addTab(optilabSingle, icon(""), tr("Single"));
-    // tbxAnalysis->addTab(optilabMulti, icon(""), tr("Multi"));
+    splitter = new QSplitter(this);
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(optilabSingle);
+    splitter->addWidget(optilabMulti);
 
     QVBoxLayout *layoutSM = new QVBoxLayout();
-    layoutSM->addWidget(optilabSingle);
-    layoutSM->addWidget(optilabMulti);
+    layoutSM->addWidget(splitter);
 
     trvVariants = new QTreeWidget(this);
     trvVariants->setMouseTracking(true);
