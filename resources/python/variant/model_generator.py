@@ -27,9 +27,10 @@ class ModelGenerator(object):
         """Return models dictionary."""
         return self._dict
 
+    @property
     def models(self):
         """Return list of models in dictionary."""
-        return self._dict.models()
+        return self._dict.models
 
     def add_parameter(self, name, values):
         """Add new model parameter defined by list of values.
@@ -74,13 +75,13 @@ class ModelGenerator(object):
 
     def combination(self):
         """Generate models by combination of all parameters values."""
-        combinations = [[{key: value} for (key, value) in zip(self._parameters, values)] 
+        combinations = [[[key, value] for (key, value) in zip(self._parameters, values)]
                        for values in product(*self._parameters.values())]
 
         for combination in combinations:
             model = self._dict.model_class()
-            for parameter in combination:
-                model.parameters.update(parameter)
+            for key, value in combination:
+                model.set_parameter(key, value)
 
             self._dict.add_model(model)
 
@@ -88,8 +89,8 @@ class ModelGenerator(object):
         """Generate models by random selection of parameters values."""
         for index in range(count):
             model = self._dict.model_class()
-            for key, value in self._parameters.items():
-                model.parameters[key] = rnd.choice(value)
+            for parameter, value in self._parameters.items():
+                model.set_parameter(parameter, rnd.choice(value))
 
             self._dict.add_model(model)
 

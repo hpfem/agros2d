@@ -30,6 +30,16 @@ class ModelBase(object):
         return self._data
 
     @property
+    def parameters(self):
+        """Return model input parameters."""
+        return self._data.parameters
+
+    @property
+    def variables(self):
+        """Return model output variables."""
+        return self._data.variables
+
+    @property
     def info(self):
         """Optional info dictionary."""
         return self._data.info
