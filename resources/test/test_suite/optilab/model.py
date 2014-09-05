@@ -16,66 +16,58 @@ class VectorMultiplyingByScalar(ModelBase):
 
     def solve(self):
         self.v = []
-        for ui in self.parameters['u']:
-            self.v.append(ui * self.parameters['c'])
+        for ui in self.get_parameter('u'):
+            self.v.append(ui * self.get_parameter('c'))
 
     def process(self):
-        self.variables['v'] = self.v
+        self.set_variable('v', self.v)
 
 class TestModel(Agros2DTestCase):
     def test_undeclared_parameter(self):
         model = ModelBase()
         with self.assertRaises(KeyError):
-            model.parameters['undeclared_parameter'] = 1.0
+            model.set_parameter('undeclared_parameter', 1.0)
 
     def test_undeclared_variable(self):
         model = ModelBase()
         with self.assertRaises(KeyError):
-            model.variables['undeclared_variable'] = 1.0
+            model.set_variable('undeclared_variable', 1.0)
 
     def test_parameter_with_bad_data_type(self):
         model = VectorMultiplyingByScalar()
 
         with self.assertRaises(TypeError):
-            model.parameters['u'] = 1
+            model.set_parameter('u', 1)
 
         with self.assertRaises(TypeError):
-            model.parameters['u'] = {'u1' : 3, 'u2' : 5}
+            model.set_parameter('u', {'u1' : 3, 'u2' : 5})
 
         with self.assertRaises(TypeError):
-            model.parameters['u'] = (3, 5)
+            model.set_parameter('u', (3, 5))
 
         with self.assertRaises(TypeError):
-            model.parameters['c'] = [3, 5]
+            model.set_parameter('c', [3, 5])
 
     def test_default(self):
         model = VectorMultiplyingByScalar()
-        model.parameters['u'] = [5, 3, 6]
+        model.set_parameter('u', [5, 3, 6])
         model.solve()
         model.process()
-        self.assertEqual([10, 6, 12], model.variables['v'])
+        self.assertEqual([10, 6, 12], model.get_variable('v'))
 
     def test_save_and_load(self):
         file_name = '{0}/model.pickle'.format('{0}'.format(pythonlab.tempname()))
 
         model = VectorMultiplyingByScalar()
-        model.parameters['u'] = [3, 5]
-        model.parameters['c'] = 3
+        model.set_parameter('u', [3, 5])
+        model.set_parameter('c', 3)
         model.create()
         model.solve()
         model.process()
         model.save(file_name)
 
-        model.clear()
         model.load(file_name)
-        self.assertEqual([9, 15], model.variables['v'])
-
-    def test_clear(self):
-        model = VectorMultiplyingByScalar()
-        model.parameters['u'] = [1,2,3]
-        model.clear()
-        with self.assertRaises(KeyError):
-            model.parameters['u']
+        self.assertEqual([9, 15], model.get_variable('v'))
 
 if __name__ == '__main__':
     import unittest as ut
