@@ -41,10 +41,21 @@ class ModelPostprocessor(object):
         """Return model dictionary."""
         return self._dict
 
-    @property
-    def parameters(self):
-        """Return dictionary collected values of model parameters in lists."""
-        return self._parameters
+    def parameters(self, only_scalars=False):
+        """Return dictionary collected values of model parameters in lists.
+
+        parameters(only_scalars=False)
+
+        Keyword arguments:
+        only_scalars -- return only int and float parameters (default is False)
+        """
+        if not only_scalars:
+            return self._parameters
+        else:
+            parameters = {}
+            for key in self.parameters_keys(only_scalars=True):
+                parameters[key] = self._parameters[key]
+            return parameters
 
     def parameters_keys(self, only_scalars=False):
         """Return keys of all model parameters.
@@ -55,15 +66,28 @@ class ModelPostprocessor(object):
         only_scalars -- return only int and float parameters (default is False)
         """
 
-        if only_scalars:
-            return self._parameters_scalar_keys
-        else:
+        if not only_scalars:
             return self._parameters_keys
+        else:
+            return self._parameters_scalar_keys
 
-    @property
-    def variables(self):
-        """Return dictionary collected values of variables in lists."""
-        return self._variables
+    def variables(self, only_scalars=False):
+        """Return dictionary collected values of variables in lists.
+
+        variables(only_scalars=False)
+
+        Keyword arguments:
+        only_scalars -- return only int and float variables (default is False)
+        """
+
+        if not only_scalars:
+            return self._variables
+        else:
+            variables = {}
+            for key in self.variables_keys(only_scalars=True):
+                variables[key] = self._variables[key]
+
+            return variables
 
     def variables_keys(self, only_scalars = False):
         """Return keys of all variables.
@@ -74,10 +98,10 @@ class ModelPostprocessor(object):
         only_scalars -- return only int and float variables (default is False)
         """
 
-        if only_scalars:
-            return self._variables_scalar_keys
-        else:
+        if not only_scalars:
             return self._variables_keys
+        else:
+            return self._variables_scalar_keys
 
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
@@ -93,12 +117,12 @@ if __name__ == '__main__':
 
     mp = ModelPostprocessor(md)
     print(mp.parameters_keys())
-    print(mp.parameters['x'])
+    print(mp.parameters()['x'])
     print(mp.variables_keys())
-    print(mp.variables['F'])
+    print(mp.variables()['F'])
 
     mf = ModelFilter()
     mf.add_parameter_range('x', 1, 9)
 
     mp = ModelPostprocessor(mf.filter(md))
-    print(mp.parameters['x'])
+    print(mp.parameters()['x'])
