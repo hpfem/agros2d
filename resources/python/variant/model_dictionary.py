@@ -14,10 +14,10 @@ class ModelDictionary(object):
     def __init__(self, model_class=ModelBase, models=None):
         """Initialization of model dictionary.
 
-        ModelDictionary(models=None, directory=None)
+        ModelDictionary(model_class=ModelBase, models=None)
 
         Keyword arguments:
-        model_class -- general class for managed models
+        model_class -- general class for managed models (default is ModelBase)
         models -- list or dictionary in style {name : model} (default is None)
         """
 
@@ -39,16 +39,24 @@ class ModelDictionary(object):
         """Return dictionary of models."""
         return self._dict
 
+    @property
     def models(self):
         """Return list of models."""
         return list(self._dict.values())
 
+    @property
     def solved_models(self):
         """Return list of solved models."""
         models = []
         for model in list(self._dict.values()):
             if model.solved: models.append(model)
+
         return models
+
+    @property
+    def names(self):
+        """Return list of models name (model key in dictionary)."""
+        return list(self._dict.keys())
 
     def add_model(self, model, name=None):
         """Add new model to dictionary.
@@ -84,7 +92,7 @@ class ModelDictionary(object):
             del self._dict[name]
 
     def load(self, file_name):
-        """Clear dictionaty and load models from OptiLab data file (*.opt).
+        """Clear dictionary and load models from OptiLab data file (*.opt).
 
         load(file_name)
 
@@ -135,12 +143,18 @@ class ModelDictionary(object):
     def solve(self, recalculate=False, save=False):
         """Solve model in directory.
 
-        solve(recalculate=False, save=False, file_name=None)
+        solve(recalculate=False, save=False)
 
         Keyword arguments:
         recalculate -- recalculate solved models (default is False)
         save -- save solved models to data file (default is False)
         """
+
+        if save and not self._file_name:
+            raise RuntimeError('Data file does not exist! Dictionary must be saved before solution.')
+
+        if save:
+            zip_file = zipfile.ZipFile(self._file_name, 'a', zipfile.ZIP_DEFLATED)
 
         for name, model in self._dict.items():
             solve_model = recalculate or not model.solved
@@ -151,13 +165,9 @@ class ModelDictionary(object):
             model.process()
 
             if save:
-                # TODO: Extremely slow!
-                if not self._file_name:
-                    raise RuntimeError('Data file does not exist! Dictionary must be saved before solution.')
+                zip_file.writestr('{0}.pickle'.format(name), model.serialize())
 
-                with zipfile.ZipFile(self._file_name, 'a', zipfile.ZIP_DEFLATED) as zip_file:
-                    zip_file.writestr('{0}.pickle'.format(name), model.serialize())
-                    zip_file.close()
+        if save: zip_file.close()
 
     def find_model_by_parameters(self, parameters):
         """Find and return model in dictionary by parameters.
@@ -169,7 +179,7 @@ class ModelDictionary(object):
         """
 
         for name, model in self._dict.items():
-            if (model.parameters == parameters): return model
+            if (model.data.parameters == parameters): return model
 
     def clear(self):
         """Clear dictionary."""
@@ -181,10 +191,10 @@ class ModelDictionaryExternal(ModelDictionary):
     def __init__(self, model_class=ModelBase, models=None):
         """Initialization of model dictionary.
 
-        ModelDictionaryExternal(models=None, directory=None)
+        ModelDictionaryExternal(model_class=ModelBase, models=None)
 
         Keyword arguments:
-        model_class -- general class for managed models
+        model_class -- general class for managed models (default is ModelBase)
         models -- list or dictionary in style {name : model} (default is None)
         """
 
@@ -212,31 +222,24 @@ class ModelDictionaryExternal(ModelDictionary):
         if not self._file_name:
             raise RuntimeError('Data file does not exist! Dictionary must be saved before solution.')
 
-        """
-        for name, model in self._dict.items():
-            solve_model = recalculate or not model.solved
-            if not solve_model: continue
+        code = 'from variant import ModelDictionary; md = ModelDictionary();'
+        code += 'md.load("{0}");'.format(self._file_name)
+        code += 'md.solve(recalculate={0}, save=True)'.format(recalculate)
+        command = ['{0}'.format(self.solver)] + self.solver_parameters + ['{0}'.format(code)]
 
-            code = "import sys; sys.path.insert(0, '{0}');".format(os.path.dirname(self._directory))
-            code += "from problem import {0}; model = {0}();".format(type(model).__name__)
-            code += "model.load('{0}/{1}.pickle');".format(self._directory, name)
-            code += "model.create(); model.solve(); model.process();"
-            code += "model.save('{0}/{1}.pickle')".format(self._directory, name)
-            command = ['{0}'.format(self.solver)] + self.solver_parameters + ['{0}'.format(code)]
-
-            process = subprocess.Popen(command, stdout=subprocess.PIPE)
-            self._output.append(process.communicate())
-            model.load('{0}/{1}.pickle'.format(self._directory, name))
-        """
+        process = subprocess.Popen(command, stdout=subprocess.PIPE)
+        self._output.append(process.communicate())
+        self.load('{0}'.format(self._file_name))
 
 if __name__ == '__main__':
     from variant.test_functions import quadratic_function
     import pythonlab
 
     md = ModelDictionary(quadratic_function.QuadraticFunction)
-    for x in range(500):
+    md.solver = pythonlab.datadir('agros2d_solver')
+    for x in range(100):
         model = quadratic_function.QuadraticFunction()
-        model.parameters['x'] = x
+        model.set_parameter('x', x)
         md.add_model(model)
 
     file_name = '{0}.opt'.format(pythonlab.tempname())
@@ -244,16 +247,17 @@ if __name__ == '__main__':
 
     md.solve()
     results = []
-    for model in md.models():
-        results.append(model.variables['F'])
+    for model in md.models:
+        results.append(model.get_variable('F'))
 
     md.clear()
     md.load(file_name)
-    print('{0}/{1}'.format(len(md.models()), len(md.solved_models())))
+    print('{0}/{1}'.format(len(md.models), len(md.solved_models)))
+
     md.solve(save=True)
-    print('{0}/{1}'.format(len(md.models()), len(md.solved_models())))
+    print('{0}/{1}'.format(len(md.models), len(md.solved_models)))
 
     md.clear()
-    print('{0}/{1}'.format(len(md.models()), len(md.solved_models())))
+    print('{0}/{1}'.format(len(md.models), len(md.solved_models)))
     md.load(file_name)
-    print('{0}/{1}'.format(len(md.models()), len(md.solved_models())))
+    print('{0}/{1}'.format(len(md.models), len(md.solved_models)))
