@@ -14,10 +14,10 @@ class TestModelFilter(Agros2DTestCase):
         self.md = ModelDictionary(quadratic_function.QuadraticFunction)
         for x in range(10):
             model = quadratic_function.QuadraticFunction()
-            model.parameters['a'] = self.a
-            model.parameters['b'] = self.b
-            model.parameters['c'] = self.c
-            model.parameters['x'] = x
+            model.set_parameter('a', self.a)
+            model.set_parameter('b', self.b)
+            model.set_parameter('c', self.c)
+            model.set_parameter('x', x)
             self.md.add_model(model)
 
         self.md.solve()

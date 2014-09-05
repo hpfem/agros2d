@@ -37,7 +37,7 @@ class TestModelGenerator(Agros2DTestCase):
             self.mg.add_parameter('p{0}'.format(i), range(k))
 
         self.mg.combination()
-        self.assertTrue(len(self.mg.models()), n**k)
+        self.assertTrue(len(self.mg.models), n**k)
 
 if __name__ == '__main__':
     import unittest as ut
