@@ -12,15 +12,10 @@ import collections
 
 class ModelGenetic(ModelBase):
     def __init__(self):
-        self._declared_parameters = dict()
-        self._declared_variables = dict()
-
-        self.declare()
+        ModelBase.__init__(self)
+       
         self.declare_variable('_population', float)
         self.declare_variable('_priority', float)
-
-        self._data = ModelData(self._declared_parameters,
-                               self._declared_variables)
 
         self.population = -1
         self.priority = -1
@@ -306,6 +301,6 @@ if __name__ == '__main__':
 
     optimization.population_size = 300
     optimization.run(5, False) # 50
-    star = optimization.find_best(optimization.model_dict.models()) 
+    star = optimization.find_best(optimization.model_dict.models) 
     print('Minimum F={0} was found with parameters: {1}'.format(star.variables['F'], star.parameters))
     print('Genuine minimum is F=-19.2085')

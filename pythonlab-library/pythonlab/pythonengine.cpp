@@ -448,7 +448,8 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
             successfulRun = false;
 
             ErrorResult result = parseError(false);
-            qDebug() << result.tracebackToString();
+            if (!result.error().isEmpty())
+                qDebug() << result.tracebackToString();
         }
     }
 
@@ -536,7 +537,8 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
         if (errorTraceback)
         {
             ErrorResult result = parseError(false);
-            qDebug() << result.tracebackToString();
+            if (!result.error().isEmpty())
+                qDebug() << result.tracebackToString();
 
             successfulRun = false;
         }

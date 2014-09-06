@@ -98,7 +98,7 @@ class TestSingleCriteriaSelector(Agros2DTestCase):
 
         self.functionals = Functionals([Functional('F', 'min')])
         self.selector = SingleCriteriaSelector(self.functionals, quadratic_function.QuadraticFunction)
-        self.population = md.models()
+        self.population = md.models
 
     def test_selection(self):
         selected = self.selector.select(self.population, int(len(self.population)/2))
@@ -136,7 +136,7 @@ class TestBoothsFunctionOptimization(Agros2DTestCase):
         optimization.population_size = 150
         optimization.run(8, False)
 
-        star = optimization.find_best(optimization.model_dict.models())
+        star = optimization.find_best(optimization.model_dict.models)
         self.assertAlmostEqual(round(star.variables['F'], 1), 0, 0)
 
 class TestHolderTableFunction(Agros2DTestCase):
@@ -150,7 +150,7 @@ class TestHolderTableFunction(Agros2DTestCase):
         optimization.population_size = 150
         optimization.run(8, False)
 
-        star = optimization.find_best(optimization.model_dict.models())
+        star = optimization.find_best(optimization.model_dict.models)
         self.assertAlmostEqual(round(star.variables['F'], 1), -19.2, 0)
 
 if __name__ == '__main__':

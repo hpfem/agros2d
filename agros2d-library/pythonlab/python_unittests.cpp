@@ -350,7 +350,7 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
         qDebug() << result.tracebackToString();
     }
 
-    currentPythonEngine()->runExpression("del agros2d_result; del agros2d_result_report");
+    currentPythonEngine()->runExpression("del agros2d_result_report");
 }
 
 void UnitTestsWidget::showInfoTests(const QString &testID)

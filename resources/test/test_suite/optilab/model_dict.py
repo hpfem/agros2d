@@ -32,7 +32,7 @@ class TestModelDict(Agros2DTestCase):
     def test_add_model(self):
         model = Model()
         self.md.add_model(model)
-        self.assertTrue(len(self.md.models()))
+        self.assertTrue(len(self.md.models))
 
     def test_add_model_with_existing_name(self):
         model = Model()
@@ -50,7 +50,7 @@ class TestModelDict(Agros2DTestCase):
 
         self.md.clear()
         self.md.load()
-        self.assertEqual(N, len(self.md.models()))
+        self.assertEqual(N, len(self.md.models))
     """
 
     def test_load_files_with_wrong_directory(self):
@@ -86,7 +86,7 @@ class TestModelDict(Agros2DTestCase):
             self.md.add_model(model)
 
         self.md.solve(mask='model_00000[0, 2]')
-        self.assertEqual(len(self.md.models()), 3)
+        self.assertEqual(len(self.md.models), 3)
         self.assertEqual(len(self.md.solved_models()), 2)
 
         for a, x in [(1, 2), (3, 4)]:
@@ -116,7 +116,7 @@ class TestModelDictExternal(Agros2DTestCase):
         self.md.save()
 
         self.md.solve()
-        self.assertEqual(2*2**2, self.md.models()[-1].variables['F'])
+        self.assertEqual(2*2**2, self.md.models[-1].variables['F'])
     """
 
 if __name__ == '__main__':

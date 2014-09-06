@@ -68,7 +68,7 @@ class Agros2DTestResult(ut.TestResult):
               "{0}".format("ERROR".rjust(10, "."))))        
 
         import traceback
-        #print(traceback.print_tb(err[2]))
+        print(traceback.print_tb(err[2]))
         print(err[1])
 
     def addFailure(self, test, err):
