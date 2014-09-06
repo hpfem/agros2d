@@ -49,11 +49,11 @@ class Actuator(ModelGenetic):
         self.magnetic.add_material("Air", {"magnetic_permeability" : 1})
 
         self.geometry = a2d.geometry
-        AR1 = self.parameters['AR1']
-        AR2 = self.parameters['AR2']
-        AR3 = self.parameters['AR3']
-        AR4 = self.parameters['AR4']
-        AR5 = self.parameters['AR5']
+        AR1 = self.get_parameter('AR1')
+        AR2 = self.get_parameter('AR2')
+        AR3 = self.get_parameter('AR3')
+        AR4 = self.get_parameter('AR4')
+        AR5 = self.get_parameter('AR5')
 
         # geometry
         self.geometry = a2d.geometry
@@ -120,20 +120,20 @@ class Actuator(ModelGenetic):
         self.info['_geometry'] = a2d.geometry.export_svg_image()
 
         # static characteristic
-        self.variables['F'] = self.F
+        self.set_variable('F', self.F)
 
         # average force
         Favg = sum(self.F)/self.N
-        self.variables['M'] = Favg
+        self.set_variable('M', Favg)
 
         # ripple
         R = 0
         for i in range(self.N):
             R += (self.F[i] - Favg)**2
-        self.variables['R'] = sqrt(R)
+        self.set_variable('R', sqrt(R))
 
         # TODO: multicriteria
-        self.variables['xMR'] = Favg + (12 - sqrt(R))
+        self.set_variable('xMR', Favg + (12 - sqrt(R)))
 
 if __name__ == '__main__':
     # optimization
@@ -152,6 +152,6 @@ if __name__ == '__main__':
     optimization.population_size = 20
     optimization.run(5, save = False)
 
-    star = optimization.find_best(optimization.model_dict.models())
+    star = optimization.find_best(optimization.model_dict.models)
     print('Force = {0} N, ripple = {1} N'.format(star.variables['M'], star.variables['R']))
     optimization.model_dict.save('Actuator.opt', 'Actuator.py')

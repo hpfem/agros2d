@@ -1,8 +1,8 @@
-from variant.model import ModelBase
 from variant.optimization.genetic.method import ModelGenetic
 
 class BoothsFunction(ModelGenetic):
     """ f(x,y) = (x + 2y - 7)**2 + (2x + y - 5)**2 """
+
     def declare(self):
         self.declare_parameter('x', float)
         self.declare_parameter('y', float)
@@ -10,8 +10,8 @@ class BoothsFunction(ModelGenetic):
     
     def solve(self):
         try:
-            self.F = (self.parameters['x'] + 2 * self.parameters['y'] - 7)**2 + \
-                     (2 * self.parameters['x'] + self.parameters['y'] - 5)**2
+            self.F = (self.get_parameter('x') + 2 * self.get_parameter('y') - 7)**2 + \
+                     (2 * self.get_parameter('x') + self.get_parameter('y') - 5)**2
 
             self.solved = True
         except:
@@ -26,4 +26,4 @@ if __name__ == '__main__':
     model.parameters['y'] = 3.0
     model.solve()
     model.process()
-    print(model.variables['F'], 0)
+    print('F = {0}'.format(model.get_variable('F')))

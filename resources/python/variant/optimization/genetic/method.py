@@ -1,4 +1,4 @@
-from variant.model import ModelData, ModelBase
+from variant.model import ModelBase
 from variant.model_dictionary import ModelDictionaryExternal
 from variant.optimization import *
 
@@ -13,11 +13,10 @@ import collections
 class ModelGenetic(ModelBase):
     def __init__(self):
         ModelBase.__init__(self)
-       
         self.declare_variable('_population', float)
-        self.declare_variable('_priority', float)
-
         self.population = -1
+
+        self.declare_variable('_priority', float)
         self.priority = -1
 
     @property
@@ -299,8 +298,8 @@ if __name__ == '__main__':
     optimization = GeneticOptimization(parameters, functionals,
                                        holder_table_function.HolderTableFunction)
 
-    optimization.population_size = 300
-    optimization.run(5, False) # 50
+    optimization.population_size = 20
+    optimization.run(30, False)
     star = optimization.find_best(optimization.model_dict.models) 
-    print('Minimum F={0} was found with parameters: {1}'.format(star.variables['F'], star.parameters))
+    print('Minimum F={0} was found with parameters: {1}'.format(star.get_variable('F'), star.parameters))
     print('Genuine minimum is F=-19.2085')

@@ -217,12 +217,12 @@ class MultiCriteriaSelector(SurvivorsSelector):
         return survivors
 
 if __name__ == '__main__':
-    from variant import ModelDict
+    from variant.model_dictionary import ModelDictionary
     from variant.optimization import Functionals, Functional
 
-    from test_suite.optilab.examples import quadratic_function
+    from variant.test_functions import quadratic_function
 
-    md = ModelDict()
+    md = ModelDictionary(quadratic_function.QuadraticFunction)
     variants = range(1000)
     for x in variants:
         model = quadratic_function.QuadraticFunction()
@@ -236,5 +236,5 @@ if __name__ == '__main__':
     selector = SingleCriteriaSelector(functionals, quadratic_function.QuadraticFunction)
     selector.recomended_population_size = len(variants)
 
-    selected = selector.select(md.models(), 0)
+    selected = selector.select(md.models, 0)
     print(len(selected))
