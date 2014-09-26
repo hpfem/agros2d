@@ -48,9 +48,9 @@ if __name__ == '__main__':
     
     number_of_populations = 10
     optimization.run(number_of_populations, save = False)
-    optimization.model_dict.save_to_zip(problem = 'Rosenbrock.py', filename = 'Rosenbrock.opt')
+    optimization.model_dict.save(file_name='Rosenbrock.opt', problem='Rosenbrock.py')
         
-    star = optimization.find_best(optimization.model_dict.models())
+    star = optimization.find_best(optimization.model_dict.models)
     print('F = {0}; x = {1}, y = {2}'.format(star.variables['F'],
                                              star.parameters['x'], star.parameters['y']))
     print('F(a,a**2) = 0'.format((1 - 1)**2 + 100*(1 - 1**2)**2))

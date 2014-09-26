@@ -110,7 +110,6 @@ class Microstrip(ModelGenetic):
         self.variables['F'] = abs(self.parameters['Z0'] - self.variables['Z0'])
 
 if __name__ == '__main__':
-    """
     # numerical solution
     model = Microstrip()
     model.parameters['W'] = 5e-4
@@ -131,7 +130,6 @@ if __name__ == '__main__':
     if (W/d > 1):
         Z0 = 120.0*pi/(sqrt(epse)*(W/d + 1.393 + 0.667*log(W/d + 1.444)))
         print('Analytical solution: Z0 = {0}'.format(Z0))
-    """
     
     # optimization
     parameters = optimization.Parameters([optimization.ContinuousParameter('W', 1e-4, 1e-3),
@@ -140,10 +138,10 @@ if __name__ == '__main__':
     functionals = optimization.Functionals([optimization.Functional("F", "min")])
     optimization = genetic.GeneticOptimization(parameters, functionals, Microstrip)
     
-    optimization.population_size = 10
-    optimization.run(2, save = False)
+    optimization.population_size = 20
+    optimization.run(5, save = False)
     
-    star = optimization.find_best(optimization.model_dict.models())
+    star = optimization.find_best(optimization.model_dict.models)
     print('Z0 = {0} Ohm (required 75 Ohm)'.format(star.variables['Z0']))
     print('Best variant parameters: W={0}, d={1}'.format(star.parameters['W'], star.parameters['d']))
     

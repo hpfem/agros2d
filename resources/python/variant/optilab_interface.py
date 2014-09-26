@@ -5,18 +5,18 @@ if __name__ != '__main__':
     # global optilab model postprocessor
     _optilab_mp =  None
         
-def _models_zip(filename):  
+def _models_zip(filename):
     md = ModelDictionary()
     md.load(filename)
-    
+
     global _optilab_mp
     _optilab_mp = ModelPostprocessor(md)
-    
+
     lst = []
-    for k, m in sorted(md.dict.items()):
-        lst.append({ 'key' : k, 'solved' : m.solved })
-                
-    return lst      
+    for k, m in sorted(md.dictionary.items()):
+        lst.append({ 'key' : k, 'solved' : m.solved})
+
+    return lst
 
 def _open_in_agros2d(file_name):    
     import os.path    

@@ -46,7 +46,7 @@ class GeneralMutation(MutationCreator):
         mutant = deepcopy(original)
         #assert (len(mutant.parameters) == len(self.parameters.parameters))
 
-        parameter_name = rnd.choice(list(mutant.parameters.keys()))
+        parameter_name = rnd.choice(list(self.parameters.names()))
         changed_parameter = self.parameters.parameter(parameter_name)
         if (self.strength == 1):
             mutant.parameters[parameter_name] = changed_parameter.random_value()
