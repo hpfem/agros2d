@@ -1,11 +1,11 @@
-import pythonlab
-import numpy as np
-import pylab as pl
+#import pythonlab
+#import numpy as np
+#import pylab as pl
 
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
+#from mpl_toolkits.mplot3d import Axes3D
+#from matplotlib import cm
 
-from variant import optimization, ModelBase
+from variant import optimization #, ModelBase
 from variant.optimization import genetic
 from variant.optimization.genetic.method import ModelGenetic
 
@@ -39,14 +39,14 @@ if __name__ == '__main__':
     functionals = optimization.Functionals([optimization.Functional("F", "min")])
     optimization = genetic.GeneticOptimization(parameters, functionals, RosenbrockFunction)
     
-    optimization.population_size = 20
+    optimization.population_size = 200
     
     optimization.selection_ratio = 8.0/10.0
     optimization.elitism_ratio = 1.0/5.0
     optimization.crossover_ratio = 1.0
     optimization.mutation_ratio = 1.0/10.0
     
-    number_of_populations = 10
+    number_of_populations = 50
     optimization.run(number_of_populations, save = False)
     optimization.model_dict.save(file_name='Rosenbrock.opt', problem='Rosenbrock.py')
         

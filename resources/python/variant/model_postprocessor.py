@@ -41,64 +41,70 @@ class ModelPostprocessor(object):
         """Return model dictionary."""
         return self._dict
 
-    def parameters(self, only_scalars=False):
+    def parameters(self, only_numbers=False):
         """Return dictionary collected values of model parameters in lists.
 
-        parameters(only_scalars=False)
+        parameters(only_numbers=False)
 
         Keyword arguments:
-        only_scalars -- return only int and float parameters (default is False)
+        only_numbers -- return only int and float parameters (default is False)
         """
-        if not only_scalars:
+        if not only_numbers:
             return self._parameters
         else:
             parameters = {}
-            for key in self.parameters_keys(only_scalars=True):
+            for key in self.parameters_keys(only_numbers=True):
                 parameters[key] = self._parameters[key]
             return parameters
 
-    def parameters_keys(self, only_scalars=False):
+    def parameter(self, name):
+        return self._parameters[name]
+
+    def parameters_keys(self, only_numbers=False):
         """Return keys of all model parameters.
 
-        parameters_keys(only_scalars=False)
+        parameters_keys(only_numbers=False)
 
         Keyword arguments:
-        only_scalars -- return only int and float parameters (default is False)
+        only_numbers -- return only int and float parameters (default is False)
         """
 
-        if not only_scalars:
+        if not only_numbers:
             return self._parameters_keys
         else:
             return self._parameters_scalar_keys
 
-    def variables(self, only_scalars=False):
+    def variables(self, only_numbers=False):
         """Return dictionary collected values of variables in lists.
 
-        variables(only_scalars=False)
+        variables(only_numbers=False)
 
         Keyword arguments:
-        only_scalars -- return only int and float variables (default is False)
+        only_numbers -- return only int and float variables (default is False)
         """
 
-        if not only_scalars:
+        if not only_numbers:
             return self._variables
         else:
             variables = {}
-            for key in self.variables_keys(only_scalars=True):
+            for key in self.variables_keys(only_numbers=True):
                 variables[key] = self._variables[key]
 
             return variables
 
-    def variables_keys(self, only_scalars = False):
+    def variable(self, name):
+        return self._variables[name]
+
+    def variables_keys(self, only_numbers = False):
         """Return keys of all variables.
 
-        variables(only_scalars=False)
+        variables(only_numbers=False)
 
         Keyword arguments:
-        only_scalars -- return only int and float variables (default is False)
+        only_numbers -- return only int and float variables (default is False)
         """
 
-        if not only_scalars:
+        if not only_numbers:
             return self._variables_keys
         else:
             return self._variables_scalar_keys

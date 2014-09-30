@@ -54,9 +54,9 @@ class TestModelPostprocessor(Agros2DTestCase):
                 number_of_scalar_parameters += 1
 
         self.assertEqual(len(mp.parameters()), number_of_parameters)
-        self.assertEqual(len(mp.parameters(only_scalars=True)), number_of_scalar_parameters)
+        self.assertEqual(len(mp.parameters(only_numbers=True)), number_of_scalar_parameters)
         self.assertEqual(len(mp.parameters_keys()), number_of_parameters)
-        self.assertEqual(len(mp.parameters_keys(only_scalars=True)), number_of_scalar_parameters)
+        self.assertEqual(len(mp.parameters_keys(only_numbers=True)), number_of_scalar_parameters)
 
         for parameter, values in mp.parameters().items():
             self.assertEqual(len(values), len(self.variants))
@@ -71,9 +71,9 @@ class TestModelPostprocessor(Agros2DTestCase):
                 number_of_scalar_variables += 1
 
         self.assertEqual(len(mp.variables()), number_of_variables)
-        self.assertEqual(len(mp.variables(only_scalars=True)), number_of_scalar_variables)
+        self.assertEqual(len(mp.variables(only_numbers=True)), number_of_scalar_variables)
         self.assertEqual(len(mp.variables_keys()), number_of_variables)
-        self.assertEqual(len(mp.variables_keys(only_scalars=True)), number_of_scalar_variables)
+        self.assertEqual(len(mp.variables_keys(only_numbers=True)), number_of_scalar_variables)
 
         for parameter, values in mp.parameters().items():
             self.assertEqual(len(values), len(self.variants))

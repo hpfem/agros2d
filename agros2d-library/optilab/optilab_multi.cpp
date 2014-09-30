@@ -52,7 +52,7 @@ OptilabMulti::OptilabMulti(OptilabWindow *parent) : QWidget(parent), optilabMain
     layoutChartXYControls->addWidget(new QLabel(tr("Variable Y:")), 1, 0);
     layoutChartXYControls->addWidget(cmbChartY, 1, 1);
     layoutChartXYControls->addWidget(new QLabel(""), 19, 0);
-    layoutChartXYControls->setRowStretch(19, 1);   
+    layoutChartXYControls->setRowStretch(19, 1);
     layoutChartXYControls->addLayout(layoutButtons, 20, 0, 1, 2);
 
     QHBoxLayout *layoutChartXY = new QHBoxLayout();
@@ -78,7 +78,7 @@ void OptilabMulti::refreshVariables()
     cmbChartY->addItem("index", "system.index");
 
     // parameters
-    QString strParameters = QString("agros2d_post_parameters = variant.optilab_interface._optilab_mp.parameter_keys(only_numbers = True)");
+    QString strParameters = QString("agros2d_post_parameters = variant.optilab_interface._optilab_mp.parameters_keys(only_numbers = True)");
     currentPythonEngine()->runExpression(strParameters);
 
     // extract values
@@ -110,7 +110,7 @@ void OptilabMulti::refreshVariables()
     currentPythonEngine()->runExpression("del agros2d_post_parameters");
 
     // variables
-    QString strVariables = QString("agros2d_post_variables = variant.optilab_interface._optilab_mp.variable_keys(only_numbers = True)");
+    QString strVariables = QString("agros2d_post_variables = variant.optilab_interface._optilab_mp.variables_keys(only_numbers = True)");
     currentPythonEngine()->runExpression(strVariables);
 
     // extract values
@@ -144,12 +144,11 @@ void OptilabMulti::refreshVariables()
 
 void OptilabMulti::refreshChart()
 {
-    /*
     QVector<double> valuesX;
     QVector<double> valuesY;
 
-    QString typeX = cmbChartX->currentData().toString().split(".").at(0);
-    QString keyX = cmbChartX->currentData().toString().split(".").at(1);
+    QString typeX = cmbChartX->itemData(cmbChartX->currentIndex()).toString().split(".").at(0);
+    QString keyX = cmbChartX->itemData(cmbChartX->currentIndex()).toString().split(".").at(1);
     QString strX;
     if (typeX == "parameter")
         strX = QString("agros2d_post_values_x = variant.optilab_interface._optilab_mp.parameter('%1')").arg(keyX);
@@ -164,8 +163,8 @@ void OptilabMulti::refreshChart()
         }
     }
 
-    QString typeY = cmbChartY->currentData().toString().split(".").at(0);
-    QString keyY = cmbChartY->currentData().toString().split(".").at(1);
+    QString typeY = cmbChartY->itemData(cmbChartY->currentIndex()).toString().split(".").at(0);
+    QString keyY = cmbChartY->itemData(cmbChartY->currentIndex()).toString().split(".").at(1);
     QString strY;
     if (typeY == "parameter")
         strY = QString("agros2d_post_values_y = variant.optilab_interface._optilab_mp.parameter('%1')").arg(keyY);
@@ -225,7 +224,6 @@ void OptilabMulti::refreshChart()
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_post_values_x; del agros2d_post_values_y");
-    */
 }
 
 /*
