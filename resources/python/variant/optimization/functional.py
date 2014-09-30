@@ -99,4 +99,4 @@ class Functionals:
                 scores.append(model.variables[functional.name])
             return scores
         else:
-            return model.variables[self.functionals[0].name]
+            return model.get_variable(self.functionals[0].name)

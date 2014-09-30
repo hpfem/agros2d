@@ -22,14 +22,14 @@ class RosenbrockFunction(ModelGenetic):
 
     def solve(self):
         try:
-            self.F = (self.parameters['a'] - self.parameters['x'])**2 +\
-                     self.parameters['b'] * (self.parameters['y'] - self.parameters['x']**2)**2
+            self.F = (self.get_parameter('a') - self.get_parameter('x'))**2 +\
+                     self.get_parameter('b') * (self.get_parameter('y') - self.get_parameter('x')**2)**2
             self.solved = True
         except:
             self.solved = False
 
     def process(self):
-        self.variables['F'] = self.F
+        self.set_variable('F', self.F)
 
 if __name__ == '__main__':
     """ optimization """
@@ -48,11 +48,11 @@ if __name__ == '__main__':
     
     number_of_populations = 50
     optimization.run(number_of_populations, save = False)
-    optimization.model_dict.save(file_name='Rosenbrock.opt', problem='Rosenbrock.py')
+    #optimization.model_dict.save(file_name='Rosenbrock.opt', problem='Rosenbrock.py')
         
     star = optimization.find_best(optimization.model_dict.models)
-    print('F = {0}; x = {1}, y = {2}'.format(star.variables['F'],
-                                             star.parameters['x'], star.parameters['y']))
+    print('F = {0}; x = {1}, y = {2}'.format(star.get_variable('F'),
+                                             star.get_parameter('x'), star.get_parameter('y')))
     print('F(a,a**2) = 0'.format((1 - 1)**2 + 100*(1 - 1**2)**2))
 
     """ results """

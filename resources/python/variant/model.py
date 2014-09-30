@@ -9,12 +9,17 @@ class ModelData(object):
 
     def __init__(self):
         self.declared_parameters = dict()
-        self.parameters = dict()
+        #self.parameters = dict()
+        self.parameters = lambda : None
 
         self.declared_variables = dict()
-        self.variables = dict()
+        #self.variables = dict()
+        self.variables = lambda : None
 
-        self.info = {'_geometry' : _empty_svg}
+        #self.info = {'_geometry' : _empty_svg}
+        self.info = lambda : None
+        self.info._geometry = _empty_svg
+
         self.solved = False
 
 class ModelBase(object):
@@ -55,7 +60,7 @@ class ModelBase(object):
 
     @solved.setter
     def solved(self, value):
-        if not value: self._data.variables = dict()
+        if not value: self._data.variables = lambda : None
         self._data.solved = value
 
     def _check_value_type(self, value, data_type):
@@ -79,11 +84,14 @@ class ModelBase(object):
         description --- description of parameter (default is empty string)
         """
 
+        setattr(self.data.parameters, name, default)
+        """
         self._check_value_type(default, data_type)
         self._data.declared_parameters[name] = {'type' : data_type, 'default' : default,
                                                 'description' : description}
 
         if default: self._data.parameters[name] = default
+        """
 
     def set_parameter(self, name, value):
         """Set value of model input parameter.
@@ -91,11 +99,15 @@ class ModelBase(object):
         set_parameter(name, value)
         """
 
+        setattr(self.data.parameters, name, value)
+
+        """
         if name not in self._data.declared_parameters.keys():
             raise KeyError('Parameter with name "{0}" is not declared!'.format(name))
         self._check_value_type(value, self._data.declared_parameters[name]['type'])
 
         self._data.parameters[name] = value
+        """
 
     def get_parameter(self, name):
         """Return value of model input parameter.
@@ -103,7 +115,8 @@ class ModelBase(object):
         get_parameter(name)
         """
 
-        return self._data.parameters[name]
+        return getattr(self.data.parameters, name)
+        #return self._data.parameters[name]
 
     def declare_variable(self, name, data_type, default=None, description=''):
         """Declare new model output variable.
@@ -117,11 +130,14 @@ class ModelBase(object):
         description --- description of variable (default is empty string)
         """
 
+        setattr(self.data.variables, name, default)
+        """
         self._check_value_type(default, data_type)
         self._data.declared_variables[name] = {'type' : data_type, 'default' : default,
                                                'description' : description}
 
         if default: self._data.variables[name] = default
+        """
 
     def set_variable(self, name, value):
         """Set value of model ouput variable.
@@ -129,11 +145,15 @@ class ModelBase(object):
         set_variable(name, value)
         """
 
+        return setattr(self.data.variables, name, value)
+
+        """
         if name not in self._data.declared_variables.keys():
             raise KeyError('Variable with name "{0}" is not declared!'.format(name))
         self._check_value_type(value, self._data.declared_variables[name]['type'])
 
         self._data.variables[name] = value
+        """
 
     def get_variable(self, name):
         """Return value of model output variable.
@@ -141,7 +161,8 @@ class ModelBase(object):
         get_variable(name)
         """
 
-        return self._data.variables[name]
+        return getattr(self.data.variables, name)
+        #return self._data.variables[name]
 
     def create(self):
         """Method creates model from input parameters."""
@@ -208,5 +229,5 @@ if __name__ == '__main__':
     model.set_variable('v', 2.0)
 
     file_name = '{0}/model.pickle'.format(pythonlab.tempname())
-    model.save(file_name)
-    model.load(file_name)
+    #model.save(file_name)
+    #model.load(file_name)

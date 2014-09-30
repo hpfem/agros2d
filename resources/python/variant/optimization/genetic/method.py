@@ -13,12 +13,13 @@ import collections
 class ModelGenetic(ModelBase):
     def __init__(self):
         ModelBase.__init__(self)
-        self.declare_variable('_population', float)
-        self.population = -1
+        #self.declare_variable('_population', float)
+        self.variables.population = -1
 
-        self.declare_variable('_priority', float)
-        self.priority = -1
+        #self.declare_variable('_priority', float)
+        self.variables.priority = -1
 
+    """
     @property
     def priority(self):
         return self._priority
@@ -42,6 +43,7 @@ class ModelGenetic(ModelBase):
 
         self.population = self.variables["_population"]
         self.priority = self.variables["_priority"]
+    """
         
 class GeneticOptimization(OptimizationMethod):
     """Genetic optimization method class."""

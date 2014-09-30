@@ -49,9 +49,9 @@ class GeneralMutation(MutationCreator):
         parameter_name = rnd.choice(list(self.parameters.names()))
         changed_parameter = self.parameters.parameter(parameter_name)
         if (self.strength == 1):
-            mutant.parameters[parameter_name] = changed_parameter.random_value()
+            mutant.set_parameter(parameter_name, changed_parameter.random_value())
         elif (self.strength < 1) and (self.strength > 0):
-            mutant.parameters[parameter_name] = changed_parameter.perturbation(mutant.parameters[parameter_name], self.strength)
+            mutant.set_parameter(parameter_name, changed_parameter.perturbation(mutant.get_parameter(parameter_name), self.strength))
         else:
             pass
 
