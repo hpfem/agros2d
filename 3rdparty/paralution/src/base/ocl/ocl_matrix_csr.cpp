@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "ocl_matrix_csr.hpp"
 #include "ocl_matrix_coo.hpp"
@@ -47,6 +52,7 @@ template <typename ValueType>
 OCLAcceleratorMatrixCSR<ValueType>::OCLAcceleratorMatrixCSR() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -54,6 +60,9 @@ OCLAcceleratorMatrixCSR<ValueType>::OCLAcceleratorMatrixCSR() {
 
 template <typename ValueType>
 OCLAcceleratorMatrixCSR<ValueType>::OCLAcceleratorMatrixCSR(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixCSR::OCLAcceleratorMatrixCSR()",
+            "constructor with local_backend");
 
   this->mat_.row_offset = NULL;  
   this->mat_.col        = NULL;  
@@ -67,6 +76,9 @@ OCLAcceleratorMatrixCSR<ValueType>::OCLAcceleratorMatrixCSR(const Paralution_Bac
 
 template <typename ValueType>
 OCLAcceleratorMatrixCSR<ValueType>::~OCLAcceleratorMatrixCSR() {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixCSR::~OCLAcceleratorMatrixCSR()",
+            "destructor");
 
   this->Clear();
 
@@ -738,97 +750,6 @@ bool OCLAcceleratorMatrixCSR<ValueType>::Permute(const BaseVector<int> &permutat
 
 }
 
-
-template <typename ValueType>
-bool OCLAcceleratorMatrixCSR<ValueType>::MultiColoring(int &num_colors,
-                                                       int **size_colors,
-                                                       BaseVector<int> *permutation) const {
-
-  assert(permutation != NULL);
-  OCLAcceleratorVector<int> *cast_perm = dynamic_cast<OCLAcceleratorVector<int>*> (permutation);
-  assert(cast_perm != NULL);
-
-  // node colors (init value = 0 i.e. no color)
-  int *color = NULL;
-  int *h_row_offset = NULL;
-  int *h_col = NULL;
-  int size = this->get_nrow();
-  allocate_host(size, &color);
-  allocate_host(this->get_nrow()+1, &h_row_offset);
-  allocate_host(this->get_nnz(), &h_col);
-
-  ocl_dev2host(this->get_nrow()+1, this->mat_.row_offset, h_row_offset,
-               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
-  ocl_dev2host(this->get_nnz(), this->mat_.col, h_col,
-               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
-
-  memset(color, 0, size*sizeof(int));
-  num_colors = 0;
-  std::vector<bool> row_col;
-
-  for (int ai=0; ai<this->get_nrow(); ++ai) {
-    color[ai] = 1;
-    row_col.clear();
-    row_col.assign(num_colors+2, false);
-
-    for (int aj=h_row_offset[ai]; aj<h_row_offset[ai+1]; ++aj)
-      if (ai != h_col[aj])
-        row_col[color[h_col[aj]]] = true;
-
-    for (int aj=h_row_offset[ai]; aj<h_row_offset[ai+1]; ++aj)
-      if (row_col[color[ai]] == true)
-        ++color[ai];
-
-    if (color[ai] > num_colors)
-      num_colors = color[ai];
-
-  }
-
-  free_host(&h_row_offset);
-  free_host(&h_col);
-
-  allocate_host(num_colors, size_colors);
-  set_to_zero_host(num_colors, *size_colors);
-
-  int *offsets_color = NULL;
-  allocate_host(num_colors, &offsets_color);
-  memset(offsets_color, 0, sizeof(int)*num_colors);
-
-  for (int i=0; i<this->get_nrow(); ++i) 
-    ++(*size_colors)[color[i]-1];
-
-  int total=0;
-  for (int i=1; i<num_colors; ++i) {
-
-    total += (*size_colors)[i-1];
-    offsets_color[i] = total; 
-    //   LOG_INFO("offsets = " << total);
-
-  }
-
-  int *h_perm = NULL;
-  allocate_host(this->get_nrow(), &h_perm);
-
-  for (int i=0; i<this->get_nrow(); ++i) {
-
-    h_perm[i] = offsets_color[ color[i]-1 ] ;
-    ++offsets_color[color[i]-1];
-
-  }
-
-  cast_perm->Allocate(this->get_nrow());
-  ocl_host2dev(permutation->get_size(), h_perm, cast_perm->vec_,
-               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
-
-  free_host(&h_perm);
-  free_host(&color);
-  free_host(&offsets_color);
-
-  return true;
-
-}
-
-
 template <typename ValueType>
 void OCLAcceleratorMatrixCSR<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
 
@@ -868,6 +789,9 @@ void OCLAcceleratorMatrixCSR<ValueType>::Apply(const BaseVector<ValueType> &in, 
     globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
     // Start kernel run
+	  // Nathan Bell and Michael Garland
+	  // Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+    // NVR-2008-004 / NVIDIA Technical Report
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
                                   CL_KERNEL_CSR_SPMV_SCALAR,
                                   1,
@@ -933,6 +857,9 @@ void OCLAcceleratorMatrixCSR<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
 
     // Start kernel run
+	  // Nathan Bell and Michael Garland
+	  // Efficient Sparse Matrix-Vector Multiplication on {CUDA}
+    // NVR-2008-004 / NVIDIA Technical Report
     err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
                                   CL_KERNEL_CSR_ADD_SPMV_SCALAR,
                                   1,
@@ -1000,6 +927,11 @@ bool OCLAcceleratorMatrixCSR<ValueType>::LLSolve(const BaseVector<ValueType> &in
   return false;
 }
 
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::LLSolve(const BaseVector<ValueType> &in, const BaseVector<ValueType> &inv_diag,
+                                                 BaseVector<ValueType> *out) const {
+  return false;
+}
 
 template <typename ValueType>
 void OCLAcceleratorMatrixCSR<ValueType>::LAnalyse(const bool diag_unit) {
@@ -1234,7 +1166,6 @@ bool OCLAcceleratorMatrixCSR<ValueType>::ExtractSubMatrix(const int row_offset,
   mat_nnz = red_row_nnz[row_size] = sum;
 
 
-
   // TODO
   //  redSubSum
 
@@ -1245,7 +1176,7 @@ bool OCLAcceleratorMatrixCSR<ValueType>::ExtractSubMatrix(const int row_offset,
     cast_mat->AllocateCSR(mat_nnz, row_size, col_size);
 
     // part of the CPU reduction section
-    // Copy object fmo host to device memory
+    // Copy object from host to device memory
     ocl_host2dev<int>((row_size+1), red_row_nnz, cast_mat->mat_.row_offset, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
 
     // copying the sub matrix
@@ -1298,6 +1229,671 @@ bool OCLAcceleratorMatrixCSR<ValueType>::ExtractSubMatrix(const int row_offset,
 
 }
 
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::ExtractL(BaseMatrix<ValueType> *L) const {
+
+  assert(L != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  OCLAcceleratorMatrixCSR<ValueType> *cast_L = dynamic_cast<OCLAcceleratorMatrixCSR<ValueType>*> (L);
+  
+  assert(cast_L != NULL);
+  
+  cast_L->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_ocl<int>(nrow+1, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_L->mat_.row_offset);
+
+  cl_int    err;
+  cl_event  ocl_event;
+  size_t    localWorkSize[1];
+  size_t    globalWorkSize[1];
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_SLOWER_NNZ_PER_ROW, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_SLOWER_NNZ_PER_ROW, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_SLOWER_NNZ_PER_ROW, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_SLOWER_NNZ_PER_ROW, 3, sizeof(cl_mem), (void *) cast_L->mat_.row_offset);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Determine local work size for kernel call
+  localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+  // Determine global work size for kernel call
+  globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+  // Start kernel run
+	// Computes the stricktly lower triangular part nnz per row
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_SLOWER_NNZ_PER_ROW,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+  
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+
+  ocl_dev2host<int>(nrow+1, // size
+                    cast_L->mat_.row_offset,     // src
+                    h_buffer, // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+  
+  int nnz_L = h_buffer[nrow];
+
+  ocl_host2dev<int>(nrow+1, // size
+                    h_buffer, // src
+                    cast_L->mat_.row_offset,     // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_ocl<int>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_L->mat_.col);
+  allocate_ocl<ValueType>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_L->mat_.val);
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 3, sizeof(cl_mem), (void *) this->mat_.val);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 4, sizeof(cl_mem), (void *) cast_L->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 5, sizeof(cl_mem), (void *) cast_L->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 6, sizeof(cl_mem), (void *) cast_L->mat_.val);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Start kernel run
+	// Extracts lower/upper triangular part for given nnz per row array (partial sums nnz)
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  cast_L->nrow_ = this->get_nrow();
+  cast_L->ncol_ = this->get_ncol();
+  cast_L->nnz_  = nnz_L;
+  
+  return true;
+  
+}
+
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::ExtractLDiagonal(BaseMatrix<ValueType> *L) const {
+
+  assert(L != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  OCLAcceleratorMatrixCSR<ValueType> *cast_L = dynamic_cast<OCLAcceleratorMatrixCSR<ValueType>*> (L);
+  
+  assert(cast_L != NULL);
+  
+  cast_L->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_ocl<int>(nrow+1, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_L->mat_.row_offset);
+
+  cl_int    err;
+  cl_event  ocl_event;
+  size_t    localWorkSize[1];
+  size_t    globalWorkSize[1];
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_LOWER_NNZ_PER_ROW, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_LOWER_NNZ_PER_ROW, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_LOWER_NNZ_PER_ROW, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_LOWER_NNZ_PER_ROW, 3, sizeof(cl_mem), (void *) cast_L->mat_.row_offset);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Determine local work size for kernel call
+  localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+  // Determine global work size for kernel call
+  globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+  // Start kernel run
+	// Computes the lower triangular part nnz per row
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_LOWER_NNZ_PER_ROW,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+
+  ocl_dev2host<int>(nrow+1, // size
+                    cast_L->mat_.row_offset,     // src
+                    h_buffer, // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+  
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+
+  int nnz_L = h_buffer[nrow];
+
+  ocl_host2dev<int>(nrow+1, // size
+                    h_buffer, // src
+                    cast_L->mat_.row_offset,     // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_ocl<int>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_L->mat_.col);
+  allocate_ocl<ValueType>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_L->mat_.val);
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 3, sizeof(cl_mem), (void *) this->mat_.val);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 4, sizeof(cl_mem), (void *) cast_L->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 5, sizeof(cl_mem), (void *) cast_L->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR, 6, sizeof(cl_mem), (void *) cast_L->mat_.val);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Start kernel run
+	// Extracts lower/upper triangular part for given nnz per row array (partial sums nnz)
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_EXTRACT_L_TRIANGULAR,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  cast_L->nrow_ = this->get_nrow();
+  cast_L->ncol_ = this->get_ncol();
+  cast_L->nnz_ = nnz_L;
+
+  return true;
+
+}
+
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::ExtractU(BaseMatrix<ValueType> *U) const {
+
+  assert(U != NULL);
+  
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  OCLAcceleratorMatrixCSR<ValueType> *cast_U = dynamic_cast<OCLAcceleratorMatrixCSR<ValueType>*> (U);
+  
+  assert(cast_U != NULL);
+  
+  cast_U->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_ocl<int>(nrow+1, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_U->mat_.row_offset);
+
+  cl_int    err;
+  cl_event  ocl_event;
+  size_t    localWorkSize[1];
+  size_t    globalWorkSize[1];
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_SUPPER_NNZ_PER_ROW, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_SUPPER_NNZ_PER_ROW, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_SUPPER_NNZ_PER_ROW, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_SUPPER_NNZ_PER_ROW, 3, sizeof(cl_mem), (void *) cast_U->mat_.row_offset);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Determine local work size for kernel call
+  localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+  // Determine global work size for kernel call
+  globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+  // Start kernel run
+	// Computes the stricktly upper triangular part nnz per row
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_SUPPER_NNZ_PER_ROW,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+  
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+
+  ocl_dev2host<int>(nrow+1, // size
+                    cast_U->mat_.row_offset,     // src
+                    h_buffer, // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+  
+  int nnz_L = h_buffer[nrow];
+
+  ocl_host2dev<int>(nrow+1, // size
+                    h_buffer, // src
+                    cast_U->mat_.row_offset,     // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  free_host(&h_buffer);
+  // end TODO
+  
+  // allocate lower triangular part structure
+  allocate_ocl<int>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_U->mat_.col);
+  allocate_ocl<ValueType>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_U->mat_.val);
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 3, sizeof(cl_mem), (void *) this->mat_.val);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 4, sizeof(cl_mem), (void *) cast_U->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 5, sizeof(cl_mem), (void *) cast_U->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 6, sizeof(cl_mem), (void *) cast_U->mat_.val);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Start kernel run
+	// Extracts lower/upper triangular part for given nnz per row array (partial sums nnz)
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  cast_U->nrow_ = this->get_nrow();
+  cast_U->ncol_ = this->get_ncol();
+  cast_U->nnz_  = nnz_L;
+
+  return true;
+
+}
+
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::ExtractUDiagonal(BaseMatrix<ValueType> *U) const {
+
+  assert(U != NULL);
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  
+  OCLAcceleratorMatrixCSR<ValueType> *cast_U = dynamic_cast<OCLAcceleratorMatrixCSR<ValueType>*> (U);
+  
+  assert(cast_U != NULL);
+  
+  cast_U->Clear();
+  
+  // compute nnz per row
+  int nrow = this->get_nrow();
+  
+  allocate_ocl<int>(nrow+1, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_U->mat_.row_offset);
+
+  cl_int    err;
+  cl_event  ocl_event;
+  size_t    localWorkSize[1];
+  size_t    globalWorkSize[1];
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_UPPER_NNZ_PER_ROW, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_UPPER_NNZ_PER_ROW, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_UPPER_NNZ_PER_ROW, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_UPPER_NNZ_PER_ROW, 3, sizeof(cl_mem), (void *) cast_U->mat_.row_offset);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Determine local work size for kernel call
+  localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+  // Determine global work size for kernel call
+  globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+  // Start kernel run
+	// Computes the upper triangular part nnz per row
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_UPPER_NNZ_PER_ROW,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // partial sum row_nnz to obtain row_offset vector
+  // TODO currently performing partial sum on host
+  int *h_buffer = NULL;
+  allocate_host(nrow+1, &h_buffer);
+
+  ocl_dev2host<int>(nrow+1, // size
+                    cast_U->mat_.row_offset,     // src
+                    h_buffer, // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  h_buffer[0] = 0;
+  for (int i=1; i<nrow+1; ++i)
+    h_buffer[i] += h_buffer[i-1];
+
+  int nnz_L = h_buffer[nrow];
+
+  ocl_host2dev<int>(nrow+1, // size
+                    h_buffer, // src
+                    cast_U->mat_.row_offset, // dst
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  free_host(&h_buffer);
+  // end TODO
+
+  // allocate lower triangular part structure
+  allocate_ocl<int>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_U->mat_.col);
+  allocate_ocl<ValueType>(nnz_L, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &cast_U->mat_.val);
+
+  // Set arguments for kernel call
+  err  = clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 0, sizeof(int),    (void *) &nrow);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 1, sizeof(cl_mem), (void *) this->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 2, sizeof(cl_mem), (void *) this->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 3, sizeof(cl_mem), (void *) this->mat_.val);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 4, sizeof(cl_mem), (void *) cast_U->mat_.row_offset);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 5, sizeof(cl_mem), (void *) cast_U->mat_.col);
+  err |= clSetKernelArg( CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR, 6, sizeof(cl_mem), (void *) cast_U->mat_.val);
+  CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  // Start kernel run
+	// Extracts lower/upper triangular part for given nnz per row array (partial sums nnz)
+  err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                               CL_KERNEL_CSR_EXTRACT_U_TRIANGULAR,
+                               1,
+                               NULL,
+                               &globalWorkSize[0],
+                               &localWorkSize[0],
+                               0,
+                               NULL,
+                               &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Wait for kernel run to finish
+  err = clWaitForEvents(1, &ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  // Release event when kernel run finished
+  err = clReleaseEvent(ocl_event);
+  CHECK_OCL_ERROR(err, __FILE__, __LINE__);
+
+  cast_U->nrow_ = this->get_nrow();
+  cast_U->ncol_ = this->get_ncol();
+  cast_U->nnz_  = nnz_L;
+
+  return true;
+
+}
+
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::MaximalIndependentSet(int &size,
+                                                               BaseVector<int> *permutation) const {
+  assert(permutation != NULL);
+  OCLAcceleratorVector<int> *cast_perm = dynamic_cast<OCLAcceleratorVector<int>*> (permutation);
+  assert(cast_perm != NULL);
+  assert(this->get_nrow() == this->get_ncol());
+
+  int *h_row_offset = NULL;
+  int *h_col = NULL;
+
+  allocate_host(this->get_nrow()+1, &h_row_offset);
+  allocate_host(this->get_nnz(), &h_col);
+
+  ocl_dev2host(this->get_nrow()+1, this->mat_.row_offset, h_row_offset,
+               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+  ocl_dev2host(this->get_nnz(), this->mat_.col, h_col,
+               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  int *mis = NULL;
+  allocate_host(this->get_nrow(), &mis);
+  memset(mis, 0, sizeof(int)*this->get_nrow());
+
+  size = 0 ;
+
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    if (mis[ai] == 0) {
+
+      // set the node
+      mis[ai] = 1;
+      ++size ;
+
+      //remove all nbh nodes (without diagonal)
+      for (int aj=h_row_offset[ai]; aj<h_row_offset[ai+1]; ++aj)
+        if (ai != h_col[aj])
+          mis[h_col[aj]] = -1 ;
+      
+    }
+  }
+
+  int *h_perm = NULL;
+  allocate_host(this->get_nrow(), &h_perm);
+
+  int pos = 0;
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    if (mis[ai] == 1) {
+
+      h_perm[ai] = pos;
+      ++pos;
+
+    } else {
+
+      h_perm[ai] = size + ai - pos;
+
+    }
+
+  }
+  
+  // Check the permutation
+  //
+  //  for (int ai=0; ai<this->get_nrow(); ++ai) {
+  //    assert( h_perm[ai] >= 0 );
+  //    assert( h_perm[ai] < this->get_nrow() );
+  //  }
+
+
+  cast_perm->Allocate(this->get_nrow());
+  ocl_host2dev(permutation->get_size(), h_perm, cast_perm->vec_,
+               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  free_host(&h_row_offset);
+  free_host(&h_col);
+
+  free_host(&h_perm);
+  free_host(&mis);
+
+  return true;
+}
+
+template <typename ValueType>
+bool OCLAcceleratorMatrixCSR<ValueType>::MultiColoring(int &num_colors,
+                                                       int **size_colors,
+                                                       BaseVector<int> *permutation) const {
+
+  assert(permutation != NULL);
+  OCLAcceleratorVector<int> *cast_perm = dynamic_cast<OCLAcceleratorVector<int>*> (permutation);
+  assert(cast_perm != NULL);
+
+  // node colors (init value = 0 i.e. no color)
+  int *color = NULL;
+  int *h_row_offset = NULL;
+  int *h_col = NULL;
+  int size = this->get_nrow();
+  allocate_host(size, &color);
+  allocate_host(this->get_nrow()+1, &h_row_offset);
+  allocate_host(this->get_nnz(), &h_col);
+
+  ocl_dev2host(this->get_nrow()+1, this->mat_.row_offset, h_row_offset,
+               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+  ocl_dev2host(this->get_nnz(), this->mat_.col, h_col,
+               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  memset(color, 0, size*sizeof(int));
+  num_colors = 0;
+  std::vector<bool> row_col;
+
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+    color[ai] = 1;
+    row_col.clear();
+    row_col.assign(num_colors+2, false);
+
+    for (int aj=h_row_offset[ai]; aj<h_row_offset[ai+1]; ++aj)
+      if (ai != h_col[aj])
+        row_col[color[h_col[aj]]] = true;
+
+    for (int aj=h_row_offset[ai]; aj<h_row_offset[ai+1]; ++aj)
+      if (row_col[color[ai]] == true)
+        ++color[ai];
+
+    if (color[ai] > num_colors)
+      num_colors = color[ai];
+
+  }
+
+  free_host(&h_row_offset);
+  free_host(&h_col);
+
+  allocate_host(num_colors, size_colors);
+  set_to_zero_host(num_colors, *size_colors);
+
+  int *offsets_color = NULL;
+  allocate_host(num_colors, &offsets_color);
+  memset(offsets_color, 0, sizeof(int)*num_colors);
+
+  for (int i=0; i<this->get_nrow(); ++i) 
+    ++(*size_colors)[color[i]-1];
+
+  int total=0;
+  for (int i=1; i<num_colors; ++i) {
+
+    total += (*size_colors)[i-1];
+    offsets_color[i] = total; 
+    //   LOG_INFO("offsets = " << total);
+
+  }
+
+  int *h_perm = NULL;
+  allocate_host(this->get_nrow(), &h_perm);
+
+  for (int i=0; i<this->get_nrow(); ++i) {
+
+    h_perm[i] = offsets_color[ color[i]-1 ] ;
+    ++offsets_color[color[i]-1];
+
+  }
+
+  cast_perm->Allocate(this->get_nrow());
+  ocl_host2dev(permutation->get_size(), h_perm, cast_perm->vec_,
+               OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+  free_host(&h_perm);
+  free_host(&color);
+  free_host(&offsets_color);
+
+  return true;
+
+}
 
 template <typename ValueType>
 bool OCLAcceleratorMatrixCSR<ValueType>::Scale(const ValueType alpha) { 
@@ -1781,20 +2377,130 @@ bool OCLAcceleratorMatrixCSR<ValueType>::MatrixAdd(const BaseMatrix<ValueType> &
 template <typename ValueType>
 bool OCLAcceleratorMatrixCSR<ValueType>::Compress(const ValueType drop_off) {
 
-  // TODO
-  return false;
-
-  /*
-  assert(drop_off > ValueType(0.0));
-
   if (this->get_nnz() > 0) {
 
+    OCLAcceleratorMatrixCSR<ValueType> tmp(this->local_backend_);
 
+    tmp.CopyFrom(*this);
 
-  FATAL_ERROR(__FILE__, __LINE__);  
+    int mat_nnz = 0;
+
+    cl_mem *row_offset = NULL;
+    allocate_ocl<int>(this->get_nrow()+1, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &row_offset);
+
+    cl_int    err;
+    cl_event  ocl_event;
+    size_t    localWorkSize[1];
+    size_t    globalWorkSize[1];
+    int       nrow = this->get_nrow();
+
+    // Determine local work size for kernel call
+    localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+    // Determine global work size for kernel call
+    globalWorkSize[0] = ( size_t( (this->get_nrow()+1) / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+    ocl_set_to<int>(CL_KERNEL_SET_TO_INT,
+                    OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                    localWorkSize[0],
+                    globalWorkSize[0],
+                    this->get_nrow()+1,
+                    0,
+                    row_offset);
+
+    // Set arguments for kernel call
+    err  = clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COUNT_NROW, 0, sizeof(cl_mem),    (void *) this->mat_.row_offset);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COUNT_NROW, 1, sizeof(cl_mem),    (void *) this->mat_.col);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COUNT_NROW, 2, sizeof(cl_mem),    (void *) this->mat_.val);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COUNT_NROW, 3, sizeof(int),       (void *) &nrow);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COUNT_NROW, 4, sizeof(ValueType), (void *) &drop_off);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COUNT_NROW, 5, sizeof(cl_mem),    (void *) row_offset);
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Determine local work size for kernel call
+    localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+    localWorkSize[0] /= 2;
+    // Determine global work size for kernel call
+    globalWorkSize[0] = ( size_t( nrow / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+    // Start kernel run
+    err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                                 CL_KERNEL_CSR_COMPRESS_COUNT_NROW,
+                                 1,
+                                 NULL,
+                                 &globalWorkSize[0],
+                                 &localWorkSize[0],
+                                 0,
+                                 NULL,
+                                 &ocl_event);
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Wait for kernel run to finish
+    err = clWaitForEvents( 1, &ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Release event when kernel run finished
+    err = clReleaseEvent( ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    int *red_row_offset = NULL;
+    allocate_host(nrow+1, &red_row_offset);
+
+    // Copy object from device to host memory
+    ocl_dev2host<int>((nrow+1), row_offset, red_row_offset, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+    int sum = 0;
+    for (int i=0; i<nrow; ++i) {
+      int tmp = red_row_offset[i];
+      red_row_offset[i] = sum;
+      sum += tmp;
+    }
+
+    mat_nnz = red_row_offset[nrow] = sum;
+
+    this->AllocateCSR(mat_nnz, this->get_nrow(), this->get_ncol());
+
+    ocl_host2dev<int>((nrow+1), red_row_offset, this->mat_.row_offset, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
+
+    free_host(&red_row_offset);
+
+    nrow = tmp.get_nrow();
+
+    // Set arguments for kernel call
+    err  = clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 0, sizeof(cl_mem),    (void *) tmp.mat_.row_offset);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 1, sizeof(cl_mem),    (void *) tmp.mat_.col);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 2, sizeof(cl_mem),    (void *) tmp.mat_.val);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 3, sizeof(int),       (void *) &nrow);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 4, sizeof(ValueType), (void *) &drop_off);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 5, sizeof(cl_mem),    (void *) this->mat_.row_offset);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 6, sizeof(cl_mem),    (void *) this->mat_.col);
+    err |= clSetKernelArg( CL_KERNEL_CSR_COMPRESS_COPY, 7, sizeof(cl_mem),    (void *) this->mat_.val);
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Start kernel run
+    err = clEnqueueNDRangeKernel(OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                                 CL_KERNEL_CSR_COMPRESS_COPY,
+                                 1,
+                                 NULL,
+                                 &globalWorkSize[0],
+                                 &localWorkSize[0],
+                                 0,
+                                 NULL,
+                                 &ocl_event);
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Wait for kernel run to finish
+    err = clWaitForEvents( 1, &ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    // Release event when kernel run finished
+    err = clReleaseEvent( ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    free_ocl(&row_offset);
 
   }
-  */
+
+  return true;
 
 }
 

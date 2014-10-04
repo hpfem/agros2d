@@ -110,8 +110,7 @@ class drawContext {
   GLuint _displayLists;
   std::set<GModel*> _hiddenModels;
   std::set<PView*> _hiddenViews;
-  std::vector<GLfloat> _bgImage;
-  int _bgImageSize[2];
+  GLuint _bgImageTexture, _bgImageW, _bgImageH;
  public:
   Camera camera;
   double r[3]; // current Euler angles (in degrees!)
@@ -178,6 +177,7 @@ class drawContext {
   bool isVisible(PView *v){ return (_hiddenViews.find(v) == _hiddenViews.end()); }
   void createQuadricsAndDisplayLists();
   void invalidateQuadricsAndDisplayLists();
+  void invalidateBgImageTexture();
   void buildRotationMatrix();
   void setQuaternion(double p1x, double p1y, double p2x, double p2y);
   void addQuaternion(double p1x, double p1y, double p2x, double p2y);
@@ -201,7 +201,7 @@ class drawContext {
   void drawMesh();
   void drawPost();
   void drawBackgroundGradient();
-  void drawBackgroundImage();
+  void drawBackgroundImage(bool moving);
   void drawText2d();
   void drawGraph2d();
   void drawAxis(double xmin, double ymin, double zmin,

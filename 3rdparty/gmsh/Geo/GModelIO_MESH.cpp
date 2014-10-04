@@ -56,7 +56,10 @@ int GModel::readMESH(const std::string &name)
     if(buffer[0] != '#'){ // skip comments and empty lines
       str[0]='\0';
       sscanf(buffer, "%s", str);
-      if(!strcmp(str, "Dimension")){
+      if(!strncmp(buffer, "Dimension 3", 11)){
+        // alternative single-line 'Dimension' field used by CGAL
+      }
+      else if(!strcmp(str, "Dimension")){
         if(!fgets(buffer, sizeof(buffer), fp)) break;
       }
       else if(!strcmp(str, "Vertices")){
@@ -254,7 +257,7 @@ int GModel::writeMESH(const std::string &name, int elementTagType,
   }
 
   if(numEdges){
-    if(CTX::instance()->mesh.order == 2)
+    if(CTX::instance()->mesh.order == 2) // FIXME (check getPolynomialOrder())
       fprintf(fp, " EdgesP2\n");
     else
       fprintf(fp, " Edges\n");
@@ -269,7 +272,7 @@ int GModel::writeMESH(const std::string &name, int elementTagType,
     }
   }
   if(numTriangles){
-    if(CTX::instance()->mesh.order == 2)
+    if(CTX::instance()->mesh.order == 2) // FIXME (check getPolynomialOrder())
       fprintf(fp, " TrianglesP2\n");
     else
       fprintf(fp, " Triangles\n");
@@ -297,7 +300,7 @@ int GModel::writeMESH(const std::string &name, int elementTagType,
   }
   if(numTetrahedra){
     if(CTX::instance()->mesh.order == 2)
-      fprintf(fp, " TetrahedraP2\n");
+      fprintf(fp, " TetrahedraP2\n"); // FIXME (check getPolynomialOrder())
     else
       fprintf(fp, " Tetrahedra\n");
     fprintf(fp, " %d\n", numTetrahedra);

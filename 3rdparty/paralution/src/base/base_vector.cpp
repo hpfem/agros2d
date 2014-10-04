@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "base_vector.hpp"
 #include "backend_manager.hpp"
 #include "../utils/log.hpp"
@@ -32,12 +37,26 @@ namespace paralution {
 template <typename ValueType>
 BaseVector<ValueType>::BaseVector() {
 
+  LOG_DEBUG(this, "BaseVector::BaseVector()",
+            "default constructor");
+
   this->size_ = 0;
 
 }
 
 template <typename ValueType>
 BaseVector<ValueType>::~BaseVector() {
+
+  LOG_DEBUG(this, "BaseVector::~BaseVector()",
+            "default destructor");
+
+}
+
+template <typename ValueType>
+inline int BaseVector<ValueType>::get_size(void) const { 
+  
+  return this->size_; 
+
 }
 
 template <typename ValueType>
@@ -48,9 +67,30 @@ void BaseVector<ValueType>::set_backend(const Paralution_Backend_Descriptor loca
 }
 
 template <typename ValueType>
+bool BaseVector<ValueType>::Check(void) const {
+
+  LOG_INFO("BaseVector::Check()");
+  this->info();
+  LOG_INFO("Only host version!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseVector<ValueType>::Assemble(const int *i, const ValueType *v,
+                                     int size, const int n) {
+  
+  LOG_INFO("BaseVector::Assemble()");
+  this->info();
+  LOG_INFO("Only host version!");
+  FATAL_ERROR(__FILE__, __LINE__);
+  
+}
+
+template <typename ValueType>
 void BaseVector<ValueType>::CopyFromFloat(const BaseVector<float> &vec) {
 
-  LOG_INFO("CopyFromFloat(const BaseVector<float> &vec)");
+  LOG_INFO("BaseVector::CopyFromFloat(const BaseVector<float> &vec)");
   this->info();
   vec.info();
   LOG_INFO("Float casting is not available for this backend");
@@ -61,7 +101,7 @@ void BaseVector<ValueType>::CopyFromFloat(const BaseVector<float> &vec) {
 template <typename ValueType>
 void BaseVector<ValueType>::CopyFromDouble(const BaseVector<double> &vec) {
 
-  LOG_INFO("CopyFromDouble(const BaseVector<double> &vec)");
+  LOG_INFO("BaseVector::CopyFromDouble(const BaseVector<double> &vec)");
   this->info();
   vec.info();
   LOG_INFO("Float casting is not available for this backend");
@@ -84,6 +124,32 @@ bool BaseVector<ValueType>::Prolongation(const BaseVector<ValueType> &vec_coarse
 
 
 template <typename ValueType>
+void BaseVector<ValueType>::CopyFromAsync(const BaseVector<ValueType> &vec) {
+
+  // default is no async
+  LOG_VERBOSE_INFO(4, "*** info: BaseVector::CopyFromAsync() no async available)");        
+
+  this->CopyFrom(vec);
+
+}
+
+template <typename ValueType>
+void BaseVector<ValueType>::CopyToAsync(BaseVector<ValueType> *vec) const {
+
+  // default is no async
+  LOG_VERBOSE_INFO(4, "*** info: BaseVector::CopyToAsync() no async available)");        
+
+  this->CopyTo(vec);
+
+}
+
+
+
+
+
+
+
+template <typename ValueType>
 AcceleratorVector<ValueType>::AcceleratorVector() {
 }
 
@@ -92,16 +158,30 @@ AcceleratorVector<ValueType>::~AcceleratorVector() {
 }
 
 
+template <typename ValueType>
+void AcceleratorVector<ValueType>::CopyFromHostAsync(const HostVector<ValueType> &src) {
+
+  // default is no async
+  this->CopyFromHost(src);
+
+}
+
+
+template <typename ValueType>
+void AcceleratorVector<ValueType>::CopyToHostAsync(HostVector<ValueType> *dst) const {
+
+  // default is no async
+  this->CopyToHostAsync(dst);
+
+}
+
 
 template class BaseVector<double>;
 template class BaseVector<float>;
+template class BaseVector<int>;
 
 template class AcceleratorVector<double>;
 template class AcceleratorVector<float>;
-
-template class BaseVector<int>;
-
 template class AcceleratorVector<int>;
-
 
 }

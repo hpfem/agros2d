@@ -840,6 +840,7 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = Agros2DTestResult()
+    """
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMaterials))
@@ -848,9 +849,10 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldLocalValues))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldIntegrals))
+    """
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfo))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfoTransient))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldSolverInfo))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivityInfoTransient))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldSolverInfo))
     suite.run(result)
 
 # TODO (Franta) :

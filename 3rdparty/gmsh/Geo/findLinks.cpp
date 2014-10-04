@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include "GmshMessage.h"
+#include "MallocUtils.h"
 #include "GModel.h"
 #include "TreeUtils.h"
 #include "ListUtils.h"
@@ -17,6 +18,13 @@ typedef struct{
   int n;
   List_T *l;
 }lnk;
+
+
+static void freeLink(void * link)
+{
+  List_Delete(((lnk*) link)->l);
+  Free(link);
+}
 
 static int complink(const void *a, const void *b)
 {
@@ -38,7 +46,7 @@ static void recurFindLinkedEdges(int ed, List_T *edges, Tree_T *points,
     return;
   }
 
-  int ip[2];  
+  int ip[2];
   ip[0] = ge->getBeginVertex()->tag();
   ip[1] = ge->getEndVertex()->tag();
 
@@ -102,7 +110,7 @@ static void orientAndSortEdges(List_T *edges, Tree_T *links)
   List_T *temp = List_Create(List_Nbr(edges), 1, sizeof(int));
   List_Copy(edges, temp);
   List_Reset(edges);
-  
+
   int num;
   List_Read(temp, 0, &num);
   List_Add(edges, &num);
@@ -110,6 +118,7 @@ static void orientAndSortEdges(List_T *edges, Tree_T *links)
   GEdge *ge0 = GModel::current()->getEdgeByTag(abs(num));
   if(!ge0){
     Msg::Error("Unknown curve %d", abs(num));
+    List_Delete(temp);
     return;
   }
 
@@ -128,6 +137,7 @@ static void orientAndSortEdges(List_T *edges, Tree_T *links)
         GEdge *ge1 = GModel::current()->getEdgeByTag(abs(na.a));
         if(!ge1){
           Msg::Error("Unknown curve %d", abs(na.a));
+          List_Delete(temp);
           return;
         }
         if(lk.n == ge1->getBeginVertex()->tag()){
@@ -144,7 +154,7 @@ static void orientAndSortEdges(List_T *edges, Tree_T *links)
       }
     }
   }
-  
+
   List_Delete(temp);
 }
 
@@ -153,8 +163,11 @@ int allEdgesLinked(int ed, List_T *edges)
   Tree_T *links = Tree_Create(sizeof(lnk), complink);
   Tree_T *points = Tree_Create(sizeof(int), fcmp_int);
 
-  if(!createEdgeLinks(links))
+  if(!createEdgeLinks(links)){
+    Tree_Delete(links, freeLink);
+    Tree_Delete(points);
     return 0;
+  }
 
   // initialize point tree with all hanging points
   for(int i = 0; i < List_Nbr(edges); i++){
@@ -163,6 +176,8 @@ int allEdgesLinked(int ed, List_T *edges)
     GEdge *ge = GModel::current()->getEdgeByTag(abs(num));
     if(!ge){
       Msg::Error("Unknown curve %d", abs(num));
+      Tree_Delete(links, freeLink);
+      Tree_Delete(points);
       return 0;
     }
     int ip[2];
@@ -193,7 +208,7 @@ int allEdgesLinked(int ed, List_T *edges)
     orientAndSortEdges(edges, links);
   }
 
-  Tree_Delete(links);
+  Tree_Delete(links, freeLink);
   Tree_Delete(points);
 
   return found;
@@ -201,7 +216,7 @@ int allEdgesLinked(int ed, List_T *edges)
 
 // Find all linked faces
 
-static void recurFindLinkedFaces(int fac, List_T *faces, Tree_T *edges, 
+static void recurFindLinkedFaces(int fac, List_T *faces, Tree_T *edges,
                                  Tree_T *links)
 {
   GFace *gf = GModel::current()->getFaceByTag(abs(fac));
@@ -265,7 +280,7 @@ int allFacesLinked(int fac, List_T *faces)
 {
   Tree_T *links = Tree_Create(sizeof(lnk), complink);
   Tree_T *edges = Tree_Create(sizeof(int), fcmp_int);
-  
+
   createFaceLinks(links);
 
   // initialize edge tree with all boundary edges
@@ -275,6 +290,8 @@ int allFacesLinked(int fac, List_T *faces)
     GFace *gf = GModel::current()->getFaceByTag(abs(num));
     if(!gf){
       Msg::Error("Unknown surface %d", abs(num));
+      Tree_Delete(links, freeLink);
+      Tree_Delete(edges);
       return 0;
     }
     std::list<GEdge*> l = gf->edges();
@@ -305,7 +322,7 @@ int allFacesLinked(int fac, List_T *faces)
     // necessary...
   }
 
-  Tree_Delete(links);
+  Tree_Delete(links, freeLink);
   Tree_Delete(edges);
 
   return found;

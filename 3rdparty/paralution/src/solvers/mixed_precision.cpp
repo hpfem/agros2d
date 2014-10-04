@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "mixed_precision.hpp"
 #include "iter_ctrl.hpp"
@@ -44,6 +49,9 @@ template <class OperatorTypeH, class VectorTypeH, typename ValueTypeH,
 MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH, 
                  OperatorTypeL, VectorTypeL, ValueTypeL>::MixedPrecisionDC() {
 
+  LOG_DEBUG(this, "MixedPrecisionDC::MixedPrecisionDC()",
+            "default constructor");
+
   this->op_l_ = NULL;
   this->Solver_L_ = NULL;
 
@@ -54,6 +62,9 @@ template <class OperatorTypeH, class VectorTypeH, typename ValueTypeH,
 MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH, 
                  OperatorTypeL, VectorTypeL, ValueTypeL>::~MixedPrecisionDC() {
 
+  LOG_DEBUG(this, "MixedPrecisionDC::~MixedPrecisionDC()",
+            "destructor");
+
   this->Clear();
 
 }
@@ -61,9 +72,12 @@ MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
 template <class OperatorTypeH, class VectorTypeH, typename ValueTypeH,
           class OperatorTypeL, class VectorTypeL, typename ValueTypeL>
 void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH, 
-                      OperatorTypeL, VectorTypeL, ValueTypeL>::Init(Solver<OperatorTypeL, VectorTypeL, 
+                      OperatorTypeL, VectorTypeL, ValueTypeL>::Set(Solver<OperatorTypeL, VectorTypeL, 
                                                                     ValueTypeL> &Solver_L) {
-  
+
+  LOG_DEBUG(this, "MixedPrecisionDC::Set()",
+            "");
+
   this->Solver_L_ = &Solver_L;
   
 }
@@ -114,6 +128,10 @@ template <class OperatorTypeH, class VectorTypeH, typename ValueTypeH,
           class OperatorTypeL, class VectorTypeL, typename ValueTypeL>
 void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH, 
                       OperatorTypeL, VectorTypeL, ValueTypeL>::Build(void) {
+
+  LOG_DEBUG(this, "MixedPrecisionDC::Build()",
+            this->build_ <<
+            " #*# begin");
 
   if (this->build_ == true)
     this->Clear();
@@ -173,12 +191,20 @@ void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
 
   this->op_l_->MoveToAccelerator();
   this->Solver_L_->MoveToAccelerator();
+
+  LOG_DEBUG(this, "MixedPrecisionDC::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorTypeH, class VectorTypeH, typename ValueTypeH,
           class OperatorTypeL, class VectorTypeL, typename ValueTypeL>
 void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH, 
                       OperatorTypeL, VectorTypeL, ValueTypeL>::Clear(void) {
+
+  LOG_DEBUG(this, "MixedPrecisionDC::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -238,6 +264,9 @@ void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
                       OperatorTypeL, VectorTypeL, ValueTypeL>::SolveNonPrecond_(const VectorTypeH &rhs,
                                                                                 VectorTypeH *x) {
 
+  LOG_DEBUG(this, "MixedPrecisionDC::SolveNonPrecond_()",
+            " #*# begin");
+
   assert(x != NULL);
   assert(x != &rhs);
   assert(this->op_  != NULL);
@@ -251,9 +280,10 @@ void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
   this->op_h_->Apply(*this->x_h_, &this->r_h_); 
   this->r_h_.ScaleAdd(ValueTypeH(-1.0), rhs);
 
-  this->iter_ctrl_.InitResidual(this->Norm(this->r_h_));
+  ValueTypeH res = this->Norm(this->r_h_);
+  this->iter_ctrl_.InitResidual(res);
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(this->r_h_), this->index_)) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
   // cast to lower precision 
 
@@ -291,8 +321,12 @@ void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
   // initial residual = b - Ax
   this->op_h_->Apply(*this->x_h_, &this->r_h_); 
   this->r_h_.ScaleAdd(ValueTypeH(-1.0), rhs);
+  res = this->Norm(this->r_h_);
 
   }
+
+  LOG_DEBUG(this, "MixedPrecisionDC::SolveNonPrecond_()",
+            " #*# end");
 
 }
 

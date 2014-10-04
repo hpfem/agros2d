@@ -31,6 +31,23 @@ struct PythonVariable
     QVariant value;
 };
 
+struct PythonGotoDefinition
+{
+public:
+    PythonGotoDefinition()
+    {
+        module_path = "";
+        line = -1;
+        full_name = "";
+        name = "";
+    }
+
+    QString module_path;
+    int line;
+    QString full_name;
+    QString name;
+};
+
 class AGROS_PYTHONLAB_API PythonEngineProfiler
 {
 public:
@@ -74,22 +91,44 @@ private:
 class ErrorResult
 {
 public:
-    ErrorResult() : m_error(""), m_traceback(""), m_line(-1) {}
+    struct ErrorTraceback
+    {
+        ErrorTraceback(const QString &fileName = "", int line = -1, const QString &name = "")
+        {
+            this->fileName = fileName;
+            this->line = line;
+            this->name = name;
+        }
 
-    ErrorResult(const QString &error, const QString &traceback, int line = -1)
+        QString fileName;
+        int line;
+        QString name;
+    };
+
+    ErrorResult() : m_error(""), m_traceback(QList<ErrorTraceback>()), m_line(-1) {}
+
+    ErrorResult(const QString &error, const QList<ErrorTraceback> &traceback, int line = -1)
     {
         this->m_error = error;
         this->m_traceback = traceback;
         this->m_line = line;
     }
 
-    inline QString error() { return m_error; }
-    inline QString traceback() { return m_traceback; }
-    inline int line() { return m_line; }
+    inline QString error() const { return m_error; }
+    QString tracebackToString() const
+    {
+        QString str;
+        foreach (ErrorTraceback trace, m_traceback)
+            str += QString("File '%1', line %2, in %3\n").arg(trace.fileName).arg(trace.line).arg(trace.name);
+
+        return str;
+    }
+    inline QList<ErrorTraceback> traceback() const { return m_traceback; }
+    inline int line() const { return m_line; }
 
 private:
     QString m_error;
-    QString m_traceback;
+    QList<ErrorTraceback> m_traceback;
     int m_line;
 };
 
@@ -111,7 +150,7 @@ public:
         m_useGlobalDict(true), m_dictLocal(NULL), m_dictGlobal(NULL) {}
     ~PythonEngine();
 
-    void init();
+    void init(int argc, char *argv[]);
 
     // python commands
     void pythonClearCommand();
@@ -122,7 +161,7 @@ public:
     bool runScript(const QString &script, const QString &fileName = "");
     bool runExpression(const QString &expression, double *value = NULL, const QString &command = QString());
     bool runExpressionConsole(const QString &expression);
-    ErrorResult parseError();
+    ErrorResult parseError(bool clear = true);
     inline bool isScriptRunning() { return m_isScriptRunning; }
 
     void deleteUserModules();
@@ -130,6 +169,8 @@ public:
     QStringList codeCompletionInterpreter(const QString& code);
     QStringList codeCompletion(const QString& command);
     QStringList codePyFlakes(const QString& fileName);
+    PythonGotoDefinition codeGotoDefinition(const QString& code, int row, int column);
+    QString codeHelp(const QString& code, int row, int column);
     QList<PythonVariable> variableList();
 
     inline void useProfiler(bool use = true) { m_useProfiler = use; }
@@ -162,10 +203,14 @@ private:
     PyObject *errorType;
     PyObject *errorValue;
     PyObject *errorTraceback;
+
+    /// Converted argv to wchar_t for PySys_SetArgv.
+    wchar_t** argvw;
+    int argc;
 };
 
 // create custom python engine
-AGROS_PYTHONLAB_API void createPythonEngine(PythonEngine *custom = NULL);
+AGROS_PYTHONLAB_API void createPythonEngine(int argc, char *argv[], PythonEngine *custom = NULL);
 
 // current python engine
 AGROS_PYTHONLAB_API PythonEngine *currentPythonEngine();

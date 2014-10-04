@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "gpu_vector.hpp"
 #include "../base_vector.hpp"
@@ -42,12 +47,16 @@ template <typename ValueType>
 GPUAcceleratorVector<ValueType>::GPUAcceleratorVector() {
 
   // no default constructors
+    LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 GPUAcceleratorVector<ValueType>::GPUAcceleratorVector(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "GPUAcceleratorVector::GPUAcceleratorVector()",
+            "constructor with local_backend");
 
   this->vec_ = NULL;
   this->set_backend(local_backend); 
@@ -59,6 +68,9 @@ GPUAcceleratorVector<ValueType>::GPUAcceleratorVector(const Paralution_Backend_D
 
 template <typename ValueType>
 GPUAcceleratorVector<ValueType>::~GPUAcceleratorVector() {
+
+  LOG_DEBUG(this, "GPUAcceleratorVector::~GPUAcceleratorVector()",
+            "destructor");
 
   this->Clear();
 
@@ -97,6 +109,8 @@ void GPUAcceleratorVector<ValueType>::SetDataPtr(ValueType **ptr, const int size
   assert(*ptr != NULL);
   assert(size > 0);
 
+  cudaDeviceSynchronize();
+
   this->vec_ = *ptr;
   this->size_ = size;
 
@@ -107,6 +121,7 @@ void GPUAcceleratorVector<ValueType>::LeaveDataPtr(ValueType **ptr) {
 
   assert(this->get_size() > 0);
 
+  cudaDeviceSynchronize();
   *ptr = this->vec_;
   this->vec_ = NULL;
 
@@ -142,7 +157,6 @@ void GPUAcceleratorVector<ValueType>::CopyFromHost(const HostVector<ValueType> &
 
     if (this->get_size() >0) {
       
-      cudaDeviceSynchronize();
       
       cublasStatus_t stat_t;
       stat_t = cublasSetVector(this->get_size(), sizeof(ValueType),
@@ -180,8 +194,6 @@ void GPUAcceleratorVector<ValueType>::CopyToHost(HostVector<ValueType> *dst) con
 
     if (this->get_size() >0) {
 
-      cudaDeviceSynchronize();
-      
       cublasStatus_t stat_t;
       stat_t = cublasGetVector(this->get_size(), sizeof(ValueType),
                                this->vec_, // src
@@ -189,6 +201,76 @@ void GPUAcceleratorVector<ValueType>::CopyToHost(HostVector<ValueType> *dst) con
                                cast_vec->vec_, // dst
                                1);
       CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+    }
+
+  } else {
+    
+    LOG_INFO("Error unsupported GPU vector type");
+    this->info();
+    dst->info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+  
+}
+
+template <typename ValueType>
+void GPUAcceleratorVector<ValueType>::CopyFromHostAsync(const HostVector<ValueType> &src) {
+
+  // CPU to GPU copy
+  const HostVector<ValueType> *cast_vec;
+  if ((cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src)) != NULL) {
+
+  if (this->get_size() == 0)
+    this->Allocate(cast_vec->get_size());
+    
+    assert(cast_vec->get_size() == this->get_size());
+
+    if (this->get_size() >0) {
+
+      cudaMemcpyAsync(this->vec_,     // dst
+                      cast_vec->vec_, // src
+                      this->get_size()*sizeof(ValueType), // size
+                      cudaMemcpyHostToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+    }
+
+  } else {
+    
+    LOG_INFO("Error unsupported GPU vector type");
+    this->info();
+    src.info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+
+
+template <typename ValueType>
+void GPUAcceleratorVector<ValueType>::CopyToHostAsync(HostVector<ValueType> *dst) const {
+
+  // GPU to CPU copy
+  HostVector<ValueType> *cast_vec;
+  if ((cast_vec = dynamic_cast<HostVector<ValueType>*> (dst)) != NULL) {
+
+  if (cast_vec->get_size() == 0)
+    cast_vec->Allocate(this->get_size());  
+    
+    assert(cast_vec->get_size() == this->get_size());
+
+    if (this->get_size() >0) {
+
+      cudaMemcpyAsync(cast_vec->vec_,  // dst
+                      this->vec_,      // src
+                      this->get_size()*sizeof(ValueType), // size
+                      cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+
+
     }
 
   } else {
@@ -223,8 +305,6 @@ void GPUAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src)
 
         if (this->get_size() >0) {
 
-          cudaDeviceSynchronize();
-          
           cudaMemcpy(this->vec_,         // dst
                      gpu_cast_vec->vec_, // src
                      this->get_size()*sizeof(ValueType), // size
@@ -257,6 +337,57 @@ void GPUAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src)
 }
 
 template <typename ValueType>
+void GPUAcceleratorVector<ValueType>::CopyFromAsync(const BaseVector<ValueType> &src) {
+
+  const GPUAcceleratorVector<ValueType> *gpu_cast_vec;
+  const HostVector<ValueType> *host_cast_vec;
+
+
+    // GPU to GPU copy
+    if ((gpu_cast_vec = dynamic_cast<const GPUAcceleratorVector<ValueType>*> (&src)) != NULL) {
+
+      if (this->get_size() == 0)
+        this->Allocate(gpu_cast_vec->get_size());
+
+      assert(gpu_cast_vec->get_size() == this->get_size());
+
+      if (this != gpu_cast_vec)  {  
+
+        if (this->get_size() >0) {
+
+          cudaMemcpy(this->vec_,         // dst
+                     gpu_cast_vec->vec_, // src
+                     this->get_size()*sizeof(ValueType), // size
+                     cudaMemcpyDeviceToDevice);
+          CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+        }
+
+      }
+
+    } else {
+      
+      //GPU to CPU copy
+      if ((host_cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src)) != NULL) {
+        
+
+        this->CopyFromHostAsync(*host_cast_vec);
+        
+      
+      } else {
+
+        LOG_INFO("Error unsupported GPU vector type");
+        this->info();
+        src.info();
+        FATAL_ERROR(__FILE__, __LINE__);
+        
+      }
+      
+    }
+
+}
+
+
+template <typename ValueType>
 void GPUAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src,
                                                const int src_offset,
                                                const int dst_offset,
@@ -275,8 +406,6 @@ void GPUAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src,
 
   dim3 BlockSize(this->local_backend_.GPU_block_size);
   dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
-
-  cudaDeviceSynchronize();
 
   kernel_copy_offset_from<ValueType, int> <<<GridSize, BlockSize>>> (size, src_offset, dst_offset,
                                                                      cast_src->vec_, this->vec_);
@@ -303,8 +432,6 @@ void GPUAcceleratorVector<ValueType>::CopyTo(BaseVector<ValueType> *dst) const{
 
         if (this->get_size() >0) {
 
-          cudaDeviceSynchronize();
-          
           cudaMemcpy(gpu_cast_vec->vec_, // dst
                      this->vec_,         // src
                      this->get_size()*sizeof(ValueType), // size
@@ -333,8 +460,56 @@ void GPUAcceleratorVector<ValueType>::CopyTo(BaseVector<ValueType> *dst) const{
       
     }
 
+}
+
+template <typename ValueType>
+void GPUAcceleratorVector<ValueType>::CopyToAsync(BaseVector<ValueType> *dst) const{
+
+  GPUAcceleratorVector<ValueType> *gpu_cast_vec;
+  HostVector<ValueType> *host_cast_vec;
+
+    // GPU to GPU copy
+    if ((gpu_cast_vec = dynamic_cast<GPUAcceleratorVector<ValueType>*> (dst)) != NULL) {
+
+      if (gpu_cast_vec->get_size() == 0)
+        gpu_cast_vec->Allocate(this->get_size());
+
+      assert(gpu_cast_vec->get_size() == this->get_size());
+
+      if (this != gpu_cast_vec)  {  
+
+        if (this->get_size() >0) {
+
+          cudaMemcpy(gpu_cast_vec->vec_, // dst
+                     this->vec_,         // src
+                     this->get_size()*sizeof(ValueType), // size
+                     cudaMemcpyDeviceToDevice);
+          CHECK_CUDA_ERROR(__FILE__, __LINE__);      
+        }
+      }
+
+    } else {
+      
+      //GPU to CPU copy
+      if ((host_cast_vec = dynamic_cast<HostVector<ValueType>*> (dst)) != NULL) {
+        
+
+        this->CopyToHostAsync(host_cast_vec);
+        
+      
+      } else {
+
+        LOG_INFO("Error unsupported GPU vector type");
+        this->info();
+        dst->info();
+        FATAL_ERROR(__FILE__, __LINE__);
+        
+      }
+      
+    }
 
 }
+
 
 template <typename ValueType>
 void GPUAcceleratorVector<ValueType>::Zeros(void) {
@@ -378,7 +553,6 @@ void GPUAcceleratorVector<double>::AddScale(const BaseVector<double> &x, const d
     assert(cast_x != NULL);
     
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
     
     stat_t = cublasDaxpy(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
                          this->get_size(), 
@@ -402,7 +576,6 @@ void GPUAcceleratorVector<float>::AddScale(const BaseVector<float> &x, const flo
     assert(cast_x != NULL);
     
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
     
     stat_t = cublasSaxpy(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
                          this->get_size(), 
@@ -439,8 +612,6 @@ void GPUAcceleratorVector<ValueType>::ScaleAdd(const ValueType alpha, const Base
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
     
-    cudaDeviceSynchronize();
-
     kernel_scaleadd<ValueType, int> <<<GridSize, BlockSize>>> (size, alpha, cast_x->vec_, this->vec_);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
@@ -463,14 +634,38 @@ void GPUAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
     
-    cudaDeviceSynchronize();
-    
     kernel_scaleaddscale<ValueType, int> <<<GridSize, BlockSize>>> (size, alpha, beta, cast_x->vec_, this->vec_);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
   }
 
 }
+
+template <typename ValueType>
+void GPUAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta,
+                                          const int src_offset, const int dst_offset,const int size) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size()  == x.get_size());
+    assert(src_offset + size <= x.get_size());
+    assert(dst_offset + size <= this->get_size());
+
+    const GPUAcceleratorVector<ValueType> *cast_x = dynamic_cast<const GPUAcceleratorVector<ValueType>*> (&x);
+    assert(cast_x != NULL);
+
+    dim3 BlockSize(this->local_backend_.GPU_block_size);
+    dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
+    
+    kernel_scaleaddscale_offset<ValueType, int> <<<GridSize, BlockSize>>> (size, src_offset, dst_offset,
+                                                                           alpha, beta, cast_x->vec_, this->vec_);
+
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);
+
+  }
+
+}
+
 
 template <typename ValueType>
 void GPUAcceleratorVector<ValueType>::ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta, const BaseVector<ValueType> &y, const ValueType gamma) {
@@ -488,8 +683,6 @@ void GPUAcceleratorVector<ValueType>::ScaleAdd2(const ValueType alpha, const Bas
     int size = this->get_size();
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     kernel_scaleadd2<ValueType, int> <<<GridSize, BlockSize>>> (size, alpha, beta, gamma, cast_x->vec_, cast_y->vec_, this->vec_);
     
@@ -579,7 +772,6 @@ float GPUAcceleratorVector<float>::Dot(const BaseVector<float> &x) const {
   if (this->get_size() > 0) {
 
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
     
     stat_t = cublasSdot(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
                         this->get_size(), 
@@ -607,7 +799,6 @@ double GPUAcceleratorVector<double>::Norm(void) const {
   if (this->get_size() > 0) {
 
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
     
     stat_t = cublasDnrm2(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
                          this->get_size(), 
@@ -627,7 +818,6 @@ float GPUAcceleratorVector<float>::Norm(void) const {
   if (this->get_size() > 0) {
 
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
     
     stat_t = cublasSnrm2(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
                          this->get_size(), 
@@ -670,7 +860,6 @@ double GPUAcceleratorVector<double>::Reduce(void) const {
                  / this->local_backend_.GPU_block_size ) + 1 ) * this->local_backend_.GPU_block_size;
     LOCAL_SIZE = GROUP_SIZE / this->local_backend_.GPU_block_size;
     
-    cudaDeviceSynchronize();
 
     kernel_reduce<double, int, 256> <<<GridSize, BlockSize>>> (size,
                                                                this->vec_,
@@ -725,8 +914,6 @@ float GPUAcceleratorVector<float>::Reduce(void) const {
                  / this->local_backend_.GPU_block_size ) + 1 ) * this->local_backend_.GPU_block_size;
     LOCAL_SIZE = GROUP_SIZE / this->local_backend_.GPU_block_size;
     
-    cudaDeviceSynchronize();
-
     kernel_reduce<float, int, 256> <<<GridSize, BlockSize>>> (size,
                                                               this->vec_,
                                                               d_buffer,
@@ -816,13 +1003,12 @@ int GPUAcceleratorVector<int>::Asum(void) const {
 template <>
 int GPUAcceleratorVector<float>::Amax(float &value) const {
 
-  int index;
+  int index = 0;
   value = 0.0;
 
   if (this->get_size() > 0) {
 
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
 
     stat_t = cublasIsamax(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle),
                           this->get_size(),
@@ -848,13 +1034,12 @@ int GPUAcceleratorVector<float>::Amax(float &value) const {
 template <>
 int GPUAcceleratorVector<double>::Amax(double &value) const {
 
-  int index;
+  int index = 0;
   value = 0.0;
 
   if (this->get_size() > 0) {
 
     cublasStatus_t stat_t;
-    cudaDeviceSynchronize();
 
     stat_t = cublasIdamax(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle),
                           this->get_size(),
@@ -899,8 +1084,6 @@ void GPUAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> 
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
     
-    cudaDeviceSynchronize();
-    
     kernel_pointwisemult<ValueType, int> <<<GridSize, BlockSize>>> (size, cast_x->vec_, this->vec_);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
@@ -924,8 +1107,6 @@ void GPUAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> 
     int size = this->get_size();
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     kernel_pointwisemult2<ValueType, int> <<<GridSize, BlockSize>>> (size, cast_x->vec_, cast_y->vec_, this->vec_);
     
@@ -953,8 +1134,6 @@ void GPUAcceleratorVector<ValueType>::Permute(const BaseVector<int> &permutation
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
     
-    cudaDeviceSynchronize();
-    
     //    this->vec_[ cast_perm->vec_[i] ] = vec_tmp.vec_[i];  
     kernel_permute<ValueType, int> <<<GridSize, BlockSize>>> (size, cast_perm->vec_, vec_tmp.vec_, this->vec_);
     
@@ -981,8 +1160,6 @@ void GPUAcceleratorVector<ValueType>::PermuteBackward(const BaseVector<int> &per
     int size = this->get_size();
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     //    this->vec_[i] = vec_tmp.vec_[ cast_perm->vec_[i] ];
     kernel_permute_backward<ValueType, int> <<<GridSize, BlockSize>>> (size, cast_perm->vec_, vec_tmp.vec_, this->vec_);
@@ -1012,8 +1189,6 @@ void GPUAcceleratorVector<ValueType>::CopyFromPermute(const BaseVector<ValueType
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
     
-    cudaDeviceSynchronize();
-    
     //    this->vec_[ cast_perm->vec_[i] ] = cast_vec->vec_[i];
     kernel_permute<ValueType, int> <<<GridSize, BlockSize>>> (size, cast_perm->vec_, cast_vec->vec_, this->vec_);
     
@@ -1042,8 +1217,6 @@ void GPUAcceleratorVector<ValueType>::CopyFromPermuteBackward(const BaseVector<V
     int size = this->get_size();
     dim3 BlockSize(this->local_backend_.GPU_block_size);
     dim3 GridSize(size / this->local_backend_.GPU_block_size + 1);
-    
-    cudaDeviceSynchronize();
     
     //    this->vec_[i] = cast_vec->vec_[ cast_perm->vec_[i] ];
     kernel_permute_backward<ValueType, int> <<<GridSize, BlockSize>>> (size, cast_perm->vec_, cast_vec->vec_, this->vec_);

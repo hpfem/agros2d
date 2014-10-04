@@ -26,6 +26,8 @@
 #include "util.h"
 #include "gui/textedit.h"
 
+#include "pythonengine.h"
+
 class PythonEngine;
 class PythonScriptingConsole;
 class PythonScriptingConsoleView;
@@ -40,8 +42,8 @@ class SceneView;
 class ScriptEditor;
 class SearchDialog;
 class SearchWidget;
-
-class ErrorResult;
+class SelectionWidget;
+class ErrorWidget;
 
 #ifdef Q_WS_X11
     const QFont FONT = QFont("Monospace", 9);
@@ -62,7 +64,7 @@ public:
     SearchWidget *searchWidget;
     QSplitter *splitter;
 
-    PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent);
+    PythonEditorWidget(PythonEngine *m_pythonEngine, QWidget *parent);
     ~PythonEditorWidget();
 
     inline QString fileName() { return m_fileName; }
@@ -74,14 +76,12 @@ public slots:
 
 private:
     QString m_fileName;
-    PythonEngine *pythonEngine;
-
-    void createControls();
-    void createEngine();
+    PythonEngine *m_pythonEngine;
+    PythonScriptingConsole *m_console;
 
 private slots:
     void pyLintAnalyseStopped(int exitCode);
-    void doHighlightLine(QTreeWidgetItem *item, int role);
+    void doHighlightLine(QTreeWidgetItem *item, int role);       
 };
 
 class AGROS_PYTHONLAB_API PythonEditorDialog : public QMainWindow
@@ -108,20 +108,21 @@ public slots:
     void doFilePrint();
 
     void doFind();
-    void doFindNext(bool fromBegining = false);
+    void doFindNext();
     void doReplace();
 
     void doDataChanged();
 
-    void doHelp();
-    void doHelpKeywordList();
-    void doAbout();
+    void doHelpOnWord();
+    void doGotoDefinition();
+    void doPrintSelection();
 
     void doCloseTab(int index);
 
     void doRunPython();
 
     // message from another app
+    void doFileOpenAndFind(const QString &file, const QString &find);
     void onOtherInstanceMessage(const QString &msg);
 
 protected:
@@ -145,6 +146,7 @@ protected:
     PythonScriptingHistoryView *consoleHistoryView;
     PythonBrowserView *variablesView;
     QDockWidget *fileBrowserView;
+    ErrorWidget *errorWidget;
 
     QLabel *lblCurrentPosition;
 
@@ -184,6 +186,7 @@ protected:
     QAction *actUnindentSelection;
     QAction *actCommentAndUncommentSelection;
     QAction *actGotoLine;
+    QAction *actGotoToFileDirectory;
 
     QAction *actRunPython;
     QAction *actStopPython;
@@ -195,8 +198,9 @@ protected:
     QAction *actOptionsPrintStacktrace;
     QAction *actOptionsEnableUseProfiler;
 
-    QAction *actHelp;
-    QAction *actHelpKeywordList;
+    QAction *actHelpOnWord;
+    QAction *actGotoDefinition;
+    QAction *actPrintSelection;
     QAction *actAbout;
     QAction *actAboutQt;
 
@@ -216,6 +220,7 @@ private slots:
     void doStopScript();
     void doReplaceTabsWithSpaces();
     void doPyLintPython();
+    void doGotoFileDirectory();
     void doFileItemDoubleClick(const QString &path);
     void doPathChangeDir();
     void doCurrentDocumentChanged(bool changed);
@@ -228,6 +233,8 @@ private slots:
 
     void doStartedScript();
     void doExecutedScript();
+
+    void doAbout();
 
     void printHeading(const QString &message);
     void printMessage(const QString &module, const QString &message);
@@ -242,6 +249,7 @@ class AGROS_PYTHONLAB_API ScriptEditor : public PlainTextEditParenthesis
 
 public:
     QMap<int, QString> errorMessagesPyFlakes;
+    QMap<int, QString> errorMessagesError;
 
     ScriptEditor(PythonEngine *pythonEngine, QWidget *parent = 0);
     ~ScriptEditor();
@@ -344,8 +352,7 @@ public:
     void showReplaceAll(const QString &text = "");
 
 public slots:
-    void find();
-    void findNext(bool fromBegining);
+    void findNext();
     void replaceAll();
     void hideWidget();
 
@@ -358,8 +365,26 @@ private:
     QLabel *lblFind, *lblReplace;
     QLineEdit *txtFind, *txtReplace;
     QPushButton *btnFind, *btnReplace, *btnHide;
+};
 
-    bool startFromBeginning;
+// ************************************************************************************************************
+
+class AGROS_PYTHONLAB_API ErrorWidget: public QWidget
+{
+    Q_OBJECT
+public:
+    ErrorWidget(QTabWidget *tabWidget, QWidget *parent);
+
+public slots:
+    void doHighlightLineError(QTreeWidgetItem *item, int role);
+    void showError(ErrorResult result);
+
+private:
+    QLabel *errorLabel;
+    QTreeWidget *trvErrors;
+
+    PythonEditorDialog *dialog;
+    QTabWidget *tabWidget;
 };
 
 #endif // SCRIPTEDITORDIALOG_H

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "operator.hpp"
 
 #include "vector.hpp"
@@ -31,11 +36,20 @@ namespace paralution {
 
 template <typename ValueType>
 Operator<ValueType>::Operator() {
+
+  LOG_DEBUG(this, "Operator::Operator()",
+            "default constructor");
+
   this->object_name_ = "";
+
 }
 
 template <typename ValueType>
 Operator<ValueType>::~Operator() {
+
+  LOG_DEBUG(this, "Operator::~Operator()",
+            "default destructor");
+
 }
 
 template <typename ValueType>

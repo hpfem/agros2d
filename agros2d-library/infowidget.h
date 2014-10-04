@@ -38,6 +38,7 @@ public:
 
     inline void setRecentProblemFiles(QStringList *recentProblemFiles) { m_recentProblemFiles = recentProblemFiles; }
     inline void setRecentScriptFiles(QStringList *recentScriptFiles) { m_recentScriptFiles = recentScriptFiles; }
+    inline void setRecentOptilabFiles(QStringList *recentOptilabFiles) { m_recentOptilabFiles = recentOptilabFiles; }
 
 signals:
     void open(const QString &fileName);
@@ -55,6 +56,7 @@ private:
 
     QStringList *m_recentProblemFiles;
     QStringList *m_recentScriptFiles;
+    QStringList *m_recentOptilabFiles;
 
 private slots:
     void showWelcome();

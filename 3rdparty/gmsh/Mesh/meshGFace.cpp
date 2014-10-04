@@ -46,12 +46,177 @@
 #include "boundaryLayersData.h"
 #include "filterElements.h"
 
+// define this to use the old initial delaunay
+#define OLD_CODE_DELAUNAY 1
+
+static void computeElementShapes(GFace *gf, double &worst, double &avg,
+                                 double &best, int &nT, int &greaterThan)
+{
+  worst = 1.e22;
+  avg = 0.0;
+  best = 0.0;
+  nT = 0;
+  greaterThan = 0;
+  for(unsigned int i = 0; i < gf->triangles.size(); i++){
+    double q = qmTriangle(gf->triangles[i], QMTRI_RHO);
+    if(q > .9) greaterThan++;
+    avg += q;
+    worst = std::min(worst, q);
+    best  = std::max(best, q);
+    nT++;
+  }
+  avg /= nT;
+}
+
+
 inline double myAngle(const SVector3 &a, const SVector3 &b, const SVector3 &d)
 {
   double cosTheta = dot(a, b);
   double sinTheta = dot(crossprod(a, b), d);
   return atan2(sinTheta, cosTheta);
 }
+
+class quadMeshRemoveHalfOfOneDMesh
+{
+  GFace *_gf;
+public:
+  std::map<GEdge*,std::vector<MLine*> > _backup;
+  std::map<MEdge, MVertex*,Less_Edge> _middle;
+  // remove one point every two and remember middle points
+  quadMeshRemoveHalfOfOneDMesh (GFace* gf) : _gf(gf){
+    // only do it if a recombination has to be done
+    if((CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine) && CTX::instance()->mesh.algoRecombine == 2){
+      //      printf("GFace %d removing half of the points in the 1D mesh\n",gf->tag());
+      std::list<GEdge*> edges = gf->edges();
+      std::list<GEdge*>::iterator ite = edges.begin();
+      while(ite != edges.end()){
+	if(!(*ite)->isMeshDegenerated()){
+	  std::vector<MLine*> temp;
+	  (*ite)->mesh_vertices.clear();
+	  for(unsigned int i = 0; i< (*ite)->lines.size(); i+=2){
+	    if (i+1 >= (*ite)->lines.size())Msg::Fatal("1D mesh cannot be divided by 2");
+	    MVertex *v1 = (*ite)->lines[i]->getVertex(0);
+	    MVertex *v2 = (*ite)->lines[i]->getVertex(1);
+	    MVertex *v3 = (*ite)->lines[i+1]->getVertex(1);
+	    temp.push_back(new MLine(v1,v3));
+	    if (v1->onWhat() == *ite) (*ite)->mesh_vertices.push_back(v1);
+	    _middle[MEdge(v1,v3)] = v2;
+	  }
+	  _backup[*ite] = (*ite)->lines;
+	  //	  printf("line %d goes from %d to %d\n",(*ite)->tag(), (*ite)->lines.size()-1,temp.size()-1);
+	  (*ite)->lines = temp;
+	}
+	++ite;
+      }
+    }
+    backgroundMesh::setSizeFactor(2.0);
+  }
+  void subdivide (){
+    std::vector<MQuadrangle*> qnew;
+
+    std::map<MEdge,MVertex*,Less_Edge> eds;
+
+    for(unsigned int i=0;i<_gf->triangles.size();i++){
+      MVertex *v[3];
+      SPoint2 m[3];
+      for (int j=0;j<3;j++){
+	MEdge E = _gf->triangles[i]->getEdge(j);
+	SPoint2 p1, p2;
+	reparamMeshEdgeOnFace(E.getVertex(0),E.getVertex(1),_gf,p1,p2);
+	std::map<MEdge, MVertex *, Less_Edge>::iterator it = _middle.find(E);
+	std::map<MEdge, MVertex *, Less_Edge>::iterator it2 = eds.find(E);
+	m[j] = p1;
+	if (it == _middle.end() && it2 == eds.end()){
+	  GPoint gp = _gf->point((p1+p2)*0.5);
+	  v[j] = new MFaceVertex (gp.x(),gp.y(),gp.z(),_gf,gp.u(),gp.v());
+	  _gf->mesh_vertices.push_back(v[j]);
+	  eds[E] = v[j];
+	}
+	else if (it == _middle.end()){
+	  v[j] = it2->second;
+	}
+	else {
+	  v[j] = it->second;
+	  v[j]->onWhat()->mesh_vertices.push_back(v[j]);
+	}
+      }
+      GPoint gp    = _gf->point((m[0]+m[1]+m[2])*(1./3.));
+      MFaceVertex *vmid = new MFaceVertex (gp.x(),gp.y(),gp.z(),_gf,gp.u(),gp.v());
+      _gf->mesh_vertices.push_back(vmid);
+      qnew.push_back(new MQuadrangle(_gf->triangles[i]->getVertex(0),v[0],vmid,v[2]));
+      qnew.push_back(new MQuadrangle(_gf->triangles[i]->getVertex(1),v[1],vmid,v[0]));
+      qnew.push_back(new MQuadrangle(_gf->triangles[i]->getVertex(2),v[2],vmid,v[1]));
+      delete _gf->triangles[i];
+    }
+    _gf->triangles.clear();
+    for(unsigned int i=0;i<_gf->quadrangles.size();i++){
+      MVertex *v[4];
+      SPoint2 m[4];
+      for (int j=0;j<4;j++){
+	MEdge E = _gf->quadrangles[i]->getEdge(j);
+	SPoint2 p1, p2;
+	reparamMeshEdgeOnFace(E.getVertex(0),E.getVertex(1),_gf,p1,p2);
+	std::map<MEdge, MVertex *, Less_Edge>::iterator it = _middle.find(E);
+	std::map<MEdge, MVertex *, Less_Edge>::iterator it2 = eds.find(E);
+	m[j] = p1;
+	if (it == _middle.end() && it2 == eds.end()){
+	  GPoint gp = _gf->point((p1+p2)*0.5);
+	  v[j] = new MFaceVertex (gp.x(),gp.y(),gp.z(),_gf,gp.u(),gp.v());
+	  _gf->mesh_vertices.push_back(v[j]);
+	  eds[E] = v[j];
+	}
+	else if (it == _middle.end()){
+	  v[j] = it2->second;
+	}
+	else {
+	  v[j] = it->second;
+	  v[j]->onWhat()->mesh_vertices.push_back(v[j]);
+	}
+      }
+      GPoint gp    = _gf->point((m[0]+m[1]+m[2]+m[3])*0.25);
+      MVertex *vmid = new MFaceVertex (gp.x(),gp.y(),gp.z(),_gf,gp.u(),gp.v());
+      _gf->mesh_vertices.push_back(vmid);
+      qnew.push_back(new MQuadrangle(_gf->quadrangles[i]->getVertex(0),v[0],vmid,v[3]));
+      qnew.push_back(new MQuadrangle(_gf->quadrangles[i]->getVertex(1),v[1],vmid,v[0]));
+      qnew.push_back(new MQuadrangle(_gf->quadrangles[i]->getVertex(2),v[2],vmid,v[1]));
+      qnew.push_back(new MQuadrangle(_gf->quadrangles[i]->getVertex(3),v[3],vmid,v[2]));
+      delete _gf->quadrangles[i];
+    }
+    _gf->quadrangles = qnew;
+    //    printf("%d triangles %d quads\n",_gf->triangles.size(),_gf->quadrangles.size());
+  }
+  void finish (){
+    backgroundMesh::setSizeFactor(1.0);
+    if((CTX::instance()->mesh.recombineAll || _gf->meshAttributes.recombine) && CTX::instance()->mesh.algoRecombine == 2){
+      // recombine the elements on the half mesh
+      recombineIntoQuads(_gf,true,true,.1);
+      Msg::Info("subdividing");
+      //      _gf->model()->writeMSH("hop1.msh");
+      subdivide();
+      //      _gf->model()->writeMSH("hop2.msh");
+      restore();
+      recombineIntoQuads(_gf,true,true,0.1);
+      computeElementShapes(_gf,
+			   _gf->meshStatistics.worst_element_shape,
+			   _gf->meshStatistics.average_element_shape,
+			   _gf->meshStatistics.best_element_shape,
+			   _gf->meshStatistics.nbTriangle,
+			   _gf->meshStatistics.nbGoodQuality);
+    }
+  }
+  void restore (){
+    std::list<GEdge*> edges = _gf->edges();
+    std::list<GEdge*>::iterator ite = edges.begin();
+    while(ite != edges.end()){
+      for(unsigned int i = 0; i< (*ite)->lines.size(); i++){
+	delete (*ite)->lines[i];
+      }
+      (*ite)->lines = _backup[*ite];
+      ++ite;
+    }
+  }
+};
+
 
 struct myPlane {
   SPoint3 p;
@@ -464,25 +629,6 @@ static bool algoDelaunay2D(GFace *gf)
   return false;
 }
 
-static void computeElementShapes(GFace *gf, double &worst, double &avg,
-                                 double &best, int &nT, int &greaterThan)
-{
-  worst = 1.e22;
-  avg = 0.0;
-  best = 0.0;
-  nT = 0;
-  greaterThan = 0;
-  for(unsigned int i = 0; i < gf->triangles.size(); i++){
-    double q = qmTriangle(gf->triangles[i], QMTRI_RHO);
-    if(q > .9) greaterThan++;
-    avg += q;
-    worst = std::min(worst, q);
-    best  = std::max(best, q);
-    nT++;
-  }
-  avg /= nT;
-}
-
 static bool recoverEdge(BDS_Mesh *m, GEdge *ge,
                         std::map<MVertex*, BDS_Point*> &recoverMapInv,
                         std::set<EdgeToRecover> *e2r,
@@ -543,7 +689,8 @@ static bool recoverEdge(BDS_Mesh *m, GEdge *ge,
   return true;
 }
 
-void BDS2GMSH(BDS_Mesh *m, GFace *gf, std::map<BDS_Point*, MVertex*, PointLessThan> &recoverMap)
+void BDS2GMSH(BDS_Mesh *m, GFace *gf,
+              std::map<BDS_Point*, MVertex*, PointLessThan> &recoverMap)
 {
   {
     std::set<BDS_Point*,PointLessThan>::iterator itp = m->points.begin();
@@ -584,7 +731,6 @@ void BDS2GMSH(BDS_Mesh *m, GFace *gf, std::map<BDS_Point*, MVertex*, PointLessTh
     }
   }
 }
-
 
 static void addOrRemove(MVertex *v1, MVertex *v2, std::set<MEdge,Less_Edge> & bedges)
 {
@@ -640,7 +786,6 @@ static void modifyInitialMeshForTakingIntoAccountBoundaryLayers(GFace *gf)
 	  if (dv2.length() < 0.03 * dv.length())break;
 	  MQuadrangle *qq = new MQuadrangle(v11,v21,v22,v12);
 	  myCol.push_back(qq);
-	  qq->setPartition(l);
 	  blQuads.push_back(qq);
 	  fprintf(ff2,"SQ (%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g){1,1,1,1};\n",
 		  v11->x(),v11->y(),v11->z(),
@@ -681,7 +826,6 @@ static void modifyInitialMeshForTakingIntoAccountBoundaryLayers(GFace *gf)
 	if (v11 != v12){
 	  MQuadrangle *qq = new MQuadrangle(v11,v12,v22,v21);
 	  myCol.push_back(qq);
-	  qq->setPartition(l);
 	  blQuads.push_back(qq);
 	  fprintf(ff2,"SQ (%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g){1,1,1,1};\n",
 		  v11->x(),v11->y(),v11->z(),
@@ -692,7 +836,6 @@ static void modifyInitialMeshForTakingIntoAccountBoundaryLayers(GFace *gf)
 	else {
 	  MTriangle *qq = new MTriangle(v,v22,v21);
 	  myCol.push_back(qq);
-	  qq->setPartition(l);
 	  blTris.push_back(qq);
 	  fprintf(ff2,"ST (%g,%g,%g,%g,%g,%g,%g,%g,%g){1,1,1,1};\n",
 		  v->x(),v->y(),v->z(),
@@ -708,7 +851,7 @@ static void modifyInitialMeshForTakingIntoAccountBoundaryLayers(GFace *gf)
   fprintf(ff2,"};\n");
   fclose(ff2);
 
-  filterOverlappingElements (blTris,blQuads,_columns->_elemColumns,_columns->_toFirst);
+  //  filterOverlappingElements (blTris,blQuads,_columns->_elemColumns,_columns->_toFirst);
 
   for (unsigned int i = 0; i < blQuads.size();i++){
     addOrRemove(blQuads[i]->getVertex(0),blQuads[i]->getVertex(1),bedges);
@@ -923,6 +1066,7 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
   std::map<MVertex*, BDS_Point*> recoverMapInv;
   std::list<GEdge*> edges = replacement_edges ? *replacement_edges : gf->edges();
   std::list<int> dir = gf->edgeOrientations();
+  std::vector<MEdge> medgesToRecover;
 
   // replace edges by their compounds
   // if necessary split compound and remesh parts
@@ -933,16 +1077,27 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
   }
 
   // build a set with all points of the boundaries
-  std::set<MVertex*> all_vertices;
+  std::set<MVertex*> all_vertices, boundary;
   std::list<GEdge*>::iterator ite = edges.begin();
   while(ite != edges.end()){
     if((*ite)->isSeam(gf)) return false;
     if(!(*ite)->isMeshDegenerated()){
+      for(unsigned int i = 0; i< (*ite)->lines.size(); i++)
+	medgesToRecover.push_back(MEdge((*ite)->lines[i]->getVertex(0),
+				       (*ite)->lines[i]->getVertex(1)));
       for(unsigned int i = 0; i< (*ite)->lines.size(); i++){
 	MVertex *v1 = (*ite)->lines[i]->getVertex(0);
 	MVertex *v2 = (*ite)->lines[i]->getVertex(1);
         all_vertices.insert(v1);
         all_vertices.insert(v2);
+        if(boundary.find(v1) == boundary.end())
+          boundary.insert(v1);
+        else
+          boundary.erase(v1);
+        if(boundary.find(v2) == boundary.end())
+          boundary.insert(v2);
+        else
+          boundary.erase(v2);
       }
     }
     else
@@ -950,9 +1105,18 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
     ++ite;
   }
 
+  if(boundary.size()){
+    Msg::Error("The 1D mesh seems not to be forming a closed loop");
+    gf->meshStatistics.status = GFace::FAILED;
+    return false;
+  }
+
   std::list<GEdge*> emb_edges = gf->embeddedEdges();
   ite = emb_edges.begin();
   while(ite != emb_edges.end()){
+    for(unsigned int i = 0; i< (*ite)->lines.size(); i++)
+      medgesToRecover.push_back(MEdge((*ite)->lines[i]->getVertex(0),
+				     (*ite)->lines[i]->getVertex(1)));
     if(!(*ite)->isMeshDegenerated()){
       all_vertices.insert((*ite)->mesh_vertices.begin(),
                           (*ite)->mesh_vertices.end() );
@@ -980,7 +1144,7 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
 
   if(all_vertices.size() < 3){
     Msg::Warning("Mesh Generation of Model Face %d Skipped: "
-                 "Only %d Mesh Vertices on The Contours",
+                 "Only %d mesh vertices on the contours",
                  gf->tag(), all_vertices.size());
     gf->meshStatistics.status = GFace::DONE;
     return true;
@@ -1022,26 +1186,25 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
     bbox += SPoint3(param[0], param[1], 0);
     count++;
   }
-  all_vertices.clear();
 
   // here check if some boundary layer nodes should be added
 
   bbox.makeCube();
 
-  // compute the bounding box in parametric space
-  SVector3 dd(bbox.max(), bbox.min());
-  double LC2D = norm(dd);
-
   // use a divide & conquer type algorithm to create a triangulation.
   // We add to the triangulation a box with 4 points that encloses the
   // domain.
-  DocRecord doc(points.size() + 4);
+#ifdef OLD_CODE_DELAUNAY
   {
+    // compute the bounding box in parametric space
+    SVector3 dd(bbox.max(), bbox.min());
+    double LC2D = norm(dd);
+    DocRecord doc(points.size() + 4);
     for(unsigned int i = 0; i < points.size(); i++){
       double XX = CTX::instance()->mesh.randFactor * LC2D * (double)rand() /
-        (double)RAND_MAX;
+	(double)RAND_MAX;
       double YY = CTX::instance()->mesh.randFactor * LC2D * (double)rand() /
-        (double)RAND_MAX;
+	(double)RAND_MAX;
       //      printf("%22.15E %22.15E \n",XX,YY);
       doc.points[i].where.h = points[i]->u + XX;
       doc.points[i].where.v = points[i]->v + YY;
@@ -1056,9 +1219,9 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
     // add 4 points than encloses the domain (use negative number to
     // distinguish those fake vertices)
     double bb[4][2] = {{bbox.min().x(), bbox.min().y()},
-                       {bbox.min().x(), bbox.max().y()},
-                       {bbox.max().x(), bbox.min().y()},
-                       {bbox.max().x(), bbox.max().y()}};
+		       {bbox.min().x(), bbox.max().y()},
+		       {bbox.max().x(), bbox.min().y()},
+		       {bbox.max().x(), bbox.max().y()}};
     for(int ip = 0; ip < 4; ip++){
       BDS_Point *pp = m->add_point(-ip - 1, bb[ip][0], bb[ip][1], gf);
       m->add_geom(gf->tag(), 2);
@@ -1073,10 +1236,15 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
     // Use "fast" inhouse recursive algo to generate the triangulation.
     // At this stage the triangulation is not what we need
     //   -) It does not necessary recover the boundaries
-    //   -) It contains triangles outside the domain (the first edge
-    //      loop is the outer one)
+      //   -) It contains triangles outside the domain (the first edge
+      //      loop is the outer one)
     Msg::Debug("Meshing of the convex hull (%d points)", points.size());
-    doc.MakeMeshWithPoints();
+    try{
+      doc.MakeMeshWithPoints();
+    }
+    catch(const char *err){
+      Msg::Error("%s", err);
+    }
     Msg::Debug("Meshing of the convex hull (%d points) done", points.size());
 
     for(int i = 0; i < doc.numTriangles; i++) {
@@ -1085,191 +1253,238 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
       int c = doc.triangles[i].c;
       int n = doc.numPoints;
       if(a < 0 || a >= n || b < 0 || b >= n || c < 0 || c >= n){
-        Msg::Warning("Skipping bad triangle %d", i);
-        continue;
+	Msg::Warning("Skipping bad triangle %d", i);
+	continue;
       }
       BDS_Point *p1 = (BDS_Point*)doc.points[doc.triangles[i].a].data;
       BDS_Point *p2 = (BDS_Point*)doc.points[doc.triangles[i].b].data;
       BDS_Point *p3 = (BDS_Point*)doc.points[doc.triangles[i].c].data;
       m->add_triangle(p1->iD, p2->iD, p3->iD);
     }
+  }
+#else
+  {
+    std::vector<MVertex*> v;
+    std::vector<MTriangle*> result;
+    v.insert(v.end(),all_vertices.begin(),all_vertices.end());
 
-    if(debug && RECUR_ITER == 0){
-      char name[245];
-      sprintf(name, "surface%d-initial-real.pos", gf->tag());
-      outputScalarField(m->triangles, name, 0);
-      sprintf(name, "surface%d-initial-param.pos", gf->tag());
-      outputScalarField(m->triangles, name, 1);
+    std::map<MVertex*,SPoint3> pos;
+    for(unsigned int i = 0; i < v.size(); i++) {
+      MVertex *v0 = v[i];
+      BDS_Point *p0  = recoverMapInv[v0];
+      pos[v0] = SPoint3(v0->x(),v0->y(),v0->z());
+      v0->setXYZ(p0->u,p0->v,0.0);
+    }
+    delaunayMeshIn2D(v, result, 0);
+    //    delaunayMeshIn2D(v, result, 0, & medgesToRecover);
+
+    for(unsigned int i = 0; i < v.size()-4; i++) {
+      MVertex *v0 = v[i];
+      SPoint3 pp = pos[v0];
+      v0->setXYZ(pp.x(),pp.y(),pp.z());
     }
 
-    // Recover the boundary edges and compute characteristic lenghts
-    // using mesh edge spacing. If two of these edges intersect, then
-    // the 1D mesh have to be densified
-    Msg::Debug("Recovering %d model Edges", edges.size());
-    std::set<EdgeToRecover> edgesToRecover;
-    std::set<EdgeToRecover> edgesNotRecovered;
-    ite = edges.begin();
-    while(ite != edges.end()){
-      if(!(*ite)->isMeshDegenerated())
-        recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 1);
-      ++ite;
+    // add the four corners
+    for(int ip = 0; ip < 4; ip++){
+      MVertex *vv = v[v.size()-ip-1];
+      BDS_Point *pp = m->add_point(-ip - 1, vv->x(),vv->y(), gf);
+      m->add_geom(gf->tag(), 2);
+      recoverMapInv[vv] = pp;
+      BDS_GeomEntity *g = m->get_geom(gf->tag(), 2);
+      pp->g = g;
     }
-    ite = emb_edges.begin();
-    while(ite != emb_edges.end()){
-      if(!(*ite)->isMeshDegenerated())
-        recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 1);
-      ++ite;
+    // add the triangles
+    for(unsigned int i = 0; i < result.size(); i++) {
+      MVertex *v0 = result[i]->getVertex(0);
+      MVertex *v1 = result[i]->getVertex(1);
+      MVertex *v2 = result[i]->getVertex(2);
+      BDS_Point *p0  = recoverMapInv[v0];
+      BDS_Point *p1  = recoverMapInv[v1];
+      BDS_Point *p2  = recoverMapInv[v2];
+      m->add_triangle(p0->iD, p1->iD, p2->iD);
     }
+  }
+#endif
+
+  if(debug && RECUR_ITER == 0){
+    char name[245];
+    sprintf(name, "surface%d-initial-real.pos", gf->tag());
+    outputScalarField(m->triangles, name, 0);
+    sprintf(name, "surface%d-initial-param.pos", gf->tag());
+    outputScalarField(m->triangles, name, 1);
+  }
+
+  // Recover the boundary edges and compute characteristic lenghts
+  // using mesh edge spacing. If two of these edges intersect, then
+  // the 1D mesh have to be densified
+  Msg::Debug("Recovering %d model Edges", edges.size());
+  std::set<EdgeToRecover> edgesToRecover;
+  std::set<EdgeToRecover> edgesNotRecovered;
+  ite = edges.begin();
+  while(ite != edges.end()){
+    if(!(*ite)->isMeshDegenerated())
+      recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 1);
+    ++ite;
+  }
+  ite = emb_edges.begin();
+  while(ite != emb_edges.end()){
+    if(!(*ite)->isMeshDegenerated())
+      recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 1);
+    ++ite;
+  }
 
 
     // effectively recover the medge
-    ite = edges.begin();
-    while(ite != edges.end()){
-      if(!(*ite)->isMeshDegenerated()){
-        if (!recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 2)){
-	  delete m;
-	  gf->meshStatistics.status = GFace::FAILED;
-	  return false;
-	}
+  ite = edges.begin();
+  while(ite != edges.end()){
+    if(!(*ite)->isMeshDegenerated()){
+      if (!recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 2)){
+	delete m;
+	gf->meshStatistics.status = GFace::FAILED;
+	return false;
       }
-      ++ite;
+    }
+    ++ite;
+  }
+
+  Msg::Debug("Recovering %d mesh Edges (%d not recovered)", edgesToRecover.size(),
+	     edgesNotRecovered.size());
+
+  if(edgesNotRecovered.size()){
+    std::ostringstream sstream;
+    for(std::set<EdgeToRecover>::iterator itr = edgesNotRecovered.begin();
+	itr != edgesNotRecovered.end(); ++itr)
+      sstream << " " << itr->ge->tag();
+    Msg::Warning(":-( There are %d intersections in the 1D mesh (curves%s)",
+		 edgesNotRecovered.size(), sstream.str().c_str());
+    if (repairSelfIntersecting1dMesh)
+      Msg::Warning("8-| Gmsh splits those edges and tries again");
+
+    if(debug){
+      char name[245];
+      sprintf(name, "surface%d-not_yet_recovered-real-%d.msh", gf->tag(),
+	      RECUR_ITER);
+      gf->model()->writeMSH(name);
     }
 
-    Msg::Debug("Recovering %d mesh Edges (%d not recovered)", edgesToRecover.size(),
-               edgesNotRecovered.size());
-
-    if(edgesNotRecovered.size()){
-      std::ostringstream sstream;
-      for(std::set<EdgeToRecover>::iterator itr = edgesNotRecovered.begin();
-          itr != edgesNotRecovered.end(); ++itr)
-        sstream << " " << itr->ge->tag();
-      Msg::Warning(":-( There are %d intersections in the 1D mesh (curves%s)",
-                   edgesNotRecovered.size(), sstream.str().c_str());
-      if (repairSelfIntersecting1dMesh)
-        Msg::Warning("8-| Gmsh splits those edges and tries again");
-
-      if(debug){
-        char name[245];
-        sprintf(name, "surface%d-not_yet_recovered-real-%d.msh", gf->tag(),
-                RECUR_ITER);
-        gf->model()->writeMSH(name);
+    std::list<GFace *> facesToRemesh;
+    if(repairSelfIntersecting1dMesh)
+      remeshUnrecoveredEdges(recoverMapInv, edgesNotRecovered, facesToRemesh);
+    else{
+      std::set<EdgeToRecover>::iterator itr = edgesNotRecovered.begin();
+      //int *_error = new int[3 * edgesNotRecovered.size()];
+      int I = 0;
+      for(; itr != edgesNotRecovered.end(); ++itr){
+	int p1 = itr->p1;
+	int p2 = itr->p2;
+	int tag = itr->ge->tag();
+	Msg::Error("Edge not recovered: %d %d %d", p1, p2, tag);
+	//_error[3 * I + 0] = p1;
+	//_error[3 * I + 1] = p2;
+	//_error[3 * I + 2] = tag;
+	I++;
       }
-
-      std::list<GFace *> facesToRemesh;
-      if(repairSelfIntersecting1dMesh)
-        remeshUnrecoveredEdges(recoverMapInv, edgesNotRecovered, facesToRemesh);
-      else{
-        std::set<EdgeToRecover>::iterator itr = edgesNotRecovered.begin();
-        //int *_error = new int[3 * edgesNotRecovered.size()];
-        int I = 0;
-        for(; itr != edgesNotRecovered.end(); ++itr){
-          int p1 = itr->p1;
-          int p2 = itr->p2;
-          int tag = itr->ge->tag();
-          Msg::Error("Edge not recovered: %d %d %d", p1, p2, tag);
-          //_error[3 * I + 0] = p1;
-          //_error[3 * I + 1] = p2;
-          //_error[3 * I + 2] = tag;
-          I++;
-        }
-        //throw _error;
-      }
-
-      // delete the mesh
-      delete m;
-      if(RECUR_ITER < 10 && facesToRemesh.size() == 0)
-        return meshGenerator
-          (gf, RECUR_ITER + 1, repairSelfIntersecting1dMesh, onlyInitialMesh,
-           debug, replacement_edges);
-      return false;
+      //throw _error;
     }
 
-    if(RECUR_ITER > 0)
-      Msg::Warning(":-) Gmsh was able to recover all edges after %d iterations",
-                   RECUR_ITER);
+    // delete the mesh
+    delete m;
+    if(RECUR_ITER < 10 && facesToRemesh.size() == 0)
+      return meshGenerator
+	(gf, RECUR_ITER + 1, repairSelfIntersecting1dMesh, onlyInitialMesh,
+	 debug, replacement_edges);
+    return false;
+  }
 
-    Msg::Debug("Boundary Edges recovered for surface %d", gf->tag());
+  if(RECUR_ITER > 0)
+    Msg::Warning(":-) Gmsh was able to recover all edges after %d iterations",
+		 RECUR_ITER);
 
-    // look for a triangle that has a negative node and recursively
-    // tag all exterior triangles
-    {
-      std::list<BDS_Face*>::iterator itt = m->triangles.begin();
-      while (itt != m->triangles.end()){
-	(*itt)->g = 0;
-	++itt;
+  Msg::Debug("Boundary Edges recovered for surface %d", gf->tag());
+
+  // look for a triangle that has a negative node and recursively
+  // tag all exterior triangles
+  {
+    std::list<BDS_Face*>::iterator itt = m->triangles.begin();
+    while (itt != m->triangles.end()){
+      (*itt)->g = 0;
+      ++itt;
+    }
+    itt = m->triangles.begin();
+    while (itt != m->triangles.end()){
+      BDS_Face *t = *itt;
+      BDS_Point *n[4];
+      t->getNodes(n);
+      if (n[0]->iD < 0 || n[1]->iD < 0 ||
+	  n[2]->iD < 0 ) {
+	recur_tag(t, &CLASS_EXTERIOR);
+	break;
       }
-      itt = m->triangles.begin();
-      while (itt != m->triangles.end()){
-        BDS_Face *t = *itt;
-	BDS_Point *n[4];
-	t->getNodes(n);
-	if (n[0]->iD < 0 || n[1]->iD < 0 ||
-	    n[2]->iD < 0 ) {
-	  recur_tag(t, &CLASS_EXTERIOR);
+      ++itt;
+    }
+  }
+
+  // now find an edge that has belongs to one of the exterior
+  // triangles
+  {
+    std::list<BDS_Edge*>::iterator ite = m->edges.begin();
+    while (ite != m->edges.end()){
+      BDS_Edge *e = *ite;
+      if(e->g  && e->numfaces() == 2){
+	if(e->faces(0)->g == &CLASS_EXTERIOR){
+	  recur_tag(e->faces(1), &CLASS_F);
 	  break;
 	}
-	++itt;
+	else if(e->faces(1)->g == &CLASS_EXTERIOR){
+	  recur_tag(e->faces(0), &CLASS_F);
+	  break;
+	}
       }
-    }
-
-    // now find an edge that has belongs to one of the exterior
-    // triangles
-    {
-      std::list<BDS_Edge*>::iterator ite = m->edges.begin();
-      while (ite != m->edges.end()){
-        BDS_Edge *e = *ite;
-        if(e->g  && e->numfaces() == 2){
-          if(e->faces(0)->g == &CLASS_EXTERIOR){
-            recur_tag(e->faces(1), &CLASS_F);
-            break;
-          }
-          else if(e->faces(1)->g == &CLASS_EXTERIOR){
-            recur_tag(e->faces(0), &CLASS_F);
-            break;
-          }
-        }
-        ++ite;
-      }
-      std::list<BDS_Face*>::iterator itt = m->triangles.begin();
-      while (itt != m->triangles.end()){
-	if ((*itt)->g == &CLASS_EXTERIOR) (*itt)->g = 0;
-	++itt;
-      }
-    }
-
-    {
-      std::list<BDS_Edge*>::iterator ite = m->edges.begin();
-      while (ite != m->edges.end()){
-        BDS_Edge *e = *ite;
-        if(e->g  && e->numfaces() == 2){
-          BDS_Point *oface[2];
-          e->oppositeof(oface);
-          if(oface[0]->iD < 0){
-            recur_tag(e->faces(1), &CLASS_F);
-            break;
-          }
-          else if(oface[1]->iD < 0){
-            recur_tag(e->faces(0), &CLASS_F);
-            break;
-          }
-        }
-        ++ite;
-      }
-    }
-
-    ite = emb_edges.begin();
-    while(ite != emb_edges.end()){
-      if(!(*ite)->isMeshDegenerated())
-        recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 2);
       ++ite;
     }
+    std::list<BDS_Face*>::iterator itt = m->triangles.begin();
+    while (itt != m->triangles.end()){
+      if ((*itt)->g == &CLASS_EXTERIOR) (*itt)->g = 0;
+      ++itt;
+    }
+  }
 
-    // compute characteristic lengths at vertices
-    if (!onlyInitialMesh){
+  {
+    std::list<BDS_Edge*>::iterator ite = m->edges.begin();
+    while (ite != m->edges.end()){
+      BDS_Edge *e = *ite;
+      if(e->g  && e->numfaces() == 2){
+	BDS_Point *oface[2];
+	e->oppositeof(oface);
+	if(oface[0]->iD < 0){
+	  recur_tag(e->faces(1), &CLASS_F);
+	  break;
+	}
+	else if(oface[1]->iD < 0){
+	  recur_tag(e->faces(0), &CLASS_F);
+	  break;
+	}
+      }
+      ++ite;
+    }
+  }
+
+  ite = emb_edges.begin();
+  while(ite != emb_edges.end()){
+    if(!(*ite)->isMeshDegenerated())
+      recoverEdge(m, *ite, recoverMapInv, &edgesToRecover, &edgesNotRecovered, 2);
+    ++ite;
+  }
+
+  // compute characteristic lengths at vertices
+  if (!onlyInitialMesh){
       Msg::Debug("Computing mesh size field at mesh vertices %d",
 		 edgesToRecover.size());
-      for(int i = 0; i < doc.numPoints; i++){
-	BDS_Point *pp = (BDS_Point*)doc.points[i].data;
+      std::set<BDS_Point*, PointLessThan>::iterator it = m->points.begin();
+      for(; it != m->points.end();++it){
+	//      for(int i = 0; i < doc.numPoints; i++){
+	//	BDS_Point *pp = (BDS_Point*)doc.points[i].data;
+	BDS_Point *pp = *it;
 	std::map<BDS_Point*, MVertex*,PointLessThan>::iterator itv = recoverMap.find(pp);
 	if(itv != recoverMap.end()){
 	  MVertex *here = itv->second;
@@ -1287,7 +1502,6 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
 	  pp->lc() = pp->lcBGM();
 	}
       }
-    }
   }
 
   // delete useless stuff
@@ -1353,42 +1567,35 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
     }
   }
 
-  if (Msg::GetVerbosity() == 10){
-    GEdge *ge = new discreteEdge(gf->model(), 1000, 0, 0);
-    MElementOctree octree(gf->model());
-    Msg::Info("Writing voronoi and skeleton.pos");
-    doc.Voronoi();
-    doc.makePosView("voronoi.pos", gf);
-    doc.printMedialAxis(octree.getInternalOctree(), "skeleton.pos", gf, ge);
-    //todo add corners with lines with closest point
-    ge->addPhysicalEntity(1000);
-    gf->model()->add(ge);
-  }
-
   {
     int nb_swap;
     Msg::Debug("Delaunizing the initial mesh");
     delaunayizeBDS(gf, *m, nb_swap);
   }
-  gf->triangles.clear();
-  gf->quadrangles.clear();
+  //gf->triangles.clear();
+  //gf->quadrangles.clear();
+
+  // only delete the mesh data stored in the base GFace class (calling
+  // gf->deleteMesh() would also destroy e.g. the data in a compound face, which
+  // we should not do)
+  gf->GFace::deleteMesh();
 
   Msg::Debug("Starting to add internal points");
   // start mesh generation
   if(!algoDelaunay2D(gf) && !onlyInitialMesh){
-       // if(CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine || 1) {
-       //   backgroundMesh::unset();
-       //   buildBackGroundMesh (gf);
-       // }
+    // if(CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine || 1) {
+    //   backgroundMesh::unset();
+    //   buildBackGroundMesh (gf);
+    // }
     refineMeshBDS(gf, *m, CTX::instance()->mesh.refineSteps, true,
                   &recoverMapInv);
     optimizeMeshBDS(gf, *m, 2);
     refineMeshBDS(gf, *m, CTX::instance()->mesh.refineSteps, false,
                 &recoverMapInv);
     optimizeMeshBDS(gf, *m, 2);
-       // if(CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine || 1) {
-       //   backgroundMesh::unset();
-       // }
+    // if(CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine || 1) {
+    //   backgroundMesh::unset();
+    // }
   }
 
   /*
@@ -1406,7 +1613,8 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
   BDS2GMSH(m, gf, recoverMap);
 
   bool infty = false;
-  if (gf->getMeshingAlgo() == ALGO_2D_FRONTAL_QUAD || gf->getMeshingAlgo() == ALGO_2D_PACK_PRLGRMS)
+  if (gf->getMeshingAlgo() == ALGO_2D_FRONTAL_QUAD ||
+      gf->getMeshingAlgo() == ALGO_2D_PACK_PRLGRMS)
     infty = true;
   if (!onlyInitialMesh) {
     if (infty)
@@ -1463,7 +1671,7 @@ bool meshGenerator(GFace *gf, int RECUR_ITER,
   delete m;
 
   if((CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine) &&
-     !CTX::instance()->mesh.optimizeLloyd && !onlyInitialMesh)
+     !CTX::instance()->mesh.optimizeLloyd && !onlyInitialMesh && CTX::instance()->mesh.algoRecombine != 2)
     recombineIntoQuads(gf);
 
   computeElementShapes(gf, gf->meshStatistics.worst_element_shape,
@@ -1802,8 +2010,8 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
       }
       if(!ok){
         gf->meshStatistics.status = GFace::FAILED;
-        Msg::Error("The 1D Mesh seems not to be forming a closed loop");
-        m->scalingU = m->scalingV = 1.0;
+        Msg::Error("The 1D mesh seems not to be forming a closed loop");
+        delete m;
         return false;
       }
       nbPointsTotal += nbPointsLocal;
@@ -1816,6 +2024,7 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
                  "Only %d Mesh Vertices on The Contours",
                  gf->tag(), nbPointsTotal);
     gf->meshStatistics.status = GFace::DONE;
+    delete m;
     return true;
   }
   if(nbPointsTotal == 3){
@@ -1827,6 +2036,7 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
     }
     gf->triangles.push_back(new MTriangle(vv[0], vv[1], vv[2]));
     gf->meshStatistics.status = GFace::DONE;
+    delete m;
     return true;
   }
 
@@ -1834,6 +2044,7 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
   // Use a divide & conquer type algorithm to create a triangulation.
   // We add to the triangulation a box with 4 points that encloses the
   // domain.
+#if 1 //OLD_CODE_DELAUNAY
   {
     DocRecord doc(nbPointsTotal + 4);
     int count = 0;
@@ -1884,7 +2095,13 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
     //   -) It contains triangles outside the domain (the first edge
     //      loop is the outer one)
     Msg::Debug("Meshing of the convex hull (%d points)", nbPointsTotal);
-    doc.MakeMeshWithPoints();
+
+    try{
+      doc.MakeMeshWithPoints();
+    }
+    catch(const char *err){
+      Msg::Error("%s", err);
+    }
 
     for(int i = 0; i < doc.numTriangles; i++){
       int a = doc.triangles[i].a;
@@ -1901,6 +2118,66 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
       m->add_triangle(p1->iD, p2->iD, p3->iD);
     }
   }
+#else
+  {
+    /// FIXME FOR PERIODIC : SOME MVERTices SHOULD BE DUPLICATED ...
+    /// Still to be done...
+    printf("coucou1\n");
+    std::vector<MVertex*> v;
+    std::map<MVertex*, BDS_Point*> recoverMapInv;
+    for(unsigned int i = 0; i < edgeLoops_BDS.size(); i++){
+      std::vector<BDS_Point*> &edgeLoop_BDS = edgeLoops_BDS[i];
+      for(unsigned int j = 0; j < edgeLoop_BDS.size(); j++){
+        BDS_Point *pp = edgeLoop_BDS[j];
+	v.push_back(recoverMap[pp]);
+	recoverMapInv[recoverMap[pp]] = pp;
+      }
+    }
+
+    printf("coucou2 %d verices\n",v.size());
+    std::map<MVertex*,SPoint3> pos;
+    for(unsigned int i = 0; i < v.size(); i++) {
+      MVertex *v0 = v[i];
+      BDS_Point *p0  = recoverMapInv[v0];
+      pos[v0] = SPoint3(v0->x(),v0->y(),v0->z());
+      v0->setXYZ(p0->u,p0->v,0.0);
+    }
+    printf("coucou3\n");
+    std::vector<MTriangle*> result;
+    delaunayMeshIn2D(v, result, 0);
+    printf("coucou4\n");
+    //    delaunayMeshIn2D(v, result, 0, & medgesToRecover);
+
+    for(unsigned int i = 0; i < v.size()-4; i++) {
+      MVertex *v0 = v[i];
+      SPoint3 pp = pos[v0];
+      v0->setXYZ(pp.x(),pp.y(),pp.z());
+    }
+    printf("coucou5\n");
+
+    // add the four corners
+    for(int ip = 0; ip < 4; ip++){
+      MVertex *vv = v[v.size()-ip-1];
+      BDS_Point *pp = m->add_point(-ip - 1, vv->x(),vv->y(), gf);
+      m->add_geom(gf->tag(), 2);
+      recoverMapInv[vv] = pp;
+      BDS_GeomEntity *g = m->get_geom(gf->tag(), 2);
+      pp->g = g;
+    }
+    printf("coucou6\n");
+    // add the triangles
+    for(unsigned int i = 0; i < result.size(); i++) {
+      MVertex *v0 = result[i]->getVertex(0);
+      MVertex *v1 = result[i]->getVertex(1);
+      MVertex *v2 = result[i]->getVertex(2);
+      BDS_Point *p0  = recoverMapInv[v0];
+      BDS_Point *p1  = recoverMapInv[v1];
+      BDS_Point *p2  = recoverMapInv[v2];
+      m->add_triangle(p0->iD, p1->iD, p2->iD);
+    }
+    printf("coucou7\n");
+  }
+#endif
 
   // Recover the boundary edges and compute characteristic lenghts
   // using mesh edge spacing
@@ -1927,6 +2204,7 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
         Msg::Error("Impossible to recover the edge %d %d", edgeLoop_BDS[j]->iD,
                    edgeLoop_BDS[(j + 1) % edgeLoop_BDS.size()]->iD);
         gf->meshStatistics.status = GFace::FAILED;
+        delete m;
         return false;
       }
       else e->g = &CLASS_E;
@@ -2179,8 +2457,8 @@ static bool meshGeneratorPeriodic(GFace *gf, bool debug = true)
   // delete the mesh
   delete m;
 
- if((CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine) &&
-    !CTX::instance()->mesh.optimizeLloyd)
+  if((CTX::instance()->mesh.recombineAll || gf->meshAttributes.recombine) &&
+     !CTX::instance()->mesh.optimizeLloyd && CTX::instance()->mesh.algoRecombine != 2)
     recombineIntoQuads(gf);
 
   computeElementShapes(gf, gf->meshStatistics.worst_element_shape,
@@ -2275,6 +2553,8 @@ void meshGFace::operator() (GFace *gf, bool print)
     return;
   }
 
+  quadMeshRemoveHalfOfOneDMesh halfmesh (gf);
+
   if ((gf->getNativeType() != GEntity::AcisModel ||
        (!gf->periodic(0) && !gf->periodic(1))) &&
       (noSeam(gf) || gf->getNativeType() == GEntity::GmshModel ||
@@ -2291,25 +2571,7 @@ void meshGFace::operator() (GFace *gf, bool print)
   Msg::Debug("Type %d %d triangles generated, %d internal vertices",
              gf->geomType(), gf->triangles.size(), gf->mesh_vertices.size());
 
-  // do the 2D mesh in several passes. For second and other passes,
-  // a background mesh is constructed with the previous mesh and
-  // nodal values of the metric are computed that take into account
-  // complex size fields that are tedious to evaluate on the fly
-  if (!twoPassesMesh)return;
-  twoPassesMesh--;
-  if (backgroundMesh::current()){
-    backgroundMesh::unset();
-    //backgroundMesh::set(gf);
-  }
-  if (CTX::instance()->mesh.saveAll){
-    backgroundMesh::set(gf);
-    char name[256];
-    sprintf(name,"bgm-%d.pos",gf->tag());
-    backgroundMesh::current()->print(name,gf);
-    sprintf(name,"cross-%d.pos",gf->tag());
-    backgroundMesh::current()->print(name,gf,1);
-  }
-  (*this)(gf);
+  halfmesh.finish();
 }
 
 bool checkMeshCompound(GFaceCompound *gf, std::list<GEdge*> &edges)

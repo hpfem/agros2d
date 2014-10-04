@@ -32,7 +32,7 @@ using namespace Hermes::Hermes2D;
 FieldSolutionID BlockSolutionID::fieldSolutionID(const FieldInfo *fieldInfo)
 {
     bool contains = false;
-    foreach(Field* field, group->fields())
+    foreach(FieldBlock* field, group->fields())
     {
         if(field->fieldInfo() == fieldInfo)
             contains = true;
@@ -87,7 +87,7 @@ void MultiArray<Scalar>::append(Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, 
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
+void MultiArray<Scalar>::append(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
 {
     assert(spaces.size() == solutions.size());
     for (int i = 0; i < solutions.size(); i++)

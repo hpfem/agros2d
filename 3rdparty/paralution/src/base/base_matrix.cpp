@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "base_matrix.hpp"
 #include "base_vector.hpp"
 #include "backend_manager.hpp"
@@ -33,6 +38,9 @@ namespace paralution {
 template <typename ValueType>
 BaseMatrix<ValueType>::BaseMatrix() {
 
+  LOG_DEBUG(this, "BaseMatrix::BaseMatrix()",
+            "default constructor");
+
   this->nrow_ = 0;
   this->ncol_ = 0;
   this->nnz_  = 0;
@@ -41,6 +49,49 @@ BaseMatrix<ValueType>::BaseMatrix() {
 
 template <typename ValueType>
 BaseMatrix<ValueType>::~BaseMatrix() {
+
+  LOG_DEBUG(this, "BaseMatrix::~BaseMatrix()",
+            "default destructor");
+
+}
+
+template <typename ValueType>
+inline int BaseMatrix<ValueType>::get_nrow(void) const {
+
+  return this->nrow_; 
+
+} 
+
+template <typename ValueType>
+inline int BaseMatrix<ValueType>::get_ncol(void) const {
+
+  return this->ncol_; 
+
+} 
+
+template <typename ValueType>
+inline int BaseMatrix<ValueType>::get_nnz(void) const {
+
+  return this->nnz_; 
+
+} 
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::set_backend(const Paralution_Backend_Descriptor local_backend) {
+
+  this->local_backend_ = local_backend;
+
+}
+
+template <typename ValueType>
+bool BaseMatrix<ValueType>::Check(void) const {
+
+  LOG_INFO("BaseMatrix<ValueType>::Check()");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
 }
 
 
@@ -249,6 +300,12 @@ bool BaseMatrix<ValueType>::LLSolve(const BaseVector<ValueType> &in, BaseVector<
 }
 
 template <typename ValueType>
+bool BaseMatrix<ValueType>::LLSolve(const BaseVector<ValueType> &in, const BaseVector<ValueType> &inv_diag,
+                                    BaseVector<ValueType> *out) const {
+  return false;
+}
+
+template <typename ValueType>
 bool BaseMatrix<ValueType>::ILU0Factorize(void) {
   return false;
 }
@@ -259,7 +316,7 @@ bool BaseMatrix<ValueType>::ILUTFactorize(const ValueType t, const int maxrow) {
 }
 
 template <typename ValueType>
-bool BaseMatrix<ValueType>::IC0Factorize(void) {
+bool BaseMatrix<ValueType>::ICFactorize(BaseVector<ValueType> *inv_diag) {
   return false;
 }
 
@@ -273,6 +330,15 @@ bool BaseMatrix<ValueType>::PermuteBackward(const BaseVector<int> &permutation) 
   return false;
 }
 
+template <typename ValueType>
+bool BaseMatrix<ValueType>::CMK(BaseVector<int> *permutation) const {
+  return false;
+}
+
+template <typename ValueType>
+bool BaseMatrix<ValueType>::RCMK(BaseVector<int> *permutation) const {
+  return false;
+}
 
 template <typename ValueType>
 bool BaseMatrix<ValueType>::MultiColoring(int &num_colors,
@@ -736,6 +802,61 @@ bool BaseMatrix<ValueType>::CreateFromMap(const BaseVector<int> &map, const int 
 }
 
 
+template <typename ValueType>
+void BaseMatrix<ValueType>::CopyFromAsync(const BaseMatrix<ValueType> &mat) {
+
+  // default is no async
+  LOG_VERBOSE_INFO(4, "*** info: BaseMatrix::CopyFromAsync() no async available)");        
+
+  this->CopyFrom(mat);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::CopyToAsync(BaseMatrix<ValueType> *mat) const {
+
+  // default is no async
+  LOG_VERBOSE_INFO(4, "*** info: BaseMatrix::CopyToAsync() no async available)");        
+
+  this->CopyTo(mat);
+
+}
+
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::Assemble(const int *i, const int *j, const ValueType *v,
+                                     const int size, const int n, const int m,
+                                     int **pp_assembly_rank,
+                                     int **pp_assembly_irank,
+                                     int **pp_assembly_loop_start,
+                                     int **pp_assembly_loop_end,
+                                     int &nThreads) {
+  
+  LOG_INFO("BaseMatrix<ValueType>::Assemble()");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::AssembleUpdate(const ValueType *v,
+                                           const int *assembly_rank,
+                                           const int *assembly_irank,
+                                           const int *assembly_loop_start,
+                                           const int *assembly_loop_end,
+                                           const int nThreads) {
+
+  
+  LOG_INFO("BaseMatrix<ValueType>::AssembleUpdate()");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
   /*
 
 
@@ -755,12 +876,7 @@ void BaseMatrix<ValueType>::
 
 
 
-template <typename ValueType>
-void BaseMatrix<ValueType>::set_backend(const Paralution_Backend_Descriptor local_backend) {
 
-  this->local_backend_ = local_backend;
-
-}
 
 
   //TODO print also parameters info?
@@ -778,12 +894,31 @@ HostMatrix<ValueType>::~HostMatrix() {
 
 
 
+
 template <typename ValueType>
 AcceleratorMatrix<ValueType>::AcceleratorMatrix() {
 }
 
 template <typename ValueType>
 AcceleratorMatrix<ValueType>::~AcceleratorMatrix() {
+}
+
+
+template <typename ValueType>
+void AcceleratorMatrix<ValueType>::CopyFromHostAsync(const HostMatrix<ValueType> &src) {
+
+  // default is no async
+  this->CopyFromHostAsync(src);
+
+}
+
+
+template <typename ValueType>
+void AcceleratorMatrix<ValueType>::CopyToHostAsync(HostMatrix<ValueType> *dst) const {
+
+  // default is no async
+  this->CopyToHostAsync(dst);
+
 }
 
 
@@ -821,20 +956,26 @@ MICAcceleratorMatrix<ValueType>::~MICAcceleratorMatrix() {
 
 template class BaseMatrix<double>;
 template class BaseMatrix<float>;
+template class BaseMatrix<int>;
 
 template class HostMatrix<double>;
 template class HostMatrix<float>;
+template class HostMatrix<int>;
 
 template class AcceleratorMatrix<double>;
 template class AcceleratorMatrix<float>;
+template class AcceleratorMatrix<int>;
 
 template class GPUAcceleratorMatrix<double>;
 template class GPUAcceleratorMatrix<float>;
+template class GPUAcceleratorMatrix<int>;
 
 template class OCLAcceleratorMatrix<double>;
 template class OCLAcceleratorMatrix<float>;
+template class OCLAcceleratorMatrix<int>;
 
 template class MICAcceleratorMatrix<double>;
 template class MICAcceleratorMatrix<float>;
+template class MICAcceleratorMatrix<int>;
 
 }

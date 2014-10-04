@@ -130,7 +130,7 @@ int Problem::numAdaptiveFields() const
 {
     int num = 0;
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+        if (fieldInfo->adaptivityType() != AdaptivityMethod_None)
             num++;
     return num;
 }
@@ -341,8 +341,8 @@ void Problem::createStructure()
     foreach (Block* block, m_blocks)
     {
         // todo: is released?
-        block->setWeakForm(new WeakFormAgros<double>(block));
-        block->weakForm()->registerForms();
+        block->setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double>(new WeakFormAgros<double>(block)));
+        block->weakFormInternal()->registerForms();
     }
 }
 
@@ -756,6 +756,12 @@ void Problem::solve(bool commandLine)
         m_isSolving = false;
         return;
     }
+    catch (std::exception& e)
+    {
+      Agros2D::log()->printError(QObject::tr("Solver"), e.what());
+      m_isSolving = false;
+      return;
+    }
     catch (...)
     {
         // todo: dangerous
@@ -808,7 +814,7 @@ void Problem::solveAction()
             else if(!skipThisTimeStep(block))
             {
                 stepMessage(block);
-                if (block->adaptivityType() == AdaptivityType_None)
+                if (block->adaptivityType() == AdaptivityMethod_None)
                 {
                     // no adaptivity
                     solvers[block]->solveSimple(actualTimeStep(), 0);
@@ -826,7 +832,7 @@ void Problem::solveAction()
                         doContinueAdaptivity = solvers[block]->createAdaptedSpace(actualTimeStep(), adaptStep);
 
                         // Python callback
-                        foreach (Field *field, block->fields())
+                        foreach (FieldBlock *field, block->fields())
                         {
                             QString command = QString("(agros2d.field(\"%1\").adaptivity_callback(%2) if (agros2d.field(\"%1\").adaptivity_callback is not None and hasattr(agros2d.field(\"%1\").adaptivity_callback, '__call__')) else True)").
                                 arg(field->fieldInfo()->fieldId()).
@@ -907,7 +913,7 @@ void Problem::stepMessage(Block* block)
 {
     // log analysis
     QString fields;
-    foreach(Field *field, block->fields())
+    foreach(FieldBlock *field, block->fields())
     {
         Agros2D::log()->addIcon(icon(QString("fields/%1").arg(field->fieldInfo()->fieldId())),
             QString("%1\n%2\n%3").
@@ -952,7 +958,7 @@ void Problem::stepMessage(Block* block)
 
 void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGenerator> meshGenerator)
 {
-    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
+    std::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
     QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> meshes;
 
     if (!meshGenerator)

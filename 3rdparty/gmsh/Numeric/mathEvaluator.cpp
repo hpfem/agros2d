@@ -8,7 +8,7 @@
 #if defined(HAVE_MATHEX)
 
 mathEvaluator::mathEvaluator(std::vector<std::string> &expressions,
-                             std::vector<std::string> &variables)                   
+                             std::vector<std::string> &variables)
 {
   _expressions.resize(expressions.size());
   _variables.resize(variables.size(), 0.);
@@ -30,7 +30,11 @@ mathEvaluator::mathEvaluator(std::vector<std::string> &expressions,
       error = true;
     }
   }
-  if(error) expressions.clear();
+  if(error){
+    for(unsigned int i = 0; i < _expressions.size(); i++)
+      delete(_expressions[i]);
+    _expressions.clear();
+  }
 }
 
 mathEvaluator::~mathEvaluator()
@@ -42,15 +46,15 @@ mathEvaluator::~mathEvaluator()
 bool mathEvaluator::eval(std::vector<double> &values, std::vector<double> &res)
 {
   if(values.size() != _variables.size()){
-    Msg::Error("Given %d values for %d variables", values.size(), _variables.size());
+    Msg::Error("Given %d value(s) for %d variable(s)", values.size(), _variables.size());
     return false;
   }
 
   if(res.size() != _expressions.size()){
-    Msg::Error("Given %d results for %d expressions", res.size(), _expressions.size());
+    Msg::Error("Given %d result(s) for %d expression(s)", res.size(), _expressions.size());
     return false;
   }
-  
+
   for(unsigned int i = 0; i < values.size(); i++)
     _variables[i] = values[i];
 

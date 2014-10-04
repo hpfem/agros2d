@@ -43,9 +43,9 @@
 	
 	<td rowspan="5">
 	<div class="section">
-	<h2>{{IMAGES_LABEL}}</h2>
+	<h2>{{GEOMETRY_LABEL}}</h2>
 	<hr/>
-	<div class="figure">{{IMAGE}}</div>
+	<div class="figure">{{GEOMETRY_IMAGE}}</div>
 	</td>
 </tr>
 </table>
@@ -71,7 +71,7 @@
 	</div>
 
 	<div class="section">
-	<h2>{{INFO_LABEL}}</h2>
+	<h2>{{INFORMATION_LABEL}}</h2>
 	<hr/>
 	<table>
 	{{#INFO_SECTION}}

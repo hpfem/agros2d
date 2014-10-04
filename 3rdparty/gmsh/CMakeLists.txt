@@ -8,6 +8,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # do not warn about non-definition of WIN32 on cygwin
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) 
 
+SET(ENABLE_BUILD_SHARED NO)
+SET(ENABLE_BUILD_LIB YES)
+
 # if CMAKE_BUILD_TYPE is specified use it; otherwise set the default
 # build type to "RelWithDebInfo" ("-O2 -g" with gcc) prior to calling
 # project()
@@ -90,7 +93,7 @@ opt(WRAP_PYTHON "Enable generation of Python wrappers" OFF)
 
 set(GMSH_MAJOR_VERSION 2)
 set(GMSH_MINOR_VERSION 8)
-set(GMSH_PATCH_VERSION 4)
+set(GMSH_PATCH_VERSION 5)
 set(GMSH_EXTRA_VERSION "" CACHE STRING "Gmsh extra version string")
 
 set(GMSH_VERSION "${GMSH_MAJOR_VERSION}.${GMSH_MINOR_VERSION}")
@@ -98,42 +101,42 @@ set(GMSH_VERSION "${GMSH_VERSION}.${GMSH_PATCH_VERSION}${GMSH_EXTRA_VERSION}")
 set(GMSH_SHORT_LICENSE "GNU General Public License")
 
 set(GMSH_API
-  ${CMAKE_CURRENT_BINARY_DIR}/Common/GmshConfig.h 
+  ${CMAKE_CURRENT_BINARY_DIR}/Common/GmshConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}/Common/GmshVersion.h
   Common/Gmsh.h Common/Context.h Common/GmshDefines.h Common/GmshMessage.h
-    Common/VertexArray.h Common/Octree.h Common/OctreeInternals.h 
+    Common/VertexArray.h Common/Octree.h Common/OctreeInternals.h
     Common/OS.h Common/StringUtils.h Common/OpenFile.h
     Common/onelab.h Common/GmshSocket.h Common/onelabUtils.h
   Numeric/Numeric.h Numeric/GaussIntegration.h Numeric/polynomialBasis.h
-    Numeric/JacobianBasis.h Numeric/bezierBasis.h Numeric/fullMatrix.h
+    Numeric/JacobianBasis.h Numeric/MetricBasis.h Numeric/bezierBasis.h Numeric/fullMatrix.h
     Numeric/simpleFunction.h Numeric/cartesian.h Numeric/ElementType.h
-  Geo/GModel.h Geo/GEntity.h Geo/GPoint.h Geo/GVertex.h Geo/GEdge.h 
-    Geo/GFace.h Geo/GRegion.h Geo/GEdgeLoop.h Geo/GEdgeCompound.h 
+  Geo/GModel.h Geo/GEntity.h Geo/GPoint.h Geo/GVertex.h Geo/GEdge.h
+    Geo/GFace.h Geo/GRegion.h Geo/GEdgeLoop.h Geo/GEdgeCompound.h
     Geo/GFaceCompound.h Geo/GRegionCompound.h Geo/GRbf.h Geo/MVertex.h
-    Geo/MVertexBoundaryLayerData.h Geo/MEdge.h 
-    Geo/MFace.h Geo/MElement.h Geo/MElementOctree.h Geo/MPoint.h Geo/MLine.h 
-    Geo/MTriangle.h Geo/MQuadrangle.h Geo/MTetrahedron.h Geo/MHexahedron.h 
-    Geo/MPrism.h Geo/MPyramid.h Geo/MElementCut.h Geo/MElementOctree.h 
-    Geo/discreteVertex.h Geo/discreteEdge.h Geo/discreteFace.h Geo/discreteRegion.h 
-    Geo/SPoint2.h Geo/SPoint3.h Geo/SVector3.h Geo/STensor3.h Geo/SBoundingBox3d.h 
-    Geo/Pair.h Geo/Range.h Geo/SOrientedBoundingBox.h 
-    Geo/CellComplex.h Geo/ChainComplex.h Geo/Cell.h Geo/Homology.h Geo/Chain.h 
+    Geo/MVertexBoundaryLayerData.h Geo/MEdge.h
+    Geo/MFace.h Geo/MElement.h Geo/MElementOctree.h Geo/MPoint.h Geo/MLine.h
+    Geo/MTriangle.h Geo/MQuadrangle.h Geo/MTetrahedron.h Geo/MHexahedron.h
+    Geo/MPrism.h Geo/MPyramid.h Geo/MElementCut.h Geo/MElementOctree.h
+    Geo/discreteVertex.h Geo/discreteEdge.h Geo/discreteFace.h Geo/discreteRegion.h
+    Geo/SPoint2.h Geo/SPoint3.h Geo/SVector3.h Geo/STensor3.h Geo/SBoundingBox3d.h
+    Geo/Pair.h Geo/Range.h Geo/SOrientedBoundingBox.h
+    Geo/CellComplex.h Geo/ChainComplex.h Geo/Cell.h Geo/Homology.h Geo/Chain.h
     Geo/partitionEdge.h Geo/CGNSOptions.h Geo/gmshLevelset.h Geo/boundaryLayersData.h
-  Mesh/meshGEdge.h Mesh/meshGFace.h Mesh/meshGFaceOptimize.h 
-    Mesh/meshGFaceElliptic.h Mesh/meshPartition.h Mesh/meshGFaceDelaunayInsertion.h 
+  Mesh/meshGEdge.h Mesh/meshGFace.h Mesh/meshGFaceOptimize.h
+    Mesh/meshGFaceElliptic.h Mesh/meshPartition.h Mesh/meshGFaceDelaunayInsertion.h
     Mesh/simple3D.h Mesh/meshPartitionOptions.h Mesh/directions3D.h Mesh/yamakawa.h
     Mesh/Voronoi3D.h Mesh/Levy3D.h Mesh/periodical.h Mesh/meshMetric.h
   Numeric/mathEvaluator.h
   Solver/dofManager.h Solver/femTerm.h Solver/laplaceTerm.h Solver/elasticityTerm.h
     Solver/crossConfTerm.h Solver/orthogonalTerm.h
-    Solver/linearSystem.h Solver/linearSystemGMM.h Solver/linearSystemCSR.h 
-    Solver/linearSystemFull.h Solver/elasticitySolver.h Solver/sparsityPattern.h 
+    Solver/linearSystem.h Solver/linearSystemGMM.h Solver/linearSystemCSR.h
+    Solver/linearSystemFull.h Solver/elasticitySolver.h Solver/sparsityPattern.h
     Solver/groupOfElements.h Solver/linearSystemPETSc.h Solver/linearSystemMUMPS.h
-  Post/PView.h Post/PViewData.h Plugin/PluginManager.h Post/OctreePost.h 
+  Post/PView.h Post/PViewData.h Plugin/PluginManager.h Post/OctreePost.h
   Post/PViewDataList.h Post/PViewDataGModel.h Post/PViewOptions.h Post/ColorTable.h
    Numeric/nodalBasis.h
   Graphics/drawContext.h
-  contrib/kbipack/gmp_normal_form.h contrib/kbipack/gmp_matrix.h 
+  contrib/kbipack/gmp_normal_form.h contrib/kbipack/gmp_matrix.h
     contrib/kbipack/gmp_blas.h contrib/kbipack/mpz.h
   contrib/DiscreteIntegration/Integration3D.h
   contrib/HighOrderMeshOptimizer/OptHOM.h contrib/HighOrderMeshOptimizer/OptHomMesh.h
@@ -571,7 +574,6 @@ endif(LINUX_JOYSTICK_H)
 if(MSVC)
   add_definitions(-D_USE_MATH_DEFINES -DNOMINMAX 
                   -D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
-  set(GMSH_SRC ${GMSH_SRC};Fltk/Win32Icon.rc)
 endif(MSVC)
 
 if(WIN32 OR CYGWIN)
@@ -701,22 +703,21 @@ endforeach(DIR)
 
 # static library target
 if(ENABLE_BUILD_LIB)
-  add_library(lib STATIC ${GMSH_SRC})
-  set_target_properties(lib PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+  add_library(${PROJECT_NAME} STATIC ${GMSH_SRC})
+  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
   if(MSVC)
-    set_target_properties(lib PROPERTIES DEBUG_POSTFIX d) 
+    set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX d) 
     if(ENABLE_MSVC_STATIC_RUNTIME)
-      set_target_properties(lib PROPERTIES LINK_FLAGS_RELEASE "/nodefaultlib:LIBCMT")
+      set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "/nodefaultlib:LIBCMT")
     endif(ENABLE_MSVC_STATIC_RUNTIME)
   endif(MSVC)
-  TARGET_LINK_LIBRARIES(lib ${PROJECT_NAME} ${LINK_LIBRARIES})
+  TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${PROJECT_NAME} ${LINK_LIBRARIES})
 endif(ENABLE_BUILD_LIB)
 
 # shared library target
 if(ENABLE_BUILD_SHARED OR ENABLE_BUILD_DYNAMIC OR 
    ENABLE_WRAP_PYTHON OR ENABLE_WRAP_JAVA)
   add_library(${PROJECT_NAME} SHARED ${GMSH_SRC})
-  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
   set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${GMSH_MAJOR_VERSION}.${GMSH_MINOR_VERSION}.${GMSH_PATCH_VERSION}
     SOVERSION ${GMSH_MAJOR_VERSION}.${GMSH_MINOR_VERSION})
@@ -775,7 +776,7 @@ if(WIN32 AND NOT MSVC OR CYGWIN)
     set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
   endif(ENABLE_BUILD_DYNAMIC)
 elseif(MSVC)
-  set_target_properties(gmsh PROPERTIES LINK_FLAGS "/STACK:16777216")
+  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/STACK:16777216")
 endif(WIN32 AND NOT MSVC OR CYGWIN)
 
 # parser target
@@ -867,7 +868,7 @@ endif(WIN32 OR CYGWIN)
 # (e.g. "make lib" or "make shared" followed by "make install/fast")
 # install(TARGETS gmsh DESTINATION ${GMSH_BIN} OPTIONAL)
 if(ENABLE_BUILD_LIB)
-  install(TARGETS lib DESTINATION ${GMSH_LIB} OPTIONAL)
+  install(TARGETS ${PROJECT_NAME} DESTINATION ${GMSH_LIB} OPTIONAL)
 endif(ENABLE_BUILD_LIB)
 if(ENABLE_BUILD_SHARED OR ENABLE_BUILD_DYNAMIC)
   if(WIN32 AND NOT MSVC OR CYGWIN)

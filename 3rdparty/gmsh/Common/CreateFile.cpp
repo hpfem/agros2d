@@ -6,7 +6,6 @@
 #include "GmshConfig.h"
 #include "GmshMessage.h"
 #include "GModel.h"
-#include "PView.h"
 #include "GmshDefines.h"
 #include "StringUtils.h"
 #include "Context.h"
@@ -27,6 +26,7 @@
 #include "gl2png.h"
 #include "gl2ppm.h"
 #include "gl2yuv.h"
+#include "gl2pgf.h"
 #endif
 
 int GetFileFormatFromExtension(const std::string &ext)
@@ -61,6 +61,7 @@ int GetFileFormatFromExtension(const std::string &ext)
   else if(ext == ".mpg")  return FORMAT_MPEG;
   else if(ext == ".mpeg") return FORMAT_MPEG;
   else if(ext == ".png")  return FORMAT_PNG;
+  else if(ext == ".pgf")  return FORMAT_PGF;
   else if(ext == ".ps")   return FORMAT_PS;
   else if(ext == ".eps")  return FORMAT_EPS;
   else if(ext == ".pdf")  return FORMAT_PDF;
@@ -112,6 +113,7 @@ std::string GetDefaultFileName(int format)
   case FORMAT_JPEG: name += ".jpg"; break;
   case FORMAT_MPEG: name += ".mpg"; break;
   case FORMAT_PNG:  name += ".png"; break;
+  case FORMAT_PGF:  name += ".todo"; break;
   case FORMAT_PS:   name += ".ps"; break;
   case FORMAT_EPS:  name += ".eps"; break;
   case FORMAT_PDF:  name += ".pdf"; break;
@@ -483,7 +485,7 @@ void CreateOutputFile(const std::string &fileName, int format,
           glLoadMatrixd(modelview);
         }
         else{
-          buffer.fill(CTX::instance()->batch);
+          drawContext::global()->drawCurrentOpenglWindow(true);
         }
         res = gl2psEndPage();
       }
@@ -513,14 +515,42 @@ void CreateOutputFile(const std::string &fileName, int format,
         gl2psBeginPage(base.c_str(), "Gmsh", viewport,
                        GL2PS_TEX, GL2PS_NO_SORT, GL2PS_NONE, GL_RGBA, 0, NULL,
                        0, 0, 0, buffsize, fp, base.c_str());
-        PixelBuffer buffer(width, height, GL_RGB, GL_UNSIGNED_BYTE);
         int oldtext = CTX::instance()->print.text;
         CTX::instance()->print.text = 1;
-        buffer.fill(CTX::instance()->batch);
+        drawContext::global()->drawCurrentOpenglWindow(true);
         CTX::instance()->print.text = oldtext;
         res = gl2psEndPage();
       }
       fclose(fp);
+    }
+    break;
+
+  case FORMAT_PGF:
+    {
+      if(!FlGui::available()) break;
+      // fill pixel buffer without colorbar and axes
+      int restoreGeneralAxis = (int) opt_general_axes(0, GMSH_GET, 0);
+      int restoreSmallAxis = (int) opt_general_small_axes(0, GMSH_GET, 0);
+      opt_general_axes(0, GMSH_SET, 0);
+      opt_general_small_axes(0, GMSH_SET, 0);
+      int num = -1; // id of the post view
+      int cnt = 0; // no of scales/colorbars active
+      for(unsigned int i = 0; i < opt_post_nb_views(0,GMSH_GET,0); i++) {
+        if(opt_view_visible(i, GMSH_GET, 0)) {
+          if (opt_view_show_scale(i, GMSH_GET, 0)) {
+            opt_view_show_scale(i, GMSH_SET, 0);
+            num = i; cnt++;
+          }
+        }
+      }
+      PixelBuffer *buffer = GetCompositePixelBuffer(GL_RGB, GL_UNSIGNED_BYTE);
+      drawContext *ctx = FlGui::instance()->getCurrentOpenglWindow()->getDrawContext();
+      print_pgf(name, num, cnt, buffer, ctx->r, ctx->viewport, ctx->proj, ctx->model);
+      delete buffer;
+      // restore view
+      if(restoreGeneralAxis) opt_general_axes(0, GMSH_SET| GMSH_GUI, 1);
+      if(restoreSmallAxis) opt_general_small_axes(0, GMSH_SET | GMSH_GUI, 1);
+      if(cnt > 0) opt_view_show_scale(num, GMSH_SET, 1);
     }
     break;
 
@@ -635,4 +665,3 @@ void CreateOutputFile(const std::string &fileName, int format,
   if(redraw) drawContext::global()->draw();
 #endif
 }
-

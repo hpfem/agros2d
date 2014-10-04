@@ -12,6 +12,7 @@
 #include "SPoint2.h"
 #include "SPoint3.h"
 #include "MVertexBoundaryLayerData.h"
+#include <algorithm>
 
 class GEntity;
 class GEdge;

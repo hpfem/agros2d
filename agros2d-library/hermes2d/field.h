@@ -110,8 +110,8 @@ public:
     QList<LinearityType> availableLinearityTypes(AnalysisType at) const;
 
     // adaptivity
-    inline AdaptivityType adaptivityType() const { return m_adaptivityType; }
-    void setAdaptivityType(const AdaptivityType at) { m_adaptivityType = at; emit changed(); }
+    inline AdaptivityMethod adaptivityType() const { return m_adaptivityType; }
+    void setAdaptivityType(const AdaptivityMethod at) { m_adaptivityType = at; emit changed(); }
 
     // matrix
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
@@ -266,7 +266,7 @@ private:
     QList<LinearityType> m_availableLinearityTypes;
 
     // adaptivity
-    AdaptivityType m_adaptivityType;
+    AdaptivityMethod m_adaptivityType;
 
     // matrix solver
     Hermes::MatrixSolverType m_matrixSolver;
@@ -298,10 +298,10 @@ XMLModule::linearity_option findLinearityOption(XMLModule::field* module, Analys
 
 ostream& operator<<(ostream& output, FieldInfo& id);
 
-class Field
+class FieldBlock
 {
 public:
-    Field(FieldInfo* fieldInfo);
+    FieldBlock(FieldInfo* fieldInfo);
     bool solveInitVariables();
 
     FieldInfo* fieldInfo() { return m_fieldInfo; }

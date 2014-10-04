@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "cr.hpp"
 #include "../iter_ctrl.hpp"
@@ -40,11 +45,20 @@ namespace paralution {
 
 template <class OperatorType, class VectorType, typename ValueType>
 CR<OperatorType, VectorType, ValueType>::CR() {
+
+  LOG_DEBUG(this, "CR::CR()",
+            "default constructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 CR<OperatorType, VectorType, ValueType>::~CR() {
+
+  LOG_DEBUG(this, "CR::~CR()",
+            "destructor");
+
   this->Clear();
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -99,6 +113,11 @@ void CR<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void CR<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "CRG::Build()",
+            this->build_ <<
+            " #*# begin");
+
+
   if (this->build_ == true)
     this->Clear();
 
@@ -136,10 +155,17 @@ void CR<OperatorType, VectorType, ValueType>::Build(void) {
   this->v_.CloneBackend(*this->op_);
   this->v_.Allocate("v", this->op_->get_nrow());
 
+  LOG_DEBUG(this, "CR::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void CR<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "CR::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -165,6 +191,9 @@ void CR<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void CR<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "CR::MoveToHostLocalData_()",
+            this->build_);  
+
   if (this->build_ == true) {
 
     this->r_.MoveToHost();
@@ -184,6 +213,9 @@ void CR<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void CR<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "CR::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -205,6 +237,9 @@ void CR<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) 
 template <class OperatorType, class VectorType, typename ValueType>
 void CR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                               VectorType *x) {
+
+  LOG_DEBUG(this, "CR::SolveNonPrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -230,7 +265,8 @@ void CR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   p->CopyFrom(*r);
 
   // use for |b-Ax0|
-  this->iter_ctrl_.InitResidual(this->Norm(*r));
+  ValueType res = this->Norm(*r);
+  this->iter_ctrl_.InitResidual(res);
 
   // use for |b|
   //  this->iter_ctrl_.InitResidual(rhs.Norm());
@@ -252,8 +288,9 @@ void CR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
 
   // r = r - alpha * q
   r->AddScale(*q, ValueType(-1.0)*alpha);
+  res = this->Norm(*r);
 
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     rho_old = rho;
 
@@ -279,14 +316,20 @@ void CR<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
 
     // r = r - alpha * q
     r->AddScale(*q, ValueType(-1.0)*alpha);
-
+    res = this->Norm(*r);
   }
+
+  LOG_DEBUG(this, "CR::SolveNonPrecond_()",
+            " #*# end");
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void CR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                             VectorType *x) {
+
+  LOG_DEBUG(this, "CR::SolvePrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -320,7 +363,8 @@ void CR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
   t->CopyFrom(*z);
 
   // use for |b-Ax0|
-  this->iter_ctrl_.InitResidual(this->Norm(*t));
+  ValueType res = this->Norm(*t);
+  this->iter_ctrl_.InitResidual(res);
 
   // use for |b|
   //  this->iter_ctrl_.InitResidual(rhs.Norm());
@@ -348,8 +392,8 @@ void CR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
 
   // t = t - alpha * q
   t->AddScale(*q, ValueType(-1.0)*alpha);
-
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*t), this->index_)) {
+  res = this->Norm(*t);
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     rho_old = rho;
 
@@ -381,8 +425,11 @@ void CR<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
 
     // t = t - alpha * q
     t->AddScale(*q, ValueType(-1.0)*alpha);
-
+    res = this->Norm(*t);
   }
+
+  LOG_DEBUG(this, "CR::SolvePrecond_()",
+            " #*# end");
 
 }
 

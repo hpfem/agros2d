@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,12 +19,17 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_VERSION_HPP_
 #define PARALUTION_VERSION_HPP_
 
 // VERSION
 #define __PARALUTION_VER_MAJOR 0
-#define __PARALUTION_VER_MINOR 5
+#define __PARALUTION_VER_MINOR 7
 #define __PARALUTION_VER_REV  0
 
 // BETA or ALPHA

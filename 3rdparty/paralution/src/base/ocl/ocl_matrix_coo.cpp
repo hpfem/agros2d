@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "ocl_matrix_csr.hpp"
 #include "ocl_matrix_coo.hpp"
 #include "ocl_matrix_dia.hpp"
@@ -33,13 +38,12 @@
 #include "../base_vector.hpp"
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
-#include "../../utils/HardwareParameters.hpp"
 #include "ocl_utils.hpp"
 #include "ocl_allocate_free.hpp"
 #include "../matrix_formats_ind.hpp"
 
 #include <assert.h>
-
+#include <algorithm>
 
 namespace paralution {
 
@@ -47,6 +51,7 @@ template <typename ValueType>
 OCLAcceleratorMatrixCOO<ValueType>::OCLAcceleratorMatrixCOO() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -54,6 +59,9 @@ OCLAcceleratorMatrixCOO<ValueType>::OCLAcceleratorMatrixCOO() {
 
 template <typename ValueType>
 OCLAcceleratorMatrixCOO<ValueType>::OCLAcceleratorMatrixCOO(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixCOO::OCLAcceleratorMatrixCOO()",
+            "constructor with local_backend");
 
   this->mat_.row = NULL;
   this->mat_.col = NULL;
@@ -65,6 +73,9 @@ OCLAcceleratorMatrixCOO<ValueType>::OCLAcceleratorMatrixCOO(const Paralution_Bac
 
 template <typename ValueType>
 OCLAcceleratorMatrixCOO<ValueType>::~OCLAcceleratorMatrixCOO() {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixCOO::~OCLAcceleratorMatrixCOO()",
+            "destructor");
 
   this->Clear();
 
@@ -453,7 +464,7 @@ void OCLAcceleratorMatrixCOO<ValueType>::Apply(const BaseVector<ValueType> &in, 
     cast_out->Zeros();
 
     // do not support super small matrices
-    assert(this->get_nnz() > OPENCL_WARPSIZE); 
+    assert(this->get_nnz() > this->local_backend_.OCL_warp_size); 
 
     // ----------------------------------------------------------
     // Modified and adopted from CUSP 0.3.1, 
@@ -469,22 +480,22 @@ void OCLAcceleratorMatrixCOO<ValueType>::Apply(const BaseVector<ValueType> &in, 
     //TODO
     //move in extra file -  max_active_blocks, warp_size, block_size
 
-    const unsigned int BLOCK_SIZE = this->local_backend_.OCL_max_work_group_size;
+    const int BLOCK_SIZE = int(this->local_backend_.OCL_max_work_group_size);
     //    const unsigned int MAX_BLOCKS = this->local_backend_.GPU_max_blocks;
 
-    const unsigned int MAX_BLOCKS = 32; //  cusp::detail::device::arch::max_active_blocks(spmv_coo_flat_kernel<IndexType, ValueType, BLOCK_SIZE, UseCache>, BLOCK_SIZE, (size_t) 0);
+    const int MAX_BLOCKS = 32; //  cusp::detail::device::arch::max_active_blocks(spmv_coo_flat_kernel<IndexType, ValueType, BLOCK_SIZE, UseCache>, BLOCK_SIZE, (size_t) 0);
 
-    const unsigned int WARPS_PER_BLOCK = BLOCK_SIZE / OPENCL_WARPSIZE;
+    const int WARPS_PER_BLOCK = BLOCK_SIZE / this->local_backend_.OCL_warp_size;
 
 
-    const unsigned int num_units  = this->get_nnz() / OPENCL_WARPSIZE; 
+    const int num_units = this->get_nnz() / this->local_backend_.OCL_warp_size; 
     const unsigned int num_warps  = std::min(num_units, WARPS_PER_BLOCK * MAX_BLOCKS);
     const unsigned int num_blocks = (num_warps + (WARPS_PER_BLOCK-1)) / WARPS_PER_BLOCK; // (N + (granularity - 1)) / granularity
     const unsigned int num_iters  = (num_units +  (num_warps-1)) / num_warps;
     
-    const unsigned int interval_size = OPENCL_WARPSIZE * num_iters;
+    const unsigned int interval_size = this->local_backend_.OCL_warp_size * num_iters;
 
-    const int tail = num_units * OPENCL_WARPSIZE; // do the last few nonzeros separately (fewer than this->local_backend_.GPU_wrap elements)
+    const int tail = num_units * this->local_backend_.OCL_warp_size; // do the last few nonzeros separately (fewer than this->local_backend_.GPU_wrap elements)
 
     const unsigned int active_warps = (interval_size == 0) ? 0 : ((tail + (interval_size-1))/interval_size);
 
@@ -649,7 +660,7 @@ void OCLAcceleratorMatrixCOO<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     assert(cast_out!= NULL);
 
     // do not support super small matrices
-    assert(this->get_nnz() > OPENCL_WARPSIZE); 
+    assert(this->get_nnz() > this->local_backend_.OCL_warp_size); 
 
     // ----------------------------------------------------------
     // Modified and adopted from CUSP 0.3.1, 
@@ -665,22 +676,22 @@ void OCLAcceleratorMatrixCOO<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
     //TODO
     //move in extra file -  max_active_blocks, warp_size, block_size
 
-    const unsigned int BLOCK_SIZE = this->local_backend_.OCL_max_work_group_size;
+    const int BLOCK_SIZE = int(this->local_backend_.OCL_max_work_group_size);
     //    const unsigned int MAX_BLOCKS = this->local_backend_.GPU_max_blocks;
 
     const unsigned int MAX_BLOCKS = 32; //  cusp::detail::device::arch::max_active_blocks(spmv_coo_flat_kernel<IndexType, ValueType, BLOCK_SIZE, UseCache>, BLOCK_SIZE, (size_t) 0);
 
-    const unsigned int WARPS_PER_BLOCK = BLOCK_SIZE / OPENCL_WARPSIZE;
+    const unsigned int WARPS_PER_BLOCK = BLOCK_SIZE / this->local_backend_.OCL_warp_size;
 
 
-    const unsigned int num_units  = this->get_nnz() / OPENCL_WARPSIZE; 
+    const unsigned int num_units  = this->get_nnz() / this->local_backend_.OCL_warp_size; 
     const unsigned int num_warps  = std::min(num_units, WARPS_PER_BLOCK * MAX_BLOCKS);
     const unsigned int num_blocks = (num_warps + (WARPS_PER_BLOCK-1)) / WARPS_PER_BLOCK; // (N + (granularity - 1)) / granularity
     const unsigned int num_iters  = (num_units +  (num_warps-1)) / num_warps;
     
-    const unsigned int interval_size = OPENCL_WARPSIZE * num_iters;
+    const unsigned int interval_size = this->local_backend_.OCL_warp_size * num_iters;
 
-    const int tail = num_units * OPENCL_WARPSIZE; // do the last few nonzeros separately (fewer than this->local_backend_.GPU_wrap elements)
+    const int tail = num_units * this->local_backend_.OCL_warp_size; // do the last few nonzeros separately (fewer than this->local_backend_.GPU_wrap elements)
 
     const unsigned int active_warps = (interval_size == 0) ? 0 : ((tail + (interval_size-1))/interval_size);
 

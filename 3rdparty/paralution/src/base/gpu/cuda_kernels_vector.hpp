@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_GPU_CUDA_KERNELS_VECTOR_HPP_
 #define PARALUTION_GPU_CUDA_KERNELS_VECTOR_HPP_
@@ -42,6 +47,19 @@ __global__ void kernel_scaleaddscale(const IndexType n, const ValueType alpha, c
 
   if (ind < n)
     out[ind] = alpha*out[ind] + beta*x[ind];
+
+}
+
+template <typename ValueType, typename IndexType>
+__global__ void kernel_scaleaddscale_offset(const IndexType n,
+                                            const IndexType src_offset, const IndexType dst_offset,
+                                            const ValueType alpha, const ValueType beta,
+                                            const ValueType *x, ValueType *out) {
+
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (ind < n)
+    out[ind+dst_offset] = alpha*out[ind+dst_offset] + beta*x[ind+src_offset];
 
 }
 

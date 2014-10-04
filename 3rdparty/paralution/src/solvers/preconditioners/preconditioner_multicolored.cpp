@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "preconditioner_multicolored.hpp"
 #include "preconditioner.hpp"
@@ -41,6 +46,9 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 MultiColored<OperatorType, VectorType, ValueType>::MultiColored() {
 
+  LOG_DEBUG(this, "MultiColored::MultiColored()",
+            "default constructor");
+
   this->num_blocks_ = 0 ;
   this->block_sizes_ = NULL ; 
 
@@ -57,12 +65,19 @@ MultiColored<OperatorType, VectorType, ValueType>::MultiColored() {
 template <class OperatorType, class VectorType, typename ValueType>
 MultiColored<OperatorType, VectorType, ValueType>::~MultiColored() {
 
+  LOG_DEBUG(this, "MultiColored::~MultiColored()",
+            "destructor");
+
+
   this->Clear();
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "MultiColored::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -120,6 +135,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(const unsigned int mat_format) {
 
+  LOG_DEBUG(this, "MultiColored::SetPrecondMatrixFormat()",
+            mat_format);
+
   this->op_mat_format_ = true;
   this->precond_mat_format_ = mat_format;
 
@@ -128,6 +146,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(c
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::SetDecomposition(const bool decomp) {
 
+  LOG_DEBUG(this, "MultiColored::SetDecomposition()",
+            decomp);
+
   this->decomp_ = decomp;
 
 }
@@ -135,6 +156,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::SetDecomposition(const b
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Build_Analyser_(void) {
+
+  LOG_DEBUG(this, "MultiColored::Build_Analyser_()",
+            "");
   
   assert(this->op_ != NULL);
   this->analyzer_op_ = NULL;
@@ -143,11 +167,16 @@ void MultiColored<OperatorType, VectorType, ValueType>::Build_Analyser_(void) {
   this->preconditioner_->CloneFrom(*this->op_);
   
   this->permutation_.CloneBackend(*this->op_);
+
 }
 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Analyse_(void) {
+
+  LOG_DEBUG(this, "MultiColored::Analyse_()",
+            "");
+
   
   if (this->analyzer_op_ != NULL) {
 
@@ -168,6 +197,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::Analyse_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Permute_(void) {
 
+  LOG_DEBUG(this, "MultiColored::Permute_()",
+            "");
+
   assert(this->permutation_.get_size() > 0);
 
   this->preconditioner_->Permute(this->permutation_);
@@ -181,6 +213,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::Factorize_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Decompose_(void) {
+
+  LOG_DEBUG(this, "MultiColored::Decompose_()",
+            " * beging");
 
   if (this->decomp_ == true) {
 
@@ -268,10 +303,17 @@ void MultiColored<OperatorType, VectorType, ValueType>::Decompose_(void) {
   this->x_.Allocate("Permuted solution vector",
                     this->op_->get_nrow());
 
+  LOG_DEBUG(this, "MultiColored::Decompose_()",
+            " * end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "MultiColored::Build()",
+            this->build_ <<
+            " #*# begin");
 
   assert(this->build_ == false);
 
@@ -304,6 +346,10 @@ void MultiColored<OperatorType, VectorType, ValueType>::Build(void) {
     this->PostAnalyse_();
   }
 
+  LOG_DEBUG(this, "MultiColored::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -313,6 +359,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::PostAnalyse_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                               VectorType *x) {
+
+  LOG_DEBUG(this, "MultiColored::Solve()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -338,11 +387,17 @@ void MultiColored<OperatorType, VectorType, ValueType>::Solve(const VectorType &
 
   }
 
+  LOG_DEBUG(this, "MultiColored::Solve()",
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::ExtractRHSinX_(const VectorType &rhs,
                                                                        VectorType *x) {
+
+  LOG_DEBUG(this, "MultiColored::ExtractRHSinX_()",
+            "");
 
   assert(this->build_ == true);
 
@@ -365,6 +420,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::ExtractRHSinX_(const Vec
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::InsertSolution_(VectorType *x) {
+
+  LOG_DEBUG(this, "MultiColored::InsertSolution_()",
+            "");
 
   assert(this->build_ == true);
 
@@ -389,6 +447,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::InsertSolution_(VectorTy
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "MultiColored::MoveToHostLocalData_()",
+            this->build_);  
 
   if (this->build_ == true) {
 
@@ -420,6 +481,9 @@ void MultiColored<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(voi
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColored<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "MultiColored::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
     

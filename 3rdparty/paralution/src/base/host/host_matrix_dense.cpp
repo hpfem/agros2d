@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,30 +19,21 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "host_matrix_dense.hpp"
-#include "host_matrix_ell.hpp"
-#include "host_matrix_dia.hpp"
-#include "host_matrix_hyb.hpp"
-#include "host_matrix_coo.hpp"
 #include "host_matrix_csr.hpp"
 #include "host_conversion.hpp"
-#include "../base_matrix.hpp"
-#include "../base_vector.hpp"
 #include "host_vector.hpp"
-#include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
 #include "../matrix_formats_ind.hpp"
 
-extern "C" {
-#include "../../../thirdparty/matrix-market/mmio.h"
-}
-
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
-#include <string.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -55,19 +46,23 @@ extern "C" {
 #include <mkl_spblas.h>
 #endif
 
-
 namespace paralution {
+
 
 template <typename ValueType>
 HostMatrixDENSE<ValueType>::HostMatrixDENSE() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 HostMatrixDENSE<ValueType>::HostMatrixDENSE(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "HostMatrixDENSE::HostMatrixDENSE()",
+            "constructor with local_backend");
 
   this->mat_.val = NULL;
   this->set_backend(local_backend);
@@ -76,6 +71,9 @@ HostMatrixDENSE<ValueType>::HostMatrixDENSE(const Paralution_Backend_Descriptor 
 
 template <typename ValueType>
 HostMatrixDENSE<ValueType>::~HostMatrixDENSE() {
+
+  LOG_DEBUG(this, "HostMatrixDENSE::~HostMatrixDENSE()",
+            "destructor");
 
   this->Clear();
 
@@ -91,7 +89,7 @@ void HostMatrixDENSE<ValueType>::info(void) const {
 template <typename ValueType>
 void HostMatrixDENSE<ValueType>::Clear() {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     free_host(&this->mat_.val);
 
@@ -109,13 +107,13 @@ void HostMatrixDENSE<ValueType>::AllocateDENSE(const int nrow, const int ncol) {
   assert( ncol  >= 0);
   assert( nrow  >= 0);
 
-  if (this->get_nnz() > 0)
+  if (this->nnz_ > 0)
     this->Clear();
 
   if (nrow*ncol > 0) {
 
     allocate_host(nrow*ncol, &this->mat_.val);
-    set_to_zero_host(nrow*ncol, mat_.val);   
+    set_to_zero_host(nrow*ncol, mat_.val);
 
     this->nrow_ = nrow;
     this->ncol_ = ncol;
@@ -145,9 +143,9 @@ void HostMatrixDENSE<ValueType>::SetDataPtrDENSE(ValueType **val, const int nrow
 template <typename ValueType>
 void HostMatrixDENSE<ValueType>::LeaveDataPtrDENSE(ValueType **val) {
 
-  assert(this->get_nrow() > 0);
-  assert(this->get_ncol() > 0);
-  assert(this->get_nnz() > 0);
+  assert(this->nrow_ > 0);
+  assert(this->ncol_ > 0);
+  assert(this->nnz_ > 0);
 
   *val = this->mat_.val;
 
@@ -166,30 +164,30 @@ void HostMatrixDENSE<ValueType>::CopyFrom(const BaseMatrix<ValueType> &mat) {
   assert(this->get_mat_format() == mat.get_mat_format());
 
   if (const HostMatrixDENSE<ValueType> *cast_mat = dynamic_cast<const HostMatrixDENSE<ValueType>*> (&mat)) {
-    
-    this->AllocateDENSE(cast_mat->get_nrow(), cast_mat->get_ncol());
 
-    assert((this->get_nnz()  == mat.get_nnz())  &&
-	   (this->get_nrow() == mat.get_nrow()) &&
-	   (this->get_ncol() == mat.get_ncol()) );    
+    this->AllocateDENSE(cast_mat->nrow_, cast_mat->ncol_);
 
-    if (this->get_nnz() > 0) {
+    assert((this->nnz_  == cast_mat->nnz_)  &&
+           (this->nrow_ == cast_mat->nrow_) &&
+           (this->ncol_ == cast_mat->ncol_) );
 
-      omp_set_num_threads(this->local_backend_.OpenMP_threads);  
+    if (this->nnz_ > 0) {
 
-#pragma omp parallel for      
-      for (int j=0; j<this->get_nnz(); ++j)
+      _set_omp_backend_threads(this->local_backend_, this->nnz_);
+
+#pragma omp parallel for
+      for (int j=0; j<this->nnz_; ++j)
         this->mat_.val[j] = cast_mat->mat_.val[j];
 
     }
 
   } else {
-    
+
     // Host matrix knows only host matrices
     // -> dispatching
     mat.CopyTo(this);
-    
-  }  
+
+  }
 
 }
 
@@ -209,27 +207,25 @@ bool HostMatrixDENSE<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
   if (mat.get_nnz() == 0)
     return true;
 
-    if (const HostMatrixDENSE<ValueType> *cast_mat = dynamic_cast<const HostMatrixDENSE<ValueType>*> (&mat)) {
+  if (const HostMatrixDENSE<ValueType> *cast_mat = dynamic_cast<const HostMatrixDENSE<ValueType>*> (&mat)) {
 
-      this->CopyFrom(*cast_mat);
-      return true;
+    this->CopyFrom(*cast_mat);
+    return true;
 
   }
 
+  if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
 
-    if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
+    this->Clear();
 
-      this->Clear();
+    csr_to_dense(this->local_backend_.OpenMP_threads,
+                 cast_mat->nnz_, cast_mat->nrow_, cast_mat->ncol_, cast_mat->mat_, &this->mat_);
 
-      csr_to_dense(this->local_backend_.OpenMP_threads,
-                   cast_mat->get_nnz(), cast_mat->get_nrow(), cast_mat->get_ncol(),
-                   cast_mat->mat_, &this->mat_);
+    this->nrow_ = cast_mat->nrow_;
+    this->ncol_ = cast_mat->ncol_;
+    this->nnz_ = this->nrow_ * this->ncol_;
 
-      this->nrow_ = cast_mat->get_nrow();
-      this->ncol_ = cast_mat->get_ncol();
-      this->nnz_ = this->nrow_ * this->ncol_;
-
-      return true;
+    return true;
 
   }
 
@@ -244,24 +240,24 @@ void HostMatrixDENSE<double>::Apply(const BaseVector<double> &in, BaseVector<dou
 
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
+  assert(in.  get_size() == this->ncol_);
+  assert(out->get_size() == this->nrow_);
 
-  const HostVector<double> *cast_in = dynamic_cast<const HostVector<double>*> (&in) ; 
-  HostVector<double> *cast_out      = dynamic_cast<      HostVector<double>*> (out) ; 
+  const HostVector<double> *cast_in = dynamic_cast<const HostVector<double>*> (&in);
+  HostVector<double> *cast_out      = dynamic_cast<      HostVector<double>*> (out);
 
   assert(cast_in != NULL);
   assert(cast_out!= NULL);
- 
-  int nrow = this->get_nrow() ;
-  int ncol = this->get_ncol();
+
   double alpha = double(1.0);
   double beta = double(0.0);
+  int nrow = this->nrow_;
+  int ncol = this->ncol_;
 
-  cblas_dgemv(CblasRowMajor, CblasNoTrans, 
+  cblas_dgemv(CblasRowMajor, CblasNoTrans,
               nrow, ncol,
               alpha, this->mat_.val,
-              nrow, 
+              nrow,
               cast_in->vec_, 1, beta,
               cast_out->vec_, 1);
 
@@ -269,29 +265,29 @@ void HostMatrixDENSE<double>::Apply(const BaseVector<double> &in, BaseVector<dou
 
 template <>
 void HostMatrixDENSE<float>::Apply(const BaseVector<float> &in, BaseVector<float> *out) const {
+
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
+  assert(in.  get_size() == this->ncol_);
+  assert(out->get_size() == this->nrow_);
 
-  const HostVector<float> *cast_in = dynamic_cast<const HostVector<float>*> (&in) ; 
-  HostVector<float> *cast_out      = dynamic_cast<      HostVector<float>*> (out) ; 
+  const HostVector<float> *cast_in = dynamic_cast<const HostVector<float>*> (&in);
+  HostVector<float> *cast_out      = dynamic_cast<      HostVector<float>*> (out);
 
   assert(cast_in != NULL);
   assert(cast_out!= NULL);
 
-  int nrow = this->get_nrow() ;
-  int ncol = this->get_ncol();
   float alpha = float(1.0);
   float beta = float(0.0);
+  int nrow = this->nrow_;
+  int ncol = this->ncol_;
 
-  cblas_sgemv(CblasRowMajor, CblasNoTrans, 
+  cblas_sgemv(CblasRowMajor, CblasNoTrans,
               nrow, ncol,
               alpha, this->mat_.val,
-              nrow, 
+              nrow,
               cast_in->vec_, 1, beta,
               cast_out->vec_, 1);
-
 
 }
 
@@ -302,22 +298,22 @@ void HostMatrixDENSE<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVect
 
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
+  assert(in.  get_size() == this->ncol_);
+  assert(out->get_size() == this->nrow_);
 
-  const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-  HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
+  const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+  HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
 
   assert(cast_in != NULL);
   assert(cast_out!= NULL);
 
-  omp_set_num_threads(this->local_backend_.OpenMP_threads);  
+  _set_omp_backend_threads(this->local_backend_, this->nnz_);
 
 #pragma omp parallel for
-  for (int ai=0; ai<this->get_nrow(); ++ai) {
+  for (int ai=0; ai<this->nrow_; ++ai) {
     cast_out->vec_[ai] = ValueType(0.0);
-      for (int aj=0; aj<this->get_ncol(); ++aj) 
-        cast_out->vec_[ai] += this->mat_.val[DENSE_IND(ai,aj,this->get_nrow(),this->get_ncol())] * cast_in->vec_[aj];
+      for (int aj=0; aj<this->ncol_; ++aj)
+        cast_out->vec_[ai] += this->mat_.val[DENSE_IND(ai,aj,this->nrow_,this->ncol_)] * cast_in->vec_[aj];
   }
 
 }
@@ -332,23 +328,23 @@ void HostMatrixDENSE<double>::ApplyAdd(const BaseVector<double> &in, const doubl
 
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
+  assert(in.  get_size() == this->ncol_);
+  assert(out->get_size() == this->nrow_);
 
-  const HostVector<double> *cast_in = dynamic_cast<const HostVector<double>*> (&in) ; 
-  HostVector<double> *cast_out      = dynamic_cast<      HostVector<double>*> (out) ; 
+  const HostVector<double> *cast_in = dynamic_cast<const HostVector<double>*> (&in);
+  HostVector<double> *cast_out      = dynamic_cast<      HostVector<double>*> (out);
 
   assert(cast_in != NULL);
   assert(cast_out!= NULL);
- 
-  int nrow = this->get_nrow() ;
-  int ncol = this->get_ncol();
-  double beta = double(1.0);
 
-  cblas_dgemv(CblasRowMajor, CblasNoTrans, 
+  double beta = double(1.0);
+  int nrow = this->nrow_;
+  int ncol = this->ncol_;
+
+  cblas_dgemv(CblasRowMajor, CblasNoTrans,
               nrow, ncol,
               scalar, this->mat_.val,
-              nrow, 
+              nrow,
               cast_in->vec_, 1, beta,
               cast_out->vec_, 1);
 
@@ -360,26 +356,25 @@ void HostMatrixDENSE<float>::ApplyAdd(const BaseVector<float> &in, const float s
 
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
+  assert(in.  get_size() == this->ncol_);
+  assert(out->get_size() == this->nrow_);
 
-  const HostVector<float> *cast_in = dynamic_cast<const HostVector<float>*> (&in) ; 
-  HostVector<float> *cast_out      = dynamic_cast<      HostVector<float>*> (out) ; 
+  const HostVector<float> *cast_in = dynamic_cast<const HostVector<float>*> (&in);
+  HostVector<float> *cast_out      = dynamic_cast<      HostVector<float>*> (out);
 
   assert(cast_in != NULL);
   assert(cast_out!= NULL);
 
-  int nrow = this->get_nrow() ;
-  int ncol = this->get_ncol();
   float beta = float(1.0);
+  int nrow = this->nrow_;
+  int ncol = this->ncol_;
 
-  cblas_sgemv(CblasRowMajor, CblasNoTrans, 
+  cblas_sgemv(CblasRowMajor, CblasNoTrans,
               nrow, ncol,
               scalar, this->mat_.val,
-              nrow, 
+              nrow,
               cast_in->vec_, 1, beta,
               cast_out->vec_, 1);
-
 
 }
 
@@ -387,27 +382,27 @@ void HostMatrixDENSE<float>::ApplyAdd(const BaseVector<float> &in, const float s
 
 template <typename ValueType>
 void HostMatrixDENSE<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
-                                        BaseVector<ValueType> *out) const {
+                                          BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
-    
-    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
+
+    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
+
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-  omp_set_num_threads(this->local_backend_.OpenMP_threads);  
+  _set_omp_backend_threads(this->local_backend_, this->nnz_);
 
 #pragma omp parallel for
-  for (int ai=0; ai<this->get_nrow(); ++ai) 
-    for (int aj=0; aj<this->get_ncol(); ++aj) 
-      cast_out->vec_[ai] += scalar * this->mat_.val[DENSE_IND(ai,aj,this->get_nrow(),this->get_ncol())] * cast_in->vec_[aj];
+  for (int ai=0; ai<this->nrow_; ++ai)
+    for (int aj=0; aj<this->ncol_; ++aj)
+      cast_out->vec_[ai] += scalar * this->mat_.val[DENSE_IND(ai,aj,this->nrow_,this->ncol_)] * cast_in->vec_[aj];
 
   }
 
@@ -420,20 +415,17 @@ void HostMatrixDENSE<ValueType>::Householder(const int idx, ValueType &beta, Bas
 
   HostVector<ValueType> *cast_vec = dynamic_cast<HostVector<ValueType>*> (vec);
   assert(cast_vec != NULL);
-
-  int nrow = this->get_nrow();
-  cast_vec->Clear();
-  cast_vec->Allocate(nrow - idx);
+  assert(cast_vec->get_size() >= this->nrow_-idx);
 
   ValueType s  = 0.0;
   ValueType mu;
 
-  for (int i=0; i<nrow-idx; ++i)
-    cast_vec->vec_[i] = this->mat_.val[DENSE_IND(idx, i+idx, nrow, this->get_ncol())];
+  for (int i=0; i<this->nrow_-idx; ++i)
+    cast_vec->vec_[i] = this->mat_.val[DENSE_IND(idx, i+idx, this->nrow_, this->ncol_)];
 
   ValueType y1 = cast_vec->vec_[0];
 
-  for (int i=1; i<cast_vec->get_size(); ++i)
+  for (int i=1; i<this->nrow_-idx; ++i)
     s += cast_vec->vec_[i] * cast_vec->vec_[i];
 
   cast_vec->vec_[0] = 1.0;
@@ -455,7 +447,7 @@ void HostMatrixDENSE<ValueType>::Householder(const int idx, ValueType &beta, Bas
     beta = 2 * y0sq / (s + y0sq);
 
     ValueType norm = cast_vec->vec_[0];
-    for (int i=0; i<cast_vec->get_size(); ++i)
+    for (int i=0; i<this->nrow_-idx; ++i)
       cast_vec->vec_[i] /= norm;
 
   }
@@ -465,16 +457,14 @@ void HostMatrixDENSE<ValueType>::Householder(const int idx, ValueType &beta, Bas
 template <typename ValueType>
 void HostMatrixDENSE<ValueType>::QRDecompose(void) {
 
-  assert(this->get_nrow() > 0);
-  assert(this->get_ncol() > 0);
-  assert(this->get_nnz() > 0);
+  assert(this->nrow_ > 0);
+  assert(this->ncol_ > 0);
+  assert(this->nnz_ > 0);
 
-  int nrow = this->get_nrow();
-  int ncol = this->get_ncol();
-
-  int size = (nrow < ncol) ? nrow : ncol;
+  int size = (this->nrow_ < this->ncol_) ? this->nrow_ : this->ncol_;
   ValueType beta;
   HostVector<ValueType> v(this->local_backend_);
+  v.Allocate(this->nrow_);
 
   for (int i=0; i<size; ++i) {
 
@@ -482,23 +472,21 @@ void HostMatrixDENSE<ValueType>::QRDecompose(void) {
 
     if (beta != 0.0) {
 
-      for (int aj=i; aj<ncol; ++aj) {
+      for (int aj=i; aj<this->ncol_; ++aj) {
         ValueType sum = 0.0;
-        for (int ai=i; ai<nrow; ++ai)
-          sum += v.vec_[ai-i] * this->mat_.val[DENSE_IND(ai, aj, nrow, ncol)];
+        for (int ai=i; ai<this->nrow_; ++ai)
+          sum += v.vec_[ai-i] * this->mat_.val[DENSE_IND(ai, aj, this->nrow_, this->ncol_)];
         sum *= beta;
 
-        for (int ai=i; ai<nrow; ++ai)
-          this->mat_.val[DENSE_IND(ai, aj, nrow, ncol)] -= sum * v.vec_[ai-i];
+        for (int ai=i; ai<this->nrow_; ++ai)
+          this->mat_.val[DENSE_IND(ai, aj, this->nrow_, this->ncol_)] -= sum * v.vec_[ai-i];
 
       }
 
-      for (int k=i+1; k<nrow; ++k)
-        this->mat_.val[DENSE_IND(k, i, nrow, ncol)] = v.vec_[k-i];
+      for (int k=i+1; k<this->nrow_; ++k)
+        this->mat_.val[DENSE_IND(k, i, this->nrow_, this->ncol_)] = v.vec_[k-i];
 
     }
-
-    v.Clear();
 
   }
 
@@ -509,8 +497,8 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
 
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_nrow());
-  assert(out->get_size() == this->get_ncol());
+  assert(in.  get_size() == this->nrow_);
+  assert(out->get_size() == this->ncol_);
 
   HostVector<ValueType> *cast_out = dynamic_cast<HostVector<ValueType>*>(out);
 
@@ -519,20 +507,18 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
   HostVector<ValueType> copy_in(this->local_backend_);
   copy_in.CopyFrom(in);
 
-  int nrow = this->get_nrow();
-  int ncol = this->get_ncol();
-  int size = (nrow < ncol) ? nrow : ncol;
+  int size = (this->nrow_ < this->ncol_) ? this->nrow_ : this->ncol_;
 
   ValueType *v = NULL;
-  allocate_host(this->get_nrow(), &v);
+  allocate_host(this->nrow_, &v);
 
   // Apply Q^T on copy_in
   v[0] = 1.0;
   for (int i=0; i<size; ++i) {
 
     ValueType sum = 1.0;
-    for (int j=1; j<this->get_nrow()-i; ++j) {
-      v[j] = this->mat_.val[DENSE_IND(j+i,i,this->get_nrow(), this->get_ncol())];
+    for (int j=1; j<this->nrow_-i; ++j) {
+      v[j] = this->mat_.val[DENSE_IND(j+i,i,this->nrow_, this->ncol_)];
       sum += v[j] * v[j];
     }
     sum = ValueType(2.0) / sum;
@@ -540,10 +526,10 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
     if (sum != 2.0) {
 
       ValueType sum2 = 0.0;
-      for (int j=0; j<this->get_nrow()-i; ++j)
+      for (int j=0; j<this->nrow_-i; ++j)
         sum2 += v[j] * copy_in.vec_[j+i];
 
-      for (int j=0; j<this->get_nrow()-i; ++j)
+      for (int j=0; j<this->nrow_-i; ++j)
         copy_in.vec_[j+i] -= sum * sum2 * v[j];
 
     }
@@ -556,10 +542,10 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
   for (int i=size-1; i>=0; --i) {
 
     ValueType sum = 0.0;
-    for (int j=i+1; j<ncol; ++j)
-      sum += this->mat_.val[DENSE_IND(i, j, this->get_nrow(), this->get_ncol())] * cast_out->vec_[j];
+    for (int j=i+1; j<this->ncol_; ++j)
+      sum += this->mat_.val[DENSE_IND(i, j, this->nrow_, this->ncol_)] * cast_out->vec_[j];
 
-    cast_out->vec_[i] = (copy_in.vec_[i] - sum) / this->mat_.val[DENSE_IND(i, i, this->get_nrow(), this->get_ncol())];
+    cast_out->vec_[i] = (copy_in.vec_[i] - sum) / this->mat_.val[DENSE_IND(i, i, this->nrow_, this->ncol_)];
 
   }
 
@@ -568,30 +554,30 @@ void HostMatrixDENSE<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVe
 template <typename ValueType>
 void HostMatrixDENSE<ValueType>::Invert(void) {
 
-  assert(this->get_nrow() > 0);
-  assert(this->get_ncol() > 0);
-  assert(this->get_nnz() > 0);
-  assert(this->get_nrow() == this->get_ncol());
+  assert(this->nrow_ > 0);
+  assert(this->ncol_ > 0);
+  assert(this->nnz_ > 0);
+  assert(this->nrow_ == this->ncol_);
 
   ValueType *val = NULL;
-  allocate_host(this->get_nrow() * this->get_ncol(), &val);
+  allocate_host(this->nrow_ * this->ncol_, &val);
 
   this->QRDecompose();
 
 #pragma omp parallel for
-  for (int i=0; i<this->get_nrow(); ++i) {
+  for (int i=0; i<this->nrow_; ++i) {
 
     HostVector<ValueType> sol(this->local_backend_);
     HostVector<ValueType> rhs(this->local_backend_);
-    sol.Allocate(this->get_nrow());
-    rhs.Allocate(this->get_nrow());
+    sol.Allocate(this->nrow_);
+    rhs.Allocate(this->nrow_);
 
     rhs.vec_[i] = ValueType(1.0);
 
     this->QRSolve(rhs, &sol);
 
-    for (int j=0; j<this->get_ncol(); ++j)
-      val[DENSE_IND(j, i, this->get_nrow(), this->get_ncol())] = sol.vec_[j];
+    for (int j=0; j<this->ncol_; ++j)
+      val[DENSE_IND(j, i, this->nrow_, this->ncol_)] = sol.vec_[j];
 
   }
 
@@ -603,22 +589,21 @@ void HostMatrixDENSE<ValueType>::Invert(void) {
 template <typename ValueType>
 void HostMatrixDENSE<ValueType>::LUFactorize(void) {
 
-  assert(this->get_nrow() > 0);
-  assert(this->get_ncol() > 0);
-  assert(this->get_nnz() > 0);
-  assert(this->get_nrow() == this->get_ncol());
+  assert(this->nrow_ > 0);
+  assert(this->ncol_ > 0);
+  assert(this->nnz_ > 0);
+  assert(this->nrow_ == this->ncol_);
 
-  int nrow = this->get_nrow();
-  int ncol = this->get_ncol();
+  for (int i=0; i<this->nrow_-1; ++i)
+    for (int j=i+1; j<this->nrow_; ++j) {
 
-  for (int i=0; i<nrow-1; ++i)
-    for (int j=i+1; j<nrow; ++j) {
+      this->mat_.val[DENSE_IND(j, i, this->nrow_, this->ncol_)] /=
+      this->mat_.val[DENSE_IND(i, i, this->nrow_, this->ncol_)];
 
-      this->mat_.val[DENSE_IND(j, i, nrow, ncol)] /= this->mat_.val[DENSE_IND(i, i, nrow, ncol)];
-
-      for (int k=i+1; k<ncol; ++k)
-        this->mat_.val[DENSE_IND(j, k, nrow, ncol)] -= this->mat_.val[DENSE_IND(j, i, nrow, ncol)]
-                                                     * this->mat_.val[DENSE_IND(i, k, nrow, ncol)];
+      for (int k=i+1; k<this->ncol_; ++k)
+        this->mat_.val[DENSE_IND(j, k, this->nrow_, this->ncol_)] -=
+        this->mat_.val[DENSE_IND(j, i, this->nrow_, this->ncol_)] *
+        this->mat_.val[DENSE_IND(i, k, this->nrow_, this->ncol_)];
 
     }
 
@@ -629,8 +614,8 @@ bool HostMatrixDENSE<ValueType>::LUSolve(const BaseVector<ValueType> &in, BaseVe
 
   assert(in.  get_size() >= 0);
   assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_nrow());
-  assert(out->get_size() == this->get_ncol());
+  assert(in.  get_size() == this->nrow_);
+  assert(out->get_size() == this->ncol_);
 
   HostVector<ValueType> *cast_out = dynamic_cast<HostVector<ValueType>*>(out);
   const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*>(&in);
@@ -638,20 +623,20 @@ bool HostMatrixDENSE<ValueType>::LUSolve(const BaseVector<ValueType> &in, BaseVe
   assert(cast_out!= NULL);
 
   // fill solution vector
-  for (int i=0; i<this->get_nrow(); ++i)
+  for (int i=0; i<this->nrow_; ++i)
     cast_out->vec_[i] = cast_in->vec_[i];
 
   // forward sweeps
-  for (int i=0; i<this->get_nrow()-1; ++i) {
-    for (int j=i+1; j<this->get_nrow(); ++j)
-      cast_out->vec_[j] -= cast_out->vec_[i] * this->mat_.val[DENSE_IND(j, i, this->get_nrow(), this->get_ncol())];
+  for (int i=0; i<this->nrow_-1; ++i) {
+    for (int j=i+1; j<this->nrow_; ++j)
+      cast_out->vec_[j] -= cast_out->vec_[i] * this->mat_.val[DENSE_IND(j, i, this->nrow_, this->ncol_)];
   }
 
   // backward sweeps
-  for (int i=this->get_nrow()-1; i>=0; --i) {
-    cast_out->vec_[i] /= this->mat_.val[DENSE_IND(i, i, this->get_nrow(), this->get_ncol())];
+  for (int i=this->nrow_-1; i>=0; --i) {
+    cast_out->vec_[i] /= this->mat_.val[DENSE_IND(i, i, this->nrow_, this->ncol_)];
     for (int j=0; j<i; ++j)
-      cast_out->vec_[j] -= cast_out->vec_[i] * this->mat_.val[DENSE_IND(j, i, this->get_nrow(), this->get_ncol())];
+      cast_out->vec_[j] -= cast_out->vec_[i] * this->mat_.val[DENSE_IND(j, i, this->nrow_, this->ncol_)];
   }
 
   return true;
@@ -663,4 +648,3 @@ template class HostMatrixDENSE<double>;
 template class HostMatrixDENSE<float>;
 
 }
-

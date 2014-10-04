@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,15 +19,24 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "mic_allocate_free.hpp"
 #include <assert.h>
 #include "mic_utils.hpp"
+#include "../../utils/log.hpp"
 
 namespace paralution {
 
 template <typename DataType>
 void allocate_mic(const int mic_dev, 
 		  const int size, DataType **ptr) {
+
+  LOG_DEBUG(0, "allocate_mic()",
+            size << " mic_dev=" << mic_dev);
 
   if (size > 0) {
     assert(*ptr == NULL);
@@ -51,6 +60,9 @@ template <typename DataType>
 void free_mic(const int mic_dev, 
 	      DataType **ptr) {
 
+  LOG_DEBUG(0, "free_mic()",
+            *ptr << " mic_dev=" << mic_dev);
+
   assert(*ptr != NULL);
 
     DataType *p = *ptr;
@@ -59,7 +71,7 @@ void free_mic(const int mic_dev,
   out(p:length(0) MIC_REUSE MIC_FREE) 
   
   delete[] *ptr;
-  
+
   *ptr = NULL;
 
 }
@@ -67,6 +79,10 @@ void free_mic(const int mic_dev,
 template <typename DataType>
 void set_to_zero_mic(const int mic_dev, 
 		     const int size, DataType *ptr) {
+
+  LOG_DEBUG(0, "set_to_zero_mic()",
+            "size =" << size << 
+            " ptr=" << ptr << " mic_dev=" << mic_dev);
 
   if (size > 0) {
 
@@ -84,6 +100,10 @@ void set_to_zero_mic(const int mic_dev,
 template <typename DataType>
 void set_to_one_mic(const int mic_dev, 
 		    const int size, DataType *ptr) {
+
+  LOG_DEBUG(0, "set_to_one_mic()",
+            "size =" << size << 
+            " ptr=" << ptr << " mic_dev=" << mic_dev);
 
   if (size > 0) {
 

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_BASE_HPP_
 #define PARALUTION_BASE_HPP_
@@ -36,13 +41,25 @@ class BaseParalution {
 public:
 
   BaseParalution();
+  BaseParalution(const BaseParalution<ValueType> &src);
   virtual ~BaseParalution();
+
+  BaseParalution<ValueType>& operator=(const BaseParalution<ValueType> &src);
 
   /// Move the object to the Accelerator backend
   virtual void MoveToAccelerator(void) = 0;
 
   /// Move the object to the Host backend
   virtual void MoveToHost(void) = 0;
+
+  /// Move the object to the Accelerator backend with async move
+  virtual void MoveToAcceleratorAsync(void);
+
+  /// Move the object to the Host backend with async move
+  virtual void MoveToHostAsync(void);
+
+  // Sync (the async move)
+  virtual void Sync(void);
 
   /// Clone the Backend descriptor from another object
   void CloneBackend(const BaseParalution<ValueType> &src);
@@ -64,8 +81,12 @@ protected:
 
   /// Return true if the object is on the host
   virtual bool is_host(void) const = 0;
+
   /// Return true if the object is on the accelerator
   virtual bool is_accel(void) const = 0;
+
+  // active async transfer
+  bool asyncf;
 
   friend class BaseParalution<int>;
   friend class BaseParalution<float>;

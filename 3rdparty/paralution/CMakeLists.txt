@@ -16,6 +16,7 @@ SET(SOURCES src/base/backend_manager.cpp
     src/base/local_matrix.cpp 
     src/base/local_vector.cpp 
     src/base/vector.cpp 
+    src/base/host/host_affinity.cpp
     src/base/host/host_conversion.cpp 
     src/base/host/host_matrix_coo.cpp 
     src/base/host/host_matrix_dense.cpp 
@@ -34,11 +35,15 @@ SET(SOURCES src/base/backend_manager.cpp
     src/solvers/krylov/bicgstab.cpp 
     src/solvers/krylov/cg.cpp 
     src/solvers/krylov/cr.cpp
-    src/solvers/krylov/gmres.cpp 
+    src/solvers/krylov/fgmres.cpp
+    src/solvers/krylov/gmres.cpp
     src/solvers/krylov/idr.cpp
+    src/solvers/krylov/minres.cpp
     src/solvers/multigrid/multigrid_amg.cpp 
     src/solvers/multigrid/multigrid.cpp 
     src/solvers/preconditioners/preconditioner.cpp 
+    src/solvers/preconditioners/preconditioner_ai.cpp
+    src/solvers/preconditioners/preconditioner_as.cpp
     src/solvers/preconditioners/preconditioner_blockprecond.cpp
     src/solvers/preconditioners/preconditioner_multicolored.cpp 
     src/solvers/preconditioners/preconditioner_multicolored_gs.cpp 
@@ -47,6 +52,7 @@ SET(SOURCES src/base/backend_manager.cpp
     src/solvers/preconditioners/preconditioner_saddlepoint.cpp
     src/utils/allocate_free.cpp 
     src/utils/math_functions.cpp
+    src/utils/time_functions.cpp
     thirdparty/matrix-market/mmio.c
   )
   

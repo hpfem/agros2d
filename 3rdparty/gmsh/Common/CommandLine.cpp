@@ -28,6 +28,10 @@
 #endif
 #endif
 
+#if defined(HAVE_PETSC)
+#include "petsc.h"
+#endif
+
 #if defined(HAVE_POST)
 #include "PView.h"
 #endif
@@ -74,7 +78,7 @@ std::vector<std::pair<std::string, std::string> > GetUsage()
   s.push_back(mp("-saveall",           "Save all elements (discard physical group definitions)"));
   s.push_back(mp("-parametric",        "Save vertices with their parametric coordinates"));
   s.push_back(mp("-algo string",       "Select mesh algorithm (meshadapt, del2d, front2d, "
-                                        "delquad, del3d, front3d, mmg3d)"));
+                                        "delquad, del3d, front3d, mmg3d, pack)"));
   s.push_back(mp("-smooth int",        "Set number of mesh smoothing steps"));
   s.push_back(mp("-order int",         "Set mesh order (1, ..., 5)"));
   s.push_back(mp("-optimize[_netgen]", "Optimize quality of tetrahedral elements"));
@@ -125,6 +129,7 @@ std::vector<std::pair<std::string, std::string> > GetUsage()
   s.push_back(mp("-pid",               "Print process id on stdout"));
   s.push_back(mp("-listen",            "Always listen to incoming connection requests"));
   s.push_back(mp("-watch pattern",     "Pattern of files to merge as they become available"));
+  s.push_back(mp("-bg file",           "Load background (image or PDF) file"));
   s.push_back(mp("-v int",             "Set verbosity level"));
   s.push_back(mp("-nopopup",           "Don't popup dialog windows in scripts"));
   s.push_back(mp("-string \"string\"", "Parse command string at startup"));
@@ -184,6 +189,7 @@ std::vector<std::pair<std::string, std::string> > GetShortcutsUsage(const std::s
   s.push_back(mp(cc + "r",         "Rename project file"));
   s.push_back(mp(cc + "s",         "Save file as"));
   s.push_back(mp("Shift+" + cc + "c", "Show clipping plane window"));
+  s.push_back(mp("Shift+" + cc + "h", "Show current options and workspace window"));
   s.push_back(mp("Shift+" + cc + "j", "Save options as default"));
   s.push_back(mp("Shift+" + cc + "m", "Show manipulator window"));
   s.push_back(mp("Shift+" + cc + "n", "Show option window"));
@@ -301,16 +307,7 @@ void GetOptions(int argc, char *argv[])
           i += 1;
         }
         else
-          Msg::Fatal("Missing client name and/or address of OneLab server");
-      }
-      else if(!strcmp(argv[i] + 1, "lol")) {
-        i++;
-        if(argv[i] && argv[i + 1] && argv[i + 1][0] != '-'){
-          Msg::LoadOnelabClient(argv[i], argv[i + 1]);
-          i += 2;
-        }
-        else
-          Msg::Fatal("Missing client name and/or address of OneLab server");
+          Msg::Fatal("Missing client name and/or address of ONELAB server");
       }
       else if(!strcmp(argv[i] + 1, "socket")) {
         i++;
@@ -712,16 +709,6 @@ void GetOptions(int argc, char *argv[])
         else
           Msg::Fatal("Missing number");
       }
-      else if(!strcmp(argv[i] + 1, "mpass")) {
-        i++;
-        if(argv[i]) {
-          CTX::instance()->mesh.multiplePasses = atoi(argv[i++]);
-          if(CTX::instance()->mesh.multiplePasses <= 0)
-            Msg::Fatal("Number of Mesh Passes must be > 0");
-        }
-        else
-          Msg::Fatal("Missing number");
-      }
       else if(!strcmp(argv[i] + 1, "ignorePartBound")) {
         i++;
         opt_mesh_ignore_part_bound(0, GMSH_SET, 1);
@@ -906,31 +893,38 @@ void GetOptions(int argc, char *argv[])
         CTX::instance()->solver.listen = 1;
         i++;
       }
+      else if(!strcmp(argv[i] + 1, "bg")){
+        i++;
+        if(argv[i])
+          CTX::instance()->bgImageFileName = argv[i++];
+        else
+          Msg::Fatal("Missing filename");
+      }
       else if(!strcmp(argv[i] + 1, "version") || !strcmp(argv[i] + 1, "-version")) {
         fprintf(stderr, "%s\n", GMSH_VERSION);
         Msg::Exit(0);
       }
       else if(!strcmp(argv[i] + 1, "info") || !strcmp(argv[i] + 1, "-info")) {
         fprintf(stderr, "Version          : %s\n", GMSH_VERSION);
+        fprintf(stderr, "License          : %s\n", GMSH_SHORT_LICENSE);
+        fprintf(stderr, "Build OS         : %s\n", GMSH_OS);
+        fprintf(stderr, "Build date       : %s\n", GMSH_DATE);
+        fprintf(stderr, "Build host       : %s\n", GMSH_HOST);
+        fprintf(stderr, "Build options    :%s\n", GMSH_CONFIG_OPTIONS);
 #if defined(HAVE_FLTK)
-        fprintf(stderr, "GUI toolkit      : FLTK %d.%d.%d\n", FL_MAJOR_VERSION,
+        fprintf(stderr, "FLTK version     : %d.%d.%d\n", FL_MAJOR_VERSION,
                 FL_MINOR_VERSION, FL_PATCH_VERSION);
-#else
-        fprintf(stderr, "GUI toolkit      : none\n");
 #endif
 #if defined(HAVE_PETSC)
+        fprintf(stderr, "PETSc version    : %d.%d.%d\n", PETSC_VERSION_MAJOR,
+                PETSC_VERSION_MINOR, PETSC_VERSION_SUBMINOR);
 #if defined(PETSC_USE_COMPLEX)
         fprintf(stderr, "PETSc arithmetic : Complex\n");
 #else
         fprintf(stderr, "PETSc arithmetic : Real\n");
 #endif
 #endif
-        fprintf(stderr, "License          : %s\n", GMSH_SHORT_LICENSE);
-        fprintf(stderr, "Build OS         : %s\n", GMSH_OS);
-        fprintf(stderr, "Build options    :%s\n", GMSH_CONFIG_OPTIONS);
-        fprintf(stderr, "Build date       : %s\n", GMSH_DATE);
-        fprintf(stderr, "Build host       : %s\n", GMSH_HOST);
-        fprintf(stderr, "Packager         : %s\n", GMSH_PACKAGER);
+        fprintf(stderr, "Packaged by      : %s\n", GMSH_PACKAGER);
         fprintf(stderr, "Web site         : http://www.geuz.org/gmsh/\n");
         fprintf(stderr, "Mailing list     : gmsh@geuz.org\n");
         Msg::Exit(0);

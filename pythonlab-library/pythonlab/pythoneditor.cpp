@@ -17,8 +17,6 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "pythonengine.h"
-
 #include "pythoneditor.h"
 #include "pythonhighlighter.h"
 #include "pythonconsole.h"
@@ -68,30 +66,7 @@ int columnAt(const QString& text, int position)
 }
 
 PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent)
-    : QWidget(parent), pythonEngine(pythonEngine)
-{
-    m_fileName = "";
-
-    createControls();
-
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
-    timer->start(4000);
-
-    txtEditor->setAcceptDrops(false);
-}
-
-PythonEditorWidget::~PythonEditorWidget()
-{
-    QSettings settings;
-
-    settings.setValue("PythonEditorWidget/Geometry", saveGeometry());
-    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
-    settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
-    settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
-}
-
-void PythonEditorWidget::createControls()
+    : QWidget(parent), m_pythonEngine(pythonEngine), m_fileName("")
 {
     txtEditor = new ScriptEditor(pythonEngine, this);
     searchWidget = new SearchWidget(txtEditor, this);
@@ -114,6 +89,7 @@ void PythonEditorWidget::createControls()
     trvPyLint->setColumnCount(1);
     trvPyLint->setIndentation(12);
     trvPyLint->setMaximumHeight(150);
+    trvPyLint->setVisible(false);
     connect(trvPyLint, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLine(QTreeWidgetItem *, int)));
 
     splitter->addWidget(trvPyLint);
@@ -129,11 +105,28 @@ void PythonEditorWidget::createControls()
     splitter->restoreState(settings.value("PythonEditorWidget/SplitterState").toByteArray());
     splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry").toByteArray());
     txtEditor->resize(txtEditor->height(), settings.value("PythonEditorWidget/EditorHeight").toInt());
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
+    timer->start(4000);
+
+    txtEditor->setAcceptDrops(false);
+}
+
+PythonEditorWidget::~PythonEditorWidget()
+{
+    QSettings settings;
+
+    settings.setValue("PythonEditorWidget/Geometry", saveGeometry());
+    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
+    settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
+    settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
 }
 
 void PythonEditorWidget::pyLintAnalyse()
 {
     trvPyLint->clear();
+    trvPyLint->setVisible(true);
 
     QProcess processPyLint;
     processPyLint.setStandardOutputFile(tempProblemFileName() + ".pylint.out");
@@ -250,13 +243,13 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
 
 void PythonEditorWidget::pyFlakesAnalyse()
 {
-    if (isVisible() && !pythonEngine->isScriptRunning())
+    if (isVisible() && !m_pythonEngine->isScriptRunning())
     {
         QString fn = tempProblemFileName() + ".pyflakes_str.py";
         QString str = txtEditor->toPlainText();
         writeStringContent(fn, &str);
 
-        QStringList messages = pythonEngine->codePyFlakes(fn);
+        QStringList messages = m_pythonEngine->codePyFlakes(fn);
 
         txtEditor->errorMessagesPyFlakes.clear();
         foreach (QString line, messages)
@@ -313,6 +306,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     connect(actStopPython, SIGNAL(triggered()), this, SLOT(doStopScript()));
     connect(actReplaceTabsWithSpaces, SIGNAL(triggered()), this, SLOT(doReplaceTabsWithSpaces()));
     connect(actCheckPyLint, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
+    connect(actGotoToFileDirectory, SIGNAL(triggered()), this, SLOT(doGotoFileDirectory()));
 
     connect(pythonEngine, SIGNAL(startedScript()), this, SLOT(doStartedScript()));
     connect(pythonEngine, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
@@ -475,6 +469,8 @@ void PythonEditorDialog::createActions()
     actGotoLine = new QAction(icon(""), tr("Goto line"), this);
     actGotoLine->setShortcut(tr("Alt+G"));
 
+    actGotoToFileDirectory = new QAction(icon("options-plugin"), tr("Goto file directory"), this);
+
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
@@ -512,15 +508,18 @@ void PythonEditorDialog::createActions()
     actExit->setShortcut(tr("Ctrl+Q"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
-    actHelp->setShortcut(QKeySequence::HelpContents);
-    actHelp->setEnabled(false);
-    connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
+    actHelpOnWord = new QAction(icon("help-contents"), tr("&Help"), this);
+    actHelpOnWord->setShortcut(QKeySequence::HelpContents);
+    actHelpOnWord->setEnabled(true);
+    connect(actHelpOnWord, SIGNAL(triggered()), this, SLOT(doHelpOnWord()));
 
-    actHelpKeywordList = new QAction(icon("help-contents"), tr("&Keyword List"), this);
-    actHelpKeywordList->setShortcut(QKeySequence::HelpContents);
-    actHelpKeywordList->setEnabled(false);
-    connect(actHelpKeywordList, SIGNAL(triggered()), this, SLOT(doHelpKeywordList()));
+    actGotoDefinition = new QAction(icon(""), tr("Goto definition"), this);
+    actGotoDefinition->setShortcut(tr("F2"));
+    connect(actGotoDefinition, SIGNAL(triggered()), this, SLOT(doGotoDefinition()));
+
+    actPrintSelection = new QAction(icon(""), tr("Print selection"), this);
+    actPrintSelection->setShortcut(tr("F5"));
+    connect(actPrintSelection, SIGNAL(triggered()), this, SLOT(doPrintSelection()));
 
     actAbout = new QAction(icon("about"), tr("About &PythonLab"), this);
     actAbout->setMenuRole(QAction::AboutRole);
@@ -573,7 +572,13 @@ void PythonEditorDialog::createControls()
     mnuTools->addAction(actStopPython);
     mnuTools->addAction(actCheckPyLint);
     mnuTools->addSeparator();
+    mnuTools->addAction(actGotoToFileDirectory);
+    mnuTools->addSeparator();
     mnuTools->addAction(actReplaceTabsWithSpaces);
+    mnuTools->addSeparator();
+    mnuTools->addAction(actHelpOnWord);
+    mnuTools->addAction(actGotoDefinition);
+    mnuTools->addAction(actPrintSelection);
 
     mnuOptions = menuBar()->addMenu(tr("&Options"));
     mnuOptions->addAction(actOptionsEnablePyFlakes);
@@ -584,8 +589,6 @@ void PythonEditorDialog::createControls()
     mnuOptions->addAction(actOptionsEnableUseProfiler);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
-    // mnuHelp->addAction(actHelp);
-    // mnuHelp->addAction(actHelpKeywordList);
     mnuHelp->addAction(actAbout);   // will be added to "PythonLab" MacOSX menu
     mnuHelp->addAction(actAboutQt); // will be added to "PythonLab" MacOSX menu
 
@@ -632,6 +635,7 @@ void PythonEditorDialog::createControls()
 #endif
     tlbTools->setObjectName("Tools");
     tlbTools->addAction(actCheckPyLint);
+    tlbTools->addAction(actGotoToFileDirectory);
 
     // path
     QLabel *lblPath = new QLabel();
@@ -669,9 +673,12 @@ void PythonEditorDialog::createControls()
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
 
+    errorWidget = new ErrorWidget(tabWidget, this);
+
     // main widget
-    QHBoxLayout *layout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tabWidget);
+    layout->addWidget(errorWidget);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
@@ -731,6 +738,11 @@ void PythonEditorDialog::doRunPython()
 {
     if (pythonEngine->isScriptRunning())
         return;
+
+    // hide pyLint
+    scriptEditorWidget()->trvPyLint->setVisible(false);
+    // clear errors
+    scriptEditorWidget()->txtEditor->errorMessagesError.clear();
 
     if (!scriptEditorWidget()->fileName().isEmpty())
         fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
@@ -806,12 +818,19 @@ void PythonEditorDialog::doRunPython()
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
             consoleView->console()->stdErr("\nStacktrace:\n");
-            consoleView->console()->stdErr(result.traceback());
+            consoleView->console()->stdErr(result.tracebackToString());
         }
 
         if (!txtEditor->textCursor().hasSelection() && result.line() >= 0)
             txtEditor->gotoLine(result.line(), true);
+
+        errorWidget->showError(result);
     }
+    else
+    {
+        errorWidget->setVisible(false);
+    }
+
     consoleView->console()->appendCommandPrompt();
 
     scriptFinish();
@@ -887,6 +906,12 @@ void PythonEditorDialog::doPyLintPython()
     txtEditor->setFocus();
 }
 
+void PythonEditorDialog::doGotoFileDirectory()
+{
+    if (!scriptEditorWidget()->fileName().isEmpty())
+        fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
+}
+
 void PythonEditorDialog::doOptionsPrintStacktrace()
 {
     QSettings settings;
@@ -942,7 +967,8 @@ void PythonEditorDialog::doPathChangeDir()
 
 void PythonEditorDialog::doFileNew()
 {
-    tabWidget->addTab(new PythonEditorWidget(pythonEngine, this), tr("Untitled"));
+    PythonEditorWidget *editor = new PythonEditorWidget(pythonEngine, this);
+    tabWidget->addTab(editor, tr("Untitled"));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
     doCurrentPageChanged(tabWidget->count()-1);
 }
@@ -972,7 +998,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
             if (scriptEditorWidgetTmp->fileName() == fileName)
             {
                 tabWidget->setCurrentIndex(i);
-                QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
+                // QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
                 return;
             }
         }
@@ -999,6 +1025,26 @@ void PythonEditorDialog::doFileOpen(const QString &file)
     }
 }
 
+void PythonEditorDialog::doFileOpenAndFind(const QString &file, const QString &find)
+{
+    doFileOpen(file);
+
+    // search
+    QTextCursor cursor = txtEditor->textCursor();
+    cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+    cursor = txtEditor->document()->find(find, txtEditor->textCursor());
+
+    if (!cursor.isNull())
+    {
+        cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+        txtEditor->setTextCursor(cursor);
+        txtEditor->ensureCursorVisible();
+        txtEditor->highlightCurrentLine(true);
+        setFocus();
+    }
+}
+
+
 void PythonEditorDialog::doFileOpenRecent(QAction *action)
 {
     QString fileName = action->text();
@@ -1016,7 +1062,17 @@ void PythonEditorDialog::doFileSave()
 
     // save dialog
     if (scriptEditorWidget()->fileName().isEmpty())
-        scriptEditorWidget()->setFileName(QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)")));
+    {
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
+
+        if (!fileName.isEmpty())
+        {
+            if (QFileInfo(fileName).suffix() != "py")
+                fileName += ".py";
+
+            scriptEditorWidget()->setFileName(fileName);
+        }
+    }
 
     // write text
     if (!scriptEditorWidget()->fileName().isEmpty())
@@ -1114,9 +1170,9 @@ void PythonEditorDialog::doFind()
     scriptEditorWidget()->searchWidget->showFind(cursor.selectedText());
 }
 
-void PythonEditorDialog::doFindNext(bool fromBegining)
-{
-    scriptEditorWidget()->searchWidget->findNext(false);
+void PythonEditorDialog::doFindNext()
+{        
+    scriptEditorWidget()->searchWidget->findNext();
 }
 
 void PythonEditorDialog::doReplace()
@@ -1130,14 +1186,47 @@ void PythonEditorDialog::doDataChanged()
     actPaste->setEnabled(!QApplication::clipboard()->text().isEmpty());
 }
 
-void PythonEditorDialog::doHelp()
+void PythonEditorDialog::doHelpOnWord()
 {
-    showPage("scripting/commands.html");
+    QTextCursor tc = txtEditor->textCursor();
+    QString help = currentPythonEngine()->codeHelp(scriptEditorWidget()->fileName(),
+                                                   tc.blockNumber() + 1,
+                                                   tc.columnNumber() + 1);
+
+    if (!help.isEmpty())
+    {
+        consoleView->console()->consoleMessage(QString("\n%1").arg(help), Qt::darkMagenta);
+        consoleView->console()->appendCommandPrompt();
+    }
 }
 
-void PythonEditorDialog::doHelpKeywordList()
+void PythonEditorDialog::doGotoDefinition()
 {
-    showPage("scripting/keyword_list.html");
+    QTextCursor tc = txtEditor->textCursor();
+    PythonGotoDefinition out = currentPythonEngine()->codeGotoDefinition(scriptEditorWidget()->fileName(),
+                                                                         tc.blockNumber() + 1,
+                                                                         tc.columnNumber() + 1);
+
+    if (out.line != -1)
+    {
+        doFileOpen(out.module_path);
+        txtEditor->gotoLine(out.line);
+    }
+}
+
+void PythonEditorDialog::doPrintSelection()
+{
+    // connect stdout and set current path
+    consoleView->console()->connectStdOut();
+
+    consoleView->console()->stdOut(QString("%1: ").arg(txtEditor->textCursor().selectedText()));
+
+    QString str = QString("print(%1)").arg(txtEditor->textCursor().selectedText());
+    currentPythonEngine()->runScript(str);
+    consoleView->console()->appendCommandPrompt();
+
+    // disconnect stdout
+    consoleView->console()->disconnectStdOut();
 }
 
 void PythonEditorDialog::doAbout()
@@ -1218,6 +1307,13 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
     connect(actCommentAndUncommentSelection, SIGNAL(triggered()), txtEditor, SLOT(commentAndUncommentSelection()));
     actGotoLine->disconnect();
     connect(actGotoLine, SIGNAL(triggered()), txtEditor, SLOT(gotoLine()));
+
+    actHelpOnWord->disconnect();
+    connect(actHelpOnWord, SIGNAL(triggered()), this, SLOT(doHelpOnWord()));
+    actGotoDefinition->disconnect();
+    connect(actGotoDefinition, SIGNAL(triggered()), this, SLOT(doGotoDefinition()));
+    actPrintSelection->disconnect();
+    connect(actPrintSelection, SIGNAL(triggered()), this, SLOT(doPrintSelection()));
 
     txtEditor->document()->disconnect(actUndo);
     txtEditor->document()->disconnect(actRedo);
@@ -1675,7 +1771,8 @@ void ScriptEditor::highlightCurrentLine(bool isError)
     if (!isReadOnly())
     {
         QTextEdit::ExtraSelection selection;
-        QColor lineColor = QColor(Qt::yellow).lighter(180);
+
+        QColor lineColor = QColor(253, 235, 227);
         if (isError)
             lineColor = QColor(Qt::red).lighter(180);
 
@@ -1697,17 +1794,18 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     // line numbers
     const QBrush bookmarkBrushPyFlakes(QColor(Qt::red).lighter());
+    const QBrush bookmarkBrushError(QColor(Qt::red).rgb());
 
     int timesWidth = 0;
     int callWidth = 0;
     if (isProfiled())
     {
         timesWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedTime()).length() + 1;
-        callWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedCall()).length() + 1;
+        callWidth = fontMetrics().width(QLatin1Char('9')) * (QString::number(profilerMaxAccumulatedCall()).length() + 1) + 1;
     }
 
-    QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    QPainter painterLineArea(lineNumberArea);
+    painterLineArea.fillRect(event->rect(), Qt::lightGray);
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -1721,15 +1819,20 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
             // line number
             QString lineNumber = QString::number(blockNumber + 1);
 
-            // draw rect
+            // draw rect - pyFlakes
             if (errorMessagesPyFlakes.contains(blockNumber + 1))
-                painter.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
-                                 bookmarkBrushPyFlakes);
+                painterLineArea.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
+                                         bookmarkBrushPyFlakes);
+
+            // draw rect - error
+            if (errorMessagesError.contains(blockNumber + 1))
+                painterLineArea.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
+                                         bookmarkBrushError);
 
             // draw line number
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, lineNumber);
+            painterLineArea.setPen(Qt::black);
+            painterLineArea.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+                                     Qt::AlignRight, lineNumber);
 
             // draw profiler number
             if (isProfiled())
@@ -1737,15 +1840,15 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
                 if (profilerAccumulatedTimes().value(blockNumber + 1) > 0)
                 {
                     QString number = QString::number(profilerAccumulatedTimes().value(blockNumber + 1));
-                    painter.setPen(Qt::darkBlue);
-                    painter.drawText(0, top, timesWidth,
-                                     fontMetrics().height(),
-                                     Qt::AlignRight, number);
+                    painterLineArea.setPen(Qt::darkBlue);
+                    painterLineArea.drawText(0, top, timesWidth,
+                                             fontMetrics().height(),
+                                             Qt::AlignRight, number);
 
-                    number = QString::number(profilerAccumulatedLines().value(blockNumber + 1));
-                    painter.setPen(Qt::darkGreen);
-                    painter.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
-                                     Qt::AlignRight, number);
+                    number = QString::number(profilerAccumulatedLines().value(blockNumber + 1)) + "x";
+                    painterLineArea.setPen(Qt::darkGreen);
+                    painterLineArea.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
+                                             Qt::AlignRight, number);
                 }
             }
         }
@@ -1768,6 +1871,9 @@ void ScriptEditor::lineNumberAreaMouseMoveEvent(QMouseEvent *event)
     {
         if (errorMessagesPyFlakes.contains(line))
             QToolTip::showText(event->globalPos(), errorMessagesPyFlakes[line]);
+
+        if (errorMessagesError.contains(line))
+            QToolTip::showText(event->globalPos(), errorMessagesError[line]);
     }
 }
 
@@ -1834,13 +1940,13 @@ SearchWidget::SearchWidget(ScriptEditor *txtEditor, QWidget *parent)
     lblReplace = new QLabel(tr("Replace with:"));
 
     txtFind = new QLineEdit();
-    connect(txtFind, SIGNAL(returnPressed()), this, SLOT(find()));
+    connect(txtFind, SIGNAL(returnPressed()), this, SLOT(findNext()));
     txtReplace = new QLineEdit();
     connect(txtReplace, SIGNAL(returnPressed()), this, SLOT(replaceAll()));
 
     btnFind = new QPushButton(tr("Find"), this);
     btnFind->setDefault(true);
-    connect(btnFind, SIGNAL(clicked()), this, SLOT(find()));
+    connect(btnFind, SIGNAL(clicked()), this, SLOT(findNext()));
 
     btnReplace = new QPushButton(tr("Replace all"), this);
     connect(btnReplace, SIGNAL(clicked()), this, SLOT(replaceAll()));
@@ -1892,8 +1998,6 @@ void SearchWidget::showFind(const QString &text)
     txtReplace->setVisible(false);
     btnReplace->setVisible(false);
 
-    startFromBeginning = true;
-
     show();
 }
 
@@ -1911,26 +2015,28 @@ void SearchWidget::showReplaceAll(const QString &text)
     show();
 }
 
-void SearchWidget::find()
-{
-    findNext(startFromBeginning);
-    startFromBeginning = false;
-}
-
-void SearchWidget::findNext(bool fromBegining)
+void SearchWidget::findNext()
 {
     if (!txtFind->text().isEmpty())
     {
-        // Search
-        QTextCursor cursor = txtEditor->textCursor();
-        if (fromBegining)
-            cursor = txtEditor->document()->find(txtFind->text());
-        else
-            cursor = txtEditor->document()->find(txtFind->text(), cursor);
+        // search
+        QTextCursor cursor = txtEditor->document()->find(txtFind->text(), txtEditor->textCursor());
 
-        if (cursor.position() >= 0)
+        if (cursor.isNull())
+        {
+            // restart from the beginning
+            cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+            if (!txtEditor->document()->find(txtFind->text(), cursor).isNull())
+            {
+                txtEditor->setTextCursor(cursor);
+                findNext();
+            }
+        }
+        else
+        {
             txtEditor->setTextCursor(cursor);
-        txtEditor->setFocus();
+            txtEditor->setFocus();
+        }
 
         if (isVisible())
             txtFind->setFocus();
@@ -1957,4 +2063,112 @@ void SearchWidget::hideWidget()
 {
     hide();
     txtEditor->setFocus();
+}
+
+// *********************************************************************************************
+
+ErrorWidget::ErrorWidget(QTabWidget *tabWidget, QWidget *parent)
+    : QWidget(parent), tabWidget(tabWidget)
+{
+    dialog = dynamic_cast<PythonEditorDialog *>(parent);
+
+    setVisible(false);
+
+    trvErrors = new QTreeWidget(this);
+    trvErrors->setHeaderHidden(false);
+    trvErrors->setMouseTracking(true);
+    trvErrors->setColumnCount(3);
+    trvErrors->setColumnWidth(1, 200);
+    trvErrors->setIndentation(12);
+    connect(trvErrors, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doHighlightLineError(QTreeWidgetItem *, int)));
+
+    QStringList headers;
+    headers << tr("Line") << tr("Name") << tr("Filename");
+    trvErrors->setHeaderLabels(headers);
+
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, Qt::red);
+
+    errorLabel = new QLabel(this);
+    errorLabel->setPalette(palette);
+
+    QVBoxLayout *layoutError = new QVBoxLayout();
+    layoutError->addWidget(errorLabel, 0);
+    layoutError->addWidget(trvErrors, 1);
+
+    setMaximumHeight(150);
+    setMinimumHeight(150);
+
+    setLayout(layoutError);
+}
+
+void ErrorWidget::showError(ErrorResult result)
+{
+    trvErrors->clear();
+    setVisible(true);
+
+    PythonEditorWidget *scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->currentWidget());
+
+    errorLabel->setText(result.error());
+
+    foreach (ErrorResult::ErrorTraceback trace, result.traceback())
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(trvErrors);
+
+        item->setIcon(0, icon("check-error"));
+        item->setText(0, QString::number(trace.line));
+        item->setData(0, Qt::UserRole, trace.line);
+        item->setText(1, trace.name);
+        item->setData(1, Qt::UserRole, trace.name);
+        item->setText(2, trace.fileName);
+        item->setData(2, Qt::UserRole, trace.fileName);
+
+        // lines
+        int line = item->data(0, Qt::UserRole).value<int>();
+        QString name = item->data(1, Qt::UserRole).toString();
+        QString fileName = item->data(2, Qt::UserRole).toString();
+
+        if (scriptEditorWidget->fileName() == fileName)
+        {
+            scriptEditorWidget->txtEditor->errorMessagesError.insert(line, name);
+        }
+    }
+}
+
+void ErrorWidget::doHighlightLineError(QTreeWidgetItem *item, int role)
+{
+    if (item)
+    {
+        int line = item->data(0, Qt::UserRole).value<int>();
+        QString fileName = item->data(2, Qt::UserRole).toString();
+
+        PythonEditorWidget *scriptEditorWidget = NULL;
+        for (int i = 0; i < tabWidget->count(); i++)
+        {
+            scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->widget(i));
+
+            if (scriptEditorWidget->fileName() == fileName)
+            {
+                tabWidget->setCurrentIndex(i);
+                break;
+            }
+            else
+            {
+                scriptEditorWidget = NULL;
+            }
+        }
+
+        // open existing file
+        if (!scriptEditorWidget)
+        {
+            if (QFile::exists(fileName))
+            {
+                dialog->doFileOpen(fileName);
+                scriptEditorWidget = dynamic_cast<PythonEditorWidget *>(tabWidget->widget(tabWidget->count() - 1));
+            }
+        }
+
+        if (scriptEditorWidget)
+            scriptEditorWidget->txtEditor->gotoLine(line, true);
+    }
 }

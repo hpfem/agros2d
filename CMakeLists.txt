@@ -152,7 +152,11 @@ IF(MSVC)
 ENDIF(MSVC)
 
 # Python
-FIND_PACKAGE(PythonLibs 3.2 REQUIRED)
+IF(MSVC)
+	FIND_PACKAGE(PythonLibs 3.4 REQUIRED)
+ELSE(MSVC)
+	FIND_PACKAGE(PythonLibs 3.2 REQUIRED)
+ENDIF(MSVC)
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 
 # VTK
@@ -243,7 +247,6 @@ ADD_SUBDIRECTORY(agros2d-solver)
 ADD_SUBDIRECTORY(agros2d-generator)
 ADD_SUBDIRECTORY(agros2d-remote)
 ADD_SUBDIRECTORY(solver-external)
-ADD_SUBDIRECTORY(optilab-binary)
 #ADD_SUBDIRECTORY(agros2d-forms)
 
 message("\nAgros2D Configuration results")

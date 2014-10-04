@@ -97,11 +97,11 @@ void NewtonSolverAgros<Scalar>::setError()
     else
         iteration = this->get_current_iteration_number();
 
-    const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
-    const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
-    const Hermes::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
-    const Hermes::vector<double>& damping_factors = this->get_parameter_value(this->damping_factors());
-    const Hermes::vector<bool>& jacobian_recalculated_log = this->get_parameter_value(this->iterations_with_recalculated_jacobian());
+    const std::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
+    const std::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
+    const std::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
+    const std::vector<double>& damping_factors = this->get_parameter_value(this->damping_factors());
+    const std::vector<bool>& jacobian_recalculated_log = this->get_parameter_value(this->iterations_with_recalculated_jacobian());
 
     double current_damping_factor = damping_factors.back();
     double previous_damping_factor = current_damping_factor;

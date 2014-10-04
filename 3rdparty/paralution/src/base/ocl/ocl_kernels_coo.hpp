@@ -1,30 +1,35 @@
+// *************************************************************************
+//
+//    PARALUTION   www.paralution.com
+//
+//    Copyright (C) 2012-2014 Dimitar Lukarski
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_OCL_KERNELS_COO_HPP_
 #define PARALUTION_OCL_KERNELS_COO_HPP_
 
 namespace paralution {
 
 const char *ocl_kernels_coo =
-	"// *************************************************************************\n"
-	"//\n"
-	"//    PARALUTION   www.paralution.com\n"
-	"//\n"
-	"//    Copyright (C) 2012-2013 Dimitar Lukarski\n"
-	"//\n"
-	"//    This program is free software: you can redistribute it and/or modify\n"
-	"//    it under the terms of the GNU General Public License as published by\n"
-	"//    the Free Software Foundation, either version 3 of the License, or\n"
-	"//    (at your option) any later version.\n"
-	"//\n"
-	"//    This program is distributed in the hope that it will be useful,\n"
-	"//    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-	"//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-	"//    GNU General Public License for more details.\n"
-	"//\n"
-	"//    You should have received a copy of the GNU General Public License\n"
-	"//    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
-	"//\n"
-	"// *************************************************************************\n"
-	"\n"
 	"__kernel void kernel_coo_permute(         const int  nnz,\n"
 	"                                 __global const int *in_row,\n"
 	"                                 __global const int *in_col,\n"
@@ -43,17 +48,16 @@ const char *ocl_kernels_coo =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
-	"// ----------------------------------------------------------\n"
-	"// function segreduce_warp(...)\n"
-	"// ----------------------------------------------------------\n"
-	"// Modified and adopted from CUSP 0.3.1, \n"
-	"// http://code.google.com/p/cusp-library/\n"
-	"// NVIDIA, APACHE LICENSE 2.0\n"
-	"// ----------------------------------------------------------\n"
-	"// CHANGELOG\n"
-	"// - adopted interface\n"
-	"// ----------------------------------------------------------\n"
+// ----------------------------------------------------------
+// function segreduce_warp(...)
+// ----------------------------------------------------------
+// Modified and adopted from CUSP 0.3.1, 
+// http://code.google.com/p/cusp-library/
+// NVIDIA, APACHE LICENSE 2.0
+// ----------------------------------------------------------
+// CHANGELOG
+// - adopted interface
+// ----------------------------------------------------------
 	"inline ValueType segreduce_warp(const int thread_lane, int row, ValueType val, __local int *rows, __local ValueType *vals) {\n"
 	"\n"
 	"  int tid = get_local_id(0);\n"
@@ -71,17 +75,16 @@ const char *ocl_kernels_coo =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
-	"// ----------------------------------------------------------\n"
-	"// function segreduce_block(...)\n"
-	"// ----------------------------------------------------------\n"
-	"// Modified and adopted from CUSP 0.3.1, \n"
-	"// http://code.google.com/p/cusp-library/\n"
-	"// NVIDIA, APACHE LICENSE 2.0\n"
-	"// ----------------------------------------------------------\n"
-	"// CHANGELOG\n"
-	"// - adopted interface\n"
-	"// ----------------------------------------------------------\n"
+// ----------------------------------------------------------
+// function segreduce_block(...)
+// ----------------------------------------------------------
+// Modified and adopted from CUSP 0.3.1, 
+// http://code.google.com/p/cusp-library/
+// NVIDIA, APACHE LICENSE 2.0
+// ----------------------------------------------------------
+// CHANGELOG
+// - adopted interface
+// ----------------------------------------------------------
 	"inline void segreduce_block(__local const int *idx, __local ValueType *val) {\n"
 	"\n"
 	"  ValueType left = 0;\n"
@@ -99,17 +102,16 @@ const char *ocl_kernels_coo =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
-	"// ----------------------------------------------------------\n"
-	"// function kernel_spmv_coo_flat(...)\n"
-	"// ----------------------------------------------------------\n"
-	"// Modified and adopted from CUSP 0.3.1, \n"
-	"// http://code.google.com/p/cusp-library/\n"
-	"// NVIDIA, APACHE LICENSE 2.0\n"
-	"// ----------------------------------------------------------\n"
-	"// CHANGELOG\n"
-	"// - adopted interface\n"
-	"// ----------------------------------------------------------\n"
+// ----------------------------------------------------------
+// function kernel_spmv_coo_flat(...)
+// ----------------------------------------------------------
+// Modified and adopted from CUSP 0.3.1, 
+// http://code.google.com/p/cusp-library/
+// NVIDIA, APACHE LICENSE 2.0
+// ----------------------------------------------------------
+// CHANGELOG
+// - adopted interface
+// ----------------------------------------------------------
 	"__kernel void kernel_coo_spmv_flat(         const       int  num_nonzeros,\n"
 	"                                            const       int  interval_size,\n"
 	"                                   __global const       int *I, \n"
@@ -125,39 +127,38 @@ const char *ocl_kernels_coo =
 	"  __local volatile ValueType vals[BLOCK_SIZE];\n"
 	"\n"
 	"        int tid         = get_local_id(0);\n"
-	"  const int thread_id   = BLOCK_SIZE * get_group_id(0) + tid;                            // global thread index\n"
-	"  const int thread_lane = tid & (WARP_SIZE-1);                                           // thread index within the warp\n"
-	"  const int warp_id     = thread_id   / WARP_SIZE;                                       // global warp index\n"
+	"  const int thread_id   = BLOCK_SIZE * get_group_id(0) + tid;\n"
+	"  const int thread_lane = tid & (WARP_SIZE-1);\n"
+	"  const int warp_id     = thread_id   / WARP_SIZE;\n"
 	"\n"
-	"  const int interval_begin = warp_id * interval_size;                                    // warp's offset into I,J,V\n"
+	"  const int interval_begin = warp_id * interval_size;\n"
 	"  int interval_end2 = interval_begin + interval_size;\n"
 	"  if (interval_end2 > num_nonzeros)\n"
 	"    interval_end2 = num_nonzeros;\n"
 	"\n"
-	"  const int interval_end = interval_end2; // min(interval_begin + interval_size, num_nonzeros);  // end of warps's work\n"
+	"  const int interval_end = interval_end2;\n"
 	"\n"
-	"  const int idx = 16 * (tid/32 + 1) + tid;                                                     // thread's index into padded rows array\n"
+	"  const int idx = 16 * (tid/32 + 1) + tid;\n"
 	"\n"
-	"  rows[idx - 16] = -1;                                                                         // fill padding with invalid row index\n"
+	"  rows[idx - 16] = -1;\n"
 	"\n"
-	"  if(interval_begin >= interval_end)                                                           // warp has no work to do \n"
+	"  if(interval_begin >= interval_end)\n"
 	"    return;\n"
 	"\n"
 	"  if (thread_lane == 31) {\n"
-	"    // initialize the carry in values\n"
 	"    rows[idx] = I[interval_begin]; \n"
 	"    vals[tid] = (ValueType) 0.0;\n"
 	"  }\n"
 	"\n"
 	"  for(int n = interval_begin + thread_lane; n < interval_end; n += WARP_SIZE) {\n"
-	"    int row = I[n];                                         // row index (i)\n"
-	"    ValueType val = scalar * V[n] * x[J[n]]; // fetch_x<UseCache>(J[n], x);            // A(i,j) * x(j)\n"
+	"    int row = I[n];\n"
+	"    ValueType val = scalar * V[n] * x[J[n]];\n"
 	"    \n"
 	"    if (thread_lane == 0) {\n"
 	"      if(row == rows[idx + 31])\n"
-	"        val += vals[tid + 31];                        // row continues\n"
+	"        val += vals[tid + 31];\n"
 	"      else\n"
-	"        y[rows[idx + 31]] += vals[tid + 31];  // row terminated\n"
+	"        y[rows[idx + 31]] += vals[tid + 31];\n"
 	"    }\n"
 	"\n"
 	"    rows[idx] = row;\n"
@@ -170,28 +171,26 @@ const char *ocl_kernels_coo =
 	"    if (row == rows[idx - 16]) { vals[tid] = val = val + vals[tid - 16]; }\n"
 	"\n"
 	"    if(thread_lane < 31 && row != rows[idx + 1])\n"
-	"      y[row] += vals[tid];                                            // row terminated\n"
+	"      y[row] += vals[tid];\n"
 	"  }\n"
 	"\n"
 	"  if (thread_lane == 31) {\n"
-	"    // write the carry out values\n"
 	"    temp_rows[warp_id] = rows[idx];\n"
 	"    temp_vals[warp_id] = vals[tid];\n"
 	"  }\n"
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
-	"// ----------------------------------------------------------\n"
-	"// function kernel_spmv_coo_reduce_update(...)\n"
-	"// ----------------------------------------------------------\n"
-	"// Modified and adopted from CUSP 0.3.1, \n"
-	"// http://code.google.com/p/cusp-library/\n"
-	"// NVIDIA, APACHE LICENSE 2.0\n"
-	"// ----------------------------------------------------------\n"
-	"// CHANGELOG\n"
-	"// - adopted interface\n"
-	"// ----------------------------------------------------------\n"
+// ----------------------------------------------------------
+// function kernel_spmv_coo_reduce_update(...)
+// ----------------------------------------------------------
+// Modified and adopted from CUSP 0.3.1, 
+// http://code.google.com/p/cusp-library/
+// NVIDIA, APACHE LICENSE 2.0
+// ----------------------------------------------------------
+// CHANGELOG
+// - adopted interface
+// ----------------------------------------------------------
 	"__kernel void kernel_coo_spmv_reduce_update(         const       int  num_warps,\n"
 	"                                            __global const       int *temp_rows,\n"
 	"                                            __global const ValueType *temp_vals,\n"
@@ -214,7 +213,6 @@ const char *ocl_kernels_coo =
 	"  int i = tid;\n"
 	"\n"
 	"  while (i < end) {\n"
-	"    // do full blocks\n"
 	"    rows[tid] = temp_rows[i];\n"
 	"    vals[tid] = temp_vals[i];\n"
 	"\n"
@@ -250,17 +248,16 @@ const char *ocl_kernels_coo =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
-	"// ----------------------------------------------------------\n"
-	"// function spmv_coo_serial_kernel(...)\n"
-	"// ----------------------------------------------------------\n"
-	"// Modified and adopted from CUSP 0.3.1, \n"
-	"// http://code.google.com/p/cusp-library/\n"
-	"// NVIDIA, APACHE LICENSE 2.0\n"
-	"// ----------------------------------------------------------\n"
-	"// CHANGELOG\n"
-	"// - adopted interface\n"
-	"// ----------------------------------------------------------\n"
+// ----------------------------------------------------------
+// function spmv_coo_serial_kernel(...)
+// ----------------------------------------------------------
+// Modified and adopted from CUSP 0.3.1, 
+// http://code.google.com/p/cusp-library/
+// NVIDIA, APACHE LICENSE 2.0
+// ----------------------------------------------------------
+// CHANGELOG
+// - adopted interface
+// ----------------------------------------------------------
 	"__kernel void kernel_coo_spmv_serial(         const       int  num_entries,\n"
 	"                                     __global const       int *I, \n"
 	"                                     __global const       int *J, \n"
@@ -275,7 +272,8 @@ const char *ocl_kernels_coo =
 	"\n"
 	"}\n"
 	"\n"
-	"\n";
+	"\n"
+;
 }
 
 #endif // PARALUTION_OCL_KERNELS_COO_HPP_

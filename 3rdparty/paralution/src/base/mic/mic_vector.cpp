@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "mic_vector.hpp"
 #include "../base_vector.hpp"
@@ -40,12 +45,16 @@ template <typename ValueType>
 MICAcceleratorVector<ValueType>::MICAcceleratorVector() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 MICAcceleratorVector<ValueType>::MICAcceleratorVector(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "MICAcceleratorVector::MICAcceleratorVector()",
+            "constructor with local_backend");
 
   this->vec_ = NULL;
   this->set_backend(local_backend); 
@@ -55,6 +64,9 @@ MICAcceleratorVector<ValueType>::MICAcceleratorVector(const Paralution_Backend_D
 
 template <typename ValueType>
 MICAcceleratorVector<ValueType>::~MICAcceleratorVector() {
+
+  LOG_DEBUG(this, "MICAcceleratorVector::~MICAcceleratorVector()",
+            "destructor");
 
   this->Clear();
 
@@ -386,6 +398,28 @@ void MICAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const
 		  cast_x->vec_, alpha, beta, this->get_size(), this->vec_);
 
   }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta,
+                                          const int src_offset, const int dst_offset,const int size) {
+
+  assert(this->get_size() > 0);
+  assert(x.    get_size() > 0);
+  assert(size > 0);
+
+  assert(src_offset + size <= x.get_size());
+  assert(dst_offset + size <= this->get_size());
+
+  const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+  assert(cast_x != NULL);
+
+  scaleaddscale(this->local_backend_.MIC_dev,
+		cast_x->vec_, alpha, beta, this->vec_,
+		src_offset, dst_offset, size);
+
+
 
 }
 

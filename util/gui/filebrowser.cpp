@@ -62,9 +62,9 @@ QString FileBrowser::basePath()
     return QString(m_basePath);
 }
 
-void FileBrowser::setDir(const QString &path)
+void FileBrowser::setDir(const QString &path, bool force)
 {
-    if (path == m_basePath)
+    if (!force && (path == m_basePath))
         return;
 
     setUpdatesEnabled(false);
@@ -76,21 +76,24 @@ void FileBrowser::setDir(const QString &path)
     QStringList entries = dir.entryList();
     foreach(QString item, entries)
     {
-        if (dir.isRoot() && (item == "..")) continue;
-        if (item != ".")
+        if (dir.isRoot() && (item == ".."))
+            continue;
+        if (item == ".")
+            continue;
+        if (item == "__pycache__")
+            continue;
+
+        QFileInfo fileInfo(path + QDir::separator() + item);
+        if (QDir(path + QDir::separator() + item).exists())
         {
-            QFileInfo fileInfo(path + QDir::separator() + item);
-            if (QDir(path + QDir::separator() + item).exists())
-            {
-                addItem(new QListWidgetItem(icon("file-folder"), item));
-            }
+            addItem(new QListWidgetItem(icon("file-folder"), item));
+        }
+        else
+        {
+            if (fileInfo.suffix() == "py")
+                addItem(new QListWidgetItem(icon("file-python"), item));
             else
-            {
-                if (fileInfo.suffix() == "py")
-                    addItem(new QListWidgetItem(icon("file-python"), item));
-                else
-                    addItem(new QListWidgetItem(icon("file-text"), item));
-            }
+                addItem(new QListWidgetItem(icon("file-text"), item));
         }
     }
 
@@ -102,7 +105,7 @@ void FileBrowser::setDir(const QString &path)
 
 void FileBrowser::refresh()
 {
-    setDir(m_basePath);
+    setDir(m_basePath, true);
 }
 
 void FileBrowser::doFileItemActivated(QListWidgetItem *item)
@@ -217,6 +220,8 @@ void FileBrowser::deleteObject(const QString &name)
         deleteDir(str);
     else
         deleteFile(str);
+
+    refresh();
 }
 
 void FileBrowser::renameDir(const QString &dirName)

@@ -494,10 +494,10 @@ void FieldWidget::fillComboBox()
     cmbNonlinearDampingType->addItem(dampingTypeString(DampingType_Off), DampingType_Off);
 
     cmbAdaptivityType->clear();
-    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_None), AdaptivityType_None);
-    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_H), AdaptivityType_H);
-    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
-    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityMethod_None), AdaptivityMethod_None);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityMethod_H), AdaptivityMethod_H);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityMethod_P), AdaptivityMethod_P);
+    cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityMethod_HP), AdaptivityMethod_HP);
 
     foreach(LinearityType linearityType, m_fieldInfo->availableLinearityTypes())
     {
@@ -601,7 +601,7 @@ bool FieldWidget::save()
     // analysis type
     m_fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
     // adaptivity
-    m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
+    m_fieldInfo->setAdaptivityType((AdaptivityMethod) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivitySteps, txtAdaptivitySteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, chkAdaptivityTolerance->isChecked() ? txtAdaptivityTolerance->value() : 0.0);
     m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, txtAdaptivityThreshold->value());
@@ -698,20 +698,20 @@ void FieldWidget::doShowEquation()
 
 void FieldWidget::doAdaptivityChanged(int index)
 {
-    txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    chkAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtAdaptivityTolerance->setEnabled(((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None) && chkAdaptivityTolerance->isChecked());
-    txtAdaptivityThreshold->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    cmbAdaptivityStoppingCriterionType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    cmbAdaptivityErrorCalculator->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    chkAdaptivityUseAniso->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    chkAdaptivitySpaceRefinement->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtAdaptivityOrderIncrease->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    chkAdaptivityFinerReference->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivitySteps->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    chkAdaptivityTolerance->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    txtAdaptivityTolerance->setEnabled(((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None) && chkAdaptivityTolerance->isChecked());
+    txtAdaptivityThreshold->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    cmbAdaptivityStoppingCriterionType->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    cmbAdaptivityErrorCalculator->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    chkAdaptivityUseAniso->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    chkAdaptivitySpaceRefinement->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    txtAdaptivityOrderIncrease->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    chkAdaptivityFinerReference->setEnabled((AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
 
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
-    txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && analysisType != AnalysisType_Transient && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && analysisType != AnalysisType_Transient && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && analysisType != AnalysisType_Transient && (AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
+    txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && analysisType != AnalysisType_Transient && (AdaptivityMethod) cmbAdaptivityType->itemData(index).toInt() != AdaptivityMethod_None);
 }
 
 void FieldWidget::doLinearityTypeChanged(int index)
@@ -773,7 +773,7 @@ void FieldWidget::doPicardAndersonChanged(int index)
 
 void FieldWidget::doAdaptivityTolerance(int state)
 {
-    txtAdaptivityTolerance->setEnabled(((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt() != AdaptivityType_None) && chkAdaptivityTolerance->isChecked());
+    txtAdaptivityTolerance->setEnabled(((AdaptivityMethod) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt() != AdaptivityMethod_None) && chkAdaptivityTolerance->isChecked());
 }
 
 void FieldWidget::doNonlinearResidual(int state)

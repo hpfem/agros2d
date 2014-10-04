@@ -26,37 +26,34 @@ TextBlockData::TextBlockData()
 
 }
 
-QVector<ParenthesisInfo *> TextBlockData::parentheses()
+QVector<ParenthesisInfo *> TextBlockData::parentheses(const char &bracket)
 {
-    return m_parentheses;
+    return m_parentheses[bracket];
 }
 
-void TextBlockData::insert(ParenthesisInfo *info)
+void TextBlockData::insert(const char &bracket, ParenthesisInfo *info)
 {
     int i = 0;
-    while (i < m_parentheses.size() && info->position > m_parentheses.at(i)->position)
+    while (i < m_parentheses[bracket].size() && info->position > m_parentheses[bracket].at(i)->position)
         ++i;
 
-    m_parentheses.insert(i, info);
+    m_parentheses[bracket].insert(i, info);
 }
 
 // ************************************************************************************************************
 
 PlainTextEditParenthesis::PlainTextEditParenthesis(QWidget *parent)
     : QPlainTextEdit(parent)
-{
+{    
 }
 
 void PlainTextEditParenthesis::matchParentheses(char left, char right)
 {
-    QList<QTextEdit::ExtraSelection> selections;
-    setExtraSelections(selections);
-
     TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
 
     if (data)
     {
-        QVector<ParenthesisInfo *> infos = data->parentheses();
+        QVector<ParenthesisInfo *> infos = data->parentheses(left);
 
         int pos = textCursor().block().position();
         for (int i = 0; i < infos.size(); ++i)
@@ -81,7 +78,7 @@ void PlainTextEditParenthesis::matchParentheses(char left, char right)
 bool PlainTextEditParenthesis::matchLeftParenthesis(char left, char right, QTextBlock currentBlock, int i, int numLeftParentheses)
 {
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
-    QVector<ParenthesisInfo *> infos = data->parentheses();
+    QVector<ParenthesisInfo *> infos = data->parentheses(left);
 
     int docPos = currentBlock.position();
     for (; i < infos.size(); ++i)
@@ -115,7 +112,7 @@ bool PlainTextEditParenthesis::matchLeftParenthesis(char left, char right, QText
 bool PlainTextEditParenthesis::matchRightParenthesis(char left, char right, QTextBlock currentBlock, int i, int numRightParentheses)
 {
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
-    QVector<ParenthesisInfo *> parentheses = data->parentheses();
+    QVector<ParenthesisInfo *> parentheses = data->parentheses(left);
 
     int docPos = currentBlock.position();
     for (; i > -1 && parentheses.size() > 0; --i)
@@ -152,7 +149,7 @@ void PlainTextEditParenthesis::createParenthesisSelection(int pos)
     QTextCharFormat format = selection.format;
     format.setForeground(Qt::red);
     format.setFontWeight(QFont::Bold);
-    // format.setBackground(Qt::lightGray);
+    format.setBackground(Qt::lightGray);
     selection.format = format;
 
     QTextCursor cursor = textCursor();

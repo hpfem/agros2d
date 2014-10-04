@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_HOST_VECTOR_HPP_
 #define PARALUTION_HOST_VECTOR_HPP_
 
@@ -32,7 +37,7 @@ class LocalVector;
 
 template <typename ValueType>
 class HostVector : public BaseVector<ValueType> {
-  
+
 public:
 
   HostVector();
@@ -41,6 +46,7 @@ public:
 
   virtual void info(void) const;
 
+  virtual bool Check(void) const;
   virtual void Allocate(const int n);
   virtual void SetDataPtr(ValueType **ptr, const int size);
   virtual void LeaveDataPtr(ValueType **ptr);
@@ -49,6 +55,8 @@ public:
   virtual void Ones(void);
   virtual void SetValues(const ValueType val);
   virtual void SetRandom(const ValueType a, const ValueType b, const int seed);
+  virtual void Assemble(const int *i, const ValueType *v,
+                        int size, const int n);
 
   virtual void CopyFrom(const BaseVector<ValueType> &vec);
   virtual void CopyFromFloat(const BaseVector<float> &vec);
@@ -64,7 +72,7 @@ public:
                                        const BaseVector<int> &permutation);
 
   virtual void Permute(const BaseVector<int> &permutation);
-  virtual void PermuteBackward(const BaseVector<int> &permutation);  
+  virtual void PermuteBackward(const BaseVector<int> &permutation);
 
   virtual bool Restriction(const BaseVector<ValueType> &vec_fine, const BaseVector<int> &map);
   virtual bool Prolongation(const BaseVector<ValueType> &vec_coarse, const BaseVector<int> &map);
@@ -73,6 +81,10 @@ public:
   void ReadFileASCII(const std::string filename);
   /// Write vector to ASCII file
   void WriteFileASCII(const std::string filename) const;
+  /// Read vector from binary file
+  void ReadFileBinary(const std::string filename);
+  /// Write vector to binary file
+  void WriteFileBinary(const std::string filename) const;
 
   // this = this + alpha*x
   virtual void AddScale(const BaseVector<ValueType> &x, const ValueType alpha);
@@ -80,8 +92,12 @@ public:
   virtual void ScaleAdd(const ValueType alpha, const BaseVector<ValueType> &x);
   // this = alpha*this + x*beta
   virtual void ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta);
+  virtual void ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta,
+                             const int src_offset, const int dst_offset,const int size);
   // this = alpha*this + x*beta + y*gamma
-  virtual void ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta, const BaseVector<ValueType> &y, const ValueType gamma) ;
+  virtual void ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x,
+                         const ValueType beta, const BaseVector<ValueType> &y,
+                         const ValueType gamma);
   // this = alpha*this
   virtual void Scale(const ValueType alpha);
   // Compute partial sum
@@ -102,7 +118,7 @@ public:
 
 private:
 
-  ValueType *vec_; 
+  ValueType *vec_;
 
   // for [] operator in LocalVector
   friend class LocalVector<ValueType>;
@@ -137,4 +153,3 @@ private:
 }
 
 #endif // PARALUTION_HOST_VECTOR_HPP_
-

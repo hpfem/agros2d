@@ -46,6 +46,7 @@ class LogDialog;
 
 class ChartWidget;
 class PythonEditorAgrosDialog;
+class OptilabWindow;
 class SceneTransformDialog;
 class SceneViewWidget;
 class LogStdOut;
@@ -56,7 +57,7 @@ class AGROS_LIBRARY_API MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(int argc, char *argv[], QWidget *parent = 0);
     ~MainWindow();
 
     inline void setStartupExecute(bool execute) { m_startupExecute = execute; }
@@ -90,6 +91,7 @@ private slots:
 
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
+    void doOptiLab();
     void doOptions();
     void doTransform();
     void doMaterialBrowser();
@@ -169,6 +171,7 @@ private:
 
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;
+    QAction *actOptiLab;
     QAction *actMaterialBrowser;
     QAction *actCreateVideo;
     QAction *actUnitTests;
@@ -228,6 +231,7 @@ private:
     LogView *logView;
 
     PythonEditorAgrosDialog *scriptEditorDialog;
+    OptilabWindow *optilabWindow;
     SceneTransformDialog *sceneTransformDialog;
 
     QSplitter *splitter;

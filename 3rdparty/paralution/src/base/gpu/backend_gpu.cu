@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "../backend_manager.hpp"
 #include "backend_gpu.hpp" 
@@ -47,6 +52,9 @@ namespace paralution {
 
 bool paralution_init_gpu(void) {
 
+  LOG_DEBUG(0, "paralution_init_gpu()",
+            "* begin");
+
   assert(_Backend_Descriptor.GPU_cublas_handle == NULL);
   assert(_Backend_Descriptor.GPU_cusparse_handle == NULL);
   //  assert(_Backend_Descriptor.GPU_dev == -1);
@@ -69,7 +77,7 @@ bool paralution_init_gpu(void) {
     return false;
   }
 
-  LOG_INFO("Number of GPU devices in the sytem: " << num_dev);
+  LOG_INFO("Number of GPU devices in the system: " << num_dev);
 
   if (num_dev < 1) {
 
@@ -119,12 +127,30 @@ bool paralution_init_gpu(void) {
     return false;
   }
 
+
+  struct cudaDeviceProp dev_prop;      
+  cudaGetDeviceProperties(&dev_prop, _Backend_Descriptor.GPU_dev);
+
+  if (dev_prop.major < 2) {
+    LOG_INFO("GPU device " << _Backend_Descriptor.GPU_dev << " has low compute capability (min 2.0 is needed)");    
+    return false;
+  }
+
+
+
+  LOG_DEBUG(0, "paralution_init_gpu()",
+            "* end");
+
   return true;
 
 }
 
 
 void paralution_stop_gpu(void) {
+
+  LOG_DEBUG(0, "paralution_stop_gpu()",
+            "* begin");
+
 
   if (_Backend_Descriptor.accelerator) {
 
@@ -146,6 +172,9 @@ void paralution_stop_gpu(void) {
 
     _Backend_Descriptor.GPU_dev = -1;
 
+  LOG_DEBUG(0, "paralution_stop_gpu()",
+            "* end");
+
 }
 
 void paralution_info_gpu(const struct Paralution_Backend_Descriptor backend_descriptor) {
@@ -159,7 +188,7 @@ void paralution_info_gpu(const struct Paralution_Backend_Descriptor backend_desc
     //    LOG_INFO("Number of GPU devices in the sytem: " << num_dev);    
 
     if (_Backend_Descriptor.GPU_dev >= 0) {
-      LOG_INFO("Selected GPU devices: " << backend_descriptor.GPU_dev);
+      LOG_INFO("Selected GPU device: " << backend_descriptor.GPU_dev);
 
     } else {
 
@@ -192,8 +221,13 @@ void paralution_info_gpu(const struct Paralution_Backend_Descriptor backend_desc
       LOG_INFO("clockRate: "                   << dev_prop.clockRate);                   //    int clockRate;
       /*
       LOG_INFO("totalConstMem: "               << dev_prop.totalConstMem);               //    size_t totalConstMem;
+      */
+      /*
       LOG_INFO("major: "                       << dev_prop.major);                       //    int major;
       LOG_INFO("minor: "                       << dev_prop.minor);                       //    int minor;
+      */
+      LOG_INFO("compute capability: "           << dev_prop.major << "." << dev_prop.minor);
+      /*
       LOG_INFO("textureAlignment: "            << dev_prop.textureAlignment);            //    size_t textureAlignment;
       LOG_INFO("deviceOverlap: "               << dev_prop.deviceOverlap);               //    int deviceOverlap;
       LOG_INFO("multiProcessorCount: "         << dev_prop.multiProcessorCount);         //    int multiProcessorCount;
@@ -286,6 +320,12 @@ AcceleratorVector<ValueType>* _paralution_init_base_gpu_vector(const struct Para
 
 }
 
+void paralution_gpu_sync(void) {
+
+  cudaDeviceSynchronize();
+  CHECK_CUDA_ERROR(__FILE__, __LINE__);
+
+}
 
 template AcceleratorVector<float>* _paralution_init_base_gpu_vector(const struct Paralution_Backend_Descriptor backend_descriptor);
 template AcceleratorVector<double>* _paralution_init_base_gpu_vector(const struct Paralution_Backend_Descriptor backend_descriptor);

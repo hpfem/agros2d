@@ -31,7 +31,7 @@
 AgrosSolver::AgrosSolver(int &argc, char **argv)
     : AgrosApplication(argc, argv), m_log(NULL), m_enableLog(false)
 {    
-    createPythonEngine(new PythonEngineAgros());
+    createPythonEngine(argc, argv, new PythonEngineAgros());
 
     checkForNewVersion(true, true);
 }
@@ -151,7 +151,7 @@ void AgrosSolver::runCommand()
         Agros2D::log()->printMessage(tr("Scripting Engine"), tr("%1\nLine: %2\nStacktrace:\n%3\n").
                                   arg(result.error()).
                                   arg(result.line()).
-                                  arg(result.traceback()));
+                                  arg(result.tracebackToString()));
 
         QApplication::exit(-1);
     }
@@ -186,7 +186,7 @@ void AgrosSolver::runSuite()
         Agros2D::log()->printMessage(tr("Scripting Engine"), tr("%1\nLine: %2\nStacktrace:\n%3\n").
                                   arg(result.error()).
                                   arg(result.line()).
-                                  arg(result.traceback()));
+                                  arg(result.tracebackToString()));
 
         QApplication::exit(-1);
     }

@@ -58,7 +58,7 @@ public:
     virtual void solve(Scalar* previousSolutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_picardSolver; }
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
+    virtual void setWeakFormulation(Hermes::Hermes2D::WeakFormSharedPtr<Scalar> wf) { m_picardSolver->set_weak_formulation(wf); }
     virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_picardSolver->get_linear_matrix_solver(); }
 
     virtual SolverAgros *solver() const { return m_picardSolver; }

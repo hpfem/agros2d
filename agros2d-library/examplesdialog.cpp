@@ -237,16 +237,20 @@ int ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
         else if (fileInfo.suffix() == "py")
         {
             // skip ui python
-            if (!QFile::exists(fileInfo.absoluteFilePath().left(fileInfo.absoluteFilePath().length() - 3) + ".ui"))
-            {
-                QTreeWidgetItem *examplePythonItem = new QTreeWidgetItem(parentItem);
-                examplePythonItem->setIcon(0, icon("script-python"));
-                examplePythonItem->setText(0, fileInfo.baseName());
-                examplePythonItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+            if (QFile::exists(fileInfo.absoluteFilePath().left(fileInfo.absoluteFilePath().length() - 3) + ".ui"))
+                continue;
 
-                // increase counter
-                count++;
-            }
+            // skip problem.py
+            if (fileInfo.baseName() == "problem")
+                continue;
+
+            QTreeWidgetItem *examplePythonItem = new QTreeWidgetItem(parentItem);
+            examplePythonItem->setIcon(0, icon("script-python"));
+            examplePythonItem->setText(0, fileInfo.baseName());
+            examplePythonItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+
+            // increase counter
+            count++;
         }
         else if (fileInfo.suffix() == "ui")
         {

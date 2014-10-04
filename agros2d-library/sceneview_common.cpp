@@ -129,7 +129,7 @@ void SceneViewCommon::createFontTexture()
             glDeleteTextures(1, &m_textureLabelRulers);
         glGenTextures(1, &m_textureLabelRulers);
         m_textureLabelRulersName = Agros2D::configComputer()->value(Config::Config_RulersFontFamily).toString();
-        m_textureLabelRulersSize = Agros2D::configComputer()->value(Config::Config_RulersFontPointSize).toInt();        
+        m_textureLabelRulersSize = Agros2D::configComputer()->value(Config::Config_RulersFontPointSize).toInt();
         initFont(m_textureLabelRulers, m_charDataRulers, m_textureLabelRulersName, m_textureLabelRulersSize);
     }
 
@@ -174,6 +174,9 @@ void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
 {
+    // QPixmap p = QPixmap::fromImage(grabFrameBuffer(false));
+    // p = renderPixmap(width() * 3, height() * 3);
+    // return p;
     return QPixmap::fromImage(grabFrameBuffer(false));
 }
 
@@ -195,7 +198,7 @@ void getBakedQuad(stbtt_bakedchar *chardata, int pw, int ph, int char_index,
 }
 
 void SceneViewCommon::printAt(int penX, int penY, const QString &text, stbtt_bakedchar *fnt)
-{   
+{
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_BLEND);

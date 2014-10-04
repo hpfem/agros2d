@@ -81,7 +81,8 @@ void transferDataStructure(GFace *gf, std::set<MTri3*, compareTri3Ptr> &AllTris,
 void computeEquivalences(GFace *gf,bidimMeshData &DATA);
 void recombineIntoQuads(GFace *gf,
                         bool topologicalOpti   = true,
-                        bool nodeRepositioning = true);
+                        bool nodeRepositioning = true,
+			double minqual = 0.1);
 
 //used for meshGFaceRecombine development
 int recombineWithBlossom(GFace *gf, double dx, double dy,
@@ -130,6 +131,8 @@ struct RecombineTriangle
   {
     n1 = me.getVertex(0);
     n2 = me.getVertex(1);
+    n3 = 0;
+    n4 = 0;
 
     if(t1->getVertex(0) != n1 && t1->getVertex(0) != n2) n3 = t1->getVertex(0);
     else if(t1->getVertex(1) != n1 && t1->getVertex(1) != n2) n3 = t1->getVertex(1);

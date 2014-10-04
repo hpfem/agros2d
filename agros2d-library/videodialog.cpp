@@ -100,7 +100,7 @@ void VideoDialog::showDialog()
     {
         tabType->setCurrentWidget(tabTransient);
     }
-    else if (m_postHermes->activeViewField()->adaptivityType() != AdaptivityType_None)
+    else if (m_postHermes->activeViewField()->adaptivityType() != AdaptivityMethod_None)
     {
         tabType->setCurrentWidget(tabAdaptivity);
     }

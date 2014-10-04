@@ -25,7 +25,7 @@
 
 class FieldInfo;
 class CouplingInfo;
-class Field;
+class FieldBlock;
 class Problem;
 class SceneBoundary;
 
@@ -49,11 +49,12 @@ public:
     QSharedPointer<ProblemSolver<double> > prepareSolver();
     void createBoundaryConditions();
 
-    inline WeakFormAgros<double> *weakForm() { return m_wf;}
-    void setWeakForm(WeakFormAgros<double> *wf);
+    WeakFormAgros<double> *weakFormInternal();
+    Hermes::Hermes2D::WeakFormSharedPtr<double> weakForm();
+    void setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double> wf);
 
     int numSolutions() const;
-    int offset(Field* field) const;
+    int offset(FieldBlock* field) const;
 
     LinearityType linearityType() const;
     bool isTransient() const;
@@ -64,7 +65,7 @@ public:
     double timeSkip() const;
     //bool skipThisTimeStep() const;
 
-    AdaptivityType adaptivityType() const;
+    AdaptivityMethod adaptivityType() const;
     int adaptivitySteps() const;
     double adaptivityTolerance() const;
     int adaptivityBackSteps() const;
@@ -117,28 +118,28 @@ public:
     int iterLinearSolverIters() const;
 
     bool contains(const FieldInfo *fieldInfo) const;
-    Field* field(const FieldInfo* fieldInfo) const;
+    FieldBlock* field(const FieldInfo* fieldInfo) const;
 
-    inline QList<Field*> fields() const { return m_fields; }
+    inline QList<FieldBlock*> fields() const { return m_fields; }
     QList<FieldInfo*> fieldInfos() const;
     inline QList<CouplingInfo*> couplings() const { return m_couplings; }
 
     // all fields, that are sources for weak coupling of either of fields of the block
     QList<FieldInfo*> sourceFieldInfosCoupling() const;
 
-    inline Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs() const { return m_bcs; }
+    inline std::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs() const { return m_bcs; }
 
-    Hermes::vector<Hermes::Hermes2D::NormType> projNormTypeVector() const;
+    std::vector<Hermes::Hermes2D::NormType> projNormTypeVector() const;
 
     void updateExactSolutionFunctions();
 
 private:
-    WeakFormAgros<double> *m_wf;
-    Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> m_bcs;
+    Hermes::Hermes2D::WeakFormSharedPtr<double>  m_wf;
+    std::vector<Hermes::Hermes2D::EssentialBCs<double> *> m_bcs;
 
     QMap<Hermes::Hermes2D::MeshFunctionSharedPtr<double>, SceneBoundary *> m_exactSolutionFunctions;
 
-    QList<Field*> m_fields;
+    QList<FieldBlock*> m_fields;
     QList<CouplingInfo*> m_couplings;
 };
 

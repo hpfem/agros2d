@@ -7,6 +7,7 @@
 #include <string.h>
 #include "GmshConfig.h"
 #include "GmshMessage.h"
+#include "GmshIO.h"
 #include "Options.h"
 #include "Geo.h"
 #include "GModel.h"
@@ -85,6 +86,12 @@ static void FinishUpBoundingBox()
     double l = sqrt(SQU(range[0]) + SQU(range[2]));
     CTX::instance()->min[1] -= l; CTX::instance()->max[1] += l;
   }
+
+  CTX::instance()->lc = sqrt(SQU(CTX::instance()->max[0] - CTX::instance()->min[0]) +
+                             SQU(CTX::instance()->max[1] - CTX::instance()->min[1]) +
+                             SQU(CTX::instance()->max[2] - CTX::instance()->min[2]));
+  for(int i = 0; i < 3; i++)
+    CTX::instance()->cg[i] = 0.5 * (CTX::instance()->min[i] + CTX::instance()->max[i]);
 }
 
 void SetBoundingBox(double xmin, double xmax,
@@ -95,12 +102,6 @@ void SetBoundingBox(double xmin, double xmax,
   CTX::instance()->min[1] = ymin; CTX::instance()->max[1] = ymax;
   CTX::instance()->min[2] = zmin; CTX::instance()->max[2] = zmax;
   FinishUpBoundingBox();
-  CTX::instance()->lc = sqrt(SQU(CTX::instance()->max[0] - CTX::instance()->min[0]) +
-                             SQU(CTX::instance()->max[1] - CTX::instance()->min[1]) +
-                             SQU(CTX::instance()->max[2] - CTX::instance()->min[2]));
-  for(int i = 0; i < 3; i++)
-    CTX::instance()->cg[i] = 0.5 * (CTX::instance()->min[i] + CTX::instance()->max[i]);
-
 }
 
 void SetBoundingBox(bool aroundVisible)
@@ -126,12 +127,6 @@ void SetBoundingBox(bool aroundVisible)
   CTX::instance()->min[1] = bb.min().y(); CTX::instance()->max[1] = bb.max().y();
   CTX::instance()->min[2] = bb.min().z(); CTX::instance()->max[2] = bb.max().z();
   FinishUpBoundingBox();
-  CTX::instance()->lc = sqrt(SQU(CTX::instance()->max[0] - CTX::instance()->min[0]) +
-                             SQU(CTX::instance()->max[1] - CTX::instance()->min[1]) +
-                             SQU(CTX::instance()->max[2] - CTX::instance()->min[2]));
-  for(int i = 0; i < 3; i++)
-    CTX::instance()->cg[i] = 0.5 * (CTX::instance()->min[i] + CTX::instance()->max[i]);
-
 }
 
 // FIXME: this is necessary for now to have an approximate CTX::instance()->lc
@@ -173,7 +168,7 @@ static void ComputeMaxEntityNum()
              GModel::current()->getMaxElementaryNumber(3));
 }
 
-static std::vector<FILE*> openedFiles;
+static std::vector<gmshFILE> openedFiles;
 
 int ParseFile(const std::string &fileName, bool close, bool warnIfMissing)
 {
@@ -184,8 +179,8 @@ int ParseFile(const std::string &fileName, bool close, bool warnIfMissing)
 
   // add 'b' for pure Windows programs: opening in text mode messes up
   // fsetpos/fgetpos (used e.g. for user-defined functions)
-  FILE *fp;
-  if(!(fp = Fopen(fileName.c_str(), "rb"))){
+  gmshFILE fp;
+  if(!(fp = gmshopen(fileName.c_str(), "rb"))){
     if(warnIfMissing)
       Msg::Warning("Unable to open file '%s'", fileName.c_str());
     return 0;
@@ -196,7 +191,7 @@ int ParseFile(const std::string &fileName, bool close, bool warnIfMissing)
 #endif
 
   std::string old_yyname = gmsh_yyname;
-  FILE *old_yyin = gmsh_yyin;
+  gmshFILE old_yyin = gmsh_yyin;
   int old_yyerrorstate = gmsh_yyerrorstate;
   int old_yylineno = gmsh_yylineno;
   int old_yyviewindex = gmsh_yyviewindex;
@@ -207,7 +202,7 @@ int ParseFile(const std::string &fileName, bool close, bool warnIfMissing)
   gmsh_yylineno = 1;
   gmsh_yyviewindex = 0;
 
-  while(!feof(gmsh_yyin)){
+  while(!gmsheof(gmsh_yyin)){
     gmsh_yyparse();
     if(gmsh_yyerrorstate > 20){
       if(gmsh_yyerrorstate != 999) // 999 is a volontary exit
@@ -219,7 +214,7 @@ int ParseFile(const std::string &fileName, bool close, bool warnIfMissing)
 
   if(close){
     gmsh_yyflush();
-    fclose(gmsh_yyin);
+    gmshclose(gmsh_yyin);
   }
   else{
     openedFiles.push_back(gmsh_yyin);
@@ -238,6 +233,21 @@ int ParseFile(const std::string &fileName, bool close, bool warnIfMissing)
 
   return 1;
 #endif
+}
+
+static bool doSystemUncompress(std::string fileName, std::string noExt)
+{
+  std::ostringstream sstream;
+  sstream << "File '"<< fileName << "' is in gzip format.\n\n"
+          << "Do you want to uncompress it?";
+  if(Msg::GetAnswer(sstream.str().c_str(), 0, "Cancel", "Uncompress")){
+    if(SystemCall(std::string("gunzip -c ") + fileName + " > " + noExt, true))
+      Msg::Warning("Potentially failed to uncompress `%s': check directory permissions",
+                   fileName.c_str());
+    GModel::current()->setFileName(noExt);
+    return true;
+  }
+  return false;
 }
 
 void ParseString(const std::string &str)
@@ -262,7 +272,8 @@ static int defineSolver(const std::string &name)
   return NUM_SOLVERS - 1;
 }
 
-int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTitle)
+int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTitle,
+              bool setBoundingBox)
 {
   if(GModel::current()->getName() == ""){
     GModel::current()->setFileName(fileName);
@@ -276,7 +287,7 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
 
   // added 'b' for pure Windows programs, since some of these files
   // contain binary data
-  FILE *fp = Fopen(fileName.c_str(), "rb");
+  gmshFILE fp = gmshopen(fileName.c_str(), "rb");
   if(!fp){
     if(warnIfMissing)
       Msg::Warning("Unable to open file '%s'", fileName.c_str());
@@ -284,8 +295,8 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
   }
 
   char header[256];
-  if(!fgets(header, sizeof(header), fp)){ fclose(fp); return 0; }
-  fclose(fp);
+  if(!gmshgets(header, sizeof(header), fp)){ gmshclose(fp); return 0; }
+  gmshclose(fp);
 
   Msg::StatusBar(true, "Reading '%s'...", fileName.c_str());
 
@@ -293,18 +304,18 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
   std::string noExt = split[0] + split[1], ext = split[2];
 
   if(ext == ".gz") {
-    // the real solution would be to rewrite all our I/O functions in
-    // terms of gzFile, but until then, this is better than nothing
-    std::ostringstream sstream;
-    sstream << "File '"<< fileName << "' is in gzip format.\n\n"
-            << "Do you want to uncompress it?";
-    if(Msg::GetAnswer(sstream.str().c_str(), 0, "Cancel", "Uncompress")){
-      if(SystemCall(std::string("gunzip -c ") + fileName + " > " + noExt, true))
-        Msg::Error("Failed to uncompress `%s': check directory permissions",
-                   fileName.c_str());
-      GModel::current()->setFileName(noExt);
-      return MergeFile(noExt, false, setWindowTitle);
+#if defined(HAVE_COMPRESSED_IO) && defined(HAVE_LIBZ)
+    std::vector<std::string> subsplit = SplitFileName(noExt);
+    ext = subsplit[2];
+    if(ext != ".geo" && ext != ".GEO" &&
+       ext != ".unv" && ext != ".UNV"){
+      if(doSystemUncompress(fileName, noExt))
+        return MergeFile(noExt, false, setWindowTitle);
     }
+#else
+    if(doSystemUncompress(fileName, noExt))
+      return MergeFile(noExt, false, setWindowTitle);
+#endif
   }
 
   // force reading msh file even if wrong extension if the header
@@ -348,14 +359,6 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
   }
   else if(ext == ".diff" || ext == ".DIFF"){
     status = GModel::current()->readDIFF(fileName);
-  }
-  else if(ext == ".pdf" || ext == ".PDF"){
-#if defined(HAVE_POPPLER)
-    status = gmshPopplerWrapper::instance()->load_from_file(fileName);
-#else
-    Msg::Error("Gmsh has to be compiled with POPPLER for displaying PDF documents");
-    status = 0;
-#endif
   }
   else if(ext == ".med" || ext == ".MED" || ext == ".mmed" || ext == ".MMED" ||
           ext == ".rmed" || ext == ".RMED"){
@@ -433,12 +436,6 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
     return 1;
   }
 #endif
-#if defined(HAVE_ONELAB_METAMODEL) && defined(HAVE_FLTK)
-  else if(ext == ".ol"){
-    // FIXME: this is a hack -- think about a better way
-    status = metamodel_cb(fileName);
-  }
-#endif
   else {
     CTX::instance()->geom.draw = 1;
     if(!strncmp(header, "$PTS", 4) || !strncmp(header, "$NO", 3) ||
@@ -478,7 +475,7 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
   }
 
   ComputeMaxEntityNum();
-  SetBoundingBox();
+  if(setBoundingBox) SetBoundingBox();
   CTX::instance()->geom.draw = 1;
   CTX::instance()->mesh.changed = ENT_ALL;
 
@@ -507,8 +504,8 @@ int MergeFile(const std::string &fileName, bool warnIfMissing, bool setWindowTit
   return status;
 }
 
-int MergePostProcessingFile(const std::string &fileName, bool showLastStep,
-                            bool hideNewViews, bool warnIfMissing)
+int MergePostProcessingFile(const std::string &fileName, int showViews,
+                            bool showLastStep, bool warnIfMissing)
 {
 #if defined(HAVE_POST)
   // check if there is a mesh in the file
@@ -550,22 +547,23 @@ int MergePostProcessingFile(const std::string &fileName, bool showLastStep,
     GModel *m = new GModel();
     GModel::setCurrent(m);
   }
-  int ret = MergeFile(fileName, warnIfMissing);
+  int ret = MergeFile(fileName, warnIfMissing, true,
+                      old->bounds().empty() ? true : false);
   GModel::setCurrent(old);
   old->setVisibility(1);
 
   // hide everything except the onelab X-Y graphs
-  if(hideNewViews){
+  if(showViews == 0){
     for(unsigned int i = 0; i < PView::list.size(); i++){
-      if(PView::list[i]->getData()->getFileName().substr(0, 6) != "OneLab")
+      if(PView::list[i]->getData()->getFileName().substr(0, 6) != "ONELAB")
         PView::list[i]->getOptions()->visible = 0;
     }
   }
-  else if(n < PView::list.size()){
+  else if(showViews == 2 && n < PView::list.size()){
     // if we created new views, assume we only want to see those (and the
     // onelab X-Y graphs)
     for(unsigned int i = 0; i < n; i++){
-      if(PView::list[i]->getData()->getFileName().substr(0, 6) != "OneLab")
+      if(PView::list[i]->getData()->getFileName().substr(0, 6) != "ONELAB")
         PView::list[i]->getOptions()->visible = 0;
     }
   }
@@ -603,7 +601,7 @@ void ClearProject()
   // close the files that might have been left open by ParseFile
   if(openedFiles.size()){
     for(unsigned int i = 0; i < openedFiles.size(); i++)
-      fclose(openedFiles[i]);
+      gmshclose(openedFiles[i]);
     openedFiles.clear();
   }
   Msg::Info("Done clearing all models and views");
@@ -680,7 +678,7 @@ void OpenProject(const std::string &fileName, bool setWindowTitle)
   // close the files that might have been left open by ParseFile
   if(openedFiles.size()){
     for(unsigned int i = 0; i < openedFiles.size(); i++)
-      fclose(openedFiles[i]);
+      gmshclose(openedFiles[i]);
     openedFiles.clear();
   }
 

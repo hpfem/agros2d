@@ -48,17 +48,17 @@
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
 #include "hermes2d/module.h"
-
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "scenetransformdialog.h"
 #include "chartdialog.h"
 #include "examplesdialog.h"
 #include "hermes2d/solver.h"
+#include "optilab/optilab.h"
 
 #include "util/form_script.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(parent)
 {
     setWindowIcon(icon("agros2d"));
 
@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if (Agros2D::configComputer()->value(Config::Config_LogStdOut).toBool())
         logStdOut = new LogStdOut();
 
-    createPythonEngine(new PythonEngineAgros());
+    createPythonEngine(argc, argv, new PythonEngineAgros());
 
     // use maximum number of threads for PostHermes (linearizer)
     int threads = omp_get_max_threads();
@@ -117,10 +117,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // problem
     problemWidget = new ProblemWidget(this);
 
+    // PythonLab
     scriptEditorDialog = new PythonEditorAgrosDialog(currentPythonEngine(), QStringList(), NULL);
     sceneInfoWidget->setRecentScriptFiles(scriptEditorDialog->recentFiles());
     // collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(sceneViewPreprocessor, this);
+
+    // OptiLab
+    optilabWindow  = new OptilabWindow(scriptEditorDialog);
+    sceneInfoWidget->setRecentOptilabFiles(optilabWindow->recentFiles());
 
     createActions();
     createViews();
@@ -232,6 +237,7 @@ MainWindow::~MainWindow()
 
     delete logStdOut;
     delete scriptEditorDialog;
+    delete optilabWindow;
 }
 
 void MainWindow::createActions()
@@ -356,6 +362,10 @@ void MainWindow::createActions()
 
     actScriptEditorRunScript = new QAction(icon("script"), tr("Run &script..."), this);
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
+
+    actOptiLab = new QAction(icon("optilab"), tr("OptiLab"), this);
+    actOptiLab->setShortcut(Qt::Key_F10);
+    connect(actOptiLab, SIGNAL(triggered()), this, SLOT(doOptiLab()));
 
     actMaterialBrowser = new QAction(icon(""), tr("Material browser..."), this);
     actMaterialBrowser->setShortcut(QKeySequence(tr("Ctrl+M")));
@@ -508,6 +518,7 @@ void MainWindow::createMenus()
     QMenu *mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
+    mnuTools->addAction(actOptiLab);
     mnuTools->addAction(actUnitTests);
     mnuTools->addSeparator();
     mnuTools->addAction(actMaterialBrowser);
@@ -700,6 +711,7 @@ void MainWindow::createMain()
     // tlbLeftBar->addAction(Agros2D::problem()->actionSolveAdaptiveStep());
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(actScriptEditor);
+    tlbLeftBar->addAction(actOptiLab);
 
     splitter = new QSplitter(Qt::Horizontal, this);
     splitter->addWidget(viewControls);
@@ -946,6 +958,14 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             // python script
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
+            return;
+        }
+
+        if (fileInfo.suffix() == "opt")
+        {
+            // OptiLab
+            optilabWindow->documentOpen(fileNameDocument);
+            optilabWindow->showDialog();
             return;
         }
 
@@ -1247,6 +1267,8 @@ void MainWindow::doOptions()
 void MainWindow::doUnitTests()
 {
     UnitTestsWidget unit(this);
+    connect(&unit, SIGNAL(openInPythonLab(QString, QString)), scriptEditorDialog, SLOT(doFileOpenAndFind(QString, QString)));
+    connect(&unit, SIGNAL(openInPythonLab(QString, QString)), scriptEditorDialog, SLOT(show()));
     unit.exec();
 }
 
@@ -1310,6 +1332,11 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
         if (!fileNameScript.isEmpty())
             QMessageBox::critical(this, tr("File open"), tr("File '%1' doesn't exists.").arg(fileNameScript));
     }
+}
+
+void MainWindow::doOptiLab()
+{
+    optilabWindow->showDialog();
 }
 
 void MainWindow::doCut()

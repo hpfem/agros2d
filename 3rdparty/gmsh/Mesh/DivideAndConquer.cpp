@@ -162,8 +162,8 @@ Segment DocRecord::UpperCommonTangent(DT vl, DT vr)
 int DocRecord::Qtest(PointNumero h, PointNumero i, PointNumero j, PointNumero k)
 {
   if((h == i) && (h == j) && (h == k)) {
-    Msg::Error("Identical points in triangulation: increase element size "
-               "or Mesh.RandomFactor");
+    throw "Identical points in triangulation: increase element size "
+      "or Mesh.RandomFactor";
     return 0;
   }
 
@@ -535,6 +535,7 @@ void DocRecord::voronoiCell(PointNumero pt, std::vector<SPoint2> &pts) const
 {
   if (!_adjacencies){
     Msg::Error("No adjacencies were created");
+    return;
   }
   const int n = _adjacencies[pt].t_length;
   for(int j = 0; j < n; j++) {
@@ -958,7 +959,13 @@ void DocRecord::concave(double x,double y,GFace* gf)
     points[i].vicinity.clear();
   }
 
-  MakeMeshWithPoints();
+  try{
+    MakeMeshWithPoints();
+  }
+  catch(const char *err){
+    Msg::Error("%s", err);
+  }
+
   set = tagInterior(x,y);
   for(it2 = set.begin(); it2 != set.end(); it2++){
     index1 = triangles[*it2].a;

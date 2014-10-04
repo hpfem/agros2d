@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,29 +19,20 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "host_matrix_hyb.hpp"
-#include "host_matrix_ell.hpp"
-#include "host_matrix_dia.hpp"
-#include "host_matrix_coo.hpp"
 #include "host_matrix_csr.hpp"
 #include "host_conversion.hpp"
-#include "../base_matrix.hpp"
-#include "../base_vector.hpp"
 #include "host_vector.hpp"
-#include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
 #include "../matrix_formats_ind.hpp"
 
-extern "C" {
-#include "../../../thirdparty/matrix-market/mmio.h"
-}
-
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -49,13 +40,14 @@ extern "C" {
 #define omp_set_num_threads(num) ;
 #endif
 
-
 namespace paralution {
+
 
 template <typename ValueType>
 HostMatrixHYB<ValueType>::HostMatrixHYB() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -63,23 +55,29 @@ HostMatrixHYB<ValueType>::HostMatrixHYB() {
 template <typename ValueType>
 HostMatrixHYB<ValueType>::HostMatrixHYB(const Paralution_Backend_Descriptor local_backend) {
 
+  LOG_DEBUG(this, "HostMatrixHYB::HostMatrixHYB()",
+            "constructor with local_backend");
+
   this->mat_.ELL.val = NULL;
   this->mat_.ELL.col = NULL;
   this->mat_.ELL.max_row = 0;
 
-  this->mat_.COO.row = NULL;  
-  this->mat_.COO.col = NULL;  
+  this->mat_.COO.row = NULL;
+  this->mat_.COO.col = NULL;
   this->mat_.COO.val = NULL;
 
   this->ell_nnz_ = 0;
   this->coo_nnz_ = 0;
 
-  this->set_backend(local_backend); 
+  this->set_backend(local_backend);
 
 }
 
 template <typename ValueType>
 HostMatrixHYB<ValueType>::~HostMatrixHYB() {
+
+  LOG_DEBUG(this, "HostMatrixHYB::~HostMatrixHYB()",
+            "destructor");
 
   this->Clear();
 
@@ -88,18 +86,17 @@ HostMatrixHYB<ValueType>::~HostMatrixHYB() {
 template <typename ValueType>
 void HostMatrixHYB<ValueType>::info(void) const {
 
-  LOG_INFO("HostMatrixHYB<ValueType>" << 
-           " ELL nnz=" << this->get_ell_nnz() <<
-           " ELL max row=" << this->get_ell_max_row() <<
-           " COO nnz=" << this->get_coo_nnz());
+  LOG_INFO("HostMatrixHYB<ValueType>" <<
+           " ELL nnz=" << this->ell_nnz_ <<
+           " ELL max row=" << this->mat_.ELL.max_row <<
+           " COO nnz=" << this->coo_nnz_);
 
 }
-
 
 template <typename ValueType>
 void HostMatrixHYB<ValueType>::Clear() {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     free_host(&this->mat_.COO.row);
     free_host(&this->mat_.COO.col);
@@ -121,7 +118,7 @@ void HostMatrixHYB<ValueType>::Clear() {
 }
 
 template <typename ValueType>
-void HostMatrixHYB<ValueType>::AllocateHYB(const int ell_nnz, const int coo_nnz, const int ell_max_row, 
+void HostMatrixHYB<ValueType>::AllocateHYB(const int ell_nnz, const int coo_nnz, const int ell_max_row,
                                            const int nrow, const int ncol) {
 
   assert( ell_nnz   >= 0);
@@ -131,7 +128,7 @@ void HostMatrixHYB<ValueType>::AllocateHYB(const int ell_nnz, const int coo_nnz,
   assert( ncol  >= 0);
   assert( nrow  >= 0);
 
-  if (this->get_nnz() > 0)
+  if (this->nnz_ > 0)
     this->Clear();
 
   if (ell_nnz + coo_nnz > 0) {
@@ -141,7 +138,7 @@ void HostMatrixHYB<ValueType>::AllocateHYB(const int ell_nnz, const int coo_nnz,
 
     allocate_host(ell_nnz, &this->mat_.ELL.val);
     allocate_host(ell_nnz, &this->mat_.ELL.col);
-    
+
     set_to_zero_host(ell_nnz, this->mat_.ELL.val);
     set_to_zero_host(ell_nnz, this->mat_.ELL.col);
 
@@ -152,7 +149,7 @@ void HostMatrixHYB<ValueType>::AllocateHYB(const int ell_nnz, const int coo_nnz,
     allocate_host(coo_nnz, &this->mat_.COO.row);
     allocate_host(coo_nnz, &this->mat_.COO.col);
     allocate_host(coo_nnz, &this->mat_.COO.val);
- 
+
     set_to_zero_host(coo_nnz, this->mat_.COO.row);
     set_to_zero_host(coo_nnz, this->mat_.COO.col);
     set_to_zero_host(coo_nnz, this->mat_.COO.val);
@@ -164,7 +161,6 @@ void HostMatrixHYB<ValueType>::AllocateHYB(const int ell_nnz, const int coo_nnz,
 
   }
 
-
 }
 
 template <typename ValueType>
@@ -175,49 +171,48 @@ void HostMatrixHYB<ValueType>::CopyFrom(const BaseMatrix<ValueType> &mat) {
 
   if (const HostMatrixHYB<ValueType> *cast_mat = dynamic_cast<const HostMatrixHYB<ValueType>*> (&mat)) {
 
-    this->AllocateHYB(cast_mat->get_ell_nnz(), cast_mat->get_coo_nnz(), cast_mat->get_ell_max_row(),
-                      cast_mat->get_nrow(), cast_mat->get_ncol());
+    this->AllocateHYB(cast_mat->ell_nnz_, cast_mat->coo_nnz_, cast_mat->mat_.ELL.max_row,
+                      cast_mat->nrow_, cast_mat->ncol_);
 
-    assert((this->get_nnz()      == cast_mat->get_nnz())  &&
-           (this->get_ell_nnz()  == cast_mat->get_ell_nnz())  &&
-           (this->get_coo_nnz()  == cast_mat->get_coo_nnz())  &&
-	   (this->get_nrow()     == cast_mat->get_nrow()) &&
-	   (this->get_ncol()     == cast_mat->get_ncol()) );
-    
-    if (this->get_ell_nnz() > 0) {
+    assert((this->nnz_      == cast_mat->nnz_) &&
+           (this->ell_nnz_  == cast_mat->ell_nnz_) &&
+           (this->coo_nnz_  == cast_mat->coo_nnz_) &&
+           (this->nrow_     == cast_mat->nrow_) &&
+           (this->ncol_     == cast_mat->ncol_) );
+
+    if (this->ell_nnz_ > 0) {
 
       // ELL
 
-      for (int i=0; i<this->get_ell_nnz(); ++i)
+      for (int i=0; i<this->ell_nnz_; ++i)
         this->mat_.ELL.col[i] = cast_mat->mat_.ELL.col[i];
 
-      for (int i=0; i<this->get_ell_nnz(); ++i)
+      for (int i=0; i<this->ell_nnz_; ++i)
         this->mat_.ELL.val[i] = cast_mat->mat_.ELL.val[i];
-      
+
     }
-    
-    if (this->get_coo_nnz() > 0) {
+
+    if (this->coo_nnz_ > 0) {
 
       // COO
-      for (int i=0; i<this->get_coo_nnz(); ++i)
+      for (int i=0; i<this->coo_nnz_; ++i)
         this->mat_.COO.row[i] = cast_mat->mat_.COO.row[i];
 
-      for (int i=0; i<this->get_coo_nnz(); ++i)
+      for (int i=0; i<this->coo_nnz_; ++i)
         this->mat_.COO.col[i] = cast_mat->mat_.COO.col[i];
 
-      for (int i=0; i<this->get_coo_nnz(); ++i)
+      for (int i=0; i<this->coo_nnz_; ++i)
         this->mat_.COO.val[i] = cast_mat->mat_.COO.val[i];
 
     }
 
-    
   } else {
-    
+
     // Host matrix knows only host matrices
     // -> dispatching
     mat.CopyTo(this);
-    
-  }  
+
+  }
 
 }
 
@@ -237,38 +232,36 @@ bool HostMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
   if (mat.get_nnz() == 0)
     return true;
 
-    if (const HostMatrixHYB<ValueType> *cast_mat = dynamic_cast<const HostMatrixHYB<ValueType>*> (&mat)) {
+  if (const HostMatrixHYB<ValueType> *cast_mat = dynamic_cast<const HostMatrixHYB<ValueType>*> (&mat)) {
 
-      this->CopyFrom(*cast_mat);
-      return true;
+    this->CopyFrom(*cast_mat);
+    return true;
 
   }
 
+  if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
 
-    if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
+    this->Clear();
+    int nnz = 0;
+    int coo_nnz = 0;
+    int ell_nnz = 0;
 
-      this->Clear();
-      int nnz = 0;
-      int coo_nnz = 0;
-      int ell_nnz = 0;
+    // this->mat_.ELL.max_row = ( cast_mat->nnz_ / cast_mat->nrow_ );
 
-      //      this->mat_.ELL.max_row = ( cast_mat->get_nnz() / cast_mat->get_nrow() );
+    csr_to_hyb(this->local_backend_.OpenMP_threads,
+               cast_mat->nnz_, cast_mat->nrow_, cast_mat->ncol_,
+               cast_mat->mat_, &this->mat_,
+               &nnz, &ell_nnz, &coo_nnz);
 
-      csr_to_hyb(this->local_backend_.OpenMP_threads,
-                 cast_mat->get_nnz(), cast_mat->get_nrow(), cast_mat->get_ncol(),
-                 cast_mat->mat_, &this->mat_, 
-                 &nnz, &ell_nnz, &coo_nnz);
-
-      this->nrow_ = cast_mat->get_nrow();
-      this->ncol_ = cast_mat->get_ncol();
-      this->nnz_ = nnz;
-      this->ell_nnz_ = ell_nnz;
-      this->coo_nnz_ = coo_nnz;
+    this->nrow_    = cast_mat->nrow_;
+    this->ncol_    = cast_mat->ncol_;
+    this->nnz_     = nnz;
+    this->ell_nnz_ = ell_nnz;
+    this->coo_nnz_ = coo_nnz;
 
     return true;
 
   }
-  
 
   return false;
 
@@ -277,90 +270,99 @@ bool HostMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
 template <typename ValueType>
 void HostMatrixHYB<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
-    
-    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
+
+    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
+
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
-    
-    omp_set_num_threads(this->local_backend_.OpenMP_threads);  
-    
+
+    _set_omp_backend_threads(this->local_backend_, this->nrow_);
+
     // ELL
-    if (this->get_ell_nnz() > 0) {
+    if (this->ell_nnz_ > 0) {
 
 #pragma omp parallel for
-      for (int ai=0; ai<this->get_nrow(); ++ai) {
+      for (int ai=0; ai<this->nrow_; ++ai) {
         cast_out->vec_[ai] = ValueType(0.0);
-        
-        for (int n=0; n<this->get_ell_max_row(); ++n) {
-          
-          int aj = ELL_IND(ai, n, this->get_nrow(), this->get_ell_max_row());
-          
-          if ((this->mat_.ELL.col[aj] >= 0) && (this->mat_.ELL.col[aj] < this->get_ncol()))
+
+        for (int n=0; n<this->mat_.ELL.max_row; ++n) {
+
+          int aj = ELL_IND(ai, n, this->nrow_, this->mat_.ELL.max_row);
+
+          if ((this->mat_.ELL.col[aj] >= 0) && (this->mat_.ELL.col[aj] < this->ncol_))
             cast_out->vec_[ai] += this->mat_.ELL.val[aj] * cast_in->vec_[ this->mat_.ELL.col[aj] ];
+
         }
+
       }
+
     }
-    
+
     // COO
-    if (this->get_coo_nnz() > 0) {
-      
-      for (int i=0; i<this->get_coo_nnz(); ++i)
+    if (this->coo_nnz_ > 0) {
+
+      for (int i=0; i<this->coo_nnz_; ++i)
         cast_out->vec_[this->mat_.COO.row[i] ] += this->mat_.COO.val[i] * cast_in->vec_[ this->mat_.COO.col[i] ];
+
     }
+
   }
 
 }
-
 
 template <typename ValueType>
 void HostMatrixHYB<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
                                         BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
     
-    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
+
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    omp_set_num_threads(this->local_backend_.OpenMP_threads);  
-    
+    _set_omp_backend_threads(this->local_backend_, this->nrow_);
+
     // ELL
-    if (this->get_ell_nnz() > 0) {
+    if (this->ell_nnz_ > 0) {
 
 #pragma omp parallel for
-      for (int ai=0; ai<this->get_nrow(); ++ai) {
-        
-        for (int n=0; n<this->get_ell_max_row(); ++n) {
-          
-          int aj = ELL_IND(ai, n, this->get_nrow(), this->get_ell_max_row());
-          
-          if ((this->mat_.ELL.col[aj] >= 0) && (this->mat_.ELL.col[aj] < this->get_ncol()))
+      for (int ai=0; ai<this->nrow_; ++ai) {
+
+        for (int n=0; n<this->mat_.ELL.max_row; ++n) {
+
+          int aj = ELL_IND(ai, n, this->nrow_, this->mat_.ELL.max_row);
+
+          if ((this->mat_.ELL.col[aj] >= 0) && (this->mat_.ELL.col[aj] < this->ncol_))
             cast_out->vec_[ai] += scalar*this->mat_.ELL.val[aj] * cast_in->vec_[ this->mat_.ELL.col[aj] ];
+
         }
+
       }
+
     }
-    
+
     // COO
-    if (this->get_coo_nnz() > 0) {
-      
-      for (int i=0; i<this->get_coo_nnz(); ++i)
+    if (this->coo_nnz_ > 0) {
+
+      for (int i=0; i<this->coo_nnz_; ++i)
         cast_out->vec_[this->mat_.COO.row[i] ] += scalar*this->mat_.COO.val[i] * cast_in->vec_[ this->mat_.COO.col[i] ];
+
     }
+
   }
 
 }

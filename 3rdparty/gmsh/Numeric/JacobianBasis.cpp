@@ -23,12 +23,81 @@ namespace {
   }
 }
 
-JacobianBasis::JacobianBasis(int tag)
+GradientBasis::GradientBasis(int tag, int order)
+{
+  const int type = ElementType::ParentTypeFromTag(tag);
+
+  fullMatrix<double> samplingPoints;
+
+  switch (type) {
+    case TYPE_PNT :
+      samplingPoints = gmshGeneratePointsLine(0);
+      break;
+    case TYPE_LIN :
+      samplingPoints = gmshGeneratePointsLine(order);
+      break;
+    case TYPE_TRI :
+      samplingPoints = gmshGeneratePointsTriangle(order,false);
+      break;
+    case TYPE_QUA :
+      samplingPoints = gmshGeneratePointsQuadrangle(order,false);
+      break;
+    case TYPE_TET :
+      samplingPoints = gmshGeneratePointsTetrahedron(order,false);
+      break;
+    case TYPE_PRI :
+      samplingPoints = gmshGeneratePointsPrism(order,false);
+      break;
+    case TYPE_HEX :
+      samplingPoints = gmshGeneratePointsHexahedron(order,false);
+      break;
+    case TYPE_PYR :
+      samplingPoints = JacobianBasis::generateJacPointsPyramid(order);
+      break;
+    default :
+      Msg::Error("Unknown Jacobian function space for element tag %d", tag);
+      return;
+  }
+  const int numSampPnts = samplingPoints.size1();
+
+  // Store shape function gradients of mapping at Jacobian nodes
+  fullMatrix<double> allDPsi;
+  const nodalBasis *mapBasis = BasisFactory::getNodalBasis(tag);
+  mapBasis->df(samplingPoints, allDPsi);
+  const int numMapNodes = allDPsi.size1();
+
+  gradShapeMatX.resize(numSampPnts, numMapNodes);
+  gradShapeMatY.resize(numSampPnts, numMapNodes);
+  gradShapeMatZ.resize(numSampPnts, numMapNodes);
+  for (int i=0; i<numSampPnts; i++) {
+    for (int j=0; j<numMapNodes; j++) {
+      gradShapeMatX(i, j) = allDPsi(j, 3*i);
+      gradShapeMatY(i, j) = allDPsi(j, 3*i+1);
+      gradShapeMatZ(i, j) = allDPsi(j, 3*i+2);
+    }
+  }
+}
+
+void GradientBasis::getGradientsFromNodes(const fullMatrix<double> &nodes,
+                                          fullMatrix<double> *dxyzdX,
+                                          fullMatrix<double> *dxyzdY,
+                                          fullMatrix<double> *dxyzdZ) const
+{
+  if (dxyzdX) gradShapeMatX.mult(nodes, *dxyzdX);
+  if (dxyzdY) gradShapeMatY.mult(nodes, *dxyzdY);
+  if (dxyzdZ) gradShapeMatZ.mult(nodes, *dxyzdZ);
+}
+
+JacobianBasis::JacobianBasis(int tag, int jacOrder)
 {
   const int parentType = ElementType::ParentTypeFromTag(tag);
   const int order = ElementType::OrderFromTag(tag);
-  const int jacobianOrder =  JacobianBasis::jacobianOrder(parentType, order);
-  const int primJacobianOrder =  JacobianBasis::jacobianOrder(parentType, 1);
+  int jacobianOrder;
+  if (jacOrder < 0)
+    jacobianOrder = JacobianBasis::jacobianOrder(parentType, order);
+  else
+    jacobianOrder = jacOrder;
+  const int primJacobianOrder = JacobianBasis::jacobianOrder(parentType, 1);
 
   fullMatrix<double> lagPoints;                                  // Sampling points
 
@@ -58,7 +127,7 @@ JacobianBasis::JacobianBasis(int tag)
       lagPoints = generateJacPointsPyramid(jacobianOrder);
       break;
     default :
-      Msg::Error("Unknown Jacobian function space for element type %d", tag);
+      Msg::Error("Unknown Jacobian function space for element tag %d", tag);
       return;
   }
   numJacNodes = lagPoints.size1();
@@ -67,22 +136,7 @@ JacobianBasis::JacobianBasis(int tag)
   bezier = BasisFactory::getBezierBasis(parentType, jacobianOrder);
 
   // Store shape function gradients of mapping at Jacobian nodes
-  fullMatrix<double> allDPsi;
-  const nodalBasis *mapBasis = BasisFactory::getNodalBasis(tag);
-
-  mapBasis->df(lagPoints, allDPsi);
-  numMapNodes = allDPsi.size1();
-
-  gradShapeMatX.resize(numJacNodes, numMapNodes);
-  gradShapeMatY.resize(numJacNodes, numMapNodes);
-  gradShapeMatZ.resize(numJacNodes, numMapNodes);
-  for (int i=0; i<numJacNodes; i++) {
-    for (int j=0; j<numMapNodes; j++) {
-      gradShapeMatX(i, j) = allDPsi(j, 3*i);
-      gradShapeMatY(i, j) = allDPsi(j, 3*i+1);
-      gradShapeMatZ(i, j) = allDPsi(j, 3*i+2);
-    }
-  }
+  _gradBasis = BasisFactory::getGradientBasis(tag, jacobianOrder);
 
   // Compute matrix for lifting from primary Jacobian basis to Jacobian basis
   int primJacType = ElementType::getTag(parentType, primJacobianOrder, false);
@@ -133,7 +187,9 @@ JacobianBasis::JacobianBasis(int tag)
   lagPointsFast(numPrimMapNodes,2) = barycenter[2];
 
   fullMatrix<double> allDPsiFast;
+  const nodalBasis *mapBasis = BasisFactory::getNodalBasis(tag);
   mapBasis->df(lagPointsFast, allDPsiFast);
+  numMapNodes = mapBasis->getNumShapeFunctions();
 
   gradShapeMatXFast.resize(numJacNodesFast, numMapNodes);
   gradShapeMatYFast.resize(numJacNodesFast, numMapNodes);
@@ -145,7 +201,6 @@ JacobianBasis::JacobianBasis(int tag)
       gradShapeMatZFast(i, j) = allDPsiFast(j, 3*i+2);
     }
   }
-
 }
 
 // Computes (unit) normals to straight line element at barycenter (with norm of gradient as return value)
@@ -224,27 +279,33 @@ double JacobianBasis::getPrimJac3D(const fullMatrix<double> &nodesXYZ) const
 
 }
 
-namespace {
-
-// Calculate (signed) Jacobian for one element, given the gradients of the shape functions
-// and vectors for regularization of line and surface Jacobians in 3D.
-inline void computeSignedJacobian(int dim, int numJacNodes, const fullMatrix<double> &gradShapeMatX,
-                                  const fullMatrix<double> &gradShapeMatY, const fullMatrix<double> &gradShapeMatZ,
-                                  const fullMatrix<double> &nodesXYZ, const fullMatrix<double> &normals,
-                                  fullVector<double> &jacobian)
+// Calculate (signed, possibly scaled) Jacobian for one element, with normal vectors to straight element
+// for regularization. Evaluation points depend on the given matrices for shape function gradients.
+template<bool scaling>
+inline void JacobianBasis::getJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
+                                              const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
+                                              const fullMatrix<double> &nodesXYZ, fullVector<double> &jacobian) const
 {
+
+  const int dim = bezier->getDim();
 
   switch (dim) {
 
     case 0 : {
-      for (int i = 0; i < numJacNodes; i++) jacobian(i) = 1.;
+      for (int i = 0; i < nJacNodes; i++) jacobian(i) = 1.;
       break;
     }
 
     case 1 : {
-      fullMatrix<double> dxyzdX(numJacNodes,3);
-      gradShapeMatX.mult(nodesXYZ, dxyzdX);
-      for (int i = 0; i < numJacNodes; i++) {
+      fullMatrix<double> normals(2,3);
+      const double invScale = getPrimNormals1D(nodesXYZ,normals);
+      if (scaling) {
+        const double scale = 1./invScale;
+        normals(0,0) *= scale; normals(0,1) *= scale; normals(0,2) *= scale;            // Faster to scale 1 normal than afterwards
+      }
+      fullMatrix<double> dxyzdX(nJacNodes,3);
+      gSMatX.mult(nodesXYZ, dxyzdX);
+      for (int i = 0; i < nJacNodes; i++) {
         const double &dxdX = dxyzdX(i,0), &dydX = dxyzdX(i,1), &dzdX = dxyzdX(i,2);
         const double &dxdY = normals(0,0), &dydY = normals(0,1), &dzdY = normals(0,2);
         const double &dxdZ = normals(1,0), &dydZ = normals(1,1), &dzdZ = normals(1,2);
@@ -254,29 +315,40 @@ inline void computeSignedJacobian(int dim, int numJacNodes, const fullMatrix<dou
     }
 
     case 2 : {
-      fullMatrix<double> dxyzdX(numJacNodes,3), dxyzdY(numJacNodes,3);
-      gradShapeMatX.mult(nodesXYZ, dxyzdX);
-      gradShapeMatY.mult(nodesXYZ, dxyzdY);
-      for (int i = 0; i < numJacNodes; i++) {
+      fullMatrix<double> normal(1,3);
+      const double invScale = getPrimNormal2D(nodesXYZ,normal);
+      if (scaling) {
+        const double scale = 1./invScale;
+        normal(0,0) *= scale; normal(0,1) *= scale; normal(0,2) *= scale;               // Faster to scale normal than afterwards
+      }
+      fullMatrix<double> dxyzdX(nJacNodes,3), dxyzdY(nJacNodes,3);
+      gSMatX.mult(nodesXYZ, dxyzdX);
+      gSMatY.mult(nodesXYZ, dxyzdY);
+      for (int i = 0; i < nJacNodes; i++) {
         const double &dxdX = dxyzdX(i,0), &dydX = dxyzdX(i,1), &dzdX = dxyzdX(i,2);
         const double &dxdY = dxyzdY(i,0), &dydY = dxyzdY(i,1), &dzdY = dxyzdY(i,2);
-        const double &dxdZ = normals(0,0), &dydZ = normals(0,1), &dzdZ = normals(0,2);
+        const double &dxdZ = normal(0,0), &dydZ = normal(0,1), &dzdZ = normal(0,2);
         jacobian(i) = calcDet3D(dxdX,dydX,dzdX,dxdY,dydY,dzdY,dxdZ,dydZ,dzdZ);
       }
       break;
     }
 
     case 3 : {
-      fullMatrix<double> dxyzdX(numJacNodes,3), dxyzdY(numJacNodes,3), dxyzdZ(numJacNodes,3);
-      gradShapeMatX.mult(nodesXYZ, dxyzdX);
-      gradShapeMatY.mult(nodesXYZ, dxyzdY);
-      gradShapeMatZ.mult(nodesXYZ, dxyzdZ);
-      for (int i = 0; i < numJacNodes; i++) {
+      fullMatrix<double> dum;
+      fullMatrix<double> dxyzdX(nJacNodes,3), dxyzdY(nJacNodes,3), dxyzdZ(nJacNodes,3);
+      gSMatX.mult(nodesXYZ, dxyzdX);
+      gSMatY.mult(nodesXYZ, dxyzdY);
+      gSMatZ.mult(nodesXYZ, dxyzdZ);
+      for (int i = 0; i < nJacNodes; i++) {
         const double &dxdX = dxyzdX(i,0), &dydX = dxyzdX(i,1), &dzdX = dxyzdX(i,2);
         const double &dxdY = dxyzdY(i,0), &dydY = dxyzdY(i,1), &dzdY = dxyzdY(i,2);
         const double &dxdZ = dxyzdZ(i,0), &dydZ = dxyzdZ(i,1), &dzdZ = dxyzdZ(i,2);
         jacobian(i) = calcDet3D(dxdX,dydX,dzdX,dxdY,dydY,dzdY,dxdZ,dydZ,dzdZ);
       }
+      if (scaling) {
+        const double scale = 1./getPrimJac3D(nodesXYZ);
+        jacobian.scale(scale);
+      }
       break;
     }
 
@@ -284,91 +356,32 @@ inline void computeSignedJacobian(int dim, int numJacNodes, const fullMatrix<dou
 
 }
 
-} // namespace
-
-// Calculate (signed) Jacobian for one element, with normal vectors to straight element for regularization.
-// Evaluation points depend on the given matrices for shape function gradients.
+// Calculate signed Jacobian for one element, with normal vectors to straight element for
+// regularization. Evaluation points depend on the given matrices for shape function gradients.
 void JacobianBasis::getSignedJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
                                              const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
                                              const fullMatrix<double> &nodesXYZ, fullVector<double> &jacobian) const
 {
-
-  const int dim = bezier->getDim();
-
-  switch (dim) {
-
-    case 1 : {
-      fullMatrix<double> normals(2,3);
-      getPrimNormals1D(nodesXYZ,normals);
-      computeSignedJacobian(dim,nJacNodes,gSMatX,gSMatY,gSMatZ,nodesXYZ,normals,jacobian);
-      break;
-    }
-
-    case 2 : {
-      fullMatrix<double> normal(1,3);
-      getPrimNormal2D(nodesXYZ,normal);
-      computeSignedJacobian(dim,nJacNodes,gSMatX,gSMatY,gSMatZ,nodesXYZ,normal,jacobian);
-      break;
-    }
-
-    case 0 :
-    case 3 : {
-      fullMatrix<double> dum;
-      computeSignedJacobian(dim,nJacNodes,gSMatX,gSMatY,gSMatZ,nodesXYZ,dum,jacobian);
-      break;
-    }
-
-  }
-
+  getJacobianGeneral<false>(nJacNodes, gSMatX,  gSMatY, gSMatZ, nodesXYZ, jacobian);
 }
 
-// Calculate scaled (signed) Jacobian for one element, with normal vectors to straight element for regularization
-// and scaling. Evaluation points depend on the given matrices for shape function gradients.
+// Calculate (signed) scaled Jacobian for one element, with normal vectors to straight element
+// for regularization. Evaluation points depend on the given matrices for shape function gradients.
 void JacobianBasis::getScaledJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
                                              const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
                                              const fullMatrix<double> &nodesXYZ, fullVector<double> &jacobian) const
 {
-
-  const int dim = bezier->getDim();
-
-  switch (dim) {
-
-    case 1 : {
-      fullMatrix<double> normals(2,3);
-      const double scale = 1./getPrimNormals1D(nodesXYZ,normals);
-      normals(0,0) *= scale; normals(0,1) *= scale; normals(0,2) *= scale;  // Faster to scale 1 normal than afterwards
-      computeSignedJacobian(dim,nJacNodes,gSMatX,gSMatY,gSMatZ,nodesXYZ,normals,jacobian);
-      break;
-    }
-
-    case 2 : {
-      fullMatrix<double> normal(1,3);
-      const double scale = 1./getPrimNormal2D(nodesXYZ,normal);
-      normal(0,0) *= scale; normal(0,1) *= scale; normal(0,2) *= scale;     // Faster to scale normal than afterwards
-      computeSignedJacobian(dim,nJacNodes,gSMatX,gSMatY,gSMatZ,nodesXYZ,normal,jacobian);
-      break;
-    }
-
-    case 0 :
-    case 3 : {
-      fullMatrix<double> dum;
-      const double scale = 1./getPrimJac3D(nodesXYZ);
-      computeSignedJacobian(dim,nJacNodes,gSMatX,gSMatY,gSMatZ,nodesXYZ,dum,jacobian);
-      jacobian.scale(scale);
-      break;
-    }
-
-  }
-
+  getJacobianGeneral<true>(nJacNodes, gSMatX,  gSMatY, gSMatZ, nodesXYZ, jacobian);
 }
 
-// Calculate (signed) Jacobian for several elements.
-// Evaluation points depend on the given matrices for shape function gradients.
+// Calculate (signed, possibly scaled) Jacobian for several elements, with normal vectors to straight
+// elements for regularization. Evaluation points depend on the given matrices for shape function gradients.
 // TODO: Optimize and test 1D & 2D
-void JacobianBasis::getSignedJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
-                                             const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
-                                             const fullMatrix<double> &nodesX, const fullMatrix<double> &nodesY,
-                                             const fullMatrix<double> &nodesZ, fullMatrix<double> &jacobian) const
+template<bool scaling>
+inline void JacobianBasis::getJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
+                                              const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
+                                              const fullMatrix<double> &nodesX, const fullMatrix<double> &nodesY,
+                                              const fullMatrix<double> &nodesZ, fullMatrix<double> &jacobian) const
 {
 
   switch (bezier->getDim()) {
@@ -385,14 +398,18 @@ void JacobianBasis::getSignedJacobianGeneral(int nJacNodes, const fullMatrix<dou
       fullMatrix<double> dxdX(nJacNodes,numEl), dydX(nJacNodes,numEl), dzdX(nJacNodes,numEl);
       gSMatX.mult(nodesX, dxdX); gSMatX.mult(nodesY, dydX); gSMatX.mult(nodesZ, dzdX);
       for (int iEl = 0; iEl < numEl; iEl++) {
-        fullMatrix<double> nodesXYZ(numPrimJacNodes,3);
-        for (int i = 0; i < numPrimJacNodes; i++) {
+        fullMatrix<double> nodesXYZ(numPrimMapNodes,3);
+        for (int i = 0; i < numPrimMapNodes; i++) {
           nodesXYZ(i,0) = nodesX(i,iEl);
           nodesXYZ(i,1) = nodesY(i,iEl);
           nodesXYZ(i,2) = nodesZ(i,iEl);
         }
         fullMatrix<double> normals(2,3);
-        getPrimNormals1D(nodesXYZ,normals);
+        const double invScale = getPrimNormals1D(nodesXYZ,normals);
+        if (scaling) {
+          const double scale = 1./invScale;
+          normals(0,0) *= scale; normals(0,1) *= scale; normals(0,2) *= scale;                // Faster to scale 1 normal than afterwards
+        }
         const double &dxdY = normals(0,0), &dydY = normals(0,1), &dzdY = normals(0,2);
         const double &dxdZ = normals(1,0), &dydZ = normals(1,1), &dzdZ = normals(1,2);
         for (int i = 0; i < nJacNodes; i++)
@@ -410,14 +427,18 @@ void JacobianBasis::getSignedJacobianGeneral(int nJacNodes, const fullMatrix<dou
       gSMatX.mult(nodesX, dxdX); gSMatX.mult(nodesY, dydX); gSMatX.mult(nodesZ, dzdX);
       gSMatY.mult(nodesX, dxdY); gSMatY.mult(nodesY, dydY); gSMatY.mult(nodesZ, dzdY);
       for (int iEl = 0; iEl < numEl; iEl++) {
-        fullMatrix<double> nodesXYZ(numPrimJacNodes,3);
-        for (int i = 0; i < numPrimJacNodes; i++) {
+        fullMatrix<double> nodesXYZ(numPrimMapNodes,3);
+        for (int i = 0; i < numPrimMapNodes; i++) {
           nodesXYZ(i,0) = nodesX(i,iEl);
           nodesXYZ(i,1) = nodesY(i,iEl);
           nodesXYZ(i,2) = nodesZ(i,iEl);
         }
         fullMatrix<double> normal(1,3);
-        getPrimNormal2D(nodesXYZ,normal);
+        const double invScale = getPrimNormal2D(nodesXYZ,normal);
+        if (scaling) {
+          const double scale = 1./invScale;
+          normal(0,0) *= scale; normal(0,1) *= scale; normal(0,2) *= scale;                   // Faster to scale normal than afterwards
+        }
         const double &dxdZ = normal(0,0), &dydZ = normal(0,1), &dzdZ = normal(0,2);
         for (int i = 0; i < nJacNodes; i++)
           jacobian(i,iEl) = calcDet3D(dxdX(i,iEl),dydX(i,iEl),dzdX(i,iEl),
@@ -435,16 +456,47 @@ void JacobianBasis::getSignedJacobianGeneral(int nJacNodes, const fullMatrix<dou
       gSMatX.mult(nodesX, dxdX); gSMatX.mult(nodesY, dydX); gSMatX.mult(nodesZ, dzdX);
       gSMatY.mult(nodesX, dxdY); gSMatY.mult(nodesY, dydY); gSMatY.mult(nodesZ, dzdY);
       gSMatZ.mult(nodesX, dxdZ); gSMatZ.mult(nodesY, dydZ); gSMatZ.mult(nodesZ, dzdZ);
-      for (int iEl = 0; iEl < numEl; iEl++)
+      for (int iEl = 0; iEl < numEl; iEl++) {
         for (int i = 0; i < nJacNodes; i++)
           jacobian(i,iEl) = calcDet3D(dxdX(i,iEl),dydX(i,iEl),dzdX(i,iEl),
                                       dxdY(i,iEl),dydY(i,iEl),dzdY(i,iEl),
                                       dxdZ(i,iEl),dydZ(i,iEl),dzdZ(i,iEl));
+        if (scaling) {
+          fullMatrix<double> nodesXYZ(numPrimMapNodes,3);
+          for (int i = 0; i < numPrimMapNodes; i++) {
+            nodesXYZ(i,0) = nodesX(i,iEl);
+            nodesXYZ(i,1) = nodesY(i,iEl);
+            nodesXYZ(i,2) = nodesZ(i,iEl);
+          }
+          const double scale = 1./getPrimJac3D(nodesXYZ);
+          for (int i = 0; i < nJacNodes; i++) jacobian(i,iEl) *= scale;
+        }
+      }
       break;
     }
 
   }
 
+}
+
+// Calculate signed Jacobian for several elements, with normal vectors to straight elements for
+// regularization. Evaluation points depend on the given matrices for shape function gradients.
+void JacobianBasis::getSignedJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
+                                             const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
+                                             const fullMatrix<double> &nodesX, const fullMatrix<double> &nodesY,
+                                             const fullMatrix<double> &nodesZ, fullMatrix<double> &jacobian) const
+{
+  getJacobianGeneral<false>(nJacNodes, gSMatX,  gSMatY, gSMatZ, nodesX, nodesY, nodesZ, jacobian);
+}
+
+// Calculate (signed) scaled Jacobian for several elements, with normal vectors to straight elements
+// for regularization. Evaluation points depend on the given matrices for shape function gradients.
+void JacobianBasis::getScaledJacobianGeneral(int nJacNodes, const fullMatrix<double> &gSMatX,
+                                             const fullMatrix<double> &gSMatY, const fullMatrix<double> &gSMatZ,
+                                             const fullMatrix<double> &nodesX, const fullMatrix<double> &nodesY,
+                                             const fullMatrix<double> &nodesZ, fullMatrix<double> &jacobian) const
+{
+  getJacobianGeneral<true>(nJacNodes, gSMatX,  gSMatY, gSMatZ, nodesX, nodesY, nodesZ, jacobian);
 }
 
 // Calculate (signed) Jacobian and its gradients for one element, with normal vectors to straight element
@@ -572,8 +624,8 @@ void JacobianBasis::getMetricMinAndGradients(const fullMatrix<double> &nodesXYZ,
   for (int l = 0; l < numJacNodes; l++) {
     double jac[2][2] = {{0., 0.}, {0., 0.}};
     for (int i = 0; i < numMapNodes; i++) {
-      const double &dPhidX = gradShapeMatX(l,i);
-      const double &dPhidY = gradShapeMatY(l,i);
+      const double &dPhidX = _gradBasis->gradShapeMatX(l,i);
+      const double &dPhidY = _gradBasis->gradShapeMatY(l,i);
       const double dpsidx = dPhidX * invJaci[0][0] + dPhidY * invJaci[1][0];
       const double dpsidy = dPhidX * invJaci[0][1] + dPhidY * invJaci[1][1];
       jac[0][0] += nodesXYZ(i,0) * dpsidx;
@@ -596,8 +648,8 @@ void JacobianBasis::getMetricMinAndGradients(const fullMatrix<double> &nodesXYZ,
     const double aetaxi  = ayx * invJaci[0][0] + ayy * invJaci[0][1];
     const double axieta  = axx * invJaci[1][0] + axy * invJaci[1][1];
     for (int i = 0; i < numMapNodes; i++) {
-      const double &dPhidX = gradShapeMatX(l,i);
-      const double &dPhidY = gradShapeMatY(l,i);
+      const double &dPhidX = _gradBasis->gradShapeMatX(l,i);
+      const double &dPhidY = _gradBasis->gradShapeMatY(l,i);
       gradLambdaJ(l, i + 0 * numMapNodes) = axixi * dPhidX + axieta * dPhidY;
       gradLambdaJ(l, i + 1 * numMapNodes) = aetaxi * dPhidX + aetaeta * dPhidY;
     }
@@ -605,9 +657,26 @@ void JacobianBasis::getMetricMinAndGradients(const fullMatrix<double> &nodesXYZ,
 
 }
 
+void JacobianBasis::interpolate(const fullVector<double> &jacobian,
+                                const fullMatrix<double> &uvw,
+                                fullMatrix<double> &result,
+                                bool areBezier) const
+{
+  fullMatrix<double> bezM(jacobian.size(), 1);
+  fullVector<double> bez;
+  bez.setAsProxy(bezM, 0);
+
+  if (areBezier)
+    bez.setAll(jacobian);
+  else
+    lag2Bez(jacobian, bez);
+
+  bezier->interpolate(bezM, uvw, result);
+}
+
 fullMatrix<double> JacobianBasis::generateJacMonomialsPyramid(int order)
 {
-  int nbMonomials = (order+3)*((order+3)+1)*(2*(order+3)+1)/6 - 5;
+  const int nbMonomials = (order+3)*(order+3)*(order+1);
   fullMatrix<double> monomials(nbMonomials, 3);
 
   if (order == 0) {
@@ -637,28 +706,28 @@ fullMatrix<double> JacobianBasis::generateJacMonomialsPyramid(int order)
   monomials(4, 1) = 0;
   monomials(4, 2) = order;
 
-  monomials(5, 0) = 2;
+  monomials(5, 0) = order+2;
   monomials(5, 1) = 0;
   monomials(5, 2) = order;
 
-  monomials(6, 0) = 2;
-  monomials(6, 1) = 2;
+  monomials(6, 0) = order+2;
+  monomials(6, 1) = order+2;
   monomials(6, 2) = order;
 
   monomials(7, 0) = 0;
-  monomials(7, 1) = 2;
+  monomials(7, 1) = order+2;
   monomials(7, 2) = order;
 
   int index = 8;
 
-  static const int bottom_edges[8][2] = {
+  static const int bottom_edges[4][2] = {
     {0, 1},
     {1, 2},
     {2, 3},
     {3, 0}
   };
 
-  // bottom "edges"
+  // bottom & top "edges"
   for (int iedge = 0; iedge < 4; ++iedge) {
     int i0 = bottom_edges[iedge][0];
     int i1 = bottom_edges[iedge][1];
@@ -671,22 +740,14 @@ fullMatrix<double> JacobianBasis::generateJacMonomialsPyramid(int order)
       monomials(index, 1) = monomials(i0, 1) + i * u_2;
       monomials(index, 2) = 0;
     }
+    for (int i = 1; i < order + 2; ++i, ++index) {
+      monomials(index, 0) = monomials(i0, 0) + i * u_1;
+      monomials(index, 1) = monomials(i0, 1) + i * u_2;
+      monomials(index, 2) = order;
+    }
   }
 
-  // top "edges"
-  for (int iedge = 0; iedge < 4; ++iedge, ++index) {
-    int i0 = bottom_edges[iedge][0] + 4;
-    int i1 = bottom_edges[iedge][1] + 4;
-
-    int u_1 = (monomials(i1,0)-monomials(i0,0)) / 2;
-    int u_2 = (monomials(i1,1)-monomials(i0,1)) / 2;
-
-    monomials(index, 0) = monomials(i0, 0) + u_1;
-    monomials(index, 1) = monomials(i0, 1) + u_2;
-    monomials(index, 2) = monomials(i0, 2);
-  }
-
-  // bottom "face"
+  // bottom & top "face"
   fullMatrix<double> uv = gmshGenerateMonomialsQuadrangle(order);
   uv.add(1);
   for (int i = 0; i < uv.size1(); ++i, ++index) {
@@ -694,16 +755,15 @@ fullMatrix<double> JacobianBasis::generateJacMonomialsPyramid(int order)
     monomials(index, 1) = uv(i, 1);
     monomials(index, 2) = 0;
   }
-
-  // top "face"
-  monomials(index, 0) = 1;
-  monomials(index, 1) = 1;
-  monomials(index, 2) = order;
-  ++index;
+  for (int i = 0; i < uv.size1(); ++i, ++index) {
+    monomials(index, 0) = uv(i, 0);
+    monomials(index, 1) = uv(i, 1);
+    monomials(index, 2) = order;
+  }
 
   // other monomials
+  uv = gmshGenerateMonomialsQuadrangle(order + 2);
   for (int k = 1; k < order; ++k) {
-    fullMatrix<double> uv = gmshGenerateMonomialsQuadrangle(order + 2 - k);
     for (int i = 0; i < uv.size1(); ++i, ++index) {
       monomials(index, 0) = uv(i, 0);
       monomials(index, 1) = uv(i, 1);
@@ -719,16 +779,17 @@ fullMatrix<double> JacobianBasis::generateJacPointsPyramid(int order)
 
   const double p = order + 2;
   for (int i = 0; i < points.size1(); ++i) {
-    points(i, 2) = points(i, 2) * 1. / p;
-    const double duv = -1. + points(i, 2);
-    points(i, 0) = duv + points(i, 0) * 2. / p;
-    points(i, 1) = duv + points(i, 1) * 2. / p;
+    points(i, 2) = points(i, 2) / p;
+    const double scale = 1. - points(i, 2);
+    points(i, 0) = (-1. + 2. * points(i, 0) / p) * scale;
+    points(i, 1) = (-1. + 2. * points(i, 1) / p) * scale;
   }
 
   return points;
 }
 
-int JacobianBasis::jacobianOrder(int parentType, int order) {
+int JacobianBasis::jacobianOrder(int parentType, int order)
+{
   switch (parentType) {
     case TYPE_PNT : return 0;
     case TYPE_LIN : return order - 1;
@@ -745,3 +806,5 @@ int JacobianBasis::jacobianOrder(int parentType, int order) {
       return 0;
   }
 }
+
+

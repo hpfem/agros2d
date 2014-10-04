@@ -1,6 +1,7 @@
 # import libraries
 import pythonlab
 import agros2d
+import variant
 
 from math import *
 

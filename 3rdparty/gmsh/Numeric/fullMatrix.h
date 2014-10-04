@@ -8,6 +8,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <algorithm>
 #include "GmshConfig.h"
 #include "GmshMessage.h"
 
@@ -110,6 +111,13 @@ class fullVector
      [(*this)(0), (*this)(1), ..., (*this)(this->size() - 1)].
   */
   inline const scalar * getDataPtr() const { return _data; }
+
+  /**
+     @return Returns a  pointer to this fullVector data.@n
+     This pointer will point to the following memory segment:
+     [(*this)(0), (*this)(1), ..., (*this)(this->size() - 1)].
+  */
+  inline scalar * getDataPtr() { return _data; }
 
   /**
      @param i A vector index between 0 and size() - 1.
@@ -443,6 +451,9 @@ class fullMatrix
     #endif
     return (*this)(r, c);
   }
+
+  inline const scalar * getDataPtr() const { return _data; }
+  inline scalar * getDataPtr() { return _data; }
 
   // operations
   inline void set(int r, int c, scalar v){

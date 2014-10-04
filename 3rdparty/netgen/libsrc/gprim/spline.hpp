@@ -37,8 +37,17 @@ namespace netgen
       : Point<D>(ap), refatpoint(aref), hmax(1e99), hpref(ahpref) { ; }
   };
 
-
-
+  // Philippose - 14.02.2009
+  // Modifications for creating a DLL in Windows
+#ifdef WIN32
+#ifdef NGLIB_EXPORTS || nglib_EXPORTS
+#define DLL_HEADER   __declspec(dllexport)
+#else
+#define DLL_HEADER   __declspec(dllimport)
+#endif
+#else
+#define DLL_HEADER 
+#endif
 
   /// base class for 2d - segment
   template < int D >
@@ -151,7 +160,7 @@ namespace netgen
 
   /// curve given by a rational, quadratic spline (including ellipses)
   template< int D >
-  class SplineSeg3 : public SplineSeg<D>
+  class DLL_HEADER SplineSeg3 : public SplineSeg<D>
   {
     ///
     GeomPoint<D> p1, p2, p3;
@@ -168,7 +177,7 @@ namespace netgen
     virtual Vec<D> GetTangent (const double t) const;
 
   
-    DLL_HEADER virtual void GetDerivatives (const double t, 
+    virtual void GetDerivatives (const double t, 
 				 Point<D> & point,
 				 Vec<D> & first,
 				 Vec<D> & second) const;
@@ -183,14 +192,14 @@ namespace netgen
 
     const GeomPoint<D> & TangentPoint (void) const { return p2; }
 
-    DLL_HEADER virtual void LineIntersections (const double a, const double b, const double c,
+    virtual void LineIntersections (const double a, const double b, const double c,
 				    Array < Point<D> > & points, const double eps) const;
 
-    DLL_HEADER virtual double MaxCurvature(void) const;
+    virtual double MaxCurvature(void) const;
 
-    DLL_HEADER virtual void Project (const Point<D> point, Point<D> & point_on_curve, double & t) const;
+    virtual void Project (const Point<D> point, Point<D> & point_on_curve, double & t) const;
 
-    DLL_HEADER virtual void GetRawData (Array<double> & data) const;
+    virtual void GetRawData (Array<double> & data) const;
   };
 
 

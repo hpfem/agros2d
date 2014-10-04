@@ -24,7 +24,7 @@ DataTable::DataTable() : m_valid(false)
     setImplicit();
 }
 
-DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
+DataTable::DataTable(std::vector<double> points, std::vector<double> values)
     : m_valid(false), m_points(points), m_values(values), m_numPoints(0), m_isEmpty(true), m_type(DataTableType_PiecewiseLinear)
 {
     setImplicit();
@@ -62,31 +62,14 @@ DataTable::DataTable(const DataTable &origin)
 
 void DataTable::clear()
 {
-    setValues(Hermes::vector<double>(), Hermes::vector<double>());
+    setValues(std::vector<double>(), std::vector<double>());
 }
 
-void DataTable::setValues(Hermes::vector<double> points, Hermes::vector<double> values)
+void DataTable::setValues(std::vector<double> points, std::vector<double> values)
 {
     inValidate();
     m_points = points;
     m_values = values;
-
-    checkTable();
-    validate();
-}
-
-void DataTable::setValues(vector<double> points, vector<double> values)
-{
-    assert(points.size() == values.size());
-
-    inValidate();
-    m_points.clear();
-    m_values.clear();
-    for (int i = 0; i < points.size(); i++)
-    {
-        m_points.push_back(points[i]);
-        m_values.push_back(values[i]);
-    }
 
     checkTable();
     validate();
@@ -401,7 +384,7 @@ void DataTable::fromString(const QString &str)
 }
 
 
-ConstantTable::ConstantTable(Hermes::vector<double> points, Hermes::vector<double> values)
+ConstantTable::ConstantTable(std::vector<double> points, std::vector<double> values)
 {
     double sum = 0;
     int size = values.size();
@@ -421,7 +404,7 @@ double ConstantTable::derivative(double x) const
     return 0;
 }
 
-PiecewiseLinear::PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values)
+PiecewiseLinear::PiecewiseLinear(std::vector<double> points, std::vector<double> values)
     : m_points(points), m_values(values)
 {
     assert(m_points.size() == m_values.size());
@@ -437,7 +420,7 @@ int PiecewiseLinear::leftIndex(double x)
 {
     // slower implementation
     //
-    // Hermes::vector<double>::const_iterator it = std::lower_bound(m_points.begin(), m_points.end(), x);
+    // std::vector<double>::const_iterator it = std::lower_bound(m_points.begin(), m_points.end(), x);
     // if (it == m_points.end())
     //     return m_size - 1;
     // else if (it == m_points.begin())

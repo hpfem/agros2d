@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "ocl_matrix_csr.hpp"
 #include "ocl_matrix_coo.hpp"
@@ -46,6 +51,7 @@ template <typename ValueType>
 OCLAcceleratorMatrixBCSR<ValueType>::OCLAcceleratorMatrixBCSR() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -53,6 +59,9 @@ OCLAcceleratorMatrixBCSR<ValueType>::OCLAcceleratorMatrixBCSR() {
 
 template <typename ValueType>
 OCLAcceleratorMatrixBCSR<ValueType>::OCLAcceleratorMatrixBCSR(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixBCSR::OCLAcceleratorMatrixBCSR()",
+            "constructor with local_backend");
 
   this->set_backend(local_backend); 
 
@@ -63,6 +72,9 @@ OCLAcceleratorMatrixBCSR<ValueType>::OCLAcceleratorMatrixBCSR(const Paralution_B
 
 template <typename ValueType>
 OCLAcceleratorMatrixBCSR<ValueType>::~OCLAcceleratorMatrixBCSR() {
+
+  LOG_DEBUG(this, "OCLAcceleratorMatrixBCSR::~OCLAcceleratorMatrixBCSR()",
+            "destructor");
 
   this->Clear();
 

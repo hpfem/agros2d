@@ -17,17 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifdef _MSC_VER
-# ifdef _DEBUG
-#  undef _DEBUG
-#  include <Python.h>
-#  define _DEBUG
-# else
-#  include <Python.h>
-# endif
-#else
-#  include <Python.h>
-#endif
+#include <Python.h>
 
 #include "pythonengine_agros.h"
 #include "python_unittests.h"
@@ -49,6 +39,8 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     webView->setMinimumSize(200, 200);
+
+    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     logWidget = new LogWidget(this);
     logWidget->setMemoryLabelVisible(false);
@@ -124,7 +116,7 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() + 1).toStdString()));
 
-    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_results.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_common.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);
 
     // read tests from test_suite
@@ -315,41 +307,50 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
     QString str = QString("from test_suite.scenario import run_test; agros2d_result_report = run_test(%1.%2)").
             arg(module).arg(cls);
 
-    currentPythonEngine()->runScript(str);
-
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_result_report");
-    if (result)
+    bool successfulRun = currentPythonEngine()->runScript(str);
+    if (successfulRun)
     {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
+        PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_result_report");
+        if (result)
         {
-            PyObject *list = PyList_GetItem(result, i);
-            Py_INCREF(list);
+            Py_INCREF(result);
+            for (int i = 0; i < PyList_Size(result); i++)
+            {
+                PyObject *list = PyList_GetItem(result, i);
+                Py_INCREF(list);
 
-            QString tmodule = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 0)));
-            QString tcls = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 1)));
-            QString ttest = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 2)));
-            double telapsedTime = PyFloat_AsDouble(PyList_GetItem(list, 3));
-            QString tstatus = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 4)));
-            QString terror = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 5)));
+                QString tmodule = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 0)));
+                QString tcls = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 1)));
+                QString ttest = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 2)));
+                double telapsedTime = PyFloat_AsDouble(PyList_GetItem(list, 3));
+                QString tstatus = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 4)));
+                QString terror = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(list, 5)));
 
-            // add to the file
-            XMLTest::item item(ttest.toStdString(),
-                               tmodule.toStdString(),
-                               tcls.toStdString(),
-                               telapsedTime,
-                               tstatus == "OK",
-                               terror.toStdString());
+                // add to the file
+                XMLTest::item item(ttest.toStdString(),
+                                   tmodule.toStdString(),
+                                   tcls.toStdString(),
+                                   telapsedTime,
+                                   tstatus == "OK",
+                                   terror.toStdString());
 
-            m_test.tests().item().push_back(item);
+                m_test.tests().item().push_back(item);
 
-            Py_XDECREF(list);
+                Py_XDECREF(list);
 
+            }
+            Py_XDECREF(result);
         }
-        Py_XDECREF(result);
+    }
+    else
+    {
+        // parse error
+        ErrorResult result = currentPythonEngine()->parseError();
+        qDebug() << result.error();
+        qDebug() << result.tracebackToString();
     }
 
-    currentPythonEngine()->runExpression("del agros2d_result; del agros2d_result_report");
+    currentPythonEngine()->runExpression("del agros2d_result_report");
 }
 
 void UnitTestsWidget::showInfoTests(const QString &testID)
@@ -654,3 +655,20 @@ void UnitTestsWidget::doReject()
     reject();
 }
 
+void UnitTestsWidget::linkClicked(const QUrl &url)
+{
+    if (url.toString().contains("test?"))
+    {
+#if QT_VERSION < 0x050000
+        QString module = url.queryItemValue("module");
+        QString name = url.queryItemValue("name");
+#else
+        QString module = QUrlQuery(url).queryItemValue("module");
+        QString name = QUrlQuery(url).queryItemValue("name");
+#endif
+        QString fileName = QString("%1/resources/test/%2.py").arg(datadir()).arg(module.replace(".", "/"));
+
+        emit openInPythonLab(fileName, QString("def %1").arg(name));
+        doAccept();
+    }
+}

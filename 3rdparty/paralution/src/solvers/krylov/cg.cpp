@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "cg.hpp"
 #include "../iter_ctrl.hpp"
@@ -40,11 +45,20 @@ namespace paralution {
 
 template <class OperatorType, class VectorType, typename ValueType>
 CG<OperatorType, VectorType, ValueType>::CG() {
+
+  LOG_DEBUG(this, "CG::CG()",
+            "default constructor");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 CG<OperatorType, VectorType, ValueType>::~CG() {
+
+  LOG_DEBUG(this, "CG::~CG()",
+            "destructor");
+
   this->Clear();
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
@@ -99,6 +113,10 @@ void CG<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void CG<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "CG::Build()",
+            this->build_ <<
+            " #*# begin");
+
   if (this->build_ == true)
     this->Clear();
 
@@ -130,10 +148,17 @@ void CG<OperatorType, VectorType, ValueType>::Build(void) {
   this->q_.CloneBackend(*this->op_);
   this->q_.Allocate("q", this->op_->get_nrow());
 
+  LOG_DEBUG(this, "CG::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void CG<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "CG::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -157,6 +182,9 @@ void CG<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void CG<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "CG::MoveToHostLocalData_()",
+            this->build_);  
+
   if (this->build_ == true) {
 
     this->r_.MoveToHost();
@@ -174,6 +202,9 @@ void CG<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void CG<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "CG::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -197,6 +228,9 @@ template <class OperatorType, class VectorType, typename ValueType>
 void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                               VectorType *x) {
 
+  LOG_DEBUG(this, "CG::SolveNonPrecond_()",
+            " #*# begin");
+
   assert(x != NULL);
   assert(x != &rhs);
   assert(this->op_  != NULL);
@@ -211,7 +245,6 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
  
   ValueType alpha, beta;
   ValueType rho, rho_old;
-  ValueType res_norm;
 
   // initial residual = b - Ax
   op->Apply(*x, r); 
@@ -223,9 +256,9 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   // rho = (r,r)
   rho = r->Dot(*r);
 
-  res_norm = this->Norm(*r);
-
   // use for |b-Ax0|
+  ValueType res_norm;
+  res_norm = this->Norm(*r);
   this->iter_ctrl_.InitResidual(res_norm);
 
   // use for |b|
@@ -248,9 +281,9 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   // rho = (r,r)
   rho = r->Dot(*r);
 
-  res_norm = this->Norm(*r);
+  ValueType res = this->Norm(*r);
   
-  while (!this->iter_ctrl_.CheckResidual(res_norm, this->index_)) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
     
     beta = rho / rho_old;
 
@@ -274,16 +307,21 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
     // rho = (r,r)
     rho = r->Dot(*r);
 
-    res_norm = this->Norm(*r);
+    res = this->Norm(*r);
 
   }
 
+  LOG_DEBUG(this, "CG::SolveNonPrecond_()",
+            " #*# end");
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                             VectorType *x) {
+
+  LOG_DEBUG(this, "CG::SolvePrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -335,8 +373,8 @@ void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
 
   // r = r - alpha*q
   r->AddScale(*q, ValueType(-1.0)*alpha);
-
-  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r), this->index_)) {
+  ValueType res = this->Norm(*r);
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     rho_old = rho;
 
@@ -362,8 +400,11 @@ void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
 
     // r = r - alpha*q
     r->AddScale(*q, ValueType(-1.0)*alpha);
-
+    res = this->Norm(*r);
   }
+
+  LOG_DEBUG(this, "CG::SolvePrecond_()",
+            " #*# end");
 
 }
 

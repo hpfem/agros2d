@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_GPU_MATRIX_COO_HPP_
 #define PARALUTION_GPU_MATRIX_COO_HPP_
@@ -53,10 +58,14 @@ public:
   virtual bool PermuteBackward(const BaseVector<int> &permutation);
 
   virtual void CopyFrom(const BaseMatrix<ValueType> &mat);
+  virtual void CopyFromAsync(const BaseMatrix<ValueType> &mat);
   virtual void CopyTo(BaseMatrix<ValueType> *mat) const;
+  virtual void CopyToAsync(BaseMatrix<ValueType> *mat) const;
 
   virtual void CopyFromHost(const HostMatrix<ValueType> &src);
+  virtual void CopyFromHostAsync(const HostMatrix<ValueType> &src);
   virtual void CopyToHost(HostMatrix<ValueType> *dst) const;
+  virtual void CopyToHostAsync(HostMatrix<ValueType> *dst) const;
 
   virtual void Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
   virtual void ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,

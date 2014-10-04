@@ -14,6 +14,9 @@
 #include "OpenFile.h"
 #include "CreateFile.h"
 #include "Options.h"
+#if defined(HAVE_PARSER)
+#include "Parser.h"
+#endif
 #include "CommandLine.h"
 #include "OS.h"
 #include "Context.h"
@@ -139,9 +142,22 @@ int GmshGetOption(const std::string &category, const std::string &name,
   return ColorOption(GMSH_GET, category.c_str(), index, name.c_str(), value);
 }
 
+int GmshRestoreDefaultOptions()
+{
+  ReInitOptions(0);
+  InitOptionsGUI(0);
+  return 1;
+}
+
 int GmshOpenProject(const std::string &fileName)
 {
   OpenProject(fileName);
+  return 1;
+}
+
+int GmshClearProject()
+{
+  ClearProject();
   return 1;
 }
 
@@ -152,8 +168,8 @@ int GmshMergeFile(const std::string &fileName)
 
 int GmshMergePostProcessingFile(const std::string &fileName)
 {
-  return MergePostProcessingFile(fileName, CTX::instance()->solver.autoShowLastStep,
-                                 CTX::instance()->solver.autoHideNewViews, true);
+  return MergePostProcessingFile(fileName, CTX::instance()->solver.autoShowViews,
+                                 CTX::instance()->solver.autoShowLastStep, true);
 }
 
 int GmshWriteFile(const std::string &fileName)
@@ -193,7 +209,7 @@ int GmshBatch()
 
 #if defined(HAVE_POST) && defined(HAVE_MESH)
   if(!CTX::instance()->bgmFileName.empty()) {
-    MergeFile(CTX::instance()->bgmFileName);
+    MergePostProcessingFile(CTX::instance()->bgmFileName);
     if(PView::list.size())
       GModel::current()->getFields()->setBackgroundMesh(PView::list.size() - 1);
     else
@@ -206,6 +222,12 @@ int GmshBatch()
   }
   else if(CTX::instance()->batch == -2){
     GModel::current()->checkMeshCoherence(CTX::instance()->geom.tolerance);
+#if defined(HAVE_PARSER)
+    std::vector<std::string> s;
+    PrintParserSymbols(0, s);
+    for(unsigned int i = 0; i < s.size(); i++)
+      Msg::Direct("%s", s[i].c_str());
+#endif
   }
   else if(CTX::instance()->batch == -1){
     CreateOutputFile(CTX::instance()->outputFileName,
@@ -305,7 +327,7 @@ int GmshFLTK(int argc, char **argv)
 
   // read background mesh if any
   if(!CTX::instance()->bgmFileName.empty()) {
-    MergeFile(CTX::instance()->bgmFileName);
+    MergePostProcessingFile(CTX::instance()->bgmFileName);
     if(PView::list.size())
       GModel::current()->getFields()->setBackgroundMesh(PView::list.size() - 1);
     else

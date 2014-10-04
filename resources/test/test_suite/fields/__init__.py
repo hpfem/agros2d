@@ -1,4 +1,6 @@
-__all__ = ["acoustic", "current", "elasticity", "electrostatic", "flow", "heat", "magnetic_steady", "magnetic_harmonic", "magnetic_transient", "rf_te", "rf_tm", "math_coeff"]
+__all__ = ["acoustic", "current", "elasticity", "electrostatic", "flow", "heat",
+           "magnetic_steady", "magnetic_harmonic", "magnetic_transient",
+           "rf_te", "rf_tm", "math_coeff"]
 
 from test_suite.fields import acoustic
 from test_suite.fields import current
@@ -12,4 +14,3 @@ from test_suite.fields import magnetic_transient
 from test_suite.fields import rf_te
 from test_suite.fields import rf_tm
 from test_suite.fields import math_coeff
-

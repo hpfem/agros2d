@@ -11,6 +11,7 @@
 #include <vector>
 #include <stdio.h>
 #include "GEntity.h"
+#include "boundaryLayersData.h"
 
 class MElement;
 class MTetrahedron;
@@ -20,6 +21,7 @@ class MPyramid;
 class MPolyhedron;
 class ExtrudeParams;
 class GRegionCompound;
+class BoundaryLayerColumns;
 
 // A model region.
 class GRegion : public GEntity {
@@ -32,6 +34,7 @@ class GRegion : public GEntity {
   // replace faces (for gluing) for specific modelers, we have to
   // re-create internal data ...
   virtual void replaceFacesInternal (std::list<GFace*> &) {}
+  BoundaryLayerColumns _columns;
 
  public:
   GRegion(GModel *model, int tag);
@@ -135,6 +138,8 @@ class GRegion : public GEntity {
   void addPrism(MPrism *p){ prisms.push_back(p); }
   void addPyramid(MPyramid *p){ pyramids.push_back(p); }
   void addPolyhedron(MPolyhedron *p){ polyhedra.push_back(p); }
+  // get the boundary layer columns
+  BoundaryLayerColumns *getColumns () {return &_columns;}
 };
 
 #endif

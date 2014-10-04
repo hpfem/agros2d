@@ -21,7 +21,7 @@
 #include <sys/sysctl.h>
 #endif
 
-#if defined(__linux__)
+#if defined(__linux__) && !defined(BUILD_ANDROID)
 #include <sys/sysinfo.h>
 #endif
 
@@ -284,6 +284,8 @@ double TotalRam()
   status.dwLength = sizeof(status);
   GlobalMemoryStatusEx(&status);
   ram = status.ullTotalPhys  / ((double)1024 * 1024);
+#elif defined(BUILD_ANDROID)
+  ram = 1024;
 #elif defined(__linux__)
   struct sysinfo infos;
   if(sysinfo(&infos) != -1)
@@ -339,7 +341,7 @@ int StatFile(const std::string &fileName)
   return ret;
 }
 
-int CreateDirectory(const std::string &dirName)
+int CreateSingleDir(const std::string &dirName)
 {
 #if defined(WIN32) && !defined(__CYGWIN__)
   setwbuf(0, dirName.c_str());
@@ -358,7 +360,7 @@ void CreatePath(const std::string &fullPath)
   size_t cur = 0;
   while(cur != std::string::npos) {
     cur = dirname.find("/", cur + 1);
-    CreateDirectory(dirname.substr(0, cur));
+    CreateSingleDir(dirname.substr(0, cur));
   }
 }
 

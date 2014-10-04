@@ -811,7 +811,7 @@ void SceneViewPost2D::paintVectors()
         FieldSolutionID fsid(m_postHermes->activeViewField(), m_postHermes->activeTimeStep(), m_postHermes->activeAdaptivityStep(), m_postHermes->activeAdaptivitySolutionType());
         MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
 
-        Hermes::vector<std::string> markers;
+        std::vector<std::string> markers;
         for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
         {
             SceneLabel *label = Agros2D::scene()->labels->at(i);
@@ -819,7 +819,7 @@ void SceneViewPost2D::paintVectors()
                 markers.push_back(QString::number(i).toStdString());
         }
 
-        Hermes::vector<std::string> markersInverted;
+        std::vector<std::string> markersInverted;
         for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
         {
             SceneLabel *label = Agros2D::scene()->labels->at(i);

@@ -52,7 +52,7 @@ public:
     void solve(Scalar* previousSolutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_linearSolver; }
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
+    virtual void setWeakFormulation(Hermes::Hermes2D::WeakFormSharedPtr<Scalar> wf) {m_linearSolver->set_weak_formulation(wf); }
     virtual void matrixUnchangedDueToBDF(bool unchanged);
     virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_matrix_solver(); }
 

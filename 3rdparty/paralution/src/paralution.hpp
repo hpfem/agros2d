@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_PARALUTION_HPP_
 #define PARALUTION_PARALUTION_HPP_
@@ -50,12 +55,19 @@
 #include "solvers/krylov/cr.hpp"
 #include "solvers/krylov/bicgstab.hpp"
 #include "solvers/krylov/gmres.hpp"
+#include "solvers/krylov/fgmres.hpp"
+#include "solvers/krylov/minres.hpp"
 #include "solvers/krylov/idr.hpp"
 #include "solvers/multigrid/multigrid.hpp"
 #include "solvers/multigrid/multigrid_amg.hpp"
 #include "solvers/deflation/dpcg.hpp"
+#include "solvers/direct/inversion.hpp"
+#include "solvers/direct/lu.hpp"
+#include "solvers/direct/qr.hpp"
 
 #include "solvers/preconditioners/preconditioner.hpp"
+#include "solvers/preconditioners/preconditioner_ai.hpp"
+#include "solvers/preconditioners/preconditioner_as.hpp"
 #include "solvers/preconditioners/preconditioner_multicolored.hpp"
 #include "solvers/preconditioners/preconditioner_multicolored_gs.hpp"
 #include "solvers/preconditioners/preconditioner_multicolored_ilu.hpp"
@@ -65,6 +77,7 @@
 
 #include "utils/allocate_free.hpp"
 #include "utils/math_functions.hpp"
+#include "utils/time_functions.hpp"
 
 
 #endif // PARALUTION_PARALUTION_HPP_

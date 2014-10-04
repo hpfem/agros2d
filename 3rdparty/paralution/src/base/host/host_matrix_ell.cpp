@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,43 +19,35 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "host_matrix_ell.hpp"
-#include "host_matrix_dia.hpp"
-#include "host_matrix_hyb.hpp"
-#include "host_matrix_coo.hpp"
 #include "host_matrix_csr.hpp"
 #include "host_conversion.hpp"
-#include "../base_matrix.hpp"
-#include "../base_vector.hpp"
 #include "host_vector.hpp"
-#include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
 #include "../matrix_formats_ind.hpp"
 
-extern "C" {
-#include "../../../thirdparty/matrix-market/mmio.h"
-}
-
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #ifdef _OPENMP
 #include <omp.h>
 #else
-#define omp_set_num_threads(num) ;
+#define omp_set_num_threads(num);
 #endif
 
-
 namespace paralution {
+
 
 template <typename ValueType>
 HostMatrixELL<ValueType>::HostMatrixELL() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -63,16 +55,22 @@ HostMatrixELL<ValueType>::HostMatrixELL() {
 template <typename ValueType>
 HostMatrixELL<ValueType>::HostMatrixELL(const Paralution_Backend_Descriptor local_backend) {
 
+  LOG_DEBUG(this, "HostMatrixELL::HostMatrixELL()",
+            "constructor with local_backend");
+
   this->mat_.val = NULL;
   this->mat_.col = NULL;
   this->mat_.max_row = 0;
 
-  this->set_backend(local_backend); 
+  this->set_backend(local_backend);
 
 }
 
 template <typename ValueType>
 HostMatrixELL<ValueType>::~HostMatrixELL() {
+
+  LOG_DEBUG(this, "HostMatrixELL::~HostMatrixELL()",
+            "destructor");
 
   this->Clear();
 
@@ -82,13 +80,13 @@ template <typename ValueType>
 void HostMatrixELL<ValueType>::info(void) const {
 
   LOG_INFO("HostMatrixELL<ValueType>");
-}
 
+}
 
 template <typename ValueType>
 void HostMatrixELL<ValueType>::Clear() {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     free_host(&this->mat_.val);
     free_host(&this->mat_.col);
@@ -109,7 +107,7 @@ void HostMatrixELL<ValueType>::AllocateELL(const int nnz, const int nrow, const 
   assert( nrow  >= 0);
   assert( max_row >= 0);
 
-  if (this->get_nnz() > 0)
+  if (this->nnz_ > 0)
     this->Clear();
 
   if (nnz > 0) {
@@ -118,10 +116,10 @@ void HostMatrixELL<ValueType>::AllocateELL(const int nnz, const int nrow, const 
 
     allocate_host(nnz, &this->mat_.val);
     allocate_host(nnz, &this->mat_.col);
-    
+
     set_to_zero_host(nnz, this->mat_.val);
     set_to_zero_host(nnz, this->mat_.col);
-    
+
     this->mat_.max_row = max_row;
     this->nrow_ = nrow;
     this->ncol_ = ncol;
@@ -138,37 +136,36 @@ void HostMatrixELL<ValueType>::CopyFrom(const BaseMatrix<ValueType> &mat) {
   assert(this->get_mat_format() == mat.get_mat_format());
 
   if (const HostMatrixELL<ValueType> *cast_mat = dynamic_cast<const HostMatrixELL<ValueType>*> (&mat)) {
-    
-    this->AllocateELL(cast_mat->get_nnz(), cast_mat->get_nrow(), cast_mat->get_ncol(), cast_mat->get_max_row() );
 
-    assert((this->get_nnz()  == mat.get_nnz())  &&
-	   (this->get_nrow() == mat.get_nrow()) &&
-	   (this->get_ncol() == mat.get_ncol()) );    
-    
+    this->AllocateELL(cast_mat->nnz_, cast_mat->nrow_, cast_mat->ncol_, cast_mat->mat_.max_row);
 
-    
-    if (this->get_nnz() > 0) {
+    assert((this->nnz_  == cast_mat->nnz_)  &&
+           (this->nrow_ == cast_mat->nrow_) &&
+           (this->ncol_ == cast_mat->ncol_));
 
-  omp_set_num_threads(this->local_backend_.OpenMP_threads);  
+    if (this->nnz_ > 0) {
 
-#pragma omp parallel for                  
-  for (int i=0; i<this->get_nnz(); ++i)
-    this->mat_.val[i] = cast_mat->mat_.val[i];
+      _set_omp_backend_threads(this->local_backend_, this->nrow_);
 
-#pragma omp parallel for                  
-  for (int i=0; i<this->get_nnz(); ++i)
-    this->mat_.col[i] = cast_mat->mat_.col[i];
+      int nnz  = this->nnz_;
+
+#pragma omp parallel for
+      for (int i=0; i<nnz; ++i)
+        this->mat_.val[i] = cast_mat->mat_.val[i];
+
+#pragma omp parallel for
+      for (int i=0; i<nnz; ++i)
+        this->mat_.col[i] = cast_mat->mat_.col[i];
 
     }
-    
-    
+
   } else {
-    
+
     // Host matrix knows only host matrices
     // -> dispatching
     mat.CopyTo(this);
-    
-  }  
+
+  }
 
 }
 
@@ -195,24 +192,23 @@ bool HostMatrixELL<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
 
   }
 
-
   if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
 
     this->Clear();
     int nnz = 0;
 
     csr_to_ell(this->local_backend_.OpenMP_threads,
-               cast_mat->get_nnz(), cast_mat->get_nrow(), cast_mat->get_ncol(),
+               cast_mat->nnz_, cast_mat->nrow_, cast_mat->ncol_,
                cast_mat->mat_, &this->mat_, &nnz);
 
-    this->nrow_ = cast_mat->get_nrow();
-    this->ncol_ = cast_mat->get_ncol();
+    this->nrow_ = cast_mat->nrow_;
+    this->ncol_ = cast_mat->ncol_;
     this->nnz_ = nnz;
 
     return true;
 
   }
-  
+
   return false;
 
 }
@@ -220,37 +216,41 @@ bool HostMatrixELL<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
 template <typename ValueType>
 void HostMatrixELL<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
-    
-    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
+
+    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
+
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
-    
-    omp_set_num_threads(this->local_backend_.OpenMP_threads);  
-    
+
+    _set_omp_backend_threads(this->local_backend_, this->nrow_);
+
 #pragma omp parallel for
-    for (int ai=0; ai<this->get_nrow(); ++ai) {
-      cast_out->vec_[ai] = ValueType(0.0);
+    for (int ai=0; ai<this->nrow_; ++ai) {
+      ValueType sum = ValueType(0.0);
 
-      for (int n=0; n<this->get_max_row(); ++n) {
+      for (int n=0; n<this->mat_.max_row; ++n) {
 
-        int aj = ELL_IND(ai, n, this->get_nrow(), this->get_max_row());
+        int aj = ELL_IND(ai, n, this->nrow_, this->mat_.max_row);
+        int col_aj = this->mat_.col[aj];
 
-        if ((this->mat_.col[aj] >= 0) && (this->mat_.col[aj] < this->get_ncol())) {
-          cast_out->vec_[ai] += this->mat_.val[aj] * cast_in->vec_[ this->mat_.col[aj] ];
-        } else {
+        if (col_aj >= 0)
+          sum += this->mat_.val[aj] * cast_in->vec_[col_aj];
+        else
           break;
-        }
+
       }
+
+      cast_out->vec_[ai] = sum;
+
     }
-    
+
   }
 
 }
@@ -259,37 +259,41 @@ template <typename ValueType>
 void HostMatrixELL<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
                                         BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
-    
-    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
+
+    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
+
     assert(cast_in != NULL);
     assert(cast_out!= NULL);
 
-    omp_set_num_threads(this->local_backend_.OpenMP_threads);  
-    
+    _set_omp_backend_threads(this->local_backend_, this->nrow_);
+
 #pragma omp parallel for
-    for (int ai=0; ai<this->get_nrow(); ++ai) 
-      for (int n=0; n<this->get_max_row(); ++n) {
+    for (int ai=0; ai<this->nrow_; ++ai) {
+      for (int n=0; n<this->mat_.max_row; ++n) {
 
-        int aj = ELL_IND(ai, n, this->get_nrow(), this->get_max_row());
+        int aj = ELL_IND(ai, n, this->nrow_, this->mat_.max_row);
+        int col_aj = this->mat_.col[aj];
 
-
-        if ((this->mat_.col[aj] >= 0) && (this->mat_.col[aj] < this->get_ncol())) {
-          cast_out->vec_[ai] += scalar*this->mat_.val[aj] * cast_in->vec_[ this->mat_.col[aj] ];
-        } else {
+        if (col_aj >= 0)
+          cast_out->vec_[ai] += scalar * this->mat_.val[aj] * cast_in->vec_[col_aj];
+        else
           break;
-        }
-      }  
+
+      }
+
+    }
+
   }
- 
+
 }
+
 
 template class HostMatrixELL<double>;
 template class HostMatrixELL<float>;

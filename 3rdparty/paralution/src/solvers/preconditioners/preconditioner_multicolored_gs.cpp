@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "preconditioner_multicolored_gs.hpp"
 #include "preconditioner_multicolored.hpp"
@@ -41,12 +46,19 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 MultiColoredSGS<OperatorType, VectorType, ValueType>::MultiColoredSGS() {
 
+  LOG_DEBUG(this, "MultiColoredSGS::MultiColoredSGS()",
+            "default constructor");
+
   this->omega_ = ValueType(1.0);
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 MultiColoredSGS<OperatorType, VectorType, ValueType>::~MultiColoredSGS() {
+
+  LOG_DEBUG(this, "MultiColoredSGS::~MultiColoredSGS()",
+            "destructor");
+
 
   this->Clear();
 
@@ -56,6 +68,9 @@ MultiColoredSGS<OperatorType, VectorType, ValueType>::~MultiColoredSGS() {
 // not optimal implementation - scale the diagonal vectors in the building phase
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::SetRelaxation(const ValueType omega) {
+
+  LOG_DEBUG(this, "MultiColoredSGS::SetRelaxation()",
+            omega);
 
   this->omega_ = omega ;
 
@@ -76,6 +91,8 @@ void MultiColoredSGS<OperatorType, VectorType, ValueType>::Print(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) {
 
+  LOG_DEBUG(this, "MultiColoredSGS::ReBuildNumeric()",
+            this->build_);
 
   if (this->preconditioner_ != NULL) {
     this->preconditioner_->Clear();
@@ -113,6 +130,9 @@ void MultiColoredSGS<OperatorType, VectorType, ValueType>::ReBuildNumeric(void) 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::PostAnalyse_(void) {
 
+  LOG_DEBUG(this, "MultiColoredSGS::PostAnalyse_()",
+            this->build_);
+
   assert(this->build_ == true);  
   this->preconditioner_->LAnalyse(false);
   this->preconditioner_->UAnalyse(false);
@@ -121,6 +141,9 @@ void MultiColoredSGS<OperatorType, VectorType, ValueType>::PostAnalyse_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::SolveL_(void) {
+
+  LOG_DEBUG(this, "MultiColoredSGS::SolveL_()",
+            "");
 
   assert(this->build_ == true);
 
@@ -144,6 +167,9 @@ void MultiColoredSGS<OperatorType, VectorType, ValueType>::SolveL_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::SolveD_(void) {
 
+  LOG_DEBUG(this, "MultiColoredSGS::SolveD_()",
+            "");
+
   assert(this->build_ == true);
 
   for (int i=0; i<this->num_blocks_; ++i) {
@@ -158,6 +184,9 @@ void MultiColoredSGS<OperatorType, VectorType, ValueType>::SolveD_(void) {
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::SolveR_(void) {
+
+  LOG_DEBUG(this, "MultiColoredSGS::SolveR_()",
+            "");
 
   assert(this->build_ == true);
   
@@ -182,6 +211,9 @@ void MultiColoredSGS<OperatorType, VectorType, ValueType>::SolveR_(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiColoredSGS<OperatorType, VectorType, ValueType>::Solve_(const VectorType &rhs,
                                                                   VectorType *x) {
+
+  LOG_DEBUG(this, "MultiColoredSGS::Solve_()",
+            "");
 
   this->x_.CopyFromPermute(rhs,
                            this->permutation_);   

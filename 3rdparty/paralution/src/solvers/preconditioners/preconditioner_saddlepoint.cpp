@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "preconditioner_saddlepoint.hpp"
 #include "preconditioner.hpp"
@@ -40,6 +45,9 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::DiagJacobiSaddlePointPrecond() {
 
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::DiagJacobiSaddlePointPrecond()",
+            "default constructor");
+
   this->size_ = 0;
 
   this->K_solver_ = NULL;
@@ -53,12 +61,20 @@ DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::DiagJacobiSad
 template <class OperatorType, class VectorType, typename ValueType>
 DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::~DiagJacobiSaddlePointPrecond() {
 
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::~DiagJacobiSaddlePointPrecond()",
+            "destructor");
+
+
   this->Clear();
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::Clear()",
+            this->build_);
+
 
   if (this->build_ == true) {
 
@@ -122,8 +138,11 @@ void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Print(vo
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Init(Solver<OperatorType, VectorType, ValueType> &K_Solver,
-                                                                             Solver<OperatorType, VectorType, ValueType> &S_Solver) {
+void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Set(Solver<OperatorType, VectorType, ValueType> &K_Solver,
+                                                                            Solver<OperatorType, VectorType, ValueType> &S_Solver) {
+
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::Set()",
+            "");
 
   this->K_solver_ = &K_Solver;
   this->S_solver_ = &S_Solver;
@@ -133,6 +152,10 @@ void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Init(Sol
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Build(void) {
+
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::Build()",
+            this->build_ <<
+            " #*# begin");
 
   assert(this->build_ == false);
   this->build_ = true ;
@@ -235,12 +258,18 @@ void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Build(vo
                       this->op_->get_nrow()-this->size_);
   
 
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::Build()",
+            this->build_ <<
+            " #*# end");
+
 }
 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                                   VectorType *x) {
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::Solve()",
+            " #*# begin");
   
   assert(this->build_ == true);
 
@@ -260,12 +289,13 @@ void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Solve(co
 
 
   // Solve the first (K) block
-  this->K_solver_->Solve(this->rhs_1_,
-                         &this->x_1_);
+  this->K_solver_->SolveZeroSol(this->rhs_1_,
+                                &this->x_1_);
+
 
   // Solve the second (S) block
-  this->S_solver_->Solve(this->rhs_2_,
-                         &this->x_2_);
+  this->S_solver_->SolveZeroSol(this->rhs_2_,
+                                &this->x_2_);
 
 
   // Copy back
@@ -283,10 +313,17 @@ void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::Solve(co
   x->CopyFromPermuteBackward(this->x_,
                              this->permutation_);
 
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::Solve()",
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::MoveToHostLocalData_()",
+            this->build_);  
+
 
   this->A_.MoveToHost();
   this->K_.MoveToHost();
@@ -313,6 +350,9 @@ void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::MoveToHo
 
 template <class OperatorType, class VectorType, typename ValueType>
 void DiagJacobiSaddlePointPrecond<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "DiagJacobiSaddlePointPrecond::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   this->A_.MoveToAccelerator();
   this->K_.MoveToAccelerator();

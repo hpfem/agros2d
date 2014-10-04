@@ -386,6 +386,6 @@ cdef class __Geometry__:
 
     def export_svg_image(self):
         """Export geometry in SVG format."""
-        return self.thisptr.exportSVG()
+        return self.thisptr.exportSVG().decode()
 
 geometry = __Geometry__()

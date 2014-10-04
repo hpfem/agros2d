@@ -27,17 +27,17 @@
 class PiecewiseLinear
 {
 public:
-    PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values);
+    PiecewiseLinear(std::vector<double> points, std::vector<double> values);
     double value(double x);
     double derivative(double x);
 
 private:
     int leftIndex(double x);
 
-    Hermes::vector<double> m_points;
-    Hermes::vector<double> m_values;
+    std::vector<double> m_points;
+    std::vector<double> m_values;
 
-    Hermes::vector<double> m_derivatives;
+    std::vector<double> m_derivatives;
     int m_size;
 };
 
@@ -45,7 +45,7 @@ private:
 class ConstantTable
 {
 public:
-    ConstantTable(Hermes::vector<double> points, Hermes::vector<double> values);
+    ConstantTable(std::vector<double> points, std::vector<double> values);
     double value(double x) const;
     double derivative(double x) const;
 
@@ -57,12 +57,11 @@ class DataTable
 {
 public:
     DataTable();
-    DataTable(Hermes::vector<double> points, Hermes::vector<double> values);
+    DataTable(std::vector<double> points, std::vector<double> values);
     DataTable(const DataTable& origin);
     DataTable& operator=(const DataTable& origin);
 
-    void setValues(Hermes::vector<double> points, Hermes::vector<double> values);
-    void setValues(vector<double> points, vector<double> values);
+    void setValues(std::vector<double> points, std::vector<double> values);
     void setValues(double *keys, double *values, int count);
 
     void setType(DataTableType type);
@@ -84,8 +83,8 @@ public:
     double minValue() const;
     double maxValue() const;
 
-    inline Hermes::vector<double> pointsVector() const { return m_points; }
-    inline Hermes::vector<double> valuesVector() const { return m_values; }
+    inline std::vector<double> pointsVector() const { return m_points; }
+    inline std::vector<double> valuesVector() const { return m_values; }
 
     void checkTable();
 
@@ -102,8 +101,8 @@ private:
     void setImplicit();
     void propertiesFromString(const QString &str);
 
-    Hermes::vector<double> m_points;
-    Hermes::vector<double> m_values;
+    std::vector<double> m_points;
+    std::vector<double> m_values;
 
     bool m_valid;
 

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_LOCAL_VECTOR_HPP_
 #define PARALUTION_LOCAL_VECTOR_HPP_
@@ -49,10 +54,17 @@ public:
   virtual ~LocalVector();
 
   virtual void MoveToAccelerator(void);
+  virtual void MoveToAcceleratorAsync(void);
   virtual void MoveToHost(void);
+  virtual void MoveToHostAsync(void);
+  virtual void Sync(void);
 
   virtual void info(void) const;   
   virtual int get_size(void) const;
+
+  /// Return true if the vector is ok (empty vector is also ok)
+  //  and false if some of values are NaN
+  bool Check(void) const;
 
   /// Allocate a local vector with name and size
   virtual void Allocate(std::string name, const int size);
@@ -61,6 +73,11 @@ public:
   void SetDataPtr(ValueType **ptr, std::string name, const int size);
   /// Get a pointer from the vector data and free the vector object
   void LeaveDataPtr(ValueType **ptr);
+
+  /// Assembling
+  void Assemble(const int *i, const ValueType *v,
+                int size, std::string name, const int n=0);
+
 
   virtual void Clear();
   virtual void Zeros();
@@ -77,8 +94,15 @@ public:
   virtual void ReadFileASCII(const std::string filename);
   /// Write vector to ASCII file
   virtual void WriteFileASCII(const std::string filename) const;
+  /// Read vector from binary file
+  virtual void ReadFileBinary(const std::string filename);
+  /// Write vector to binary file
+  virtual void WriteFileBinary(const std::string filename) const;
 
   virtual void CopyFrom(const LocalVector<ValueType> &src);
+
+  // Async copy (only for the entire vector
+  virtual void CopyFromAsync(const LocalVector<ValueType> &src);
 
   virtual void CopyFromFloat(const LocalVector<float> &src);
   virtual void CopyFromDouble(const LocalVector<double> &src);
@@ -97,8 +121,8 @@ public:
   void CopyFromPermuteBackward(const LocalVector<ValueType> &src,
                                const LocalVector<int> &permutation);
 
-
-  void CloneFrom(const LocalVector<ValueType> &src);  
+  /// Clone the entire vector (values,backend descr) from another LocalVector
+  void CloneFrom(const LocalVector<ValueType> &src);
 
   /// Perform inplace permutation (forward) of the vector
   void Permute(const LocalVector<int> &permutation);
@@ -115,6 +139,11 @@ public:
   virtual void AddScale(const LocalVector<ValueType> &x, const ValueType alpha);
   virtual void ScaleAdd(const ValueType alpha, const LocalVector<ValueType> &x);
   virtual void ScaleAddScale(const ValueType alpha, const LocalVector<ValueType> &x, const ValueType beta);
+  virtual void ScaleAddScale(const ValueType alpha, const LocalVector<ValueType> &x, const ValueType beta,
+                             const int src_offset,
+                             const int dst_offset,
+                             const int size);
+
   virtual void ScaleAdd2(const ValueType alpha, const LocalVector<ValueType> &x, const ValueType beta, const LocalVector<ValueType> &y, const ValueType gamma);
   virtual void Scale(const ValueType alpha);
   virtual void PartialSum(const LocalVector<ValueType> &x);

@@ -44,7 +44,7 @@ public:
 
     virtual bool mesh() = 0;
 
-    inline Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes() { return m_meshes; }
+    inline std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes() { return m_meshes; }
 
 protected:
     struct MeshEdge
@@ -221,7 +221,7 @@ protected:
 
     bool m_isError;
     QSharedPointer<QProcess> m_process;
-    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> m_meshes;
+    std::vector<Hermes::Hermes2D::MeshSharedPtr> m_meshes;
 };
 
 #endif //MESHGENERATOR_H

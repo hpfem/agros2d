@@ -1,68 +1,52 @@
-__empty_svg__ = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32" height="32" viewBox="0 0 32 32"></svg>'
+_empty_svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32" height="32" viewBox="0 0 32 32"></svg>'
 
 import pickle
-from os.path import dirname, isdir
-from os import makedirs
+import os
+import warnings
 
-class Parameters(dict):
-    def __init__(self, defaults):
-        dict.__init__(self)
-        self._defaults = defaults
+class ModelData(object):
+    """General class collected all model data."""
 
-    def __getitem__(self, key):
-        if key in dict.keys(self):
-            return dict.__getitem__(self, key)
-        elif key in self._defaults.keys():
-            return self._defaults[key]
-        else:
-            raise KeyError(key)
-
-class ModelData:
     def __init__(self):
-        self.defaults = dict()
-        self.parameters = Parameters(self.defaults)
-        self.variables = dict()
-        self.info = dict()
+        self.declared_parameters = dict()
+        #self.parameters = dict()
+        self.parameters = lambda : None
 
-        self.geometry_image = __empty_svg__
-        self.images = list()
+        self.declared_variables = dict()
+        #self.variables = dict()
+        self.variables = lambda : None
+
+        #self.info = {'_geometry' : _empty_svg}
+        self.info = lambda : None
+        self.info._geometry = _empty_svg
 
         self.solved = False
 
 class ModelBase(object):
+    """General class described model."""
+
     def __init__(self):
         self._data = ModelData()
+        self.declare()
+
+    @property
+    def data(self):
+        """Return model data."""
+        return self._data
 
     @property
     def parameters(self):
-        """ Input parameters """
+        """Return model input parameters."""
         return self._data.parameters
-
-    @parameters.setter
-    def parameters(self, value):
-        self._data.parameters = value
-
-    @property
-    def defaults(self):
-        """ Default values for parameters """
-        return self._data.defaults
-
-    @defaults.setter
-    def defaults(self, value):
-        self._data.defaults = value
 
     @property
     def variables(self):
-        """ Output variables """
+        """Return model output variables."""
         return self._data.variables
-
-    @variables.setter
-    def variables(self, value):
-        self._data.variables = value
 
     @property
     def info(self):
-        """ Optional info """
+        """Optional info dictionary."""
         return self._data.info
 
     @info.setter
@@ -70,114 +54,180 @@ class ModelBase(object):
         self._data.info = value
 
     @property
-    def geometry_image(self):
-        """ Geometry image """
-        return self._data.geometry_image
-
-    @geometry_image.setter
-    def geometry_image(self, value):
-        self._data.geometry_image = value
-
-    @property
-    def images(self):
-        """ Optional images """
-        return self._data.images
-
-    @images.setter
-    def images(self, value):
-        self._data.images = value
-
-    @property
     def solved(self):
-        """ Solution state """
+        """Solution state of the model (return True if model is solved)."""
         return self._data.solved
 
     @solved.setter
     def solved(self, value):
+        if not value: self._data.variables = lambda : None
         self._data.solved = value
 
+    def _check_value_type(self, value, data_type):
+        if (value and type(value) != data_type):
+            if not (data_type == float and type(value) == int):
+                raise TypeError('Data type of value do not correspond with defined data type!')
+
+    def declare(self):
+        """Method declare model input parameters and ouput variables by ModelInfo class."""
+        warnings.warn("Method declare() should be overrided!", RuntimeWarning)
+
+    def declare_parameter(self, name, data_type, default=None, description=''):
+        """Declare new model input parameter.
+
+        declare_parameter(name, type, description = '')
+
+        Keyword arguments:
+        name -- parameter name
+        type -- parameter data type
+        default -- parameter default value (default is None)
+        description --- description of parameter (default is empty string)
+        """
+
+        setattr(self.data.parameters, name, default)
+        """
+        self._check_value_type(default, data_type)
+        self._data.declared_parameters[name] = {'type' : data_type, 'default' : default,
+                                                'description' : description}
+
+        if default: self._data.parameters[name] = default
+        """
+
+    def set_parameter(self, name, value):
+        """Set value of model input parameter.
+
+        set_parameter(name, value)
+        """
+
+        setattr(self.data.parameters, name, value)
+
+        """
+        if name not in self._data.declared_parameters.keys():
+            raise KeyError('Parameter with name "{0}" is not declared!'.format(name))
+        self._check_value_type(value, self._data.declared_parameters[name]['type'])
+
+        self._data.parameters[name] = value
+        """
+
+    def get_parameter(self, name):
+        """Return value of model input parameter.
+        
+        get_parameter(name)
+        """
+
+        return getattr(self.data.parameters, name)
+        #return self._data.parameters[name]
+
+    def declare_variable(self, name, data_type, default=None, description=''):
+        """Declare new model output variable.
+
+        add_variable(name, type, description = '')
+
+        Keyword arguments:
+        name -- variable name
+        type -- parameter data type
+        default -- variable default value
+        description --- description of variable (default is empty string)
+        """
+
+        setattr(self.data.variables, name, default)
+        """
+        self._check_value_type(default, data_type)
+        self._data.declared_variables[name] = {'type' : data_type, 'default' : default,
+                                               'description' : description}
+
+        if default: self._data.variables[name] = default
+        """
+
+    def set_variable(self, name, value):
+        """Set value of model ouput variable.
+
+        set_variable(name, value)
+        """
+
+        return setattr(self.data.variables, name, value)
+
+        """
+        if name not in self._data.declared_variables.keys():
+            raise KeyError('Variable with name "{0}" is not declared!'.format(name))
+        self._check_value_type(value, self._data.declared_variables[name]['type'])
+
+        self._data.variables[name] = value
+        """
+
+    def get_variable(self, name):
+        """Return value of model output variable.
+        
+        get_variable(name)
+        """
+
+        return getattr(self.data.variables, name)
+        #return self._data.variables[name]
+
     def create(self):
-        pass
+        """Method creates model from input parameters."""
+        warnings.warn("Method create() should be overrided!", RuntimeWarning)
 
     def solve(self):
-        pass
+        """Method for solution of model."""
+        warnings.warn("Method solve() should be overrided!", RuntimeWarning)
 
     def process(self):
-        pass    
+        """Method calculate output variables."""
+        warnings.warn("Method process() should be overrided!", RuntimeWarning)
         
     def load(self, file_name):
-        """ Load model data from file """
+        """Unpickle model and load binary file (marshalling of model object).
+
+        load(file_name)
+
+        Keyword arguments:
+        file_name -- file name of binary file for read
+        """
+
         with open(file_name, 'rb') as infile:
             self._data = pickle.load(infile)
-                                
+
     def save(self, file_name):
-        """ Save model data from file """
-        directory = dirname(file_name)
-        if not isdir(directory):
-            makedirs(directory)
+        """Pickle model and save binary file (serialization of model object).
+
+        save(file_name)
+
+        Keyword arguments:
+        file_name -- file name of binary file for write
+        """
+
+        directory = os.path.dirname(file_name)
+        if not os.path.isdir(directory):
+            os.makedirs(directory)
 
         with open(file_name, 'wb') as outfile:
             pickle.dump(self._data, outfile, pickle.HIGHEST_PROTOCOL)
 
-    def clear(self):
-        self._data = ModelData()
+    def serialize(self):
+        """Serialize and return model data to string."""
+        return pickle.dumps(self._data, pickle.HIGHEST_PROTOCOL)
 
-def create_model_dict(directory):   
-    md = ModelDict()
-    md.load('{0}/*.pickle'.format(directory))
-    return md
+    def deserialize(self, data):
+        """Deserialize and return model data object from string.
+        
+        deserialize(data)
+        """
 
-def convert_xml_to_pickle(directory):
-    import xml.etree.ElementTree as ET
-    from glob import glob
-    from json import loads
-    from os.path import basename, splitext
-                
-    for file_name in glob('{0}/*.rst'.format(directory)):
-        model_data = ModelData()
-        tree = ET.parse(directory + "/" + file)
-        variant = tree.getroot()
-        results = variant.findall('results')[0]
-        result = results.findall('result')[0]
-                        
-        # solution
-        solution = result.findall('solution')[0]
-        model_data.solved = int(solution.attrib['solved'])
-        
-        # input
-        input = result.findall('input')[0]
-        for par in input.iter(tag='parameter'):             
-            model_data.parameters[par.attrib["name"]] = loads(par.attrib["value"])
-        
-        # output
-        output = result.findall('output')[0]
-        for var in output.iter(tag='variable'): 
-            model_data.variables[var.attrib["name"]] = loads(var.attrib["value"])
-        
-        # info
-        info = result.findall('info')[0]
-        for item in info.iter(tag='item'): 
-            model_data.info[item.attrib["name"]] = loads(item.attrib["value"])
-        
-        # geometry
-        geometry_image = solution.find('geometry_image')
-        if (geometry_image is None):
-            model_data.geometry_image = __empty_svg__
-        else:
-            model_data.geometry_image  = str(geometry_image.attrib["source"])
-        
-        # images
-        images = solution.findall('images')[0]
-        for image in images.findall('image'):
-            model_data.images.append(str(image.attrib["source"]))
-
-        # save
-        save_pickle(m, )
-        with open(file_name, 'wb') as outfile:
-            pickle.dump(model_data, '{0}/{1}.pickle'.format(directory, splitext(basename(file))[0]), pickle.HIGHEST_PROTOCOL)
+        self._data = pickle.loads(data)
 
 if __name__ == '__main__':
-    #import pythonlab
-    #convert_xml_to_pickle(pythonlab.datadir('/data/sweep/act/solutions'))
-    #md = create_model_dict(pythonlab.datadir('/resources/test/test_suite/optilab/genetic/solutions'))
-    pass
+    import pythonlab
+
+    class Model(ModelBase):
+        def declare(self):
+            self.declare_parameter('p', float, default = 1.0)
+            self.declare_variable('v', float)
+
+    model = Model()
+    model.set_parameter('p', 2.0)
+    model.set_variable('v', 2.0)
+
+    file_name = '{0}/model.pickle'.format(pythonlab.tempname())
+    #model.save(file_name)
+    #model.load(file_name)

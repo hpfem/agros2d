@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "../backend_manager.hpp"
 #include "backend_mic.hpp" 
@@ -43,7 +48,16 @@ namespace paralution {
 
 bool paralution_init_mic(void) {
 
+  LOG_DEBUG(0, "paralution_init_mic()",
+            "* begin");
+
+  // no nothing
   LOG_INFO("MIC backed is initialized");
+
+  LOG_DEBUG(0, "paralution_init_mic()",
+            "* end");
+
+
   return true;
 
 }
@@ -51,10 +65,17 @@ bool paralution_init_mic(void) {
 
 void paralution_stop_mic(void) {
 
+  LOG_DEBUG(0, "paralution_stop_mic()",
+            "* begin");
+
   if (_Backend_Descriptor.accelerator) {
 
+    // no nothing
 
   }
+
+  LOG_DEBUG(0, "paralution_stop_mic()",
+            "* end");
 
 }
 
@@ -63,7 +84,7 @@ void paralution_info_mic(const struct Paralution_Backend_Descriptor backend_desc
   int num_dev = 0 ;
   num_dev = _Offload_number_of_devices();
 
-  LOG_INFO("Number of MIC devices in the sytem: " << num_dev);
+  LOG_INFO("Number of MIC devices in the system: " << num_dev);
   LOG_INFO("Selected MIC devices:" << backend_descriptor.MIC_dev);
 
 }

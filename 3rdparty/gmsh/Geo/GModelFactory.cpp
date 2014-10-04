@@ -391,6 +391,9 @@ std::vector<GEntity*> GeoFactory::extrudeBoundaryLayer(GModel *gm, GEntity *e,
     }
   }
 
+  List_Delete(list_out);
+  List_Delete(tmp);
+
   return extrudedEntities;
 
   // //return the new created entity
@@ -423,6 +426,16 @@ std::vector<GEntity*> GeoFactory::extrudeBoundaryLayer(GModel *gm, GEntity *e,
   // return newEnt;
 
 };
+
+void GeoFactory::healGeometry(GModel *gm, double tolerance)
+{
+  GModel *current = GModel::current();
+  GModel::setCurrent(gm);
+  ReplaceAllDuplicatesNew(tolerance);
+  gm->destroy();
+  gm->importGEOInternals();
+  GModel::setCurrent(current);
+}
 
 #if defined(HAVE_OCC)
 #include "OCCIncludes.h"
@@ -601,7 +614,7 @@ GEdge *OCCFactory::addSpline(GModel *gm, const splineType &type,
   }
   else if (type == BSPLINE) {
 
-    Handle(Geom_BSplineCurve) Bez = GeomAPI_PointsToBSpline(ctrlPoints).Curve(); 
+    Handle(Geom_BSplineCurve) Bez = GeomAPI_PointsToBSpline(ctrlPoints).Curve();
 
     if (occv1 && occv2)
       occEdge = BRepBuilderAPI_MakeEdge(Bez,occv1->getShape(),occv2->getShape()).Edge();
@@ -1568,6 +1581,18 @@ GEntity *OCCFactory::addPipe(GModel *gm, GEntity *base, std::vector<GEdge *> wir
   return ret;
 }
 
+void OCCFactory::healGeometry(GModel *gm, double tolerance)
+{
+  if (tolerance < 0.)
+    tolerance = CTX::instance()->geom.tolerance;
+  if (!gm || !gm->_occ_internals)
+    return;
+  //gm->_occ_internals->healGeometry(tolerance, false, false, false, true, false, false);
+  gm->_occ_internals->healGeometry(tolerance, true, true, true, true, true, true);
+  gm->_occ_internals->buildLists();
+  gm->_occ_internals->buildGModel(gm);
+}
+
 //Prepare SGEOM integration
 #if defined(HAVE_SGEOM) && defined(HAVE_OCC)
 
@@ -1604,6 +1629,12 @@ GFace* SGEOMFactory::addPlanarFace(GModel *gm, std::vector<std::vector<GEdge *> 
 GRegion* SGEOMFactory::addVolume(GModel *gm, std::vector<std::vector<GFace *> > faces)
 {
   Msg::Error("addVolume not implemented yet for SGEOMFactory");
+  return 0;
+}
+
+void SGEOMFactory::healGeometry(GModel *gm, double tolerance)
+{
+  Msg::Error("healGeometry not implemented yet for SGEOMFactory");
   return 0;
 }
 

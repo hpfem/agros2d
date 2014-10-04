@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "mic_matrix_csr.hpp"
 #include "mic_matrix_coo.hpp"
@@ -45,12 +50,16 @@ namespace paralution {
 template <typename ValueType>
 MICAcceleratorMatrixCSR<ValueType>::MICAcceleratorMatrixCSR() {
 
-    // no default constructors
+  // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 template <typename ValueType>
 MICAcceleratorMatrixCSR<ValueType>::MICAcceleratorMatrixCSR(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "MICAcceleratorMatrixCSR::MICAcceleratorMatrixCSR()",
+            "constructor with local_backend");
 
   this->mat_.row_offset = NULL;  
   this->mat_.col        = NULL;  
@@ -63,6 +72,9 @@ MICAcceleratorMatrixCSR<ValueType>::MICAcceleratorMatrixCSR(const Paralution_Bac
 
 template <typename ValueType>
 MICAcceleratorMatrixCSR<ValueType>::~MICAcceleratorMatrixCSR() {
+
+  LOG_DEBUG(this, "MICAcceleratorMatrixCSR::~MICAcceleratorMatrixCSR()",
+            "destructor");
 
   this->Clear();
 

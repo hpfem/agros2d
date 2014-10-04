@@ -17,17 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifdef _MSC_VER
-# ifdef _DEBUG
-#  undef _DEBUG
-#  include <Python.h>
-#  define _DEBUG
-# else
-#  include <Python.h>
-# endif
-#else
-#  include <Python.h>
-#endif
+#include <Python.h>
 
 #include "../resources_source/python/agros2d.cpp"
 
@@ -144,20 +134,30 @@ QStringList PythonEngineAgros::testSuiteScenarios()
     QStringList list;
 
     // run expression
-    currentPythonEngine()->runExpression(QString("from test_suite.scenario import find_all_scenarios; agros2d_scenarios = find_all_scenarios()"));
+    bool successfulRun = currentPythonEngine()->runExpression(QString("from test_suite.scenario import find_all_scenarios; agros2d_scenarios = find_all_scenarios()"));
 
-    // extract values
-    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
-    if (result)
+    if (successfulRun)
     {
-        Py_INCREF(result);
-        for (int i = 0; i < PyList_Size(result); i++)
+        // extract values
+        PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
+        if (result)
         {
-            QString testName = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(result, i)));
+            Py_INCREF(result);
+            for (int i = 0; i < PyList_Size(result); i++)
+            {
+                QString testName = QString::fromWCharArray(PyUnicode_AsUnicode(PyList_GetItem(result, i)));
 
-            list.append(testName);
+                list.append(testName);
+            }
+            Py_XDECREF(result);
         }
-        Py_XDECREF(result);
+    }
+    else
+    {
+        // parse error
+        ErrorResult result = currentPythonEngine()->parseError();
+        qDebug() << result.error();
+        qDebug() << result.tracebackToString();
     }
 
     // remove variables
@@ -185,7 +185,7 @@ PythonEditorAgrosDialog::PythonEditorAgrosDialog(PythonEngine *pythonEngine, QSt
     mnuTools->addAction(actCreateFromModel);
 
     tlbTools->addSeparator();
-    tlbTools->addAction(actCreateFromModel);    
+    tlbTools->addAction(actCreateFromModel);
 
     mnuOptions->addSeparator();
     mnuOptions->addAction(actConsoleOutput);
@@ -340,7 +340,7 @@ QString createPythonFromModel()
                 arg(fieldInfo->fieldId()).
                 arg(adaptivityTypeToStringKey(fieldInfo->adaptivityType()));
 
-        if (fieldInfo->adaptivityType() != AdaptivityType_None)
+        if (fieldInfo->adaptivityType() != AdaptivityMethod_None)
         {
             // TODO: Quick FIX - must be more general
 

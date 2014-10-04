@@ -32,11 +32,11 @@
 
 
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
-    m_couplings(couplings), m_wf(NULL)
+    m_couplings(couplings)
 {
     foreach (FieldInfo *fi, fieldInfos)
     {
-        Field* field = new Field(fi);
+        FieldBlock* field = new FieldBlock(fi);
 
         foreach (CouplingInfo* couplingInfo, Agros2D::problem()->couplingInfos())
         {
@@ -53,14 +53,14 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
 Block::~Block()
 {
     // clear fields
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
         delete field;
     m_fields.clear();
 
     // clear boundary conditions
     foreach (Hermes::Hermes2D::EssentialBCs<double> *bc, m_bcs)
     {
-        for (Hermes::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
+        for (std::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
         {
             // delete bc
             delete *it;
@@ -69,17 +69,12 @@ Block::~Block()
         delete bc;
     }
     m_bcs.clear();
-
-    // delete weakform
-    if (m_wf)
-        delete m_wf;
-    m_wf = NULL;
 }
 
 QList<FieldInfo* > Block::sourceFieldInfosCoupling() const
 {
     QList<FieldInfo* > result;
-    foreach(Field* field, m_fields)
+    foreach(FieldBlock* field, m_fields)
     {
         foreach(CouplingInfo* couplingInfo, field->couplingInfos())
         {
@@ -108,7 +103,7 @@ void Block::createBoundaryConditions()
 
     m_exactSolutionFunctions.clear();
 
-    foreach(Field* field, this->fields())
+    foreach(FieldBlock* field, this->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
@@ -157,10 +152,18 @@ void Block::updateExactSolutionFunctions()
     }
 }
 
-void Block::setWeakForm(WeakFormAgros<double> *wf)
+WeakFormAgros<double> *Block::weakFormInternal()
 {
-    if (m_wf)
-        delete m_wf;
+    return dynamic_cast<WeakFormAgros<double> *>(m_wf.get());
+}
+
+Hermes::Hermes2D::WeakFormSharedPtr<double> Block::weakForm()
+{
+    return m_wf;
+}
+
+void Block::setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double> wf)
+{
     m_wf = wf;
 }
 
@@ -168,7 +171,7 @@ QSharedPointer<ProblemSolver<double> > Block::prepareSolver()
 {
     QSharedPointer<ProblemSolver<double> > solver = QSharedPointer<ProblemSolver<double> >(new ProblemSolver<double>());
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         // evaluate all values
         if (!field->solveInitVariables())
@@ -184,7 +187,7 @@ QSharedPointer<ProblemSolver<double> > Block::prepareSolver()
 
 bool Block::isTransient() const
 {
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             return true;
@@ -196,7 +199,7 @@ bool Block::isTransient() const
 double Block::timeSkip() const
 {
     double skip = 0.;
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             continue;
@@ -208,11 +211,11 @@ double Block::timeSkip() const
     return skip;
 }
 
-AdaptivityType Block::adaptivityType() const
+AdaptivityMethod Block::adaptivityType() const
 {
-    AdaptivityType at = m_fields.at(0)->fieldInfo()->adaptivityType();
+    AdaptivityMethod at = m_fields.at(0)->fieldInfo()->adaptivityType();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->adaptivityType() == at);
@@ -225,7 +228,7 @@ int Block::adaptivitySteps() const
 {
     int as = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivitySteps).toInt();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->value(FieldInfo::AdaptivitySteps).toInt() == as);
@@ -238,7 +241,7 @@ int Block::adaptivityBackSteps() const
 {
     int abs = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityTransientBackSteps).toInt();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->value(FieldInfo::AdaptivityTransientBackSteps).toInt() == abs);
@@ -251,7 +254,7 @@ int Block::adaptivityRedoneEach() const
 {
     int re = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityTransientRedoneEach).toInt();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->value(FieldInfo::AdaptivityTransientRedoneEach).toInt() == re);
@@ -264,7 +267,7 @@ double Block::adaptivityTolerance() const
 {
     double tolerance = numeric_limits<double>::max();
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble() < tolerance)
@@ -278,7 +281,7 @@ AdaptivityStoppingCriterionType Block::adaptivityStoppingCriterionType() const
 {
     AdaptivityStoppingCriterionType sc = (AdaptivityStoppingCriterionType) m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityStoppingCriterion).toInt();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert((AdaptivityStoppingCriterionType) field->fieldInfo()->value(FieldInfo::AdaptivityStoppingCriterion).toInt() == sc);
@@ -291,7 +294,7 @@ double Block::adaptivityThreshold() const
 {
     double threshold = numeric_limits<double>::max();
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble() < threshold)
@@ -305,7 +308,7 @@ bool Block::adaptivityUseAniso() const
 {
     bool useAniso = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityUseAniso).toBool();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->value(FieldInfo::AdaptivityUseAniso).toBool() == useAniso);
@@ -318,7 +321,7 @@ bool Block::adaptivityFinerReference() const
 {
     bool finerReference = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityFinerReference).toBool();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->value(FieldInfo::AdaptivityFinerReference).toBool() == finerReference);
@@ -330,17 +333,17 @@ bool Block::adaptivityFinerReference() const
 int Block::numSolutions() const
 {
     int num = 0;
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
         num += field->fieldInfo()->numberOfSolutions();
 
     return num;
 }
 
-int Block::offset(Field *fieldParam) const
+int Block::offset(FieldBlock *fieldParam) const
 {
     int offset = 0;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         if (field == fieldParam)
             return offset;
@@ -357,7 +360,7 @@ LinearityType Block::linearityType() const
     int newton = 0;
     int picard = 0;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->linearityType() == LinearityType_Linear)
@@ -383,7 +386,7 @@ Hermes::MatrixSolverType Block::matrixSolver() const
 {
     Hermes::MatrixSolverType mt = m_fields.at(0)->fieldInfo()->matrixSolver();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert(field->fieldInfo()->matrixSolver() == mt);
@@ -396,7 +399,7 @@ double Block::nonlinearResidualNorm() const
 {
     double tolerance = numeric_limits<double>::max();
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble() < tolerance)
@@ -415,7 +418,7 @@ double Block::nonlinearRelativeChangeOfSolutions() const
 {
     double tolerance = numeric_limits<double>::max();
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble() < tolerance)
@@ -433,7 +436,7 @@ double Block::nonlinearRelativeChangeOfSolutions() const
 DampingType Block::nonlinearDampingType() const
 {
     DampingType blockDt = DampingType_Undefined;
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         DampingType dt = (DampingType)fieldInfo->value(FieldInfo::NonlinearDampingType).toInt();
@@ -450,7 +453,7 @@ double Block::nonlinearDampingCoeff() const
 {
     double coeff = 1.0;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble() < coeff)
@@ -462,7 +465,7 @@ double Block::nonlinearDampingCoeff() const
 
 bool Block::newtonReuseJacobian() const
 {
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (!fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool())
@@ -476,7 +479,7 @@ int Block::nonlinearStepsToIncreaseDampingFactor() const
 {
     int number = 0;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NonlinearStepsToIncreaseDampingFactor).toInt() > number)
@@ -490,7 +493,7 @@ double Block::newtonSufficientImprovementFactorForJacobianReuse() const
 {
     double number = 1e10;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NewtonJacobianReuseRatio).toDouble() < number)
@@ -504,7 +507,7 @@ double Block::nonlinearDampingFactorDecreaseRatio() const
 {
     double number = 1e10;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NonlinearDampingFactorDecreaseRatio).toDouble() < number)
@@ -518,7 +521,7 @@ int Block::newtonMaxStepsWithReusedJacobian() const
 {
     int number = 10;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt() < number)
@@ -530,7 +533,7 @@ int Block::newtonMaxStepsWithReusedJacobian() const
 
 bool Block::picardAndersonAcceleration() const
 {
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (!fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool())
@@ -544,7 +547,7 @@ double Block::picardAndersonBeta() const
 {
     double number = 0;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         // TODO: check ">"
@@ -559,7 +562,7 @@ int Block::picardAndersonNumberOfLastVectors() const
 {
     int number = 1;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt() > number)
@@ -574,7 +577,7 @@ IterSolverType Block::iterLinearSolverType() const
     Hermes::Solvers::IterSolverType method
             = (Hermes::Solvers::IterSolverType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert((Hermes::Solvers::IterSolverType) field->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt() == method );
@@ -588,7 +591,7 @@ Hermes::Solvers::PreconditionerType Block::iterPreconditionerType() const
     Hermes::Solvers::PreconditionerType type
             = (Hermes::Solvers::PreconditionerType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt();
 
-    foreach (Field *field, m_fields)
+    foreach (FieldBlock *field, m_fields)
     {
         // todo: ensure in GUI
         assert((Hermes::Solvers::PreconditionerType) field->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt() == type );
@@ -601,7 +604,7 @@ double Block::iterLinearSolverToleranceAbsolute() const
 {
     double coeff = 1.0;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble() < coeff)
@@ -615,7 +618,7 @@ int Block::iterLinearSolverIters() const
 {
     int iters = 1;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         if (fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt() > iters)
@@ -627,7 +630,7 @@ int Block::iterLinearSolverIters() const
 
 bool Block::contains(const FieldInfo *fieldInfo) const
 {
-    foreach(Field* field, m_fields)
+    foreach(FieldBlock* field, m_fields)
     {
         if (field->fieldInfo() == fieldInfo)
             return true;
@@ -635,9 +638,9 @@ bool Block::contains(const FieldInfo *fieldInfo) const
     return false;
 }
 
-Field* Block::field(const FieldInfo *fieldInfo) const
+FieldBlock* Block::field(const FieldInfo *fieldInfo) const
 {
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         if (fieldInfo == field->fieldInfo())
             return field;
@@ -649,17 +652,17 @@ Field* Block::field(const FieldInfo *fieldInfo) const
 QList<FieldInfo*> Block::fieldInfos() const
 {
     QList<FieldInfo*> result;
-    foreach(Field* field, m_fields)
+    foreach(FieldBlock* field, m_fields)
         result.push_back(field->fieldInfo());
 
     return result;
 }
 
-Hermes::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const
+std::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const
 {
-    Hermes::vector<Hermes::Hermes2D::NormType> vec;
+    std::vector<Hermes::Hermes2D::NormType> vec;
 
-    foreach (Field* field, m_fields)
+    foreach (FieldBlock* field, m_fields)
     {
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {

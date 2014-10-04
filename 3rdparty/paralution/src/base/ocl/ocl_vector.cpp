@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "ocl_vector.hpp"
 #include "../base_vector.hpp"
@@ -40,6 +45,7 @@ template <typename ValueType>
 OCLAcceleratorVector<ValueType>::OCLAcceleratorVector() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -47,6 +53,9 @@ OCLAcceleratorVector<ValueType>::OCLAcceleratorVector() {
 
 template <typename ValueType>
 OCLAcceleratorVector<ValueType>::OCLAcceleratorVector(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "OCLAcceleratorVector::OCLAcceleratorVector()",
+            "constructor with local_backend");
 
   this->vec_ = NULL;
   this->set_backend(local_backend);
@@ -56,6 +65,9 @@ OCLAcceleratorVector<ValueType>::OCLAcceleratorVector(const Paralution_Backend_D
 
 template <typename ValueType>
 OCLAcceleratorVector<ValueType>::~OCLAcceleratorVector() {
+
+  LOG_DEBUG(this, "OCLAcceleratorVector::~OCLAcceleratorVector()",
+            "destructor");
 
   this->Clear();
 
@@ -93,7 +105,7 @@ void OCLAcceleratorVector<ValueType>::Allocate(const int n) {
                           localWorkSize[0],
                           globalWorkSize[0],
                           n,
-                          0.0,
+                          ValueType(0),
                           this->vec_);
 
     this->size_ = n;
@@ -380,7 +392,7 @@ void OCLAcceleratorVector<ValueType>::Zeros(void) {
                           localWorkSize[0],
                           globalWorkSize[0],
                           this->get_size(),
-                          0.0,
+                          ValueType(0),
                           this->vec_);
 
   }
@@ -404,7 +416,7 @@ void OCLAcceleratorVector<ValueType>::Ones(void) {
                           localWorkSize[0],
                           globalWorkSize[0],
                           this->get_size(),
-                          1.0,
+                          ValueType(1),
                           this->vec_);
 
   }
@@ -582,6 +594,54 @@ void OCLAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha,
 
 }
 
+template <typename ValueType>
+void OCLAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta,
+                                          const int src_offset, const int dst_offset,const int size) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    
+    const OCLAcceleratorVector<ValueType> *cast_x = dynamic_cast<const OCLAcceleratorVector<ValueType>*> (&x);
+    assert(cast_x != NULL);
+
+    cl_int    err;
+    cl_event  ocl_event;
+    size_t    localWorkSize[1];
+    size_t    globalWorkSize[1];
+
+    err  = clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 0, sizeof(int),       (void *) &size );
+    err |= clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 1, sizeof(int),       (void *) &src_offset );
+    err |= clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 2, sizeof(int),       (void *) &dst_offset );
+    err |= clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 3, sizeof(ValueType), (void *) &alpha );
+    err |= clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 4, sizeof(ValueType), (void *) &beta );
+    err |= clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 5, sizeof(cl_mem),    (void *) cast_x->vec_ );
+    err |= clSetKernelArg( CL_KERNEL_SCALEADDSCALE_OFFSET, 6, sizeof(cl_mem),    (void *) this->vec_ );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    localWorkSize[0]  = this->local_backend_.OCL_max_work_group_size;
+    globalWorkSize[0] = ( size_t( size / localWorkSize[0] ) + 1 ) * localWorkSize[0];
+
+    err = clEnqueueNDRangeKernel( OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue,
+                                  CL_KERNEL_SCALEADDSCALE_OFFSET,
+                                  1,
+                                  NULL,
+                                  &globalWorkSize[0],
+                                  &localWorkSize[0],
+                                  0,
+                                  NULL,
+                                  &ocl_event);
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    err = clWaitForEvents( 1, &ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+    err = clReleaseEvent( ocl_event );
+    CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
+
+  }
+
+}
 
 template <typename ValueType>
 void OCLAcceleratorVector<ValueType>::ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x,
@@ -697,7 +757,7 @@ ValueType OCLAcceleratorVector<ValueType>::Dot(const BaseVector<ValueType> &x) c
   const OCLAcceleratorVector<ValueType> *cast_x = dynamic_cast<const OCLAcceleratorVector<ValueType>*> (&x);
   assert(cast_x != NULL);
 
-  ValueType res = 0.0;
+  ValueType res = ValueType(0);
 
   if (this->get_size() > 0) {
 
@@ -716,11 +776,12 @@ ValueType OCLAcceleratorVector<ValueType>::Dot(const BaseVector<ValueType> &x) c
     hostBuffer   = NULL;
 
     localWorkSize[0] = this->local_backend_.OCL_max_work_group_size;
-    GROUP_SIZE = ( size_t( ( size_t( size / ( this->local_backend_.OCL_computeUnits * 4 ) ) + 1 ) / localWorkSize[0] ) + 1 ) * localWorkSize[0];
-    LOCAL_SIZE = GROUP_SIZE / localWorkSize[0];
+    GROUP_SIZE = ( ( ( ( size / ( int(this->local_backend_.OCL_computeUnits) * 4 ) ) + 1 )
+		       / int(localWorkSize[0]) ) + 1 ) * int(localWorkSize[0]);
+    LOCAL_SIZE = GROUP_SIZE / int(localWorkSize[0]);
     globalWorkSize[0] = this->local_backend_.OCL_computeUnits * 4 * localWorkSize[0];
 
-    allocate_ocl<ValueType>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
+    allocate_ocl<ValueType>(int(this->local_backend_.OCL_computeUnits) * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
 
     err  = clSetKernelArg( CL_KERNEL_DOT, 0, sizeof(int),    (void *) &size );
     err |= clSetKernelArg( CL_KERNEL_DOT, 1, sizeof(cl_mem), (void *) this->vec_ );
@@ -748,7 +809,7 @@ ValueType OCLAcceleratorVector<ValueType>::Dot(const BaseVector<ValueType> &x) c
     err = clReleaseEvent( ocl_event );
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
-    FinalReduceSize = this->local_backend_.OCL_computeUnits * 4;
+    FinalReduceSize = int(this->local_backend_.OCL_computeUnits) * 4;
     allocate_host(FinalReduceSize, &hostBuffer);
 
     ocl_dev2host<ValueType>(FinalReduceSize, deviceBuffer, hostBuffer, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
@@ -812,7 +873,7 @@ int OCLAcceleratorVector<int>::Norm(void) const {
 template <typename ValueType>
 ValueType OCLAcceleratorVector<ValueType>::Reduce(void) const {
 
-  ValueType res = 0.0;
+  ValueType res = ValueType(0);
 
   if (this->get_size() > 0) {
 
@@ -828,11 +889,11 @@ ValueType OCLAcceleratorVector<ValueType>::Reduce(void) const {
     ValueType *hostBuffer = NULL;
 
     localWorkSize[0] = this->local_backend_.OCL_max_work_group_size;
-    GROUP_SIZE = ( size_t( ( size_t( size / ( this->local_backend_.OCL_computeUnits * 4 ) ) + 1 ) / localWorkSize[0] ) + 1 ) * localWorkSize[0];
-    LOCAL_SIZE = GROUP_SIZE / localWorkSize[0];
+    GROUP_SIZE = ( ( ( ( size / ( int(this->local_backend_.OCL_computeUnits) * 4 ) ) + 1 ) / int(localWorkSize[0]) ) + 1 ) * int(localWorkSize[0]);
+    LOCAL_SIZE = GROUP_SIZE / int(localWorkSize[0]);
     globalWorkSize[0] = this->local_backend_.OCL_computeUnits * 4 * localWorkSize[0];
 
-    allocate_ocl<ValueType>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
+    allocate_ocl<ValueType>(int(this->local_backend_.OCL_computeUnits) * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
 
     err  = clSetKernelArg( CL_KERNEL_REDUCE, 0, sizeof(int),    (void *) &size );
     err |= clSetKernelArg( CL_KERNEL_REDUCE, 1, sizeof(cl_mem), (void *) this->vec_ );
@@ -859,7 +920,7 @@ ValueType OCLAcceleratorVector<ValueType>::Reduce(void) const {
     err = clReleaseEvent( ocl_event );
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
-    FinalReduceSize = this->local_backend_.OCL_computeUnits * 4;
+    FinalReduceSize = int(this->local_backend_.OCL_computeUnits) * 4;
     allocate_host(FinalReduceSize, &hostBuffer);
 
     ocl_dev2host<ValueType>(FinalReduceSize, deviceBuffer, hostBuffer, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
@@ -880,7 +941,7 @@ ValueType OCLAcceleratorVector<ValueType>::Reduce(void) const {
 template <typename ValueType>
 ValueType OCLAcceleratorVector<ValueType>::Asum(void) const {
 
-  ValueType res = 0.0;
+  ValueType res = ValueType(0);
 
   if (this->get_size() > 0) {
 
@@ -896,11 +957,11 @@ ValueType OCLAcceleratorVector<ValueType>::Asum(void) const {
     ValueType *hostBuffer = NULL;
 
     localWorkSize[0] = this->local_backend_.OCL_max_work_group_size;
-    GROUP_SIZE = ( size_t( ( size_t( size / ( this->local_backend_.OCL_computeUnits * 4 ) ) + 1 ) / localWorkSize[0] ) + 1 ) * localWorkSize[0];
-    LOCAL_SIZE = GROUP_SIZE / localWorkSize[0];
+    GROUP_SIZE = ( ( ( ( size / ( int(this->local_backend_.OCL_computeUnits) * 4 ) ) + 1 ) / int(localWorkSize[0]) ) + 1 ) * int(localWorkSize[0]);
+    LOCAL_SIZE = GROUP_SIZE / int(localWorkSize[0]);
     globalWorkSize[0] = this->local_backend_.OCL_computeUnits * 4 * localWorkSize[0];
 
-    allocate_ocl<ValueType>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
+    allocate_ocl<ValueType>(int(this->local_backend_.OCL_computeUnits) * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
 
     err  = clSetKernelArg( CL_KERNEL_ASUM, 0, sizeof(int),    (void *) &size );
     err |= clSetKernelArg( CL_KERNEL_ASUM, 1, sizeof(cl_mem), (void *) this->vec_ );
@@ -927,7 +988,7 @@ ValueType OCLAcceleratorVector<ValueType>::Asum(void) const {
     err = clReleaseEvent( ocl_event );
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
-    FinalReduceSize = this->local_backend_.OCL_computeUnits * 4;
+    FinalReduceSize = int(this->local_backend_.OCL_computeUnits) * 4;
     allocate_host(FinalReduceSize, &hostBuffer);
 
     ocl_dev2host<ValueType>(FinalReduceSize, deviceBuffer, hostBuffer, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_cmdQueue);
@@ -948,7 +1009,7 @@ ValueType OCLAcceleratorVector<ValueType>::Asum(void) const {
 template <typename ValueType>
 int OCLAcceleratorVector<ValueType>::Amax(ValueType &value) const {
 
-  ValueType res = 0.0;
+  ValueType res = ValueType(0);
   int idx = 0;
 
   if (this->get_size() > 0) {
@@ -967,12 +1028,12 @@ int OCLAcceleratorVector<ValueType>::Amax(ValueType &value) const {
     int       *iHostBuffer = NULL;
 
     localWorkSize[0] = this->local_backend_.OCL_max_work_group_size;
-    GROUP_SIZE = ( size_t( ( size_t( size / ( this->local_backend_.OCL_computeUnits * 4 ) ) + 1 ) / localWorkSize[0] ) + 1 ) * localWorkSize[0];
-    LOCAL_SIZE = GROUP_SIZE / localWorkSize[0];
+    GROUP_SIZE = ( ( ( ( size / ( int(this->local_backend_.OCL_computeUnits) * 4 ) ) + 1 ) / int(localWorkSize[0]) ) + 1 ) * int(localWorkSize[0]);
+    LOCAL_SIZE = GROUP_SIZE / int(localWorkSize[0]);
     globalWorkSize[0] = this->local_backend_.OCL_computeUnits * 4 * localWorkSize[0];
 
-    allocate_ocl<ValueType>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
-    allocate_ocl<int>(this->local_backend_.OCL_computeUnits * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &iDeviceBuffer);
+    allocate_ocl<ValueType>(int(this->local_backend_.OCL_computeUnits) * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &deviceBuffer);
+    allocate_ocl<int>(int(this->local_backend_.OCL_computeUnits) * 4, OCL_HANDLE(this->local_backend_.OCL_handle)->OCL_context, &iDeviceBuffer);
 
     err  = clSetKernelArg( CL_KERNEL_AMAX, 0, sizeof(int),    (void *) &size );
     err |= clSetKernelArg( CL_KERNEL_AMAX, 1, sizeof(cl_mem), (void *) this->vec_ );
@@ -1001,7 +1062,7 @@ int OCLAcceleratorVector<ValueType>::Amax(ValueType &value) const {
     err = clReleaseEvent( ocl_event );
     CHECK_OCL_ERROR( err, __FILE__, __LINE__ );
 
-    FinalReduceSize = this->local_backend_.OCL_computeUnits * 4;
+    FinalReduceSize = int(this->local_backend_.OCL_computeUnits) * 4;
     allocate_host(FinalReduceSize, &hostBuffer);
     allocate_host(FinalReduceSize, &iHostBuffer);
 

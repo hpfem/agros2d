@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "chebyshev.hpp"
 #include "iter_ctrl.hpp"
@@ -41,18 +46,31 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 Chebyshev<OperatorType, VectorType, ValueType>::Chebyshev() {
 
+  LOG_DEBUG(this, "Chebyshev::Chebyshev()",
+            "default constructor");
+
   this->init_lambda_ = false;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 Chebyshev<OperatorType, VectorType, ValueType>::~Chebyshev() {
+
+  LOG_DEBUG(this, "Chebyshev::~Chebyshev()",
+            "destructor");
+
   this->Clear();
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
-void Chebyshev<OperatorType, VectorType, ValueType>::Init(const ValueType lambda_min, 
-                                                          const ValueType lambda_max) {
+void Chebyshev<OperatorType, VectorType, ValueType>::Set(const ValueType lambda_min, 
+                                                         const ValueType lambda_max) {
+
+  LOG_DEBUG(this, "Chebyshev::Set()",
+            "lambda_min="  << lambda_min <<
+            " lambda_max=" << lambda_max);
+
 
   this->lambda_min_ = lambda_min;
   this->lambda_max_ = lambda_max;
@@ -113,6 +131,10 @@ void Chebyshev<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void Chebyshev<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "Chebyshev::Build()",
+            this->build_ <<
+            " #*# begin");
+
   if (this->build_ == true)
     this->Clear();
 
@@ -140,10 +162,19 @@ void Chebyshev<OperatorType, VectorType, ValueType>::Build(void) {
   this->p_.CloneBackend(*this->op_);
   this->p_.Allocate("p", this->op_->get_nrow());
 
+  LOG_DEBUG(this, "Chebyshev::Build()",
+            this->build_ <<
+            " #*# end");
+
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Chebyshev<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "Chebyshev::Clear()",
+            this->build_);
+
 
   if (this->build_ == true) {
 
@@ -167,6 +198,10 @@ void Chebyshev<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void Chebyshev<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "Chebyshev::MoveToHostLocalData_()",
+            this->build_);
+
+
   if (this->build_ == true) {
 
     this->r_.MoveToHost();
@@ -182,6 +217,9 @@ void Chebyshev<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void Chebyshev<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "Chebyshev::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -199,6 +237,9 @@ void Chebyshev<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_
 template <class OperatorType, class VectorType, typename ValueType>
 void Chebyshev<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType &rhs,
                                                                       VectorType *x) {
+
+  LOG_DEBUG(this, "Chebyshev::SolveNonPrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -221,7 +262,8 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vect
   op->Apply(*x, r);
   r->ScaleAdd(ValueType(-1.0), rhs);
 
-  this->iter_ctrl_.InitResidual(r->Norm());
+  ValueType res = this->Norm(*r);
+  this->iter_ctrl_.InitResidual(res);
 
   // p = r
   p->CopyFrom(*r);
@@ -235,7 +277,8 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vect
   op->Apply(*x, r);
   r->ScaleAdd(ValueType(-1.0), rhs);
   
-  while (!this->iter_ctrl_.CheckResidual(r->Norm(), this->index_)) {
+  res = this->Norm(*r);
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     beta = (c*alpha/ValueType(2.0))*(c*alpha/ValueType(2.0));
     
@@ -250,8 +293,11 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vect
     // compute residual = b - Ax
     op->Apply(*x, r);
     r->ScaleAdd(ValueType(-1.0), rhs);
-
+    res = this->Norm(*r);
   }
+
+  LOG_DEBUG(this, "Chebyshev::SolveNonPrecond_()",
+            " #*# end");
  
 
 }
@@ -259,6 +305,9 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vect
 template <class OperatorType, class VectorType, typename ValueType>
 void Chebyshev<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rhs,
                                                                    VectorType *x) {
+
+  LOG_DEBUG(this, "Chebyshev::SolvePrecond_()",
+            " #*# begin");
 
   assert(x != NULL);
   assert(x != &rhs);
@@ -281,7 +330,8 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorT
   op->Apply(*x, r);
   r->ScaleAdd(ValueType(-1.0), rhs);
 
-  this->iter_ctrl_.InitResidual(r->Norm());
+  ValueType res = this->Norm(*r); 
+  this->iter_ctrl_.InitResidual(res);
 
   // Solve Mz=r
   this->precond_->SolveZeroSol(*r, z);
@@ -297,8 +347,9 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorT
   // compute residual = b - Ax
   op->Apply(*x, r);
   r->ScaleAdd(ValueType(-1.0), rhs);
+  res = this->Norm(*r); 
   
-  while (!this->iter_ctrl_.CheckResidual(r->Norm(), this->index_)) {
+  while (!this->iter_ctrl_.CheckResidual(res, this->index_)) {
 
     // Solve Mz=r
     this->precond_->SolveZeroSol(*r, z);
@@ -316,8 +367,11 @@ void Chebyshev<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorT
     // compute residual = b - Ax
     op->Apply(*x, r);
     r->ScaleAdd(ValueType(-1.0), rhs);
-
+    res = this->Norm(*r); 
   }
+
+  LOG_DEBUG(this, "Chebyshev::SolvePrecond_()",
+            " #*# end");
 
 }
 

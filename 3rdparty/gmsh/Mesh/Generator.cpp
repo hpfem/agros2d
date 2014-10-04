@@ -46,132 +46,6 @@
 #include "PViewData.h"
 #endif
 
-static MVertex* isEquivalentTo(std::multimap<MVertex*, MVertex*> &m, MVertex *v)
-{
-  std::multimap<MVertex*, MVertex*>::iterator it = m.lower_bound(v);
-  std::multimap<MVertex*, MVertex*>::iterator ite = m.upper_bound(v);
-  if (it == ite) return v;
-  MVertex *res = it->second; ++it;
-  while (it !=ite){
-    res = std::min(res,it->second); ++it;
-  }
-  if (res < v) return isEquivalentTo(m, res);
-  return res;
-}
-
-static void buildASetOfEquivalentMeshVertices(GFace *gf,
-                                              std::multimap<MVertex*, MVertex *> &equivalent,
-                                              std::map<GVertex*, MVertex*> &bm)
-{
-  // an edge is degenerated when is length is considered to be
-  // zero. In some cases, a model edge can be considered as too
-  // small an is ignored.
-
-  // for taking that into account, we loop over the edges
-  // and create pairs of MVertices that are considered as
-  // equal.
-
-  std::list<GEdge*> edges = gf->edges();
-  std::list<GEdge*> emb_edges = gf->embeddedEdges();
-  std::list<GEdge*>::iterator it = edges.begin();
-
-  while(it != edges.end()){
-    if((*it)->isMeshDegenerated()){
-      MVertex *va = *((*it)->getBeginVertex()->mesh_vertices.begin());
-      MVertex *vb = *((*it)->getEndVertex()->mesh_vertices.begin());
-      if (va != vb){
-        equivalent.insert(std::make_pair(va, vb));
-        equivalent.insert(std::make_pair(vb, va));
-        bm[(*it)->getBeginVertex()] = va;
-        bm[(*it)->getEndVertex()] = vb;
-        printf("%d equivalent to %d\n", va->getNum(), vb->getNum());
-      }
-    }
-    ++it;
-  }
-
-  it = emb_edges.begin();
-  while(it != emb_edges.end()){
-    if((*it)->isMeshDegenerated()){
-      MVertex *va = *((*it)->getBeginVertex()->mesh_vertices.begin());
-      MVertex *vb = *((*it)->getEndVertex()->mesh_vertices.begin());
-      if (va != vb){
-        equivalent.insert(std::make_pair(va, vb));
-        equivalent.insert(std::make_pair(vb, va));
-        bm[(*it)->getBeginVertex()] = va;
-        bm[(*it)->getEndVertex()] = vb;
-      }
-    }
-    ++it;
-  }
-}
-
-struct geomThresholdVertexEquivalence
-{
-  // Initial MVertex associated to one given MVertex
-  std::map<GVertex*, MVertex*> backward_map;
-  // initiate the forward and backward maps
-  geomThresholdVertexEquivalence(GModel *g);
-  // restores the initial state
-  ~geomThresholdVertexEquivalence ();
-};
-
-geomThresholdVertexEquivalence::geomThresholdVertexEquivalence(GModel *g)
-{
-  std::multimap<MVertex*, MVertex*> equivalenceMap;
-  for (GModel::fiter it = g->firstFace(); it != g->lastFace(); ++it)
-    buildASetOfEquivalentMeshVertices(*it, equivalenceMap, backward_map);
-  // build the structure that identifiate geometrically equivalent
-  // mesh vertices.
-  for (std::map<GVertex*, MVertex*>::iterator it = backward_map.begin();
-       it != backward_map.end(); ++it){
-    GVertex *g = it->first;
-    MVertex *v = it->second;
-    MVertex *other = isEquivalentTo(equivalenceMap, v);
-    if (v != other){
-      printf("Finally : %d equivalent to %d\n", v->getNum(), other->getNum());
-      g->mesh_vertices.clear();
-      g->mesh_vertices.push_back(other);
-      std::list<GEdge*> ed = g->edges();
-      for (std::list<GEdge*>::iterator ite = ed.begin() ; ite != ed.end() ; ++ite){
-        std::vector<MLine*> newl;
-        for (unsigned int i = 0; i < (*ite)->lines.size(); ++i){
-          MLine *l = (*ite)->lines[i];
-          MVertex *v1 = l->getVertex(0);
-          MVertex *v2 = l->getVertex(1);
-          if (v1 == v && v2 != other){
-            delete l;
-            l = new MLine(other,v2);
-            newl.push_back(l);
-          }
-          else if (v1 != other && v2 == v){
-            delete l;
-            l = new MLine(v1,other);
-            newl.push_back(l);
-          }
-          else if (v1 != v && v2 != v)
-            newl.push_back(l);
-          else
-            delete l;
-        }
-        (*ite)->lines = newl;
-      }
-    }
-  }
-}
-
-geomThresholdVertexEquivalence::~geomThresholdVertexEquivalence()
-{
-  // restore the initial data
-  for (std::map<GVertex*, MVertex*>::iterator it = backward_map.begin();
-       it != backward_map.end() ; ++it){
-    GVertex *g = it->first;
-    MVertex *v = it->second;
-    g->mesh_vertices.clear();
-    g->mesh_vertices.push_back(v);
-  }
-}
-
 template<class T>
 static void GetQualityMeasure(std::vector<T*> &ele,
                               double &gamma, double &gammaMin, double &gammaMax,
@@ -466,9 +340,6 @@ static void Mesh2D(GModel *m)
   for(GModel::fiter it = m->firstFace(); it != m->lastFace(); ++it)
     (*it)->meshStatistics.status = GFace::PENDING;
 
-  // skip short mesh edges
-  //geomThresholdVertexEquivalence inst(m);
-
   // boundary layers are special: their generation (including vertices
   // and curve meshes) is global as it depends on a smooth normal
   // field generated from the surface mesh of the source surfaces
@@ -490,10 +361,10 @@ static void Mesh2D(GModel *m)
 #if defined(_OPENMP)
 #pragma omp parallel for schedule (dynamic)
 #endif
-      for(size_t K = 0 ; K < temp.size() ; K++){
+      for(int K = 0 ; K < temp.size() ; K++){
 	if (temp[K]->meshStatistics.status == GFace::PENDING){
           backgroundMesh::current()->unset();
-	  meshGFace mesher(true, CTX::instance()->mesh.multiplePasses);
+	  meshGFace mesher(true);
 	  mesher(temp[K]);
 
 #if defined(HAVE_BFGS)
@@ -532,7 +403,7 @@ static void Mesh2D(GModel *m)
           it != cf.end(); ++it){
         if ((*it)->meshStatistics.status == GFace::PENDING){
           backgroundMesh::current()->unset();
-          meshGFace mesher(true, CTX::instance()->mesh.multiplePasses);
+          meshGFace mesher(true);
           mesher(*it);
 
 #if defined(HAVE_BFGS)
@@ -671,6 +542,9 @@ static void Mesh3D(GModel *m)
     }
   }
 
+  // Ensure that all volume Jacobians are positive
+  m->setAllVolumesPositive();
+
   double t2 = Cpu();
   CTX::instance()->meshTimer[2] = t2 - t1;
   Msg::StatusBar(true, "Done meshing 3D (%g s)", CTX::instance()->meshTimer[2]);
@@ -683,6 +557,9 @@ void OptimizeMeshNetgen(GModel *m)
 
   std::for_each(m->firstRegion(), m->lastRegion(), optimizeMeshGRegionNetgen());
 
+  // Ensure that all volume Jacobians are positive
+  m->setAllVolumesPositive();
+
   double t2 = Cpu();
   Msg::StatusBar(true, "Done optimizing 3D mesh with Netgen (%g s)", t2 - t1);
 }
@@ -693,6 +570,9 @@ void OptimizeMesh(GModel *m)
   double t1 = Cpu();
 
   std::for_each(m->firstRegion(), m->lastRegion(), optimizeMeshGRegionGmsh());
+
+  // Ensure that all volume Jacobians are positive
+  m->setAllVolumesPositive();
 
   double t2 = Cpu();
   Msg::StatusBar(true, "Done optimizing 3D mesh (%g s)", t2 - t1);
@@ -782,8 +662,6 @@ void GenerateMesh(GModel *m, int ask)
     }
   }
 
-  m->setAllVolumesPositive();
-
   // Subdivide into quads or hexas
   if(m->getMeshStatus() == 2 && CTX::instance()->mesh.algoSubdivide == 1)
     RefineMesh(m, CTX::instance()->mesh.secondOrderLinear, true);
@@ -802,7 +680,7 @@ void GenerateMesh(GModel *m, int ask)
   if(CTX::instance()->mesh.hoOptimize){
 #if defined(HAVE_OPTHOM)
     if(CTX::instance()->mesh.hoOptimize < 0){
-      ElasticAnalogy(GModel::current(), CTX::instance()->mesh.hoThresholdMin, false);
+      ElasticAnalogy(GModel::current(), false);
     }
     else{
       OptHomParameters p;

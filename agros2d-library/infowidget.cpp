@@ -47,7 +47,7 @@
 #include "hermes2d.h"
 
 InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent)
-    : QWidget(parent), m_recentProblemFiles(NULL), m_recentScriptFiles(NULL)
+    : QWidget(parent), m_recentProblemFiles(NULL), m_recentScriptFiles(NULL), m_recentOptilabFiles(NULL)
 {
     this->m_sceneViewGeometry = sceneView;
 
@@ -154,12 +154,25 @@ void InfoWidget::showWelcome()
     problemInfo.SetValue("RECENT_SCRIPTS_LABEL", tr("Recent Python Scripts").toStdString());
     if (m_recentScriptFiles)
     {
-        for (int i = 0; i < qMin(10, m_recentScriptFiles->count()); i++)
+        for (int i = 0; i < qMin(7, m_recentScriptFiles->count()); i++)
         {
             ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_SCRIPT_SECTION");
             recent->SetValue("SCRIPT_FILENAME", QUrl::fromUserInput(m_recentScriptFiles->at(i)).toString().toStdString());
             recent->SetValue("SCRIPT_FILENAME_LABEL", QFileInfo(m_recentScriptFiles->at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
             recent->SetValue("SCRIPT_BASE", QFileInfo(m_recentScriptFiles->at(i)).baseName().toStdString());
+        }
+    }
+
+    // recent optilab files
+    problemInfo.SetValue("RECENT_OPTILAB_LABEL", tr("Recent OptiLab Files").toStdString());
+    if (m_recentOptilabFiles)
+    {
+        for (int i = 0; i < qMin(5, m_recentOptilabFiles->count()); i++)
+        {
+            ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_OPTILAB_SECTION");
+            recent->SetValue("OPTILAB_FILENAME", QUrl::fromUserInput(m_recentOptilabFiles->at(i)).toString().toStdString());
+            recent->SetValue("OPTILAB_FILENAME_LABEL", QFileInfo(m_recentOptilabFiles->at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
+            recent->SetValue("OPTILAB_BASE", QFileInfo(m_recentOptilabFiles->at(i)).baseName().toStdString());
         }
     }
 
@@ -293,7 +306,7 @@ void InfoWidget::showInfo()
             field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
             field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
 
-            if (fieldInfo->adaptivityType() != AdaptivityType_None)
+            if (fieldInfo->adaptivityType() != AdaptivityMethod_None)
             {
                 field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->value(FieldInfo::AdaptivitySteps).toInt()).toStdString());
@@ -389,7 +402,7 @@ void InfoWidget::showInfo()
                     field->SetValue("NEWTON_RESIDUAL_CHART", commandResidual.toStdString());
                 }
 
-                if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
+                if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityMethod_None))
                 {
                     QString solutionMeshNodesAll = QString::number(solutionMeshNodes.at(0));
                     QString solutionMeshElementsAll = QString::number(solutionMeshElements.at(0));
@@ -516,7 +529,7 @@ void InfoWidget::showInfo()
 }
 
 void InfoWidget::linkClicked(const QUrl &url)
-{
+{    
     if (url.toString().contains("/example?"))
     {
 #if QT_VERSION < 0x050000

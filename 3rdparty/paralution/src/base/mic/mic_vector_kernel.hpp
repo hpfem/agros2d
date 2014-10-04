@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_MIC_VECTOR_KERNEL_HPP_
 #define PARALUTION_MIC_VECTOR_KERNEL_HPP_
@@ -150,6 +155,22 @@ void scaleaddscale(const int mic_dev,
 #pragma omp parallel for 
   for (int i=0; i<size; ++i)
     vec2[i] = alpha*vec2[i] + beta*vec1[i];
+
+}
+
+template <typename ValueType>
+void scaleaddscale(const int mic_dev, 
+		   const ValueType *vec1, const ValueType alpha, 
+		   const ValueType beta, ValueType *vec2,
+		   const int src_offset, const int dst_offset,const int size) {
+
+#pragma offload target(mic:mic_dev)				    \
+  in(vec1:length(0) MIC_REUSE MIC_RETAIN)		    \
+  in(vec2:length(0) MIC_REUSE MIC_RETAIN) 
+#pragma omp parallel for 
+  for (int i=0; i<size; ++i)
+    vec2[i+dst_offset] = alpha*vec2[i+dst_offset] + beta*vec1[i+src_offset];
+
 
 }
 

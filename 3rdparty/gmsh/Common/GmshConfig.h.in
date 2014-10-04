@@ -16,6 +16,7 @@
 #cmakedefine HAVE_BLOSSOM
 #cmakedefine HAVE_CAIRO
 #cmakedefine HAVE_CHACO
+#cmakedefine HAVE_COMPRESSED_IO
 #cmakedefine HAVE_DLOPEN
 #cmakedefine HAVE_DINTEGRATION
 #cmakedefine HAVE_FLTK
@@ -46,6 +47,7 @@
 #cmakedefine HAVE_NO_VSNPRINTF
 #cmakedefine HAVE_OCC
 #cmakedefine HAVE_ONELAB
+#cmakedefine HAVE_ONELAB2
 #cmakedefine HAVE_ONELAB_METAMODEL
 #cmakedefine HAVE_OPENGL
 #cmakedefine HAVE_OPTHOM

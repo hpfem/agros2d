@@ -41,6 +41,7 @@ struct crossField2d
 
 class backgroundMesh : public simpleFunction<double>
 {
+  static double sizeFactor;
   MElementOctree *_octree;
   std::vector<MVertex*> _vertices;
   std::vector<MElement*> _triangles;
@@ -66,6 +67,7 @@ class backgroundMesh : public simpleFunction<double>
   static void setCrossFieldsByDistance(GFace *);
   static void unset();
   static backgroundMesh *current () { return _current; }
+  static void setSizeFactor (double s) {sizeFactor = s;}
   void propagate1dMesh(GFace *);
   void propagateCrossField(GFace *);
   void propagateCrossFieldByDistance(GFace *);
@@ -83,6 +85,16 @@ class backgroundMesh : public simpleFunction<double>
     }
   }
   MElementOctree* get_octree();
+  MElement *getMeshElementByCoord(double u, double v, double w, bool strict=true);
+  int getNumMeshElements()const{return _triangles.size();}
+  std::vector<MVertex*>::iterator begin_vertices(){return _vertices.begin();}
+  std::vector<MVertex*>::iterator end_vertices(){return _vertices.end();}
+  std::vector<MVertex*>::const_iterator begin_vertices()const{return _vertices.begin();}
+  std::vector<MVertex*>::const_iterator end_vertices()const{return _vertices.end();}
+  std::vector<MElement*>::iterator begin_triangles(){return _triangles.begin();}
+  std::vector<MElement*>::iterator end_triangles(){return _triangles.end();}
+  std::vector<MElement*>::const_iterator begin_triangles()const{return _triangles.begin();}
+  std::vector<MElement*>::const_iterator end_triangles()const{return _triangles.end();}
 };
 
 SMetric3 buildMetricTangentToCurve (SVector3 &t, double l_t, double l_n);

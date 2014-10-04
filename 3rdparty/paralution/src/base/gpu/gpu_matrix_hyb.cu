@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "gpu_matrix_csr.hpp"
 #include "gpu_matrix_coo.hpp"
@@ -52,12 +57,16 @@ template <typename ValueType>
 GPUAcceleratorMatrixHYB<ValueType>::GPUAcceleratorMatrixHYB() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 GPUAcceleratorMatrixHYB<ValueType>::GPUAcceleratorMatrixHYB(const Paralution_Backend_Descriptor local_backend) {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixHYB::GPUAcceleratorMatrixHYB()",
+            "constructor with local_backend");
 
   this->mat_.ELL.val = NULL;
   this->mat_.ELL.col = NULL;
@@ -79,6 +88,9 @@ GPUAcceleratorMatrixHYB<ValueType>::GPUAcceleratorMatrixHYB(const Paralution_Bac
 
 template <typename ValueType>
 GPUAcceleratorMatrixHYB<ValueType>::~GPUAcceleratorMatrixHYB() {
+
+  LOG_DEBUG(this, "GPUAcceleratorMatrixHYB::~GPUAcceleratorMatrixHYB()",
+            "destructor");
 
   this->Clear();
 
@@ -188,9 +200,9 @@ void GPUAcceleratorMatrixHYB<ValueType>::CopyFromHost(const HostMatrix<ValueType
     this->AllocateHYB(cast_mat->get_ell_nnz(), cast_mat->get_coo_nnz(), cast_mat->get_ell_max_row(),
                       cast_mat->get_nrow(), cast_mat->get_ncol());
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
     if (this->get_ell_nnz() > 0) {
 
@@ -258,9 +270,9 @@ void GPUAcceleratorMatrixHYB<ValueType>::CopyToHost(HostMatrix<ValueType> *dst) 
     cast_mat->AllocateHYB(this->get_ell_nnz(), this->get_coo_nnz(), this->get_ell_max_row(),
                       this->get_nrow(), this->get_ncol());
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     if (this->get_ell_nnz() > 0) {
       
@@ -329,9 +341,9 @@ void GPUAcceleratorMatrixHYB<ValueType>::CopyFrom(const BaseMatrix<ValueType> &s
     this->AllocateHYB(gpu_cast_mat->get_ell_nnz(), gpu_cast_mat->get_coo_nnz(), gpu_cast_mat->get_ell_max_row(),
                       gpu_cast_mat->get_nrow(), gpu_cast_mat->get_ncol());
 
-    assert((this->get_nnz()  == src.get_nnz())  &&
-	   (this->get_nrow() == src.get_nrow()) &&
-	   (this->get_ncol() == src.get_ncol()) );
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
 
 
     if (this->get_ell_nnz() > 0) {
@@ -411,9 +423,9 @@ void GPUAcceleratorMatrixHYB<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
     gpu_cast_mat->AllocateHYB(this->get_ell_nnz(), this->get_coo_nnz(), this->get_ell_max_row(),
                       this->get_nrow(), this->get_ncol());
 
-    assert((this->get_nnz()  == dst->get_nnz())  &&
-	   (this->get_nrow() == dst->get_nrow()) &&
-	   (this->get_ncol() == dst->get_ncol()) );
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
 
     if (this->get_ell_nnz() > 0) {
 
@@ -478,6 +490,310 @@ void GPUAcceleratorMatrixHYB<ValueType>::CopyTo(BaseMatrix<ValueType> *dst) cons
 
 
 template <typename ValueType>
+void GPUAcceleratorMatrixHYB<ValueType>::CopyFromHostAsync(const HostMatrix<ValueType> &src) {
+
+  const HostMatrixHYB<ValueType> *cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == src.get_mat_format());
+
+  // CPU to GPU copy
+  if (cast_mat = dynamic_cast<const HostMatrixHYB<ValueType>*> (&src)) {
+    
+  if (this->get_nnz() == 0)
+    this->AllocateHYB(cast_mat->get_ell_nnz(), cast_mat->get_coo_nnz(), cast_mat->get_ell_max_row(),
+                      cast_mat->get_nrow(), cast_mat->get_ncol());
+
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
+
+    if (this->get_ell_nnz() > 0) {
+
+      // ELL
+      cudaMemcpyAsync(this->mat_.ELL.col,     // dst
+                      cast_mat->mat_.ELL.col, // src
+                      this->get_ell_nnz()*sizeof(int), // size
+                      cudaMemcpyHostToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(this->mat_.ELL.val,     // dst
+                      cast_mat->mat_.ELL.val, // src
+                      this->get_ell_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyHostToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+
+    if (this->get_coo_nnz() > 0) {
+
+      // COO
+      cudaMemcpyAsync(this->mat_.COO.row,     // dst
+                      cast_mat->mat_.COO.row, // src
+                      (this->get_coo_nnz())*sizeof(int), // size
+                      cudaMemcpyHostToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(this->mat_.COO.col,     // dst
+                      cast_mat->mat_.COO.col, // src
+                      this->get_coo_nnz()*sizeof(int), // size
+                      cudaMemcpyHostToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(this->mat_.COO.val,     // dst
+                      cast_mat->mat_.COO.val, // src
+                      this->get_coo_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyHostToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+    
+  } else {
+    
+    LOG_INFO("Error unsupported GPU matrix type");
+    this->info();
+    src.info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixHYB<ValueType>::CopyToHostAsync(HostMatrix<ValueType> *dst) const {
+
+  HostMatrixHYB<ValueType> *cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == dst->get_mat_format());
+
+  // GPU to CPU copy
+  if (cast_mat = dynamic_cast<HostMatrixHYB<ValueType>*> (dst)) {
+
+    cast_mat->set_backend(this->local_backend_);   
+
+  if (dst->get_nnz() == 0)
+    cast_mat->AllocateHYB(this->get_ell_nnz(), this->get_coo_nnz(), this->get_ell_max_row(),
+                      this->get_nrow(), this->get_ncol());
+
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
+
+    if (this->get_ell_nnz() > 0) {
+      
+      // ELL
+      cudaMemcpyAsync(cast_mat->mat_.ELL.col, // dst
+                      this->mat_.ELL.col,     // src
+                      this->get_ell_nnz()*sizeof(int), // size
+                      cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(cast_mat->mat_.ELL.val, // dst
+                      this->mat_.ELL.val,     // src
+                      this->get_ell_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyDeviceToHost);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+
+
+    if (this->get_coo_nnz() > 0) {
+
+      // COO
+      cudaMemcpyAsync(cast_mat->mat_.COO.row, // dst
+                      this->mat_.COO.row,     // src
+                      this->get_coo_nnz()*sizeof(int), // size
+                      cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(cast_mat->mat_.COO.col, // dst
+                      this->mat_.COO.col,     // src
+                      this->get_coo_nnz()*sizeof(int), // size
+                      cudaMemcpyDeviceToHost);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpyAsync(cast_mat->mat_.COO.val, // dst
+                      this->mat_.COO.val,     // src
+                      this->get_coo_nnz()*sizeof(ValueType), // size
+                      cudaMemcpyDeviceToHost);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+    }
+
+  } else {
+    
+    LOG_INFO("Error unsupported GPU matrix type");
+    this->info();
+    dst->info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixHYB<ValueType>::CopyFromAsync(const BaseMatrix<ValueType> &src) {
+
+  const GPUAcceleratorMatrixHYB<ValueType> *gpu_cast_mat;
+  const HostMatrix<ValueType> *host_cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == src.get_mat_format());
+
+  // GPU to GPU copy
+  if (gpu_cast_mat = dynamic_cast<const GPUAcceleratorMatrixHYB<ValueType>*> (&src)) {
+    
+  if (this->get_nnz() == 0)
+    this->AllocateHYB(gpu_cast_mat->get_ell_nnz(), gpu_cast_mat->get_coo_nnz(), gpu_cast_mat->get_ell_max_row(),
+                      gpu_cast_mat->get_nrow(), gpu_cast_mat->get_ncol());
+
+    assert(this->get_nnz()  == src.get_nnz());
+    assert(this->get_nrow() == src.get_nrow());
+    assert(this->get_ncol() == src.get_ncol());
+
+
+    if (this->get_ell_nnz() > 0) {
+
+      // ELL
+      cudaMemcpy(this->mat_.ELL.col,     // dst
+                 gpu_cast_mat->mat_.ELL.col, // src
+                 this->get_ell_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(this->mat_.ELL.val,     // dst
+                 gpu_cast_mat->mat_.ELL.val, // src
+                 this->get_ell_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+
+    if (this->get_coo_nnz() > 0) {
+
+      // COO
+      cudaMemcpy(this->mat_.COO.row,     // dst
+                 gpu_cast_mat->mat_.COO.row, // src
+                 (this->get_coo_nnz())*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(this->mat_.COO.col,     // dst
+                 gpu_cast_mat->mat_.COO.col, // src
+                 this->get_coo_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(this->mat_.COO.val,     // dst
+                 gpu_cast_mat->mat_.COO.val, // src
+                 this->get_coo_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+
+    }
+      
+  } else {
+
+    //CPU to GPU
+    if (host_cast_mat = dynamic_cast<const HostMatrix<ValueType>*> (&src)) {
+      
+      this->CopyFromHostAsync(*host_cast_mat);
+      
+    } else {
+      
+      LOG_INFO("Error unsupported GPU matrix type");
+      this->info();
+      src.info();
+      FATAL_ERROR(__FILE__, __LINE__);
+      
+    }
+    
+  }
+
+}
+
+template <typename ValueType>
+void GPUAcceleratorMatrixHYB<ValueType>::CopyToAsync(BaseMatrix<ValueType> *dst) const {
+
+  GPUAcceleratorMatrixHYB<ValueType> *gpu_cast_mat;
+  HostMatrix<ValueType> *host_cast_mat;
+
+  // copy only in the same format
+  assert(this->get_mat_format() == dst->get_mat_format());
+
+  // GPU to GPU copy
+  if (gpu_cast_mat = dynamic_cast<GPUAcceleratorMatrixHYB<ValueType>*> (dst)) {
+
+    gpu_cast_mat->set_backend(this->local_backend_);       
+
+  if (this->get_nnz() == 0)
+    gpu_cast_mat->AllocateHYB(this->get_ell_nnz(), this->get_coo_nnz(), this->get_ell_max_row(),
+                      this->get_nrow(), this->get_ncol());
+
+    assert(this->get_nnz()  == dst->get_nnz());
+    assert(this->get_nrow() == dst->get_nrow());
+    assert(this->get_ncol() == dst->get_ncol());
+
+    if (this->get_ell_nnz() > 0) {
+
+      // ELL
+      cudaMemcpy(gpu_cast_mat->mat_.ELL.col, // dst
+                 this->mat_.ELL.col,     // src
+                 this->get_ell_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(gpu_cast_mat->mat_.ELL.val, // dst
+                 this->mat_.ELL.val,     // src
+                 this->get_ell_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+    }
+
+    if (this->get_coo_nnz() > 0) {
+
+      // COO
+      cudaMemcpy(gpu_cast_mat->mat_.COO.row, // dst
+                 this->mat_.COO.row,     // src
+                 this->get_coo_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(gpu_cast_mat->mat_.COO.col, // dst
+                 this->mat_.COO.col,     // src
+                 this->get_coo_nnz()*sizeof(int), // size
+                 cudaMemcpyDeviceToDevice);
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+      
+      cudaMemcpy(gpu_cast_mat->mat_.COO.val, // dst
+                 this->mat_.COO.val,     // src
+                 this->get_coo_nnz()*sizeof(ValueType), // size
+                 cudaMemcpyDeviceToDevice);    
+      CHECK_CUDA_ERROR(__FILE__, __LINE__);     
+
+    }
+   
+    
+  } else {
+
+    //GPU to CPU
+    if (host_cast_mat = dynamic_cast<HostMatrix<ValueType>*> (dst)) {
+      
+      this->CopyToHostAsync(host_cast_mat);
+
+    } else {
+      
+      LOG_INFO("Error unsupported GPU matrix type");
+      this->info();
+      dst->info();
+      FATAL_ERROR(__FILE__, __LINE__);
+      
+    }
+
+  }
+
+
+}
+
+
+template <typename ValueType>
 bool GPUAcceleratorMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
 
   this->Clear();
@@ -511,8 +827,6 @@ bool GPUAcceleratorMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType>
 
     allocate_gpu<int>(nrow, &nnz_coo);
 
-    cudaDeviceSynchronize();
-
     kernel_ell_nnz_coo<int> <<<GridSize, BlockSize>>> (nrow, max_row,
                                                        cast_mat_csr->mat_.row_offset,
                                                        nnz_coo);
@@ -532,8 +846,6 @@ bool GPUAcceleratorMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType>
     GROUP_SIZE = ( size_t( ( size_t( nrow / ( this->local_backend_.GPU_wrap * 4 ) ) + 1 ) 
                  / this->local_backend_.GPU_block_size ) + 1 ) * this->local_backend_.GPU_block_size;
     LOCAL_SIZE = GROUP_SIZE / this->local_backend_.GPU_block_size;
-
-    cudaDeviceSynchronize();
 
     kernel_reduce<int, int, 256> <<<GridSize2, BlockSize>>> (nrow, nnz_coo, d_buffer, GROUP_SIZE, LOCAL_SIZE);
     CHECK_CUDA_ERROR(__FILE__, __LINE__);
@@ -571,8 +883,6 @@ bool GPUAcceleratorMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType>
 
     allocate_gpu<int>(nrow, &nnz_ell);
 
-    cudaDeviceSynchronize();
-
     kernel_ell_fill_ell<ValueType, int> <<<GridSize, BlockSize>>> (nrow, max_row,
                                                                    cast_mat_csr->mat_.row_offset,
                                                                    cast_mat_csr->mat_.col,
@@ -601,7 +911,6 @@ bool GPUAcceleratorMatrixHYB<ValueType>::ConvertFrom(const BaseMatrix<ValueType>
     // end TODO
 
     // copy any remaining values in row i into the COO
-    cudaDeviceSynchronize();
 
     kernel_ell_fill_coo<ValueType, int> <<<GridSize, BlockSize>>> (nrow, cast_mat_csr->mat_.row_offset,
                                                                    cast_mat_csr->mat_.col,
@@ -656,8 +965,6 @@ void GPUAcceleratorMatrixHYB<ValueType>::Apply(const BaseVector<ValueType> &in, 
       dim3 BlockSize(this->local_backend_.GPU_block_size);
       dim3 GridSize(nrow / this->local_backend_.GPU_block_size + 1);
     
-      cudaDeviceSynchronize();
-      
       
       kernel_ell_spmv<ValueType, int> <<<GridSize, BlockSize>>> (nrow, ncol, max_row,
                                                                  this->mat_.ELL.col, this->mat_.ELL.val,
@@ -710,7 +1017,6 @@ void GPUAcceleratorMatrixHYB<ValueType>::Apply(const BaseVector<ValueType> &in, 
       allocate_gpu(active_warps, &temp_vals);
       
       
-      cudaDeviceSynchronize();
       CHECK_CUDA_ERROR(__FILE__, __LINE__);     
       
       // TODO 
@@ -777,8 +1083,6 @@ void GPUAcceleratorMatrixHYB<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
       dim3 BlockSize(this->local_backend_.GPU_block_size);
       dim3 GridSize(nrow / this->local_backend_.GPU_block_size + 1);
     
-      cudaDeviceSynchronize();
-      
       
       kernel_ell_add_spmv<ValueType, int> <<<GridSize, BlockSize>>> (nrow, ncol, max_row,
                                                                      this->mat_.ELL.col, this->mat_.ELL.val,
@@ -832,7 +1136,6 @@ void GPUAcceleratorMatrixHYB<ValueType>::ApplyAdd(const BaseVector<ValueType> &i
       allocate_gpu(active_warps, &temp_vals);
       
       
-      cudaDeviceSynchronize();
       CHECK_CUDA_ERROR(__FILE__, __LINE__);     
       
       // TODO 

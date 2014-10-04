@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_GLOBAL_VECTOR_HPP_
 #define PARALUTION_GLOBAL_VECTOR_HPP_
@@ -66,7 +71,8 @@ public:
   virtual void CopyFrom(const GlobalVector<ValueType> &src);
   virtual void ReadFileASCII(const std::string filename);
   virtual void WriteFileASCII(const std::string filename) const;
-
+  virtual void ReadFileBinary(const std::string filename);
+  virtual void WriteFileBinary(const std::string filename) const;
 
   // this = this + alpha*x
   virtual void AddScale(const GlobalVector<ValueType> &x, const ValueType alpha);

@@ -49,11 +49,13 @@ unsigned int fun2 (void * val)
 void RunParallel ( void* (*fun)(void *), void * in)
 {
   sfun = fun;
+#ifndef _MSC_VER
   if (netgen::mparam.parthread)
     AfxBeginThread (fun2, in);
   //AfxBeginThread (fun2, NULL);
   else
     fun (in);
+#endif
 }
 
 #endif // #ifdef MSVC_EXPRESS

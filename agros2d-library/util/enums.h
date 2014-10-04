@@ -41,13 +41,13 @@ enum AnalysisType
     AnalysisType_Harmonic = 3
 };
 
-enum AdaptivityType
+enum AdaptivityMethod
 {
-    AdaptivityType_Undefined = 1000,
-    AdaptivityType_None = 3,
-    AdaptivityType_H = 1,
-    AdaptivityType_P = 2,
-    AdaptivityType_HP = 0
+    AdaptivityMethod_Undefined = 1000,
+    AdaptivityMethod_None = 3,
+    AdaptivityMethod_H = 1,
+    AdaptivityMethod_P = 2,
+    AdaptivityMethod_HP = 0
 };
 
 enum AdaptivityStoppingCriterionType
@@ -296,10 +296,10 @@ AGROS_LIBRARY_API QString physicFieldVariableCompToStringKey(PhysicFieldVariable
 AGROS_LIBRARY_API PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);
 
 // adaptivity type
-AGROS_LIBRARY_API QString adaptivityTypeString(AdaptivityType adaptivityType);
+AGROS_LIBRARY_API QString adaptivityTypeString(AdaptivityMethod adaptivityType);
 AGROS_LIBRARY_API QStringList adaptivityTypeStringKeys();
-AGROS_LIBRARY_API QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
-AGROS_LIBRARY_API AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+AGROS_LIBRARY_API QString adaptivityTypeToStringKey(AdaptivityMethod adaptivityType);
+AGROS_LIBRARY_API AdaptivityMethod adaptivityTypeFromStringKey(const QString &adaptivityType);
 
 // adaptivity stopping criterion type
 AGROS_LIBRARY_API QString adaptivityStoppingCriterionTypeString(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType);

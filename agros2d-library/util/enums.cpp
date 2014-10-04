@@ -31,7 +31,7 @@ static QMap<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QMap<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QMap<WeakFormKind, QString> weakFormList;
 static QMap<WeakFormVariant, QString> weakFormVariantList;
-static QMap<AdaptivityType, QString> adaptivityTypeList;
+static QMap<AdaptivityMethod, QString> adaptivityTypeList;
 static QMap<AdaptivityStoppingCriterionType, QString> adaptivityStoppingCriterionTypeList;
 static QMap<Hermes::Hermes2D::NormType, QString> adaptivityNormTypeList;
 static QMap<TimeStepMethod, QString> timeStepMethodList;
@@ -83,8 +83,8 @@ QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVa
 PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp) { return physicFieldVariableCompList.key(physicFieldVariableComp); }
 
 QStringList adaptivityTypeStringKeys() { return adaptivityTypeList.values(); }
-QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
-AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+QString adaptivityTypeToStringKey(AdaptivityMethod adaptivityType) { return adaptivityTypeList[adaptivityType]; }
+AdaptivityMethod adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
 
 QStringList adaptivityStoppingCriterionTypeStringKeys() { return adaptivityStoppingCriterionTypeList.values(); }
 QString adaptivityStoppingCriterionTypeToStringKey(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType) { return adaptivityStoppingCriterionTypeList[adaptivityStoppingCriterionType]; }
@@ -221,10 +221,10 @@ void initLists()
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_Model, "model");
 
     // ADAPTIVITYTYPE
-    adaptivityTypeList.insert(AdaptivityType_None, "disabled");
-    adaptivityTypeList.insert(AdaptivityType_H, "h-adaptivity");
-    adaptivityTypeList.insert(AdaptivityType_P, "p-adaptivity");
-    adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
+    adaptivityTypeList.insert(AdaptivityMethod_None, "disabled");
+    adaptivityTypeList.insert(AdaptivityMethod_H, "h-adaptivity");
+    adaptivityTypeList.insert(AdaptivityMethod_P, "p-adaptivity");
+    adaptivityTypeList.insert(AdaptivityMethod_HP, "hp-adaptivity");
 
     // AdaptivityStoppingCriterionType
     adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Cumulative, "cumulative");
@@ -449,17 +449,17 @@ QString solutionTypeString(SolutionMode solutionMode)
     }
 }
 
-QString adaptivityTypeString(AdaptivityType adaptivityType)
+QString adaptivityTypeString(AdaptivityMethod adaptivityType)
 {
     switch (adaptivityType)
     {
-    case AdaptivityType_None:
+    case AdaptivityMethod_None:
         return QObject::tr("Disabled");
-    case AdaptivityType_H:
+    case AdaptivityMethod_H:
         return QObject::tr("h-adaptivity");
-    case AdaptivityType_P:
+    case AdaptivityMethod_P:
         return QObject::tr("p-adaptivity");
-    case AdaptivityType_HP:
+    case AdaptivityMethod_HP:
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #include "multigrid.hpp"
 #include "../iter_ctrl.hpp"
@@ -40,6 +45,10 @@ namespace paralution {
 
 template <class OperatorType, class VectorType, typename ValueType>
 MultiGrid<OperatorType, VectorType, ValueType>::MultiGrid() {
+
+  LOG_DEBUG(this, "MultiGrid::MultiGrid()",
+            "default constructor");
+
 
   this->levels_ = -1;
   this->current_level_ = 0;
@@ -77,12 +86,18 @@ MultiGrid<OperatorType, VectorType, ValueType>::MultiGrid() {
 template <class OperatorType, class VectorType, typename ValueType>
 MultiGrid<OperatorType, VectorType, ValueType>::~MultiGrid() {
 
+  LOG_DEBUG(this, "MultiGrid::~MultiGrid()",
+            "destructor");
+
   this->Clear();
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::InitLevels(const int levels) {
+
+  LOG_DEBUG(this, "MultiGrid::InitLevels()",
+            levels);
 
   assert(this->build_ == false);
   assert(levels > 0);
@@ -93,6 +108,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::InitLevels(const int levels
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::InitOperator(const bool type) {
+
+  LOG_DEBUG(this, "MultiGrid::InitOperator()",
+            type);
 
   assert(this->build_ == false);
   this->operator_type_ = type;
@@ -110,6 +128,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetPreconditioner(Solver<Op
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetOperatorHierarchy(OperatorType **op) {
 
+  LOG_DEBUG(this, "MultiGrid::SetOperatorHierarchy()",
+            "");
+  
   assert(this->build_ == false);
   assert(op != NULL );
 
@@ -119,6 +140,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetOperatorHierarchy(Operat
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetSmoother(IterativeLinearSolver<OperatorType, VectorType, ValueType> **smoother) {
+
+  LOG_DEBUG(this, "MultiGrid::SetSmoother()",
+            "");
 
 //  assert(this->build_ == false); not possible due to AMG
   assert(smoother != NULL);
@@ -130,6 +154,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetSmoother(IterativeLinear
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetSmootherPreIter(const int iter) {
 
+  LOG_DEBUG(this, "MultiGrid::SetSmootherPreIter()",
+            iter);
+
   this->iter_pre_smooth_ = iter;
 
 }
@@ -137,12 +164,18 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetSmootherPreIter(const in
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetSmootherPostIter(const int iter) {
 
+  LOG_DEBUG(this, "MultiGrid::SetSmootherPostIter()",
+            iter);
+
   this->iter_post_smooth_ = iter;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetSolver(Solver<OperatorType, VectorType, ValueType> &solver) {
+
+  LOG_DEBUG(this, "MultiGrid::SetSolver()",
+            "");
 
 //  assert(this->build_ == false); not possible due to AMG
   assert(&solver != NULL);
@@ -153,6 +186,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetSolver(Solver<OperatorTy
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetRestrictOperator(OperatorType **op) {
+
+  LOG_DEBUG(this, "MultiGrid::SetRestrictOperator()",
+            "");
 
   assert(this->build_ == false);
   assert(op != NULL);
@@ -165,6 +201,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetRestrictOperator(Operato
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetRestrictVector(LocalVector<int> **op) {
 
+  LOG_DEBUG(this, "MultiGrid::SetRestrictVector()",
+            "");
+
   assert(this->build_ == false);
   assert(op != NULL);
   assert(this->operator_type_ == false);
@@ -175,6 +214,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetRestrictVector(LocalVect
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetProlongOperator(OperatorType **op) {
+
+  LOG_DEBUG(this, "MultiGrid::SetProlongOperator()",
+            "");
 
   assert(this->build_ == false);
   assert(op != NULL);
@@ -187,12 +229,18 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SetProlongOperator(Operator
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetScaling(const bool scaling) {
 
+  LOG_DEBUG(this, "MultiGrid::SetScaling()",
+            scaling);
+
   this->scaling_ = scaling;
 
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::SetCycle(const _cycle cycle) {
+
+  LOG_DEBUG(this, "MultiGrid::SetCycle()",
+            cycle);
 
   this->cycle_ = cycle;
 
@@ -228,6 +276,10 @@ void MultiGrid<OperatorType, VectorType, ValueType>::PrintEnd_(void) const {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Build(void) {
 
+  LOG_DEBUG(this, "MultiGrid::Build()",
+            this->build_ <<
+            " #*# begin");
+
   if (this->build_ == true)
     this->Clear();
 
@@ -244,9 +296,16 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Build(void) {
   assert(this->solver_coarse_ != NULL);
   assert(this->levels_ > 0);
 
+  LOG_DEBUG(this, "MultiGrid::Build()",
+            "#*# setup finest level 0");
+
   // Setup finest level 0
   this->smoother_level_[0]->SetOperator(*this->op_);
   this->smoother_level_[0]->Build();
+
+
+  LOG_DEBUG(this, "MultiGrid::Build()",
+            "#*# setup coarser levels");
 
   // Setup coarser levels
   for (int i=1; i<this->levels_-1; ++i) {
@@ -254,9 +313,14 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Build(void) {
     this->smoother_level_[i]->Build();
   }
 
+  LOG_DEBUG(this, "MultiGrid::Build()",
+            "#*# setup coarse grid solver");
   // Setup coarse grid solver
   this->solver_coarse_->SetOperator(*op_level_[this->levels_-2]);
   this->solver_coarse_->Build();
+
+  LOG_DEBUG(this, "MultiGrid::Build()",
+            "#*# setup all tmp vectors");
 
   // Setup all temporary vectors for the cycles - needed on all levels
   this->d_level_ = new VectorType*[this->levels_];
@@ -323,10 +387,16 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Build(void) {
   this->s_level_[0]->CloneBackend(*this->op_);
   this->s_level_[0]->Allocate("temporary", this->op_->get_nrow());
 
+  LOG_DEBUG(this, "MultiGrid::Build()",
+            this->build_ <<
+            " #*# end");
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  LOG_DEBUG(this, "MultiGrid::Clear()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -381,6 +451,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Clear(void) {
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
+  LOG_DEBUG(this, "MultiGrid::MoveToHostLocalData_()",
+            this->build_);  
+
   if (this->build_ == true) {
 
     this->r_level_[this->levels_-1]->MoveToHost();
@@ -424,6 +497,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) 
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  LOG_DEBUG(this, "MultiGrid::MoveToAcceleratorLocalData_()",
+            this->build_);
 
   if (this->build_ == true) {
 
@@ -469,6 +545,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                                  VectorType *x) {
+
+  LOG_DEBUG(this, "MultiGrid::Solve()",
+            " #*# begin");
 
   assert(this->levels_ > 1);
   assert(x != NULL);
@@ -525,12 +604,18 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs
     this->PrintEnd_();
   }
 
+  LOG_DEBUG(this, "MultiGrid::Solve()",
+            " #*# end");
+
 }
 
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Restrict_(const VectorType &fine,
                                                                      VectorType *coarse,
                                                                const int level) {
+
+  LOG_DEBUG(this, "MultiGrid::Restrict_()",
+            level);
 
   if (this->operator_type_)
     this->restrict_op_level_[level]->Apply(fine, coarse);
@@ -543,6 +628,8 @@ template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Prolong_(const VectorType &coarse,
                                                                     VectorType *fine,
                                                               const int level) {
+  LOG_DEBUG(this, "MultiGrid::Prolong_()",
+            level);
 
   if (this->operator_type_)
     this->prolong_op_level_[level]->Apply(coarse, fine);
@@ -554,6 +641,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Prolong_(const VectorType &
 template <class OperatorType, class VectorType, typename ValueType>
 void MultiGrid<OperatorType, VectorType, ValueType>::Vcycle_(const VectorType &rhs,
                                                                    VectorType *x) {
+
+  LOG_DEBUG(this, "MultiGrid::Vcycle_()",
+            " #*# begin");
 
   // Perform cycle
   if (this->current_level_ < this->levels_-1) {
@@ -651,6 +741,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::Vcycle_(const VectorType &r
   } else
     // Coarse grid solver
     this->solver_coarse_->SolveZeroSol(rhs, x);
+
+  LOG_DEBUG(this, "MultiGrid::Vcycle_()",
+            " #*# end");
 
 }
 

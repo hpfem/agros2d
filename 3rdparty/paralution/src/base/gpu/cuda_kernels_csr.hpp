@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_GPU_CUDA_KERNELS_CSR_HPP_
 #define PARALUTION_GPU_CUDA_KERNELS_CSR_HPP_
@@ -486,26 +491,57 @@ __global__ void kernel_csr_supper_nnz_per_row(const IndexType nrow, const IndexT
 }
 
 
-// Extracts lower/upper triangular part for given nnz per row array (partial sums nnz)
-// Should work not only for lower/upper matrices but for all patterns
+// Extracts lower triangular part for given nnz per row array (partial sums nnz)
 template <typename ValueType, typename IndexType>
-__global__ void kernel_csr_extract_lu_triangular(const IndexType nrow,
-                                                 const IndexType *src_row_offset, const IndexType *src_col,
-                                                 const ValueType *src_val, IndexType *nnz_per_row,
-                                                 IndexType *dst_col, ValueType *dst_val) {
+__global__ void kernel_csr_extract_l_triangular(const IndexType nrow,
+                                                const IndexType *src_row_offset, const IndexType *src_col,
+                                                const ValueType *src_val, IndexType *nnz_per_row,
+                                                IndexType *dst_col, ValueType *dst_val) {
   
   IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
   IndexType aj;
   
   if (ai < nrow) {
+
+    IndexType dst_index = nnz_per_row[ai];
+    IndexType src_index = src_row_offset[ai];
     
     for (aj=0; aj<nnz_per_row[ai+1]-nnz_per_row[ai]; ++aj) {
-      
-      IndexType dst_index = nnz_per_row[ai] + aj;
-      IndexType src_index = aj + src_row_offset[ai];
-      
+
       dst_col[dst_index] = src_col[src_index];
       dst_val[dst_index] = src_val[src_index];
+
+      ++dst_index;
+      ++src_index;
+      
+    }
+  }
+}
+
+
+// Extracts upper triangular part for given nnz per row array (partial sums nnz)
+template <typename ValueType, typename IndexType>
+__global__ void kernel_csr_extract_u_triangular(const IndexType nrow,
+                                                const IndexType *src_row_offset, const IndexType *src_col,
+                                                const ValueType *src_val, IndexType *nnz_per_row,
+                                                IndexType *dst_col, ValueType *dst_val) {
+  
+  IndexType ai = blockIdx.x * blockDim.x + threadIdx.x;
+  IndexType aj;
+  
+  if (ai < nrow) {
+
+    IndexType num_elements = nnz_per_row[ai+1]-nnz_per_row[ai];
+    IndexType src_index = src_row_offset[ai+1]-num_elements;
+    IndexType dst_index = nnz_per_row[ai];
+
+    for (aj=0; aj<num_elements; ++aj) {
+
+      dst_col[dst_index] = src_col[src_index];
+      dst_val[dst_index] = src_val[src_index];
+
+      ++dst_index;
+      ++src_index;
       
     }
   }

@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,17 +19,69 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include <cmath>
 #include "gpu_allocate_free.hpp"
 #include <cuda.h>
 #include <assert.h>
 #include "gpu_utils.hpp"
 #include "cuda_kernels_general.hpp"
+#include "../../utils/allocate_free.hpp"
 
 namespace paralution {
 
+#ifdef PARALUTION_CUDA_PINNED_MEMORY
+
+template <typename DataType>
+void allocate_host(const int size, DataType **ptr) {
+
+  LOG_DEBUG(0, "allocate_host()",
+            size);
+
+  if (size > 0) {
+
+    assert(*ptr == NULL);
+    
+    //    *ptr = new DataType[size];
+
+    cudaMallocHost((void **)ptr, size*sizeof(DataType));
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);
+
+    LOG_DEBUG(0, "allocate_host()",
+              *ptr);
+    
+    assert(*ptr != NULL);
+  }
+
+}
+
+template <typename DataType>
+void free_host(DataType **ptr) {
+
+  LOG_DEBUG(0, "free_host()",
+            *ptr);
+
+  assert(*ptr != NULL);
+
+  //  delete[] *ptr;
+  cudaFreeHost(*ptr);
+  CHECK_CUDA_ERROR(__FILE__, __LINE__);
+  
+  *ptr = NULL;
+
+}
+
+#endif
+
 template <typename DataType>
 void allocate_gpu(const int size, DataType **ptr) {
+
+  LOG_DEBUG(0, "allocate_gpu()",
+            size);
 
   if (size > 0) {
 
@@ -46,11 +98,11 @@ void allocate_gpu(const int size, DataType **ptr) {
 template <typename DataType>
 void free_gpu(DataType **ptr) {
 
+  LOG_DEBUG(0, "free_gpu()",
+            *ptr);
+
   assert(*ptr != NULL);
   
-  cudaDeviceSynchronize();
-  CHECK_CUDA_ERROR(__FILE__, __LINE__);
-
   cudaFree(*ptr);
   CHECK_CUDA_ERROR(__FILE__, __LINE__);
   
@@ -62,6 +114,10 @@ template <typename DataType>
 void set_to_zero_gpu(const int blocksize,
                      const int max_threads,
                      const int size, DataType *ptr) {
+
+  LOG_DEBUG(0, "set_to_zero_gpu()",
+            "size =" << size << 
+            " ptr=" << ptr);
   
   if (size > 0) {
 
@@ -79,8 +135,6 @@ void set_to_zero_gpu(const int blocksize,
     dim3 BlockSize(blocksize);
     dim3 GridSize(s / blocksize + 1);
 
-    cudaDeviceSynchronize();
-    
     kernel_set_to_zeros<DataType, int> <<<GridSize, BlockSize>>> (size, ptr);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
@@ -91,8 +145,6 @@ void set_to_zero_gpu(const int blocksize,
     dim3 BlockSize(blocksize);
     dim3 GridSize(size / blocksize + 1);
 
-    cudaDeviceSynchronize();
-    
     kernel_set_to_zeros<DataType, int> <<<GridSize, BlockSize>>> (size, ptr);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
@@ -106,6 +158,10 @@ template <typename DataType>
 void set_to_one_gpu(const int blocksize,
                     const int max_threads,
                     const int size, DataType *ptr) {
+
+  LOG_DEBUG(0, "set_to_zero_gpu()",
+            "size =" << size << 
+            " ptr=" << ptr);
   
   if (size > 0) {
 
@@ -120,8 +176,6 @@ void set_to_one_gpu(const int blocksize,
     dim3 BlockSize(blocksize);
     dim3 GridSize(s / blocksize + 1);
 
-    cudaDeviceSynchronize();
-    
     kernel_set_to_ones<DataType, int> <<<GridSize, BlockSize>>> (size, ptr);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
@@ -131,8 +185,6 @@ void set_to_one_gpu(const int blocksize,
     dim3 BlockSize(blocksize);
     dim3 GridSize(size / blocksize + 1);
 
-    cudaDeviceSynchronize();
-    
     kernel_set_to_ones<DataType, int> <<<GridSize, BlockSize>>> (size, ptr);
     
     CHECK_CUDA_ERROR(__FILE__, __LINE__);      
@@ -142,6 +194,21 @@ void set_to_one_gpu(const int blocksize,
 
 }
 
+#ifdef PARALUTION_CUDA_PINNED_MEMORY
+
+template void allocate_host<float       >(const int size, float        **ptr);
+template void allocate_host<double      >(const int size, double       **ptr);
+template void allocate_host<int         >(const int size, int          **ptr);
+template void allocate_host<unsigned int>(const int size, unsigned int **ptr);
+template void allocate_host<char        >(const int size, char         **ptr);
+
+template void free_host<float       >(float        **ptr);
+template void free_host<double      >(double       **ptr);
+template void free_host<int         >(int          **ptr);
+template void free_host<unsigned int>(unsigned int **ptr);
+template void free_host<char        >(char         **ptr);
+
+#endif
 
 template void allocate_gpu<float       >(const int size, float        **ptr);
 template void allocate_gpu<double      >(const int size, double       **ptr);

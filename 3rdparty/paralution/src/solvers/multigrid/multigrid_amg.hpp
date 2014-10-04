@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_MULTIGRID_AMG_HPP_
 #define PARALUTION_MULTIGRID_AMG_HPP_
@@ -91,7 +96,8 @@ protected:
                     OperatorType *restrict) const;
 
   /// Constructs vector with connections
-  virtual void Connect(const OperatorType &op, LocalVector<int> *connections) const;
+  virtual void Connect(const OperatorType &op, const ValueType eps,
+                       LocalVector<int> *connections) const;
 
   /// Constructs vector with aggregate numbers
   virtual void Aggregate(const OperatorType &op,

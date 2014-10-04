@@ -1,30 +1,35 @@
+// *************************************************************************
+//
+//    PARALUTION   www.paralution.com
+//
+//    Copyright (C) 2012-2014 Dimitar Lukarski
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_OCL_KERNELS_MCSR_HPP_
 #define PARALUTION_OCL_KERNELS_MCSR_HPP_
 
 namespace paralution {
 
 const char *ocl_kernels_mcsr =
-	"// *************************************************************************\n"
-	"//\n"
-	"//    PARALUTION   www.paralution.com\n"
-	"//\n"
-	"//    Copyright (C) 2012-2013 Dimitar Lukarski\n"
-	"//\n"
-	"//    This program is free software: you can redistribute it and/or modify\n"
-	"//    it under the terms of the GNU General Public License as published by\n"
-	"//    the Free Software Foundation, either version 3 of the License, or\n"
-	"//    (at your option) any later version.\n"
-	"//\n"
-	"//    This program is distributed in the hope that it will be useful,\n"
-	"//    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-	"//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-	"//    GNU General Public License for more details.\n"
-	"//\n"
-	"//    You should have received a copy of the GNU General Public License\n"
-	"//    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
-	"//\n"
-	"// *************************************************************************\n"
-	"\n"
 	"__kernel void kernel_mcsr_spmv_scalar(const int nrow, __global const int *row_offset, \n"
 	"                                      __global const int *col, __global const ValueType *val, \n"
 	"                                      __global const ValueType *in, __global ValueType *out) {\n"
@@ -45,7 +50,6 @@ const char *ocl_kernels_mcsr =
 	"\n"
 	"}\n"
 	"\n"
-	"\n"
 	"__kernel void kernel_mcsr_add_spmv_scalar(const int nrow, __global const int *row_offset, \n"
 	"                                          __global const int *col, __global const ValueType *val, \n"
 	"                                          const ValueType scalar, __global const ValueType *in,\n"
@@ -65,7 +69,8 @@ const char *ocl_kernels_mcsr =
 	"\n"
 	"}\n"
 	"\n"
-	"\n";
+	"\n"
+;
 }
 
 #endif // PARALUTION_OCL_KERNELS_MCSR_HPP_

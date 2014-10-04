@@ -106,7 +106,7 @@ void gradSimplex(double *x, double *y, double *z, double *v, double *grad);
 double ComputeVonMises(double *val);
 double ComputeScalarRep(int numComp, double *val);
 void invert_singular_matrix3x3(double MM[3][3], double II[3][3]);
-bool newton_fd(void (*func)(fullVector<double> &, fullVector<double> &, void *),
+bool newton_fd(bool (*func)(fullVector<double> &, fullVector<double> &, void *),
                fullVector<double> &x, void *data, double relax=1., double tolx=1.e-6);
 double minimize_grad_fd(double (*func)(fullVector<double> &, void *),
                         fullVector<double> &x, void *data);
@@ -142,8 +142,8 @@ void signedDistancesPointsEllipseLine (std::vector<double>&distances,
                                        const std::vector<SPoint3> &pts,
                                        const SPoint3 &p1, const SPoint3 &p2);
 
-int intersection_segments (SPoint3 &p1, SPoint3 &p2,
-			   SPoint3 &q1, SPoint3 &q2,
+int intersection_segments (const SPoint3 &p1, const SPoint3 &p2,
+			   const SPoint3 &q1, const SPoint3 &q2,
 			   double x[2]);
 
 //tools for projection onto plane

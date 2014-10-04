@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // *************************************************************************
+
+
+
+// PARALUTION version 0.7.0 
+
 
 #ifndef PARALUTION_BASE_VECTOR_HPP_
 #define PARALUTION_BASE_VECTOR_HPP_
@@ -56,10 +61,13 @@ public:
   virtual void info(void) const = 0;
 
   /// Returns the size of the vector
-  inline int get_size(void) const { return this->size_; }
+  int get_size(void) const;
   
   /// Copy the backend descriptor information
   void set_backend(const Paralution_Backend_Descriptor local_backend);
+
+  /// Check if everything is ok
+  virtual bool Check(void) const;
 
   /// Allocate a local vector with name and size
   virtual void Allocate(const int n) = 0;
@@ -69,6 +77,9 @@ public:
   /// Get a pointer from the vector data and free the vector object
   virtual void LeaveDataPtr(ValueType **ptr) = 0;
 
+  /// Assembling
+  virtual void Assemble(const int *i, const ValueType *v,
+                        int size, const int n);
 
   /// Clear (free) the vector
   virtual void Clear(void) = 0;
@@ -86,12 +97,16 @@ public:
 
   /// Copy values from another vector
   virtual void CopyFrom(const BaseVector<ValueType> &vec) = 0;
+  /// Async copy values from another vector
+  virtual void CopyFromAsync(const BaseVector<ValueType> &vec);
   /// Copy values from another (float) vector
   virtual void CopyFromFloat(const BaseVector<float> &vec);
   /// Copy values from another (double) vector
   virtual void CopyFromDouble(const BaseVector<double> &vec);
   /// Copy values to another vector
   virtual void CopyTo(BaseVector<ValueType> *vec) const = 0;
+  /// Async copy values to another vector
+  virtual void CopyToAsync(BaseVector<ValueType> *vec) const;
   /// Copy data (not entire vector) from another vector with specified 
   /// src/dst offsets and size
   virtual void CopyFrom(const BaseVector<ValueType> &src,
@@ -119,6 +134,13 @@ public:
   /// Perform vector update of type this = alpha*this + x*beta
   virtual void ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, 
                              const ValueType beta) = 0;
+
+  virtual void ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, 
+                             const ValueType beta,
+                             const int src_offset,
+                             const int dst_offset,
+                             const int size) = 0;
+  
   /// Perform vector update of type this = alpha*this + x*beta + y*gamma
   virtual void ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x, 
                          const ValueType beta, const BaseVector<ValueType> &y, 
@@ -167,6 +189,11 @@ public:
   virtual void CopyFromHost(const HostVector<ValueType> &src) = 0;
   /// Copy (host vector) from accelerator vector
   virtual void CopyToHost(HostVector<ValueType> *dst) const = 0;
+
+  /// Async copy (accelerator vector) from host vector
+  virtual void CopyFromHostAsync(const HostVector<ValueType> &src);
+  /// Async copy (host vector) from accelerator vector
+  virtual void CopyToHostAsync(HostVector<ValueType> *dst) const;
 
 };
 

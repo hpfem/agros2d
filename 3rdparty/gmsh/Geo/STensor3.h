@@ -8,6 +8,7 @@
 
 #include "SVector3.h"
 #include "fullMatrix.h"
+#include <algorithm>
 #include "Numeric.h"
 
 // concrete class for symmetric positive definite 3x3 matrix
@@ -172,6 +173,8 @@ SMetric3 intersection_conserve_mostaniso (const SMetric3 &m1, const SMetric3 &m2
 SMetric3 intersection_conserve_mostaniso_2d (const SMetric3 &m1, const SMetric3 &m2);
 // compute the largest inscribed ellipsoid...
 SMetric3 intersection (const SMetric3 &m1,
+                       const SMetric3 &m2);
+SMetric3 intersection_alauzet (const SMetric3 &m1,
                        const SMetric3 &m2);
 SMetric3 interpolation (const SMetric3 &m1,
                         const SMetric3 &m2,
@@ -339,6 +342,15 @@ class STensor3 {
           val = fabs(_val[i]);
     return val;
   };
+  double norm2()const{
+    double sqr = 0;
+    for (int i=0; i<3; i++){
+      for (int j =0; j<3; j++){
+	sqr += this->operator()(i,j)*this->operator()(i,j);
+      }
+    }
+    return sqrt(sqr);
+  }
 };
 
 // tensor product

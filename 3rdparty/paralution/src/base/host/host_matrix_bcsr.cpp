@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,29 +19,19 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "host_matrix_bcsr.hpp"
-#include "host_matrix_dia.hpp"
-#include "host_matrix_hyb.hpp"
-#include "host_matrix_coo.hpp"
 #include "host_matrix_csr.hpp"
 #include "host_conversion.hpp"
-#include "../base_matrix.hpp"
-#include "../base_vector.hpp"
 #include "host_vector.hpp"
-#include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
-#include "../matrix_formats_ind.hpp"
-
-extern "C" {
-#include "../../../thirdparty/matrix-market/mmio.h"
-}
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -49,18 +39,14 @@ extern "C" {
 #define omp_set_num_threads(num) ;
 #endif
 
-#ifdef SUPPORT_MKL
-#include <mkl.h>
-#include <mkl_spblas.h>
-#endif
-
-
 namespace paralution {
+
 
 template <typename ValueType>
 HostMatrixBCSR<ValueType>::HostMatrixBCSR() {
 
   // no default constructors
+  LOG_INFO("no default constructor");
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
@@ -68,7 +54,10 @@ HostMatrixBCSR<ValueType>::HostMatrixBCSR() {
 template <typename ValueType>
 HostMatrixBCSR<ValueType>::HostMatrixBCSR(const Paralution_Backend_Descriptor local_backend) {
 
-  this->set_backend(local_backend); 
+  LOG_DEBUG(this, "HostMatrixBCSR::HostMatrixBCSR()",
+            "constructor with local_backend");
+
+  this->set_backend(local_backend);
 
   // not implemented yet
   FATAL_ERROR(__FILE__, __LINE__);
@@ -77,6 +66,9 @@ HostMatrixBCSR<ValueType>::HostMatrixBCSR(const Paralution_Backend_Descriptor lo
 template <typename ValueType>
 HostMatrixBCSR<ValueType>::~HostMatrixBCSR() {
 
+  LOG_DEBUG(this, "HostMatrixBCSR::~HostMatrixBCSR()",
+            "destructor");
+
   this->Clear();
 
 }
@@ -84,16 +76,15 @@ HostMatrixBCSR<ValueType>::~HostMatrixBCSR() {
 template <typename ValueType>
 void HostMatrixBCSR<ValueType>::info(void) const {
 
-  //TODO 
+  //TODO
   LOG_INFO("HostMatrixBCSR<ValueType>");
 
 }
 
-
 template <typename ValueType>
 void HostMatrixBCSR<ValueType>::Clear() {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     this->nrow_ = 0;
     this->ncol_ = 0;
@@ -110,7 +101,7 @@ void HostMatrixBCSR<ValueType>::AllocateBCSR(const int nnz, const int nrow, cons
   assert( ncol  >= 0);
   assert( nrow  >= 0);
 
-  if (this->get_nnz() > 0)
+  if (this->nnz_ > 0)
     this->Clear();
 
   if (nnz > 0) {
@@ -131,29 +122,28 @@ void HostMatrixBCSR<ValueType>::CopyFrom(const BaseMatrix<ValueType> &mat) {
 
   if (const HostMatrixBCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixBCSR<ValueType>*> (&mat)) {
     
-    this->AllocateBCSR(cast_mat->get_nnz(), cast_mat->get_nrow(), cast_mat->get_ncol());
+    this->AllocateBCSR(cast_mat->nnz_, cast_mat->nrow_, cast_mat->ncol_);
 
-    assert((this->get_nnz()  == mat.get_nnz())  &&
-	   (this->get_nrow() == mat.get_nrow()) &&
-	   (this->get_ncol() == mat.get_ncol()) );    
-    
-    if (this->get_nnz() > 0) {
+    assert((this->nnz_  == cast_mat->nnz_)  &&
+           (this->nrow_ == cast_mat->nrow_) &&
+           (this->ncol_ == cast_mat->ncol_) );
 
-      omp_set_num_threads(this->local_backend_.OpenMP_threads);  
+    if (this->nnz_ > 0) {
+
+      _set_omp_backend_threads(this->local_backend_, this->nrow_);
 
       // TODO
-    
       FATAL_ERROR(__FILE__, __LINE__);
+
     }
-    
-    
+
   } else {
-    
+
     // Host matrix knows only host matrices
     // -> dispatching
     mat.CopyTo(this);
-    
-  }  
+
+  }
 
 }
 
@@ -173,158 +163,86 @@ bool HostMatrixBCSR<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
   if (mat.get_nnz() == 0)
     return true;
 
-    if (const HostMatrixBCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixBCSR<ValueType>*> (&mat)) {
+  if (const HostMatrixBCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixBCSR<ValueType>*> (&mat)) {
 
-      this->CopyFrom(*cast_mat);
-      return true;
-
-  }
-
-
-    if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
-
-      this->Clear();
-      int nnz = 0;
-
-      // TODO
-     
-
-      //      csr_to_bcsr(cast_mat->get_nnz(), cast_mat->get_nrow(), cast_mat->get_ncol(),
-      //                 cast_mat->mat_, &this->mat_, &nnz);
-
-      FATAL_ERROR(__FILE__, __LINE__);
-
-      this->nrow_ = cast_mat->get_nrow();
-      this->ncol_ = cast_mat->get_ncol();
-      this->nnz_ = nnz;
-
+    this->CopyFrom(*cast_mat);
     return true;
 
   }
-  
+
+  if (const HostMatrixCSR<ValueType> *cast_mat = dynamic_cast<const HostMatrixCSR<ValueType>*> (&mat)) {
+
+    this->Clear();
+    int nnz = 0;
+
+    // TODO
+    //      csr_to_bcsr(cast_mat->nnz_, cast_mat->nrow_, cast_mat->ncol_,
+    //                 cast_mat->mat_, &this->mat_, &nnz);
+    FATAL_ERROR(__FILE__, __LINE__);
+
+    this->nrow_ = cast_mat->nrow_;
+    this->ncol_ = cast_mat->ncol_;
+    this->nnz_ = nnz;
+
+  return true;
+
+  }
 
   return false;
 
 }
 
-#ifdef SUPPORT_MKL
-
-template <>
-void HostMatrixBCSR<double>::Apply(const BaseVector<double> &in, BaseVector<double> *out) const {
-
-  assert(in.  get_size() >= 0);
-  assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
-
-  const HostVector<double> *cast_in = dynamic_cast<const HostVector<double>*> (&in) ; 
-  HostVector<double> *cast_out      = dynamic_cast<      HostVector<double>*> (out) ; 
-
-  assert(cast_in != NULL);
-  assert(cast_out!= NULL);
- 
-  char transp='N'; 
-  int nrow = this->get_nrow() ;
-  int nnz = this->get_nnz();
-
-  // TODO
-
-  FATAL_ERROR(__FILE__, __LINE__);
-
-  /*
-  mkl_cspblas_ddiagemv(&transp, &nrow, 
-		       this->mat_.val, this->mat_.row, this->mat_.col,
-		       &nnz,
-		       cast_in->vec_, cast_out->vec_);
-  */
-}
-
-template <>
-void HostMatrixBCSR<float>::Apply(const BaseVector<float> &in, BaseVector<float> *out) const {
-  assert(in.  get_size() >= 0);
-  assert(out->get_size() >= 0);
-  assert(in.  get_size() == this->get_ncol());
-  assert(out->get_size() == this->get_nrow());
-
-  const HostVector<float> *cast_in = dynamic_cast<const HostVector<float>*> (&in) ; 
-  HostVector<float> *cast_out      = dynamic_cast<      HostVector<float>*> (out) ; 
-
-  assert(cast_in != NULL);
-  assert(cast_out!= NULL);
-
-  char transp='N'; 
-  int nrow = this->get_nrow() ;
-  int nnz = this->get_nnz();
-
-  // TODO
-  
-  FATAL_ERROR(__FILE__, __LINE__);
-
-  /*
-  mkl_cspblas_scoogemv(&transp, &nrow,
-		       this->mat_.val, this->mat_.row, this->mat_.col,
-		       &nnz,
-		       cast_in->vec_, cast_out->vec_);
-  */
-
-}
-
-#else
-
 template <typename ValueType>
 void HostMatrixBCSR<ValueType>::Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
-    
-//    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
-//    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
+
+//    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in);
+//    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out);
+
 //    assert(cast_in != NULL);
 //    assert(cast_out!= NULL);
-    
-    omp_set_num_threads(this->local_backend_.OpenMP_threads);  
-  
-      // TODO
 
+    _set_omp_backend_threads(this->local_backend_, this->nrow_);
+
+    // TODO
     FATAL_ERROR(__FILE__, __LINE__);
 
   }
 
 }
-
-#endif
 
 template <typename ValueType>
 void HostMatrixBCSR<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar,
-                                        BaseVector<ValueType> *out) const {
+                                         BaseVector<ValueType> *out) const {
 
-  if (this->get_nnz() > 0) {
+  if (this->nnz_ > 0) {
 
     assert(in.  get_size() >= 0);
     assert(out->get_size() >= 0);
-    assert(in.  get_size() == this->get_ncol());
-    assert(out->get_size() == this->get_nrow());
+    assert(in.  get_size() == this->ncol_);
+    assert(out->get_size() == this->nrow_);
 
 //    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
 //    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
-    
+
 //    assert(cast_in != NULL);
 //    assert(cast_out!= NULL);
 
-    omp_set_num_threads(this->local_backend_.OpenMP_threads);  
+    _set_omp_backend_threads(this->local_backend_, this->nrow_);
 
     // TODO
-
     FATAL_ERROR(__FILE__, __LINE__);
 
   }
 
 }
+
 
 template class HostMatrixBCSR<double>;
 template class HostMatrixBCSR<float>;

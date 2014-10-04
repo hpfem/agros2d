@@ -8,6 +8,7 @@
 #include "GmshConfig.h"
 #include "fullMatrix.h"
 #include "GmshMessage.h"
+#include <algorithm>
 
 //#if defined(_MSC_VER)
 //#define F77NAME(x) (x)

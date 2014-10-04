@@ -39,7 +39,7 @@ StringXString GeneralOptions_String[] = {
     "Z-axis label" },
 
   { F|O, "BackgroundImageFileName" , opt_general_background_image_filename , "" ,
-    "Background image file in JPEG or PNG format" },
+    "Background image file in JPEG, PNG or PDF format" },
 
   { F|O, "DefaultFileName" , opt_general_default_filename , "untitled.geo" ,
     "Default project file name" },
@@ -329,12 +329,25 @@ StringXNumber GeneralOptions_Number[] = {
 
   { F|O, "BackgroundGradient" , opt_general_background_gradient , 1. ,
     "Draw background gradient (0=none, 1=vertical, 2=horizontal, 3=radial)" },
-  { F|O, "BackgroundImagePositionX" , opt_general_background_image_position0 , 1.e5 ,
-    "X position (in pixels) of background image (< 0: measure from right edge; "
+  { F|O, "BackgroundImage3D" , opt_general_background_image_3d , 0 ,
+    "Create background image in the 3D model (units = model units) or as "
+    "2D background (units = pixels)" },
+  { F|O, "BackgroundImagePage" , opt_general_background_image_page , 0 ,
+    "Page to render in the background image (for multi-page PDFs)" },
+  { F|O, "BackgroundImagePositionX" , opt_general_background_image_position0 , 0 ,
+    "X position of background image (for 2D background: < 0: measure from right window edge; "
     ">= 1e5: centered)" },
-  { F|O, "BackgroundImagePositionY" , opt_general_background_image_position1 , 1.e5 ,
-    "Y position (in pixels) of background image (< 0: measure from bottom edge; "
+  { F|O, "BackgroundImagePositionY" , opt_general_background_image_position1 , 0 ,
+    "Y position of background image (for 2D background: < 0: measure from bottom window edge; "
     ">= 1e5: centered)" },
+  { F|O, "BackgroundImageWidth" , opt_general_background_image_size0 , -1. ,
+    "Width of background image (0: actual width if height = 0, natural scaling if not; "
+    "-1: graphic window width)" },
+  { F|O, "BackgroundImageHeight" , opt_general_background_image_size1 , -1 ,
+    "Height of background image (0: actual height if width = 0, natural scaling if not; "
+    "-1: graphic window height)" },
+  { F|O, "BoundingBoxSize" , opt_general_lc, 1. ,
+    "Overall bounding box size (read-only)" },
 
   { F|O, "Camera" , opt_general_camera_mode, 0. ,
     "Enable camera view mode" },
@@ -666,10 +679,10 @@ StringXNumber GeneralOptions_Number[] = {
   { F|O, "SmallAxes" , opt_general_small_axes , 1. ,
     "Display the small axes" },
   { F|O, "SmallAxesPositionX" , opt_general_small_axes_position0 , -60. ,
-    "X position (in pixels) of small axes (< 0: measure from right edge; >= 1e5:"
+    "X position (in pixels) of small axes (< 0: measure from right window edge; >= 1e5:"
     " centered)" },
   { F|O, "SmallAxesPositionY" , opt_general_small_axes_position1 , -40. ,
-    "Y position (in pixels) of small axes (< 0: measure from bottom edge; >= 1e5:"
+    "Y position (in pixels) of small axes (< 0: measure from bottom window edge; >= 1e5:"
     " centered)" },
   { F|O, "SmallAxesSize" , opt_general_small_axes_size , 30. ,
     "Size (in pixels) of small axes" },
@@ -726,12 +739,14 @@ StringXNumber GeneralOptions_Number[] = {
 
 StringXNumber GeometryOptions_Number[] = {
   { F|O, "AutoCoherence" , opt_geometry_auto_coherence , 1. ,
-    "Should all duplicate entities be automatically removed?" },
+    "Should all duplicate entities be automatically removed? (if ==2, also remove degenerate entities)" },
 
   { F,   "Clip" , opt_geometry_clip , 0.,
     "Enable clipping planes? (Plane[i]=2^i, i=0,...,5)" },
   { F|O, "CopyMeshingMethod" , opt_geometry_copy_meshing_method, 0. ,
     "Copy meshing method (unstructured or transfinite) when duplicating geometrical entities?" },
+  { F|O, "CopyDisplayAttributes" , opt_geometry_copy_display_attributes, 0. ,
+    "Copy display attributes (visibiliy, color) when duplicating geometrical entities?" },
 
   { F|O, "ExactExtrusion" , opt_geometry_exact_extrusion, 1. ,
     "Use exact extrusion formula in interpolations (set to 0 to allow "
@@ -1024,9 +1039,6 @@ StringXNumber MeshOptions_Number[] = {
     "Version of the MSH file format to use" },
   { F|O, "MshFilePartitioned" , opt_mesh_msh_file_partitioned , 0. ,
     "Split MSH file by mesh partition (0: no, 1: yes, 2: create physicals by partition)" },
-  { F|O, "MultiplePassesMeshes" , opt_mesh_multiple_passes , 0. ,
-    "Do a first simple mesh and use it for complex background meshes (curvatures...)" },
-
   { F|O, "PartitionHexWeight"     , opt_mesh_partition_hex_weight , 1 ,
     "Weight of hexahedral element for METIS load balancing" },
   { F|O, "PartitionPrismWeight"   , opt_mesh_partition_pri_weight , 1 ,
@@ -1201,11 +1213,12 @@ StringXNumber SolverOptions_Number[] = {
   { F|O, "AutoSaveDatabase" , opt_solver_auto_save_database , 0. ,
     "Automatically save database after each computation" },
   { F|O, "AutoMesh" , opt_solver_auto_mesh , 1. ,
-    "Automatically mesh if necesssary" },
+    "Automatically mesh if necesssary (0: never remesh; 1: on startup, use existing "
+    "mesh on disk if available; 2: always remesh)" },
   { F|O, "AutoMergeFile" , opt_solver_auto_merge_file , 1. ,
     "Automatically merge result files" },
-  { F|O, "AutoHideNewViews" , opt_solver_auto_hide_new_views , 0. ,
-    "Automcatically hide newly merged results" },
+  { F|O, "AutoShowViews" , opt_solver_auto_show_views , 2. ,
+    "Automcatically show newly merged results (0: none; 1: all; 2: last one)" },
   { F|O, "AutoShowLastStep" , opt_solver_auto_show_last_step , 1. ,
     "Automatically show the last time step in newly merged results" },
 
@@ -1544,10 +1557,19 @@ StringXNumber PrintOptions_Number[] = {
     "Number of steps in loop over print parameter" },
 
   { F|O, "Background" , opt_print_background , 0. ,
-    "Print background?" },
+    "Print background (gradient and image)?" },
 
   { F|O, "CompositeWindows" , opt_print_composite_windows , 0. ,
     "Composite all window tiles in the same output image (for bitmap output only)" },
+
+  { F|O, "PgfTwoDim" , opt_print_pgf_two_dim , 1. ,
+    "Output PGF format for two dimensions. Mostly irrelevant if `PgfExportAxis=0`. Default `1` (yes)." },
+
+  { F|O, "PgfExportAxis" , opt_print_pgf_export_axis , 0. ,
+    "Include axis in export pgf code (not in the png). Default `0` (no)." },
+
+  { F|O, "PgfHorizontalBar" , opt_print_pgf_horiz_bar , 0. ,
+    "Use a horizontal color bar in the pgf output. Default `0` (no)." },
 
   { F|O, "DeleteTemporaryFiles" , opt_print_delete_tmp_files , 1. ,
     "Delete temporary files used during printing" },

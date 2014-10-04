@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,15 +19,20 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #ifndef PARALUTION_BACKEND_OCL_HPP_
 #define PARALUTION_BACKEND_OCL_HPP_
 
 #include "../backend_manager.hpp"
 
 #if defined(__APPLE__) && defined(__MACH__)
-#include <OpenCL/cl.h>
+  #include <OpenCL/cl.h>
 #else
-#include <CL/cl.h>
+  #include <CL/cl.h>
 #endif
 
 
@@ -57,22 +62,22 @@ struct oclHandle_t {
   // OCL program for int
   cl_program OCL_program_int;
 
-  // OCL platform array
+  // OCL platforms
+  cl_uint OCL_numPlatforms;
   cl_platform_id *OCL_platforms;
 
-  // OCL device array
-  cl_device_id *OCL_devices;
+  // OCL devices
+  cl_uint *OCL_numDevices;
+  cl_device_id **OCL_devices;
 
   // OCL kernel array
-  cl_kernel OCL_kernel[106];
+  cl_kernel *OCL_kernels;
 
 };
 
-/// Set all OpenCL kernels
-void paralution_set_ocl_kernels();
 /// Get OpenCL kernel
 template <typename ValueType>
-cl_kernel paralution_get_ocl_kernel(int);
+cl_kernel paralution_get_kernel_ocl(int);
 /// Initialize OpenCL
 bool paralution_init_ocl();
 /// Release the OpenCL resources

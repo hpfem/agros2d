@@ -44,7 +44,7 @@ const int ErrorMarkerPropertyId = QTextFormat::UserProperty + 1;
 
 // ************************************************************************************************************
 
-PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent), selectedWordRule(NULL)
 {
     HighlightingRule rule;
 
@@ -70,6 +70,16 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
     classFormat.setForeground(Qt::darkMagenta);
     rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
     rule.format = classFormat;
+    highlightingRules.append(rule);
+
+    selfFormat.setForeground(QColor(121, 71, 0));
+    rule.pattern = QRegExp("\\bself\\b");
+    rule.format = selfFormat;
+    highlightingRules.append(rule);
+
+    internalFormat.setForeground(QColor(121, 71, 0));
+    rule.pattern = QRegExp("\\b._[A-Za-z_]+\\b");
+    rule.format = internalFormat;
     highlightingRules.append(rule);
 
     functionFormat.setForeground(Qt::darkMagenta);
@@ -154,6 +164,8 @@ void PythonHighlighter::highlightBlock(const QString &text)
     highlightBlockParenthesis(text, '(', ')');
     // highlightBlockParenthesis(text, '[', ']');
     // highlightBlockParenthesis(text, '{', '}');
+    // highlightBlockParenthesis(text, '\'', '\'');
+    // highlightBlockParenthesis(text, '"', '"');
 }
 
 void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left, char right)
@@ -167,7 +179,7 @@ void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left
         info->character = left;
         info->position = leftPos;
 
-        data->insert(info);
+        data->insert(left, info);
         leftPos = text.indexOf(left, leftPos + 1);
     }
 
@@ -178,7 +190,7 @@ void PythonHighlighter::highlightBlockParenthesis(const QString &text, char left
         info->character = right;
         info->position = rightPos;
 
-        data->insert(info);
+        data->insert(left, info);
         rightPos = text.indexOf(right, rightPos + 1);
     }
 

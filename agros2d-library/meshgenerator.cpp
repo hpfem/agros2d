@@ -273,7 +273,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     // Create top-level vertex nodes.
     for (int vertex_i = 0; vertex_i < vertices_count; vertex_i++)
     {
-        Node* node = global_mesh->add_node();
+        Node* node = global_mesh->get_nodes().add();
         assert(node->id == vertex_i);
         node->ref = TOP_LEVEL_REF;
         node->type = HERMES_TYPE_VERTEX;
@@ -382,11 +382,9 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
     {
         if (e->cm != nullptr)
         {
-            if (e->area < 0)
-                throw AgrosMeshException(tr("Mesh is corrupted (some areas have a negative area)"));
-
             e->cm->update_refmap_coeffs(e);
         }
+        Hermes::Hermes2D::RefMap::set_element_iro_cache(e);
     }
 }
 
@@ -499,7 +497,7 @@ void MeshGenerator::writeToHermes()
             }
         }
 
-        Hermes::vector<FieldInfo*> fieldInfoVector;
+        std::vector<FieldInfo*> fieldInfoVector;
         foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
         {
             fieldInfoVector.push_back(fieldInfo);
@@ -531,7 +529,7 @@ void MeshGenerator::writeToHermes()
                 // Create top-level vertex nodes.
                 for (int vertex_i = 0; vertex_i < vertex_number_count; vertex_i++)
                 {
-                    Node* node = m_meshes[subdomains_i]->add_node();
+                    Node* node = m_meshes[subdomains_i]->get_nodes().add();
                     assert(node->id == vertex_i);
                     node->ref = TOP_LEVEL_REF;
                     node->type = HERMES_TYPE_VERTEX;

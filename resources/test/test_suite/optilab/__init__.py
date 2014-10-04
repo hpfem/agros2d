@@ -1,5 +1,8 @@
-__all__ = ["model_dict"] # , "model_set_manager", "genetic"
+__all__ = ["model", "model_dictionary", "model_generator", "model_fiter", "model_postprocessor", "optimization"]
 
-from test_suite.optilab import model_dict
-#from test_suite.optilab import model_set_manager
-#from test_suite.optilab import genetic
+from test_suite.optilab import model
+from test_suite.optilab import model_dictionary
+from test_suite.optilab import model_generator
+from test_suite.optilab import model_filter
+from test_suite.optilab import model_postprocessor
+from test_suite.optilab import optimization

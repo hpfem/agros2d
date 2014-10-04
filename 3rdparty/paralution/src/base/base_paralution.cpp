@@ -2,7 +2,7 @@
 //
 //    PARALUTION   www.paralution.com
 //
-//    Copyright (C) 2012-2013 Dimitar Lukarski
+//    Copyright (C) 2012-2014 Dimitar Lukarski
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,25 +19,68 @@
 //
 // *************************************************************************
 
+
+
+// PARALUTION version 0.7.0 
+
+
 #include "base_paralution.hpp"
 #include <assert.h>
+#include "../utils/log.hpp"
+
 
 namespace paralution {
 
 template <typename ValueType>
 BaseParalution<ValueType>::BaseParalution() {
 
+  LOG_DEBUG(this, "BaseParalution::BaseParalution()",
+              "default constructor");
+
   // copy the backend description
   this->local_backend_ = _Backend_Descriptor;
+
+  this->asyncf = false;
+  
+  assert(_Backend_Descriptor.init == true);
+
+}
+
+template <typename ValueType>
+BaseParalution<ValueType>::BaseParalution(const BaseParalution<ValueType> &src) {
+
+  LOG_DEBUG(this, "BaseParalution::BaseParalution()",
+            "copy constructor");
+
+  LOG_INFO("no copy constructor");
+  FATAL_ERROR(__FILE__, __LINE__);
 
 }
 
 template <typename ValueType>
 BaseParalution<ValueType>::~BaseParalution() {
+
+  LOG_DEBUG(this, "BaseParalution::~BaseParalution()",
+            "default destructor");
+
+}
+
+template<typename ValueType>
+BaseParalution<ValueType>& BaseParalution<ValueType>::operator=(const BaseParalution<ValueType> &src) {
+
+  LOG_DEBUG(this, "BaseParalution::operator=()",
+            "");
+
+  LOG_INFO("no overloaded operator=()");
+  FATAL_ERROR(__FILE__, __LINE__);
+
 }
 
 template<typename ValueType>
 void BaseParalution<ValueType>::CloneBackend(const BaseParalution<ValueType> &src) {
+
+  LOG_DEBUG(this, "BaseParalution::CloneBackend()",
+            "with the same ValueType");
 
 
   assert(this != &src);
@@ -65,6 +108,9 @@ template <typename ValueType>
 template<typename ValueType2>
 void BaseParalution<ValueType>::CloneBackend(const BaseParalution<ValueType2> &src) {
 
+  LOG_DEBUG(this, "BaseParalution::CloneBackend()",
+            "with different ValueType");
+
 
   this->local_backend_ = src.local_backend_; 
 
@@ -83,6 +129,33 @@ void BaseParalution<ValueType>::CloneBackend(const BaseParalution<ValueType2> &s
   }
 
 }
+
+
+
+template<typename ValueType>
+void BaseParalution<ValueType>::MoveToAcceleratorAsync(void) {
+
+  // default call
+  this->MoveToAccelerator();
+
+}
+
+template<typename ValueType>
+void BaseParalution<ValueType>::MoveToHostAsync(void) {
+
+  // default call
+  this->MoveToHost();
+
+}
+
+template<typename ValueType>
+void BaseParalution<ValueType>::Sync(void) {
+
+  _paralution_sync();
+  this->asyncf = false;
+
+}
+
 
 template class BaseParalution<double>;
 template class BaseParalution<float>;
