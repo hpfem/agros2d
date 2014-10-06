@@ -57,7 +57,7 @@ class SingleCriteriaSelector(SurvivorsSelector):
             new_genom._data = deepcopy(genom.data)
 
             if priority > 0:
-                new_genom.priority = priority
+                new_genom.variables['priority'] = priority
                 survivors.append(new_genom)
 
         return survivors
@@ -83,7 +83,7 @@ class MultiCriteriaSelector(SurvivorsSelector):
 
     def set_priority(self, member, priority):
         if (priority > member.priority):
-            member.priority = priority
+            member.variables['priority'] = priority
 
     def select(self, population):
         assert self.functionals.isMulticriterial()

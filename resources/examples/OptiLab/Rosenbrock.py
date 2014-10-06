@@ -5,31 +5,23 @@
 #from mpl_toolkits.mplot3d import Axes3D
 #from matplotlib import cm
 
-from variant import optimization #, ModelBase
+from variant import optimization, ModelBase
 from variant.optimization import genetic
-from variant.optimization.genetic.method import ModelGenetic
 
-class RosenbrockFunction(ModelGenetic):
+class RosenbrockFunction(ModelBase):
     def declare(self):
-        self.declare_parameter('a', float, 1)
-        self.declare_parameter('b', float, 100)
-        self.declare_parameter('x', float)
-        self.declare_parameter('y', float)
-        self.declare_variable('F', float)
+        self.parameters.declare('a', float, 1)
+        self.parameters.declare('b', float, 100)
+        self.parameters.declare('x', float)
+        self.parameters.declare('y', float)
+        self.variables.declare('F', float)
 
     def create(self):
         pass
 
     def solve(self):
-        try:
-            self.F = (self.parameters['a'] - self.parameters['x'])**2 +\
-                     self.parameters['b'] * (self.parameters['y'] - self.parameters['x']**2)**2
-            self.solved = True
-        except:
-            self.solved = False
-
-    def process(self):
-        self.variables['F'] = self.F
+        self.variables['F'] = (self.parameters['a'] - self.parameters['x'])**2 +\
+                              self.parameters['b'] * (self.parameters['y'] - self.parameters['x']**2)**2
 
 if __name__ == '__main__':
     """ optimization """
@@ -39,7 +31,7 @@ if __name__ == '__main__':
     functionals = optimization.Functionals([optimization.Functional("F", "min")])
     optimization = genetic.GeneticOptimization(parameters, functionals, RosenbrockFunction)
     
-    optimization.population_size = 200
+    optimization.population_size = 20
     
     optimization.selection_ratio = 8.0/10.0
     optimization.elitism_ratio = 1.0/5.0

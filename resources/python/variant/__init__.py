@@ -1,10 +1,11 @@
-__all__ = ["Modeldata", "ModelBase",
+__all__ = ["ModelData", "ModelBase",
            "ModelDictionary", "ModelDictionaryExternal",
            "ModelGenerator", "ModelPostprocessor",
            "ModelFilter"]
 
 from variant.model import ModelData
 from variant.model import ModelBase
+
 from variant.model_dictionary import ModelDictionary
 from variant.model_dictionary import ModelDictionaryExternal
 from variant.model_generator import ModelGenerator

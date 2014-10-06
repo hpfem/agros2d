@@ -1,22 +1,21 @@
 import agros2d as a2d
 
-from variant import optimization
+from variant import optimization, ModelBase
 from variant.optimization import genetic
-from variant.optimization.genetic.method import ModelGenetic
 
 from math import sqrt
 
-class Actuator(ModelGenetic):
+class Actuator(ModelBase):
     def declare(self):
-        self.declare_parameter('AR1', float)
-        self.declare_parameter('AR2', float)
-        self.declare_parameter('AR3', float)
-        self.declare_parameter('AR4', float)
-        self.declare_parameter('AR5', float)
-        self.declare_variable('F', list)
-        self.declare_variable('M', float)
-        self.declare_variable('R', float)
-        self.declare_variable('xMR', float)
+        self.parameters.declare('AR1', float)
+        self.parameters.declare('AR2', float)
+        self.parameters.declare('AR3', float)
+        self.parameters.declare('AR4', float)
+        self.parameters.declare('AR5', float)
+        self.variables.declare('F', list)
+        self.variables.declare('M', float)
+        self.variables.declare('R', float)
+        self.variables.declare('xMR', float)
 
     def create(self):
         # defaults and parameters
@@ -49,11 +48,11 @@ class Actuator(ModelGenetic):
         self.magnetic.add_material("Air", {"magnetic_permeability" : 1})
 
         self.geometry = a2d.geometry
-        AR1 = self.get_parameter('AR1')
-        AR2 = self.get_parameter('AR2')
-        AR3 = self.get_parameter('AR3')
-        AR4 = self.get_parameter('AR4')
-        AR5 = self.get_parameter('AR5')
+        AR1 = self.parameters['AR1']
+        AR2 = self.parameters['AR2']
+        AR3 = self.parameters['AR3']
+        AR4 = self.parameters['AR4']
+        AR5 = self.parameters['AR5']
 
         # geometry
         self.geometry = a2d.geometry
@@ -97,43 +96,37 @@ class Actuator(ModelGenetic):
         a2d.view.post2d.disable()
 
     def solve(self):
-        try:
-            dz = 0.003
-            self.N = 9
-            self.F = []
-            for i in range(self.N):
-                if (i > 0):
-                    self.geometry.select_edges(range(21, 28))
-                    self.geometry.move_selection(0, dz)
-                    self.geometry.select_labels([3])
-                    self.geometry.move_selection(0, dz)
+        dz = 0.003
+        self.N = 9
+        self.F = []
+        for i in range(self.N):
+            if (i > 0):
+                self.geometry.select_edges(range(21, 28))
+                self.geometry.move_selection(0, dz)
+                self.geometry.select_labels([3])
+                self.geometry.move_selection(0, dz)
                     
-                self.problem.solve()
-                self.F.append(self.magnetic.volume_integrals([3])['Fty'])
+            self.problem.solve()
+            self.F.append(self.magnetic.volume_integrals([3])['Fty'])
 
-            self.solved = True
-        except:
-            self.solved = False
-
-    def process(self):
         # store geometry
         self.info['_geometry'] = a2d.geometry.export_svg_image()
 
         # static characteristic
-        self.set_variable('F', self.F)
+        self.variables['F'] = self.F
 
         # average force
         Favg = sum(self.F)/self.N
-        self.set_variable('M', Favg)
+        self.variables['M'] = Favg
 
         # ripple
         R = 0
         for i in range(self.N):
             R += (self.F[i] - Favg)**2
-        self.set_variable('R', sqrt(R))
+        self.variables['R'] = sqrt(R)
 
         # TODO: multicriteria
-        self.set_variable('xMR', Favg + (12 - sqrt(R)))
+        self.variables['xMR'] = Favg + (12 - sqrt(R))
 
 if __name__ == '__main__':
     # optimization

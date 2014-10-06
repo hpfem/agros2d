@@ -20,10 +20,10 @@ class ModelPostprocessor(object):
             for parameter, value in model.parameters.items():
                 self._parameters.setdefault(parameter, []).append(value)
 
-        parameters = self._dict.model_class().data.declared_parameters
+        parameters = self._dict.model_class().data.parameters.data_types
         self._parameters_keys = sorted(list(parameters.keys()))
         self._parameters_scalar_keys = sorted([key for key, value in parameters.items()\
-                                               if (value['type'] == int or value['type'] == float)])
+                                               if (value == int or value == float)])
 
         # cache variables
         self._variables = {}
@@ -31,10 +31,10 @@ class ModelPostprocessor(object):
             for variable, value in model.variables.items():
                 self._variables.setdefault(variable, []).append(value)
 
-        variables = self._dict.model_class().data.declared_variables
+        variables = self._dict.model_class().data.variables.data_types
         self._variables_keys = sorted(list(variables.keys()))
         self._variables_scalar_keys = sorted([key for key, value in variables.items()\
-                                              if (value['type'] == int or value['type'] == float)])
+                                              if (value == int or value == float)])
 
     @property
     def dictionary(self):
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     md = ModelDictionary(quadratic_function.QuadraticFunction)
     for x in range(10):
         model = quadratic_function.QuadraticFunction()
-        model.set_parameter('x', x)
+        model.parameters['x'] = x
         md.add_model(model)
 
     md.solve()

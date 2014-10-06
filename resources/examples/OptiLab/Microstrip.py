@@ -1,24 +1,23 @@
 import agros2d as a2d
 
-from variant import optimization
+from variant import optimization, ModelBase
 from variant.optimization import genetic
-from variant.optimization.genetic.method import ModelGenetic
 
 from math import sqrt, log, pi
 
-class Microstrip(ModelGenetic):
+class Microstrip(ModelBase):
     def declare(self):
-        self.declare_parameter('U', float, 1)
-        self.declare_parameter('epsr', float, 2.6285)
-        self.declare_parameter('I', float, 1)
-        self.declare_parameter('Z0', float, 75)
+        self.parameters.declare('U', float, 1)
+        self.parameters.declare('epsr', float, 2.6285)
+        self.parameters.declare('I', float, 1)
+        self.parameters.declare('Z0', float, 75)
 
-        self.declare_parameter('t', float, 0.5e-4)
-        self.declare_parameter('W', float)
-        self.declare_parameter('d', float)
+        self.parameters.declare('t', float, 0.5e-4)
+        self.parameters.declare('W', float)
+        self.parameters.declare('d', float)
 
-        self.declare_variable('Z0', float)
-        self.declare_variable('F', float)
+        self.variables.declare('Z0', float)
+        self.variables.declare('F', float)
         
     def create(self):
         self.problem = a2d.problem(clear = True)
@@ -93,17 +92,12 @@ class Microstrip(ModelGenetic):
         a2d.view.post2d.disable()
 
     def solve(self):
-        try:
-            self.problem.solve()
-            self.solved = True
-        except:
-            self.solved = False
+        self.problem.solve()
 
-    def process(self):
         # store geometry
         self.info['_geometry'] = a2d.geometry.export_svg_image()
 
-        # variables            
+        # compute variables
         C = 2 * self.electrostatic.volume_integrals()['We'] / self.parameters['U']**2
         L = 2 * self.magnetic.volume_integrals()['Wm'] / self.parameters['I']**2
         self.variables['Z0'] = sqrt(L/C)
@@ -116,7 +110,6 @@ if __name__ == '__main__':
     model.parameters['d'] = 1e-3
     model.create()
     model.solve()
-    model.process()
     print('Numerical solution: Z0 = {0}'.format(model.variables['Z0']))
     
     # analytical solution

@@ -39,20 +39,20 @@ class ModelFilter(object):
     def _test(self, model):
         for parameter, value in self._parameters.items():
             if not isinstance(value, collections.Iterable):
-                if (model.get_parameter(parameter) != value):
+                if (model.parameters[parameter] != value):
                     return False
             else:
-                if (model.get_parameter(parameter) < value[0] or
-                    model.get_parameter(parameter) > value[1]):
+                if (model.parameters[parameter] < value[0] or
+                    model.parameters[parameter] > value[1]):
                     return False
 
         for variable, value in self._variables.items():
             if not isinstance(value, collections.Iterable):
-                if model.get_variable(variable) != value:
+                if model.variables[variable] != value:
                     return False
             else:
-                if (model.get_variable(variable) < value[0] or
-                    model.get_variable(variable) > value[1]):
+                if (model.variables[variable] < value[0] or
+                    model.variables[variable] > value[1]):
                     return False
 
         return True
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     md = ModelDictionary(quadratic_function.QuadraticFunction)
     for x in range(10):
         model = quadratic_function.QuadraticFunction()
-        model.set_parameter('x', x)
+        model.parameters['x'] = x
         md.add_model(model)
 
     md.solve()

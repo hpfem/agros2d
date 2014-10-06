@@ -4,17 +4,17 @@ import agros2d as a2d
 
 class Capacitor(ModelBase):
     def declare(self):
-        self.declare_parameter('R1', float, 0.01)
-        self.declare_parameter('w1', float, 0.02)
-        self.declare_parameter('w2', float, 0.03)
-        self.declare_parameter('l', float, 0.08)
-        self.declare_parameter('RB', float, 0.2)
+        self.parameters.declare('R1', float, 0.01)
+        self.parameters.declare('w1', float, 0.02)
+        self.parameters.declare('w2', float, 0.03)
+        self.parameters.declare('l', float, 0.08)
+        self.parameters.declare('RB', float, 0.2)
 
-        self.declare_parameter('U', float, 10)
-        self.declare_parameter('epsr1', float, 3)
-        self.declare_parameter('epsr2', float, 4)
+        self.parameters.declare('U', float, 10)
+        self.parameters.declare('epsr1', float, 3)
+        self.parameters.declare('epsr2', float, 4)
 
-        self.declare_variable('C', float)
+        self.variables.declare('C', float)
 
     def create(self):
         R1 = self.parameters['R1']
@@ -75,13 +75,7 @@ class Capacitor(ModelBase):
         a2d.view.post2d.disable()
 
     def solve(self):
-        try:
-            self.problem.solve()
-            self.solved = True
-        except:
-            self.solved = False
-
-    def process(self):
+        self.problem.solve()
         self.info['_geometry'] = a2d.geometry.export_svg_image()
         self.variables['C'] = 2 * self.electrostatic.volume_integrals()['We'] / self.parameters['U']**2
 

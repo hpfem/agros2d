@@ -81,7 +81,7 @@ class ModelGenerator(object):
         for combination in combinations:
             model = self._dict.model_class()
             for key, value in combination:
-                model.set_parameter(key, value)
+                model.parameters[key] = value
 
             self._dict.add_model(model)
 
@@ -90,7 +90,7 @@ class ModelGenerator(object):
         for index in range(count):
             model = self._dict.model_class()
             for parameter, value in self._parameters.items():
-                model.set_parameter(parameter, rnd.choice(value))
+                model.parameters[parameter] = rnd.choice(value)
 
             self._dict.add_model(model)
 

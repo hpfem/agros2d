@@ -36,6 +36,9 @@ class ImplicitInitialPopulationCreator(InitialPopulationCreator):
         population = []
         for index in range(number):
             genom = self.model_class()
+            genom.variables.declare('population', int)
+            genom.variables.declare('priority', int)
+
             for parameter in self.parameters.parameters:
                 genom.parameters[parameter.name] = parameter.random_value()
 

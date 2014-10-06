@@ -1,4 +1,3 @@
-from variant.model import ModelBase
 from variant.model_dictionary import ModelDictionaryExternal
 from variant.optimization import *
 
@@ -10,39 +9,6 @@ from variant.optimization.genetic.crossover import ImplicitCrossover
 import random as rnd
 import collections
 
-class ModelGenetic(ModelBase):
-    def __init__(self):
-        ModelBase.__init__(self)
-        self.declare_variable('_population', float)
-        self.population = -1
-
-        self.declare_variable('_priority', float)
-        self.priority = -1
-
-    @property
-    def priority(self):
-        return self._priority
-        
-    @priority.setter
-    def priority(self, value):
-        self._priority = value
-        self.variables["_priority"] = value
-
-    @property
-    def population(self):
-        return self._population
-        
-    @population.setter
-    def population(self, value):
-        self._population = value
-        self.variables["_population"] = value
-
-    def load(self, file_name):       
-        ModelBase.load(self, file_name)
-
-        self.population = self.variables["_population"]
-        self.priority = self.variables["_priority"]
-        
 class GeneticOptimization(OptimizationMethod):
     """Genetic optimization method class."""
 
@@ -139,7 +105,7 @@ class GeneticOptimization(OptimizationMethod):
 
         indices = []
         for index in range(len(population)):
-            indices += [index] * population[index].priority 
+            indices += [index] * population[index].variables['priority']
 
         index = indices[rnd.choice(indices)]
         return population[index], index
@@ -206,7 +172,7 @@ class GeneticOptimization(OptimizationMethod):
                 continue
             """
 
-            son.solved = False
+            #son.solved = False
             crossbreeds.append(son)
 
             attempts += 1
@@ -263,7 +229,8 @@ class GeneticOptimization(OptimizationMethod):
             population = self.initial_population_creator.create(self._population_size)
 
         for genom in population:
-            genom.population = self.current_population_index
+            genom.variables['population'] = self.current_population_index
+            genom.variables['priority'] = 1
 
             self.model_dict.add_model(genom)
 
@@ -298,8 +265,8 @@ if __name__ == '__main__':
     optimization = GeneticOptimization(parameters, functionals,
                                        holder_table_function.HolderTableFunction)
 
-    optimization.population_size = 20
+    optimization.population_size = 100
     optimization.run(30, False)
     star = optimization.find_best(optimization.model_dict.models) 
-    print('Minimum F={0} was found with parameters: {1}'.format(star.get_variable('F'), star.parameters))
+    print('Minimum F={0} was found with parameters: {1}'.format(star.variables['F'], star.parameters))
     print('Genuine minimum is F=-19.2085')

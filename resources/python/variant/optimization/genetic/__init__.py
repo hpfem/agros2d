@@ -1,10 +1,9 @@
-__all__ = ["GeneticOptimization", "ModelGenetic"
+__all__ = ["GeneticOptimization",
            "InitialPopulationCreator", "ImplicitInitialPopulationCreator",
            "SurvivorsSelector", "SingleCriteriaSelector", "MultiCriteriaSelector",
            "MutationCreator", "GeneralMutation", "ImplicitMutation",
            "GeneralCrossover", "ImplicitCrossover"]
 
-from variant.optimization.genetic.method import ModelGenetic
 from variant.optimization.genetic.method import GeneticOptimization
 from variant.optimization.genetic.initial_population import InitialPopulationCreator, ImplicitInitialPopulationCreator
 from variant.optimization.genetic.selector import SurvivorsSelector, SingleCriteriaSelector, MultiCriteriaSelector

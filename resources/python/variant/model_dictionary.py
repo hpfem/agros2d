@@ -162,7 +162,6 @@ class ModelDictionary(object):
 
             model.create()
             model.solve()
-            model.process()
 
             if save:
                 zip_file.writestr('{0}.pickle'.format(name), model.serialize())
@@ -239,7 +238,7 @@ if __name__ == '__main__':
     md.solver = pythonlab.datadir('agros2d_solver')
     for x in range(100):
         model = quadratic_function.QuadraticFunction()
-        model.set_parameter('x', x)
+        model.parameters['x'] = x
         md.add_model(model)
 
     file_name = '{0}.opt'.format(pythonlab.tempname())
@@ -248,7 +247,7 @@ if __name__ == '__main__':
     md.solve()
     results = []
     for model in md.models:
-        results.append(model.get_variable('F'))
+        results.append(model.variables['F'])
 
     md.clear()
     md.load(file_name)
