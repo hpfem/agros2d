@@ -416,24 +416,24 @@ bool Problem::meshAction(bool emitMeshed)
     switch (config()->meshType())
     {
     case MeshType_Triangle:
-    case MeshType_Triangle_QuadFineDivision:
-    case MeshType_Triangle_QuadRoughDivision:
-    case MeshType_Triangle_QuadJoin:
+    // case MeshType_Triangle_QuadFineDivision:
+    // case MeshType_Triangle_QuadRoughDivision:
+    // case MeshType_Triangle_QuadJoin:
 #ifdef WIN64
         meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorTriangleExternal());
 #else
         meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorTriangle());
 #endif
         break;
-    case MeshType_GMSH_Triangle:
-    case MeshType_GMSH_Quad:
-    case MeshType_GMSH_QuadDelaunay_Experimental:
-        meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorGMSH());
-        break;       
-    case MeshType_NETGEN_Triangle:
-    case MeshType_NETGEN_QuadDominated:
-        meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorNetgen());
-        break;
+    // case MeshType_GMSH_Triangle:
+    // case MeshType_GMSH_Quad:
+    // case MeshType_GMSH_QuadDelaunay_Experimental:
+    //     meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorGMSH());
+    //     break;
+    // case MeshType_NETGEN_Triangle:
+    // case MeshType_NETGEN_QuadDominated:
+    //     meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorNetgen());
+    //     break;
     default:
         QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));
         break;
@@ -960,6 +960,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
 {
     std::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
     QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> meshes;
+    QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > meshesDeal;
 
     if (!meshGenerator)
     {
@@ -998,8 +999,10 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
         {
             // cache
             meshesVector = meshGenerator.data()->meshes();
-            meshes[fieldInfo] = meshesVector[subdomain_i++];
+            meshes[fieldInfo] = meshesVector[subdomain_i++];            
         }
+
+        meshesDeal = meshGenerator.data()->meshes_dealii();
 
         // Agros2D::log()->printDebug(tr("Mesh Generator"), tr("Reading initial mesh from memory"));
     }
@@ -1008,6 +1011,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
     foreach (FieldInfo *fieldInfo, m_fieldInfos)
     {
         Hermes::Hermes2D::MeshSharedPtr mesh = meshes[fieldInfo];
+        std::shared_ptr<dealii::Triangulation<2> > meshDeal = meshesDeal[fieldInfo];
 
         // check that all boundary edges have a marker assigned
         for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -1049,9 +1053,11 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
 
         // refine mesh
         fieldInfo->refineMesh(mesh);
+        fieldInfo->refineMesh(meshDeal);
 
         // set initial mesh
         fieldInfo->setInitialMesh(mesh);
+        fieldInfo->setInitialMesh(meshDeal);
     }
 
     meshes.clear();

@@ -191,14 +191,14 @@ void initLists()
 
     // Mesh Type
     meshTypeList.insert(MeshType_Triangle, "triangle");
-    meshTypeList.insert(MeshType_Triangle_QuadFineDivision, "triangle_quad_fine_division");
-    meshTypeList.insert(MeshType_Triangle_QuadRoughDivision, "triangle_quad_rough_division");
-    meshTypeList.insert(MeshType_Triangle_QuadJoin, "triangle_quad_join");
-    meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
-    meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
-    meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
-    meshTypeList.insert(MeshType_NETGEN_Triangle, "netgen_triangle");
-    meshTypeList.insert(MeshType_NETGEN_QuadDominated, "netgen_quaddominated");
+    // meshTypeList.insert(MeshType_Triangle_QuadFineDivision, "triangle_quad_fine_division");
+    // meshTypeList.insert(MeshType_Triangle_QuadRoughDivision, "triangle_quad_rough_division");
+    // meshTypeList.insert(MeshType_Triangle_QuadJoin, "triangle_quad_join");
+    // meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
+    // meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
+    // meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
+    // meshTypeList.insert(MeshType_NETGEN_Triangle, "netgen_triangle");
+    // meshTypeList.insert(MeshType_NETGEN_QuadDominated, "netgen_quaddominated");
 
     timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
     timeStepMethodList.insert(TimeStepMethod_BDFTolerance, "adaptive");
@@ -539,22 +539,22 @@ QString meshTypeString(MeshType meshType)
     {
     case MeshType_Triangle:
         return QObject::tr("Triangle - triangle");
-    case MeshType_Triangle_QuadFineDivision:
-        return QObject::tr("Triangle - quad fine div.");
-    case MeshType_Triangle_QuadRoughDivision:
-        return QObject::tr("Triangle - quad rough div.");
-    case MeshType_Triangle_QuadJoin:
-        return QObject::tr("Triangle - quad join");
-    case MeshType_GMSH_Triangle:
-        return QObject::tr("GMSH (exp.) - triangle");
-    case MeshType_GMSH_Quad:
-        return QObject::tr("GMSH (exp.) - quad");
-    case MeshType_GMSH_QuadDelaunay_Experimental:
-        return QObject::tr("GMSH (exp.) - quad Delaunay");
-    case MeshType_NETGEN_Triangle:
-        return QObject::tr("NETGEN (exp.) - triangle");
-    case MeshType_NETGEN_QuadDominated:
-        return QObject::tr("NETGEN (exp.) - quad dominated");
+    // case MeshType_Triangle_QuadFineDivision:
+    //     return QObject::tr("Triangle - quad fine div.");
+    // case MeshType_Triangle_QuadRoughDivision:
+    //     return QObject::tr("Triangle - quad rough div.");
+    // case MeshType_Triangle_QuadJoin:
+    //     return QObject::tr("Triangle - quad join");
+    // case MeshType_GMSH_Triangle:
+    //     return QObject::tr("GMSH (exp.) - triangle");
+    // case MeshType_GMSH_Quad:
+    //     return QObject::tr("GMSH (exp.) - quad");
+    // case MeshType_GMSH_QuadDelaunay_Experimental:
+    //     return QObject::tr("GMSH (exp.) - quad Delaunay");
+    // case MeshType_NETGEN_Triangle:
+    //     return QObject::tr("NETGEN (exp.) - triangle");
+    // case MeshType_NETGEN_QuadDominated:
+    //     return QObject::tr("NETGEN (exp.) - quad dominated");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;

@@ -20,14 +20,64 @@
 #ifndef SCENEVIEW_POST_H
 #define SCENEVIEW_POST_H
 
+#undef signals
+#include <deal.II/base/point.h>
+#include <deal.II/numerics/data_out.h>
+#define signals public
+
+
 #include "util.h"
 #include "sceneview_common.h"
 
 template <typename Scalar> class SceneSolution;
 template <typename Scalar> class MultiArray;
 
+class MultiArrayDeal;
+
 class ParticleTracing;
 class FieldInfo;
+
+struct PostTriangle
+{
+    PostTriangle(dealii::Point<2> a, dealii::Point<2> b, dealii::Point<2> c,
+                 double va, double vb, double vc)
+    {
+        this->vertices[0] = a;
+        this->vertices[1] = b;
+        this->vertices[2] = c;
+
+        this->values[0] = va;
+        this->values[1] = vb;
+        this->values[2] = vc;
+    }
+
+    dealii::Point<2> vertices[3];
+    double values[3];
+};
+
+class DataPostprocessor : public dealii::DataOut<2>
+{
+public:
+    DataPostprocessor();
+
+    void compute_nodes(QList<PostTriangle> &scalarValues);
+
+    virtual typename dealii::DataOut<2>::cell_iterator first_cell();
+    virtual typename dealii::DataOut<2>::cell_iterator next_cell(const typename dealii::DataOut<2>::cell_iterator &old_cell);
+
+    inline double min() const { return m_min; }
+    inline double max() const { return m_max; }
+
+private:
+    double m_min;
+    double m_max;
+
+    std::vector<int> m_subdomains;
+
+    void compute_node(dealii::Point<2> &node, const dealii::DataOutBase::Patch<2> *patch,
+                      const unsigned int xstep, const unsigned int ystep, const unsigned int zstep,
+                      const unsigned int n_subdivisions);
+};
 
 class PostHermes : public QObject
 {
@@ -45,16 +95,21 @@ public:
     Hermes::Hermes2D::Views::Orderizer *ordView() { return m_orderView; }
 
     // contour
-    inline Hermes::Hermes2D::Views::Linearizer *linContourView() { return m_linContourView; }
+    inline QList<PostTriangle> &contourValues() { return m_contourValues; }
 
     // scalar view
-    inline Hermes::Hermes2D::Views::Linearizer *linScalarView() { return m_linScalarView; }
+    inline QList<PostTriangle> &scalarValues() { return m_scalarValues; }
 
     // vector view
     inline Hermes::Hermes2D::Views::Vectorizer *vecVectorView() { return m_vecVectorView; }
+    inline QList<PostTriangle> &vectorXValues() { return m_vectorXValues; }
+    inline QList<PostTriangle> &vectorYValues() { return m_vectorYValues; }
 
-    Hermes::Hermes2D::MeshFunctionSharedPtr<double> viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                                     PhysicFieldVariableComp physicFieldVariableComp);
+    // vtk dealii view
+    QString scalarViewDeal();
+
+    std::shared_ptr<DataPostprocessor> viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                        PhysicFieldVariableComp physicFieldVariableComp);
 
     // view
     inline FieldInfo* activeViewField() const { return m_activeViewField; } // assert(m_activeViewField);
@@ -70,6 +125,7 @@ public:
     void setActiveAdaptivitySolutionType(SolutionMode st) { m_activeSolutionMode = st; }
 
     MultiArray<double> activeMultiSolutionArray();
+    MultiArrayDeal activeMultiSolutionArrayDeal();
 
     inline bool isProcessed() const { return m_isProcessed; }
 
@@ -93,20 +149,23 @@ private:
     // order view
     Hermes::Hermes2D::Views::Orderizer *m_orderView;
 
-    // contour
-    Hermes::Hermes2D::Views::Linearizer *m_linContourView;
-
-    // scalar view
-    Hermes::Hermes2D::Views::Linearizer *m_linScalarView; // linealizer for scalar view
-
     // vector view
     Hermes::Hermes2D::Views::Vectorizer *m_vecVectorView; // vectorizer for vector view
+
+    // contour
+    QList<PostTriangle> m_contourValues;
+    // scalar view
+    QList<PostTriangle> m_scalarValues;
+    // vector view
+    QList<PostTriangle> m_vectorXValues;
+    QList<PostTriangle> m_vectorYValues;
 
     // view
     FieldInfo *m_activeViewField;
     int m_activeTimeStep;
     int m_activeAdaptivityStep;
     SolutionMode m_activeSolutionMode;
+
 
 private slots:
     void processMeshed();

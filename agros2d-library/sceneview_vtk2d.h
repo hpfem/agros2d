@@ -38,6 +38,37 @@ template <typename Scalar> class ViewScalarFilter;
 class SceneViewVTK2D;
 class LineEditDouble;
 
+/*! Gridlines class */
+//class GridlineActors
+//{
+//public:
+//    GridlineActors();
+//    ~GridlineActors();
+
+//    void createGridxy(double bounds[],int height_spacing, int width_spacing, int line_width, int r, int g, int b, int opacity, int z_plane_value);
+//    void createGridxz(double bounds[],int height_spacing, int width_spacing, int line_width, int r, int g, int b, int opacity, int z_plane_value);
+//    void createGridyz(double bounds[],int height_spacing, int width_spacing, int line_width, int r, int g, int b, int opacity, int z_plane_value);
+//    void createGrid3D(double bounds[],int height_spacing, int width_spacing, int depth_spacing, int line_width, int r, int g, int b, int opacity);
+
+//    vtkSmartPointer<vtkActor> GetHorizontalGridlines(int i);
+//    vtkSmartPointer<vtkActor> GetVerticalGridlines(int i);
+//    vtkSmartPointer<vtkActor> GetDepthGridlines(int i);
+
+//    int NumberOfLines();
+//    int NumberOfHorizontalLines();
+//    int NumberOfVerticalLines();
+//    int NumberOfDepthLines();
+
+//private:
+//    vtkSmartPointer<vtkActor>* GridlineActorVectorHorizontal;	/*!< Contains horizontal gridline actors */
+//    vtkSmartPointer<vtkActor>* GridlineActorVectorVertical;		/*!< Contains vertical gridline actors */
+//    vtkSmartPointer<vtkActor>* GridlineActorVectorDepth;		/*!< Contains depth gridline actors */
+
+//    int num_horizontal_lines;	/*!< Number of horizontal lines */
+//    int num_vertical_lines;		/*!< Number of vertical lines */
+//    int num_depth_lines;		/*!< Number of depth lines */
+//};
+
 class SceneViewVTK2D : public QVTKWidget
 {
     Q_OBJECT
@@ -52,7 +83,7 @@ public:
     QAction *actSceneModeVTK2D;
 
     virtual QIcon iconView() { return icon("scene-post2d"); }
-    virtual QString labelView() { return tr("Particle Tracing"); }
+    virtual QString labelView() { return tr("VTK"); }
 
     void doZoomBestFit();
 
@@ -64,6 +95,7 @@ protected:
     vtkSmartPointer<vtkLegendScaleActor> rulersActor();
 
     vtkSmartPointer<vtkActor> geometryActor();
+    vtkSmartPointer<vtkActor> meshActor();
 
     vtkSmartPointer<vtkActor> contourActor();
     vtkSmartPointer<vtkActor> scalarActor();
@@ -75,6 +107,7 @@ private:
     vtkSmartPointer<vtkRenderer> m_renderer;
     vtkSmartPointer<vtkEventQtSlotConnect> m_connections;
     vtkSmartPointer<vtkLookupTable> m_palette;
+    // GridlineActors *m_gridlines;
 
     void initVTK();
     void createControls();

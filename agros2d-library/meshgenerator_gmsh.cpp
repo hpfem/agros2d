@@ -361,6 +361,7 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
         return false;
     }
     QTextStream out(&file);
+    QString outCommands;
 
     // mesh size
     RectPoint rect = Agros2D::scene()->boundingBox();
@@ -427,6 +428,8 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
 
             edgesCount++;
         }
+        if (Agros2D::scene()->edges->at(i)->markersCount() > 0)
+            outCommands.append(QString("Physical Line(%1) = {%1};\n").arg(edgesCount));
     }
 
     try
@@ -454,7 +457,7 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
                 if (j < Agros2D::scene()->loopsInfo()->loops().at(i).size() - 1)
                     outLoops.append(",");
             }
-            outLoops.append(QString("};\n"));
+            outLoops.append(QString("};\n"));            
         }
     }
     outLoops.append("\n");
@@ -476,6 +479,8 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
                     outLoops.append(",");
             }
             outLoops.append(QString("};\n"));
+
+            outCommands.append(QString("Physical Surface(%1) = {%1};\n").arg(surfaceCount));
         }
     }
 
@@ -513,7 +518,6 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
     //        outLoops.append(QString("Recombine Surface {1, 2};\n"));
 
     // Mesh.Algorithm - 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=bamg, 8=delquad
-    QString outCommands;
     outCommands.append(QString("Mesh.CharacteristicLengthFromPoints = 1;\n"));
     outCommands.append(QString("Mesh.CharacteristicLengthFromCurvature = 1;\n"));
     outCommands.append(QString("Mesh.CharacteristicLengthFactor = 2;\n"));
@@ -578,7 +582,7 @@ bool MeshGeneratorGMSH::writeToGmshMeshFile()
 
     // Finalization.
     delete m;
-    GmshFinalize();
+    // GmshFinalize();
 
     return true;
 }
@@ -652,6 +656,7 @@ bool MeshGeneratorGMSH::readFromGmshMeshFile()
     fileGMSH.close();
 
     writeToHermes();
+    writeTodealii();
 
     nodeList.clear();
     edgeList.clear();

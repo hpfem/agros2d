@@ -28,6 +28,10 @@
 #include <tr1/memory>
 #endif
 
+#undef signals
+#include <deal.II/grid/tria.h>
+#define signals public
+
 namespace XMLSubdomains
 {
     class domain;
@@ -45,6 +49,7 @@ public:
     virtual bool mesh() = 0;
 
     inline std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes() { return m_meshes; }
+    inline QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > meshes_dealii() { return m_triangulations_deal; }
 
 protected:
     struct MeshEdge
@@ -202,6 +207,7 @@ protected:
 
     /// Complete method translating the internal generator structures into m_meshes.
     void writeToHermes();
+    void writeTodealii();
 
     /// Utility method serving the purpose of (potential) multi-mesh setup.
     /// Translates the internal structures into the global mesh (of which every other mesh in the system is a submesh of).
@@ -222,6 +228,8 @@ protected:
     bool m_isError;
     QSharedPointer<QProcess> m_process;
     std::vector<Hermes::Hermes2D::MeshSharedPtr> m_meshes;
+
+    QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > m_triangulations_deal;
 };
 
 #endif //MESHGENERATOR_H

@@ -48,12 +48,15 @@ int main(int argc, char *argv[])
         SimpleVector<double> *rhs = new SimpleVector<double>();
         LinearMatrixSolver<double> *solver;
 
+        /*
         if (solverArg.getValue() == "umfpack")
         {
             matrix = new CSCMatrix<double>();
             solver = new UMFPackLinearMatrixSolver<double>(matrix, rhs);
         }
-        else if (solverArg.getValue() == "mumps")
+        else
+        */
+        if (solverArg.getValue() == "mumps")
         {
             matrix = new MumpsMatrix<double>();
             solver = new MumpsSolver<double>(static_cast<MumpsMatrix<double> *>(matrix), rhs);

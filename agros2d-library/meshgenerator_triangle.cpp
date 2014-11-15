@@ -106,13 +106,13 @@ void MeshGeneratorTriangleExternal::meshTriangleCreated(int exitCode)
             // Agros2D::log()->printDebug(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             //  remove triangle temp files
-            //QFile::remove(tempProblemFileName() + ".poly");
-            //QFile::remove(tempProblemFileName() + ".node");
-            //QFile::remove(tempProblemFileName() + ".edge");
-            //QFile::remove(tempProblemFileName() + ".ele");
-            //QFile::remove(tempProblemFileName() + ".neigh");
-            //QFile::remove(tempProblemFileName() + ".triangle.out");
-            //QFile::remove(tempProblemFileName() + ".triangle.err");
+            QFile::remove(tempProblemFileName() + ".poly");
+            QFile::remove(tempProblemFileName() + ".node");
+            QFile::remove(tempProblemFileName() + ".edge");
+            QFile::remove(tempProblemFileName() + ".ele");
+            QFile::remove(tempProblemFileName() + ".neigh");
+            QFile::remove(tempProblemFileName() + ".triangle.out");
+            QFile::remove(tempProblemFileName() + ".triangle.err");
         }
         else
         {
@@ -391,14 +391,15 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
         int nodeNB = parsedLine.at(5).toInt();
         int nodeNC = parsedLine.at(6).toInt();
 
+        /*
         if (Agros2D::problem()->config()->meshType() == MeshType_Triangle ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadJoin ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
         {
-            elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1            
+            elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1
         }
-
-        if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
+        */
+        // if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
         {
             // add additional node
             nodeList.append(Point((nodeList[nodeA].x + nodeList[nodeB].x + nodeList[nodeC].x) / 3.0,
@@ -432,7 +433,7 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
 
     // heterogeneous mesh
     // element division
-    if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
+    // if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
@@ -453,6 +454,7 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
         }
     }
 
+    /*
     if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
     {
         for (int i = 0; i < elementCountLinear; i++)
@@ -563,11 +565,13 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
             }
         }
     }
+    */
 
     fillNeighborStructures();
-    moveNodesOnCurvedEdges();
+    // moveNodesOnCurvedEdges();
 
     writeToHermes();
+    writeTodealii();
 
     nodeList.clear();
     edgeList.clear();
@@ -658,7 +662,8 @@ bool MeshGeneratorTriangle::writeToTriangle()
             double startAngle = atan2(center.y - Agros2D::scene()->edges->at(i)->nodeStart()->point().y,
                                       center.x - Agros2D::scene()->edges->at(i)->nodeStart()->point().x) - M_PI;
 
-            int segments = Agros2D::scene()->edges->at(i)->segments();
+            // TODO: REMOVE MULTIPLICATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            int segments = Agros2D::scene()->edges->at(i)->segments() * 1; // TODO: REMOVE MULTIPLICATION
             double theta = deg2rad(Agros2D::scene()->edges->at(i)->angle()) / double(segments);
 
             int nodeStartIndex = 0;
@@ -883,14 +888,16 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
         int nodeNB = triOut.trianglelist[6*i+4];
         int nodeNC = triOut.trianglelist[6*i+5];
 
+        /*
         if (Agros2D::problem()->config()->meshType() == MeshType_Triangle ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadJoin ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
         {
             elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1
         }
+        */
 
-        if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
+        // if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
         {
             // add additional node
             nodeList.append(Point((nodeList[nodeA].x + nodeList[nodeB].x + nodeList[nodeC].x) / 3.0,
@@ -913,7 +920,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
 
     // heterogeneous mesh
     // element division
-    if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
+    // if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
@@ -933,7 +940,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
             }
         }
     }
-
+    /*
     if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
     {
         for (int i = 0; i < elementCountLinear; i++)
@@ -1044,7 +1051,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
             }
         }
     }
-
+    */
     free(triOut.pointlist);
     free(triOut.pointmarkerlist);
     free(triOut.trianglelist);
@@ -1056,9 +1063,10 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     free(triOut.edgemarkerlist);
 
     this->fillNeighborStructures();
-    this->moveNodesOnCurvedEdges();
+    // this->moveNodesOnCurvedEdges();
 
     writeToHermes();
+    writeTodealii();
 
     nodeList.clear();
     edgeList.clear();

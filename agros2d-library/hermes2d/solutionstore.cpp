@@ -181,6 +181,116 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
     }
 }
 
+MultiArrayDeal SolutionStore::multiArrayDeal(FieldSolutionID solutionID)
+{
+    if(solutionID.solutionMode == SolutionMode_Finer)
+    {
+        solutionID.solutionMode = SolutionMode_Reference;
+        if(!m_multiSolutions.contains(solutionID))
+            solutionID.solutionMode = SolutionMode_Normal;
+    }
+
+    assert(m_multiSolutions.contains(solutionID));
+
+    if (!m_multiSolutionDealCache.contains(solutionID))
+    {
+        assert("LOAD");
+
+        //qDebug() << "Read from disk: " << solutionID.toString();
+        /*
+        const FieldInfo *fieldInfo = solutionID.group;
+        const Block *block = Agros2D::problem()->blockOfField(fieldInfo);
+
+        MultiArray<double> msa;
+        SolutionRunTimeDetails runTime = m_multiSolutionRunTimeDetails[solutionID];
+
+        for (int fieldCompIdx = 0; fieldCompIdx < solutionID.group->numberOfSolutions(); fieldCompIdx++)
+        {
+            // reuse space and mesh
+            Hermes::Hermes2D::SpaceSharedPtr<double> space;
+            foreach (FieldSolutionID searchSolutionID, m_multiSolutionCacheIDOrder)
+            {
+                SolutionRunTimeDetails searchRunTime = m_multiSolutionRunTimeDetails[searchSolutionID];
+                if ((fieldCompIdx < searchRunTime.fileNames().size()) &&
+                        (runTime.fileNames()[fieldCompIdx].meshFileName() == searchRunTime.fileNames()[fieldCompIdx].meshFileName()) &&
+                        (runTime.fileNames()[fieldCompIdx].spaceFileName() == searchRunTime.fileNames()[fieldCompIdx].spaceFileName()))
+                {
+                    space = m_multiSolutionCache[searchSolutionID].spaces().at(fieldCompIdx);
+                    break;
+                }
+            }
+
+            // read space and mesh from file
+            if (!space.get())
+            {
+                // load the mesh file
+                QString fn = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName());
+                std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
+                if (QFileInfo(fn).suffix() == "msh")
+                    meshes = Module::readMeshFromFileXML(fn);
+                else
+                    meshes = Module::readMeshFromFileBSON(fn);
+
+                Hermes::Hermes2D::MeshSharedPtr mesh;
+                int globalFieldIdx = 0;
+                foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+                {
+                    if (fieldInfo == solutionID.group)
+                    {
+                        mesh = meshes.at(globalFieldIdx);
+                        break;
+                    }
+                    globalFieldIdx++;
+                }
+                assert(mesh);
+
+                try
+                {
+                    EssentialBCs<double>* essentialBcs = NULL;
+                    if((fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_SPACE) && (fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_MARKERWISE_CONST_SPACE))
+                    {
+                        int bcIndex = fieldCompIdx + block->offset(block->field(fieldInfo));
+                        essentialBcs = block->bcs().at(bcIndex);
+                    }
+                    QString spaceFileName = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].spaceFileName());
+                    // space = Space<double>::load(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, false, essentialBcs);
+                    space = Space<double>::load_bson(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, essentialBcs);
+                }
+                catch (Hermes::Exceptions::Exception &e)
+                {
+                    Agros2D::log()->printError(QObject::tr("Solver"), QString::fromStdString(e.info()));
+                    throw;
+                }
+            }
+
+            // read solution
+            Solution<double> *sln = new Solution<double>();
+            sln->set_validation(false);
+            // QTime time;
+            // time.start();
+            sln->load_bson(QString("%1/%2").
+                            arg(compatibleFilename(cacheProblemDir())).
+                            arg(runTime.fileNames()[fieldCompIdx].solutionFileName()).toStdString().c_str(), space);
+            // sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName())).toLatin1().data(), space);
+            // qDebug() << "LOAD" << time.elapsed();
+
+            msa.append(space, sln);
+        }
+
+        // insert to the cache
+        insertMultiSolutionToCache(solutionID, msa);
+
+        //printDebugCacheStatus();
+
+        return msa;
+        */
+    }
+    else
+    {
+        return m_multiSolutionDealCache[solutionID];
+    }
+}
+
 bool SolutionStore::contains(FieldSolutionID solutionID) const
 {
     return m_multiSolutions.contains(solutionID);
@@ -197,6 +307,19 @@ MultiArray<double> SolutionStore::multiArray(BlockSolutionID solutionID)
 
     return ma;
 }
+
+MultiArrayDeal SolutionStore::multiArrayDeal(BlockSolutionID solutionID)
+{
+    MultiArrayDeal ma;
+    foreach (FieldBlock *field, solutionID.group->fields())
+    {
+        MultiArrayDeal maGroup = multiArrayDeal(solutionID.fieldSolutionID(field->fieldInfo()));
+        ma.append(maGroup.doFHandlers(), maGroup.solutions());
+    }
+
+    return ma;
+}
+
 
 void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
@@ -299,6 +422,109 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
     // m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
 }
 
+void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArrayDeal multiSolution, SolutionRunTimeDetails runTime)
+{
+    // qDebug() << "saving solution " << solutionID;
+    // assert(!m_multiSolutions.contains(solutionID));
+    assert(solutionID.timeStep >= 0);
+    assert(solutionID.adaptivityStep >= 0);
+    // save soloution
+
+    QList<SolutionRunTimeDetails::FileName> fileNames;
+    for (int i = 0; i < multiSolution.size(); i++)
+        fileNames.append(SolutionRunTimeDetails::FileName());
+
+    /*
+    QString baseFN = baseStoreFileName(solutionID);
+    FieldSolutionID previous = lastTimeAndAdaptiveSolution(solutionID.group, solutionID.solutionMode);
+    if (m_multiSolutionDealCache.contains(previous))
+    {
+        MultiArray<double> ma = m_multiSolutionDealCache[previous];
+        SolutionRunTimeDetails str = m_multiSolutionRunTimeDetails[previous];
+
+        for (int i = 0; i < multiSolution.size(); i++)
+        {
+            if (ma.spaces().at(i).get()->get_mesh() == multiSolution.spaces().at(i).get()->get_mesh())
+                fileNames[i].setMeshFileName(str.fileNames()[i].meshFileName());
+
+            if (ma.spaces().at(i).get() == multiSolution.spaces().at(i).get())
+                fileNames[i].setSpaceFileName(str.fileNames()[i].spaceFileName());
+        }
+    }
+
+    // meshes
+    for (int i = 0; i < multiSolution.size(); i++)
+    {
+        if (fileNames[i].meshFileName().isEmpty())
+        {
+            std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
+            foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+            {
+                if (fieldInfo == solutionID.group)
+                    meshes.push_back(multiSolution.spaces().at(i)->get_mesh());
+                else
+                    meshes.push_back(fieldInfo->initialMesh());
+            }
+
+            // QString meshFN = QString("%1_%2.msh").arg(baseFN).arg(i);
+            // Module::writeMeshToFileXML(meshFN, meshes);
+            QString meshFN = QString("%1_%2.mbs").arg(baseFN).arg(i);
+            Module::writeMeshToFileBSON(meshFN, meshes);
+
+            fileNames[i].setMeshFileName(QFileInfo(meshFN).fileName());
+        }
+    }
+
+    // spaces
+    for (int i = 0; i < multiSolution.size(); i++)
+    {
+        if (fileNames[i].spaceFileName().isEmpty())
+        {
+            QString spaceFN = QString("%1_%2.spc").arg(baseFN).arg(i);
+            // multiSolution.spaces().at(i)->save(compatibleFilename(spaceFN).toStdString().c_str());
+            multiSolution.spaces().at(i)->save_bson(compatibleFilename(spaceFN).toStdString().c_str());
+
+            fileNames[i].setSpaceFileName(QFileInfo(spaceFN).fileName());
+        }
+    }
+
+    // solutions
+    for (int i = 0; i < multiSolution.size(); i++)
+    {
+        if (fileNames[i].solutionFileName().isEmpty())
+        {
+            QString solutionFN = QString("%1_%2.sln").arg(baseFN).arg(i);
+            // QTime time;
+            // time.start();
+            // dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save(solutionFN.toLatin1().data());
+            dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save_bson(compatibleFilename(solutionFN).toStdString().c_str());
+            // qDebug() << "SAVE" << time.elapsed();
+
+            fileNames[i].setSolutionFileName(QFileInfo(solutionFN).fileName());
+        }
+    }
+    */
+
+    runTime.setFileNames(fileNames);
+
+    // append multisolution
+    m_multiSolutions.append(solutionID);
+
+    // append properties
+    m_multiSolutionRunTimeDetails.insert(solutionID, runTime);
+
+    // insert to the cache
+    insertMultiSolutionToCache(solutionID, multiSolution);
+
+    //printDebugCacheStatus();
+
+    // save run time details to the file
+    saveRunTimeDetails();
+
+    // save to the memory info (for debug purposes)
+    // m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
+}
+
 void SolutionStore::removeSolution(FieldSolutionID solutionID, bool saveRunTime)
 {
     assert(m_multiSolutions.contains(solutionID));
@@ -349,6 +575,18 @@ void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<doub
     {
         FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
         MultiArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
+        addSolution(fieldSID, fieldMultiSolution, runTime);
+    }
+
+    // printDebugMemoryInfo();
+}
+
+void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArrayDeal multiSolution, SolutionRunTimeDetails runTime)
+{
+    foreach (FieldBlock* field, blockSolutionID.group->fields())
+    {
+        FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
+        MultiArrayDeal fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
         addSolution(fieldSID, fieldMultiSolution, runTime);
     }
 
@@ -600,6 +838,28 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
 
         // add solution
         m_multiSolutionCache.insert(solutionID, multiSolution);
+        m_multiSolutionCacheIDOrder.append(solutionID);
+    }
+}
+
+void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArrayDeal multiSolution)
+{
+    if (!m_multiSolutionDealCache.contains(solutionID))
+    {
+        // flush cache
+        if (m_multiSolutionDealCache.count() > Agros2D::configComputer()->value(Config::Config_CacheSize).toInt())
+        {
+            assert(! m_multiSolutionCacheIDOrder.empty());
+            FieldSolutionID idRemove = m_multiSolutionCacheIDOrder[0];
+            m_multiSolutionCacheIDOrder.removeFirst();
+
+            // free ma
+            m_multiSolutionDealCache[idRemove].clear();
+            m_multiSolutionDealCache.remove(idRemove);
+        }
+
+        // add solution
+        m_multiSolutionDealCache.insert(solutionID, multiSolution);
         m_multiSolutionCacheIDOrder.append(solutionID);
     }
 }

@@ -20,12 +20,17 @@
 #ifndef SOLUTIONTYPES_H
 #define SOLUTIONTYPES_H
 
+#undef signals
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/lac/vector.h>
+#define signals public
+
 #include "util.h"
 #include "util/enums.h"
 
 #include "hermes2d.h"
 
-/// this header file shoul be kept small, since it is included in other header files
+/// this header file should be kept small, since it is included in other header files
 
 class FieldInfo;
 class Block;
@@ -64,6 +69,35 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(st
 
     return slns;
 }
+
+class AGROS_LIBRARY_API MultiArrayDeal
+{
+public:
+    MultiArrayDeal();
+    MultiArrayDeal(std::vector<std::shared_ptr<dealii::DoFHandler<2> > > doFHandlers, std::vector<dealii::Vector<double> > solutions)
+        : m_doFHandlers(doFHandlers), m_solutions(solutions) {}
+    ~MultiArrayDeal();
+
+    void clear();
+
+    // add next component
+    void append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler, dealii::Vector<double> solution);
+    void append(std::vector<std::shared_ptr<dealii::DoFHandler<2> > > doFHandlers, std::vector<dealii::Vector<double> > solutions);
+
+    std::vector<std::shared_ptr<dealii::DoFHandler<2> > > &doFHandlers() { return m_doFHandlers; }
+    std::vector<dealii::Vector<double> > &solutions() { return m_solutions; }
+
+    // returns only that part of list that corresponds to given field (as part of the given block)
+    MultiArrayDeal fieldPart(const Block *block, const FieldInfo *fieldInfo);
+
+    int size() { assert(m_doFHandlers.size() == m_solutions.size()); return m_doFHandlers.size(); }
+
+    void createEmpty(int numComp);
+
+private:
+    std::vector<std::shared_ptr<dealii::DoFHandler<2> > > m_doFHandlers;
+    std::vector<dealii::Vector<double> > m_solutions;
+};
 
 template <typename Scalar>
 class AGROS_LIBRARY_API MultiArray

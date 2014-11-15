@@ -61,6 +61,50 @@ QString FieldSolutionID::toString()
 
 // *********************************************************************************************
 
+MultiArrayDeal::MultiArrayDeal()
+{
+}
+
+MultiArrayDeal::~MultiArrayDeal()
+{
+    clear();
+}
+
+void MultiArrayDeal::clear()
+{
+    m_doFHandlers.clear();
+    m_solutions.clear();
+}
+
+void MultiArrayDeal::append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler, dealii::Vector<double> solution)
+{
+    m_doFHandlers.push_back(doFHandler);
+    m_solutions.push_back(solution);
+}
+
+void MultiArrayDeal::append(std::vector<std::shared_ptr<dealii::DoFHandler<2> > > doFHandlers, std::vector<dealii::Vector<double> > solutions)
+{
+    assert(doFHandlers.size() == solutions.size());
+    for (int i = 0; i < solutions.size(); i++)
+        append(doFHandlers.at(i), solutions.at(i));
+}
+
+MultiArrayDeal MultiArrayDeal::fieldPart(const Block *block, const FieldInfo *fieldInfo)
+{
+    assert(block->contains(fieldInfo));
+    MultiArrayDeal msa;
+    int offset = block->offset(block->field(fieldInfo));
+    int numSol = fieldInfo->numberOfSolutions();
+
+    for(int i = offset; i < offset + numSol; i++)
+    {
+        msa.append(m_doFHandlers.at(i), m_solutions.at(i));
+    }
+    return msa;
+}
+
+// *********************************************************************************************
+
 template <typename Scalar>
 MultiArray<Scalar>::MultiArray()
 {

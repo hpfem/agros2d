@@ -94,14 +94,14 @@ enum MeshType
 {
     MeshType_Undefined = -1,
     MeshType_Triangle = 0,
-    MeshType_Triangle_QuadFineDivision = 1,
-    MeshType_Triangle_QuadRoughDivision = 2,
-    MeshType_Triangle_QuadJoin = 3,
-    MeshType_GMSH_Triangle = 4,
-    MeshType_GMSH_Quad = 5,
-    MeshType_GMSH_QuadDelaunay_Experimental = 6,
-    MeshType_NETGEN_Triangle = 10,
-    MeshType_NETGEN_QuadDominated = 11
+    // MeshType_Triangle_QuadFineDivision = 1,
+    // MeshType_Triangle_QuadRoughDivision = 2,
+    // MeshType_Triangle_QuadJoin = 3,
+    // MeshType_GMSH_Triangle = 4,
+    // MeshType_GMSH_Quad = 5,
+    // MeshType_GMSH_QuadDelaunay_Experimental = 6,
+    // MeshType_NETGEN_Triangle = 10,
+    // MeshType_NETGEN_QuadDominated = 11
 };
 
 enum PhysicFieldVariableComp

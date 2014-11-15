@@ -23,6 +23,10 @@
 #endif
 #endif
 
+#include <deal.II/numerics/data_out.h>
+#include <deal.II/numerics/data_postprocessor.h>
+#include <deal.II/grid/filtered_iterator.h>
+
 #include "sceneview_post.h"
 
 #include "util/global.h"
@@ -52,6 +56,139 @@
 
 #include "pythonlab/pythonengine.h"
 
+DataPostprocessor::DataPostprocessor() : dealii::DataOut<2>()
+{
+}
+
+void DataPostprocessor::compute_nodes(QList<PostTriangle> &scalarValues)
+{
+    scalarValues.clear();
+
+    m_min =  numeric_limits<double>::max();
+    m_max = -numeric_limits<double>::max();
+
+    dealii::Point<2> node0, node1, node2, node3;
+
+    // loop over all patches
+    for (typename std::vector<dealii::DataOutBase::Patch<2> >::const_iterator patch = patches.begin(); patch != patches.end(); ++patch)
+    {
+        const unsigned int n_subdivisions = patch->n_subdivisions;
+        const unsigned int n = n_subdivisions + 1;
+        unsigned int d1 = 1;
+        unsigned int d2 = n;
+
+        for (unsigned int i2=0; i2<n-1; ++i2)
+        {
+            for (unsigned int i1=0; i1<n-1; ++i1)
+            {
+                // compute coordinates for this patch point
+                compute_node(node0, &*patch, i1, i2, 0, n_subdivisions);
+                compute_node(node1, &*patch, i1, i2+1, 0, n_subdivisions);
+                compute_node(node2, &*patch, i1+1, i2, 0, n_subdivisions);
+                compute_node(node3, &*patch, i1+1, i2+1, 0, n_subdivisions);
+
+                double value0 = patch->data(0, i1*d1 + i2*d2);
+                double value1 = patch->data(0, i1*d1 + (i2+1)*d2);
+                double value2 = patch->data(0, (i1+1)*d1 + i2*d2);
+                double value3 = patch->data(0, (i1+1)*d1 + (i2+1)*d2);
+
+                m_min = std::min(std::min(std::min(std::min(m_min, value0), value1), value2), value3);
+                m_max = std::max(std::max(std::max(std::max(m_max, value0), value1), value2), value3);
+
+                scalarValues.append(PostTriangle(node0, node1, node2, value0, value1, value2));
+                scalarValues.append(PostTriangle(node1, node3, node2, value1, value3, value2));
+            }
+        }
+    }
+}
+
+void DataPostprocessor::compute_node(dealii::Point<2> &node, const dealii::DataOutBase::Patch<2> *patch,
+                                     const unsigned int xstep, const unsigned int ystep, const unsigned int zstep,
+                                     const unsigned int n_subdivisions)
+{
+    if (patch->points_are_available)
+    {
+        unsigned int point_no=0;
+        // note: switch without break !
+        Assert (ystep<n_subdivisions+1, ExcIndexRange(ystep,0,n_subdivisions+1));
+        point_no+=(n_subdivisions+1)*ystep;
+        for (unsigned int d=0; d<2; ++d)
+            node[d]=patch->data(patch->data.size(0)-2+d,point_no);
+    }
+    else
+    {
+        // perform a dim-linear interpolation
+        const double stepsize=1./n_subdivisions, xfrac=xstep*stepsize;
+
+        node = (patch->vertices[1] * xfrac) + (patch->vertices[0] * (1-xfrac));
+        const double yfrac=ystep*stepsize;
+        node*= 1-yfrac;
+        node += ((patch->vertices[3] * xfrac) + (patch->vertices[2] * (1-xfrac))) * yfrac;
+    }
+}
+
+
+typename dealii::DataOut<2>::cell_iterator DataPostprocessor::first_cell()
+{
+    if (m_subdomains.size() == 0)
+        return this->dofs->begin_active();
+
+    typename DataOut<2>::active_cell_iterator
+            cell = this->dofs->begin_active();
+    while ((cell != this->dofs->end()) &&
+           (cell->subdomain_id() != m_subdomains[0])) // TODO !!!
+        ++cell;
+
+    return cell;
+}
+
+typename dealii::DataOut<2>::cell_iterator DataPostprocessor::next_cell (const typename DataOut<2>::cell_iterator &old_cell)
+{
+    if (m_subdomains.size() == 0)
+        return dealii::DataOut<2>::next_cell(old_cell);
+
+    if (old_cell != this->dofs->end())
+    {
+        const dealii::IteratorFilters::SubdomainEqualTo predicate(m_subdomains[0]); // TODO !!!!
+        return ++(dealii::FilteredIterator <typename dealii::DataOut<2>::active_cell_iterator>(predicate, old_cell));
+    }
+    else
+    {
+        return old_cell;
+    }
+}
+
+template <int dim>
+class DataPostprocessorAgros : public dealii::DataPostprocessorScalar<dim>
+{
+public:
+    DataPostprocessorAgros () :
+        dealii::DataPostprocessorScalar<dim> ("Electric field",  dealii::update_values | dealii::update_gradients | dealii::update_q_points)
+    {
+        std::cout << "OK" << std::endl;
+    }
+
+    virtual void compute_derived_quantities_vector (const std::vector<double> &uh,
+                                                    const std::vector<dealii::Tensor<1,dim> > &duh,
+                                                    const std::vector<dealii::Tensor<2,dim> > &dduh,
+                                                    const std::vector<dealii::Point<dim> > &normals,
+                                                    const std::vector<dealii::Point<dim> > &evaluation_points,
+                                                    std::vector<Vector<double> >  &computed_quantities) const
+    {
+        std::cout << uh.size() << std::endl;
+        std::cout << duh.size() << std::endl;
+        // qDebug() << duh[0].size();
+
+        // Assert(computed_quantities.size() == uh.size(), ExcDimensionMismatch (computed_quantities.size(), uh.size()));
+        for (unsigned int i=0; i<computed_quantities.size(); i++)
+        {
+            // Assert(computed_quantities[i].size() == 1, ExcDimensionMismatch (computed_quantities[i].size(), 1));
+            // Assert(uh[i].size() == 2, ExcDimensionMismatch (uh[i].size(), 2));
+            // computed_quantities[i](0) = std::sqrt(duh[i][0][0]*duh[i][0][0]); //  + duh[i][0][1]*duh[i][0][1]);
+        }
+    }
+};
+
 PostHermes::PostHermes() :
     m_activeViewField(NULL),
     m_activeTimeStep(NOT_FOUND_SO_FAR),
@@ -61,8 +198,6 @@ PostHermes::PostHermes() :
     m_linInitialMeshView(NULL),
     m_linSolutionMeshView(NULL),
     m_orderView(NULL),
-    m_linContourView(NULL),
-    m_linScalarView(NULL),
     m_vecVectorView(NULL)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
@@ -180,21 +315,22 @@ void PostHermes::processRangeContour()
         QString variableName = Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString();
         Module::LocalVariable variable = m_activeViewField->localVariable(variableName);
 
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnContourView;
+        m_contourValues.clear();
+
+        std::shared_ptr<DataPostprocessor> data_out;
+
         if (variable.isScalar())
-            slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
-                                              PhysicFieldVariableComp_Scalar);
+            data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
+                                        PhysicFieldVariableComp_Scalar);
+
         else
-            slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
-                                              PhysicFieldVariableComp_Magnitude);
+            data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
+                                        PhysicFieldVariableComp_Magnitude);
 
-        // new linearizer
-        if (m_linContourView)
-            delete m_linContourView;
-        m_linContourView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
-
+        data_out->compute_nodes(m_contourValues);
 
         // deformed shape
+        /*
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
         {
             Hermes::Hermes2D::MagFilter<double> *filter
@@ -215,21 +351,7 @@ void PostHermes::processRangeContour()
         {
             m_linContourView->set_displacement(NULL, NULL);
         }
-
-        // process solution.
-        try
-        {
-            m_linContourView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-            // m_linContourView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
-            m_linContourView->process_solution(slnContourView, Hermes::Hermes2D::H2D_FN_VAL_0);
-        }
-        catch (Hermes::Exceptions::Exception& e)
-        {
-            delete m_linContourView;
-            m_linContourView = NULL;
-
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (contour view) processing failed: %1").arg(e.info().c_str()));
-        }
+        */
     }
 }
 
@@ -251,14 +373,11 @@ void PostHermes::processRangeScalar()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                                         (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        std::shared_ptr<DataPostprocessor> data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                                       (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        data_out->compute_nodes(m_scalarValues);
 
-        // new linearizer
-        if (m_linScalarView)
-            delete m_linScalarView;
-        m_linScalarView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
-
+        /*
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())
         {
@@ -280,45 +399,11 @@ void PostHermes::processRangeScalar()
         {
             m_linScalarView->set_displacement(NULL, NULL);
         }
-
-        // process solution
-        try
+        */
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {
-            /*
-            QTime time;
-
-            time.start();
-            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
-            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
-            qDebug() << "LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH)" << time.elapsed();
-
-            time.start();
-            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH));
-            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
-            qDebug() << "LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_HIGH)" << time.elapsed();
-
-            time.start();
-            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(2));
-            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
-            qDebug() << "LinearizerCriterionFixed(2)" << time.elapsed();
-            */
-            // time.start();
-            m_linScalarView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-            m_linScalarView->process_solution(slnScalarView, Hermes::Hermes2D::H2D_FN_VAL_0);
-            // qDebug() << "LinearizerCriterionFixed(1)" << time.elapsed();
-
-            if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
-            {
-                Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, m_linScalarView->get_min_value());
-                Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, m_linScalarView->get_max_value());
-            }
-        }
-        catch (Hermes::Exceptions::Exception &e)
-        {
-            delete m_linScalarView;
-            m_linScalarView = NULL;
-
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (scalar view) processing failed: %1").arg(e.info().c_str()));
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, data_out->min());
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, data_out->max());
         }
     }
 }
@@ -339,17 +424,16 @@ void PostHermes::processRangeVector()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                                          PhysicFieldVariableComp_X);
+        std::shared_ptr<DataPostprocessor> data_outX = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                        PhysicFieldVariableComp_X);
 
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                                          PhysicFieldVariableComp_Y);
+        std::shared_ptr<DataPostprocessor> data_outY = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                        PhysicFieldVariableComp_Y);
 
-        // new vectorizer
-        if (m_vecVectorView)
-            delete m_vecVectorView;
-        m_vecVectorView = new Hermes::Hermes2D::Views::Vectorizer(Hermes::Hermes2D::OpenGL);
+        data_outX->compute_nodes(m_vectorXValues);
+        data_outY->compute_nodes(m_vectorYValues);
 
+        /*
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
         {
@@ -370,30 +454,18 @@ void PostHermes::processRangeVector()
         {
             m_vecVectorView->set_displacement(NULL, NULL);
         }
-
-        // process solution
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slns[2] = { slnVectorXView, slnVectorYView };
-        int items[2] = { Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0 };
-
-        try
-        {
-            // m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionAdaptive(Hermes::Hermes2D::Views::HERMES_EPS_VERYHIGH));
-            m_vecVectorView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-            m_vecVectorView->process_solution(slns, items);
-        }
-        catch (Hermes::Exceptions::Exception &e)
-        {
-            delete m_vecVectorView;
-            m_vecVectorView = NULL;
-
-            Agros2D::log()->printError("Mesh View", QObject::tr("Vectorizer processing failed: %1").arg(e.info().c_str()));
-        }
+        */
     }
 }
 
 void PostHermes::clearView()
 {
     m_isProcessed = false;
+
+    m_contourValues.clear();
+    m_scalarValues.clear();
+    m_vectorXValues.clear();
+    m_vectorYValues.clear();
 
     if (m_linInitialMeshView)
     {
@@ -409,23 +481,6 @@ void PostHermes::clearView()
     {
         delete m_orderView;
         m_orderView = NULL;
-    }
-
-    if (m_linContourView)
-    {
-        delete m_linContourView;
-        m_linContourView = NULL;
-    }
-    if (m_linScalarView)
-    {
-        delete m_linScalarView;
-        m_linScalarView = NULL;
-    }
-
-    if (m_vecVectorView)
-    {
-        delete m_vecVectorView;
-        m_vecVectorView = NULL;
     }
 }
 
@@ -527,19 +582,22 @@ void PostHermes::processSolved()
     }
 }
 
-Hermes::Hermes2D::MeshFunctionSharedPtr<double> PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                                             PhysicFieldVariableComp physicFieldVariableComp)
+
+std::shared_ptr<DataPostprocessor> PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                                PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
     if (Agros2D::problem()->isTransient())
         Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
 
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
-    for (int k = 0; k < activeViewField()->numberOfSolutions(); k++)
-        slns.push_back(activeMultiSolutionArray().solutions().at(k));
+    MultiArrayDeal ma = activeMultiSolutionArrayDeal();
 
-    //qDebug() << "viewScalarFilter: " << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
+    std::shared_ptr<DataPostprocessor> data_out = std::shared_ptr<DataPostprocessor>(new DataPostprocessor());
+    data_out->attach_dof_handler(*ma.doFHandlers().at(0));
+    data_out->add_data_vector(ma.solutions().at(0), "solution");
+    data_out->build_patches(2);
 
+    /*
     return activeViewField()->plugin()->filter(activeViewField(),
                                                activeTimeStep(),
                                                activeAdaptivityStep(),
@@ -547,8 +605,10 @@ Hermes::Hermes2D::MeshFunctionSharedPtr<double> PostHermes::viewScalarFilter(Mod
                                                slns,
                                                physicFieldVariable.id(),
                                                physicFieldVariableComp);
-}
+    */
 
+    return data_out;
+}
 
 void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
 {
@@ -619,6 +679,12 @@ MultiArray<double> PostHermes::activeMultiSolutionArray()
 {
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
     return Agros2D::solutionStore()->multiArray(fsid);
+}
+
+MultiArrayDeal PostHermes::activeMultiSolutionArrayDeal()
+{
+    FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
+    return Agros2D::solutionStore()->multiArrayDeal(fsid);
 }
 
 // ************************************************************************************************

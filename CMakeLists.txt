@@ -90,10 +90,17 @@ SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
 SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 SET(MATIO_LIBRARY agros2d_3dparty_matio)
 SET(TRIANGLE_LIBRARY agros2d_3dparty_triangle)
-SET(GMSH_LIBRARY agros2d_3dparty_gmsh)
-SET(NETGEN_LIBRARY agros2d_3dparty_netgen)
+# SET(GMSH_LIBRARY agros2d_3dparty_gmsh)
+# SET(NETGEN_LIBRARY agros2d_3dparty_netgen)
 
 SET(AGROS_SOLVER_EXTERNAL solver_external)
+
+
+# deal.ii
+FIND_PACKAGE(deal.II 8.1 REQUIRED
+  HINTS 3rdparty/dealii/build
+)
+DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 # Hermes and Hermes common
 IF(MSVC)
@@ -160,9 +167,9 @@ ENDIF(MSVC)
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 
 # VTK
-FIND_PACKAGE(VTK REQUIRED)
-include(${VTK_USE_FILE})
-INCLUDE_DIRECTORIES(${VTK_INCLUDE_DIRS})
+#FIND_PACKAGE(VTK REQUIRED)
+#include(${VTK_USE_FILE})
+#INCLUDE_DIRECTORIES(${VTK_INCLUDE_DIRS})
 
 # Include current dir
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -294,22 +301,22 @@ MACRO(ADD_INFO_FILES)
    ENDFOREACH()
 ENDMACRO()
 
-set(info resources/modules/acoustic.xml
-         resources/modules/current.xml
-         resources/modules/elasticity.xml
+set(info #resources/modules/acoustic.xml
+         #resources/modules/current.xml
+         #resources/modules/elasticity.xml
          resources/modules/electrostatic.xml
-         resources/modules/flow.xml
-         resources/modules/heat.xml
-         resources/modules/magnetic.xml
-         resources/modules/rf_te.xml
-         resources/modules/rf_tm.xml
-         resources/modules/richards.xml
-         resources/modules/math_coeff.xml
-         resources/couplings/current-heat.xml
-         resources/couplings/heat-elasticity.xml
-         resources/couplings/magnetic-heat.xml
-         resources/couplings/magnetic-flow.xml
-         resources/couplings/flow-heat.xml
+         #resources/modules/flow.xml
+         #resources/modules/heat.xml
+         #resources/modules/magnetic.xml
+         #resources/modules/rf_te.xml
+         #resources/modules/rf_tm.xml
+         #resources/modules/richards.xml
+         #resources/modules/math_coeff.xml
+         #resources/couplings/current-heat.xml
+         #resources/couplings/heat-elasticity.xml
+         #resources/couplings/magnetic-heat.xml
+         #resources/couplings/magnetic-flow.xml
+         #resources/couplings/flow-heat.xml
          resources/python/functions_agros2d.py
          resources/python/functions_pythonlab.py
          resources/templates/generator/coupling_CMakeLists_txt.tpl

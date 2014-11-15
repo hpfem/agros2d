@@ -1032,10 +1032,22 @@ void PostprocessorWidget::doApply()
     // QApplication::processEvents();
 
     // read auto range values
-    if (chkScalarFieldRangeAuto->isChecked() && m_postHermes->linScalarView())
+    if (chkScalarFieldRangeAuto->isChecked() && !m_postHermes->scalarValues().isEmpty())
     {
-        txtScalarFieldRangeMin->setValue(m_postHermes->linScalarView()->get_min_value());
-        txtScalarFieldRangeMax->setValue(m_postHermes->linScalarView()->get_max_value());
+        double rangeMin =  numeric_limits<double>::max();
+        double rangeMax = -numeric_limits<double>::max();
+
+        foreach (PostTriangle triangle, m_postHermes->scalarValues())
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (triangle.values[i] > rangeMax) rangeMax = triangle.values[i];
+                if (triangle.values[i] < rangeMin) rangeMin = triangle.values[i];
+            }
+        }
+
+        txtScalarFieldRangeMin->setValue(rangeMin);
+        txtScalarFieldRangeMax->setValue(rangeMax);
     }
     else
     {

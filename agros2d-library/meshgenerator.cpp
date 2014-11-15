@@ -17,6 +17,44 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+// deal.ii
+#include <deal.II/grid/tria.h>
+#include <deal.II/dofs/dof_handler.h>
+
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/grid_in.h>
+#include <deal.II/grid/grid_reordering.h>
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/grid/tria_accessor.h>
+#include <deal.II/grid/tria_iterator.h>
+#include <deal.II/dofs/dof_accessor.h>
+
+#include <deal.II/fe/fe_q.h>
+#include <deal.II/dofs/dof_tools.h>
+
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/base/quadrature_lib.h>
+
+#include <deal.II/base/function.h>
+#include <deal.II/numerics/vector_tools.h>
+#include <deal.II/numerics/matrix_tools.h>
+
+#include <deal.II/lac/vector.h>
+#include <deal.II/lac/full_matrix.h>
+#include <deal.II/lac/sparse_matrix.h>
+#include <deal.II/lac/compressed_sparsity_pattern.h>
+#include <deal.II/lac/solver_cg.h>
+#include <deal.II/lac/sparse_direct.h>
+#include <deal.II/lac/precondition.h>
+
+#include <deal.II/grid/grid_refinement.h>
+#include <deal.II/numerics/error_estimator.h>
+
+#include <deal.II/numerics/fe_field_function.h>
+#include <deal.II/numerics/data_out.h>
+
+#include <deal.II/base/timer.h>
+
 #include "meshgenerator.h"
 
 #include "util/global.h"
@@ -180,7 +218,7 @@ void MeshGenerator::moveNodesOnCurvedEdges()
             {
                 // curve
                 if (Agros2D::scene()->edges->at(edge.marker)->angle() > 0.0 &&
-                    Agros2D::scene()->edges->at(edge.marker)->isCurvilinear())
+                        Agros2D::scene()->edges->at(edge.marker)->isCurvilinear())
                 {
                     // Nodes.
                     Point* node[2] = { &nodeList[edge.node[0]], &nodeList[edge.node[1]]};
@@ -223,7 +261,7 @@ void MeshGenerator::moveNodesOnCurvedEdges()
         {
             // curve
             if (Agros2D::scene()->edges->at(edge.marker)->angle() > 0.0 &&
-                Agros2D::scene()->edges->at(edge.marker)->isCurvilinear())
+                    Agros2D::scene()->edges->at(edge.marker)->isCurvilinear())
             {
                 // Nodes.
                 Point* node[2] = { &nodeList[edge.node[0]], &nodeList[edge.node[1]]};
@@ -299,7 +337,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
             continue;
         // Trim whitespaces.
         int internal_marker =
-            global_mesh->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
+                global_mesh->element_markers_conversion.insert_marker(QString::number(elementList[element_i].marker).toStdString());
 
         if (elementList[element_i].isTriangle())
             global_mesh->create_triangle(internal_marker, global_mesh->get_node(elementList[element_i].node[0]), global_mesh->get_node(elementList[element_i].node[1]), global_mesh->get_node(elementList[element_i].node[2]), nullptr);
@@ -346,7 +384,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
         {
             // curve
             if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->angle() > 0.0 &&
-                Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
+                    Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
             {
                 // load the control points, knot vector, etc.
                 Node* en;
@@ -364,7 +402,7 @@ void MeshGenerator::writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshShare
                 // direction
                 Point center = Agros2D::scene()->edges->at(edgeList[edge_i].marker)->center();
                 int direction = (((nodeList[edgeList[edge_i].node[0]].x - center.x)*(nodeList[edgeList[edge_i].node[1]].y - center.y) -
-                    (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
+                        (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
 
                 double angle = direction * theta * chordShort / chord;
 
@@ -432,14 +470,14 @@ void MeshGenerator::getDataCountsForSingleSubdomain(FieldInfo* fieldInfo, int& e
                 if (neigh != -1)
                 {
                     if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
-                        != SceneMaterialContainer::getNone(fieldInfo))
+                            != SceneMaterialContainer::getNone(fieldInfo))
                         numNeighWithField++;
                 }
             }
 
             // edge has boundary condition prescribed for this field
             bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->hasMarker(fieldInfo)
-                && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
+                                              && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
 
             if (numNeighWithField == 1)
             {
@@ -471,7 +509,7 @@ void MeshGenerator::writeToHermes()
     }
 
     try
-    {        
+    {
         MeshSharedPtr global_mesh(new Mesh);
 
         this->writeTemporaryGlobalMeshToHermes(global_mesh);
@@ -572,7 +610,7 @@ void MeshGenerator::writeToHermes()
                             if (neigh != -1)
                             {
                                 if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
-                                    != SceneMaterialContainer::getNone(fieldInfo))
+                                        != SceneMaterialContainer::getNone(fieldInfo))
                                     numNeighWithField++;
                             }
                         }
@@ -582,7 +620,7 @@ void MeshGenerator::writeToHermes()
 
                             // edge has boundary condition prescribed for this field
                             bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->hasMarker(fieldInfo)
-                                && (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
+                                                              && (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
 
                             // edge is on "boundary" of the field, should have boundary condition prescribed
                             if (!hasFieldBoundaryCondition)
@@ -635,7 +673,7 @@ void MeshGenerator::writeToHermes()
                     {
                         // curve
                         if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->angle() > 0.0 &&
-                            Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
+                                Agros2D::scene()->edges->at(edgeList[edge_i].marker)->isCurvilinear())
                         {
                             // load the control points, knot vector, etc.
                             Node* en;
@@ -653,7 +691,7 @@ void MeshGenerator::writeToHermes()
                             // direction
                             Point center = Agros2D::scene()->edges->at(edgeList[edge_i].marker)->center();
                             int direction = (((nodeList[edgeList[edge_i].node[0]].x - center.x)*(nodeList[edgeList[edge_i].node[1]].y - center.y) -
-                                (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
+                                    (nodeList[edgeList[edge_i].node[0]].y - center.y)*(nodeList[edgeList[edge_i].node[1]].x - center.x)) > 0) ? 1 : -1;
 
                             double angle = direction * theta * chordShort / chord;
 
@@ -703,6 +741,303 @@ void MeshGenerator::writeToHermes()
     {
         Agros2D::log()->printError(tr("Mesh generator"), tr("Failed: %1").arg(e.what()));
     }
+}
+
+void MeshGenerator::writeTodealii()
+{
+    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    {
+        std::shared_ptr<dealii::Triangulation<2> > triangulation = std::shared_ptr<dealii::Triangulation<2> >(new dealii::Triangulation<2>());
+
+        // vertices
+        std::vector<dealii::Point<2> > vertices;
+        for (int vertex_i = 0; vertex_i < nodeList.count(); vertex_i++)
+        {
+            vertices.push_back(dealii::Point<2>(
+                                   nodeList[vertex_i].x,
+                                   nodeList[vertex_i].y));
+        }
+
+        // elements
+        std::vector<dealii::CellData<2> > cells;
+        for (int element_i = 0; element_i < elementList.count(); element_i++)
+        {
+            if (elementList[element_i].isUsed &&
+                    (Agros2D::scene()->labels->at(elementList[element_i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
+            {
+                if (elementList[element_i].isTriangle())
+                {
+                    assert("triangle");
+                }
+                else
+                {
+                    dealii::CellData<2> cell;
+                    cell.vertices[0] = elementList[element_i].node[0];
+                    cell.vertices[1] = elementList[element_i].node[1];
+                    cell.vertices[2] = elementList[element_i].node[2];
+                    cell.vertices[3] = elementList[element_i].node[3];
+                    cell.material_id = elementList[element_i].marker + 1;
+
+                    cells.push_back(cell);
+                }
+            }
+        }
+
+        // boundary markers
+        dealii::SubCellData subcelldata;
+        for (int edge_i = 0; edge_i < edgeList.count(); edge_i++)
+        {
+            if (edgeList[edge_i].marker == -1)
+                continue;
+
+            if (Agros2D::scene()->edges->at(edgeList[edge_i].marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
+                continue;
+
+            dealii::CellData<1> cell_data;
+            cell_data.vertices[0] = edgeList[edge_i].node[0];
+            cell_data.vertices[1] = edgeList[edge_i].node[1];
+            cell_data.boundary_id = edgeList[edge_i].marker + 1;
+
+            subcelldata.boundary_lines.push_back(cell_data);
+        }
+
+        dealii::GridTools::delete_unused_vertices (vertices, cells, subcelldata);
+        dealii::GridReordering<2>::invert_all_cells_of_negative_grid (vertices, cells);
+        dealii::GridReordering<2>::reorder_cells (cells);
+
+        triangulation.get()->create_triangulation_compatibility (vertices, cells, subcelldata);
+
+        m_triangulations_deal[fieldInfo] = triangulation;
+    }
+
+    // read mesh
+    // dealii::GridIn<2> gridin;
+    // gridin.attach_triangulation(m_triangulation);
+    // std::ifstream input_file((tempProblemFileName() + ".msh").toStdString());
+    // gridin.read_msh(input_file);
+    /*
+    if (Agros2D::problem()->fieldInfos().count() > 0)
+    {
+        dealii::Triangulation<2> *triangulation = m_triangulations_deal.first().get();
+        std::vector<dealii::types::boundary_id> bindicators = triangulation->get_boundary_indicators();
+        std::cout << "Number of boundary indicators: " << bindicators.size() << std::endl;
+        std::cout << "Number of active cells: " << triangulation->n_active_cells() << std::endl;
+        std::cout << "Total number of cells: " << triangulation->n_cells() << std::endl;
+
+        dealii::FE_Q<2> fe(3);
+        dealii::DoFHandler<2> dof_handler(*triangulation);
+
+        dealii::SparsityPattern sparsity_pattern;
+        dealii::SparseMatrix<double> system_matrix;
+
+        dealii::Vector<double> solution;
+        dealii::Vector<double> system_rhs;
+
+        // *************************************************************************************
+
+        // refine mesh
+        // triangulation.refine_global(1);
+
+        // setup dof handler
+        dof_handler.distribute_dofs(fe);
+        std::cout << "Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;
+
+        dealii::CompressedSparsityPattern c_sparsity(dof_handler.n_dofs());
+        dealii::DoFTools::make_sparsity_pattern (dof_handler, c_sparsity);
+        sparsity_pattern.copy_from(c_sparsity);
+        system_matrix.reinit (sparsity_pattern);
+
+        // reinit sln and rhs
+        solution.reinit (dof_handler.n_dofs());
+        system_rhs.reinit (dof_handler.n_dofs());
+
+        // assemble
+        dealii::QGauss<2>  quadrature_formula(5);
+        dealii::QGauss<2-1> face_quadrature_formula(5);
+
+        dealii::FEValues<2> fe_values (fe, quadrature_formula, dealii::update_values | dealii::update_gradients | dealii::update_JxW_values);
+        dealii::FEFaceValues<2> fe_face_values (fe, face_quadrature_formula, dealii::update_values | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
+
+        const unsigned int dofs_per_cell = fe.dofs_per_cell;
+        const unsigned int n_q_points = quadrature_formula.size();
+        const unsigned int n_face_q_points = face_quadrature_formula.size();
+
+        dealii::FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+        dealii::Vector<double> cell_rhs (dofs_per_cell);
+
+        std::vector<dealii::types::global_dof_index> local_dof_indices (dofs_per_cell);
+
+        dealii::DoFHandler<2>::active_cell_iterator cell = dof_handler.begin_active(), endc = dof_handler.end();
+        for (; cell!=endc; ++cell)
+        {
+            fe_values.reinit (cell);
+
+            // local matrix
+            cell_matrix = 0;
+            cell_rhs = 0;
+
+            double perm = 8.854e-12;
+            if (cell->material_id() == 1)
+                perm = 1 * perm;
+            if (cell->material_id() == 2)
+                perm = 10 * perm;
+
+            // matrix
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    for (unsigned int q_point=0; q_point<n_q_points; ++q_point)
+                        cell_matrix(i,j) += (fe_values.shape_grad (i, q_point) *
+                                             fe_values.shape_grad (j, q_point) *
+                                             perm *
+                                             fe_values.JxW (q_point));
+
+            // rhs
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int q_point=0; q_point<n_q_points; ++q_point)
+                    cell_rhs(i) += (fe_values.shape_value (i, q_point) *
+                                    0 *
+                                    fe_values.JxW (q_point));
+
+
+            // boundary (Neumann)
+            for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
+                {
+                    fe_face_values.reinit (cell, face);
+                    for (unsigned int q_point=0; q_point<n_face_q_points; ++q_point)
+                    {
+                        for (unsigned int i=0; i<dofs_per_cell; ++i)
+                            cell_rhs(i) += (// fe_face_values.normal_vector(q_point) *
+                                            1e-7 *
+                                            fe_face_values.shape_value(i, q_point) *
+                                            fe_face_values.JxW(q_point));
+                    }
+                }
+
+            cell->get_dof_indices (local_dof_indices);
+
+            // global matrix
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    system_matrix.add (local_dof_indices[i],
+                                       local_dof_indices[j],
+                                       cell_matrix(i,j));
+
+            // global rhs
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+                system_rhs(local_dof_indices[i]) += cell_rhs(i);
+        }
+
+        // Dirichlet
+        // voltage
+        std::vector<int> vv = {1, 6};
+        for (int i : vv)
+        {
+            std::map<dealii::types::global_dof_index,double> boundary_values;
+            dealii::VectorTools::interpolate_boundary_values (dof_handler, i, dealii::ConstantFunction<2>(1000), boundary_values);
+            dealii::MatrixTools::apply_boundary_values (boundary_values, system_matrix, solution, system_rhs);
+        }
+        // ground
+        std::vector<int> vg = {8, 9};
+        for (int i : vg)
+        {
+            std::map<dealii::types::global_dof_index,double> boundary_values;
+            dealii::VectorTools::interpolate_boundary_values (dof_handler, i, dealii::ZeroFunction<2>(), boundary_values);
+            dealii::MatrixTools::apply_boundary_values (boundary_values, system_matrix, solution, system_rhs);
+        }
+
+        dealii::Timer timer;
+        timer.start ();
+        // SolverControl solver_control (10000, 1e-11);
+        // SolverCG<> solver (solver_control);
+        // solver.solve (system_matrix, solution, system_rhs, PreconditionIdentity());
+
+        // umfpack
+        dealii::SparseDirectUMFPACK  A_direct;
+        A_direct.initialize(system_matrix);
+        A_direct.vmult (solution, system_rhs);
+
+        timer.stop ();
+        std::cout << "solved (" << timer () << "s)" << std::endl;
+
+        // output
+        int cycle = 0;
+        dealii::DataOut<2> data_out;
+        data_out.attach_dof_handler (dof_handler);
+        data_out.add_data_vector (solution, "solution");
+        data_out.build_patches ();
+
+        std::string filename = "solution-";
+        filename += ('0' + cycle);
+        std::ofstream output (filename + ".vtk");
+        data_out.write_vtk(output);
+
+        // point values
+        dealii::Point<2> p = dealii::Point<2>(0.0447658, 0.469707);
+        dealii::Functions::FEFieldFunction<2> localvalues(dof_handler, solution);
+        std::cout << "Local value (Agros2D 1188): " << localvalues.value(p) << std::endl;
+        dealii::Tensor<1, 2> grad = localvalues.gradient(p);
+        std::cout << "Local grad (Agros2D -5254, 2993): " << grad[0] << ", " << grad[1] << std::endl;
+
+        // volume
+        double total_volume = 0;
+        double energy = 0;
+        double charge = 0;
+
+        dealii::QGauss<2> quadrature_formula_int(5);
+        dealii::QGauss<2-1> face_quadrature_formula_int(5);
+
+        dealii::FEValues<2>  fe_values_int(dof_handler.get_fe(), quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points  | dealii::update_JxW_values);
+        dealii::FEFaceValues<2> fe_face_values_int(fe, face_quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
+
+        // const unsigned int n_q_points = fe_values_int.n_quadrature_points;
+        // const unsigned int n_face_q_points = face_quadrature_formula_int.size();
+
+        std::vector<dealii::Vector<double> > solution_values(n_q_points, dealii::Vector<double>(1));
+        std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(n_q_points, std::vector<dealii::Tensor<1,2> > (1));
+
+        std::vector<dealii::Vector<double> > solution_face_values(n_face_q_points, dealii::Vector<double>(1));
+        std::vector<std::vector<dealii::Tensor<1,2> > >  solution_face_grads(n_face_q_points, std::vector<dealii::Tensor<1,2> > (1));
+
+        // Then start the loop over all cells, and select those cells which are
+        // close enough to the evaluation point:
+        dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler.begin_active(), endc_int = dof_handler.end();
+        for (; cell_int != endc_int; ++cell_int)
+        {
+            // volume integration
+            if (cell_int->material_id() == 1)
+            {
+                fe_values_int.reinit (cell_int);
+                fe_values_int.get_function_values (solution, solution_values);
+                fe_values_int.get_function_gradients (solution, solution_grads);
+
+                for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                    energy += 0.5 * 1 * 8.854e-12 * (solution_grads[q][0] * solution_grads[q][0]) * fe_values_int.JxW (q);
+                    total_volume += fe_values_int.JxW (q);
+                }
+            }
+
+            // surface integration
+            for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                if (cell_int->face(face)->at_boundary() && (cell_int->face(face)->boundary_indicator() == 8 || cell_int->face(face)->boundary_indicator() == 9))
+                {
+                    fe_face_values_int.reinit (cell_int, face);
+                    fe_face_values_int.get_function_values (solution, solution_face_values);
+                    fe_face_values_int.get_function_gradients (solution, solution_face_grads);
+
+                    for (unsigned int q=0; q<n_face_q_points; ++q)
+                    {
+                        charge += 1 * 8.854e-12 * (fe_face_values_int.normal_vector(q) * solution_face_grads[q][0]) * fe_face_values_int.JxW(q);
+                    }
+                }
+        }
+
+        std::cout << "Volume (Agros2D 3.298): " << total_volume << std::endl;
+        std::cout << "Energy (Agros2D 1.762e-05): " << energy << std::endl;
+        std::cout << "Charge (Agros2D -2.730e-08): " << charge << std::endl;
+    }
+    */
 }
 
 bool MeshGenerator::prepare()

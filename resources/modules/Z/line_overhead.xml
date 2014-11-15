@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<module:module xmlns:module="XMLModule"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
+<module:field>
+  <module:general_field id="line_overhead" name="Overhead Line">
+    <module:description>Overhead line</module:description>
+    <module:analyses>
+      <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate" />
+    </module:analyses>
+  </module:general_field>
+
+  <module:constants />
+
+  <module:spaces>
+    <module:space analysistype="steadystate">
+      <module:space_config i="1" orderadjust="0" type="h1"/>
+    </module:space>
+  </module:spaces>
+
+  <module:volume>
+    <module:quantity id="line_overhead_r" shortname="lo_r"/>
+    <module:quantity id="line_overhead_l" shortname="lo_l"/>
+    <module:quantity id="line_overhead_c" shortname="lo_c"/>
+    <module:quantity id="line_overhead_g" shortname="lo_g"/>
+
+    <module:matrix_form id="equation" i="1" j="1" planar="(udx * vdx) - lo_r * lo_g * uval * vval + lo_l * lo_c * (udy * vdy) - (lo_r * lo_c + lo_g * lo_l) * uval * vdy" axi="" symmetric="0"/>
+ 
+    <module:weakforms_volume>
+      <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( c\,\, \grad u \right) + \vec{b} \cdot \grad u + a \cdot u = f">
+        <module:quantity id="line_overhead_r"/>
+        <module:quantity id="line_overhead_l"/>
+        <module:quantity id="line_overhead_c"/>
+        <module:quantity id="line_overhead_g"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="equation" />
+        </module:linearity_option>
+      </module:weakform_volume>
+
+    </module:weakforms_volume>
+  </module:volume>
+
+  <module:surface>
+    <module:quantity id="line_overhead_voltage" shortname="lo_u"/>
+    <module:quantity id="line_overhead_flux" shortname="lo_uf"/>
+
+    <module:essential_form id="solution" i="1" axi="lo_u" planar="lo_u"/>
+    <module:vector_form id="flux" i="1" j="1" axi="lo_uf * r * vval" planar="lo_uf * vval"/>
+
+      <module:weakforms_surface>
+      <module:weakform_surface analysistype="steadystate" default="line_overhead_voltage">
+        <module:boundary equation="u = u_0" id="line_overhead_voltage" name="Solution">
+          <module:quantity dependence="space" id="line_overhead_voltage"/>
+          
+          <module:linearity_option type="linear">
+            <module:essential_form id="solution"/>
+          </module:linearity_option>
+        </module:boundary>
+
+        <module:boundary equation="f_\mathrm{n} = c \frac{\partial u}{\partial n_0} = f_0" id="line_overhead_flux" name="Flux">
+          <module:quantity id="line_overhead_flux"/>
+          
+          <module:linearity_option type="linear">
+            <module:vector_form id="flux"/>
+          </module:linearity_option>
+        </module:boundary>
+      </module:weakform_surface>
+
+    </module:weakforms_surface>
+  </module:surface>
+
+  <module:error_calculator>
+        <module:calculator id="l2" name="L2 norm">
+           <module:expression analysistype="steadystate" axi="(uval * vval)"
+                                                      planar="(uval * vval)"/>
+        </module:calculator>
+        <module:calculator id="h1" name="H1 norm">
+       <module:expression analysistype="steadystate" axi="(uval * vval + udr * vdr + udz * vdz)"
+                                                  planar="(uval * vval + udx * vdx + udy * vdy)"/>
+        </module:calculator>
+  </module:error_calculator>
+
+  <module:preprocessor>
+    <module:gui type="volume">
+        <module:group name="">
+        <module:quantity default="1" id="line_overhead_r" name="Resistivity" shortname="r" shortname_html="&lt;i>R&lt;/i>" shortname_latex="R" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity default="0" id="line_overhead_l" name="Inductance" shortname="l" shortname_html="&lt;i>L&lt;/i>" shortname_latex="L" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity default="1" id="line_overhead_c" name="Capacity" shortname="c" shortname_html="&lt;i>C&lt;/i>" shortname_latex="C" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity default="0" id="line_overhead_g" name="Conductance" shortname="g" shortname_html="&lt;i>G&lt;/i>" shortname_latex="G" unit="-" unit_html="-" unit_latex="-"/>
+        </module:group>
+    </module:gui>
+    <module:gui type="surface">
+      <module:group>
+        <module:quantity id="line_overhead_voltage" name="Voltage" shortname="u" shortname_html="&lt;i>u&lt;/i>" shortname_latex="u" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity id="line_overhead_flux" name="" shortname="Flux" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" unit="-" unit_html="-" unit_latex="-"/>
+      </module:group>
+    </module:gui>
+  </module:preprocessor>
+
+  <module:postprocessor>
+    <module:localvariables>
+    <module:localvariable id="line_overhead_voltage" name="Solution" shortname="u" shortname_html="&lt;i>u&lt;/i>" shortname_latex="u" type="scalar" unit="-" unit_html="-" unit_latex="-">
+      <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
+    </module:localvariable>
+    <module:localvariable id="line_overhead_gradient" name="Gradient" shortname="g" shortname_html="&lt;i>g&lt;/i>" shortname_latex="g" type="vector" unit="-" unit_html="-" unit_latex="-">
+      <module:expression analysistype="steadystate" axi_r="dr1" axi_z="dz1" planar_x="dx1" planar_y="dy1"/>
+    </module:localvariable>
+    <module:localvariable id="line_overhead_flux" name="Flux" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" type="vector" unit="-" unit_html="-" unit_latex="-">
+      <module:expression analysistype="steadystate" axi_r="dr1" axi_z="dz1" planar_x="dx1" planar_y="dy1"/>
+    </module:localvariable>
+    </module:localvariables>
+
+    <module:view>
+      <module:scalar_view>
+        <module:default analysistype="steadystate" id="line_overhead_voltage"/>
+      </module:scalar_view>
+      <module:vector_view>
+        <module:default analysistype="steadystate" id="line_overhead_gradient"/>
+      </module:vector_view>
+    </module:view>
+
+    <module:volumeintegrals>
+      <module:volumeintegral id="line_overhead_volume" name="Volume" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="line_overhead_cross_section" name="Cross section" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
+        <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
+      </module:volumeintegral>      
+      <module:volumeintegral id="line_overhead_voltage" name="Solution" shortname="u" shortname_html="&lt;i>u&lt;/i>" shortname_latex="u" unit="m3" unit_html=" m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * value1" planar="value1"/>
+      </module:volumeintegral>
+    </module:volumeintegrals>
+
+    <module:surfaceintegrals>
+      <module:surfaceintegral id="line_overhead_length" name="Length" shortname="l" shortname_html="&lt;i>l&lt;/i>" shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
+        <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="line_overhead_surface" name="Surface" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="line_overhead_gradient" name="Gradient" shortname="g" shortname_html="&lt;i>g&lt;/i>" shortname_latex="g" unit="-" unit_html="-" unit_latex="-">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * (tanz * dr1 - tanr * dz1)" planar="(tany * dx1 - tanx * dy1)"/>
+      </module:surfaceintegral>
+      <module:surfaceintegral id="line_overhead_flux" name="Flux" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" unit="-" unit_html="-" unit_latex="-">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * (tanz * dr1 - tanr * dz1)" planar="(tany * dx1 - tanx * dy1)"/>
+      </module:surfaceintegral>
+    </module:surfaceintegrals>
+    <module:force/>
+  </module:postprocessor>
+
+</module:field>
+</module:module>
+

@@ -91,6 +91,8 @@ public:
     bool contains(FieldSolutionID solutionID) const;
     MultiArray<double> multiArray(FieldSolutionID solutionID);
     MultiArray<double> multiArray(BlockSolutionID solutionID);
+    MultiArrayDeal multiArrayDeal(FieldSolutionID solutionID);
+    MultiArrayDeal multiArrayDeal(BlockSolutionID solutionID);
 
     // returns MultiSolution with components related to last time step, in which was each respective field calculated
     // this time step can be different for respective fields due to time step skipping
@@ -98,6 +100,7 @@ public:
     MultiArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
 
     void addSolution(BlockSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
+    void addSolution(BlockSolutionID solutionID, MultiArrayDeal multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(BlockSolutionID solutionID);
 
     // removes all solutions with the given time step
@@ -139,15 +142,19 @@ public:
     void printDebugCacheStatus();
 
 private:
+    QMap<FieldSolutionID, MultiArrayDeal> m_multiSolutionDealCache;
+
     QList<FieldSolutionID> m_multiSolutions;
     QMap<FieldSolutionID, SolutionRunTimeDetails> m_multiSolutionRunTimeDetails;
     QMap<FieldSolutionID, MultiArray<double> > m_multiSolutionCache;
     QList<FieldSolutionID> m_multiSolutionCacheIDOrder;
 
     void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
+    void addSolution(FieldSolutionID solutionID, MultiArrayDeal multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID, bool saveRunTime = true);
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiArray);
+    void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArrayDeal multiArray);
 
     QString baseStoreFileName(FieldSolutionID solutionID) const;
 

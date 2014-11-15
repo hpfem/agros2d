@@ -19,6 +19,10 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/libdxfrw)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/poly2tri)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
+# deal.ii
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/build/include)
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/deal.II/include)
+# paralution
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 # gmsh
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/gmsh/Common)
@@ -79,6 +83,7 @@ ENDIF()
 
 SET(SOURCES value.cpp
     scene.cpp
+    meshgenerator.cpp
     confdialog.cpp
     util/conf.cpp
     util/global.cpp
@@ -122,11 +127,11 @@ SET(SOURCES value.cpp
     sceneview_post2d.cpp
     sceneview_post3d.cpp
     sceneview_particle.cpp
-    sceneview_vtk2d.cpp
-    meshgenerator.cpp
+    # sceneview_vtk2d.cpp
+    # meshgenerator.cpp
     meshgenerator_triangle.cpp
-    meshgenerator_gmsh.cpp
-    meshgenerator_netgen.cpp
+    # meshgenerator_gmsh.cpp
+    # meshgenerator_netgen.cpp
     chartdialog.cpp
     problemdialog.cpp
     scenetransformdialog.cpp
@@ -214,11 +219,11 @@ SET(SOURCES value.cpp
     sceneview_post2d.h
     sceneview_post3d.h
     sceneview_particle.h
-    sceneview_vtk2d.h
+    # sceneview_vtk2d.h
     meshgenerator.h
     meshgenerator_triangle.h
-    meshgenerator_gmsh.h
-    meshgenerator_netgen.h
+    # meshgenerator_gmsh.h
+    # meshgenerator_netgen.h
     chartdialog.h
     problemdialog.h
     scenetransformdialog.h
@@ -292,6 +297,7 @@ IF(WITH_QT5)
   QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets Svg UiTools OpenGL)
 ENDIF(WITH_QT5)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${TRIANGLE_LIBRARY} ${GMSH_LIBRARY} ${NETGEN_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES} ${ZLIB_LIBRARY} ${VTK_LIBRARIES})
+# ${GMSH_LIBRARY} ${NETGEN_LIBRARY} ${VTK_LIBRARIES}
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${DEAL_II_LIBRARIES} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${TRIANGLE_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES} ${ZLIB_LIBRARY})
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

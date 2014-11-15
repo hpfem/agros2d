@@ -25,6 +25,10 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
+#undef signals
+#include <deal.II/grid/tria.h>
+#define signals public
+
 namespace Module
 {
     struct ModuleAgros;
@@ -59,8 +63,10 @@ public:
     inline int numberId() const { return m_numberId; }
 
     inline Hermes::Hermes2D::MeshSharedPtr initialMesh() const { return m_initialMesh; }
-    inline void clearInitialMesh() { m_initialMesh = Hermes::Hermes2D::MeshSharedPtr();}
+    inline std::shared_ptr<dealii::Triangulation<2> > initialMeshDeal() const { return m_initialMeshDeal; }
+    void clearInitialMesh();
     void setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh);
+    void setInitialMesh(std::shared_ptr<dealii::Triangulation<2> > mesh);
 
     enum Type
     {
@@ -154,6 +160,7 @@ public:
 
     // refine mesh
     void refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh);
+    void refineMesh(std::shared_ptr<dealii::Triangulation<2> > mesh);
 
     // name
     QString name() const;
@@ -182,7 +189,7 @@ public:
     QList<Module::MaterialTypeVariable> materialTypeVariables() const;
 
     // list of all volume quantities
-    QList<QString>  allMaterialQuantities() const;
+    QList<QString> allMaterialQuantities() const;
 
     // variable by name
     bool materialTypeVariableContains(const QString &id) const;
@@ -255,6 +262,7 @@ private:
 
     // initial mesh
     Hermes::Hermes2D::MeshSharedPtr m_initialMesh;
+    std::shared_ptr<dealii::Triangulation<2> > m_initialMeshDeal;
 
     // analysis type
     AnalysisType m_analysisType;
