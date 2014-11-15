@@ -31,6 +31,22 @@
 
 #include "hermes2d/plugin_interface.h"
 
+#include <deal.II/grid/tria.h>
+#include <deal.II/dofs/dof_handler.h>
+
+#include <deal.II/fe/fe_q.h>
+#include <deal.II/dofs/dof_tools.h>
+
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/base/quadrature_lib.h>
+
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/fe/mapping_q1.h>
+#include <deal.II/numerics/fe_field_function.h>
+
+#include <deal.II/numerics/vector_tools.h>
+
+/*
 const double internal_coeff = 0.5;
 
 class {{CLASS}}SurfaceIntegralCalculator : public Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>
@@ -119,6 +135,7 @@ private:
     // field info
     const FieldInfo *m_fieldInfo;
 };
+*/
 
 {{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
     : IntegralValue(fieldInfo, timeStep, adaptivityStep, solutionType)
@@ -128,51 +145,75 @@ private:
 
 void {{CLASS}}SurfaceIntegral::calculate()
 {
+    int numberOfSolutions = m_fieldInfo->numberOfSolutions();
+
     m_values.clear();
-
-    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
-    // check existence
-    if (!Agros2D::solutionStore()->contains(fsid))
-        return;
-
-    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
 
     if (Agros2D::problem()->isSolved())
     {
+        FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+        // check existence
+        if (!Agros2D::solutionStore()->contains(fsid))
+            return;
+
+        MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
+
         // update time functions
         if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(m_fieldInfo);
-            Module::updateTimeFunctions(timeLevels[m_timeStep]);
+            Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(m_timeStep));
         }
 
-        std::vector<std::string> boundaryMarkers;
-        std::vector<std::string> internalMarkers;
-        for (int i = 0; i < Agros2D::scene()->edges->count(); i++)
+        dealii::QGauss<2-1> face_quadrature_formula_int(5);
+        const unsigned int n_face_q_points = face_quadrature_formula_int.size();
+
+        dealii::FEFaceValues<2> fe_face_values_int(ma.doFHandlers().at(0)->get_fe(), face_quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
+
+        std::vector<dealii::Vector<double> > solution_values(n_face_q_points, dealii::Vector<double>(1));
+        std::vector<std::vector<dealii::Tensor<1,2> > > solution_grads(n_face_q_points, std::vector<dealii::Tensor<1,2> > (1));
+
+        double *x = new double[n_face_q_points];
+        double *y = new double[n_face_q_points];
+
+        for (int iFace = 0; iFace < Agros2D::scene()->edges->count(); iFace++)
         {
-            SceneEdge *edge = Agros2D::scene()->edges->at(i);
-            if (edge->isSelected())
+            SceneEdge *edge = Agros2D::scene()->edges->at(iFace);
+            if (!edge->isSelected())
+                continue;
+
+            // Then start the loop over all cells, and select those cells which are close enough to the evaluation point:
+            dealii::DoFHandler<2>::active_cell_iterator cell_int = ma.doFHandlers().at(0)->begin_active(), endc_int = ma.doFHandlers().at(0)->end();
+            for (; cell_int != endc_int; ++cell_int)
             {
-                if (edge->marker(m_fieldInfo)->isNone())
-                    internalMarkers.push_back(QString::number(i).toStdString());
-                else
-                    boundaryMarkers.push_back(QString::number(i).toStdString());
+                SceneLabel *label = Agros2D::scene()->labels->at(cell_int->material_id() - 1);
+                SceneMaterial *material = label->marker(m_fieldInfo);
+
+                {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+                {{/VARIABLE_MATERIAL}}
+
+                // surface integration
+                for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                {
+                    if (cell_int->face(face)->at_boundary() && cell_int->face(face)->boundary_indicator() - 1 == iFace)
+                    {
+                        fe_face_values_int.reinit (cell_int, face);
+                        fe_face_values_int.get_function_values(ma.solutions().at(0), solution_values);
+                        fe_face_values_int.get_function_gradients(ma.solutions().at(0), solution_grads);
+
+                        {{#VARIABLE_SOURCE}}
+                        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+                        {
+                            for (unsigned int i = 0; i < n_face_q_points; ++i)
+                            {
+                                dealii::Point<2> normal = fe_face_values_int.normal_vector(i);
+
+                                m_values[QLatin1String("{{VARIABLE}}")] += fe_face_values_int.JxW(i) * ({{EXPRESSION}});
+                            }
+                        }
+                        {{/VARIABLE_SOURCE}}
+                    }
+                }
             }
-        }
-
-        if (internalMarkers.size() > 0 || boundaryMarkers.size() > 0)
-        {
-            {{CLASS}}SurfaceIntegralCalculator calc(m_fieldInfo, ma.solutions(), {{INTEGRAL_COUNT}});
-            double *internalValues = calc.calculate(internalMarkers);
-            double *boundaryValues = calc.calculate(boundaryMarkers);
-
-            {{#VARIABLE_SOURCE}}
-            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[QLatin1String("{{VARIABLE}}")] = internal_coeff * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
-            {{/VARIABLE_SOURCE}}
-
-            ::free(internalValues);
-            ::free(boundaryValues);
         }
     }
 }

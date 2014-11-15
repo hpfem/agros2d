@@ -197,8 +197,7 @@ PostHermes::PostHermes() :
     m_isProcessed(false),
     m_linInitialMeshView(NULL),
     m_linSolutionMeshView(NULL),
-    m_orderView(NULL),
-    m_vecVectorView(NULL)
+    m_orderView(NULL)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(Agros2D::problem(), SIGNAL(clearedSolution()), this, SLOT(clearView()));

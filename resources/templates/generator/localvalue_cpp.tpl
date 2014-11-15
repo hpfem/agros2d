@@ -24,13 +24,18 @@
 #include "util.h"
 #include "util/global.h"
 
-
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
 #include "hermes2d/solutionstore.h"
 
 #include "hermes2d/plugin_interface.h"
+
+#include <deal.II/grid/tria.h>
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/fe/mapping_q1.h>
+#include <deal.II/numerics/fe_field_function.h>
+
 
 {{CLASS}}LocalValue::{{CLASS}}LocalValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                          const Point &point)
@@ -45,69 +50,54 @@ void {{CLASS}}LocalValue::calculate()
 
     m_values.clear();
 
-    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
-    // check existence
-    if (!Agros2D::solutionStore()->contains(fsid))
-        return;
-
-    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
-
-    // update time functions
-    if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)
-    {
-       Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(m_timeStep));
-    }
-
     if (Agros2D::problem()->isSolved())
     {
-        double x = m_point.x;
-        double y = m_point.y;
-
-        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, m_fieldInfo->initialMesh(),
-                                                                                                 m_point.x, m_point.y);
-        if (e)
+        try
         {
-            // find marker
-            SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
-            SceneMaterial *material = label->marker(m_fieldInfo);
+            FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+            // check existence
+            if (!Agros2D::solutionStore()->contains(fsid))
+                return;
 
-            int elementMarker = e->marker;
+            MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
+
+            // update time functions
+            if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)
+            {
+                Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(m_timeStep));
+            }
+
+            dealii::Point<2> p(m_point.x, m_point.y);
+            std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+                    dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMeshDeal().get(), p);
+
+            // find marker
+            SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
+            SceneMaterial *material = label->marker(m_fieldInfo);
 
             {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
             {{/VARIABLE_MATERIAL}}
-            {{#SPECIAL_FUNCTION_SOURCE}}
-            QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};
-            if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
-                {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
-            {{/SPECIAL_FUNCTION_SOURCE}}
 
-            double *value = new double[numberOfSolutions];
-            double *dudx = new double[numberOfSolutions];
-            double *dudy = new double[numberOfSolutions];
+            double *solution_values = new double[numberOfSolutions];
+            dealii::Tensor<1, 2> *solution_grads = new dealii::Tensor<1, 2>[numberOfSolutions];
 
             for (int k = 0; k < numberOfSolutions; k++)
             {
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)
                 {
-
                     // set variables
-                    value[k] = m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
-                    dudx[k] = 0;
-                    dudy[k] = 0;
+                    solution_values[k] = m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
+                    solution_grads[k][0] = 0;
+                    solution_grads[k][1] = 0;
                 }
                 else
                 {
                     // point values
-                    Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(m_point.x, m_point.y, true);
+                    dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandlers().at(0), ma.solutions().at(0));
 
                     // set variables
-                    value[k] = values->val[0];
-                    dudx[k] = values->dx[0];
-                    dudy[k] = values->dy[0];
-
-                    // values->free_fn();
-                    // values->free_ord();
-                    delete values;
+                    solution_values[k] = localvalues.value(p);
+                    solution_grads[k] = localvalues.gradient(p);
                 }
             }
 
@@ -118,9 +108,12 @@ void {{CLASS}}LocalValue::calculate()
                 m_values[QLatin1String("{{VARIABLE}}")] = LocalPointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
             {{/VARIABLE_SOURCE}}
 
-            delete [] value;
-            delete [] dudx;
-            delete [] dudy;
+            delete [] solution_values;
+            delete [] solution_grads;
+        }
+        catch (const typename dealii::GridTools::ExcPointNotFound<2> &e)
+        {
+            qDebug() << e.what();
         }
     }
 }

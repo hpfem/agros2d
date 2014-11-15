@@ -360,8 +360,8 @@ void ParserInstance::addPostprocessorBasic()
         m_dict["x"] = "x[i]";
         m_dict["y"] = "y[i]";
         // surface integral
-        m_dict["tanx"] = "e->tx[i]";
-        m_dict["tany"] = "e->ty[i]";
+        m_dict["tanx"] = "(-normal[1])"; // "e->tx[i]";
+        m_dict["tany"] = "(normal[0])"; // "e->ty[i]";
         // velocity (force calculation)
         m_dict["velx"] = "velocity.x";
         m_dict["vely"] = "velocity.y";
@@ -372,8 +372,8 @@ void ParserInstance::addPostprocessorBasic()
         m_dict["r"] = "x[i]";
         m_dict["z"] = "y[i]";
         // surface integral
-        m_dict["tanr"] = "e->tx[i]";
-        m_dict["tanz"] = "e->ty[i]";
+        m_dict["tanr"] = "(-normal[1])"; // "e->tx[i]";
+        m_dict["tanz"] = "(normal[0])"; // "e->ty[i]";
         // velocity (force calculation)
         m_dict["velr"] = "velocity.x";
         m_dict["velz"] = "velocity.y";
@@ -389,16 +389,16 @@ void ParserInstance::addPostprocessorBasic()
     // functions
     for (int i = 1; i < m_parserModuleInfo.numSolutions + 1; i++)
     {
-        m_dict[QString("value%1").arg(i)] = QString("value[%1][i]").arg(i-1);
+        m_dict[QString("value%1").arg(i)] = QString("solution_values[i][%1]").arg(i-1); // QString("value[%1][i]").arg(i-1);
         if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
-            m_dict[QString("dx%1").arg(i)] = QString("dudx[%1][i]").arg(i-1);
-            m_dict[QString("dy%1").arg(i)] = QString("dudy[%1][i]").arg(i-1);
+            m_dict[QString("dx%1").arg(i)] = QString("solution_grads[i][%1][0]").arg(i-1); // QString("dudx[%1][i]").arg(i-1);
+            m_dict[QString("dy%1").arg(i)] = QString("solution_grads[i][%1][1]").arg(i-1); // QString("dudy[%1][i]").arg(i-1);
         }
         else
         {
-            m_dict[QString("dr%1").arg(i)] = QString("dudx[%1][i]").arg(i-1);
-            m_dict[QString("dz%1").arg(i)] = QString("dudy[%1][i]").arg(i-1);
+            m_dict[QString("dr%1").arg(i)] = QString("solution_grads[i][%1][0]").arg(i-1); // QString("dudx[%1][i]").arg(i-1);
+            m_dict[QString("dz%1").arg(i)] = QString("solution_grads[i][%1][1]").arg(i-1); // QString("dudy[%1][i]").arg(i-1);
         }
     }
     // eggshell

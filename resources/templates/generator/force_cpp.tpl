@@ -30,6 +30,11 @@
 
 #include "hermes2d/plugin_interface.h"
 
+#include <deal.II/grid/tria.h>
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/fe/mapping_q1.h>
+#include <deal.II/numerics/fe_field_function.h>
+
 bool hasForce{{CLASS}}(const FieldInfo *fieldInfo)
 {
     {{#VARIABLE_SOURCE}}
@@ -49,7 +54,7 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
     int numberOfSolutions = fieldInfo->numberOfSolutions();
 
     FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
-    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+    MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
@@ -69,41 +74,48 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
         double x = point.x;
         double y = point.y;
 
-        double *value = new double[numberOfSolutions];
-        double *dudx = new double[numberOfSolutions];
-        double *dudy = new double[numberOfSolutions];
+        double *solution_values = new double[numberOfSolutions];
+        dealii::Tensor<1, 2> *solution_grads = new dealii::Tensor<1, 2>[numberOfSolutions];
 
         for (int k = 0; k < numberOfSolutions; k++)
         {
             // point values
-            // point values
-            Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(point.x, point.y, true, element);
-            if (!values)
+            try
+            {
+                dealii::Point<2> p(point.x, point.y);
+                std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+                        dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *fieldInfo->initialMeshDeal().get(), p);
+
+                // find marker
+                SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
+                SceneMaterial *material = label->marker(fieldInfo);
+
+                if ((fieldInfo->analysisType() == AnalysisType_Transient) && timeStep == 0)
+                {
+                    // set variables
+                    solution_values[k] = fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
+                    solution_grads[k][0] = 0;
+                    solution_grads[k][1] = 0;
+                }
+                else
+                {
+                    // point values
+                    dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandlers().at(0), ma.solutions().at(0));
+
+                    // set variables
+                    solution_values[k] = localvalues.value(p);
+                    solution_grads[k] = localvalues.gradient(p);
+                }
+            }
+            catch (const typename dealii::GridTools::ExcPointNotFound<2> &e)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
 
-                delete [] value;
-                delete [] dudx;
-                delete [] dudy;
+                delete [] solution_values;
+                delete [] solution_grads;
 
                 return res;
             }
-
-            double val;
-            if ((fieldInfo->analysisType() == AnalysisType_Transient) && timeStep == 0)
-                // const solution at first time step
-                val = fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
-            else
-                val = values->val[0];
-
-            // set variables
-            value[k] = val;
-            dudx[k] = values->dx[0];
-            dudy[k] = values->dy[0];
-
-            // values->free_fn();
-            // values->free_ord();
-            delete values;
         }
 
         {{#VARIABLE_SOURCE}}
@@ -116,9 +128,8 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
         }
         {{/VARIABLE_SOURCE}}
 
-        delete [] value;
-        delete [] dudx;
-        delete [] dudy;
+        delete [] solution_values;
+        delete [] solution_grads;
     }
 
     return res;

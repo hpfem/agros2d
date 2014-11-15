@@ -101,7 +101,6 @@ public:
     inline QList<PostTriangle> &scalarValues() { return m_scalarValues; }
 
     // vector view
-    inline Hermes::Hermes2D::Views::Vectorizer *vecVectorView() { return m_vecVectorView; }
     inline QList<PostTriangle> &vectorXValues() { return m_vectorXValues; }
     inline QList<PostTriangle> &vectorYValues() { return m_vectorYValues; }
 
@@ -148,9 +147,6 @@ private:
 
     // order view
     Hermes::Hermes2D::Views::Orderizer *m_orderView;
-
-    // vector view
-    Hermes::Hermes2D::Views::Vectorizer *m_vecVectorView; // vectorizer for vector view
 
     // contour
     QList<PostTriangle> m_contourValues;

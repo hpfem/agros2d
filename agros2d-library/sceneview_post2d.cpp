@@ -529,78 +529,6 @@ void SceneViewPost2D::paintVectors()
 {
     if (!Agros2D::problem()->isSolved()) return;
 
-    /*
-    static QVector<QVector2D> arrayMesh;
-
-    if (m_listVectors == -1)
-    {
-        arrayMesh.clear();
-
-        FieldSolutionID fsid(m_postHermes->activeViewField(), m_postHermes->activeTimeStep(), m_postHermes->activeAdaptivityStep(), m_postHermes->activeAdaptivitySolutionType());
-        MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
-
-        std::vector<std::string> markers;
-        for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
-        {
-            SceneLabel *label = Agros2D::scene()->labels->at(i);
-            if (label->isSelected())
-                markers.push_back(QString::number(i).toStdString());
-        }
-
-        std::vector<std::string> markersInverted;
-        for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
-        {
-            SceneLabel *label = Agros2D::scene()->labels->at(i);
-            if (!label->isSelected())
-                markersInverted.push_back(QString::number(i).toStdString());
-        }
-
-        if (markers.size() > 0 && markersInverted.size() > 0)
-        {
-            Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 2);
-            eggShellMesh.get()->refine_towards_boundary(Hermes::Hermes2D::EggShell::eggShell1Marker, 2);
-            if(eggShellMesh->get_num_active_elements() == 0)
-              return;
-            // Hermes::Hermes2D::MeshFunctionSharedPtr<double> eggShell(new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 2));
-
-            Hermes::Hermes2D::Views::Linearizer linMeshView(Hermes::Hermes2D::OpenGL);
-            linMeshView.set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(0));
-            linMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(eggShellMesh)));
-
-            // edges
-            arrayMesh.reserve(2 * linMeshView.get_edge_count());
-
-            for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-                 it = linMeshView.edges_begin(); !it.end; ++it)
-            {
-                Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
-
-                arrayMesh.append(QVector2D(edge[0][0], edge[0][1]));
-                arrayMesh.append(QVector2D(edge[1][0], edge[1][1]));
-            }
-
-            m_listVectors = 0;
-        }
-    }
-    else
-    {
-        loadProjection2d(true);
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3d(COLORINITIALMESH[0], COLORINITIALMESH[1], COLORINITIALMESH[2]);
-        glLineWidth(1.3);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-
-        glVertexPointer(2, GL_FLOAT, 0, arrayMesh.constData());
-        glDrawArrays(GL_LINES, 0, arrayMesh.size());
-
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    return;
-    */
-
     loadProjection2d(true);
 
     if (m_listVectors == -1)
@@ -631,7 +559,7 @@ void SceneViewPost2D::paintVectors()
             {
                 try
                 {
-                    dealii::Point<2> point = dealii::Point<2>(rect.start.x + i * gs + ((j % 2 == 0) ? 0 : gs / 2.0), rect.start.y + j * gs);
+                    dealii::Point<2> point(rect.start.x + i * gs + ((j % 2 == 0) ? 0 : gs / 2.0), rect.start.y + j * gs);
                     dealii::Tensor<1, 2> grad = localvalues.gradient(point);
 
                     points.append(point);
@@ -831,6 +759,7 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
                 glEnd();
 
                 // connect with inner label, outer normal should be in opposite dirrection, but not allways, depends on geometry!
+                /*
                 glLineWidth(2.0);
                 glBegin(GL_LINES);
                 glVertex2d((edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2., (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2.);
@@ -838,7 +767,7 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
                 glVertex2d(label->point().x, label->point().y);
 
                 glEnd();
-
+                */
             }
             else
             {

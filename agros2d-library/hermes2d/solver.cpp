@@ -659,6 +659,8 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
             cell_matrix = 0;
             cell_rhs = 0;
 
+            qDebug() << cell->material_id();
+
             double perm = 8.854e-12;
             if (cell->material_id() == 1)
                 perm = 1 * perm;
