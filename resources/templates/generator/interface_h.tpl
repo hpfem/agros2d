@@ -38,55 +38,55 @@ class {{CLASS}}Interface : public QObject, public PluginInterface
 #endif
 
 public:
-    {{CLASS}}Interface();
-    virtual ~{{CLASS}}Interface();
+{{CLASS}}Interface();
+virtual ~{{CLASS}}Interface();
 
-    inline virtual QString fieldId() { return "{{ID}}"; }
+inline virtual QString fieldId() { return "{{ID}}"; }
 
-    // weakforms
-    virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
-    virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
-    virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
+// weakforms
+virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
+virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
+virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
+virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
 
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh);
+virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh);
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
+virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
 
-    // postprocessor
-    // filter
-    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                 std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
-                                                 const QString &variable,
-                                                 PhysicFieldVariableComp physicFieldVariableComp);
+// postprocessor
+// filter
+virtual std::shared_ptr<dealii::DataPostprocessorScalar<2> > filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                                    MultiArrayDeal *ma,
+                                                                    const QString &variable,
+                                                                    PhysicFieldVariableComp physicFieldVariableComp);
 
-    // error calculators
-    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
-                                                                       const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
+// error calculators
+virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
+                                                                   const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
 
-    // local values
-    virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
-    // surface integrals
-    virtual IntegralValue *surfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
-    // volume integrals
-    virtual IntegralValue *volumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
+// local values
+virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
+// surface integrals
+virtual IntegralValue *surfaceIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
+// volume integrals
+virtual IntegralValue *volumeIntegral(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
-    // force calculation
-    virtual Point3 force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                         Hermes::Hermes2D::Element *element, SceneMaterial *material,
-                         const Point3 &point, const Point3 &velocity);
-    virtual bool hasForce(const FieldInfo *fieldInfo);
+// force calculation
+virtual Point3 force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                     Hermes::Hermes2D::Element *element, SceneMaterial *material,
+                     const Point3 &point, const Point3 &velocity);
+virtual bool hasForce(const FieldInfo *fieldInfo);
 
 
-    // localization
-    virtual QString localeName(const QString &name);
+// localization
+virtual QString localeName(const QString &name);
 
-    // description of module
-    virtual QString localeDescription();
+// description of module
+virtual QString localeDescription();
 
 private:
-    {{#EXT_FUNCTIONS_PART}} AgrosExtFunction *{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
-    {{/EXT_FUNCTIONS_PART}}
+{{#EXT_FUNCTIONS_PART}} AgrosExtFunction *{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
+{{/EXT_FUNCTIONS_PART}}
 
 };
 

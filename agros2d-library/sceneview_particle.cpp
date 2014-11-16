@@ -424,8 +424,8 @@ void ParticleTracingWidget::doApply()
 
 // *************************************************************************************************
 
-SceneViewParticleTracing::SceneViewParticleTracing(PostHermes *postHermes, QWidget *parent)
-    : SceneViewCommon3D(postHermes, parent),
+SceneViewParticleTracing::SceneViewParticleTracing(PostDeal *postDeal, QWidget *parent)
+    : SceneViewCommon3D(postDeal, parent),
       m_listParticleTracing(-1)
 {
     createActionsParticleTracing();
@@ -434,7 +434,7 @@ SceneViewParticleTracing::SceneViewParticleTracing(PostHermes *postHermes, QWidg
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+    connect(m_postDeal, SIGNAL(processed()), this, SLOT(refresh()));
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));

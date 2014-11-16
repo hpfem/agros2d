@@ -28,7 +28,7 @@ class SceneViewMesh : public SceneViewCommon2D
     Q_OBJECT
 
 public:
-    SceneViewMesh(PostHermes *postHermes, QWidget *parent = 0);
+    SceneViewMesh(PostDeal *postDeal, QWidget *parent = 0);
     ~SceneViewMesh();
 
     QAction *actSceneModeMesh;

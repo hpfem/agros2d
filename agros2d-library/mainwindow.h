@@ -23,7 +23,7 @@
 #include "util.h"
 #include "util/enums.h"
 
-class PostHermes;
+class PostDeal;
 class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewPreprocessor;
@@ -205,7 +205,7 @@ private:
     SceneViewWidget *sceneViewBlankWidget;
     SceneViewWidget *sceneViewChartWidget;
 
-    PostHermes *postHermes;
+    PostDeal *postDeal;
 
     QStackedLayout *tabViewLayout;
     InfoWidget *sceneInfoWidget;

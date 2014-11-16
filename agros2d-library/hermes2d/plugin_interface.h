@@ -34,8 +34,13 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/field.h"
 #include "hermes2d/weak_form.h"
+#include "../sceneview_post.h"
 
 #include "../../resources_source/classes/module_xml.h"
+
+#undef signals
+#include <deal.II/numerics/data_postprocessor.h>
+#define signals public
 
 class PositionInfo;
 
@@ -59,7 +64,7 @@ public:
 protected:
     const FieldInfo* m_fieldInfo;
     const WeakFormAgros<double>* m_wfAgros;
-   // int m_formsOffset;
+    // int m_formsOffset;
 
 };
 
@@ -227,12 +232,12 @@ protected:
     // time discretisation table
     BDF2Table **m_table;
 
-//    // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
-//    // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
-//    // before the shift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
-//    // and the original position
-//    int m_offsetI;
-//    int m_offsetJ;
+    //    // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
+    //    // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
+    //    // before the shift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
+    //    // and the original position
+    //    int m_offsetI;
+    //    int m_offsetJ;
 
     const WeakFormAgros<Scalar> *m_wfAgros;
 
@@ -312,10 +317,10 @@ public:
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                                   std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
-                                                                   const QString &variable,
-                                                                   PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    virtual std::shared_ptr<dealii::DataPostprocessorScalar<2> > filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                                        MultiArrayDeal *ma,
+                                                                        const QString &variable,
+                                                                        PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     // local values
     virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) = 0;

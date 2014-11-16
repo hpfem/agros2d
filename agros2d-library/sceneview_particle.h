@@ -98,7 +98,7 @@ public slots:
     void processParticleTracing();
 
 public:
-    SceneViewParticleTracing(PostHermes *postHermes, QWidget *parent = 0);
+    SceneViewParticleTracing(PostDeal *postDeal, QWidget *parent = 0);
     ~SceneViewParticleTracing();
 
     QAction *actSceneModeParticleTracing;

@@ -129,7 +129,7 @@ AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, Q
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
 {
-       {{#VOLUME_MATRIX_SOURCE}}
+    {{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
             (form->id == "{{WEAKFORM_ID}}"))
         if ({{EXPRESSION_CHECK}})
@@ -143,7 +143,7 @@ VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID pr
 {
     {{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}"))
+            (form->id == "{{WEAKFORM_ID}}"))
         if ({{EXPRESSION_CHECK}})
             return new {{FUNCTION_NAME}}<double>(form->i - 1 , form->j - 1, wfAgros);
     {{/VOLUME_VECTOR_SOURCE}}
@@ -155,7 +155,7 @@ MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID 
 {
     {{#SURFACE_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
+            (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
         return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/SURFACE_MATRIX_SOURCE}}
 
@@ -166,7 +166,7 @@ VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID 
 {
     {{#SURFACE_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
+            (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
         return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
     {{/SURFACE_VECTOR_SOURCE}}
 
@@ -177,7 +177,7 @@ ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const Proble
 {
     {{#EXACT_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-         (form->id == "{{WEAKFORM_ID}}"))
+            (form->id == "{{WEAKFORM_ID}}"))
         return new {{FUNCTION_NAME}}<double>(mesh);
     {{/EXACT_SOURCE}}
 
@@ -190,12 +190,12 @@ Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(c
     return new {{CLASS}}ErrorCalculator<double>(fieldInfo, calculator, errorType);
 }
 
-Hermes::Hermes2D::MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
-                                                     const QString &variable,
-                                                     PhysicFieldVariableComp physicFieldVariableComp)
+std::shared_ptr<dealii::DataPostprocessorScalar<2> > {{CLASS}}Interface::filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                                                MultiArrayDeal *ma,
+                                                                                const QString &variable,
+                                                                                PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp));
+    return std::shared_ptr<dealii::DataPostprocessorScalar<2> >(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, ma, variable, physicFieldVariableComp));
 }
 
 LocalValue *{{CLASS}}Interface::localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
@@ -227,11 +227,11 @@ bool {{CLASS}}Interface::hasForce(const FieldInfo *fieldInfo)
 
 QString {{CLASS}}Interface::localeName(const QString &name)
 {
-   {{#NAMES}}
-   if (name == "{{NAME}}")
-	return tr("{{NAME}}"); 
-   {{/NAMES}}
-   return name;	
+    {{#NAMES}}
+    if (name == "{{NAME}}")
+        return tr("{{NAME}}");
+    {{/NAMES}}
+    return name;
 }
 
 QString {{CLASS}}Interface::localeDescription()

@@ -115,17 +115,17 @@ void PyViewMeshAndPost::setActiveTimeStep(int timeStep)
     if (silentMode())
         return;
 
-    FieldInfo *fieldInfo = currentPythonEngineAgros()->postHermes()->activeViewField();
+    FieldInfo *fieldInfo = currentPythonEngineAgros()->postDeal()->activeViewField();
     if (!Agros2D::solutionStore()->timeLevels(fieldInfo).contains(Agros2D::problem()->timeStepToTotalTime(timeStep)))
         throw out_of_range(QObject::tr("Field '%1' does not have solution for time step %2 (%3 s).").arg(fieldInfo->fieldId()).
                            arg(timeStep).arg(Agros2D::problem()->timeStepToTotalTime(timeStep)).toStdString());
 
-    SolutionMode solutionType = currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType();
+    SolutionMode solutionType = currentPythonEngineAgros()->postDeal()->activeAdaptivitySolutionType();
     int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, solutionType, timeStep);
 
-    currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
-    currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
-    currentPythonEngineAgros()->postHermes()->refresh();
+    currentPythonEngineAgros()->postDeal()->setActiveTimeStep(timeStep);
+    currentPythonEngineAgros()->postDeal()->setActiveAdaptivityStep(adaptivityStep);
+    currentPythonEngineAgros()->postDeal()->refresh();
 }
 
 void PyViewMeshAndPost::setActiveAdaptivityStep(int adaptivityStep)
@@ -133,19 +133,19 @@ void PyViewMeshAndPost::setActiveAdaptivityStep(int adaptivityStep)
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    int last_step = Agros2D::solutionStore()->lastAdaptiveStep(currentPythonEngineAgros()->postHermes()->activeViewField(),
-                                                               currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType(),
-                                                               currentPythonEngineAgros()->postHermes()->activeTimeStep());
+    int last_step = Agros2D::solutionStore()->lastAdaptiveStep(currentPythonEngineAgros()->postDeal()->activeViewField(),
+                                                               currentPythonEngineAgros()->postDeal()->activeAdaptivitySolutionType(),
+                                                               currentPythonEngineAgros()->postDeal()->activeTimeStep());
 
     if (adaptivityStep < 1 || adaptivityStep > last_step + 1)
         throw out_of_range(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.")
-                           .arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId())
+                           .arg(currentPythonEngineAgros()->postDeal()->activeViewField()->fieldId())
                            .arg(last_step + 1).toStdString());
 
     if (!silentMode())
     {
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep - 1);
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->setActiveAdaptivityStep(adaptivityStep - 1);
+        currentPythonEngineAgros()->postDeal()->refresh();
     }
 }
 
@@ -157,14 +157,14 @@ void PyViewMeshAndPost::setActiveSolutionType(const std::string &solutionType)
     if (!solutionTypeStringKeys().contains(QString::fromStdString(solutionType)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-    if (currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivityType() == AdaptivityMethod_None)
+    if (currentPythonEngineAgros()->postDeal()->activeViewField()->adaptivityType() == AdaptivityMethod_None)
         throw logic_error(QObject::tr("Field '%1' was not solved with space adaptivity.").
-                          arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).toStdString());
+                          arg(currentPythonEngineAgros()->postDeal()->activeViewField()->fieldId()).toStdString());
 
     if (!silentMode())
     {
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString::fromStdString(solutionType)));
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString::fromStdString(solutionType)));
+        currentPythonEngineAgros()->postDeal()->refresh();
     }
 }
 
@@ -191,7 +191,7 @@ void PyViewMesh::activate()
     if (!silentMode())
     {
         currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
     }
 }
 
@@ -200,7 +200,7 @@ void PyViewMesh::refresh()
     checkExistingMesh();
 
     if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
 }
 
 void PyViewMesh::setField(const std::string &fieldId)
@@ -215,8 +215,8 @@ void PyViewMesh::setField(const std::string &fieldId)
 
     FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(QString::fromStdString(fieldId));
 
-    currentPythonEngineAgros()->postHermes()->setActiveViewField(fieldInfo);
-    currentPythonEngineAgros()->postHermes()->refresh();
+    currentPythonEngineAgros()->postDeal()->setActiveViewField(fieldInfo);
+    currentPythonEngineAgros()->postDeal()->refresh();
 }
 
 void PyViewMesh::setOrderViewPalette(const std::string &palette)
@@ -234,8 +234,8 @@ void PyViewMesh::setComponent(int component)
 {
     checkExistingMesh();
 
-    if (component < 1 && component > currentPythonEngineAgros()->postHermes()->activeViewField()->numberOfSolutions())
-        throw out_of_range(QObject::tr("Component must be in the range from 1 to %1.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->numberOfSolutions()).toStdString());
+    if (component < 1 && component > currentPythonEngineAgros()->postDeal()->activeViewField()->numberOfSolutions())
+        throw out_of_range(QObject::tr("Component must be in the range from 1 to %1.").arg(currentPythonEngineAgros()->postDeal()->activeViewField()->numberOfSolutions()).toStdString());
 
     if (!silentMode())
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderComponent, component);
@@ -268,8 +268,8 @@ void PyViewPost::setField(const std::string &fieldId)
         return;
 
     FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(QString::fromStdString(fieldId));
-    SolutionMode solutionType = currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType();
-    int timeStep = currentPythonEngineAgros()->postHermes()->activeTimeStep();
+    SolutionMode solutionType = currentPythonEngineAgros()->postDeal()->activeAdaptivitySolutionType();
+    int timeStep = currentPythonEngineAgros()->postDeal()->activeTimeStep();
 
     if (fieldInfo->adaptivityType() == AdaptivityMethod_None)
         solutionType = SolutionMode_Normal;
@@ -280,11 +280,11 @@ void PyViewPost::setField(const std::string &fieldId)
     // set last adaptivity step (keeping of previous step can be misleading)
     int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, solutionType, timeStep);
 
-    currentPythonEngineAgros()->postHermes()->setActiveViewField(fieldInfo);
-    currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
-    currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
-    currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionType);
-    currentPythonEngineAgros()->postHermes()->refresh();
+    currentPythonEngineAgros()->postDeal()->setActiveViewField(fieldInfo);
+    currentPythonEngineAgros()->postDeal()->setActiveTimeStep(timeStep);
+    currentPythonEngineAgros()->postDeal()->setActiveAdaptivityStep(adaptivityStep);
+    currentPythonEngineAgros()->postDeal()->setActiveAdaptivitySolutionType(solutionType);
+    currentPythonEngineAgros()->postDeal()->refresh();
 }
 
 void PyViewPost::setScalarViewVariable(const std::string &var)
@@ -292,7 +292,7 @@ void PyViewPost::setScalarViewVariable(const std::string &var)
     checkExistingSolution();
 
     QStringList list;
-    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewScalarVariables())
+    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postDeal()->activeViewField()->viewScalarVariables())
     {
         list.append(variable.id());
         if (variable.id() == QString::fromStdString(var))
@@ -339,7 +339,7 @@ void PyViewPost2D::activate()
     if (!silentMode())
     {
         currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
     }
 }
 
@@ -348,7 +348,7 @@ void PyViewPost2D::refresh()
     checkExistingSolution();
 
     if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
 }
 
 void PyViewPost2D::setContourVariable(const std::string &var)
@@ -356,7 +356,7 @@ void PyViewPost2D::setContourVariable(const std::string &var)
     checkExistingSolution();
 
     QStringList list;
-    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewScalarVariables())
+    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postDeal()->activeViewField()->viewScalarVariables())
     {
         if (variable.isScalar())
         {
@@ -395,7 +395,7 @@ void PyViewPost2D::setVectorVariable(const std::string &var)
     checkExistingSolution();
 
     QStringList list;
-    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewVectorVariables())
+    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postDeal()->activeViewField()->viewVectorVariables())
     {
         list.append(variable.id());
         if (variable.id() == QString::fromStdString(var))
@@ -442,7 +442,7 @@ void PyViewPost3D::activate()
     if (!silentMode())
     {
         currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->trigger();
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
     }
 }
 
@@ -451,7 +451,7 @@ void PyViewPost3D::refresh()
     checkExistingSolution();
 
     if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
 }
 
 void PyViewPost3D::setPost3DMode(const std::string &mode)
@@ -473,7 +473,7 @@ void PyViewParticleTracing::activate()
     if (!silentMode())
     {
         currentPythonEngineAgros()->sceneViewParticleTracing()->actSceneModeParticleTracing->trigger();
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
     }
 }
 
@@ -483,5 +483,5 @@ void PyViewParticleTracing::refresh()
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
     if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
+        currentPythonEngineAgros()->postDeal()->refresh();
 }

@@ -34,7 +34,7 @@ public slots:
     virtual void clear();
 
 public:
-    SceneViewPost3D(PostHermes *postHermes, QWidget *parent = 0);
+    SceneViewPost3D(PostDeal *postDeal, QWidget *parent = 0);
     ~SceneViewPost3D();
 
     QAction *actSceneModePost3D;

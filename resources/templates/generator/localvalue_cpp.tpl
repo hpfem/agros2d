@@ -113,7 +113,7 @@ void {{CLASS}}LocalValue::calculate()
         }
         catch (const typename dealii::GridTools::ExcPointNotFound<2> &e)
         {
-            qDebug() << e.what();
+            // qDebug() << e.what();
         }
     }
 }

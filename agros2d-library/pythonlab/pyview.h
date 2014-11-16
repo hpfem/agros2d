@@ -92,17 +92,17 @@ struct PyViewMeshAndPost : PyViewClass
 {
     // time step
     void setActiveTimeStep(int timeStep);
-    inline int getActiveTimeStep() const { return currentPythonEngineAgros()->postHermes()->activeTimeStep(); }
+    inline int getActiveTimeStep() const { return currentPythonEngineAgros()->postDeal()->activeTimeStep(); }
 
     // adaptivity step
     void setActiveAdaptivityStep(int adaptivityStep);
-    inline int getActiveAdaptivityStep() const { return currentPythonEngineAgros()->postHermes()->activeAdaptivityStep(); }
+    inline int getActiveAdaptivityStep() const { return currentPythonEngineAgros()->postDeal()->activeAdaptivityStep(); }
 
     // solution type
     void setActiveSolutionType(const std::string &solutionType);
     inline std::string getActiveSolutionType() const
     {
-        return solutionTypeToStringKey(currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType()).toStdString();
+        return solutionTypeToStringKey(currentPythonEngineAgros()->postDeal()->activeAdaptivitySolutionType()).toStdString();
     }
 };
 
@@ -128,7 +128,7 @@ struct PyViewMesh : PyViewMeshAndPost
     void setField(const std::string &fieldId);
     inline std::string getField() const
     {
-        return currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString();
+        return currentPythonEngineAgros()->postDeal()->activeViewField()->fieldId().toStdString();
     }
 
     // initial mesh
@@ -174,7 +174,7 @@ struct PyViewPost : PyViewMeshAndPost
     void setField(const std::string &fieldId);
     inline std::string getField() const
     {
-        return currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString();
+        return currentPythonEngineAgros()->postDeal()->activeViewField()->fieldId().toStdString();
     }
 
     // scalar view variable

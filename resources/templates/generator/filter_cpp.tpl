@@ -29,23 +29,25 @@
 
 #include "hermes2d/plugin_interface.h"
 
+#include <deal.II/grid/tria.h>
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/fe/mapping_q1.h>
+#include <deal.II/numerics/fe_field_function.h>
+
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                           std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
-                                           const QString &variable,
-                                           PhysicFieldVariableComp physicFieldVariableComp)
-    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType),
-      m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
+                                                     MultiArrayDeal *ma,
+                                                     const QString &variable,
+                                                     PhysicFieldVariableComp physicFieldVariableComp)
+    : dealii::DataPostprocessorScalar<2>("Field",  dealii::update_values | dealii::update_gradients | dealii::update_q_points),
+      m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType),
+      ma(ma), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
     m_variableHash = qHash(m_variable);
 
     {{#SPECIAL_FUNCTION_SOURCE}}
     if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
-        {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
+    {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
     {{/SPECIAL_FUNCTION_SOURCE}}
-
-    value = new double*[this->solutions.size()];
-    dudx = new double*[this->solutions.size()];
-    dudy = new double*[this->solutions.size()];
 
     m_coordinateType = Agros2D::problem()->config()->coordinateType();
     m_labels = Agros2D::scene()->labels;
@@ -55,6 +57,55 @@
 {
 }
 
+void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::vector<double> &uh,
+                                                                   const std::vector<dealii::Tensor<1,2> > &duh,
+                                                                   const std::vector<dealii::Tensor<2,2> > &dduh,
+                                                                   const std::vector<dealii::Point<2> > &normals,
+                                                                   const std::vector<dealii::Point<2> > &evaluation_points,
+                                                                   std::vector<dealii::Vector<double> > &computed_quantities) const
+{
+    // qDebug() << "compute_derived_quantities_scalar " << computed_quantities.size();
+    // qDebug() << "uh.size() " << uh.size();
+    // qDebug() << "duh.size() " << duh.size();
+
+    dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
+            (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
+
+    // qDebug() << evaluation_points.size() << "center" << center[0] << center[1];
+
+    std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+            dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMeshDeal().get(), center);
+
+    // find marker
+    SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
+    SceneMaterial *material = label->marker(m_fieldInfo);
+
+    const Value *material_electrostatic_permittivity = material->valueNakedPtr(QLatin1String("electrostatic_permittivity"));
+    const Value *material_electrostatic_charge_density = material->valueNakedPtr(QLatin1String("electrostatic_charge_density"));
+
+    int i = 0;
+
+    double solution_values[1][1];
+    dealii::Tensor<1, 2> solution_grads[1][1];
+
+    for (unsigned int k = 0; k < computed_quantities.size(); k++)
+    {
+        solution_values[i][0] = uh[k];
+        solution_grads[i][0] = duh[k];
+
+        {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{/VARIABLE_MATERIAL}}
+        {{#VARIABLE_SOURCE}}
+        if ((m_variableHash == {{VARIABLE_HASH}})
+                && (m_coordinateType == {{COORDINATE_TYPE}})
+                && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
+            computed_quantities[k](0) = {{EXPRESSION}};
+        {{/VARIABLE_SOURCE}}
+    }
+}
+
+/*
 Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, bool use_MeshHashGrid, Hermes::Hermes2D::Element* e)
 {
     return NULL;
@@ -87,7 +138,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(unsigned short order, unsigned shor
     int elementMarker = e->marker;
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
-    {{/VARIABLE_MATERIAL}}    
+    {{/VARIABLE_MATERIAL}}
     {{#VARIABLE_SOURCE}}
     if ((m_variableHash == {{VARIABLE_HASH}})
             && (m_coordinateType == {{COORDINATE_TYPE}})
@@ -109,4 +160,4 @@ void {{CLASS}}ViewScalarFilter::precalculate(unsigned short order, unsigned shor
 
     return filter;
 }
-
+*/

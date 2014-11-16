@@ -31,28 +31,29 @@
 
 class SceneLabelContainer;
 
-class {{CLASS}}ViewScalarFilter : public Hermes::Hermes2D::Filter<double>
+class {{CLASS}}ViewScalarFilter : public dealii::DataPostprocessorScalar<2>
 {
 public:
     {{CLASS}}ViewScalarFilter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
+                     MultiArrayDeal *ma,
                      const QString &variable,
                      PhysicFieldVariableComp physicFieldVariableComp);
-    virtual ~{{CLASS}}ViewScalarFilter();
+    virtual ~{{CLASS}}ViewScalarFilter();    
 
-    virtual Hermes::Hermes2D::Func<double> *get_pt_value(double x, double y, bool use_MeshHashGrid = false, Hermes::Hermes2D::Element* e = NULL);
-
-    {{CLASS}}ViewScalarFilter* clone() const;
-
+    virtual void compute_derived_quantities_scalar (const std::vector<double> &uh,
+                                                    const std::vector<dealii::Tensor<1,2> > &duh,
+                                                    const std::vector<dealii::Tensor<2,2> > &dduh,
+                                                    const std::vector<dealii::Point<2> > &normals,
+                                                    const std::vector<dealii::Point<2> > &evaluation_points,
+                                                    std::vector<dealii::Vector<double> > &computed_quantities) const;
 protected:
-
-    void precalculate(unsigned short order, unsigned short mask);
 
 private:
     const FieldInfo *m_fieldInfo;
     int m_timeStep;
     int m_adaptivityStep;
     SolutionMode m_solutionType;
+    MultiArrayDeal *ma;
 
     SceneLabelContainer *m_labels;
 
@@ -62,11 +63,7 @@ private:
     CoordinateType m_coordinateType;
 
     {{#SPECIAL_FUNCTION_SOURCE}}
-    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
-
-    double **value;
-    double **dudx;
-    double **dudy;    
+    QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}   
 };
 
 #endif // {{ID}}_FILTER_H

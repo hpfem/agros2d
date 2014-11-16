@@ -56,13 +56,13 @@
 
 #include "pythonlab/pythonengine.h"
 
-DataPostprocessor::DataPostprocessor() : dealii::DataOut<2>()
+PostDataOut::PostDataOut() : dealii::DataOut<2>()
 {
 }
 
-void DataPostprocessor::compute_nodes(QList<PostTriangle> &scalarValues)
+void PostDataOut::compute_nodes(QList<PostTriangle> &values)
 {
-    scalarValues.clear();
+    values.clear();
 
     m_min =  numeric_limits<double>::max();
     m_max = -numeric_limits<double>::max();
@@ -95,16 +95,16 @@ void DataPostprocessor::compute_nodes(QList<PostTriangle> &scalarValues)
                 m_min = std::min(std::min(std::min(std::min(m_min, value0), value1), value2), value3);
                 m_max = std::max(std::max(std::max(std::max(m_max, value0), value1), value2), value3);
 
-                scalarValues.append(PostTriangle(node0, node1, node2, value0, value1, value2));
-                scalarValues.append(PostTriangle(node1, node3, node2, value1, value3, value2));
+                values.append(PostTriangle(node0, node1, node2, value0, value1, value2));
+                values.append(PostTriangle(node1, node3, node2, value1, value3, value2));
             }
         }
     }
 }
 
-void DataPostprocessor::compute_node(dealii::Point<2> &node, const dealii::DataOutBase::Patch<2> *patch,
-                                     const unsigned int xstep, const unsigned int ystep, const unsigned int zstep,
-                                     const unsigned int n_subdivisions)
+void PostDataOut::compute_node(dealii::Point<2> &node, const dealii::DataOutBase::Patch<2> *patch,
+                               const unsigned int xstep, const unsigned int ystep, const unsigned int zstep,
+                               const unsigned int n_subdivisions)
 {
     if (patch->points_are_available)
     {
@@ -128,7 +128,7 @@ void DataPostprocessor::compute_node(dealii::Point<2> &node, const dealii::DataO
 }
 
 
-typename dealii::DataOut<2>::cell_iterator DataPostprocessor::first_cell()
+typename dealii::DataOut<2>::cell_iterator PostDataOut::first_cell()
 {
     if (m_subdomains.size() == 0)
         return this->dofs->begin_active();
@@ -142,7 +142,7 @@ typename dealii::DataOut<2>::cell_iterator DataPostprocessor::first_cell()
     return cell;
 }
 
-typename dealii::DataOut<2>::cell_iterator DataPostprocessor::next_cell (const typename DataOut<2>::cell_iterator &old_cell)
+typename dealii::DataOut<2>::cell_iterator PostDataOut::next_cell (const typename DataOut<2>::cell_iterator &old_cell)
 {
     if (m_subdomains.size() == 0)
         return dealii::DataOut<2>::next_cell(old_cell);
@@ -158,38 +158,9 @@ typename dealii::DataOut<2>::cell_iterator DataPostprocessor::next_cell (const t
     }
 }
 
-template <int dim>
-class DataPostprocessorAgros : public dealii::DataPostprocessorScalar<dim>
-{
-public:
-    DataPostprocessorAgros () :
-        dealii::DataPostprocessorScalar<dim> ("Electric field",  dealii::update_values | dealii::update_gradients | dealii::update_q_points)
-    {
-        std::cout << "OK" << std::endl;
-    }
+// ************************************************************************************************************************
 
-    virtual void compute_derived_quantities_vector (const std::vector<double> &uh,
-                                                    const std::vector<dealii::Tensor<1,dim> > &duh,
-                                                    const std::vector<dealii::Tensor<2,dim> > &dduh,
-                                                    const std::vector<dealii::Point<dim> > &normals,
-                                                    const std::vector<dealii::Point<dim> > &evaluation_points,
-                                                    std::vector<Vector<double> >  &computed_quantities) const
-    {
-        std::cout << uh.size() << std::endl;
-        std::cout << duh.size() << std::endl;
-        // qDebug() << duh[0].size();
-
-        // Assert(computed_quantities.size() == uh.size(), ExcDimensionMismatch (computed_quantities.size(), uh.size()));
-        for (unsigned int i=0; i<computed_quantities.size(); i++)
-        {
-            // Assert(computed_quantities[i].size() == 1, ExcDimensionMismatch (computed_quantities[i].size(), 1));
-            // Assert(uh[i].size() == 2, ExcDimensionMismatch (uh[i].size(), 2));
-            // computed_quantities[i](0) = std::sqrt(duh[i][0][0]*duh[i][0][0]); //  + duh[i][0][1]*duh[i][0][1]);
-        }
-    }
-};
-
-PostHermes::PostHermes() :
+PostDeal::PostDeal() :
     m_activeViewField(NULL),
     m_activeTimeStep(NOT_FOUND_SO_FAR),
     m_activeAdaptivityStep(NOT_FOUND_SO_FAR),
@@ -207,12 +178,12 @@ PostHermes::PostHermes() :
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(problemSolved()));
 }
 
-PostHermes::~PostHermes()
+PostDeal::~PostDeal()
 {
     clear();
 }
 
-void PostHermes::processInitialMesh()
+void PostDeal::processInitialMesh()
 {
     if (Agros2D::problem()->isMeshed() && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool()))
     {
@@ -238,7 +209,7 @@ void PostHermes::processInitialMesh()
     }
 }
 
-void PostHermes::processSolutionMesh()
+void PostDeal::processSolutionMesh()
 {
     if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool()))
     {
@@ -268,7 +239,7 @@ void PostHermes::processSolutionMesh()
     }
 }
 
-void PostHermes::processOrder()
+void PostDeal::processOrder()
 {
     // init linearizer for order view
     if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()))
@@ -295,7 +266,7 @@ void PostHermes::processOrder()
     }
 }
 
-void PostHermes::processRangeContour()
+void PostDeal::processRangeContour()
 {
     if (Agros2D::problem()->isSolved() && m_activeViewField && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool()))
     {
@@ -316,7 +287,7 @@ void PostHermes::processRangeContour()
 
         m_contourValues.clear();
 
-        std::shared_ptr<DataPostprocessor> data_out;
+        std::shared_ptr<PostDataOut> data_out;
 
         if (variable.isScalar())
             data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
@@ -354,7 +325,7 @@ void PostHermes::processRangeContour()
     }
 }
 
-void PostHermes::processRangeScalar()
+void PostDeal::processRangeScalar()
 {
     if ((Agros2D::problem()->isSolved()) && (m_activeViewField)
             && ((Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool())
@@ -372,8 +343,8 @@ void PostHermes::processRangeScalar()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
-        std::shared_ptr<DataPostprocessor> data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                       (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        std::shared_ptr<PostDataOut> data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                                 (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
         data_out->compute_nodes(m_scalarValues);
 
         /*
@@ -407,7 +378,7 @@ void PostHermes::processRangeScalar()
     }
 }
 
-void PostHermes::processRangeVector()
+void PostDeal::processRangeVector()
 {
     if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowVectorView).toBool()))
     {
@@ -423,11 +394,11 @@ void PostHermes::processRangeVector()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
-        std::shared_ptr<DataPostprocessor> data_outX = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                        PhysicFieldVariableComp_X);
+        std::shared_ptr<PostDataOut> data_outX = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                  PhysicFieldVariableComp_X);
 
-        std::shared_ptr<DataPostprocessor> data_outY = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                        PhysicFieldVariableComp_Y);
+        std::shared_ptr<PostDataOut> data_outY = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                  PhysicFieldVariableComp_Y);
 
         data_outX->compute_nodes(m_vectorXValues);
         data_outY->compute_nodes(m_vectorYValues);
@@ -457,7 +428,7 @@ void PostHermes::processRangeVector()
     }
 }
 
-void PostHermes::clearView()
+void PostDeal::clearView()
 {
     m_isProcessed = false;
 
@@ -483,7 +454,7 @@ void PostHermes::clearView()
     }
 }
 
-void PostHermes::refresh()
+void PostDeal::refresh()
 {
     Agros2D::problem()->setIsPostprocessingRunning();
     clearView();
@@ -499,7 +470,7 @@ void PostHermes::refresh()
     Agros2D::problem()->setIsPostprocessingRunning(false);
 }
 
-void PostHermes::clear()
+void PostDeal::clear()
 {
     clearView();
 
@@ -509,7 +480,7 @@ void PostHermes::clear()
     m_activeSolutionMode = SolutionMode_Undefined;
 }
 
-void PostHermes::problemMeshed()
+void PostDeal::problemMeshed()
 {
     if (!m_activeViewField)
     {
@@ -526,7 +497,7 @@ void PostHermes::problemMeshed()
     //    }
 }
 
-void PostHermes::problemSolved()
+void PostDeal::problemSolved()
 {
     if (!m_activeViewField)
     {
@@ -548,12 +519,12 @@ void PostHermes::problemSolved()
     setActiveAdaptivitySolutionType(SolutionMode_Normal);
 }
 
-void PostHermes::processMeshed()
+void PostDeal::processMeshed()
 {
     processInitialMesh();
 }
 
-void PostHermes::processSolved()
+void PostDeal::processSolved()
 {
     // update time functions
     if (Agros2D::problem()->isTransient())
@@ -582,8 +553,8 @@ void PostHermes::processSolved()
 }
 
 
-std::shared_ptr<DataPostprocessor> PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                                PhysicFieldVariableComp physicFieldVariableComp)
+std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                        PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
     if (Agros2D::problem()->isTransient())
@@ -591,25 +562,24 @@ std::shared_ptr<DataPostprocessor> PostHermes::viewScalarFilter(Module::LocalVar
 
     MultiArrayDeal ma = activeMultiSolutionArrayDeal();
 
-    std::shared_ptr<DataPostprocessor> data_out = std::shared_ptr<DataPostprocessor>(new DataPostprocessor());
-    data_out->attach_dof_handler(*ma.doFHandlers().at(0));
-    data_out->add_data_vector(ma.solutions().at(0), "solution");
-    data_out->build_patches(2);
+    std::shared_ptr<dealii::DataPostprocessorScalar<2> > post = activeViewField()->plugin()->filter(activeViewField(),
+                                                                                                    activeTimeStep(),
+                                                                                                    activeAdaptivityStep(),
+                                                                                                    activeAdaptivitySolutionType(),
+                                                                                                    &ma,
+                                                                                                    physicFieldVariable.id(),
+                                                                                                    physicFieldVariableComp);
 
-    /*
-    return activeViewField()->plugin()->filter(activeViewField(),
-                                               activeTimeStep(),
-                                               activeAdaptivityStep(),
-                                               activeAdaptivitySolutionType(),
-                                               slns,
-                                               physicFieldVariable.id(),
-                                               physicFieldVariableComp);
-    */
+    std::shared_ptr<PostDataOut> data_out = std::shared_ptr<PostDataOut>(new PostDataOut());
+    data_out->attach_dof_handler(*ma.doFHandlers().at(0));
+    // data_out->add_data_vector(ma.solutions().at(0), "solution");
+    data_out->add_data_vector(ma.solutions().at(0), *post.get());
+    data_out->build_patches(2);
 
     return data_out;
 }
 
-void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
+void PostDeal::setActiveViewField(FieldInfo* fieldInfo)
 {
     // previous active field
     FieldInfo* previousActiveViewField = m_activeViewField;
@@ -663,24 +633,24 @@ void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
     }
 }
 
-void PostHermes::setActiveTimeStep(int ts)
+void PostDeal::setActiveTimeStep(int ts)
 {
     m_activeTimeStep = ts;
     Agros2D::problem()->setActualTimePostprocessing(Agros2D::problem()->timeStepToTime(ts));
 }
 
-void PostHermes::setActiveAdaptivityStep(int as)
+void PostDeal::setActiveAdaptivityStep(int as)
 {
     m_activeAdaptivityStep = as;
 }
 
-MultiArray<double> PostHermes::activeMultiSolutionArray()
+MultiArray<double> PostDeal::activeMultiSolutionArray()
 {
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
     return Agros2D::solutionStore()->multiArray(fsid);
 }
 
-MultiArrayDeal PostHermes::activeMultiSolutionArrayDeal()
+MultiArrayDeal PostDeal::activeMultiSolutionArrayDeal()
 {
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
     return Agros2D::solutionStore()->multiArrayDeal(fsid);
@@ -688,9 +658,9 @@ MultiArrayDeal PostHermes::activeMultiSolutionArrayDeal()
 
 // ************************************************************************************************
 
-SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *parent)
+SceneViewPostInterface::SceneViewPostInterface(PostDeal *postDeal, QWidget *parent)
     : SceneViewCommon(parent),
-      m_postHermes(postHermes),
+      m_postDeal(postDeal),
       m_textureScalar(0)
 {
 }
@@ -1032,7 +1002,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     }
 
     // variable
-    Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
+    Module::LocalVariable localVariable = postDeal()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
     QString str = QString("%1 (%2)").
             arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.shortname()).
             arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.unit());

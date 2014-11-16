@@ -41,7 +41,7 @@ public slots:
     void exportVTKContourView(const QString &fileName = QString());
 
 public:
-    SceneViewPost2D(PostHermes *postHermes, QWidget *parent = 0);
+    SceneViewPost2D(PostDeal *postDeal, QWidget *parent = 0);
     ~SceneViewPost2D();
 
     QAction *actSceneModePost2D;

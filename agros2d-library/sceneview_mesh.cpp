@@ -36,15 +36,15 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/module.h"
 
-SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
-    : SceneViewCommon2D(postHermes, parent)
+SceneViewMesh::SceneViewMesh(PostDeal *postDeal, QWidget *parent)
+    : SceneViewCommon2D(postDeal, parent)
 {
     createActionsMesh();
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+    connect(m_postDeal, SIGNAL(processed()), this, SLOT(refresh()));
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
@@ -136,10 +136,10 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
 
         Hermes::Hermes2D::Views::Orderizer orderView;
         if (exportMeshOnly)
-            orderView.save_mesh_vtk(postHermes()->activeMultiSolutionArray().spaces().at(0),
+            orderView.save_mesh_vtk(postDeal()->activeMultiSolutionArray().spaces().at(0),
                                     fn.toLatin1().data());
         else
-            orderView.save_orders_vtk(postHermes()->activeMultiSolutionArray().spaces().at(0),
+            orderView.save_orders_vtk(postDeal()->activeMultiSolutionArray().spaces().at(0),
                                       fn.toLatin1().data());
 
         if (!fn.isEmpty())
@@ -170,20 +170,20 @@ void SceneViewMesh::paintGL()
     QTime time;
 
     // view
-    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
     {
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()) paintOrder();
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool()) paintSolutionMesh();
     }
 
     // initial mesh
-    if (Agros2D::problem()->isMeshed() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isMeshed() && m_postDeal->isProcessed())
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool()) paintInitialMesh();
 
     // geometry
     paintGeometry();
 
-    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
     {
         // bars
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()
@@ -240,14 +240,14 @@ void SceneViewMesh::paintInitialMesh()
 
     if (m_arrayInitialMesh.isEmpty())
     {
-        if (!m_postHermes->activeViewField()->initialMeshDeal()) return;
+        if (!m_postDeal->activeViewField()->initialMeshDeal()) return;
 
         // vertices
-        const std::vector<dealii::Point<2> >& vertices = m_postHermes->activeViewField()->initialMeshDeal()->get_vertices();
+        const std::vector<dealii::Point<2> >& vertices = m_postDeal->activeViewField()->initialMeshDeal()->get_vertices();
 
         // faces
-        typename dealii::Triangulation<2>::active_face_iterator ti = m_postHermes->activeViewField()->initialMeshDeal()->begin_face();
-        while (ti != m_postHermes->activeViewField()->initialMeshDeal()->end_face())
+        typename dealii::Triangulation<2>::active_face_iterator ti = m_postDeal->activeViewField()->initialMeshDeal()->begin_face();
+        while (ti != m_postDeal->activeViewField()->initialMeshDeal()->end_face())
         {
             m_arrayInitialMesh.append(QVector2D(vertices[ti->vertex_index(0)][0], vertices[ti->vertex_index(0)][1]));
             m_arrayInitialMesh.append(QVector2D(vertices[ti->vertex_index(1)][0], vertices[ti->vertex_index(1)][1]));
@@ -257,10 +257,10 @@ void SceneViewMesh::paintInitialMesh()
 
         /*
         // edges
-        m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView()->get_edge_count());
+        m_arrayInitialMesh.reserve(2 * m_postDeal->linInitialMeshView()->get_edge_count());
 
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postHermes->linInitialMeshView()->edges_begin(); !it.end; ++it)
+             it = m_postDeal->linInitialMeshView()->edges_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
 
@@ -293,13 +293,13 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
-        if (!m_postHermes->linSolutionMeshView()) return;
+        if (!m_postDeal->linSolutionMeshView()) return;
 
         // edges
-        m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView()->get_edge_count());
+        m_arraySolutionMesh.reserve(2 * m_postDeal->linSolutionMeshView()->get_edge_count());
 
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postHermes->linSolutionMeshView()->edges_begin(); !it.end; ++it)
+             it = m_postDeal->linSolutionMeshView()->edges_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
 
@@ -330,25 +330,25 @@ void SceneViewMesh::paintOrder()
 
     if (m_arrayOrderMesh.isEmpty())
     {
-        if (!m_postHermes->ordView()) return;
+        if (!m_postDeal->ordView()) return;
 
         // order scalar view
-        double3* vert = m_postHermes->ordView()->get_vertices();
-        int3* tris = m_postHermes->ordView()->get_triangles();
+        double3* vert = m_postDeal->ordView()->get_vertices();
+        int3* tris = m_postDeal->ordView()->get_triangles();
 
         // draw mesh
         int min = 11;
         int max = 1;
-        for (int i = 0; i < m_postHermes->ordView()->get_num_triangles(); i++)
+        for (int i = 0; i < m_postDeal->ordView()->get_num_triangles(); i++)
         {
             if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
             if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
         }
 
         // triangles
-        m_arrayOrderMesh.reserve(3 * m_postHermes->ordView()->get_num_triangles());
-        m_arrayOrderMeshColor.reserve(3 * m_postHermes->ordView()->get_num_triangles());
-        for (int i = 0; i < m_postHermes->ordView()->get_num_triangles(); i++)
+        m_arrayOrderMesh.reserve(3 * m_postDeal->ordView()->get_num_triangles());
+        m_arrayOrderMeshColor.reserve(3 * m_postDeal->ordView()->get_num_triangles());
+        for (int i = 0; i < m_postDeal->ordView()->get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
             QVector3D colorVector = QVector3D(paletteColorOrder(color)[0],
@@ -393,11 +393,11 @@ void SceneViewMesh::paintOrder()
         glScaled(2.0 / width(), 2.0 / height(), 1.0);
         glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
-        double3* vert = m_postHermes->ordView()->get_vertices();
+        double3* vert = m_postDeal->ordView()->get_vertices();
         int* lvert;
         char** ltext;
         double2* lbox;
-        int nl = m_postHermes->ordView()->get_labels(lvert, ltext, lbox);
+        int nl = m_postDeal->ordView()->get_labels(lvert, ltext, lbox);
 
         for (int i = 0; i < nl; i++)
         {
@@ -418,12 +418,12 @@ void SceneViewMesh::paintOrderColorBar()
     if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool()) return;
 
     // order scalar view
-    double3* vert = m_postHermes->ordView()->get_vertices();
-    int3* tris = m_postHermes->ordView()->get_triangles();
+    double3* vert = m_postDeal->ordView()->get_vertices();
+    int3* tris = m_postDeal->ordView()->get_triangles();
 
     int min = 11;
     int max = 1;
-    for (int i = 0; i < m_postHermes->ordView()->get_num_triangles(); i++)
+    for (int i = 0; i < m_postDeal->ordView()->get_num_triangles(); i++)
     {
         if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
         if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];

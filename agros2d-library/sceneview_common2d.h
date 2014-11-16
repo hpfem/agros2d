@@ -32,7 +32,7 @@ public slots:
     virtual void clear();
 
 public:
-    SceneViewCommon2D(PostHermes *postHermes, QWidget *parent = 0);
+    SceneViewCommon2D(PostDeal *postDeal, QWidget *parent = 0);
     ~SceneViewCommon2D();
 
     void doZoomRegion(const Point &start, const Point &end);

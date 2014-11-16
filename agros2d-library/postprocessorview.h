@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class PostHermes;
+class PostDeal;
 class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
@@ -39,7 +39,7 @@ class PostprocessorWidget : public QWidget
     Q_OBJECT
 
 public:
-    PostprocessorWidget(PostHermes *postHermes,
+    PostprocessorWidget(PostDeal *postDeal,
                         SceneViewPreprocessor *sceneGeometry,
                         SceneViewMesh *sceneMesh,
                         SceneViewPost2D *scenePost2D,
@@ -50,7 +50,7 @@ private slots:
     void doApply();
 
 private:
-    PostHermes *m_postHermes;
+    PostDeal *m_postDeal;
     SceneViewPreprocessor *m_sceneGeometry;
     SceneViewMesh *m_sceneMesh;
     SceneViewPost2D *m_scenePost2D;

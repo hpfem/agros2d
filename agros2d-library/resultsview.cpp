@@ -65,8 +65,8 @@ public:
 };
 
 
-ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
-    : QDockWidget(tr("Results view"), parent), m_postHermes(postHermes)
+ResultsView::ResultsView(PostDeal *postDeal, QWidget *parent)
+    : QDockWidget(tr("Results view"), parent), m_postDeal(postDeal)
 {
     setObjectName("ResultsView");
 
@@ -75,7 +75,7 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
 
     createActions();
 
-    connect(postHermes, SIGNAL(processed()), this, SLOT(doShowResults()));
+    connect(postDeal, SIGNAL(processed()), this, SLOT(doShowResults()));
 
     // stylesheet
     std::string style;
@@ -132,7 +132,7 @@ void ResultsView::showPoint(const Point &point)
 
 void ResultsView::showPoint()
 {
-    if (!(Agros2D::problem()->isSolved() && m_postHermes->isProcessed()))
+    if (!(Agros2D::problem()->isSolved() && m_postDeal->isProcessed()))
     {
         showNotSolved();
         return;
@@ -154,9 +154,9 @@ void ResultsView::showPoint()
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo,
-                                                            m_postHermes->activeTimeStep(),
-                                                            m_postHermes->activeAdaptivityStep(),
-                                                            m_postHermes->activeAdaptivitySolutionType(),
+                                                            m_postDeal->activeTimeStep(),
+                                                            m_postDeal->activeAdaptivityStep(),
+                                                            m_postDeal->activeAdaptivitySolutionType(),
                                                             m_point);
         QMap<QString, LocalPointValue> values = value->values();
         delete value;
@@ -226,9 +226,9 @@ void ResultsView::showVolumeIntegral()
         CustomVolumetricIntegralCalculator calc(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(), 0);
 
         IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo,
-                                                                      m_postHermes->activeTimeStep(),
-                                                                      m_postHermes->activeAdaptivityStep(),
-                                                                      m_postHermes->activeAdaptivitySolutionType());
+                                                                      m_postDeal->activeTimeStep(),
+                                                                      m_postDeal->activeAdaptivityStep(),
+                                                                      m_postDeal->activeAdaptivitySolutionType());
         QMap<QString, double> values = integral->values();
         if (values.size() > 0)
         {
@@ -270,9 +270,9 @@ void ResultsView::showSurfaceIntegral()
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         IntegralValue *integral = fieldInfo->plugin()->surfaceIntegral(fieldInfo,
-                                                                       m_postHermes->activeTimeStep(),
-                                                                       m_postHermes->activeAdaptivityStep(),
-                                                                       m_postHermes->activeAdaptivitySolutionType());
+                                                                       m_postDeal->activeTimeStep(),
+                                                                       m_postDeal->activeAdaptivityStep(),
+                                                                       m_postDeal->activeAdaptivitySolutionType());
         QMap<QString, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");

@@ -60,8 +60,8 @@ static void computeNormal(double p0x, double p0y, double p0z,
     // double p[3] = { nx*l, ny*l, nz*l };
 }
 
-SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent)
-    : SceneViewCommon3D(postHermes, parent),
+SceneViewPost3D::SceneViewPost3D(PostDeal *postDeal, QWidget *parent)
+    : SceneViewCommon3D(postDeal, parent),
       m_listScalarField3D(-1),
       m_listScalarField3DSolid(-1),
       m_listModel(-1)
@@ -72,7 +72,7 @@ SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent)
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+    connect(m_postDeal, SIGNAL(processed()), this, SLOT(refresh()));
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
@@ -112,7 +112,7 @@ void SceneViewPost3D::paintGL()
         if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_Model) paintScalarField3DSolid();
     }
 
-    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
     {
         if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D) paintScalarField3D();
         if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3DSolid) paintScalarField3DSolid();
@@ -128,9 +128,9 @@ void SceneViewPost3D::paintGL()
     case SceneViewPost3DMode_ScalarView3D:
     case SceneViewPost3DMode_ScalarView3DSolid:
     {
-        if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+        if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
         {
-            Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
+            Module::LocalVariable localVariable = postDeal()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
             QString text = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.name();
             if ((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt() != PhysicFieldVariableComp_Scalar)
                 text += " - " + physicFieldVariableCompString((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
@@ -167,7 +167,7 @@ void SceneViewPost3D::paintScalarField3D()
 
     if (m_listScalarField3D == -1)
     {
-        if (m_postHermes->scalarValues().isEmpty()) return;
+        if (m_postDeal->scalarValues().isEmpty()) return;
 
         paletteCreate();
 
@@ -221,7 +221,7 @@ void SceneViewPost3D::paintScalarField3D()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        foreach (PostTriangle triangle, m_postHermes->scalarValues())
+        foreach (PostTriangle triangle, m_postDeal->scalarValues())
         {
             if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
@@ -265,7 +265,7 @@ void SceneViewPost3D::paintScalarField3D()
         // triangles
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->linInitialMeshView()->triangles_begin(); !it.end; ++it)
+             it = m_postDeal->linInitialMeshView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -367,7 +367,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
     if (m_listScalarField3DSolid == -1)
     {
-        if (m_postHermes->scalarValues().isEmpty()) return;
+        if (m_postDeal->scalarValues().isEmpty()) return;
 
         paletteCreate();
 
@@ -430,14 +430,14 @@ void SceneViewPost3D::paintScalarField3DSolid()
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            foreach (PostTriangle triangle, m_postHermes->scalarValues())
+            foreach (PostTriangle triangle, m_postDeal->scalarValues())
             {
                 // int& elem_marker = it.get_marker();
 
                 // find marker
-                // SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
+                // SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
                 SceneLabel *label = Agros2D::scene()->labels->at(0);
-                SceneMaterial *material = label->marker(postHermes()->activeViewField());
+                SceneMaterial *material = label->marker(postDeal()->activeViewField());
 
                 // hide material
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
@@ -485,14 +485,14 @@ void SceneViewPost3D::paintScalarField3DSolid()
             glEnd();
 
             glBegin(GL_QUADS);
-            foreach (PostTriangle triangle, m_postHermes->scalarValues())
+            foreach (PostTriangle triangle, m_postDeal->scalarValues())
             {
                 // boundary element
                 // if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
                 {
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-                    SceneMaterial *material = label->marker(postHermes()->activeViewField());
+                    SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneMaterial *material = label->marker(postDeal()->activeViewField());
 
                     // hide material
                     if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
@@ -528,14 +528,14 @@ void SceneViewPost3D::paintScalarField3DSolid()
         {
             // side
             glBegin(GL_TRIANGLES);
-            foreach (PostTriangle triangle, m_postHermes->scalarValues())
+            foreach (PostTriangle triangle, m_postDeal->scalarValues())
             {
                 // int& elem_marker = it.get_marker();
                 int elem_marker = 0;
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
-                SceneMaterial *material = label->marker(postHermes()->activeViewField());
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
+                SceneMaterial *material = label->marker(postDeal()->activeViewField());
 
                 // hide material
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
@@ -569,7 +569,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             }
             glEnd();
 
-            foreach (PostTriangle triangle, m_postHermes->scalarValues())
+            foreach (PostTriangle triangle, m_postDeal->scalarValues())
             {
                 // int& elem_marker = it.get_marker();
                 int elem_marker = 0;
@@ -578,8 +578,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 // if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
                 {
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
-                    SceneMaterial *material = label->marker(postHermes()->activeViewField());
+                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
+                    SceneMaterial *material = label->marker(postDeal()->activeViewField());
 
                     // hide material
                     if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))

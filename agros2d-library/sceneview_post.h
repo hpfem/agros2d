@@ -55,12 +55,12 @@ struct PostTriangle
     double values[3];
 };
 
-class DataPostprocessor : public dealii::DataOut<2>
+class PostDataOut : public dealii::DataOut<2>
 {
 public:
-    DataPostprocessor();
+    PostDataOut();
 
-    void compute_nodes(QList<PostTriangle> &scalarValues);
+    void compute_nodes(QList<PostTriangle> &values);
 
     virtual typename dealii::DataOut<2>::cell_iterator first_cell();
     virtual typename dealii::DataOut<2>::cell_iterator next_cell(const typename dealii::DataOut<2>::cell_iterator &old_cell);
@@ -79,13 +79,13 @@ private:
                       const unsigned int n_subdivisions);
 };
 
-class PostHermes : public QObject
+class PostDeal : public QObject
 {
     Q_OBJECT
 
 public:
-    PostHermes();
-    ~PostHermes();
+    PostDeal();
+    ~PostDeal();
 
     // mesh
     inline Hermes::Hermes2D::Views::Linearizer *linInitialMeshView() { return m_linInitialMeshView; }
@@ -107,7 +107,7 @@ public:
     // vtk dealii view
     QString scalarViewDeal();
 
-    std::shared_ptr<DataPostprocessor> viewScalarFilter(Module::LocalVariable physicFieldVariable,
+    std::shared_ptr<PostDataOut> viewScalarFilter(Module::LocalVariable physicFieldVariable,
                                                         PhysicFieldVariableComp physicFieldVariableComp);
 
     // view
@@ -186,9 +186,9 @@ class SceneViewPostInterface : public SceneViewCommon
     Q_OBJECT
 
 public:
-    SceneViewPostInterface(PostHermes *postHermes, QWidget *parent = 0);
+    SceneViewPostInterface(PostDeal *postDeal, QWidget *parent = 0);
 
-    inline PostHermes *postHermes() { assert(m_postHermes); return m_postHermes; }
+    inline PostDeal *postDeal() { assert(m_postDeal); return m_postDeal; }
 
 protected:
     double m_texScale;
@@ -196,7 +196,7 @@ protected:
 
     GLuint m_textureScalar;
 
-    PostHermes *m_postHermes;
+    PostDeal *m_postDeal;
 
     virtual void initializeGL();
 

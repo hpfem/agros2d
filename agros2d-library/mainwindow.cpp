@@ -73,22 +73,22 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(pa
 
     createPythonEngine(argc, argv, new PythonEngineAgros());
 
-    // use maximum number of threads for PostHermes (linearizer)
+    // use maximum number of threads for postDeal (linearizer)
     int threads = omp_get_max_threads();
     if (threads == 0)
         threads = 1;
 
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
-    postHermes = new PostHermes();
+    postDeal = new PostDeal();
 
     // scene
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
-    sceneViewMesh = new SceneViewMesh(postHermes, this);
-    sceneViewPost2D = new SceneViewPost2D(postHermes, this);
-    sceneViewPost3D = new SceneViewPost3D(postHermes, this);
+    sceneViewMesh = new SceneViewMesh(postDeal, this);
+    sceneViewPost2D = new SceneViewPost2D(postDeal, this);
+    sceneViewPost3D = new SceneViewPost3D(postDeal, this);
     sceneViewChart = new ChartView(this);
-    sceneViewParticleTracing = new SceneViewParticleTracing(postHermes, this);
-    // sceneViewVTK2D = new SceneViewVTK2D(postHermes, this);
+    sceneViewParticleTracing = new SceneViewParticleTracing(postDeal, this);
+    // sceneViewVTK2D = new SceneViewVTK2D(postDeal, this);
     sceneViewBlank = new QLabel("", this);
 
     // scene - info widget
@@ -102,7 +102,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(pa
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
     connect(Agros2D::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
     // postprocessor
-    postprocessorWidget = new PostprocessorWidget(postHermes,
+    postprocessorWidget = new PostprocessorWidget(postDeal,
                                                   sceneViewPreprocessor,
                                                   sceneViewMesh,
                                                   sceneViewPost2D,
@@ -138,9 +138,9 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(pa
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 
     // post hermes
-    connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));
-    connect(postprocessorWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
-    currentPythonEngineAgros()->setPostHermes(postHermes);
+    connect(problemWidget, SIGNAL(changed()), postDeal, SLOT(refresh()));
+    connect(postprocessorWidget, SIGNAL(apply()), postDeal, SLOT(refresh()));
+    currentPythonEngineAgros()->setpostDeal(postDeal);
 
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
@@ -746,7 +746,7 @@ void MainWindow::createViews()
     logView->setAllowedAreas(Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, logView);
 
-    resultsView = new ResultsView(postHermes, this);
+    resultsView = new ResultsView(postDeal, this);
     resultsView->setAllowedAreas(Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
@@ -1216,11 +1216,11 @@ void MainWindow::doCreateVideo()
 {
     VideoDialog *videoDialog = NULL;
     if (sceneViewMesh->actSceneModeMesh->isChecked())
-        videoDialog = new VideoDialog(sceneViewMesh, postHermes, this);
+        videoDialog = new VideoDialog(sceneViewMesh, postDeal, this);
     else if (sceneViewPost2D->actSceneModePost2D->isChecked())
-        videoDialog = new VideoDialog(sceneViewPost2D, postHermes, this);
+        videoDialog = new VideoDialog(sceneViewPost2D, postDeal, this);
     else if (sceneViewPost3D->actSceneModePost3D->isChecked())
-        videoDialog = new VideoDialog(sceneViewPost3D, postHermes, this);
+        videoDialog = new VideoDialog(sceneViewPost3D, postDeal, this);
 
     if (videoDialog)
     {
@@ -1259,7 +1259,7 @@ void MainWindow::doOptions()
     if (configDialog.exec())
     {
         sceneViewPreprocessor->refresh();
-        postHermes->refresh();
+        postDeal->refresh();
         // setControls();
     }
 }

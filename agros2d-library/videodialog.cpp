@@ -30,8 +30,8 @@
 
 #include "gui/lineeditdouble.h"
 
-VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes *postHermes, QWidget *parent)
-    : QDialog(parent), m_sceneViewInterface(sceneViewInterface), m_postHermes(postHermes)
+VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostDeal *postDeal, QWidget *parent)
+    : QDialog(parent), m_sceneViewInterface(sceneViewInterface), m_postDeal(postDeal)
 {
     setModal(true);
     setWindowIcon(icon("video"));
@@ -41,9 +41,9 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
     QDir(tempProblemDir()).mkdir("video");
 
     // store timestep
-    m_timeStepStore = m_postHermes->activeTimeStep();
+    m_timeStepStore = m_postDeal->activeTimeStep();
     // store adaptive step
-    m_adaptiveStepStore = m_postHermes->activeAdaptivityStep();
+    m_adaptiveStepStore = m_postDeal->activeAdaptivityStep();
 
     m_showRulersStore = Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool();
     m_showGridStore = Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool();
@@ -64,14 +64,14 @@ VideoDialog::~VideoDialog()
     settings.setValue("VideoDialog/SaveImages", chkSaveImages->isChecked());
 
     // restore previous timestep
-    m_postHermes->setActiveTimeStep(m_timeStepStore);
-    m_postHermes->setActiveAdaptivityStep(m_adaptiveStepStore);
+    m_postDeal->setActiveTimeStep(m_timeStepStore);
+    m_postDeal->setActiveAdaptivityStep(m_adaptiveStepStore);
 
     Agros2D::configComputer()->setValue(Config::Config_ShowRulers, m_showRulersStore);
     Agros2D::configComputer()->setValue(Config::Config_ShowGrid, m_showGridStore);
     Agros2D::configComputer()->setValue(Config::Config_ShowAxes, m_showAxesStore);
 
-    m_postHermes->refresh();
+    m_postDeal->refresh();
 
     delete timer;
 }
@@ -79,7 +79,7 @@ VideoDialog::~VideoDialog()
 void VideoDialog::showDialog()
 {
     // time steps
-    m_timeLevels = Agros2D::solutionStore()->timeLevels(m_postHermes->activeViewField());
+    m_timeLevels = Agros2D::solutionStore()->timeLevels(m_postDeal->activeViewField());
     m_timeSteps = m_timeLevels.count() - 1;
     lblTransientStep->setText(QString("%1 / %2").arg(0).arg(m_timeSteps));
     lblTransientTime->setText(tr("%1 / %2 s").arg(0.0).arg(m_timeLevels.last()));
@@ -89,18 +89,18 @@ void VideoDialog::showDialog()
     sliderTransientAnimate->blockSignals(false);
 
     // adaptive steps
-    m_adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(m_postHermes->activeViewField(), SolutionMode_Normal) + 1;
+    m_adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(m_postDeal->activeViewField(), SolutionMode_Normal) + 1;
     lblAdaptiveStep->setText(QString("%1 / %2").arg(1).arg(m_adaptiveSteps));
     sliderAdaptiveAnimate->blockSignals(true);
     sliderAdaptiveAnimate->setMinimum(1);
     sliderAdaptiveAnimate->setMaximum(m_adaptiveSteps);
     sliderAdaptiveAnimate->blockSignals(false);
 
-    if (m_postHermes->activeViewField()->analysisType() == AnalysisType_Transient)
+    if (m_postDeal->activeViewField()->analysisType() == AnalysisType_Transient)
     {
         tabType->setCurrentWidget(tabTransient);
     }
-    else if (m_postHermes->activeViewField()->adaptivityType() != AdaptivityMethod_None)
+    else if (m_postDeal->activeViewField()->adaptivityType() != AdaptivityMethod_None)
     {
         tabType->setCurrentWidget(tabAdaptivity);
     }
@@ -256,9 +256,9 @@ void VideoDialog::transientAnimate()
 
 void VideoDialog::transientAnimateNextStep()
 {
-    if (m_postHermes->activeTimeStep() < m_timeSteps)
+    if (m_postDeal->activeTimeStep() < m_timeSteps)
     {
-        setTransientStep(m_postHermes->activeTimeStep() + 1);
+        setTransientStep(m_postDeal->activeTimeStep() + 1);
     }
     else
     {
@@ -272,9 +272,9 @@ void VideoDialog::setTransientStep(int transientStep)
     Agros2D::configComputer()->setValue(Config::Config_ShowGrid, chkFigureShowGrid->isChecked());
     Agros2D::configComputer()->setValue(Config::Config_ShowAxes, chkFigureShowAxes->isChecked());
 
-    m_postHermes->setActiveTimeStep(transientStep);
-    m_postHermes->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(m_postHermes->activeViewField(), SolutionMode_Normal, transientStep));
-    m_postHermes->refresh();
+    m_postDeal->setActiveTimeStep(transientStep);
+    m_postDeal->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(m_postDeal->activeViewField(), SolutionMode_Normal, transientStep));
+    m_postDeal->refresh();
 
     if (chkSaveImages->isChecked())
         m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(transientStep)).right(8)));
@@ -310,8 +310,8 @@ void VideoDialog::adaptiveAnimate()
 
 void VideoDialog::adaptiveAnimateNextStep()
 {
-    if (m_postHermes->activeAdaptivityStep() < m_adaptiveSteps - 1)
-        setAdaptiveStep(m_postHermes->activeAdaptivityStep() + 2);
+    if (m_postDeal->activeAdaptivityStep() < m_adaptiveSteps - 1)
+        setAdaptiveStep(m_postDeal->activeAdaptivityStep() + 2);
     else
         adaptiveAnimate();
 }
@@ -322,8 +322,8 @@ void VideoDialog::setAdaptiveStep(int adaptiveStep)
     Agros2D::configComputer()->setValue(Config::Config_ShowGrid, chkFigureShowGrid->isChecked());
     Agros2D::configComputer()->setValue(Config::Config_ShowAxes, chkFigureShowAxes->isChecked());
 
-    m_postHermes->setActiveAdaptivityStep(adaptiveStep - 1);
-    m_postHermes->refresh();
+    m_postDeal->setActiveAdaptivityStep(adaptiveStep - 1);
+    m_postDeal->refresh();
 
     sliderAdaptiveAnimate->setValue(adaptiveStep);
     lblAdaptiveStep->setText(QString("%1 / %2").arg(adaptiveStep).arg(m_adaptiveSteps));

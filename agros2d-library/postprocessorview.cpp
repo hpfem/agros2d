@@ -43,14 +43,14 @@
 
 #include "util/constants.h"
 
-PostprocessorWidget::PostprocessorWidget(PostHermes *postHermes,
+PostprocessorWidget::PostprocessorWidget(PostDeal *postDeal,
                                          SceneViewPreprocessor *sceneGeometry,
                                          SceneViewMesh *sceneMesh,
                                          SceneViewPost2D *scenePost2D,
                                          SceneViewPost3D *scenePost3D,
                                          QWidget *parent) : QWidget(parent)
 {
-    m_postHermes = postHermes;
+    m_postDeal = postDeal;
     m_sceneGeometry = sceneGeometry;
     m_sceneMesh = sceneMesh;
     m_scenePost2D = scenePost2D;
@@ -168,9 +168,9 @@ void PostprocessorWidget::loadAdvanced()
 
     // solid
     lstSolidMaterials->clear();
-    if (Agros2D::problem()->isSolved() && m_scenePost2D->postHermes()->activeViewField())
+    if (Agros2D::problem()->isSolved() && m_scenePost2D->postDeal()->activeViewField())
     {
-        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_scenePost2D->postHermes()->activeViewField()).items())
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_scenePost2D->postDeal()->activeViewField()).items())
         {
             QListWidgetItem *item = new QListWidgetItem(lstSolidMaterials);
             item->setText(material->name());
@@ -828,10 +828,10 @@ void PostprocessorWidget::doCalculationFinished()
 
     if (Agros2D::problem()->isSolved())
     {
-        fieldWidget->selectField(m_postHermes->activeViewField());
-        fieldWidget->selectTimeStep(m_postHermes->activeTimeStep());
-        fieldWidget->selectAdaptivityStep(m_postHermes->activeAdaptivityStep());
-        fieldWidget->selectedAdaptivitySolutionType(m_postHermes->activeAdaptivitySolutionType());
+        fieldWidget->selectField(m_postDeal->activeViewField());
+        fieldWidget->selectTimeStep(m_postDeal->activeTimeStep());
+        fieldWidget->selectAdaptivityStep(m_postDeal->activeAdaptivityStep());
+        fieldWidget->selectedAdaptivitySolutionType(m_postDeal->activeAdaptivitySolutionType());
     }
 
     if ((Agros2D::problem()->isMeshed() && !Agros2D::problem()->isSolving()) || Agros2D::problem()->isSolved())
@@ -1018,10 +1018,10 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
 
 void PostprocessorWidget::doApply()
 {
-    m_postHermes->setActiveViewField(fieldWidget->selectedField());
-    m_postHermes->setActiveTimeStep(fieldWidget->selectedTimeStep());
-    m_postHermes->setActiveAdaptivityStep(fieldWidget->selectedAdaptivityStep());
-    m_postHermes->setActiveAdaptivitySolutionType(fieldWidget->selectedAdaptivitySolutionType());
+    m_postDeal->setActiveViewField(fieldWidget->selectedField());
+    m_postDeal->setActiveTimeStep(fieldWidget->selectedTimeStep());
+    m_postDeal->setActiveAdaptivityStep(fieldWidget->selectedAdaptivityStep());
+    m_postDeal->setActiveAdaptivitySolutionType(fieldWidget->selectedAdaptivitySolutionType());
 
     // qDebug() << "doApply: " << fieldWidget->selectedField()->fieldId() << fieldWidget->selectedTimeStep() << fieldWidget->selectedAdaptivityStep() << fieldWidget->selectedAdaptivitySolutionType();
 
@@ -1032,12 +1032,12 @@ void PostprocessorWidget::doApply()
     // QApplication::processEvents();
 
     // read auto range values
-    if (chkScalarFieldRangeAuto->isChecked() && !m_postHermes->scalarValues().isEmpty())
+    if (chkScalarFieldRangeAuto->isChecked() && !m_postDeal->scalarValues().isEmpty())
     {
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        foreach (PostTriangle triangle, m_postHermes->scalarValues())
+        foreach (PostTriangle triangle, m_postDeal->scalarValues())
         {
             for (int i = 0; i < 3; i++)
             {

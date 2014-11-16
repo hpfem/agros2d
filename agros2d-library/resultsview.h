@@ -32,7 +32,7 @@
 class ValueLineEdit;
 class SceneMaterial;
 class Solution;
-class PostHermes;
+class PostDeal;
 
 class ResultsView : public QDockWidget
 {
@@ -50,13 +50,13 @@ public slots:
     void showSurfaceIntegral();
 
 public:
-    ResultsView(PostHermes *postHermes, QWidget *parent = 0);
+    ResultsView(PostDeal *postDeal, QWidget *parent = 0);
 
     QPushButton *btnSelectMarker;
 
 private:
     Point m_point;
-    PostHermes *m_postHermes;
+    PostDeal *m_postDeal;
 
     SceneModePostprocessor m_sceneModePostprocessor;
     QString m_cascadeStyleSheet;

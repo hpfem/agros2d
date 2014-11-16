@@ -15,10 +15,8 @@ IF(MSVC)
   SET(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} /Ob2")
 ENDIF(MSVC)
 
-# {{ID}}_filter.cpp
-# {{ID}}_filter.h
-SET(SOURCES {{ID}}_weakform.cpp {{ID}}_extfunction.cpp {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_interface.cpp {{ID}}_errorcalculator.cpp)
-SET(HEADERS {{ID}}_weakform.h {{ID}}_extfunction.h {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_interface.h {{ID}}_errorcalculator.h)
+SET(SOURCES {{ID}}_filter.cpp {{ID}}_weakform.cpp {{ID}}_extfunction.cpp {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_interface.cpp {{ID}}_errorcalculator.cpp)
+SET(HEADERS {{ID}}_filter.h {{ID}}_weakform.h {{ID}}_extfunction.h {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_interface.h {{ID}}_errorcalculator.h)
 
 SET(SOURCES ${SOURCES} "${CMAKE_AGROS_DIRECTORY}/resources_source/classes/module_xml.cpp")
 ADD_DEFINITIONS(-DQT_PLUGIN)

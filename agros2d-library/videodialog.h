@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class PostHermes;
+class PostDeal;
 class LineEditDouble;
 class SceneViewPostInterface;
 class FieldInfo;
@@ -32,14 +32,14 @@ class VideoDialog : public QDialog
     Q_OBJECT
 
 public:
-    VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes *postHermes, QWidget *parent = 0);
+    VideoDialog(SceneViewPostInterface *sceneViewInterface, PostDeal *postDeal, QWidget *parent = 0);
     ~VideoDialog();
 
     void showDialog();
 
 private:
     SceneViewPostInterface *m_sceneViewInterface;
-    PostHermes *m_postHermes;
+    PostDeal *m_postDeal;
 
     int m_timeSteps;
     int m_timeStepStore;

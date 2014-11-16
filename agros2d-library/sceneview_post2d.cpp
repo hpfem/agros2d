@@ -50,8 +50,8 @@
 #include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/grid/grid_tools.h>
 
-SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
-    : SceneViewCommon2D(postHermes, parent),
+SceneViewPost2D::SceneViewPost2D(PostDeal *postDeal, QWidget *parent)
+    : SceneViewCommon2D(postDeal, parent),
       m_listContours(-1),
       m_listVectors(-1),
       m_listScalarField(-1),
@@ -65,7 +65,7 @@ SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
-    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+    connect(m_postDeal, SIGNAL(processed()), this, SLOT(refresh()));
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
@@ -174,10 +174,10 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, postHermes()->activeViewField()->initialMesh(), p.x, p.y);
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, postDeal()->activeViewField()->initialMesh(), p.x, p.y);
             if (e)
             {
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().
                                                                       get_user_marker(e->marker).marker.c_str()));
 
                 label->setSelected(!label->isSelected());
@@ -214,7 +214,7 @@ void SceneViewPost2D::paintGL()
     if (Agros2D::configComputer()->value(Config::Config_ShowGrid).toBool()) paintGrid();
 
     // view
-    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
     {
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool()) paintScalarField();
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool()) paintContours();
@@ -224,7 +224,7 @@ void SceneViewPost2D::paintGL()
     // geometry
     paintGeometry();
 
-    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
     {
         if (actPostprocessorModeLocalPointValue->isChecked()) paintPostprocessorSelectedPoint();
         if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
@@ -249,11 +249,11 @@ void SceneViewPost2D::paintGL()
 
     paintZoomRegion();
 
-    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
+    if (Agros2D::problem()->isSolved() && m_postDeal->isProcessed())
     {
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool())
         {
-            Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
+            Module::LocalVariable localVariable = postDeal()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
             QString text = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString() != "" ? localVariable.name() : "";
             if ((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt() != PhysicFieldVariableComp_Scalar)
                 text += " - " + physicFieldVariableCompString((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
@@ -315,7 +315,7 @@ void SceneViewPost2D::paintScalarField()
 
     if (m_listScalarField == -1)
     {
-        if (m_postHermes->scalarValues().isEmpty()) return;
+        if (m_postDeal->scalarValues().isEmpty()) return;
 
         paletteCreate();
 
@@ -340,7 +340,7 @@ void SceneViewPost2D::paintScalarField()
         glScaled(m_texScale, 0.0, 0.0);
 
         glBegin(GL_TRIANGLES);
-        foreach (PostTriangle triangle, m_postHermes->scalarValues())
+        foreach (PostTriangle triangle, m_postDeal->scalarValues())
         {
             if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
@@ -385,7 +385,7 @@ void SceneViewPost2D::paintScalarField()
 
         glBegin(GL_TRIANGLES);
         for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postHermes->linScalarView()->triangles_begin(); !it.end; ++it)
+             it = m_postDeal->linScalarView()->triangles_begin(); !it.end; ++it)
         {
             Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
@@ -418,7 +418,7 @@ void SceneViewPost2D::paintContours()
 
     if (m_listContours == -1)
     {
-        if (m_postHermes->contourValues().isEmpty()) return;
+        if (m_postDeal->contourValues().isEmpty()) return;
 
         m_listContours = glGenLists(1);
         glNewList(m_listContours, GL_COMPILE);
@@ -427,7 +427,7 @@ void SceneViewPost2D::paintContours()
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        foreach (PostTriangle triangle, m_postHermes->scalarValues())
+        foreach (PostTriangle triangle, m_postDeal->scalarValues())
         {
             for (int i = 0; i < 3; i++)
             {
@@ -446,7 +446,7 @@ void SceneViewPost2D::paintContours()
             glColor3d(COLORCONTOURS[0], COLORCONTOURS[1], COLORCONTOURS[2]);
 
             glBegin(GL_LINES);
-            foreach (PostTriangle triangle, m_postHermes->scalarValues())
+            foreach (PostTriangle triangle, m_postDeal->scalarValues())
             {
                 paintContoursTri(triangle, step);
             }
@@ -533,7 +533,7 @@ void SceneViewPost2D::paintVectors()
 
     if (m_listVectors == -1)
     {
-        // if (!m_postHermes->vecVectorView()) return;
+        // if (!m_postDeal->vecVectorView()) return;
 
         m_listVectors = glGenLists(1);
         glNewList(m_listVectors, GL_COMPILE);
@@ -541,7 +541,7 @@ void SceneViewPost2D::paintVectors()
         RectPoint rect = Agros2D::scene()->boundingBox();
         double gs = (rect.width() + rect.height()) / Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt();
 
-        MultiArrayDeal ma = m_postHermes->activeMultiSolutionArrayDeal();
+        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
         dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandlers().at(0), ma.solutions().at(0));
 
         // min max
@@ -846,7 +846,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
 
 void SceneViewPost2D::exportVTKContourView(const QString &fileName)
 {
-    Module::LocalVariable variable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString());
+    Module::LocalVariable variable = postDeal()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString());
     PhysicFieldVariableComp comp = variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
 
     exportVTK(fileName,
@@ -878,7 +878,7 @@ void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable
                 QFile::remove(fn);
         }
 
-        std::shared_ptr<DataPostprocessor> data_out = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(variable), physicFieldVariableComp);
+        std::shared_ptr<PostDataOut> data_out = m_postDeal->viewScalarFilter(postDeal()->activeViewField()->localVariable(variable), physicFieldVariableComp);
 
         std::ofstream output (fn.toStdString());
         data_out->write_vtk(output);

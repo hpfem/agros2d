@@ -40,8 +40,8 @@
 
 #include "util/constants.h"
 
-SceneViewCommon2D::SceneViewCommon2D(PostHermes *postHermes, QWidget *parent)
-    : SceneViewPostInterface(postHermes, parent)
+SceneViewCommon2D::SceneViewCommon2D(PostDeal *postDeal, QWidget *parent)
+    : SceneViewPostInterface(postDeal, parent)
 {
     connect(this, SIGNAL(mouseMoved(Point)), this, SLOT(updatePosition(Point)));
 }
