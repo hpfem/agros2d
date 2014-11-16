@@ -36,6 +36,10 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/module.h"
 
+// deal.ii
+#include <deal.II/grid/tria.h>
+#include <deal.II/dofs/dof_handler.h>
+
 SceneViewMesh::SceneViewMesh(PostDeal *postDeal, QWidget *parent)
     : SceneViewCommon2D(postDeal, parent)
 {
@@ -254,20 +258,6 @@ void SceneViewMesh::paintInitialMesh()
 
             ++ti;
         }
-
-        /*
-        // edges
-        m_arrayInitialMesh.reserve(2 * m_postDeal->linInitialMeshView()->get_edge_count());
-
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postDeal->linInitialMeshView()->edges_begin(); !it.end; ++it)
-        {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
-
-            m_arrayInitialMesh.append(QVector2D(edge[0][0], edge[0][1]));
-            m_arrayInitialMesh.append(QVector2D(edge[1][0], edge[1][1]));
-        }
-        */
     }
     else
     {
@@ -293,18 +283,27 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
-        if (!m_postDeal->linSolutionMeshView()) return;
+        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
+        dealii::DoFHandler<2> *dof_handler = ma.doFHandlers().at(0).get();
 
-        // edges
-        m_arraySolutionMesh.reserve(2 * m_postDeal->linSolutionMeshView()->get_edge_count());
+        // TODO: components and level
+        // activeMultiSolutionArray().spaces().at(comp)
+        // int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
 
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t>
-             it = m_postDeal->linSolutionMeshView()->edges_begin(); !it.end; ++it)
+        int level = 0;
+        typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();
+        for (; cell_int != endc_int; ++cell_int)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::edge_t& edge = it.get();
+            // coordinates
+            dealii::Point<2> point0 = cell_int->vertex(0);
+            dealii::Point<2> point1 = cell_int->vertex(1);
+            dealii::Point<2> point2 = cell_int->vertex(2);
+            dealii::Point<2> point3 = cell_int->vertex(3);
 
-            m_arraySolutionMesh.append(QVector2D(edge[0][0], edge[0][1]));
-            m_arraySolutionMesh.append(QVector2D(edge[1][0], edge[1][1]));
+            m_arraySolutionMesh.append(QVector2D(point0[0], point0[1]));
+            m_arraySolutionMesh.append(QVector2D(point1[0], point1[1]));
+            m_arraySolutionMesh.append(QVector2D(point3[0], point3[1]));
+            m_arraySolutionMesh.append(QVector2D(point2[0], point2[1]));
         }
     }
     else
@@ -318,7 +317,7 @@ void SceneViewMesh::paintSolutionMesh()
         glEnableClientState(GL_VERTEX_ARRAY);
 
         glVertexPointer(2, GL_FLOAT, 0, m_arraySolutionMesh.constData());
-        glDrawArrays(GL_LINES, 0, m_arraySolutionMesh.size());
+        glDrawArrays(GL_QUADS, 0, m_arraySolutionMesh.size());
 
         glDisableClientState(GL_VERTEX_ARRAY);
     }
@@ -330,7 +329,44 @@ void SceneViewMesh::paintOrder()
 
     if (m_arrayOrderMesh.isEmpty())
     {
-        if (!m_postDeal->ordView()) return;
+        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
+        dealii::DoFHandler<2> *dof_handler = ma.doFHandlers().at(0).get();
+
+        // TODO: components and level
+        // activeMultiSolutionArray().spaces().at(comp)
+        // int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
+
+        int level = 0;
+        typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();
+        for (; cell_int != endc_int; ++cell_int)
+        {
+            // coordinates
+            dealii::Point<2> point0 = cell_int->vertex(0);
+            dealii::Point<2> point1 = cell_int->vertex(1);
+            dealii::Point<2> point2 = cell_int->vertex(2);
+            dealii::Point<2> point3 = cell_int->vertex(3);
+
+            // polynomial degree
+            int degree = cell_int->get_fe().degree;
+
+            QVector3D colorVector = QVector3D(paletteColorOrder(degree)[0], paletteColorOrder(degree)[1], paletteColorOrder(degree)[2]);
+
+            m_arrayOrderMesh.append(QVector2D(point0[0], point0[1]));
+            m_arrayOrderMeshColor.append(colorVector);
+            m_arrayOrderMesh.append(QVector2D(point1[0], point1[1]));
+            m_arrayOrderMeshColor.append(colorVector);
+            m_arrayOrderMesh.append(QVector2D(point2[0], point2[1]));
+            m_arrayOrderMeshColor.append(colorVector);
+
+            m_arrayOrderMesh.append(QVector2D(point1[0], point1[1]));
+            m_arrayOrderMeshColor.append(colorVector);
+            m_arrayOrderMesh.append(QVector2D(point3[0], point3[1]));
+            m_arrayOrderMeshColor.append(colorVector);
+            m_arrayOrderMesh.append(QVector2D(point2[0], point2[1]));
+            m_arrayOrderMeshColor.append(colorVector);
+        }
+
+        /*
 
         // order scalar view
         double3* vert = m_postDeal->ordView()->get_vertices();
@@ -364,6 +400,7 @@ void SceneViewMesh::paintOrder()
             m_arrayOrderMesh.append(QVector2D(vert[tris[i][2]][0], vert[tris[i][2]][1]));
             m_arrayOrderMeshColor.append(colorVector);
         }
+        */
     }
     else
     {
@@ -388,6 +425,8 @@ void SceneViewMesh::paintOrder()
     // paint labels
     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderLabel).toBool())
     {
+        assert(0);
+        /*
         loadProjectionViewPort();
 
         glScaled(2.0 / width(), 2.0 / height(), 1.0);
@@ -410,6 +449,7 @@ void SceneViewMesh::paintOrder()
                             ltext[i]);
             }
         }
+        */
     }
 }
 
@@ -417,16 +457,20 @@ void SceneViewMesh::paintOrderColorBar()
 {
     if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool()) return;
 
-    // order scalar view
-    double3* vert = m_postDeal->ordView()->get_vertices();
-    int3* tris = m_postDeal->ordView()->get_triangles();
+    int minDegree = 11;
+    int maxDegree = 1;
+    MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
+    dealii::DoFHandler<2> *dof_handler = ma.doFHandlers().at(0).get();
 
-    int min = 11;
-    int max = 1;
-    for (int i = 0; i < m_postDeal->ordView()->get_num_triangles(); i++)
+    int level = 0;
+    typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();
+    for (; cell_int != endc_int; ++cell_int)
     {
-        if (vert[tris[i][0]][2] < min) min = vert[tris[i][0]][2];
-        if (vert[tris[i][0]][2] > max) max = vert[tris[i][0]][2];
+        // polynomial degree
+        int degree = cell_int->get_fe().degree;
+
+        if (degree < minDegree) minDegree = degree;
+        if (degree > maxDegree) maxDegree = degree;
     }
 
     // order color map
@@ -438,7 +482,7 @@ void SceneViewMesh::paintOrderColorBar()
     // dimensions
     int textWidth = 6 * (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0);
     int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
-    Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
+    Point scaleSize = Point(20 + textWidth, (20 + maxDegree * (2 * textHeight) - textHeight / 2.0 + 2));
     Point scaleBorder = Point(10.0, (Agros2D::configComputer()->value(Config::Config_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (20 + textWidth));
 
@@ -452,7 +496,7 @@ void SceneViewMesh::paintOrderColorBar()
 
     // bars
     glBegin(GL_QUADS);
-    for (int i = 1; i < max+1; i++)
+    for (int i = 1; i < maxDegree+1; i++)
     {
         glColor3d(0.0, 0.0, 0.0);
         glVertex2d(scaleLeft + 10,                             scaleBorder.y + 10 + (i-1)*(2 * textHeight));
@@ -472,7 +516,7 @@ void SceneViewMesh::paintOrderColorBar()
 
     // labels
     glColor3d(1.0, 1.0, 1.0);
-    for (int i = 1; i < max + 1; i++)
+    for (int i = 1; i < maxDegree + 1; i++)
     {
         printPostAt(scaleLeft + 10 + 3.5 * (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) - 2 - scaleBorder.x,
                     scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,

@@ -87,13 +87,6 @@ public:
     PostDeal();
     ~PostDeal();
 
-    // mesh
-    inline Hermes::Hermes2D::Views::Linearizer *linInitialMeshView() { return m_linInitialMeshView; }
-    inline Hermes::Hermes2D::Views::Linearizer *linSolutionMeshView() { return m_linSolutionMeshView; }
-
-    // order view
-    Hermes::Hermes2D::Views::Orderizer *ordView() { return m_orderView; }
-
     // contour
     inline QList<PostTriangle> &contourValues() { return m_contourValues; }
 
@@ -139,15 +132,6 @@ public slots:
 private:
     bool m_isProcessed;
 
-    // initial mesh
-    Hermes::Hermes2D::Views::Linearizer *m_linInitialMeshView;
-
-    // solution mesh
-    Hermes::Hermes2D::Views::Linearizer *m_linSolutionMeshView;
-
-    // order view
-    Hermes::Hermes2D::Views::Orderizer *m_orderView;
-
     // contour
     QList<PostTriangle> m_contourValues;
     // scalar view
@@ -164,12 +148,7 @@ private:
 
 
 private slots:
-    void processMeshed();
     void processSolved();
-
-    void processInitialMesh();
-    void processSolutionMesh();
-    void processOrder();
 
     void processRangeContour();
     void processRangeScalar();

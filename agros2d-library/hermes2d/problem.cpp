@@ -797,7 +797,7 @@ void Problem::solveAction()
             throw AgrosSolverException(tr("Cannot create solver."));
 
         solvers[block] = solver;
-        solvers[block].data()->createInitialSpace();
+        solvers[block]->createInitialSpace();
     }
 
     TimeStepInfo nextTimeStep(config()->initialTimeStepLength());
@@ -998,11 +998,11 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
         foreach (FieldInfo* fieldInfo, m_fieldInfos)
         {
             // cache
-            meshesVector = meshGenerator.data()->meshes();
+            meshesVector = meshGenerator->meshes();
             meshes[fieldInfo] = meshesVector[subdomain_i++];            
         }
 
-        meshesDeal = meshGenerator.data()->meshes_dealii();
+        meshesDeal = meshGenerator->meshes_dealii();
 
         // Agros2D::log()->printDebug(tr("Mesh Generator"), tr("Reading initial mesh from memory"));
     }

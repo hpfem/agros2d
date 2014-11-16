@@ -165,10 +165,7 @@ PostDeal::PostDeal() :
     m_activeTimeStep(NOT_FOUND_SO_FAR),
     m_activeAdaptivityStep(NOT_FOUND_SO_FAR),
     m_activeSolutionMode(SolutionMode_Undefined),
-    m_isProcessed(false),
-    m_linInitialMeshView(NULL),
-    m_linSolutionMeshView(NULL),
-    m_orderView(NULL)
+    m_isProcessed(false)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
     connect(Agros2D::problem(), SIGNAL(clearedSolution()), this, SLOT(clearView()));
@@ -181,89 +178,6 @@ PostDeal::PostDeal() :
 PostDeal::~PostDeal()
 {
     clear();
-}
-
-void PostDeal::processInitialMesh()
-{
-    if (Agros2D::problem()->isMeshed() && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool()))
-    {
-        Agros2D::log()->printMessage(tr("Mesh View"), tr("Initial mesh with %1 elements").arg(m_activeViewField->initialMesh()->get_num_active_elements()));
-
-        if (m_linInitialMeshView)
-            delete m_linInitialMeshView;
-        m_linInitialMeshView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
-
-        // init linearizer for initial mesh
-        try
-        {
-            m_linInitialMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-            m_linInitialMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
-        }
-        catch (Hermes::Exceptions::Exception& e)
-        {
-            delete m_linInitialMeshView;
-            m_linInitialMeshView = NULL;
-
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (initial mesh) processing failed: %1").arg(e.info().c_str()));
-        }
-    }
-}
-
-void PostDeal::processSolutionMesh()
-{
-    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool()))
-    {
-        int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
-
-        Agros2D::log()->printMessage(tr("Mesh View"), tr("Solution mesh with %1 elements").arg(activeMultiSolutionArray().solutions().at(comp)->get_mesh()->get_num_active_elements()));
-
-        // init linearizer for solution mesh
-        const Hermes::Hermes2D::MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(comp)->get_mesh();
-
-        if (m_linSolutionMeshView)
-            delete m_linSolutionMeshView;
-        m_linSolutionMeshView = new Hermes::Hermes2D::Views::Linearizer(Hermes::Hermes2D::OpenGL);
-
-        try
-        {
-            m_linSolutionMeshView->set_criterion(Hermes::Hermes2D::Views::LinearizerCriterionFixed(1));
-            m_linSolutionMeshView->process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
-        }
-        catch (Hermes::Exceptions::Exception& e)
-        {
-            delete m_linSolutionMeshView;
-            m_linSolutionMeshView = NULL;
-
-            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer (solution mesh) processing failed: %1").arg(e.info().c_str()));
-        }
-    }
-}
-
-void PostDeal::processOrder()
-{
-    // init linearizer for order view
-    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()))
-    {
-        Agros2D::log()->printMessage(tr("Mesh View"), tr("Polynomial order"));
-
-        int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
-
-        if (m_orderView)
-            delete m_orderView;
-        m_orderView = new Hermes::Hermes2D::Views::Orderizer();
-
-        try
-        {
-            m_orderView->process_space(activeMultiSolutionArray().spaces().at(comp));
-        }
-        catch (Hermes::Exceptions::Exception& e)
-        {
-            delete m_orderView;
-            m_orderView = NULL;
-
-            Agros2D::log()->printError("Order View", QObject::tr("Orderizer processing failed: %1").arg(e.info().c_str()));
-        }
-    }
 }
 
 void PostDeal::processRangeContour()
@@ -436,31 +350,12 @@ void PostDeal::clearView()
     m_scalarValues.clear();
     m_vectorXValues.clear();
     m_vectorYValues.clear();
-
-    if (m_linInitialMeshView)
-    {
-        delete m_linInitialMeshView;
-        m_linInitialMeshView = NULL;
-    }
-    if (m_linSolutionMeshView)
-    {
-        delete m_linSolutionMeshView;
-        m_linSolutionMeshView = NULL;
-    }
-    if (m_orderView)
-    {
-        delete m_orderView;
-        m_orderView = NULL;
-    }
 }
 
 void PostDeal::refresh()
 {
     Agros2D::problem()->setIsPostprocessingRunning();
     clearView();
-
-    if (Agros2D::problem()->isMeshed())
-        processMeshed();
 
     if (Agros2D::problem()->isSolved())
         processSolved();
@@ -519,11 +414,6 @@ void PostDeal::problemSolved()
     setActiveAdaptivitySolutionType(SolutionMode_Normal);
 }
 
-void PostDeal::processMeshed()
-{
-    processInitialMesh();
-}
-
 void PostDeal::processSolved()
 {
     // update time functions
@@ -542,9 +432,6 @@ void PostDeal::processSolved()
         // add icon to progress
         Agros2D::log()->addIcon(icon("scene-post2d"),
                                 tr("Postprocessor"));
-
-        processSolutionMesh();
-        processOrder();
 
         processRangeContour();
         processRangeScalar();

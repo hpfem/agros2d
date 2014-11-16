@@ -263,15 +263,23 @@ void SceneViewPost3D::paintScalarField3D()
         glColor4d(0.5, 0.5, 0.5, 0.3);
 
         // triangles
-        glBegin(GL_TRIANGLES);
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postDeal->linInitialMeshView()->triangles_begin(); !it.end; ++it)
+        glBegin(GL_TRIANGLES); // GL_QUADS are not optimized in OpenGL
+        typename dealii::Triangulation<2>::active_cell_iterator cell_int = m_postDeal->activeViewField()->initialMeshDeal()->begin_active(),
+                endc_int = m_postDeal->activeViewField()->initialMeshDeal()->end();
+        for (; cell_int != endc_int; ++cell_int)
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
+            dealii::Point<2> point0 = cell_int->vertex(0);
+            dealii::Point<2> point1 = cell_int->vertex(1);
+            dealii::Point<2> point2 = cell_int->vertex(2);
+            dealii::Point<2> point3 = cell_int->vertex(3);
 
-            glVertex2d(triangle[0][0], triangle[0][1]);
-            glVertex2d(triangle[1][0], triangle[1][1]);
-            glVertex2d(triangle[2][0], triangle[2][1]);
+            glVertex2d(point0[0], point0[1]);
+            glVertex2d(point1[0], point1[1]);
+            glVertex2d(point2[0], point2[1]);
+
+            glVertex2d(point1[0], point1[1]);
+            glVertex2d(point3[0], point3[1]);
+            glVertex2d(point2[0], point2[1]);
         }
         glEnd();
 
