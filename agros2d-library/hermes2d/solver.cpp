@@ -255,7 +255,7 @@ void SolverDeal::solveUMFPACK()
 
 void SolverDeal::solveCG()
 {
-    dealii::SolverControl solver_control(10000, 1e-11);
+    dealii::SolverControl solver_control(10000, 1e-13);
     dealii::SolverCG<> solver(solver_control);
     solver.solve(system_matrix, *m_solution, system_rhs, dealii::PreconditionIdentity());
 }

@@ -427,7 +427,7 @@ void SceneViewPost2D::paintContours()
         double rangeMin =  numeric_limits<double>::max();
         double rangeMax = -numeric_limits<double>::max();
 
-        foreach (PostTriangle triangle, m_postDeal->scalarValues())
+        foreach (PostTriangle triangle, m_postDeal->contourValues())
         {
             for (int i = 0; i < 3; i++)
             {
@@ -446,7 +446,7 @@ void SceneViewPost2D::paintContours()
             glColor3d(COLORCONTOURS[0], COLORCONTOURS[1], COLORCONTOURS[2]);
 
             glBegin(GL_LINES);
-            foreach (PostTriangle triangle, m_postDeal->scalarValues())
+            foreach (PostTriangle triangle, m_postDeal->contourValues())
             {
                 paintContoursTri(triangle, step);
             }
