@@ -62,10 +62,8 @@ public:
     QString fieldId() const { return m_fieldId; }
     inline int numberId() const { return m_numberId; }
 
-    inline Hermes::Hermes2D::MeshSharedPtr initialMesh() const { return m_initialMesh; }
-    inline std::shared_ptr<dealii::Triangulation<2> > initialMeshDeal() const { return m_initialMeshDeal; }
+    inline std::shared_ptr<dealii::Triangulation<2> > initialMesh() const { return m_initialMesh; }
     void clearInitialMesh();
-    void setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh);
     void setInitialMesh(std::shared_ptr<dealii::Triangulation<2> > mesh);
 
     enum Type
@@ -261,8 +259,7 @@ private:
     QString m_fieldId;
 
     // initial mesh
-    Hermes::Hermes2D::MeshSharedPtr m_initialMesh;
-    std::shared_ptr<dealii::Triangulation<2> > m_initialMeshDeal;
+    std::shared_ptr<dealii::Triangulation<2> > m_initialMesh;
 
     // analysis type
     AnalysisType m_analysisType;

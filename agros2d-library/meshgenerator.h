@@ -48,8 +48,7 @@ public:
 
     virtual bool mesh() = 0;
 
-    inline std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes() { return m_meshes; }
-    inline QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > meshes_dealii() { return m_triangulations_deal; }
+    inline QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > meshes() { return m_triangulations; }
 
 protected:
     struct MeshEdge
@@ -206,7 +205,6 @@ protected:
     QList<MeshElement> elementList;
 
     /// Complete method translating the internal generator structures into m_meshes.
-    void writeToHermes();
     void writeTodealii();
 
     /// Utility method serving the purpose of (potential) multi-mesh setup.
@@ -227,9 +225,8 @@ protected:
 
     bool m_isError;
     QSharedPointer<QProcess> m_process;
-    std::vector<Hermes::Hermes2D::MeshSharedPtr> m_meshes;
 
-    QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > m_triangulations_deal;
+    QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > m_triangulations;
 };
 
 #endif //MESHGENERATOR_H

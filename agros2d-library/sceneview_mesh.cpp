@@ -247,14 +247,14 @@ void SceneViewMesh::paintInitialMesh()
 
     if (m_arrayInitialMesh.isEmpty())
     {
-        if (!m_postDeal->activeViewField()->initialMeshDeal()) return;
+        if (!m_postDeal->activeViewField()->initialMesh()) return;
 
         // vertices
-        const std::vector<dealii::Point<2> >& vertices = m_postDeal->activeViewField()->initialMeshDeal()->get_vertices();
+        const std::vector<dealii::Point<2> >& vertices = m_postDeal->activeViewField()->initialMesh()->get_vertices();
 
         // faces
-        typename dealii::Triangulation<2>::active_face_iterator ti = m_postDeal->activeViewField()->initialMeshDeal()->begin_face();
-        while (ti != m_postDeal->activeViewField()->initialMeshDeal()->end_face())
+        typename dealii::Triangulation<2>::active_face_iterator ti = m_postDeal->activeViewField()->initialMesh()->begin_face();
+        while (ti != m_postDeal->activeViewField()->initialMesh()->end_face())
         {
             m_arrayInitialMesh.append(QVector2D(vertices[ti->vertex_index(0)][0], vertices[ti->vertex_index(0)][1]));
             m_arrayInitialMesh.append(QVector2D(vertices[ti->vertex_index(1)][0], vertices[ti->vertex_index(1)][1]));

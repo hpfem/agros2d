@@ -44,6 +44,7 @@ void AgrosSpecialExtFunction::init()
     {
         for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
         {
+            /*
             SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
             Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelNum).toStdString());
             if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
@@ -53,6 +54,7 @@ void AgrosSpecialExtFunction::init()
                 assert(!m_data.contains(hermesMarker));
                 createOneTable(hermesMarker);
             }
+            */
         }
     }
 

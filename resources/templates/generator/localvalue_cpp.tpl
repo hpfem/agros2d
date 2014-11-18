@@ -69,7 +69,7 @@ void {{CLASS}}LocalValue::calculate()
 
             dealii::Point<2> p(m_point.x, m_point.y);
             std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-                    dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMeshDeal().get(), p);
+                    dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), p);
 
             // find marker
             SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);

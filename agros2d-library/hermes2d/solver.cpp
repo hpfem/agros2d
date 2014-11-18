@@ -89,16 +89,21 @@ SolverDeal::SolverDeal(const FieldInfo *fieldInfo, int initialOrder)
     : m_fieldInfo(fieldInfo),
       fe(dealii::FE_Q<2>(initialOrder), 1)
 {
-    m_triangulation = m_fieldInfo->initialMeshDeal();
+    // copy initial mesh
+    m_triangulation = std::shared_ptr<dealii::Triangulation<2> >(new dealii::Triangulation<2>());
+    m_triangulation->copy_triangulation(*m_fieldInfo->initialMesh());
+
+    // create dof handler
     m_doFHandler = std::shared_ptr<dealii::DoFHandler<2> >(new dealii::DoFHandler<2>(*m_triangulation));
 
-    std::vector<dealii::types::boundary_id> bindicators = m_triangulation->get_boundary_indicators();
+    // create solution vector
+    m_solution = std::shared_ptr<dealii::Vector<double> >(new dealii::Vector<double>());
 
+    // info
+    std::vector<dealii::types::boundary_id> bindicators = m_triangulation->get_boundary_indicators();
     std::cout << "Number of boundary indicators: " << bindicators.size() << std::endl;
     std::cout << "Number of active cells: " << m_triangulation->n_active_cells() << std::endl;
     std::cout << "Total number of cells: " << m_triangulation->n_cells() << std::endl;
-
-    m_solution = std::shared_ptr<dealii::Vector<double> >(new dealii::Vector<double>());
 }
 
 void SolverDeal::setup()
@@ -121,113 +126,20 @@ void SolverDeal::setup()
 
 void SolverDeal::assemble()
 {
+    QTime time;
+    time.start();
     assembleSystem();
+    qDebug() << "assemble system (" << time.elapsed() << "ms )";
+
+    time.start();
     assembleDirichlet();
+    qDebug() << "assemble Dirichlet (" << time.elapsed() << "ms )";
 }
 
 void SolverDeal::assembleSystem()
 {
-
+    assert(0);
 }
-
-/*
-void SolverDeal::assembleSystem()
-{
-    dealii::QGauss<2>  quadrature_formula(5);
-    dealii::QGauss<2-1> face_quadrature_formula(5);
-
-    dealii::FEValues<2> fe_values (fe, quadrature_formula, dealii::update_values | dealii::update_gradients | dealii::update_JxW_values);
-    dealii::FEFaceValues<2> fe_face_values (fe, face_quadrature_formula, dealii::update_values | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
-
-    const unsigned int dofs_per_cell = fe.dofs_per_cell;
-    const unsigned int n_q_points = quadrature_formula.size();
-    const unsigned int n_face_q_points = face_quadrature_formula.size();
-
-    dealii::FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
-    dealii::Vector<double> cell_rhs (dofs_per_cell);
-
-    std::vector<dealii::types::global_dof_index> local_dof_indices (dofs_per_cell);
-
-    dealii::DoFHandler<2>::active_cell_iterator cell = m_doFHandler->begin_active(), endc = m_doFHandler->end();
-    for (; cell!=endc; ++cell)
-    {
-        fe_values.reinit (cell);
-
-        // local matrix
-        cell_matrix = 0;
-        cell_rhs = 0;
-
-        double perm = 8.854e-12;
-        if (cell->material_id() == 1)
-            perm = 1 * perm;
-        if (cell->material_id() == 2)
-            perm = 10 * perm;
-
-        // matrix
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-            for (unsigned int j=0; j<dofs_per_cell; ++j)
-                for (unsigned int q_point=0; q_point<n_q_points; ++q_point)
-                    cell_matrix(i,j) += (fe_values.shape_grad (i, q_point) *
-                                         fe_values.shape_grad (j, q_point) *
-                                         perm *
-                                         fe_values.JxW (q_point));
-
-        // rhs
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-            for (unsigned int q_point=0; q_point<n_q_points; ++q_point)
-                cell_rhs(i) += (fe_values.shape_value (i, q_point) *
-                                0 *
-                                fe_values.JxW (q_point));
-
-
-        for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
-        {
-            // boundary (Neumann)
-            if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
-            {
-                fe_face_values.reinit (cell, face);
-                for (unsigned int q_point=0; q_point<n_face_q_points; ++q_point)
-                    for (unsigned int i=0; i<dofs_per_cell; ++i)
-                        cell_rhs(i) += (// fe_face_values.normal_vector(q_point) *
-                                        1e-7 *
-                                        fe_face_values.shape_value(i, q_point) *
-                                        fe_face_values.JxW(q_point));
-            }
-
-                ROBIN - CHECK!!!
-//                if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 1))
-//                {
-//                    fe_face_values.reinit(cell, face);
-
-//                    for (unsigned int i = 0; i < dofs_per_cell; ++i)
-//                        for (unsigned int j = 0; j < dofs_per_cell; ++j)
-//                            for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-//                                cell_matrix(i, j) += 1 / R_SI_1* fe_face_values.shape_value(i, q_point) * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-//                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-//                        for (unsigned int j = 0; j < dofs_per_cell; ++j)
-//                            cell_rhs(j) += 1/ R_SI_1 * THETA_1 * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-//                }
-
-        }
-
-        cell->get_dof_indices(local_dof_indices);
-
-
-        // system matrix
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-            for (unsigned int j=0; j<dofs_per_cell; ++j)
-                system_matrix.add (local_dof_indices[i],
-                                   local_dof_indices[j],
-                                   cell_matrix(i,j));
-
-        // system rhs
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-            system_rhs(local_dof_indices[i]) += cell_rhs(i);
-    }
-}
-*/
 
 void SolverDeal::assembleDirichlet()
 {
@@ -236,14 +148,13 @@ void SolverDeal::assembleDirichlet()
 
 void SolverDeal::solve()
 {
-    dealii::Timer timer;
-    timer.start ();
+    QTime time;
+    time.start();
 
     solveUMFPACK();
     // solveCG();
 
-    timer.stop ();
-    std::cout << "solved (" << timer () << "s)" << std::endl;
+    qDebug() << "solved (" << time.elapsed() << "ms )";
 }
 
 void SolverDeal::solveUMFPACK()
@@ -893,6 +804,8 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
 template <typename Scalar>
 void ProblemSolver<Scalar>::createInitialSpace()
 {
+    return; // dealii
+
     // read mesh from file
     if (!Agros2D::problem()->isMeshed())
         throw AgrosSolverException(QObject::tr("Problem is not meshed"));
@@ -920,6 +833,8 @@ void ProblemSolver<Scalar>::createInitialSpace()
             assert(fieldSpaces.contains(spaceI));
             Hermes::Hermes2D::SpaceSharedPtr<Scalar> oneSpace;
             SpaceType spaceType = fieldSpaces[spaceI].type();
+            assert(0);
+            /*
             switch (spaceType)
             {
             case HERMES_L2_SPACE:
@@ -941,6 +856,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
                 assert(0);
                 break;
             }
+            */
 
             // cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             m_actualSpaces.push_back(oneSpace);
@@ -1249,7 +1165,8 @@ void ProblemSolverDeal::init()
     // TODO: more fields
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        m_solverDeal = fieldInfo->plugin()->solverDeal(fieldInfo, 2);
+        m_solverDeal = fieldInfo->plugin()->solverDeal(fieldInfo,
+                                                       fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
     }
 }
 

@@ -40,6 +40,8 @@
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/problem_config.h"
 
+#include <deal.II/grid/grid_tools.h>
+
 ParticleTracing::ParticleTracing(QObject *parent)
     : QObject(parent)
 {
@@ -48,16 +50,11 @@ ParticleTracing::ParticleTracing(QObject *parent)
         if(!fieldInfo->plugin()->hasForce(fieldInfo))
             continue;
 
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
         int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
         int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
         SolutionMode solutionMode = SolutionMode_Finer;
 
-        FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionMode);
-        Hermes::Hermes2D::MeshFunctionSharedPtr<double> sln = Agros2D::solutionStore()->multiArray(fsid).solutions().at(0);
-
         m_solutionIDs[fieldInfo] = FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
-        m_meshes[fieldInfo] = sln->get_mesh();
     }
 }
 
@@ -95,7 +92,7 @@ Point3 ParticleTracing::force(int particleIndex,
             continue;
 
         Point3 fieldForce;
-
+        /*
         bool elementIsValid = false;
         Hermes::Hermes2D::Element *activeElement = NULL;
 
@@ -137,6 +134,30 @@ Point3 ParticleTracing::force(int particleIndex,
                 return Point3();
             }
         }
+        */
+
+        // find material
+        dealii::Point<2> p(position.x, position.y);
+        std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+                dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *fieldInfo->initialMesh().get(), p);
+
+        SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
+        SceneMaterial *material = label->marker(fieldInfo);
+
+        assert(!material->isNone());
+
+        try
+        {
+            fieldForce = fieldInfo->plugin()->force(fieldInfo, m_solutionIDs[fieldInfo].timeStep, m_solutionIDs[fieldInfo].adaptivityStep, m_solutionIDs[fieldInfo].solutionMode,
+                                                    NULL, material, position, velocity)
+                    * m_particleChargesList[particleIndex];
+        }
+        catch (AgrosException e)
+        {
+            qDebug() << "Particle Tracing warning: " << e.what();
+            return Point3();
+        }
+
         totalFieldForce = totalFieldForce + fieldForce;
     }
 

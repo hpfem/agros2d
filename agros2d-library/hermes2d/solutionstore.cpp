@@ -361,7 +361,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
                 if (fieldInfo == solutionID.group)
                     meshes.push_back(multiSolution.spaces().at(i)->get_mesh());
                 else
-                    meshes.push_back(fieldInfo->initialMesh());
+                    assert(0); // meshes.push_back(fieldInfo->initialMesh());
             }
 
             // QString meshFN = QString("%1_%2.msh").arg(baseFN).arg(i);

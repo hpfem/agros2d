@@ -444,6 +444,8 @@ void PostDeal::processSolved()
 std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable physicFieldVariable,
                                                         PhysicFieldVariableComp physicFieldVariableComp)
 {
+    qDebug() << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
+
     // update time functions
     if (Agros2D::problem()->isTransient())
         Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
@@ -458,11 +460,15 @@ std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable ph
                                                                                                     physicFieldVariable.id(),
                                                                                                     physicFieldVariableComp);
 
+    qDebug() << "OK 1";
     std::shared_ptr<PostDataOut> data_out = std::shared_ptr<PostDataOut>(new PostDataOut());
+    qDebug() << "OK 2" << ma.doFHandler()->n_dofs();
     data_out->attach_dof_handler(*ma.doFHandler());
-    // data_out->add_data_vector(ma.solutions().at(0), "solution");
-    data_out->add_data_vector(*ma.solution(), *post);
+    qDebug() << "OK 3";
+    data_out->add_data_vector(*ma.solution(), "solution");
+    // data_out->add_data_vector(*ma.solution(), *post);
     data_out->build_patches(2);
+    qDebug() << "OK 4";
 
     return data_out;
 }

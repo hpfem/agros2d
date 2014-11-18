@@ -39,6 +39,7 @@ public:
 
     virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u, Hermes::Hermes2D::Func<Scalar> *v, Hermes::Hermes2D::GeomVol<double> *e) const
     {
+        /*
         SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
         SceneMaterial *material = label->marker(m_fieldInfo);
 
@@ -48,7 +49,8 @@ public:
         Scalar result = Scalar(0);
         // for (int i = 0; i < n; i++)
         //     result += wt[i] * ({{EXPRESSION}});
-
+        */
+        Scalar result = Scalar(0);
         return result;
     }
 

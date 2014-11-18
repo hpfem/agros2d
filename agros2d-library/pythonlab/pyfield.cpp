@@ -679,8 +679,8 @@ void PyField::initialMeshInfo(map<std::string, int> &info) const
     if (!Agros2D::problem()->isMeshed())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
 
-    info["nodes"] = m_fieldInfo->initialMesh()->get_num_vertex_nodes();
-    info["elements"] = m_fieldInfo->initialMesh()->get_num_active_elements();
+    info["nodes"] = m_fieldInfo->initialMesh()->n_used_vertices();
+    info["elements"] = m_fieldInfo->initialMesh()->n_active_cells();
 
     if (Agros2D::problem()->isSolved())
     {

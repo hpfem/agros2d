@@ -570,7 +570,6 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
     fillNeighborStructures();
     // moveNodesOnCurvedEdges();
 
-    writeToHermes();
     writeTodealii();
 
     nodeList.clear();
@@ -1065,7 +1064,6 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     this->fillNeighborStructures();
     // this->moveNodesOnCurvedEdges();
 
-    writeToHermes();
     writeTodealii();
 
     nodeList.clear();

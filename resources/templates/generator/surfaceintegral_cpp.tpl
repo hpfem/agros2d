@@ -205,7 +205,8 @@ void {{CLASS}}SurfaceIntegral::calculate()
                         {
                             for (unsigned int i = 0; i < n_face_q_points; ++i)
                             {
-                                dealii::Point<2> normal = fe_values.normal_vector(i);
+                                const dealii::Point<2> p = fe_values.quadrature_point(i);
+                                const dealii::Point<2> normal = fe_values.normal_vector(i);
 
                                 m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(i) * ({{EXPRESSION}});
                             }

@@ -72,8 +72,8 @@ MultiArrayDeal::~MultiArrayDeal()
 
 void MultiArrayDeal::clear()
 {
-    // m_doFHandler.clear();
-    // m_solution.clear();
+    // m_doFHandler.reset();
+    // m_solution.reset();
 }
 
 void MultiArrayDeal::append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,

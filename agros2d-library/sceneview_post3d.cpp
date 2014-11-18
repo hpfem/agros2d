@@ -264,8 +264,8 @@ void SceneViewPost3D::paintScalarField3D()
 
         // triangles
         glBegin(GL_TRIANGLES); // GL_QUADS are not optimized in OpenGL
-        typename dealii::Triangulation<2>::active_cell_iterator cell_int = m_postDeal->activeViewField()->initialMeshDeal()->begin_active(),
-                endc_int = m_postDeal->activeViewField()->initialMeshDeal()->end();
+        typename dealii::Triangulation<2>::active_cell_iterator cell_int = m_postDeal->activeViewField()->initialMesh()->begin_active(),
+                endc_int = m_postDeal->activeViewField()->initialMesh()->end();
         for (; cell_int != endc_int; ++cell_int)
         {
             dealii::Point<2> point0 = cell_int->vertex(0);
@@ -539,10 +539,9 @@ void SceneViewPost3D::paintScalarField3DSolid()
             foreach (PostTriangle triangle, m_postDeal->scalarValues())
             {
                 // int& elem_marker = it.get_marker();
-                int elem_marker = 0;
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
+                SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
                 SceneMaterial *material = label->marker(postDeal()->activeViewField());
 
                 // hide material
@@ -586,7 +585,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 // if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
                 {
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
+                    SceneLabel *label = Agros2D::scene()->labels->at(0); // Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(elem_marker).marker.c_str()));
                     SceneMaterial *material = label->marker(postDeal()->activeViewField());
 
                     // hide material

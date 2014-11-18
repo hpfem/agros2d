@@ -19,8 +19,8 @@ void ParserInstance::addBasicWeakformTokens()
     // coordinates
     if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
-        m_dict["x"] = "fe_values.quadrature_point(q_point)[0]"; // "e->x[i]";
-        m_dict["y"] = "fe_values.quadrature_point(q_point)[1]"; // "e->y[i]";
+        m_dict["x"] = "p[0]"; // "e->x[i]";
+        m_dict["y"] = "p[1]"; // "e->y[i]";
         m_dict["tx"] = "e->tx[i]";
         m_dict["ty"] = "e->ty[i]";
         m_dict["nx"] = "e->nx[i]";
@@ -28,8 +28,8 @@ void ParserInstance::addBasicWeakformTokens()
     }
     else
     {
-        m_dict["r"] = "fe_values.quadrature_point(q_point)[0]"; // "e->x[i]";
-        m_dict["z"] = "fe_values.quadrature_point(q_point)[1]"; // "e->y[i]";
+        m_dict["r"] = "p[0]"; // "e->x[i]";
+        m_dict["z"] = "p[1]"; // "e->y[i]";
         m_dict["tr"] = "e->tx[i]";
         m_dict["tz"] = "e->ty[i]";
         m_dict["nr"] = "e->nx[i]";
@@ -362,8 +362,8 @@ void ParserInstance::addPostprocessorBasic()
     // coordinates
     if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
-        m_dict["x"] = "fe_values.quadrature_point(i)[0]"; // "x[i]";
-        m_dict["y"] = "fe_values.quadrature_point(i)[1]"; // "y[i]";
+        m_dict["x"] = "p[0]"; // "x[i]";
+        m_dict["y"] = "p[1]"; // "y[i]";
         // surface integral
         m_dict["tanx"] = "(-normal[1])"; // "e->tx[i]";
         m_dict["tany"] = "(normal[0])"; // "e->ty[i]";
@@ -374,8 +374,8 @@ void ParserInstance::addPostprocessorBasic()
     }
     else
     {
-        m_dict["r"] = "fe_values.quadrature_point(i)[0]"; // "x[i]";
-        m_dict["z"] = "fe_values.quadrature_point(i)[1]"; // "y[i]";
+        m_dict["r"] = "p[0]"; // "x[i]";
+        m_dict["z"] = "p[1]"; // "y[i]";
         // surface integral
         m_dict["tanr"] = "(-normal[1])"; // "e->tx[i]";
         m_dict["tanz"] = "(normal[0])"; // "e->ty[i]";

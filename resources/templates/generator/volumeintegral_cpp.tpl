@@ -260,6 +260,8 @@ void {{CLASS}}VolumeIntegral::calculate()
                     {
                         for (unsigned int i = 0; i < n_q_points; ++i)
                         {
+                            const dealii::Point<2> p = fe_values.quadrature_point(i);
+
                             m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(i) * ({{EXPRESSION}});
                         }
                     }

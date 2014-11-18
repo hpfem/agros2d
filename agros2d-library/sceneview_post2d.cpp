@@ -174,16 +174,23 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, postDeal()->activeViewField()->initialMesh(), p.x, p.y);
-            if (e)
+            try
             {
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postDeal()->activeViewField()->initialMesh()->get_element_markers_conversion().
-                                                                      get_user_marker(e->marker).marker.c_str()));
+                dealii::Point<2> pt(p.x, p.y);
+                std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+                        dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_postDeal->activeViewField()->initialMesh().get(), pt);
 
+                // find marker
+                SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
                 label->setSelected(!label->isSelected());
+
                 updateGL();
+                emit mousePressed();
             }
-            emit mousePressed();
+            catch (const typename dealii::GridTools::ExcPointNotFound<2> &e)
+            {
+                // do nothing
+            }
         }
 
         // select surface integral area

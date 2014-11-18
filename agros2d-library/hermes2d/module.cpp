@@ -193,9 +193,10 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
         }
 
         // volume
-        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
-        double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
-        weakFormAgros->setMarkerVolume(volume);
+        // Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
+        // double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
+        // weakFormAgros->setMarkerVolume(volume);
+        weakFormAgros->setMarkerVolume(-1);
 
         // symmetric flag
         weakFormAgros->setSymFlag(form->sym(problemId.coordinateType));
@@ -222,9 +223,10 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
         if (!weakFormAgros) return NULL;
 
         // volume
-        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
-        double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
-        weakFormAgros->setMarkerVolume(volume);
+        // Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
+        // double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
+        // weakFormAgros->setMarkerVolume(volume);
+        weakFormAgros->setMarkerVolume(-1);
 
         // source marker
         weakFormAgros->setMarkerSource(markerSource);

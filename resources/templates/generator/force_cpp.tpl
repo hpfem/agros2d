@@ -51,18 +51,18 @@ bool hasForce{{CLASS}}(const FieldInfo *fieldInfo)
 Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                       Hermes::Hermes2D::Element *element, SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
-    int numberOfSolutions = fieldInfo->numberOfSolutions();
-
-    FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
-    MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
-
-    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
-    {{/VARIABLE_MATERIAL}}
-
     Point3 res;
 
     if (Agros2D::problem()->isSolved())
     {
+        int numberOfSolutions = fieldInfo->numberOfSolutions();
+
+        FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
+        MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
+
+        {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{/VARIABLE_MATERIAL}}
+
         // update time functions
         if (fieldInfo->analysisType() == AnalysisType_Transient)
         {
@@ -82,14 +82,6 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
             // point values
             try
             {
-                dealii::Point<2> p(point.x, point.y);
-                std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-                        dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *fieldInfo->initialMeshDeal().get(), p);
-
-                // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
-                SceneMaterial *material = label->marker(fieldInfo);
-
                 if ((fieldInfo->analysisType() == AnalysisType_Transient) && timeStep == 0)
                 {
                     // set variables
@@ -101,6 +93,7 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
                 {
                     // point values
                     dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandler(), *ma.solution());
+                    dealii::Point<2> p(point.x, point.y);
 
                     // set variables
                     solution_values[k] = localvalues.value(p);

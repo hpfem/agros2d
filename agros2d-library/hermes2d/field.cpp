@@ -126,12 +126,14 @@ void FieldInfo::createValuePointerTable()
     {
         if(!Agros2D::scene()->labels->at(labelIndex)->marker(this)->isNone())
         {
+            /*
             Hermes::Hermes2D::Mesh::MarkersConversion::IntValid intValid = initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
             assert(intValid.valid);
             assert(intValid.marker <= num);
             assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == LABEL_OUTSIDE_FIELD);
             m_hermesMarkerToAgrosLabelConversion[intValid.marker] = labelIndex;           
             m_labelAreas[labelIndex] = initialMesh()->get_marker_area(intValid.marker);
+            */
         }
     }
 
@@ -189,19 +191,12 @@ double FieldInfo::labelArea(int agrosLabel) const
 
 void FieldInfo::clearInitialMesh()
 {
-    m_initialMesh = Hermes::Hermes2D::MeshSharedPtr();
-    m_initialMeshDeal = std::shared_ptr<dealii::Triangulation<2> >(new dealii::Triangulation<2>());
-}
-
-void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
-{
-    clearInitialMesh();
-    m_initialMesh = mesh;
+    m_initialMesh = std::shared_ptr<dealii::Triangulation<2> >(new dealii::Triangulation<2>());
 }
 
 void FieldInfo::setInitialMesh(std::shared_ptr<dealii::Triangulation<2> > mesh)
 {
-    m_initialMeshDeal = mesh;
+    m_initialMesh = mesh;
 }
 
 void FieldInfo::setAnalysisType(AnalysisType at)

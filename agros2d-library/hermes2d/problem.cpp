@@ -972,14 +972,13 @@ void Problem::stepMessage(Block* block)
 
 void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGenerator> meshGenerator)
 {
-    std::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
-    QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> meshes;
     QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > meshesDeal;
 
     if (!meshGenerator)
     {
         // load initial mesh file
         // prepare mesh array
+        /*
         foreach (FieldInfo* fieldInfo, m_fieldInfos)
         {
             Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
@@ -1002,21 +1001,11 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
         QString fileName = QFileInfo(cacheProblemDir() + "/initial.msh").absoluteFilePath();
         meshloader.set_validation(false);
         meshloader.load(fileName.toStdString().c_str(), meshesVector);
-
-        // set system locale
-        // setlocale(LC_NUMERIC, plocale);
+        */
     }
     else
     {
-        int subdomain_i = 0;
-        foreach (FieldInfo* fieldInfo, m_fieldInfos)
-        {
-            // cache
-            meshesVector = meshGenerator->meshes();
-            meshes[fieldInfo] = meshesVector[subdomain_i++];            
-        }
-
-        meshesDeal = meshGenerator->meshes_dealii();
+        meshesDeal = meshGenerator->meshes();
 
         // Agros2D::log()->printDebug(tr("Mesh Generator"), tr("Reading initial mesh from memory"));
     }
@@ -1024,28 +1013,9 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
     QSet<int> boundaries;
     foreach (FieldInfo *fieldInfo, m_fieldInfos)
     {
-        Hermes::Hermes2D::MeshSharedPtr mesh = meshes[fieldInfo];
         std::shared_ptr<dealii::Triangulation<2> > meshDeal = meshesDeal[fieldInfo];
 
-        // check that all boundary edges have a marker assigned
-        for (int i = 0; i < mesh->get_max_node_id(); i++)
-        {
-            Hermes::Hermes2D::Node *node = mesh->get_node(i);
-
-            if ((node->used == 1 && node->ref < 2 && node->type == 1))
-            {
-                int marker = atoi(mesh->get_boundary_markers_conversion().get_user_marker(node->marker).marker.c_str());
-
-                assert(marker >= 0 || marker == -999);
-
-                if (marker >= Agros2D::scene()->edges->count())
-                    throw AgrosException(tr("Marker index is out of range."));
-
-                if (marker >= 0 && Agros2D::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
-                    boundaries.insert(marker);
-            }
-        }
-
+        /*
         if (boundaries.count() > 0)
         {
             QString markers;
@@ -1064,18 +1034,14 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
             return;
         }
         boundaries.clear();
+        */
 
         // refine mesh
-        fieldInfo->refineMesh(mesh);
         fieldInfo->refineMesh(meshDeal);
 
         // set initial mesh
-        fieldInfo->setInitialMesh(mesh);
         fieldInfo->setInitialMesh(meshDeal);
     }
-
-    meshes.clear();
-    meshesVector.clear();
 
     if (emitMeshed)
         emit meshed();
