@@ -423,15 +423,16 @@ void PostDeal::processSolved()
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
     if (Agros2D::solutionStore()->contains(fsid))
     {
+        /*
         MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
         if (ma.spaces().empty())
             return;
         if (ma.solutions().empty())
             return;
+        */
 
         // add icon to progress
-        Agros2D::log()->addIcon(icon("scene-post2d"),
-                                tr("Postprocessor"));
+        Agros2D::log()->addIcon(icon("scene-post2d"), tr("Postprocessor"));
 
         processRangeContour();
         processRangeScalar();
@@ -447,7 +448,7 @@ std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable ph
     if (Agros2D::problem()->isTransient())
         Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
 
-    MultiArrayDeal ma = activeMultiSolutionArrayDeal();
+    MultiArrayDeal ma = activeMultiSolutionArray();
 
     std::shared_ptr<dealii::DataPostprocessorScalar<2> > post = activeViewField()->plugin()->filter(activeViewField(),
                                                                                                     activeTimeStep(),
@@ -458,9 +459,9 @@ std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable ph
                                                                                                     physicFieldVariableComp);
 
     std::shared_ptr<PostDataOut> data_out = std::shared_ptr<PostDataOut>(new PostDataOut());
-    data_out->attach_dof_handler(*ma.doFHandlers().at(0));
+    data_out->attach_dof_handler(*ma.doFHandler());
     // data_out->add_data_vector(ma.solutions().at(0), "solution");
-    data_out->add_data_vector(ma.solutions().at(0), *post.get());
+    data_out->add_data_vector(*ma.solution(), *post);
     data_out->build_patches(2);
 
     return data_out;
@@ -531,13 +532,7 @@ void PostDeal::setActiveAdaptivityStep(int as)
     m_activeAdaptivityStep = as;
 }
 
-MultiArray<double> PostDeal::activeMultiSolutionArray()
-{
-    FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
-    return Agros2D::solutionStore()->multiArray(fsid);
-}
-
-MultiArrayDeal PostDeal::activeMultiSolutionArrayDeal()
+MultiArrayDeal PostDeal::activeMultiSolutionArray()
 {
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
     return Agros2D::solutionStore()->multiArrayDeal(fsid);

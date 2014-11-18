@@ -108,6 +108,11 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
     {{/EXT_FUNCTIONS_PART}}
 }
 
+SolverDeal *{{CLASS}}Interface::solverDeal(const FieldInfo *fieldInfo, int initialOrder)
+{
+    return new SolverDeal{{CLASS}}(fieldInfo, initialOrder);
+}
+
 {{#EXT_FUNCTIONS_PART}}
 AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {

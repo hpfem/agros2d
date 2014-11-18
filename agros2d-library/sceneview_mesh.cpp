@@ -138,6 +138,8 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
                 QFile::remove(fn);
         }
 
+        assert(0); // IMPLEMENT dealii
+        /*
         Hermes::Hermes2D::Views::Orderizer orderView;
         if (exportMeshOnly)
             orderView.save_mesh_vtk(postDeal()->activeMultiSolutionArray().spaces().at(0),
@@ -145,6 +147,7 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
         else
             orderView.save_orders_vtk(postDeal()->activeMultiSolutionArray().spaces().at(0),
                                       fn.toLatin1().data());
+        */
 
         if (!fn.isEmpty())
         {
@@ -283,8 +286,8 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
-        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
-        dealii::DoFHandler<2> *dof_handler = ma.doFHandlers().at(0).get();
+        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+        dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
         // TODO: components and level
         // activeMultiSolutionArray().spaces().at(comp)
@@ -329,8 +332,8 @@ void SceneViewMesh::paintOrder()
 
     if (m_arrayOrderMesh.isEmpty())
     {
-        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
-        dealii::DoFHandler<2> *dof_handler = ma.doFHandlers().at(0).get();
+        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+        dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
         // TODO: components and level
         // activeMultiSolutionArray().spaces().at(comp)
@@ -459,8 +462,8 @@ void SceneViewMesh::paintOrderColorBar()
 
     int minDegree = 11;
     int maxDegree = 1;
-    MultiArrayDeal ma = m_postDeal->activeMultiSolutionArrayDeal();
-    dealii::DoFHandler<2> *dof_handler = ma.doFHandlers().at(0).get();
+    MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+    dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
     int level = 0;
     typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();

@@ -7,6 +7,8 @@
 
 #include "meshgenerator.h"
 
+class ProblemSolverDeal;
+
 class FieldInfo;
 class CouplingInfo;
 
@@ -165,6 +167,7 @@ private:
     ProblemSetting *m_setting;
 
     QList<Block *> m_blocks;
+    ProblemSolverDeal *m_solverDeal;
 
     QMap<QString, FieldInfo *> m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;

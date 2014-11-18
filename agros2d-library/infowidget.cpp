@@ -362,6 +362,7 @@ void InfoWidget::showInfo()
 
             if (Agros2D::problem()->isSolved())
             {
+                /*
                 int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
                 int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
                 MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
@@ -372,6 +373,7 @@ void InfoWidget::showInfo()
                     solutionMeshElements.append(msa.solutions().at(comp)->get_mesh()->get_num_active_elements());
                 }
                 DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
+                */
             }
 
             if (Agros2D::problem()->isMeshed())

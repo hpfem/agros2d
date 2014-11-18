@@ -90,6 +90,8 @@ Problem::Problem()
 
     m_isNonlinear = false;
 
+    m_solverDeal = new ProblemSolverDeal();
+
     actMesh = new QAction(icon("scene-meshgen"), tr("&Mesh area"), this);
     actMesh->setShortcut(QKeySequence(tr("Alt+W")));
     connect(actMesh, SIGNAL(triggered()), this, SLOT(doMeshWithGUI()));
@@ -109,6 +111,8 @@ Problem::~Problem()
     delete m_config;
     delete m_setting;
     delete m_calculationThread;
+
+    delete m_solverDeal;
 }
 
 bool Problem::isMeshed() const
@@ -259,6 +263,7 @@ void Problem::removeField(FieldInfo *field)
 
 void Problem::createStructure()
 {
+    // hermes
     foreach (Block* block, m_blocks)
         delete block;
     m_blocks.clear();
@@ -595,6 +600,9 @@ void Problem::solveInit(bool reCreateStructure)
     {
         createStructure();
     }
+
+    // dealii - new concept without Blocks (not necessary)
+    m_solverDeal->init();
 }
 
 void Problem::doAbortSolve()
@@ -804,6 +812,11 @@ void Problem::solveAction()
     bool doNextTimeStep = true;
     do
     {
+        // dealii
+        m_solverDeal->solveSimple(actualTimeStep(), 0);
+
+        // hermes
+        /*
         foreach (Block* block, m_blocks)
         {
             // qDebug() << "solving " << block->fields().at(0)->fieldInfo()->fieldId();
@@ -870,6 +883,7 @@ void Problem::solveAction()
             }
         }
 
+        */
         doNextTimeStep = false;
         if (isTransient())
         {

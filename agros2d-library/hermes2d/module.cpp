@@ -381,14 +381,14 @@ void WeakFormAgros<Scalar>::registerForms()
             assert(material);
             if (material != Agros2D::scene()->materials->getNone(fieldInfo))
             {
-                foreach (FormInfo expression, wfMatrixVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
+                foreach (FormInfo expression, Module::wfMatrixVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
                 {
                     expression.i += m_block->offset(field);
                     expression.j += m_block->offset(field);
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression, material);
                 }
 
-                foreach (FormInfo expression, wfVectorVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
+                foreach (FormInfo expression, Module::wfVectorVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
                 {
                     expression.i += m_block->offset(field);
                     expression.j += m_block->offset(field);
@@ -712,6 +712,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     // qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
 }
 
+
 template <typename SectionWithTemplates>
 QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section)
 {
@@ -877,9 +878,7 @@ QList<FormInfo> wfEssentialElements(XMLModule::boundary *boundary, AnalysisType 
     return weakForms;
 }
 
-
-template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
+QList<FormInfo> Module::wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
 {
     QList<FormInfo> templates = wfMatrixTemplates(&module->volume());
     QList<FormInfo> elements = wfMatrixElements(&module->volume(), analysisType, linearityType);
@@ -887,14 +886,35 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::field*
     return generateSeparated(elements, templates);
 }
 
-template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
+QList<FormInfo> Module::wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType)
 {
     QList<FormInfo> templatesVector = wfVectorTemplates(&module->volume());
     QList<FormInfo> templatesMatrix = wfMatrixTemplates(&module->volume());
     QList<FormInfo> elements = wfVectorElements(&module->volume(), analysisType, linearityType);
 
     return generateSeparated(elements, templatesVector, templatesMatrix);
+}
+
+QList<FormInfo> Module::wfMatrixSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType)
+{
+    QList<FormInfo> matrixTemplates = wfMatrixTemplates(surface);
+    QList<FormInfo> matrixElements = wfMatrixElements<XMLModule::boundary>(boundary, analysisType, linearityType);
+    return generateSeparated(matrixElements, matrixTemplates);
+}
+
+QList<FormInfo> Module::wfVectorSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType)
+{
+    QList<FormInfo> vectorTemplates = wfVectorTemplates(surface);
+    QList<FormInfo> matrixTemplates = wfMatrixTemplates(surface);
+    QList<FormInfo> vectorElements = wfVectorElements<XMLModule::boundary>(boundary, analysisType, linearityType);
+    return generateSeparated(vectorElements, vectorTemplates, matrixTemplates);
+}
+
+QList<FormInfo> Module::essential(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType)
+{
+    QList<FormInfo> essentialTemplates = wfEssentialTemplates(surface);
+    QList<FormInfo> essentialElements = wfEssentialElements(boundary, analysisType, linearityType);
+    return generateSeparated(essentialElements, essentialTemplates);
 }
 
 // ***********************************************************************************************
@@ -1000,31 +1020,9 @@ Module::BoundaryType::BoundaryType(const FieldInfo *fieldInfo,
         }
     }
 
-    m_wfMatrix = wfMatrixSurface(&fieldInfo->plugin()->module()->surface(), &bdy, fieldInfo->analysisType(), fieldInfo->linearityType());
-    m_wfVector = wfVectorSurface(&fieldInfo->plugin()->module()->surface(), &bdy, fieldInfo->analysisType(), fieldInfo->linearityType());
-    m_essential = essential(&fieldInfo->plugin()->module()->surface(), &bdy, fieldInfo->analysisType(), fieldInfo->linearityType());
-}
-
-QList<FormInfo> Module::BoundaryType::wfMatrixSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType)
-{
-    QList<FormInfo> matrixTemplates = wfMatrixTemplates(surface);
-    QList<FormInfo> matrixElements = wfMatrixElements(boundary, analysisType, linearityType);
-    return generateSeparated(matrixElements, matrixTemplates);
-}
-
-QList<FormInfo> Module::BoundaryType::wfVectorSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType)
-{
-    QList<FormInfo> vectorTemplates = wfVectorTemplates(surface);
-    QList<FormInfo> matrixTemplates = wfMatrixTemplates(surface);
-    QList<FormInfo> vectorElements = wfVectorElements(boundary, analysisType, linearityType);
-    return generateSeparated(vectorElements, vectorTemplates, matrixTemplates);
-}
-
-QList<FormInfo> Module::BoundaryType::essential(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType)
-{
-    QList<FormInfo> essentialTemplates = wfEssentialTemplates(surface);
-    QList<FormInfo> essentialElements = wfEssentialElements(boundary, analysisType, linearityType);
-    return generateSeparated(essentialElements, essentialTemplates);
+    m_wfMatrix = Module::wfMatrixSurface(&fieldInfo->plugin()->module()->surface(), &bdy, fieldInfo->analysisType(), fieldInfo->linearityType());
+    m_wfVector = Module::wfVectorSurface(&fieldInfo->plugin()->module()->surface(), &bdy, fieldInfo->analysisType(), fieldInfo->linearityType());
+    m_essential = Module::essential(&fieldInfo->plugin()->module()->surface(), &bdy, fieldInfo->analysisType(), fieldInfo->linearityType());
 }
 
 Module::BoundaryTypeVariable::BoundaryTypeVariable(XMLModule::quantity quant)

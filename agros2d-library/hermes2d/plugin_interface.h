@@ -34,6 +34,7 @@
 #include "hermes2d/marker.h"
 #include "hermes2d/field.h"
 #include "hermes2d/weak_form.h"
+#include "hermes2d/solver.h"
 #include "../sceneview_post.h"
 
 #include "../../resources_source/classes/module_xml.h"
@@ -307,6 +308,8 @@ public:
     virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary) = 0;
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh) = 0;
+
+    virtual SolverDeal *solverDeal(const FieldInfo *fieldInfo, int initialOrder) = 0;
 
     // offsetI .. for hard coupling
     virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros) = 0;

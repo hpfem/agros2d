@@ -23,6 +23,18 @@
 #include "util.h"
 #include "solutiontypes.h"
 
+#undef signals
+#include <deal.II/grid/tria.h>
+#include <deal.II/dofs/dof_handler.h>
+
+#include <deal.II/fe/fe_q.h>
+#include <deal.II/fe/fe_system.h>
+#include <deal.II/dofs/dof_tools.h>
+#include <deal.II/lac/vector.h>
+#include <deal.II/lac/full_matrix.h>
+#include <deal.II/lac/sparse_matrix.h>
+#define signals public
+
 class Block;
 class FieldInfo;
 
@@ -30,6 +42,41 @@ template <typename Scalar>
 class ExactSolutionScalarAgros;
 
 class SceneBoundary;
+
+class SolverDeal
+{
+public:
+    SolverDeal(const FieldInfo *fieldInfo, int initialOrder = 2);
+
+    inline std::shared_ptr<dealii::Vector<double> > solution() { return m_solution; }
+    inline std::shared_ptr<dealii::DoFHandler<2> > doFHandler() { return m_doFHandler; }
+
+    virtual void setup();
+
+    virtual void assemble();
+    virtual void assembleSystem();
+    virtual void assembleDirichlet() = 0;
+
+    virtual void solve();
+
+protected:
+    const FieldInfo *m_fieldInfo;
+
+    std::shared_ptr<dealii::Triangulation<2> > m_triangulation;
+    std::shared_ptr<dealii::DoFHandler<2> > m_doFHandler;
+
+    dealii::FESystem<2> fe;
+
+    dealii::ConstraintMatrix hanging_node_constraints;
+    dealii::SparsityPattern sparsity_pattern;
+
+    dealii::SparseMatrix<double> system_matrix;
+    dealii::Vector<double> system_rhs;
+    std::shared_ptr<dealii::Vector<double> > m_solution;
+
+    void solveUMFPACK();
+    void solveCG();
+};
 
 namespace Module {
     class ErrorCalculator;
@@ -159,6 +206,20 @@ protected:
     Scalar *m_slnVector;
 
     bool m_constJacobianPossible;
+};
+
+// solve
+class ProblemSolverDeal
+{
+public:
+    ProblemSolverDeal();
+
+    void init();
+
+    void solveSimple(int timeStep, int adaptivityStep);
+
+private:
+    SolverDeal *m_solverDeal;
 };
 
 // solve

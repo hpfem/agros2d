@@ -146,7 +146,7 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
             LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
 
             // generate individual forms
-            QList<FormInfo> matrixForms = WeakFormAgros<double>::wfMatrixVolumeSeparated(m_module, analysisType, linearityType);
+            QList<FormInfo> matrixForms = Module::wfMatrixVolumeSeparated(m_module, analysisType, linearityType);
             // genrate also complete forms
             //matrixForms.append(WeakFormAgros<double>::wfMatrixVolumeComplete(m_module, analysisType, linearityType));
             foreach(FormInfo formInfo, matrixForms)
@@ -155,7 +155,7 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
             }
 
             // generate individual forms
-            QList<FormInfo> vectorForms = WeakFormAgros<double>::wfVectorVolumeSeparated(m_module, analysisType, linearityType);
+            QList<FormInfo> vectorForms = Module::wfVectorVolumeSeparated(m_module, analysisType, linearityType);
             // genrate also complete forms
             //vectorForms.append(WeakFormAgros<double>::wfVectorVolumeComplete(m_module, analysisType, linearityType));
             foreach(FormInfo formInfo, vectorForms)
@@ -174,9 +174,9 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
             {
                 LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
 
-                QList<FormInfo> matrixForms = Module::BoundaryType::wfMatrixSurface(&m_module->surface(), &boundary, analysisType, linearityType);
-                QList<FormInfo> vectorForms = Module::BoundaryType::wfVectorSurface(&m_module->surface(), &boundary, analysisType, linearityType);
-                QList<FormInfo> essentialForms = Module::BoundaryType::essential(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> matrixForms = Module::wfMatrixSurface(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> vectorForms = Module::wfVectorSurface(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> essentialForms = Module::essential(&m_module->surface(), &boundary, analysisType, linearityType);
                 foreach(FormInfo formInfo, matrixForms)
                 {
                     generateForm(formInfo, linearityType, output, weakform, "SURFACE_MATRIX", &boundary);

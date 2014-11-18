@@ -53,6 +53,9 @@ virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemI
 
 virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
 
+// solver deal
+virtual SolverDeal *solverDeal(const FieldInfo *fieldInfo, int initialOrder);
+
 // postprocessor
 // filter
 virtual std::shared_ptr<dealii::DataPostprocessorScalar<2> > filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,

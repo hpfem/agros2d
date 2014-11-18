@@ -314,7 +314,7 @@ MultiArrayDeal SolutionStore::multiArrayDeal(BlockSolutionID solutionID)
     foreach (FieldBlock *field, solutionID.group->fields())
     {
         MultiArrayDeal maGroup = multiArrayDeal(solutionID.fieldSolutionID(field->fieldInfo()));
-        ma.append(maGroup.doFHandlers(), maGroup.solutions());
+        ma.append(maGroup.doFHandler(), maGroup.solution());
     }
 
     return ma;
@@ -431,8 +431,8 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArrayDeal multi
     // save soloution
 
     QList<SolutionRunTimeDetails::FileName> fileNames;
-    for (int i = 0; i < multiSolution.size(); i++)
-        fileNames.append(SolutionRunTimeDetails::FileName());
+    // for (int i = 0; i < multiSolution.size(); i++)
+    fileNames.append(SolutionRunTimeDetails::FileName());
 
     /*
     QString baseFN = baseStoreFileName(solutionID);

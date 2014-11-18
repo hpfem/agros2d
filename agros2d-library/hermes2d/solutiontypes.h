@@ -74,29 +74,27 @@ class AGROS_LIBRARY_API MultiArrayDeal
 {
 public:
     MultiArrayDeal();
-    MultiArrayDeal(std::vector<std::shared_ptr<dealii::DoFHandler<2> > > doFHandlers, std::vector<dealii::Vector<double> > solutions)
-        : m_doFHandlers(doFHandlers), m_solutions(solutions) {}
+    MultiArrayDeal(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
+                   std::shared_ptr<dealii::Vector<double> > solution)
+        : m_doFHandler(doFHandler), m_solution(solution) {}
     ~MultiArrayDeal();
 
     void clear();
 
     // add next component
-    void append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler, dealii::Vector<double> solution);
-    void append(std::vector<std::shared_ptr<dealii::DoFHandler<2> > > doFHandlers, std::vector<dealii::Vector<double> > solutions);
+    void append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler, std::shared_ptr<dealii::Vector<double> > solution);
 
-    std::vector<std::shared_ptr<dealii::DoFHandler<2> > > &doFHandlers() { return m_doFHandlers; }
-    std::vector<dealii::Vector<double> > &solutions() { return m_solutions; }
+    std::shared_ptr<dealii::DoFHandler<2> > &doFHandler() { return m_doFHandler; }
+    std::shared_ptr<dealii::Vector<double> > &solution() { return m_solution; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiArrayDeal fieldPart(const Block *block, const FieldInfo *fieldInfo);
 
-    int size() { assert(m_doFHandlers.size() == m_solutions.size()); return m_doFHandlers.size(); }
-
     void createEmpty(int numComp);
 
 private:
-    std::vector<std::shared_ptr<dealii::DoFHandler<2> > > m_doFHandlers;
-    std::vector<dealii::Vector<double> > m_solutions;
+    std::shared_ptr<dealii::DoFHandler<2> > m_doFHandler;
+    std::shared_ptr<dealii::Vector<double> > m_solution;
 };
 
 template <typename Scalar>

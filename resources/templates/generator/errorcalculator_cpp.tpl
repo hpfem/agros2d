@@ -46,8 +46,8 @@ public:
         const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr(QLatin1String("{{VARIABLE}}"));{{/VARIABLE_SOURCE}}
 
         Scalar result = Scalar(0);
-        for (int i = 0; i < n; i++)
-            result += wt[i] * ({{EXPRESSION}});
+        // for (int i = 0; i < n; i++)
+        //     result += wt[i] * ({{EXPRESSION}});
 
         return result;
     }

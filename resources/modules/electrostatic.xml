@@ -45,10 +45,10 @@
   </module:volume>
 
   <module:surface>
-    <module:quantity id="electrostatic_potential" shortname="V"/>
-    <module:quantity id="electrostatic_surface_charge_density" shortname="sigma"/>
-    <module:essential_form id="essential" i="1" axi="V" planar="V"/>
-    <module:vector_form id="neumann" i="1" j="1" axi="sigma * r * vval" planar="sigma * vval"/>
+    <module:quantity id="electrostatic_potential" shortname="el_u"/>
+    <module:quantity id="electrostatic_surface_charge_density" shortname="el_sigma"/>
+    <module:essential_form id="essential" i="1" axi="el_u" planar="el_u"/>
+    <module:vector_form id="neumann" i="1" j="1" axi="el_sigma * r * vval" planar="el_sigma * vval"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="electrostatic_potential">
         <module:boundary equation="\varphi = \varphi_0" id="electrostatic_potential" name="Fixed voltage">

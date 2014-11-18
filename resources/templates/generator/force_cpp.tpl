@@ -100,7 +100,7 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
                 else
                 {
                     // point values
-                    dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandlers().at(0), ma.solutions().at(0));
+                    dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandler(), *ma.solution());
 
                     // set variables
                     solution_values[k] = localvalues.value(p);

@@ -337,7 +337,7 @@ XMLModule::linearity_option findLinearityOption(XMLModule::volume *volume, Analy
 // todo: copied!
 // todo: copied!
 template <typename SectionWithElements>
-QList<FormInfo> wfMatrixElements(SectionWithElements *section, AnalysisType analysisTypeSource, AnalysisType analysisTypeTarget, CouplingType couplingType, LinearityType linearityType)
+QList<FormInfo> wfMatrixElementsCoupling(SectionWithElements *section, AnalysisType analysisTypeSource, AnalysisType analysisTypeTarget, CouplingType couplingType, LinearityType linearityType)
 {
     // matrix weakforms
     QList<FormInfo> weakForms;
@@ -356,7 +356,7 @@ QList<FormInfo> wfMatrixElements(SectionWithElements *section, AnalysisType anal
 // todo: copied!
 // todo: copied!
 template <typename SectionWithElements>
-QList<FormInfo> wfVectorElements(SectionWithElements *section, AnalysisType analysisTypeSource, AnalysisType analysisTypeTarget, CouplingType couplingType, LinearityType linearityType)
+QList<FormInfo> wfVectorElementsCoupling(SectionWithElements *section, AnalysisType analysisTypeSource, AnalysisType analysisTypeTarget, CouplingType couplingType, LinearityType linearityType)
 {
     // vector weakforms
     QList<FormInfo> weakForms;
@@ -381,7 +381,7 @@ QList<FormInfo> wfVectorElements(SectionWithElements *section, AnalysisType anal
 QList<FormInfo> CouplingInfo::wfMatrixVolumeSeparated(XMLModule::volume* volume, AnalysisType sourceAnalysis, AnalysisType targetAnalysis, CouplingType couplingType, LinearityType linearityType)
 {
     QList<FormInfo> templates = wfMatrixTemplates(volume);
-    QList<FormInfo> elements = wfMatrixElements(volume, sourceAnalysis, targetAnalysis, couplingType, linearityType);
+    QList<FormInfo> elements = wfMatrixElementsCoupling(volume, sourceAnalysis, targetAnalysis, couplingType, linearityType);
 
     return generateSeparated(elements, templates);
 }
@@ -390,7 +390,7 @@ QList<FormInfo> CouplingInfo::wfVectorVolumeSeparated(XMLModule::volume* volume,
 {
     QList<FormInfo> templatesVector = wfVectorTemplates(volume);
     QList<FormInfo> templatesMatrix = wfMatrixTemplates(volume);
-    QList<FormInfo> elements = wfVectorElements(volume, sourceAnalysis, targetAnalysis, couplingType, linearityType);
+    QList<FormInfo> elements = wfVectorElementsCoupling(volume, sourceAnalysis, targetAnalysis, couplingType, linearityType);
 
     return generateSeparated(elements, templatesVector, templatesMatrix);
 }

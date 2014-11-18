@@ -167,7 +167,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         dealii::QGauss<2-1> face_quadrature_formula_int(5);
         const unsigned int n_face_q_points = face_quadrature_formula_int.size();
 
-        dealii::FEFaceValues<2> fe_face_values_int(ma.doFHandlers().at(0)->get_fe(), face_quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
+        dealii::FEFaceValues<2> fe_face_values_int(ma.doFHandler()->get_fe(), face_quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
 
         std::vector<dealii::Vector<double> > solution_values(n_face_q_points, dealii::Vector<double>(1));
         std::vector<std::vector<dealii::Tensor<1,2> > > solution_grads(n_face_q_points, std::vector<dealii::Tensor<1,2> > (1));
@@ -182,7 +182,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                 continue;
 
             // Then start the loop over all cells, and select those cells which are close enough to the evaluation point:
-            dealii::DoFHandler<2>::active_cell_iterator cell_int = ma.doFHandlers().at(0)->begin_active(), endc_int = ma.doFHandlers().at(0)->end();
+            dealii::DoFHandler<2>::active_cell_iterator cell_int = ma.doFHandler()->begin_active(), endc_int = ma.doFHandler()->end();
             for (; cell_int != endc_int; ++cell_int)
             {
                 SceneLabel *label = Agros2D::scene()->labels->at(cell_int->material_id() - 1);
@@ -197,8 +197,8 @@ void {{CLASS}}SurfaceIntegral::calculate()
                     if (cell_int->face(face)->at_boundary() && cell_int->face(face)->boundary_indicator() - 1 == iFace)
                     {
                         fe_face_values_int.reinit (cell_int, face);
-                        fe_face_values_int.get_function_values(ma.solutions().at(0), solution_values);
-                        fe_face_values_int.get_function_gradients(ma.solutions().at(0), solution_grads);
+                        fe_face_values_int.get_function_values(*ma.solution(), solution_values);
+                        fe_face_values_int.get_function_gradients(*ma.solution(), solution_grads);
 
                         {{#VARIABLE_SOURCE}}
                         if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))

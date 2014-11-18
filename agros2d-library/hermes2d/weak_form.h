@@ -101,10 +101,6 @@ public:
     void updateExtField();
     inline BDF2Table* bdf2Table() { return m_bdf2Table; }
 
-    // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
-    static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
-
     inline const PositionInfo* positionInfo(int index) const { return &m_positionInfos[index]; }
     inline void positionInfoBasicCheck(int index) const
     {

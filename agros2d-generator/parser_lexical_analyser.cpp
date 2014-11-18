@@ -19,8 +19,8 @@ void ParserInstance::addBasicWeakformTokens()
     // coordinates
     if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
-        m_dict["x"] = "e->x[i]";
-        m_dict["y"] = "e->y[i]";
+        m_dict["x"] = "fe_values.quadrature_point(q_point)[0]"; // "e->x[i]";
+        m_dict["y"] = "fe_values.quadrature_point(q_point)[1]"; // "e->y[i]";
         m_dict["tx"] = "e->tx[i]";
         m_dict["ty"] = "e->ty[i]";
         m_dict["nx"] = "e->nx[i]";
@@ -28,8 +28,8 @@ void ParserInstance::addBasicWeakformTokens()
     }
     else
     {
-        m_dict["r"] = "e->x[i]";
-        m_dict["z"] = "e->y[i]";
+        m_dict["r"] = "fe_values.quadrature_point(q_point)[0]"; // "e->x[i]";
+        m_dict["z"] = "fe_values.quadrature_point(q_point)[1]"; // "e->y[i]";
         m_dict["tr"] = "e->tx[i]";
         m_dict["tz"] = "e->ty[i]";
         m_dict["nr"] = "e->nx[i]";
@@ -46,8 +46,8 @@ void ParserInstance::addBasicWeakformTokens()
 
     // functions
     // scalar field
-    m_dict["uval"] = "u->val[i]";
-    m_dict["vval"] = "v->val[i]";
+    m_dict["uval"] = "fe_values.shape_value(j, q_point)"; // "u->val[i]";
+    m_dict["vval"] = "fe_values.shape_value(i, q_point)"; // "v->val[i]";
     m_dict["upval"] = "u_ext[this->j]->val[i]";
     m_dict["uptval"] = "ext[*this->m_offsetPreviousTimeExt + this->j - this->m_offsetJ]->val[i]";
     m_dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
@@ -67,20 +67,20 @@ void ParserInstance::addBasicWeakformTokens()
     if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         // scalar field
-        m_dict["udx"] = "u->dx[i]";
-        m_dict["vdx"] = "v->dx[i]";
-        m_dict["udy"] = "u->dy[i]";
-        m_dict["vdy"] = "v->dy[i]";
+        m_dict["udx"] = "fe_values.shape_grad(j, q_point)[0]"; // u->dx[i]";
+        m_dict["vdx"] = "fe_values.shape_grad(i, q_point)[0]"; // "v->dx[i]";
+        m_dict["udy"] = "fe_values.shape_grad(j, q_point)[1]"; // "u->dy[i]";
+        m_dict["vdy"] = "fe_values.shape_grad(i, q_point)[1]"; // "v->dy[i]";
         m_dict["updx"] = "u_ext[this->j]->dx[i]";
         m_dict["updy"] = "u_ext[this->j]->dy[i]";
     }
     else
     {
         // scalar field
-        m_dict["udr"] = "u->dx[i]";
-        m_dict["vdr"] = "v->dx[i]";
-        m_dict["udz"] = "u->dy[i]";
-        m_dict["vdz"] = "v->dy[i]";
+        m_dict["udr"] = "fe_values.shape_grad(j, q_point)[0]"; // u->dx[i]";
+        m_dict["vdr"] = "fe_values.shape_grad(i, q_point)[0]"; // "v->dx[i]";
+        m_dict["udz"] = "fe_values.shape_grad(j, q_point)[1]"; // "u->dy[i]";
+        m_dict["vdz"] = "fe_values.shape_grad(i, q_point)[1]"; // "v->dy[i]";
         m_dict["updr"] = "u_ext[this->j]->dx[i]";
         m_dict["updz"] = "u_ext[this->j]->dy[i]";
     }
@@ -241,9 +241,14 @@ void ParserInstance::addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool 
         if (quantity.shortname().present())
         {
             // in weak forms, values replaced by ext functions
+            /*
             m_dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + %2]->val[i]").
                     arg(pmiField.quantityOrdering[QString::fromStdString(quantity.id())]).
                     arg(offsetQuant);
+            */
+            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
+                    arg(QString::fromStdString(quantity.shortname().get()));
+
             if(pmiField.quantityIsNonlinear[QString::fromStdString(quantity.id())])
             {
                 m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + %2]->val[i]").

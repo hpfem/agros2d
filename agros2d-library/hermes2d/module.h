@@ -216,8 +216,8 @@ class AGROS_LIBRARY_API ErrorCalculator
 {
 public:
     ErrorCalculator(const QString &id = "",
-                  const QString &name = "",
-                   const QString &expr = "")
+                    const QString &name = "",
+                    const QString &expr = "")
         : m_id(id),
           m_name(name),
           m_expression(expr) {}
@@ -341,13 +341,10 @@ struct AGROS_LIBRARY_API BoundaryType
     inline QList<BoundaryTypeVariable> variables() const { return m_variables; }
 
     // weakform
-    static QList<FormInfo> wfMatrixSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
     inline QList<FormInfo> wfMatrixSurface() const {return m_wfMatrix; }
     inline QList<FormInfo> wfVectorSurface() const {return m_wfVector; }
 
     // essential
-    static QList<FormInfo> essential(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
     inline QList<FormInfo> essential() const {return m_essential; }
 
     // latex equation
@@ -491,6 +488,12 @@ std::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileXML(const QString &
 void writeMeshToFileXML(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes);
 void writeMeshToFileBSON(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes);
 
+QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
+QList<FormInfo> wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
+
+QList<FormInfo> wfMatrixSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+QList<FormInfo> wfVectorSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+QList<FormInfo> essential(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
 }
 
 #endif // HERMES_FIELD_H

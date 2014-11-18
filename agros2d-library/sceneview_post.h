@@ -97,9 +97,6 @@ public:
     inline QList<PostTriangle> &vectorXValues() { return m_vectorXValues; }
     inline QList<PostTriangle> &vectorYValues() { return m_vectorYValues; }
 
-    // vtk dealii view
-    QString scalarViewDeal();
-
     std::shared_ptr<PostDataOut> viewScalarFilter(Module::LocalVariable physicFieldVariable,
                                                         PhysicFieldVariableComp physicFieldVariableComp);
 
@@ -116,8 +113,7 @@ public:
     inline SolutionMode activeAdaptivitySolutionType() const { return m_activeSolutionMode; }
     void setActiveAdaptivitySolutionType(SolutionMode st) { m_activeSolutionMode = st; }
 
-    MultiArray<double> activeMultiSolutionArray();
-    MultiArrayDeal activeMultiSolutionArrayDeal();
+    MultiArrayDeal activeMultiSolutionArray();
 
     inline bool isProcessed() const { return m_isProcessed; }
 

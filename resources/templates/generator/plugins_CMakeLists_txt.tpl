@@ -138,7 +138,7 @@ IF(AGROS_PLUGINS_DEBUG)
     # Disable all warnings and turn on only important ones:
     # SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
     # SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
-    SET(DEBUG_FLAGS   "-g")
+    # SET(DEBUG_FLAGS "-g")
     SET(CMAKE_BUILD_TYPE Debug)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DEBUG_FLAGS}")
   ENDIF()

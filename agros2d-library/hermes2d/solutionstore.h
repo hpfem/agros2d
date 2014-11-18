@@ -103,6 +103,10 @@ public:
     void addSolution(BlockSolutionID solutionID, MultiArrayDeal multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(BlockSolutionID solutionID);
 
+    void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
+    void addSolution(FieldSolutionID solutionID, MultiArrayDeal multiArray, SolutionRunTimeDetails runTime);
+    void removeSolution(FieldSolutionID solutionID, bool saveRunTime = true);
+
     // removes all solutions with the given time step
     void removeTimeStep(int timeStep);
 
@@ -148,10 +152,6 @@ private:
     QMap<FieldSolutionID, SolutionRunTimeDetails> m_multiSolutionRunTimeDetails;
     QMap<FieldSolutionID, MultiArray<double> > m_multiSolutionCache;
     QList<FieldSolutionID> m_multiSolutionCacheIDOrder;
-
-    void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
-    void addSolution(FieldSolutionID solutionID, MultiArrayDeal multiArray, SolutionRunTimeDetails runTime);
-    void removeSolution(FieldSolutionID solutionID, bool saveRunTime = true);
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiArray);
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArrayDeal multiArray);

@@ -26,6 +26,20 @@
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"
 
+class SolverDeal{{CLASS}} : public SolverDeal
+{
+public:
+    SolverDeal{{CLASS}}(const FieldInfo *fieldInfo, int initialOrder = 2)
+        : SolverDeal(fieldInfo, initialOrder) {}
+
+    // virtual void setup();
+
+    // virtual void assemble();
+    virtual void assembleSystem();
+    virtual void assembleDirichlet();
+};
+
+
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
