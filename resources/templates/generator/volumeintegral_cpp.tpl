@@ -227,7 +227,7 @@ void {{CLASS}}VolumeIntegral::calculate()
         dealii::QGauss<2> quadrature_formula_int(5);
         const unsigned int n_q_points = quadrature_formula_int.size();
 
-        dealii::FEValues<2> fe_values_int(ma.doFHandler()->get_fe(), quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points  | dealii::update_JxW_values);
+        dealii::FEValues<2> fe_values(ma.doFHandler()->get_fe(), quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points  | dealii::update_JxW_values);
 
         std::vector<dealii::Vector<double> > solution_values(n_q_points, dealii::Vector<double>(1));
         std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(n_q_points, std::vector<dealii::Tensor<1,2> > (1));
@@ -253,23 +253,20 @@ void {{CLASS}}VolumeIntegral::calculate()
                 // volume integration
                 if (cell_int->material_id() - 1 == iLabel)
                 {
-                    fe_values_int.reinit(cell_int);
-                    fe_values_int.get_function_values(*ma.solution(), solution_values);
-                    fe_values_int.get_function_gradients(*ma.solution(), solution_grads);
+                    fe_values.reinit(cell_int);
+                    fe_values.get_function_values(*ma.solution(), solution_values);
+                    fe_values.get_function_gradients(*ma.solution(), solution_grads);
 
-                    if ((m_fieldInfo->analysisType() == AnalysisType_SteadyState) && (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar))
+                    // expressions
+                    {{#VARIABLE_SOURCE}}
+                    if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                     {
-                        // expressions
-                        {{#VARIABLE_SOURCE}}
-                        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+                        for (unsigned int i = 0; i < n_q_points; ++i)
                         {
-                            for (unsigned int i = 0; i < n_q_points; ++i)
-                            {
-                                m_values[QLatin1String("{{VARIABLE}}")] += fe_values_int.JxW(i) * ({{EXPRESSION}});
-                            }
+                            m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(i) * ({{EXPRESSION}});
                         }
-                        {{/VARIABLE_SOURCE}}
                     }
+                    {{/VARIABLE_SOURCE}}
                 }
             }
         }

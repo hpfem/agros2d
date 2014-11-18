@@ -167,7 +167,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         dealii::QGauss<2-1> face_quadrature_formula_int(5);
         const unsigned int n_face_q_points = face_quadrature_formula_int.size();
 
-        dealii::FEFaceValues<2> fe_face_values_int(ma.doFHandler()->get_fe(), face_quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
+        dealii::FEFaceValues<2> fe_values(ma.doFHandler()->get_fe(), face_quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
 
         std::vector<dealii::Vector<double> > solution_values(n_face_q_points, dealii::Vector<double>(1));
         std::vector<std::vector<dealii::Tensor<1,2> > > solution_grads(n_face_q_points, std::vector<dealii::Tensor<1,2> > (1));
@@ -196,18 +196,18 @@ void {{CLASS}}SurfaceIntegral::calculate()
                 {
                     if (cell_int->face(face)->at_boundary() && cell_int->face(face)->boundary_indicator() - 1 == iFace)
                     {
-                        fe_face_values_int.reinit (cell_int, face);
-                        fe_face_values_int.get_function_values(*ma.solution(), solution_values);
-                        fe_face_values_int.get_function_gradients(*ma.solution(), solution_grads);
+                        fe_values.reinit (cell_int, face);
+                        fe_values.get_function_values(*ma.solution(), solution_values);
+                        fe_values.get_function_gradients(*ma.solution(), solution_grads);
 
                         {{#VARIABLE_SOURCE}}
                         if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                         {
                             for (unsigned int i = 0; i < n_face_q_points; ++i)
                             {
-                                dealii::Point<2> normal = fe_face_values_int.normal_vector(i);
+                                dealii::Point<2> normal = fe_values.normal_vector(i);
 
-                                m_values[QLatin1String("{{VARIABLE}}")] += fe_face_values_int.JxW(i) * ({{EXPRESSION}});
+                                m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(i) * ({{EXPRESSION}});
                             }
                         }
                         {{/VARIABLE_SOURCE}}

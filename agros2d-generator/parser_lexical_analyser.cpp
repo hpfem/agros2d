@@ -362,8 +362,8 @@ void ParserInstance::addPostprocessorBasic()
     // coordinates
     if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
-        m_dict["x"] = "x[i]";
-        m_dict["y"] = "y[i]";
+        m_dict["x"] = "fe_values.quadrature_point(i)[0]"; // "x[i]";
+        m_dict["y"] = "fe_values.quadrature_point(i)[1]"; // "y[i]";
         // surface integral
         m_dict["tanx"] = "(-normal[1])"; // "e->tx[i]";
         m_dict["tany"] = "(normal[0])"; // "e->ty[i]";
@@ -374,8 +374,8 @@ void ParserInstance::addPostprocessorBasic()
     }
     else
     {
-        m_dict["r"] = "x[i]";
-        m_dict["z"] = "y[i]";
+        m_dict["r"] = "fe_values.quadrature_point(i)[0]"; // "x[i]";
+        m_dict["z"] = "fe_values.quadrature_point(i)[1]"; // "y[i]";
         // surface integral
         m_dict["tanr"] = "(-normal[1])"; // "e->tx[i]";
         m_dict["tanz"] = "(normal[0])"; // "e->ty[i]";
