@@ -232,9 +232,6 @@ void {{CLASS}}VolumeIntegral::calculate()
         std::vector<dealii::Vector<double> > solution_values(n_q_points, dealii::Vector<double>(1));
         std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(n_q_points, std::vector<dealii::Tensor<1,2> > (1));
 
-        double *x = new double[n_q_points];
-        double *y = new double[n_q_points];
-
         for (int iLabel = 0; iLabel < Agros2D::scene()->labels->count(); iLabel++)
         {
             SceneLabel *label = Agros2D::scene()->labels->at(iLabel);
