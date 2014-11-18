@@ -115,8 +115,8 @@ void SolverDeal{{CLASS}}::assemble()
 
 void SolverDeal{{CLASS}}::assembleSystem()
 {
-    dealii::QGauss<2> quadrature_formula(5);
-    dealii::QGauss<2-1> face_quadrature_formula(5);
+    dealii::QGauss<2> quadrature_formula(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + 5);
+    dealii::QGauss<2-1> face_quadrature_formula(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + 5);
 
     dealii::FEValues<2> fe_values (fe, quadrature_formula, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_JxW_values);
     dealii::FEFaceValues<2> fe_face_values (fe, face_quadrature_formula, dealii::update_values | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
@@ -145,14 +145,15 @@ void SolverDeal{{CLASS}}::assembleSystem()
             SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
             assert(material);
 
+
             if (material != Agros2D::scene()->materials->getNone(m_fieldInfo))
             {
-                foreach (FormInfo expression, Module::wfMatrixVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
+                {{#VOLUME_MATRIX_SOURCE}}
+                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
-                    if (cell->material_id() == labelNum + 1)
+                    foreach (FormInfo expression, Module::wfMatrixVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
                     {
-                        {{#VOLUME_MATRIX_SOURCE}}
-                        if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
+                        if (cell->material_id() == labelNum + 1)
                         {
                             {{#VARIABLE_SOURCE}}
                             const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -171,16 +172,16 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                 }
                             }
                         }
-                        {{/VOLUME_MATRIX_SOURCE}}
                     }
                 }
+                {{/VOLUME_MATRIX_SOURCE}}
 
-                foreach (FormInfo expression, Module::wfVectorVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
+                {{#VOLUME_VECTOR_SOURCE}}
+                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
-                    if (cell->material_id() == labelNum + 1)
+                    foreach (FormInfo expression, Module::wfVectorVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
                     {
-                        {{#VOLUME_VECTOR_SOURCE}}
-                        if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
+                        if (cell->material_id() == labelNum + 1)
                         {
                             {{#VARIABLE_SOURCE}}
                             const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -196,9 +197,9 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                 }
                             }
                         }
-                        {{/VOLUME_VECTOR_SOURCE}}
                     }
                 }
+                {{/VOLUME_VECTOR_SOURCE}}
 
                 /*
                     // weak coupling
@@ -250,13 +251,13 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
             if (boundary != Agros2D::scene()->boundaries->getNone(m_fieldInfo))
             {
-                for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                {{#SURFACE_VECTOR_SOURCE}}
+                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
-                    // boundary (Neumann)
-                    if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
+                    for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
                     {
-                        {{#SURFACE_VECTOR_SOURCE}}
-                        if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
+                        // boundary (Neumann)
+                        if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
                         {
                             {{#VARIABLE_SOURCE}}
                             const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
@@ -272,26 +273,26 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                 }
                             }
                         }
-                        {{/SURFACE_VECTOR_SOURCE}}
+                        /*
+                        ROBIN - CHECK!!!
+                        if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 1))
+                        {
+                            fe_face_values.reinit(cell, face);
+
+                            for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                                for (unsigned int j = 0; j < dofs_per_cell; ++j)
+                                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                                        cell_matrix(i, j) += 1 / R_SI_1* fe_face_values.shape_value(i, q_point) * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
+
+                            for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                                for (unsigned int j = 0; j < dofs_per_cell; ++j)
+                                    cell_rhs(j) += 1/ R_SI_1 * THETA_1 * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
+
+                        }
+                        */
                     }
-                    /*
-                    ROBIN - CHECK!!!
-                    if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 1))
-                    {
-                        fe_face_values.reinit(cell, face);
-
-                        for (unsigned int i = 0; i < dofs_per_cell; ++i)
-                            for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                                for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                                    cell_matrix(i, j) += 1 / R_SI_1* fe_face_values.shape_value(i, q_point) * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-                        for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                            for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                                cell_rhs(j) += 1/ R_SI_1 * THETA_1 * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-                    }
-                    */
                 }
+                {{/SURFACE_VECTOR_SOURCE}}
             }
         }
 

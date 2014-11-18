@@ -610,8 +610,8 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
             solutionID.solutionMode = SolutionMode_Normal;
         assert(Agros2D::solutionStore()->contains(solutionID));
 
-        for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
-            result.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
+        // for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
+        //     result.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
     }
 
     return result;
@@ -620,6 +620,8 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
 template <typename Scalar>
 std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
 {
+    assert(0);
+    /*
     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
 
     FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Finer);
@@ -628,12 +630,14 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
         result.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
 
     return result;
+    */
 }
 
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField()
 {
+    /*
     // implicit values. Values have to be renewed each step, since e.g.number of previous time solutions may vary due to changing BDF order
     for(int i = 0; i < MAX_FIELDS; i++)
         m_positionInfos[i] = PositionInfo();
@@ -712,6 +716,7 @@ void WeakFormAgros<Scalar>::updateExtField()
 
     // outputPositionInfos();
     // qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
+    */
 }
 
 

@@ -207,11 +207,6 @@ protected:
     /// Complete method translating the internal generator structures into m_meshes.
     void writeTodealii();
 
-    /// Utility method serving the purpose of (potential) multi-mesh setup.
-    /// Translates the internal structures into the global mesh (of which every other mesh in the system is a submesh of).
-    /// \param[out] global_mesh The global mesh structure being filled by this method.
-    void writeTemporaryGlobalMeshToHermes(Hermes::Hermes2D::MeshSharedPtr global_mesh);
-
     /// Fills MeshEdge::neighElem structures for detecting subdomain boundaries etc.
     void fillNeighborStructures();
 

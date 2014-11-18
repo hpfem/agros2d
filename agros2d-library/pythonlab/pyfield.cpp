@@ -681,12 +681,7 @@ void PyField::initialMeshInfo(map<std::string, int> &info) const
 
     info["nodes"] = m_fieldInfo->initialMesh()->n_used_vertices();
     info["elements"] = m_fieldInfo->initialMesh()->n_active_cells();
-
-    if (Agros2D::problem()->isSolved())
-    {
-        MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(m_fieldInfo, 0, 0, SolutionMode_Normal));
-        info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
-    }
+    info["dofs"] = -1;
 }
 
 void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info) const
@@ -701,13 +696,13 @@ void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::stri
     adaptivityStep = getAdaptivityStep(adaptivityStep, timeStep, solutionMode);
 
     // TODO: (Franta) time and adaptivity step in gui vs. implementation
-    MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, solutionMode));
+    MultiArray ma = Agros2D::solutionStore()->multiArray(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, solutionMode));
 
     // TODO: fix -> list
-    info["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
-    info["elements"] = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
+    info["nodes"] = ma.doFHandler()->get_tria().n_used_vertices();
+    info["elements"] = ma.doFHandler()->get_tria().n_active_cells();
 
-    info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
+    info["dofs"] = ma.doFHandler()->n_dofs();
 }
 
 void PyField::solverInfo(int timeStep, int adaptivityStep, const std::string &solutionType,

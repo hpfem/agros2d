@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-optilab/resources/xsd/problem_a2d_31_xml.xsd">
-
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-dealii/resources/xsd/problem_a2d_31_xml.xsd">
   <geometry>
     <nodes>
       <node id="0" valuex="0.04" valuey="0.01" x="0.04" y="0.01"/>
@@ -45,7 +44,6 @@
       <label area="0" id="3" valuex="0.109507" valuey="0.050865" x="0.109507" y="0.050865"/>
     </labels>
   </geometry>
-
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
       <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear" matrix_solver="mumps">
@@ -61,8 +59,8 @@
               <boundary_edge id="11"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="electrostatic_potential" value="1e4"/>
               <boundary_type key="electrostatic_surface_charge_density" value="0"/>
+              <boundary_type key="electrostatic_potential" value="1e4"/>
             </boundary_types>
           </boundary>
           <boundary id="2" name="Ground" type="electrostatic_potential">
@@ -73,8 +71,8 @@
               <boundary_edge id="15"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="electrostatic_potential" value="0"/>
               <boundary_type key="electrostatic_surface_charge_density" value="0"/>
+              <boundary_type key="electrostatic_potential" value="0"/>
             </boundary_types>
           </boundary>
           <boundary id="3" name="Neumann" type="electrostatic_surface_charge_density">
@@ -85,8 +83,8 @@
               <boundary_edge id="7"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="electrostatic_potential" value="1000"/>
               <boundary_type key="electrostatic_surface_charge_density" value="0"/>
+              <boundary_type key="electrostatic_potential" value="1000"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -96,8 +94,8 @@
               <material_label id="3"/>
             </material_labels>
             <material_types>
-              <material_type key="electrostatic_charge_density" value="0"/>
               <material_type key="electrostatic_permittivity" value="1"/>
+              <material_type key="electrostatic_charge_density" value="0"/>
             </material_types>
           </material>
           <material id="2" name="Screen">
@@ -105,8 +103,8 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="electrostatic_charge_density" value="0"/>
               <material_type key="electrostatic_permittivity" value="2"/>
+              <material_type key="electrostatic_charge_density" value="0"/>
             </material_types>
           </material>
         </materials>
@@ -123,12 +121,12 @@
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
           <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
           <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
@@ -157,7 +155,6 @@
       <problem_item problem_key="TimeTotal" problem_value="1"/>
     </problem_config>
   </problem>
-
   <config>
     <item key="Problem_StartupScript" value=""/>
     <item key="View_GridStep" value="0.05"/>
@@ -243,5 +240,4 @@
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_SolidViewHide" value=""/>
   </config>
-
 </problem:document>

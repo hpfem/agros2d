@@ -630,6 +630,7 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(std::vector<Hermes::Hermes2D::Spa
 template <typename Scalar>
 void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 {
+    /*
     // to be used as starting vector for the Newton solver
     MultiArray<Scalar> previousTSMultiSolutionArray;
     // if ((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
@@ -693,11 +694,13 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     {
         throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(e.toString()));
     }
+    */
 }
 
 template <typename Scalar>
 TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
 {
+    /*
     double timeTotal = Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble();
 
     // TODO: move to some config?
@@ -799,13 +802,14 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
         Agros2D::log()->printMessage(m_solverID, "Transient step refused");
 
     return TimeStepInfo(nextTimeStepLength, refuseThisStep);
+    */
 }
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::createInitialSpace()
 {
     return; // dealii
-
+    /*
     // read mesh from file
     if (!Agros2D::problem()->isMeshed())
         throw AgrosSolverException(QObject::tr("Problem is not meshed"));
@@ -833,8 +837,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
             assert(fieldSpaces.contains(spaceI));
             Hermes::Hermes2D::SpaceSharedPtr<Scalar> oneSpace;
             SpaceType spaceType = fieldSpaces[spaceI].type();
-            assert(0);
-            /*
+
             switch (spaceType)
             {
             case HERMES_L2_SPACE:
@@ -856,7 +859,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
                 assert(0);
                 break;
             }
-            */
+
 
             // cout << "Space " << i << "dofs: " << actualSpace->get_num_dofs() << endl;
             m_actualSpaces.push_back(oneSpace);
@@ -887,11 +890,13 @@ void ProblemSolver<Scalar>::createInitialSpace()
 
     m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
     m_hermesSolverContainer->setTableSpaces()->set_spaces(m_actualSpaces);
+    */
 }
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 {
+    /*
     //    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     //    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
     //    MultiSolutionArray<Scalar> msaRef;
@@ -1003,11 +1008,13 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
+    */
 }
 
 template <typename Scalar>
 bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 {
+    /*
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
     MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
@@ -1103,11 +1110,13 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     }
 
     return adapt;
+    */
 }
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::solveInitialTimeStep()
 {
+    /*
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
     //std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
@@ -1136,11 +1145,13 @@ void ProblemSolver<Scalar>::solveInitialTimeStep()
     Agros2D::solutionStore()->addSolution(solutionID,
                                           MultiArray<Scalar>(actualSpaces(), solutions),
                                           runTime);
+                                          */
 }
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
 {
+    /*
     BlockSolutionID solID(m_block, 0, adaptivityStep, SolutionMode_Normal);
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(solID);
 
@@ -1148,7 +1159,7 @@ void ProblemSolver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
 
     assert(!m_hermesSolverContainer);
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);
-
+    */
 }
 
 ProblemSolverDeal::ProblemSolverDeal() : m_solverDeal(NULL)
@@ -1182,7 +1193,7 @@ void ProblemSolverDeal::solveSimple(int timeStep, int adaptivityStep)
         FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, adaptivityStep, SolutionMode_Normal);
         SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), 0.0, 0);
 
-        Agros2D::solutionStore()->addSolution(solutionID, MultiArrayDeal(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
+        Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
     }
 }
 

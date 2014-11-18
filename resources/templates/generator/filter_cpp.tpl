@@ -35,7 +35,7 @@
 #include <deal.II/numerics/fe_field_function.h>
 
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                     MultiArrayDeal *ma,
+                                                     MultiArray *ma,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp)
     : dealii::DataPostprocessorScalar<2>("Field",  dealii::update_values | dealii::update_gradients | dealii::update_q_points),

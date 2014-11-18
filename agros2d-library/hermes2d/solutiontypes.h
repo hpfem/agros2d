@@ -70,14 +70,14 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(st
     return slns;
 }
 
-class AGROS_LIBRARY_API MultiArrayDeal
+class AGROS_LIBRARY_API MultiArray
 {
 public:
-    MultiArrayDeal();
-    MultiArrayDeal(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
+    MultiArray();
+    MultiArray(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
                    std::shared_ptr<dealii::Vector<double> > solution)
         : m_doFHandler(doFHandler), m_solution(solution) {}
-    ~MultiArrayDeal();
+    ~MultiArray();
 
     void clear();
 
@@ -88,45 +88,13 @@ public:
     std::shared_ptr<dealii::Vector<double> > &solution() { return m_solution; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
-    MultiArrayDeal fieldPart(const Block *block, const FieldInfo *fieldInfo);
+    MultiArray fieldPart(const Block *block, const FieldInfo *fieldInfo);
 
     void createEmpty(int numComp);
 
 private:
     std::shared_ptr<dealii::DoFHandler<2> > m_doFHandler;
     std::shared_ptr<dealii::Vector<double> > m_solution;
-};
-
-template <typename Scalar>
-class AGROS_LIBRARY_API MultiArray
-{
-public:
-    MultiArray();
-    MultiArray(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
-               std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions) : m_spaces(spaces), m_solutions(solutions) {}
-    ~MultiArray();
-
-    void clear();
-
-    // add next component
-    void append(Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> solution);
-    void append(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
-
-    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
-
-    //std::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
-
-    // returns only that part of list that corresponds to given field (as part of the given block)
-    MultiArray<Scalar> fieldPart(const Block *block, const FieldInfo *fieldInfo);
-
-    int size() { assert(m_solutions.size() == m_spaces.size()); return m_spaces.size(); }
-
-    void createEmpty(int numComp);
-
-private:
-    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_spaces;
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > m_solutions;
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;

@@ -362,18 +362,11 @@ void InfoWidget::showInfo()
 
             if (Agros2D::problem()->isSolved())
             {
-                /*
                 int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
                 int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
-                MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
+                MultiArray ma = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
-                for (int comp = 0; comp < fieldInfo->numberOfSolutions(); comp++)
-                {
-                    solutionMeshNodes.append(msa.solutions().at(comp)->get_mesh()->get_num_vertex_nodes());
-                    solutionMeshElements.append(msa.solutions().at(comp)->get_mesh()->get_num_active_elements());
-                }
-                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
-                */
+                DOFs = ma.doFHandler()->n_dofs();
             }
 
             if (Agros2D::problem()->isMeshed())
@@ -499,8 +492,8 @@ void InfoWidget::showInfo()
         problemInfo.SetValue("SOLUTION_LABEL", tr("Solution").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME_LABEL", tr("Total elapsed time:").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Agros2D::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
-        // problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
-        // problemInfo.SetValue("NUM_THREADS", QString("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::numThreads)).toStdString());
+        problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
+        problemInfo.SetValue("NUM_THREADS", QString("%1").arg(-1).toStdString());
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
     }
 

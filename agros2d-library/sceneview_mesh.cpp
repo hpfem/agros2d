@@ -286,7 +286,7 @@ void SceneViewMesh::paintSolutionMesh()
 
     if (m_arraySolutionMesh.isEmpty())
     {
-        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+        MultiArray ma = m_postDeal->activeMultiSolutionArray();
         dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
         // TODO: components and level
@@ -332,7 +332,7 @@ void SceneViewMesh::paintOrder()
 
     if (m_arrayOrderMesh.isEmpty())
     {
-        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+        MultiArray ma = m_postDeal->activeMultiSolutionArray();
         dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
         // TODO: components and level
@@ -462,7 +462,7 @@ void SceneViewMesh::paintOrderColorBar()
 
     int minDegree = 11;
     int maxDegree = 1;
-    MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+    MultiArray ma = m_postDeal->activeMultiSolutionArray();
     dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
     int level = 0;

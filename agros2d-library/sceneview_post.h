@@ -30,9 +30,8 @@
 #include "sceneview_common.h"
 
 template <typename Scalar> class SceneSolution;
-template <typename Scalar> class MultiArray;
 
-class MultiArrayDeal;
+class MultiArray;
 
 class ParticleTracing;
 class FieldInfo;
@@ -113,7 +112,7 @@ public:
     inline SolutionMode activeAdaptivitySolutionType() const { return m_activeSolutionMode; }
     void setActiveAdaptivitySolutionType(SolutionMode st) { m_activeSolutionMode = st; }
 
-    MultiArrayDeal activeMultiSolutionArray();
+    MultiArray activeMultiSolutionArray();
 
     inline bool isProcessed() const { return m_isProcessed; }
 

@@ -58,7 +58,7 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
         int numberOfSolutions = fieldInfo->numberOfSolutions();
 
         FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
-        MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
+        MultiArray ma = Agros2D::solutionStore()->multiArray(fsid);
 
         {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
         {{/VARIABLE_MATERIAL}}

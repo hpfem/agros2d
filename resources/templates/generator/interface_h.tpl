@@ -59,13 +59,13 @@ virtual SolverDeal *solverDeal(const FieldInfo *fieldInfo, int initialOrder);
 // postprocessor
 // filter
 virtual std::shared_ptr<dealii::DataPostprocessorScalar<2> > filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                                    MultiArrayDeal *ma,
+                                                                    MultiArray *ma,
                                                                     const QString &variable,
                                                                     PhysicFieldVariableComp physicFieldVariableComp);
 
 // error calculators
-virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
-                                                                   const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
+// virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
+//                                                                   const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
 
 // local values
 virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);

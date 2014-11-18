@@ -320,53 +320,6 @@ void MeshGenerator::fillNeighborStructures()
     }
 }
 
-void MeshGenerator::getDataCountsForSingleSubdomain(FieldInfo* fieldInfo, int& element_number_count, int& boundary_edge_number_count, int& inner_edge_number_count)
-{
-    for (int i = 0; i < elementList.count(); i++)
-        if (elementList[i].isUsed && (Agros2D::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
-            element_number_count++;
-
-    QList<int> unassignedEdges;
-    for (int i = 0; i < edgeList.count(); i++)
-    {
-        if (edgeList[i].isUsed && edgeList[i].marker != -1)
-        {
-            int numNeighWithField = 0;
-            for (int neigh_i = 0; neigh_i < 2; neigh_i++)
-            {
-                int neigh = edgeList[i].neighElem[neigh_i];
-                if (neigh != -1)
-                {
-                    if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
-                            != SceneMaterialContainer::getNone(fieldInfo))
-                        numNeighWithField++;
-                }
-            }
-
-            // edge has boundary condition prescribed for this field
-            bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->hasMarker(fieldInfo)
-                                              && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
-
-            if (numNeighWithField == 1)
-            {
-                // edge is on "boundary" of the field, should have boundary condition prescribed
-
-                if (!hasFieldBoundaryCondition)
-                    if (!unassignedEdges.contains(edgeList[i].marker))
-                        unassignedEdges.append(edgeList[i].marker);
-
-                boundary_edge_number_count++;
-            }
-            else if (numNeighWithField == 2)
-            {
-                // todo: we could enforce not to have boundary conditions prescribed inside:
-                // assert(!hasFieldBoundaryCondition);
-                inner_edge_number_count;;
-            }
-        }
-    }
-}
-
 void MeshGenerator::writeTodealii()
 {
     foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())

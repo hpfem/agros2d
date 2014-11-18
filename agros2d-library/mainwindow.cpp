@@ -73,12 +73,6 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(pa
 
     createPythonEngine(argc, argv, new PythonEngineAgros());
 
-    // use maximum number of threads for postDeal (linearizer)
-    int threads = omp_get_max_threads();
-    if (threads == 0)
-        threads = 1;
-
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
     postDeal = new PostDeal();
 
     // scene

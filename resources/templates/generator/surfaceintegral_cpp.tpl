@@ -156,7 +156,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         if (!Agros2D::solutionStore()->contains(fsid))
             return;
 
-        MultiArrayDeal ma = Agros2D::solutionStore()->multiArrayDeal(fsid);
+        MultiArray ma = Agros2D::solutionStore()->multiArray(fsid);
 
         // update time functions
         if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)

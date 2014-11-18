@@ -548,7 +548,7 @@ void SceneViewPost2D::paintVectors()
         RectPoint rect = Agros2D::scene()->boundingBox();
         double gs = (rect.width() + rect.height()) / Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt();
 
-        MultiArrayDeal ma = m_postDeal->activeMultiSolutionArray();
+        MultiArray ma = m_postDeal->activeMultiSolutionArray();
         dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandler(), *ma.solution());
 
         // min max

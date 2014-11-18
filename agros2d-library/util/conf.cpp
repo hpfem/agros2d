@@ -76,9 +76,8 @@ void Config::load()
     }
 
     // number of threads
-    if (m_setting[Config_NumberOfThreads].toInt() > omp_get_max_threads())
-        m_setting[Config_NumberOfThreads] = omp_get_max_threads();
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, m_setting[Config_NumberOfThreads].toInt());
+    // if (m_setting[Config_NumberOfThreads].toInt() > omp_get_max_threads())
+    //    m_setting[Config_NumberOfThreads] = omp_get_max_threads();
 }
 
 void Config::save()
@@ -87,9 +86,6 @@ void Config::save()
 
     foreach (Type key, m_setting.keys())
         settings.setValue(m_settingKey[key], m_setting[key]);
-
-    // number of threads
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, m_setting[Config_NumberOfThreads].toInt());
 }
 
 void Config::setStringKeys()

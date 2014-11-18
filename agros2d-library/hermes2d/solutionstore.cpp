@@ -35,11 +35,11 @@ using namespace Hermes::Hermes2D;
 
 void SolutionStore::printDebugCacheStatus()
 {
-    assert(m_multiSolutionCacheIDOrder.size() == m_multiSolutionCache.keys().size());
+    assert(m_multiSolutionCacheIDOrder.size() == m_multiSolutionDealCache.keys().size());
     qDebug() << "solution store cache status:";
     foreach(FieldSolutionID fsid, m_multiSolutionCacheIDOrder)
     {
-        assert(m_multiSolutionCache.keys().contains(fsid));
+        assert(m_multiSolutionDealCache.keys().contains(fsid));
         qDebug() << fsid.toString();
     }
 }
@@ -71,9 +71,10 @@ void SolutionStore::clearAll()
 
     assert(m_multiSolutions.isEmpty());
     assert(m_multiSolutionRunTimeDetails.isEmpty());
-    assert(m_multiSolutionCache.isEmpty());
+    assert(m_multiSolutionDealCache.isEmpty());
 }
 
+/*
 MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 {
     if(solutionID.solutionMode == SolutionMode_Finer)
@@ -180,8 +181,9 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         return m_multiSolutionCache[solutionID];
     }
 }
+*/
 
-MultiArrayDeal SolutionStore::multiArrayDeal(FieldSolutionID solutionID)
+MultiArray SolutionStore::multiArray(FieldSolutionID solutionID)
 {
     if(solutionID.solutionMode == SolutionMode_Finer)
     {
@@ -296,24 +298,12 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiArray<double> SolutionStore::multiArray(BlockSolutionID solutionID)
+MultiArray SolutionStore::multiArray(BlockSolutionID solutionID)
 {
-    MultiArray<double> ma;
+    MultiArray ma;
     foreach (FieldBlock *field, solutionID.group->fields())
     {
-        MultiArray<double> maGroup = multiArray(solutionID.fieldSolutionID(field->fieldInfo()));
-        ma.append(maGroup.spaces(), maGroup.solutions());
-    }
-
-    return ma;
-}
-
-MultiArrayDeal SolutionStore::multiArrayDeal(BlockSolutionID solutionID)
-{
-    MultiArrayDeal ma;
-    foreach (FieldBlock *field, solutionID.group->fields())
-    {
-        MultiArrayDeal maGroup = multiArrayDeal(solutionID.fieldSolutionID(field->fieldInfo()));
+        MultiArray maGroup = multiArray(solutionID.fieldSolutionID(field->fieldInfo()));
         ma.append(maGroup.doFHandler(), maGroup.solution());
     }
 
@@ -321,108 +311,8 @@ MultiArrayDeal SolutionStore::multiArrayDeal(BlockSolutionID solutionID)
 }
 
 
-void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
-{
-    // qDebug() << "saving solution " << solutionID;
-    assert(!m_multiSolutions.contains(solutionID));
-    assert(solutionID.timeStep >= 0);
-    assert(solutionID.adaptivityStep >= 0);
 
-    // save soloution
-    QList<SolutionRunTimeDetails::FileName> fileNames;
-    for (int i = 0; i < multiSolution.size(); i++)
-        fileNames.append(SolutionRunTimeDetails::FileName());
-
-    QString baseFN = baseStoreFileName(solutionID);
-    FieldSolutionID previous = lastTimeAndAdaptiveSolution(solutionID.group, solutionID.solutionMode);
-    if (m_multiSolutionCache.contains(previous))
-    {
-        MultiArray<double> ma = m_multiSolutionCache[previous];
-        SolutionRunTimeDetails str = m_multiSolutionRunTimeDetails[previous];
-
-        for (int i = 0; i < multiSolution.size(); i++)
-        {
-            if (ma.spaces().at(i).get()->get_mesh() == multiSolution.spaces().at(i).get()->get_mesh())
-                fileNames[i].setMeshFileName(str.fileNames()[i].meshFileName());
-
-            if (ma.spaces().at(i).get() == multiSolution.spaces().at(i).get())
-                fileNames[i].setSpaceFileName(str.fileNames()[i].spaceFileName());
-        }
-    }
-
-    // meshes
-    for (int i = 0; i < multiSolution.size(); i++)
-    {
-        if (fileNames[i].meshFileName().isEmpty())
-        {
-            std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
-            foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
-            {
-                if (fieldInfo == solutionID.group)
-                    meshes.push_back(multiSolution.spaces().at(i)->get_mesh());
-                else
-                    assert(0); // meshes.push_back(fieldInfo->initialMesh());
-            }
-
-            // QString meshFN = QString("%1_%2.msh").arg(baseFN).arg(i);
-            // Module::writeMeshToFileXML(meshFN, meshes);
-            QString meshFN = QString("%1_%2.mbs").arg(baseFN).arg(i);
-            Module::writeMeshToFileBSON(meshFN, meshes);
-
-            fileNames[i].setMeshFileName(QFileInfo(meshFN).fileName());
-        }
-    }
-
-    // spaces
-    for (int i = 0; i < multiSolution.size(); i++)
-    {
-        if (fileNames[i].spaceFileName().isEmpty())
-        {
-            QString spaceFN = QString("%1_%2.spc").arg(baseFN).arg(i);
-            // multiSolution.spaces().at(i)->save(compatibleFilename(spaceFN).toStdString().c_str());
-            multiSolution.spaces().at(i)->save_bson(compatibleFilename(spaceFN).toStdString().c_str());
-
-            fileNames[i].setSpaceFileName(QFileInfo(spaceFN).fileName());
-        }
-    }
-
-    // solutions
-    for (int i = 0; i < multiSolution.size(); i++)
-    {
-        if (fileNames[i].solutionFileName().isEmpty())
-        {
-            QString solutionFN = QString("%1_%2.sln").arg(baseFN).arg(i);
-            // QTime time;
-            // time.start();
-            // dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save(solutionFN.toLatin1().data());
-            dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save_bson(compatibleFilename(solutionFN).toStdString().c_str());
-            // qDebug() << "SAVE" << time.elapsed();
-
-            fileNames[i].setSolutionFileName(QFileInfo(solutionFN).fileName());
-        }
-    }
-
-    runTime.setFileNames(fileNames);
-
-    // append multisolution
-    m_multiSolutions.append(solutionID);
-
-    // append properties
-    m_multiSolutionRunTimeDetails.insert(solutionID, runTime);
-
-    // insert to the cache
-    insertMultiSolutionToCache(solutionID, multiSolution);
-
-    //printDebugCacheStatus();
-
-    // save run time details to the file
-    saveRunTimeDetails();
-
-    // save to the memory info (for debug purposes)
-    // m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
-}
-
-void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArrayDeal multiSolution, SolutionRunTimeDetails runTime)
+void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray multiSolution, SolutionRunTimeDetails runTime)
 {
     // qDebug() << "saving solution " << solutionID;
     // assert(!m_multiSolutions.contains(solutionID));
@@ -534,11 +424,11 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID, bool saveRunTime)
     // remove properties
     m_multiSolutionRunTimeDetails.remove(solutionID);
     // remove from cache
-    if (m_multiSolutionCache.contains(solutionID))
+    if (m_multiSolutionDealCache.contains(solutionID))
     {
         // free ma
-        m_multiSolutionCache[solutionID].clear();
-        m_multiSolutionCache.remove(solutionID);
+        m_multiSolutionDealCache[solutionID].clear();
+        m_multiSolutionDealCache.remove(solutionID);
         m_multiSolutionCacheIDOrder.removeOne(solutionID);
     }
 
@@ -569,24 +459,12 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID, bool saveRunTime)
         saveRunTimeDetails();
 }
 
-void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
+void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray multiSolution, SolutionRunTimeDetails runTime)
 {
     foreach (FieldBlock* field, blockSolutionID.group->fields())
     {
         FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
-        MultiArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
-        addSolution(fieldSID, fieldMultiSolution, runTime);
-    }
-
-    // printDebugMemoryInfo();
-}
-
-void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArrayDeal multiSolution, SolutionRunTimeDetails runTime)
-{
-    foreach (FieldBlock* field, blockSolutionID.group->fields())
-    {
-        FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
-        MultiArrayDeal fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
+        MultiArray fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
         addSolution(fieldSID, fieldMultiSolution, runTime);
     }
 
@@ -636,6 +514,7 @@ int SolutionStore::lastTimeStep(const Block *block, SolutionMode solutionType) c
     return timeStep;
 }
 
+/*
 MultiArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID)
 {
     MultiArray<double> ma;
@@ -650,6 +529,7 @@ MultiArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutio
 
     return ma;
 }
+*/
 
 int SolutionStore::nthCalculatedTimeStep(const FieldInfo *fieldInfo, int n) const
 {
@@ -820,29 +700,7 @@ double SolutionStore::timeLevel(const FieldInfo *fieldInfo, int timeLevelIndex)
         return levels.at(timeLevelIndex);
 }
 
-void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiSolution)
-{
-    if (!m_multiSolutionCache.contains(solutionID))
-    {
-        // flush cache
-        if (m_multiSolutionCache.count() > Agros2D::configComputer()->value(Config::Config_CacheSize).toInt())
-        {
-            assert(! m_multiSolutionCacheIDOrder.empty());
-            FieldSolutionID idRemove = m_multiSolutionCacheIDOrder[0];
-            m_multiSolutionCacheIDOrder.removeFirst();
-
-            // free ma
-            m_multiSolutionCache[idRemove].clear();
-            m_multiSolutionCache.remove(idRemove);
-        }
-
-        // add solution
-        m_multiSolutionCache.insert(solutionID, multiSolution);
-        m_multiSolutionCacheIDOrder.append(solutionID);
-    }
-}
-
-void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArrayDeal multiSolution)
+void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray multiSolution)
 {
     if (!m_multiSolutionDealCache.contains(solutionID))
     {

@@ -61,87 +61,36 @@ QString FieldSolutionID::toString()
 
 // *********************************************************************************************
 
-MultiArrayDeal::MultiArrayDeal()
+MultiArray::MultiArray()
 {
 }
 
-MultiArrayDeal::~MultiArrayDeal()
+MultiArray::~MultiArray()
 {
     clear();
 }
 
-void MultiArrayDeal::clear()
+void MultiArray::clear()
 {
     // m_doFHandler.reset();
     // m_solution.reset();
 }
 
-void MultiArrayDeal::append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
+void MultiArray::append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
                             std::shared_ptr<dealii::Vector<double> > solution)
 {
     m_doFHandler = doFHandler;
     m_solution = solution;
 }
 
-MultiArrayDeal MultiArrayDeal::fieldPart(const Block *block, const FieldInfo *fieldInfo)
+MultiArray MultiArray::fieldPart(const Block *block, const FieldInfo *fieldInfo)
 {
     assert(block->contains(fieldInfo));
-    MultiArrayDeal msa;
+    MultiArray msa;
     int offset = block->offset(block->field(fieldInfo));
 
     msa.append(m_doFHandler, m_solution);
     return msa;
 }
 
-// *********************************************************************************************
-
-template <typename Scalar>
-MultiArray<Scalar>::MultiArray()
-{
-}
-
-template <typename Scalar>
-MultiArray<Scalar>::~MultiArray()
-{
-    clear();
-}
-
-template <typename Scalar>
-void MultiArray<Scalar>::clear()
-{
-    m_solutions.clear();
-    m_spaces.clear();
-}
-
-template <typename Scalar>
-void MultiArray<Scalar>::append(Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> solution)
-{
-    m_spaces.push_back(space);
-    m_solutions.push_back(solution);
-}
-
-template <typename Scalar>
-void MultiArray<Scalar>::append(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
-{
-    assert(spaces.size() == solutions.size());
-    for (int i = 0; i < solutions.size(); i++)
-        append(spaces.at(i), solutions.at(i));
-}
-
-template <typename Scalar>
-MultiArray<Scalar> MultiArray<Scalar>::fieldPart(const Block *block, const FieldInfo *fieldInfo)
-{
-    assert(block->contains(fieldInfo));
-    MultiArray<Scalar> msa;
-    int offset = block->offset(block->field(fieldInfo));
-    int numSol = fieldInfo->numberOfSolutions();
-
-    for(int i = offset; i < offset + numSol; i++)
-    {
-        msa.append(m_spaces.at(i), m_solutions.at(i));
-    }
-    return msa;
-}
-
-template class MultiArray<double>;
 template class SolutionID<FieldInfo>;

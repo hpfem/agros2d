@@ -450,7 +450,7 @@ std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable ph
     if (Agros2D::problem()->isTransient())
         Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
 
-    MultiArrayDeal ma = activeMultiSolutionArray();
+    MultiArray ma = activeMultiSolutionArray();
 
     std::shared_ptr<dealii::DataPostprocessorScalar<2> > post = activeViewField()->plugin()->filter(activeViewField(),
                                                                                                     activeTimeStep(),
@@ -538,10 +538,10 @@ void PostDeal::setActiveAdaptivityStep(int as)
     m_activeAdaptivityStep = as;
 }
 
-MultiArrayDeal PostDeal::activeMultiSolutionArray()
+MultiArray PostDeal::activeMultiSolutionArray()
 {
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
-    return Agros2D::solutionStore()->multiArrayDeal(fsid);
+    return Agros2D::solutionStore()->multiArray(fsid);
 }
 
 // ************************************************************************************************

@@ -189,14 +189,16 @@ ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const Proble
     return NULL;
 }
 
+/*
 Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(const FieldInfo *fieldInfo,
                                                                                const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
 {
     return new {{CLASS}}ErrorCalculator<double>(fieldInfo, calculator, errorType);
 }
+*/
 
 std::shared_ptr<dealii::DataPostprocessorScalar<2> > {{CLASS}}Interface::filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                                                MultiArrayDeal *ma,
+                                                                                MultiArray *ma,
                                                                                 const QString &variable,
                                                                                 PhysicFieldVariableComp physicFieldVariableComp)
 {
