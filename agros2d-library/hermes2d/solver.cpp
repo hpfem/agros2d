@@ -39,6 +39,7 @@
 #include <deal.II/base/function.h>
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/numerics/matrix_tools.h>
+#include <deal.II/numerics/error_estimator.h>
 
 #include <deal.II/lac/vector.h>
 #include <deal.II/lac/full_matrix.h>
@@ -53,8 +54,6 @@
 
 #include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/numerics/data_out.h>
-
-#include <deal.II/base/timer.h>
 
 #include "solver.h"
 #include "solver_linear.h"
@@ -111,11 +110,17 @@ void SolverDeal::setup()
     m_doFHandler->distribute_dofs(fe);
     std::cout << "Number of degrees of freedom: " << m_doFHandler->n_dofs() << std::endl;
 
-    dealii::CompressedSparsityPattern c_sparsity(m_doFHandler->n_dofs());
+    // hanging_node_constraints.clear();
+    // dealii::DoFTools::make_hanging_node_constraints (*m_doFHandler,
+    //                                                  hanging_node_constraints);
+
+    // hanging_node_constraints.close();
+
+    // dealii::CompressedSparsityPattern c_sparsity(m_doFHandler->n_dofs());
     sparsity_pattern.reinit(m_doFHandler->n_dofs(),
                             m_doFHandler->n_dofs(),
                             m_doFHandler->max_couplings_between_dofs());
-    dealii::DoFTools::make_sparsity_pattern(*m_doFHandler, sparsity_pattern);
+    dealii::DoFTools::make_sparsity_pattern(*m_doFHandler, sparsity_pattern); // hanging_node_constraints
     sparsity_pattern.compress();
     system_matrix.reinit(sparsity_pattern);
 
@@ -146,6 +151,7 @@ void SolverDeal::assembleDirichlet()
     assert(0);
 }
 
+/*
 void SolverDeal::solve()
 {
     QTime time;
@@ -156,12 +162,40 @@ void SolverDeal::solve()
 
     qDebug() << "solved (" << time.elapsed() << "ms )";
 }
+*/
+
+void SolverDeal::solve()
+{
+    QTime time;
+    time.start();
+
+    solveUMFPACK();
+    // hanging_node_constraints.distribute(*m_solution);
+    // solveCG();
+    /*
+    qDebug() << "adapt 1";
+    dealii::Vector<float> estimated_error_per_cell(m_triangulation->n_active_cells());
+    qDebug() << "adapt 2";
+    dealii::KellyErrorEstimator<2>::estimate(*m_doFHandler,
+                                             dealii::QGauss<2-1>(2),
+                                             typename dealii::FunctionMap<2>::type(),
+                                             *m_solution,
+                                             estimated_error_per_cell);
+    qDebug() << "adapt 3";
+    dealii::GridRefinement::refine_and_coarsen_fixed_number(*m_triangulation, estimated_error_per_cell, 0.3, 0.03);
+    qDebug() << "adapt 4";
+    m_triangulation->execute_coarsening_and_refinement();
+    qDebug() << "adapt 5";
+    */
+
+    qDebug() << "solved (" << time.elapsed() << "ms )";
+}
 
 void SolverDeal::solveUMFPACK()
 {
-    dealii::SparseDirectUMFPACK  A_direct;
-    A_direct.initialize(system_matrix);
-    A_direct.vmult(*m_solution, system_rhs);
+    dealii::SparseDirectUMFPACK direct;
+    direct.initialize(system_matrix);
+    direct.vmult(*m_solution, system_rhs);
 }
 
 void SolverDeal::solveCG()

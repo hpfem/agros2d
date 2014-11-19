@@ -460,15 +460,10 @@ std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable ph
                                                                                                     physicFieldVariable.id(),
                                                                                                     physicFieldVariableComp);
 
-    qDebug() << "OK 1";
     std::shared_ptr<PostDataOut> data_out = std::shared_ptr<PostDataOut>(new PostDataOut());
-    qDebug() << "OK 2" << ma.doFHandler()->n_dofs();
     data_out->attach_dof_handler(*ma.doFHandler());
-    qDebug() << "OK 3";
-    data_out->add_data_vector(*ma.solution(), "solution");
-    // data_out->add_data_vector(*ma.solution(), *post);
+    data_out->add_data_vector(*ma.solution(), *post);
     data_out->build_patches(2);
-    qDebug() << "OK 4";
 
     return data_out;
 }
