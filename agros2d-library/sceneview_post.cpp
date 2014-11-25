@@ -201,7 +201,7 @@ void PostDeal::processRangeContour()
 
         m_contourValues.clear();
 
-        std::shared_ptr<PostDataOut> data_out;
+        PostDataOut *data_out = NULL;
 
         if (variable.isScalar())
             data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
@@ -236,6 +236,8 @@ void PostDeal::processRangeContour()
             m_linContourView->set_displacement(NULL, NULL);
         }
         */
+
+        delete data_out;
     }
 }
 
@@ -257,8 +259,8 @@ void PostDeal::processRangeScalar()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
-        std::shared_ptr<PostDataOut> data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                 (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        PostDataOut *data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                 (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
         data_out->compute_nodes(m_scalarValues);
 
         /*
@@ -289,6 +291,8 @@ void PostDeal::processRangeScalar()
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, data_out->min());
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, data_out->max());
         }
+
+        delete data_out;
     }
 }
 
@@ -308,11 +312,11 @@ void PostDeal::processRangeVector()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
-        std::shared_ptr<PostDataOut> data_outX = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                  PhysicFieldVariableComp_X);
+        PostDataOut *data_outX = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                  PhysicFieldVariableComp_X);
 
-        std::shared_ptr<PostDataOut> data_outY = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                  PhysicFieldVariableComp_Y);
+        PostDataOut *data_outY = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                  PhysicFieldVariableComp_Y);
 
         data_outX->compute_nodes(m_vectorXValues);
         data_outY->compute_nodes(m_vectorYValues);
@@ -339,6 +343,9 @@ void PostDeal::processRangeVector()
             m_vecVectorView->set_displacement(NULL, NULL);
         }
         */
+
+        delete data_outX;
+        delete data_outY;
     }
 }
 
@@ -441,29 +448,34 @@ void PostDeal::processSolved()
 }
 
 
-std::shared_ptr<PostDataOut> PostDeal::viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                        PhysicFieldVariableComp physicFieldVariableComp)
-{
-    qDebug() << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
+PostDataOut *PostDeal::viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                        PhysicFieldVariableComp physicFieldVariableComp)
+{    
+    QTime time;
+    time.start();
 
     // update time functions
     if (Agros2D::problem()->isTransient())
         Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
 
     MultiArray ma = activeMultiSolutionArray();
+    // qDebug() << "solution->size()" << ma.solution()->size() << "doFHandler->size()" << ma.doFHandler()->n_dofs();
 
-    std::shared_ptr<dealii::DataPostprocessorScalar<2> > post = activeViewField()->plugin()->filter(activeViewField(),
-                                                                                                    activeTimeStep(),
-                                                                                                    activeAdaptivityStep(),
-                                                                                                    activeAdaptivitySolutionType(),
-                                                                                                    &ma,
-                                                                                                    physicFieldVariable.id(),
-                                                                                                    physicFieldVariableComp);
+    dealii::DataPostprocessorScalar<2> *post = activeViewField()->plugin()->filter(activeViewField(),
+                                                                                  activeTimeStep(),
+                                                                                  activeAdaptivityStep(),
+                                                                                  activeAdaptivitySolutionType(),
+                                                                                  &ma,
+                                                                                  physicFieldVariable.id(),
+                                                                                  physicFieldVariableComp);
 
-    std::shared_ptr<PostDataOut> data_out = std::shared_ptr<PostDataOut>(new PostDataOut());
+    PostDataOut *data_out = new PostDataOut();
     data_out->attach_dof_handler(*ma.doFHandler());
     data_out->add_data_vector(*ma.solution(), *post);
+    // data_out->add_data_vector(*ma.solution(), "x");
     data_out->build_patches(2);
+
+    qDebug() << "process - build patches (" << time.elapsed() << "ms )";
 
     return data_out;
 }
@@ -536,7 +548,10 @@ void PostDeal::setActiveAdaptivityStep(int as)
 MultiArray PostDeal::activeMultiSolutionArray()
 {
     FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
-    return Agros2D::solutionStore()->multiArray(fsid);
+    if (Agros2D::solutionStore()->contains(fsid))
+        return Agros2D::solutionStore()->multiArray(fsid);
+    else
+        assert(0);
 }
 
 // ************************************************************************************************

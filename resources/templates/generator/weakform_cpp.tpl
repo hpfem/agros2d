@@ -106,11 +106,6 @@ void SolverDeal{{CLASS}}::setup()
 {
 
 }
-
-void SolverDeal{{CLASS}}::assemble()
-{
-
-}
 */
 
 void SolverDeal{{CLASS}}::assembleSystem()
@@ -118,10 +113,10 @@ void SolverDeal{{CLASS}}::assembleSystem()
     dealii::QGauss<2> quadrature_formula(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + 5);
     dealii::QGauss<2-1> face_quadrature_formula(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + 5);
 
-    dealii::FEValues<2> fe_values (fe, quadrature_formula, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_JxW_values);
-    dealii::FEFaceValues<2> fe_face_values (fe, face_quadrature_formula, dealii::update_values | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
+    dealii::FEValues<2> fe_values (*m_fe, quadrature_formula, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points | dealii::update_JxW_values);
+    dealii::FEFaceValues<2> fe_face_values (*m_fe, face_quadrature_formula, dealii::update_values | dealii::update_quadrature_points | dealii::update_normal_vectors | dealii::update_JxW_values);
 
-    const unsigned int dofs_per_cell = fe.dofs_per_cell;
+    const unsigned int dofs_per_cell = m_fe->dofs_per_cell;
     const unsigned int n_q_points = quadrature_formula.size();
     const unsigned int n_face_q_points = face_quadrature_formula.size();
 
@@ -298,6 +293,13 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
         cell->get_dof_indices(local_dof_indices);
 
+        // distribute local to global system
+        hanging_node_constraints.distribute_local_to_global(cell_matrix,
+                                                            cell_rhs,
+                                                            local_dof_indices,
+                                                            system_matrix,
+                                                            system_rhs);
+        /*
         // system matrix
         for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -308,6 +310,7 @@ void SolverDeal{{CLASS}}::assembleSystem()
         // system rhs
         for (unsigned int i=0; i<dofs_per_cell; ++i)
             system_rhs(local_dof_indices[i]) += cell_rhs(i);
+        */
     }
 }
 
@@ -340,8 +343,9 @@ void SolverDeal{{CLASS}}::assembleDirichlet()
                 if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
                     std::map<dealii::types::global_dof_index,double> boundary_values;
-                    dealii::VectorTools::interpolate_boundary_values (*m_doFHandler, i+1, Deal_{{FUNCTION_NAME}}<2>(boundary), boundary_values);
-                    dealii::MatrixTools::apply_boundary_values (boundary_values, system_matrix, *m_solution, system_rhs);
+                    dealii::VectorTools::interpolate_boundary_values (*m_doFHandler, i+1, Deal_{{FUNCTION_NAME}}<2>(boundary), hanging_node_constraints);
+                    // dealii::VectorTools::interpolate_boundary_values (*m_doFHandler, i+1, Deal_{{FUNCTION_NAME}}<2>(boundary), boundary_values);
+                    // dealii::MatrixTools::apply_boundary_values (boundary_values, system_matrix, *m_solution, system_rhs);
                 }
                 {{/EXACT_SOURCE}}
             }

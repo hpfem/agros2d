@@ -55,6 +55,11 @@
 
 #include <deal.II/base/timer.h>
 
+#include <boost/config.hpp>
+#include <boost/archive/tmpdir.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+
 #include "meshgenerator.h"
 
 #include "util/global.h"
@@ -324,7 +329,7 @@ void MeshGenerator::writeTodealii()
 {
     foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        std::shared_ptr<dealii::Triangulation<2> > triangulation = std::shared_ptr<dealii::Triangulation<2> >(new dealii::Triangulation<2>());
+        dealii::Triangulation<2> *triangulation = new dealii::Triangulation<2>();
 
         // vertices
         std::vector<dealii::Point<2> > vertices;
@@ -382,9 +387,15 @@ void MeshGenerator::writeTodealii()
         dealii::GridReordering<2>::invert_all_cells_of_negative_grid (vertices, cells);
         dealii::GridReordering<2>::reorder_cells (cells);
 
-        triangulation.get()->create_triangulation_compatibility (vertices, cells, subcelldata);
+        triangulation->create_triangulation_compatibility (vertices, cells, subcelldata);
 
         m_triangulations[fieldInfo] = triangulation;
+
+        // save to disk
+        QString fnMesh = QString("%1/%2_initial.msh").arg(cacheProblemDir()).arg(fieldInfo->fieldId());
+        std::ofstream ofsMesh(fnMesh.toStdString());
+        boost::archive::binary_oarchive sbMesh(ofsMesh);
+        triangulation->save(sbMesh, 0);
     }
 }
 

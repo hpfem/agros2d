@@ -74,18 +74,17 @@ class AGROS_LIBRARY_API MultiArray
 {
 public:
     MultiArray();
-    MultiArray(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
-                   std::shared_ptr<dealii::Vector<double> > solution)
+    MultiArray(dealii::DoFHandler<2> *doFHandler, dealii::Vector<double> *solution)
         : m_doFHandler(doFHandler), m_solution(solution) {}
     ~MultiArray();
 
     void clear();
 
     // add next component
-    void append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler, std::shared_ptr<dealii::Vector<double> > solution);
+    void append(dealii::DoFHandler<2> *doFHandler, dealii::Vector<double> *solution);
 
-    std::shared_ptr<dealii::DoFHandler<2> > &doFHandler() { return m_doFHandler; }
-    std::shared_ptr<dealii::Vector<double> > &solution() { return m_solution; }
+    dealii::DoFHandler<2> *doFHandler() { return m_doFHandler; }
+    dealii::Vector<double> *solution() { return m_solution; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiArray fieldPart(const Block *block, const FieldInfo *fieldInfo);
@@ -93,8 +92,8 @@ public:
     void createEmpty(int numComp);
 
 private:
-    std::shared_ptr<dealii::DoFHandler<2> > m_doFHandler;
-    std::shared_ptr<dealii::Vector<double> > m_solution;
+    dealii::DoFHandler<2> *m_doFHandler;
+    dealii::Vector<double> *m_solution;
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;

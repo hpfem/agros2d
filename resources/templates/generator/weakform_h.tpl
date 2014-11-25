@@ -34,7 +34,6 @@ public:
 
     // virtual void setup();
 
-    // virtual void assemble();
     virtual void assembleSystem();
     virtual void assembleDirichlet();
 };

@@ -13,7 +13,7 @@
                   <complexType>
               <attribute name="array_id" type="int" use="required" />
                     <attribute name="mesh_filename" type="string" use="required" />
-                    <attribute name="space_filename" type="string" use="required" />  
+                    <attribute name="dof_filename" type="string" use="required" />  
                     <attribute name="solution_filename" type="string" use="required" />    
             </complexType>
             </element>

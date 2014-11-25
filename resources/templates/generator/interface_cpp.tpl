@@ -197,12 +197,12 @@ Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(c
 }
 */
 
-std::shared_ptr<dealii::DataPostprocessorScalar<2> > {{CLASS}}Interface::filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+dealii::DataPostprocessorScalar<2> *{{CLASS}}Interface::filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                                                 MultiArray *ma,
                                                                                 const QString &variable,
                                                                                 PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return std::shared_ptr<dealii::DataPostprocessorScalar<2> >(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, ma, variable, physicFieldVariableComp));
+    return new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, ma, variable, physicFieldVariableComp);
 }
 
 LocalValue *{{CLASS}}Interface::localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)

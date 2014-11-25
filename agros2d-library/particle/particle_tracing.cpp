@@ -139,7 +139,7 @@ Point3 ParticleTracing::force(int particleIndex,
         // find material
         dealii::Point<2> p(position.x, position.y);
         std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-                dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *fieldInfo->initialMesh().get(), p);
+                dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *fieldInfo->initialMesh(), p);
 
         SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
         SceneMaterial *material = label->marker(fieldInfo);

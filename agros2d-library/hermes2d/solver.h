@@ -47,13 +47,14 @@ class SolverDeal
 {
 public:
     SolverDeal(const FieldInfo *fieldInfo, int initialOrder = 2);
+    ~SolverDeal();
 
-    inline std::shared_ptr<dealii::Vector<double> > solution() { return m_solution; }
-    inline std::shared_ptr<dealii::DoFHandler<2> > doFHandler() { return m_doFHandler; }
+    inline dealii::Vector<double> *solution() { return m_solution; }
+    inline dealii::DoFHandler<2> *doFHandler() { return m_doFHandler; }
+    inline dealii::Triangulation<2> *triangulation() { return m_triangulation; }
 
     virtual void setup();
 
-    virtual void assemble();
     virtual void assembleSystem();
     virtual void assembleDirichlet() = 0;
 
@@ -62,17 +63,16 @@ public:
 protected:
     const FieldInfo *m_fieldInfo;
 
-    std::shared_ptr<dealii::Triangulation<2> > m_triangulation;
-    std::shared_ptr<dealii::DoFHandler<2> > m_doFHandler;
-
-    dealii::FESystem<2> fe;
+    dealii::Triangulation<2> *m_triangulation;
+    dealii::DoFHandler<2> *m_doFHandler;
+    dealii::FESystem<2> *m_fe;
+    dealii::Vector<double> *m_solution;
 
     dealii::ConstraintMatrix hanging_node_constraints;
     dealii::SparsityPattern sparsity_pattern;
 
     dealii::SparseMatrix<double> system_matrix;
     dealii::Vector<double> system_rhs;
-    std::shared_ptr<dealii::Vector<double> > m_solution;
 
     void solveUMFPACK();
     void solveCG();

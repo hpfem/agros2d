@@ -72,12 +72,11 @@ MultiArray::~MultiArray()
 
 void MultiArray::clear()
 {
-    // m_doFHandler.reset();
-    // m_solution.reset();
+    // delete m_doFHandler;
+    // delete m_solution;
 }
 
-void MultiArray::append(std::shared_ptr<dealii::DoFHandler<2> > doFHandler,
-                            std::shared_ptr<dealii::Vector<double> > solution)
+void MultiArray::append(dealii::DoFHandler<2> *doFHandler, dealii::Vector<double> *solution)
 {
     m_doFHandler = doFHandler;
     m_solution = solution;

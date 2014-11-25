@@ -55,7 +55,7 @@ bool FieldBlock::solveInitVariables()
 int FieldInfo::numberIdNext = 0;
 
 FieldInfo::FieldInfo(QString fieldId)
-    : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr), m_labelAreas(nullptr)
+    : m_plugin(NULL), m_numberOfSolutions(0), m_hermesMarkerToAgrosLabelConversion(nullptr), m_labelAreas(nullptr), m_initialMesh(nullptr)
 {    
     assert(!fieldId.isEmpty());
     m_fieldId = fieldId;
@@ -191,10 +191,13 @@ double FieldInfo::labelArea(int agrosLabel) const
 
 void FieldInfo::clearInitialMesh()
 {
-    m_initialMesh = std::shared_ptr<dealii::Triangulation<2> >(new dealii::Triangulation<2>());
+    if (m_initialMesh)
+        delete m_initialMesh;
+
+    m_initialMesh = new dealii::Triangulation<2>();
 }
 
-void FieldInfo::setInitialMesh(std::shared_ptr<dealii::Triangulation<2> > mesh)
+void FieldInfo::setInitialMesh(dealii::Triangulation<2> *mesh)
 {
     m_initialMesh = mesh;
 }
@@ -343,9 +346,9 @@ void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
     }
 }
 
-void FieldInfo::refineMesh(std::shared_ptr<dealii::Triangulation<2> > mesh)
+void FieldInfo::refineMesh(dealii::Triangulation<2> *mesh)
 {
-    mesh.get()->refine_global(value(FieldInfo::SpaceNumberOfRefinements).toInt());
+    mesh->refine_global(value(FieldInfo::SpaceNumberOfRefinements).toInt());
 
     /*
     // refine mesh - boundary

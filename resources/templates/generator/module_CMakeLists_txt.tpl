@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/paralution/src)
 # deal.ii
 INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/dealii/build/include)
 INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/dealii/deal.II/include)
+INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/dealii/deal.II/bundled/boost-1.49.0/include)
 INCLUDE_DIRECTORIES(.)
 
 # This overrides CXX flags for MSVC

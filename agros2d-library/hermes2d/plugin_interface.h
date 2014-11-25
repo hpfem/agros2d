@@ -320,10 +320,10 @@ public:
 
     // postprocessor
     // filter
-    virtual std::shared_ptr<dealii::DataPostprocessorScalar<2> > filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                                        MultiArray *ma,
-                                                                        const QString &variable,
-                                                                        PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    virtual dealii::DataPostprocessorScalar<2> *filter(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                       MultiArray *ma,
+                                                       const QString &variable,
+                                                       PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     // local values
     virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) = 0;

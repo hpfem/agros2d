@@ -279,7 +279,6 @@ void SceneViewMesh::paintInitialMesh()
     }
 }
 
-
 void SceneViewMesh::paintSolutionMesh()
 {
     if (!Agros2D::problem()->isSolved()) return;
@@ -287,14 +286,13 @@ void SceneViewMesh::paintSolutionMesh()
     if (m_arraySolutionMesh.isEmpty())
     {
         MultiArray ma = m_postDeal->activeMultiSolutionArray();
-        dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
         // TODO: components and level
         // activeMultiSolutionArray().spaces().at(comp)
         // int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
 
-        int level = 0;
-        typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();
+        int level = m_postDeal->activeAdaptivityStep();
+        typename dealii::DoFHandler<2>::active_cell_iterator cell_int = ma.doFHandler()->begin_active(0), endc_int = ma.doFHandler()->end_active(level);
         for (; cell_int != endc_int; ++cell_int)
         {
             // coordinates
@@ -333,14 +331,13 @@ void SceneViewMesh::paintOrder()
     if (m_arrayOrderMesh.isEmpty())
     {
         MultiArray ma = m_postDeal->activeMultiSolutionArray();
-        dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
         // TODO: components and level
         // activeMultiSolutionArray().spaces().at(comp)
         // int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
 
-        int level = 0;
-        typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();
+        int level = m_postDeal->activeAdaptivityStep();
+        typename dealii::DoFHandler<2>::active_cell_iterator cell_int = ma.doFHandler()->begin_active(0), endc_int = ma.doFHandler()->end_active(level);
         for (; cell_int != endc_int; ++cell_int)
         {
             // coordinates
@@ -463,10 +460,9 @@ void SceneViewMesh::paintOrderColorBar()
     int minDegree = 11;
     int maxDegree = 1;
     MultiArray ma = m_postDeal->activeMultiSolutionArray();
-    dealii::DoFHandler<2> *dof_handler = ma.doFHandler().get();
 
     int level = 0;
-    typename dealii::DoFHandler<2>::active_cell_iterator cell_int = dof_handler->begin_active(level), endc_int = dof_handler->end();
+    typename dealii::DoFHandler<2>::active_cell_iterator cell_int = ma.doFHandler()->begin_active(level), endc_int = ma.doFHandler()->end();
     for (; cell_int != endc_int; ++cell_int)
     {
         // polynomial degree

@@ -74,7 +74,7 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
     // qDebug() << evaluation_points.size() << "center" << center[0] << center[1];
 
     std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-            dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh().get(), center);
+            dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), center);
 
     // find marker
     SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);

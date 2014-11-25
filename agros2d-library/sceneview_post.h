@@ -96,7 +96,7 @@ public:
     inline QList<PostTriangle> &vectorXValues() { return m_vectorXValues; }
     inline QList<PostTriangle> &vectorYValues() { return m_vectorYValues; }
 
-    std::shared_ptr<PostDataOut> viewScalarFilter(Module::LocalVariable physicFieldVariable,
+    PostDataOut *viewScalarFilter(Module::LocalVariable physicFieldVariable,
                                                         PhysicFieldVariableComp physicFieldVariableComp);
 
     // view

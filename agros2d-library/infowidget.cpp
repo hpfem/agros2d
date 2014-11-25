@@ -399,6 +399,7 @@ void InfoWidget::showInfo()
 
                 if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityMethod_None))
                 {
+                    /*
                     QString solutionMeshNodesAll = QString::number(solutionMeshNodes.at(0));
                     QString solutionMeshElementsAll = QString::number(solutionMeshElements.at(0));
                     for (int comp = 1; comp < fieldInfo->numberOfSolutions(); comp++)
@@ -449,6 +450,7 @@ void InfoWidget::showInfo()
 
                     field->SetValue("ERROR_STEPS_CHART", commandError.toStdString());
                     field->SetValue("DOFS_STEPS_CHART", commandDOFs.toStdString());
+                    */
                 }
 
                 if (Agros2D::problem()->isSolved())

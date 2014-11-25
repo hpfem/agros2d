@@ -33,19 +33,19 @@ public:
         class FileName
         {
         public:
-            FileName(QString meshFileName = "", QString spaceFileName = "", QString solutionFileName = "")
-                : m_meshFileName(meshFileName), m_spaceFileName(spaceFileName), m_solutionFileName(solutionFileName) {}
+            FileName(QString meshFileName = "", QString doFFileName = "", QString solutionFileName = "")
+                : m_meshFileName(meshFileName), m_DoFFileName(doFFileName), m_solutionFileName(solutionFileName) {}
 
             inline QString meshFileName() const { return m_meshFileName; }
             inline void setMeshFileName(const QString &value) { m_meshFileName = value; }
-            inline QString spaceFileName() const { return m_spaceFileName; }
-            inline void setSpaceFileName(const QString &value) { m_spaceFileName = value; }
+            inline QString doFFileName() const { return m_DoFFileName; }
+            inline void setDoFFileName(const QString &value) { m_DoFFileName = value; }
             inline QString solutionFileName() const { return m_solutionFileName; }
             inline void setSolutionFileName(const QString &value) { m_solutionFileName = value; }
 
         private:
             QString m_meshFileName;
-            QString m_spaceFileName;
+            QString m_DoFFileName;
             QString m_solutionFileName;
         };
 
@@ -53,7 +53,6 @@ public:
             : m_timeStepLength(time_step_length), m_adaptivityError(error), m_DOFs(DOFs) {}
         ~SolutionRunTimeDetails()
         {
-            m_fileNames.clear();
             m_relativeChangeOfSolutions.clear();
             m_newtonResidual.clear();
             m_nonlinearDamping.clear();
@@ -67,8 +66,8 @@ public:
         inline void setDOFs(int value) { m_DOFs = value; }
         inline int jacobianCalculations() const { return m_jacobianCalculations; }
         inline void setJacobianCalculations(int value) { m_jacobianCalculations = value; }
-        inline QList<FileName> fileNames() const { return m_fileNames; }
-        inline void setFileNames(QList<FileName> value) { m_fileNames = value; }
+        inline FileName fileNames() const { return m_fileNames; }
+        inline void setFileNames(FileName value) { m_fileNames = value; }
         inline QVector<double> relativeChangeOfSolutions() const { return m_relativeChangeOfSolutions; }
         inline void setRelativeChangeOfSolutions(QVector<double> value) { m_relativeChangeOfSolutions = value; }
         inline QVector<double> newtonResidual() const { return m_newtonResidual; }
@@ -82,7 +81,8 @@ public:
         int m_DOFs;
         int m_jacobianCalculations;
 
-        QList<FileName> m_fileNames;
+        FileName m_fileNames;
+
         QVector<double> m_relativeChangeOfSolutions;
         QVector<double> m_newtonResidual;
         QVector<double> m_nonlinearDamping;

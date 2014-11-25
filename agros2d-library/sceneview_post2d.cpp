@@ -178,7 +178,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
             {
                 dealii::Point<2> pt(p.x, p.y);
                 std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-                        dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_postDeal->activeViewField()->initialMesh().get(), pt);
+                        dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_postDeal->activeViewField()->initialMesh(), pt);
 
                 // find marker
                 SceneLabel *label = Agros2D::scene()->labels->at(current_cell.first->material_id() - 1);
@@ -391,17 +391,13 @@ void SceneViewPost2D::paintScalarField()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glBegin(GL_TRIANGLES);
-        for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
-             it = m_postDeal->linScalarView()->triangles_begin(); !it.end; ++it)
+        foreach (PostTriangle triangle, m_postDeal->scalarValues())
         {
-            Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
-
             for (int j = 0; j < 3; j++)
-                glVertex2d(triangle[j][0], triangle[j][1]);
+                glVertex2d(triangle.vertices[j][0], triangle.vertices[j][1]);
         }
         glEnd();
         */
-
         /*
         glEnableClientState(GL_COLOR_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -885,7 +881,7 @@ void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable
                 QFile::remove(fn);
         }
 
-        std::shared_ptr<PostDataOut> data_out = m_postDeal->viewScalarFilter(postDeal()->activeViewField()->localVariable(variable), physicFieldVariableComp);
+        PostDataOut *data_out = m_postDeal->viewScalarFilter(postDeal()->activeViewField()->localVariable(variable), physicFieldVariableComp);
 
         std::ofstream output (fn.toStdString());
         data_out->write_vtk(output);
@@ -900,6 +896,8 @@ void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable
                 settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
             }
         }
+
+        delete data_out;
     }
 }
 

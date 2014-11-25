@@ -22,6 +22,7 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 # deal.ii
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/build/include)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/deal.II/include)
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/deal.II/bundled/boost-1.49.0/include)
 # paralution
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 # gmsh

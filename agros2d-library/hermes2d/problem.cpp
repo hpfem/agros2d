@@ -17,6 +17,11 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
+#include <boost/config.hpp>
+#include <boost/archive/tmpdir.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+
 #include "problem.h"
 #include "problem_config.h"
 
@@ -421,24 +426,24 @@ bool Problem::meshAction(bool emitMeshed)
     switch (config()->meshType())
     {
     case MeshType_Triangle:
-    // case MeshType_Triangle_QuadFineDivision:
-    // case MeshType_Triangle_QuadRoughDivision:
-    // case MeshType_Triangle_QuadJoin:
+        // case MeshType_Triangle_QuadFineDivision:
+        // case MeshType_Triangle_QuadRoughDivision:
+        // case MeshType_Triangle_QuadJoin:
 #ifdef WIN64
         meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorTriangleExternal());
 #else
         meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorTriangle());
 #endif
         break;
-    // case MeshType_GMSH_Triangle:
-    // case MeshType_GMSH_Quad:
-    // case MeshType_GMSH_QuadDelaunay_Experimental:
-    //     meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorGMSH());
-    //     break;
-    // case MeshType_NETGEN_Triangle:
-    // case MeshType_NETGEN_QuadDominated:
-    //     meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorNetgen());
-    //     break;
+        // case MeshType_GMSH_Triangle:
+        // case MeshType_GMSH_Quad:
+        // case MeshType_GMSH_QuadDelaunay_Experimental:
+        //     meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorGMSH());
+        //     break;
+        // case MeshType_NETGEN_Triangle:
+        // case MeshType_NETGEN_QuadDominated:
+        //     meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorNetgen());
+        //     break;
     default:
         QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));
         break;
@@ -446,7 +451,7 @@ bool Problem::meshAction(bool emitMeshed)
 
     // add icon to progress
     Agros2D::log()->addIcon(icon("scene-meshgen"),
-        tr("Mesh generator\n%1").arg(meshTypeString(config()->meshType())));
+                            tr("Mesh generator\n%1").arg(meshTypeString(config()->meshType())));
 
     if (meshGenerator && meshGenerator->mesh())
     {
@@ -635,11 +640,11 @@ void Problem::solve(bool commandLine)
     // clear solution
     clearSolution();
 
-//    if (numTransientFields() > 1)
-//    {
-//        Agros2D::log()->printError(tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
-//        return;
-//    }
+    //    if (numTransientFields() > 1)
+    //    {
+    //        Agros2D::log()->printError(tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
+    //        return;
+    //    }
 
     if ((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
     {
@@ -707,30 +712,30 @@ void Problem::solve(bool commandLine)
         switch(convergenceState)
         {
         case Hermes::Solvers::NotConverged:
-            {
-                Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Newton solver did not converge."));
-                break;
-            }
+        {
+            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Newton solver did not converge."));
+            break;
+        }
         case Hermes::Solvers::BelowMinDampingCoeff:
-            {
-                Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Damping coefficient below minimum."));
-                break;
-            }
+        {
+            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Damping coefficient below minimum."));
+            break;
+        }
         case Hermes::Solvers::AboveMaxAllowedResidualNorm:
-            {
-                Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Residual norm exceeded limit."));
-                break;
-            }
+        {
+            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Residual norm exceeded limit."));
+            break;
+        }
         case Hermes::Solvers::AboveMaxIterations:
-            {
-                Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Number of iterations exceeded limit."));
-                break;
-            }
+        {
+            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Number of iterations exceeded limit."));
+            break;
+        }
         case Hermes::Solvers::Error:
-            {
-                Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("An error occurred in Newton solver."));
-                break;
-            }
+        {
+            Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("An error occurred in Newton solver."));
+            break;
+        }
         default:
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Newton solver failed from unknown reason."));
         }
@@ -764,9 +769,9 @@ void Problem::solve(bool commandLine)
     }
     catch (std::exception& e)
     {
-      Agros2D::log()->printError(QObject::tr("Solver"), e.what());
-      m_isSolving = false;
-      return;
+        Agros2D::log()->printError(QObject::tr("Solver"), e.what());
+        m_isSolving = false;
+        return;
     }
     catch (...)
     {
@@ -897,7 +902,7 @@ void Problem::solveAction()
                 if (actualTimeStep() > 0)
                 {
                     QString command = QString("(agros2d.problem().time_callback(%1) if (agros2d.problem().time_callback is not None and hasattr(agros2d.problem().time_callback, '__call__')) else True)").
-                        arg(actualTimeStep());
+                            arg(actualTimeStep());
 
                     double cont = 1.0;
                     bool successfulRun = currentPythonEngine()->runExpression(command, &cont);
@@ -928,10 +933,10 @@ void Problem::stepMessage(Block* block)
     foreach(FieldBlock *field, block->fields())
     {
         Agros2D::log()->addIcon(icon(QString("fields/%1").arg(field->fieldInfo()->fieldId())),
-            QString("%1\n%2\n%3").
-            arg(field->fieldInfo()->name()).
-            arg(analysisTypeString(field->fieldInfo()->analysisType())).
-            arg(linearityTypeString(field->fieldInfo()->linearityType())));
+                                QString("%1\n%2\n%3").
+                                arg(field->fieldInfo()->name()).
+                                arg(analysisTypeString(field->fieldInfo()->analysisType())).
+                                arg(linearityTypeString(field->fieldInfo()->linearityType())));
 
         fields += field->fieldInfo()->fieldId() + ", ";
     }
@@ -942,18 +947,18 @@ void Problem::stepMessage(Block* block)
         if(config()->isTransientAdaptive())
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                QObject::tr("Transient step %1 (actual time: %3 s, %2 %)").
-                arg(actualTimeStep()).
-                arg(int(100*actualTime() / config()->value(ProblemConfig::TimeTotal).toDouble())).
-                arg(actualTime()));
+                                         QObject::tr("Transient step %1 (actual time: %3 s, %2 %)").
+                                         arg(actualTimeStep()).
+                                         arg(int(100*actualTime() / config()->value(ProblemConfig::TimeTotal).toDouble())).
+                                         arg(actualTime()));
         }
         else
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                QObject::tr("Transient step %1/%2 (actual time: %3 s)").
-                arg(actualTimeStep()).
-                arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()).
-                arg(actualTime()));
+                                         QObject::tr("Transient step %1/%2 (actual time: %3 s)").
+                                         arg(actualTimeStep()).
+                                         arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()).
+                                         arg(actualTime()));
         }
 
         Agros2D::log()->updateTransientChartInfo(actualTime());
@@ -970,36 +975,24 @@ void Problem::stepMessage(Block* block)
 
 void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGenerator> meshGenerator)
 {
-    QMap<FieldInfo *, std::shared_ptr<dealii::Triangulation<2> > > meshesDeal;
+    QMap<FieldInfo *, dealii::Triangulation<2> *> meshesDeal;
 
     if (!meshGenerator)
     {
         // load initial mesh file
         // prepare mesh array
-        /*
         foreach (FieldInfo* fieldInfo, m_fieldInfos)
         {
-            Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
+            // triangulation
+            QString fnMesh = QString("%1/%2_initial.msh").arg(cacheProblemDir()).arg(fieldInfo->fieldId());
+            std::ifstream ifsMesh(fnMesh.toStdString());
+            boost::archive::binary_iarchive sbiMesh(ifsMesh);
+            dealii::Triangulation<2> *triangulation = new dealii::Triangulation<2>();
+            triangulation->load(sbiMesh, 0);
 
-            meshesVector.push_back(mesh);
             // cache
-            meshes[fieldInfo] = mesh;
+            meshesDeal[fieldInfo] = triangulation;
         }
-        Hermes::HermesCommonApi.set_integral_param_value(Hermes::checkMeshesOnLoad, false);
-
-        Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-        Agros2D::log()->printMessage(tr("Problem"), tr("Loading initial mesh from disk"));
-
-        // read from file
-        // save locale
-        // char *plocale = setlocale (LC_NUMERIC, "");
-        // setlocale (LC_NUMERIC, "C");
-
-        // load mesh from file
-        QString fileName = QFileInfo(cacheProblemDir() + "/initial.msh").absoluteFilePath();
-        meshloader.set_validation(false);
-        meshloader.load(fileName.toStdString().c_str(), meshesVector);
-        */
     }
     else
     {
@@ -1008,31 +1001,9 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, QSharedPointer<MeshGene
         // Agros2D::log()->printDebug(tr("Mesh Generator"), tr("Reading initial mesh from memory"));
     }
 
-    QSet<int> boundaries;
     foreach (FieldInfo *fieldInfo, m_fieldInfos)
     {
-        std::shared_ptr<dealii::Triangulation<2> > meshDeal = meshesDeal[fieldInfo];
-
-        /*
-        if (boundaries.count() > 0)
-        {
-            QString markers;
-            foreach (int marker, boundaries)
-                markers += QString::number(marker) + ", ";
-            markers = markers.left(markers.length() - 2);
-
-            throw AgrosException(QObject::tr("Mesh reader (%1): boundary edges '%2' do not have a boundary condition").
-                arg(fieldInfo->fieldId()).
-                arg(markers));
-
-            // delete meshes
-            meshes.clear();
-            meshesVector.clear();
-
-            return;
-        }
-        boundaries.clear();
-        */
+        dealii::Triangulation<2> *meshDeal = meshesDeal[fieldInfo];
 
         // refine mesh
         fieldInfo->refineMesh(meshDeal);
@@ -1094,8 +1065,8 @@ void Problem::synchronizeCouplings()
     foreach (CouplingInfo* couplingInfo, m_couplingInfos)
     {
         if (!(m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
-            m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
-            couplingList()->isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
+              m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
+              couplingList()->isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
         {
             m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
 
@@ -1126,7 +1097,7 @@ void Problem::doMeshWithGUI()
     logDialog->show();
 
     // create mesh
-    mesh();    
+    mesh();
 }
 
 void Problem::doSolveWithGUI()
