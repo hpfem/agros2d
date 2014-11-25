@@ -61,19 +61,21 @@ QString FieldSolutionID::toString()
 
 // *********************************************************************************************
 
-MultiArray::MultiArray()
+MultiArray::MultiArray() : m_doFHandler(nullptr), m_solution(nullptr)
 {
 }
 
 MultiArray::~MultiArray()
 {
-    clear();
+    // clear must be called explicitely
 }
 
 void MultiArray::clear()
 {
-    // delete m_doFHandler;
-    // delete m_solution;
+    if (m_doFHandler)
+        delete m_doFHandler;
+    if (m_solution)
+        delete m_solution;
 }
 
 void MultiArray::append(dealii::DoFHandler<2> *doFHandler, dealii::Vector<double> *solution)

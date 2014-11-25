@@ -118,6 +118,9 @@ SolverDeal::~SolverDeal()
 
 void SolverDeal::setup()
 {
+    QTime time;
+    time.start();
+
     m_doFHandler->distribute_dofs(*m_fe);
 
     // reinit sln and rhs
@@ -149,6 +152,8 @@ void SolverDeal::setup()
     sparsity_pattern.copy_from(c_sparsity);
     // sparsity_pattern.compress();
     system_matrix.reinit(sparsity_pattern);
+
+    qDebug() << "setup (" << time.elapsed() << "ms )";
 }
 
 void SolverDeal::assembleSystem()
@@ -1208,7 +1213,10 @@ void ProblemSolverDeal::solveSimple(int timeStep, int adaptivityStep)
             qDebug() << "Simple solution";
 
             m_solverDeal->setup();
+            QTime time;
+            time.start();
             m_solverDeal->assembleSystem();
+            qDebug() << "assemble (" << time.elapsed() << "ms )";
             m_solverDeal->solve();
 
             FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, 0, SolutionMode_Normal);
@@ -1256,7 +1264,10 @@ void ProblemSolverDeal::solveSimple(int timeStep, int adaptivityStep)
                 }
 
                 m_solverDeal->setup();
+                QTime time;
+                time.start();
                 m_solverDeal->assembleSystem();
+                qDebug() << "assemble (" << time.elapsed() << "ms )";
                 m_solverDeal->solve();
 
                 FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, i, SolutionMode_Normal);
