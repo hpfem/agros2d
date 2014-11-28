@@ -23,7 +23,6 @@
 #include "util/constants.h"
 
 #include "field.h"
-#include "block.h"
 #include "solutionstore.h"
 
 #include "scene.h"

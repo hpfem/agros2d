@@ -18,8 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "{{ID}}_weakform.h"
-#include "{{ID}}_extfunction.h"
-
+// #include "{{ID}}_extfunction.h"
 
 #include "util.h"
 #include "util/global.h"
@@ -390,6 +389,7 @@ void SolverDeal{{CLASS}}::assembleDirichlet()
 {{#QUANTITY_INFO}}//{{QUANT_ID}} = ext[{{INDEX}} + {{OFFSET}}]
 {{/QUANTITY_INFO}}
 
+/*
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, const WeakFormAgros<double>* wfAgros)
@@ -586,6 +586,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(const Marker *marker)
 {{/SURFACE_VECTOR_SOURCE}}
 
 // ***********************************************************************************************************************************
+*/
 
 /*
 {{#SOURCE}}template class {{FUNCTION_NAME}}<double>;

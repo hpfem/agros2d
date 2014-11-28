@@ -91,7 +91,6 @@ class SceneMaterial;
 class SceneMaterialDialog;
 
 class FieldBlock;
-class Block;
 
 struct SceneViewSettings;
 template <typename Scalar> struct SolutionArray;

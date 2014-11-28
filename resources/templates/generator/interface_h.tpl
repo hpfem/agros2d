@@ -43,16 +43,6 @@ virtual ~{{CLASS}}Interface();
 
 inline virtual QString fieldId() { return "{{ID}}"; }
 
-// weakforms
-virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
-virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material);
-virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
-virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary);
-
-virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh);
-
-virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
-
 // solver deal
 virtual SolverDeal *solverDeal(const FieldInfo *fieldInfo, int initialOrder);
 
@@ -88,8 +78,8 @@ virtual QString localeName(const QString &name);
 virtual QString localeDescription();
 
 private:
-{{#EXT_FUNCTIONS_PART}} AgrosExtFunction *{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
-{{/EXT_FUNCTIONS_PART}}
+// {{#EXT_FUNCTIONS_PART}} AgrosExtFunction *{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros);
+// {{/EXT_FUNCTIONS_PART}}
 
 };
 

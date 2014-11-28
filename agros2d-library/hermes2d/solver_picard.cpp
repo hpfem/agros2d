@@ -25,8 +25,6 @@
 #include "logview.h"
 #include "problem.h"
 
-#include "block.h"
-
 using namespace Hermes::Hermes2D;
 
 

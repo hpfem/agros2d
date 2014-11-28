@@ -20,7 +20,6 @@
 #include "module.h"
 #include "weak_form.h"
 #include "field.h"
-#include "block.h"
 #include "problem.h"
 #include "logview.h"
 
@@ -136,6 +135,7 @@ QMap<QString, QString> Module::availableModules()
     return modules;
 }
 
+/*
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
     Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)
@@ -277,8 +277,6 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, FieldBlock *field, QString area, FormInfo form, Marker* marker)
 {
-    return;
-    /*
     ProblemID problemId;
 
     problemId.targetFieldId = field->fieldInfo()->fieldId();
@@ -300,15 +298,12 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, FieldBlock *field, Q
 
     addForm(type, custom_form);
     m_numberOfForms++;
-    */
 }
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
-    return;
-    /*
     ProblemID problemId;
 
     problemId.sourceFieldId = materialSource->fieldInfo()->fieldId();
@@ -337,7 +332,6 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     addForm(type, custom_form);
     m_numberOfForms++;
-    */
 }
 
 
@@ -626,8 +620,6 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
 template <typename Scalar>
 std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
 {
-    assert(0);
-    /*
     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
 
     FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Finer);
@@ -636,14 +628,11 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
         result.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
 
     return result;
-    */
 }
-
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField()
 {
-    /*
     // implicit values. Values have to be renewed each step, since e.g.number of previous time solutions may vary due to changing BDF order
     for(int i = 0; i < MAX_FIELDS; i++)
         m_positionInfos[i] = PositionInfo();
@@ -722,9 +711,8 @@ void WeakFormAgros<Scalar>::updateExtField()
 
     // outputPositionInfos();
     // qDebug() << "total number of u_ext_fn: " << externalUSlns.size() << " and ext_fn: " << externalSlns.size();
-    */
 }
-
+*/
 
 template <typename SectionWithTemplates>
 QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section)
@@ -1278,5 +1266,3 @@ void Module::volumeQuantityProperties(XMLModule::field *module, QMap<QString, in
         nextIndex++;
     }
 }
-
-template class WeakFormAgros<double>;

@@ -24,7 +24,6 @@
 
 #include "logview.h"
 #include "field.h"
-#include "block.h"
 #include "scene.h"
 #include "problem.h"
 #include "problem_config.h"
@@ -305,20 +304,6 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiArray SolutionStore::multiArray(BlockSolutionID solutionID)
-{
-    MultiArray ma;
-    foreach (FieldBlock *field, solutionID.group->fields())
-    {
-        MultiArray maGroup = multiArray(solutionID.fieldSolutionID(field->fieldInfo()));
-        ma.append(maGroup.doFHandler(), maGroup.solution());
-    }
-
-    return ma;
-}
-
-
-
 void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray multiSolution, SolutionRunTimeDetails runTime)
 {
     // qDebug() << "saving solution " << solutionID;
@@ -413,27 +398,6 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID, bool saveRunTime)
         saveRunTimeDetails();
 }
 
-void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray multiSolution, SolutionRunTimeDetails runTime)
-{
-    foreach (FieldBlock* field, blockSolutionID.group->fields())
-    {
-        FieldSolutionID fieldSID = blockSolutionID.fieldSolutionID(field->fieldInfo());
-        MultiArray fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
-        addSolution(fieldSID, fieldMultiSolution, runTime);
-    }
-
-    // printDebugMemoryInfo();
-}
-
-void SolutionStore::removeSolution(BlockSolutionID solutionID)
-{
-    foreach(FieldBlock* field, solutionID.group->fields())
-    {
-        FieldSolutionID fieldSID = solutionID.fieldSolutionID(field->fieldInfo());
-        removeSolution(fieldSID);
-    }
-}
-
 void SolutionStore::removeTimeStep(int timeStep)
 {
     foreach (FieldSolutionID sid, m_multiSolutions)
@@ -451,18 +415,6 @@ int SolutionStore::lastTimeStep(const FieldInfo *fieldInfo, SolutionMode solutio
     {
         if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;
-    }
-
-    return timeStep;
-}
-
-int SolutionStore::lastTimeStep(const Block *block, SolutionMode solutionType) const
-{
-    int timeStep = lastTimeStep(block->fields().at(0)->fieldInfo(), solutionType);
-
-    foreach(FieldBlock* field, block->fields())
-    {
-        assert(lastTimeStep(field->fieldInfo(), solutionType) == timeStep);
     }
 
     return timeStep;
@@ -533,19 +485,6 @@ double SolutionStore::lastTime(const FieldInfo *fieldInfo)
     return time;
 }
 
-double SolutionStore::lastTime(const Block *block)
-{
-    double time = lastTime(block->fields().at(0)->fieldInfo());
-
-    foreach(FieldBlock* field, block->fields())
-    {
-        assert(lastTime(field->fieldInfo()) == time);
-    }
-
-    return time;
-
-}
-
 int SolutionStore::lastAdaptiveStep(const FieldInfo *fieldInfo, SolutionMode solutionType, int timeStep) const
 {
     if (timeStep == -1)
@@ -556,18 +495,6 @@ int SolutionStore::lastAdaptiveStep(const FieldInfo *fieldInfo, SolutionMode sol
     {
         if ((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep == timeStep) && (sid.adaptivityStep > adaptiveStep))
             adaptiveStep = sid.adaptivityStep;
-    }
-
-    return adaptiveStep;
-}
-
-int SolutionStore::lastAdaptiveStep(const Block *block, SolutionMode solutionType, int timeStep) const
-{
-    int adaptiveStep = lastAdaptiveStep(block->fields().at(0)->fieldInfo(), solutionType, timeStep);
-
-    foreach(FieldBlock* field, block->fields())
-    {
-        assert(lastAdaptiveStep(field->fieldInfo(), solutionType, timeStep) == adaptiveStep);
     }
 
     return adaptiveStep;
@@ -598,20 +525,6 @@ FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(const FieldInfo *fiel
     }
 
     return solutionID;
-}
-
-BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(const Block *block, SolutionMode solutionType)
-{
-    FieldSolutionID fsid = lastTimeAndAdaptiveSolution(block->fields().at(0)->fieldInfo(), solutionType);
-    BlockSolutionID bsid = fsid.blockSolutionID(block);
-
-
-    foreach(FieldBlock* field, block->fields())
-    {
-        assert(bsid == lastTimeAndAdaptiveSolution(field->fieldInfo(), solutionType).blockSolutionID(block));
-    }
-
-    return bsid;
 }
 
 QList<double> SolutionStore::timeLevels(const FieldInfo *fieldInfo) const

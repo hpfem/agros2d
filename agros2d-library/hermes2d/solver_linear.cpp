@@ -23,7 +23,6 @@
 #include "util/global.h"
 
 #include "field.h"
-#include "block.h"
 #include "problem.h"
 #include "hermes2d/problem_config.h"
 #include "module.h"
@@ -42,15 +41,15 @@
 using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
-LinearSolverAgros<Scalar>::LinearSolverAgros(Block *block)
-    : LinearSolver<Scalar>(), SolverAgros(block)
+LinearSolverAgros<Scalar>::LinearSolverAgros()
+    : LinearSolver<Scalar>(), SolverAgros()
 {
 }
 
 template <typename Scalar>
-LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
+LinearSolverContainer<Scalar>::LinearSolverContainer() : HermesSolverContainer<Scalar>()
 {
-    m_linearSolver = new LinearSolverAgros<Scalar>(block);
+    m_linearSolver = new LinearSolverAgros<Scalar>();
     m_linearSolver->set_verbose_output(false);
 
     this->m_constJacobianPossible = true;

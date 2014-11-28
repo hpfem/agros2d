@@ -29,7 +29,6 @@
 #include "util/constants.h"
 
 #include "field.h"
-#include "block.h"
 #include "solutionstore.h"
 
 #include "scene.h"
@@ -201,10 +200,6 @@ void Problem::clearFieldsAndConfig()
 {
     clearSolution();
 
-    foreach (Block* block, m_blocks)
-        delete block;
-    m_blocks.clear();
-
     // clear couplings
     foreach (CouplingInfo* couplingInfo, m_couplingInfos)
         delete couplingInfo;
@@ -265,7 +260,7 @@ void Problem::removeField(FieldInfo *field)
 
     emit fieldsChanged();
 }
-
+/*
 void Problem::createStructure()
 {
     // hermes
@@ -355,7 +350,7 @@ void Problem::createStructure()
         block->weakFormInternal()->registerForms();
     }
 }
-
+*/
 bool Problem::mesh(bool emitMeshed)
 {
     bool result = false;
@@ -527,14 +522,16 @@ bool Problem::defineActualTimeStepLength(double ts)
     }
 }
 
-bool Problem::skipThisTimeStep(Block *block)
+bool Problem::skipThisTimeStep() // Block *block
 {
+    /*
     if(actualTime() == 0)
         return false;
     double timeSkip = block->timeSkip();
     double lastTime = Agros2D::solutionStore()->lastTime(block);
 
     return lastTime + timeSkip > actualTime();
+    */
 }
 
 void Problem::refuseLastTimeStepLength()
@@ -600,11 +597,6 @@ void Problem::solveInit(bool reCreateStructure)
     // (whether, e.g., parameters of the mesh have been changed)
     if (!mesh(false))
         throw AgrosSolverException(tr("Could not create mesh"));
-
-    if (reCreateStructure || m_blocks.isEmpty())
-    {
-        createStructure();
-    }
 
     // dealii - new concept without Blocks (not necessary)
     m_solverDeal->init();
@@ -797,19 +789,7 @@ void Problem::solveAction()
 
     assert(isMeshed());
 
-    QMap<Block*, QSharedPointer<ProblemSolver<double> > > solvers;
-
     // Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
-
-    foreach (Block* block, m_blocks)
-    {
-        QSharedPointer<ProblemSolver<double> > solver = block->prepareSolver();
-        if (solver.isNull())
-            throw AgrosSolverException(tr("Cannot create solver."));
-
-        solvers[block] = solver;
-        solvers[block]->createInitialSpace();
-    }
 
     TimeStepInfo nextTimeStep(config()->initialTimeStepLength());
     bool doNextTimeStep = true;
@@ -926,8 +906,9 @@ void Problem::solveAction()
     } while (doNextTimeStep && !m_abort);
 }
 
-void Problem::stepMessage(Block* block)
+void Problem::stepMessage() // Block* block)
 {
+    /*
     // log analysis
     QString fields;
     foreach(FieldBlock *field, block->fields())
@@ -970,6 +951,7 @@ void Problem::stepMessage(Block* block)
         else
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("Fields solving (coupled analysis)"));
     }
+    */
 }
 
 
@@ -1024,11 +1006,6 @@ void Problem::readSolutionsFromFile()
     {
         // load structure
         Agros2D::solutionStore()->loadRunTimeDetails();
-        createStructure();
-        foreach(Block* block, m_blocks)
-        {
-            block->createBoundaryConditions();
-        }
 
         // emit solve
         emit solved();
@@ -1076,16 +1053,6 @@ void Problem::synchronizeCouplings()
 
     if (changed)
         emit couplingsChanged();
-}
-
-Block* Problem::blockOfField(const FieldInfo *fieldInfo) const
-{
-    foreach(Block* block, m_blocks)
-    {
-        if(block->contains(fieldInfo))
-            return block;
-    }
-    return NULL;
 }
 
 void Problem::doMeshWithGUI()

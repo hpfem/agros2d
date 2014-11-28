@@ -90,15 +90,11 @@ public:
 
     bool contains(FieldSolutionID solutionID) const;
     MultiArray multiArray(FieldSolutionID solutionID);
-    MultiArray multiArray(BlockSolutionID solutionID);
 
     // returns MultiSolution with components related to last time step, in which was each respective field calculated
     // this time step can be different for respective fields due to time step skipping
     // intented to be used as initial condition for the newton method
     // MultiArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
-
-    void addSolution(BlockSolutionID solutionID, MultiArray multiArray, SolutionRunTimeDetails runTime);
-    void removeSolution(BlockSolutionID solutionID);
 
     void addSolution(FieldSolutionID solutionID, MultiArray multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID, bool saveRunTime = true);
@@ -107,7 +103,6 @@ public:
     void removeTimeStep(int timeStep);
 
     int lastTimeStep(const FieldInfo* fieldInfo, SolutionMode solutionType) const;
-    int lastTimeStep(const Block* block, SolutionMode solutionType) const;
 
     // finds nearest smaller(or equal) time step, where this fieldInfo was calculated
     int nearestTimeStep(const FieldInfo* fieldInfo, int timeStep) const;
@@ -116,11 +111,9 @@ public:
     int nthCalculatedTimeStep(const FieldInfo* fieldInfo, int n) const;
 
     double lastTime(const FieldInfo* fieldInfo);
-    double lastTime(const Block* block);
 
     // last adaptive step for given time step. If time step not given, last time step used implicitly
     int lastAdaptiveStep(const FieldInfo* fieldInfo, SolutionMode solutionType, int timeStep = -1) const;
-    int lastAdaptiveStep(const Block* block, SolutionMode solutionType, int timeStep = -1) const;
 
     QList<double> timeLevels(const FieldInfo* fieldInfo) const;
 
@@ -129,7 +122,6 @@ public:
     double timeLevel(const FieldInfo* fieldInfo, int timeLevelIndex);
 
     FieldSolutionID lastTimeAndAdaptiveSolution(const FieldInfo* fieldInfo, SolutionMode solutionType);
-    BlockSolutionID lastTimeAndAdaptiveSolution(const Block *block, SolutionMode solutionType);
 
     void loadRunTimeDetails();
 

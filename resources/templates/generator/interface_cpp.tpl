@@ -21,7 +21,7 @@
 
 #include "{{ID}}_interface.h"
 #include "{{ID}}_weakform.h"
-#include "{{ID}}_extfunction.h"
+// #include "{{ID}}_extfunction.h"
 #include "{{ID}}_filter.h"
 #include "{{ID}}_force.h"
 #include "{{ID}}_localvalue.h"
@@ -97,7 +97,7 @@ static XMLModule::module *module_module = NULL;
 {{CLASS}}Interface::~{{CLASS}}Interface()
 {
 }
-
+/*
 AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {
     {{#EXT_FUNCTIONS_PART}}
@@ -107,12 +107,14 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
     }
     {{/EXT_FUNCTIONS_PART}}
 }
+*/
 
 SolverDeal *{{CLASS}}Interface::solverDeal(const FieldInfo *fieldInfo, int initialOrder)
 {
     return new SolverDeal{{CLASS}}(fieldInfo, initialOrder);
 }
 
+/*
 {{#EXT_FUNCTIONS_PART}}
 AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {
@@ -132,69 +134,6 @@ AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, Q
 }
 {{/EXT_FUNCTIONS_PART}}
 
-MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
-{
-    /*
-    {{#VOLUME_MATRIX_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-            (form->id == "{{WEAKFORM_ID}}"))
-        if ({{EXPRESSION_CHECK}})
-            return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
-    {{/VOLUME_MATRIX_SOURCE}}
-    */
-    return NULL;
-}
-
-VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Material *material)
-{
-    /*
-    {{#VOLUME_VECTOR_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-            (form->id == "{{WEAKFORM_ID}}"))
-        if ({{EXPRESSION_CHECK}})
-            return new {{FUNCTION_NAME}}<double>(form->i - 1 , form->j - 1, wfAgros);
-    {{/VOLUME_VECTOR_SOURCE}}
-    */
-    return NULL;
-}
-
-MatrixFormSurfAgros<double> *{{CLASS}}Interface::matrixFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary)
-{
-    /*
-    {{#SURFACE_MATRIX_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-            (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
-        return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
-    {{/SURFACE_MATRIX_SOURCE}}
-    */
-    return NULL;
-}
-
-VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID problemId, FormInfo *form, const WeakFormAgros<double>* wfAgros, Boundary *boundary)
-{
-    /*
-    {{#SURFACE_VECTOR_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-            (form->id == "{{WEAKFORM_ID}}") && (boundary->type() == "{{BOUNDARY_TYPE}}"))
-        return new {{FUNCTION_NAME}}<double>(form->i - 1, form->j - 1, wfAgros);
-    {{/SURFACE_VECTOR_SOURCE}}
-    */
-    return NULL;
-}
-
-ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh)
-{
-    /*
-    {{#EXACT_SOURCE}}
-    if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeTarget == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
-            (form->id == "{{WEAKFORM_ID}}"))
-        return new {{FUNCTION_NAME}}<double>(mesh);
-    {{/EXACT_SOURCE}}
-    */
-    return NULL;
-}
-
-/*
 Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(const FieldInfo *fieldInfo,
                                                                                const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
 {

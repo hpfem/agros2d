@@ -4,8 +4,6 @@
 #include "form_info.h"
 
 class BDF2Table;
-class Block;
-class FieldBlock;
 class Marker;
 class Boundary;
 class Material;
@@ -89,7 +87,7 @@ QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> temp
 
 template <typename SectionWithTemplates>
 QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section);
-
+/*
 template <typename Scalar>
 class AGROS_LIBRARY_API WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
@@ -149,5 +147,5 @@ private:
     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const;
     std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > sourceCouplingSolutions(const FieldInfo* fieldInfo) const;
 };
-
+*/
 #endif // WEAK_FORM_H

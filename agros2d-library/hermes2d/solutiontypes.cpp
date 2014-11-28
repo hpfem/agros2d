@@ -23,30 +23,10 @@
 
 #include "scene.h"
 #include "field.h"
-#include "block.h"
 #include "problem.h"
 #include "logview.h"
 
 using namespace Hermes::Hermes2D;
-
-FieldSolutionID BlockSolutionID::fieldSolutionID(const FieldInfo *fieldInfo)
-{
-    bool contains = false;
-    foreach(FieldBlock* field, group->fields())
-    {
-        if(field->fieldInfo() == fieldInfo)
-            contains = true;
-    }
-    assert(contains);
-
-    return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
-}
-
-BlockSolutionID FieldSolutionID::blockSolutionID(const Block *block)
-{
-    assert(block->contains(this->group));
-    return BlockSolutionID(block, timeStep, adaptivityStep, solutionMode);
-}
 
 QString FieldSolutionID::toString()
 {
@@ -82,16 +62,6 @@ void MultiArray::append(dealii::DoFHandler<2> *doFHandler, dealii::Vector<double
 {
     m_doFHandler = doFHandler;
     m_solution = solution;
-}
-
-MultiArray MultiArray::fieldPart(const Block *block, const FieldInfo *fieldInfo)
-{
-    assert(block->contains(fieldInfo));
-    MultiArray msa;
-    int offset = block->offset(block->field(fieldInfo));
-
-    msa.append(m_doFHandler, m_solution);
-    return msa;
 }
 
 template class SolutionID<FieldInfo>;

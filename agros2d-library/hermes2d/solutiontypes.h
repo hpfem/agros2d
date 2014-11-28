@@ -33,9 +33,6 @@
 /// this header file should be kept small, since it is included in other header files
 
 class FieldInfo;
-class Block;
-
-class BlockSolutionID;
 class FieldSolutionID;
 
 //template <typename Scalar>
@@ -85,9 +82,6 @@ public:
 
     dealii::DoFHandler<2> *doFHandler() { return m_doFHandler; }
     dealii::Vector<double> *solution() { return m_solution; }
-
-    // returns only that part of list that corresponds to given field (as part of the given block)
-    MultiArray fieldPart(const Block *block, const FieldInfo *fieldInfo);
 
     void createEmpty(int numComp);
 
@@ -159,20 +153,7 @@ public:
 
     FieldSolutionID() : SolutionID<FieldInfo>() {}
 
-    BlockSolutionID blockSolutionID(const Block* block);
-
     QString toString();
-};
-
-class BlockSolutionID : public SolutionID<Block>
-{
-public:
-    BlockSolutionID(const Block* block, int timeStep, int adaptivityStep, SolutionMode solutionType) :
-        SolutionID<Block>(block, timeStep, adaptivityStep, solutionType) {}
-
-    BlockSolutionID() : SolutionID<Block>() {}
-
-    FieldSolutionID fieldSolutionID(const FieldInfo* fieldInfo);
 };
 
 enum SolverAction

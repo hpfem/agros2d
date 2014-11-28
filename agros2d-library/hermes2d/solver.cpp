@@ -59,15 +59,14 @@
 #include <sstream>
 
 #include "solver.h"
-#include "solver_linear.h"
-#include "solver_newton.h"
-#include "solver_picard.h"
+// #include "solver_linear.h"
+// #include "solver_newton.h"
+// #include "solver_picard.h"
 
 #include "util.h"
 #include "util/global.h"
 
 #include "field.h"
-#include "block.h"
 #include "problem.h"
 #include "hermes2d/problem_config.h"
 //#include "module.h"
@@ -437,8 +436,11 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Algebra::Mixin
 }
 
 template <typename Scalar>
-QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::factory(Block* block)
+QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::factory()
 {
+    /*
+    QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::factory(Block* block)
+
     QString solverName;
     QListIterator<FieldBlock*> iter(block->fields());
     while (iter.hasNext())
@@ -492,6 +494,7 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
     }
 
     return solver;
+    */
 }
 
 template <typename Scalar>
@@ -499,6 +502,7 @@ void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
                                                             std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
                                                             std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
 {
+    /*
     if (solutions.empty())
     {
         int ndof = Space<Scalar>::get_num_dofs(spaces);
@@ -511,6 +515,7 @@ void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
                                     solutions,
                                     solutionVector, this->m_block->projNormTypeVector());
     }
+    */
 }
 
 template <typename Scalar>
@@ -519,8 +524,9 @@ ProblemSolver<Scalar>::~ProblemSolver()
     clearActualSpaces();
 }
 
+/*
 template <typename Scalar>
-void ProblemSolver<Scalar>::init(Block* block)
+void ProblemSolver<Scalar>::init()
 {
     m_block = block;
 
@@ -538,10 +544,12 @@ void ProblemSolver<Scalar>::init(Block* block)
     }
     m_solverID = QObject::tr("Solver (%1)").arg(m_solverName);
 }
+*/
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::initSelectors(std::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > &selectors)
 {
+    /*
     // create types of projection and selectors
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
@@ -593,11 +601,13 @@ void ProblemSolver<Scalar>::initSelectors(std::vector<QSharedPointer<Hermes::Her
         // add refinement selector
         selectors.push_back(select);
     }
+    */
 }
 
 template <typename Scalar>
 std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceCopy(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, bool createReference)
 {
+    /*
     std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > newSpaces;
     int totalComp = 0;
     foreach(FieldBlock* field, m_block->fields())
@@ -640,6 +650,7 @@ std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::de
     }
 
     return newSpaces;
+    */
 }
 
 template <typename Scalar>
@@ -662,8 +673,8 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(std::vector<Hermes::Hermes2D::Spa
 {
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
 
-    if (m_block->isTransient())
-        linearSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_REORDERING);
+    // if (m_block->isTransient())
+    //     linearSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_REORDERING);
 
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
@@ -1273,7 +1284,7 @@ void ProblemSolverDeal::solveSimple(FieldInfo *fieldInfo, int timeStep)
     qDebug() << "assemble (" << time.elapsed() << "ms )";
     m_solverDeal->solve();
 
-    FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, 0, SolutionMode_Normal);
+    FieldSolutionID solutionID(fieldInfo, timeStep, 0, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), 0.0, 0);
 
     Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
@@ -1334,7 +1345,7 @@ void ProblemSolverDeal::solveAdaptive(FieldInfo *fieldInfo, int timeStep)
         qDebug() << "assemble (" << time.elapsed() << "ms )";
         m_solverDeal->solve();
 
-        FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, i, SolutionMode_Normal);
+        FieldSolutionID solutionID(fieldInfo, timeStep, i, SolutionMode_Normal);
         SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), error, i);
 
         Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
@@ -1344,6 +1355,4 @@ void ProblemSolverDeal::solveAdaptive(FieldInfo *fieldInfo, int timeStep)
     }
 }
 
-//template class VectorStore<double>;
-template class PicardSolverContainer<double>;
 template class ProblemSolver<double>;

@@ -24,7 +24,6 @@
 #include "solutiontypes.h"
 #include "solver.h"
 
-class Block;
 class FieldInfo;
 
 template <typename Scalar>

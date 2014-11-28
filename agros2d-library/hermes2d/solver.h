@@ -35,7 +35,6 @@
 #include <deal.II/lac/sparse_matrix.h>
 #define signals public
 
-class Block;
 class FieldInfo;
 
 template <typename Scalar>
@@ -85,7 +84,7 @@ namespace Module {
 class SolverAgros
 {
 public:
-    SolverAgros(Block *block) : m_block(block), m_jacobianCalculations(0), m_phase(Phase_Undefined) {}
+    SolverAgros() : m_jacobianCalculations(0), m_phase(Phase_Undefined) {}
 
     enum Phase
     {
@@ -108,7 +107,6 @@ public:
     void clearSteps();
 
 protected:
-    Block* m_block;
     Phase m_phase;
 
     virtual void setError() = 0;
@@ -178,7 +176,7 @@ template <typename Scalar>
 class HermesSolverContainer
 {
 public:
-    HermesSolverContainer(Block* block) : m_block(block), m_slnVector(NULL), m_constJacobianPossible(false) {}
+    HermesSolverContainer() : m_slnVector(NULL), m_constJacobianPossible(false) {}
     virtual ~HermesSolverContainer() {}
 
     void projectPreviousSolution(Scalar* solutionVector,
@@ -199,10 +197,9 @@ public:
     virtual SolverAgros *solver() const = 0;
 
     // solver factory
-    static QSharedPointer<HermesSolverContainer<Scalar> > factory(Block* block);
+    static QSharedPointer<HermesSolverContainer<Scalar> > factory();
 
-protected:
-    Block* m_block;
+protected:    
     Scalar *m_slnVector;
 
     bool m_constJacobianPossible;
@@ -232,7 +229,7 @@ public:
     ProblemSolver() : m_hermesSolverContainer(NULL) {}
     ~ProblemSolver();
 
-    void init(Block* block);
+    // void init(Block* block);
 
     void createInitialSpace();
     void solveInitialTimeStep();
@@ -248,8 +245,6 @@ public:
     void resumeAdaptivityProcess(int adaptivityStep);
 
 private:
-    Block* m_block;
-
     QSharedPointer<HermesSolverContainer<Scalar> > m_hermesSolverContainer;
 
     std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_actualSpaces;

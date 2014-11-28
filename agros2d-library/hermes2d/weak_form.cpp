@@ -1,7 +1,6 @@
 #include "util/global.h"
 #include "problem.h"
 #include "field.h"
-#include "block.h"
 #include "weak_form.h"
 
 void checkDuplicities(QList<FormInfo> list)
@@ -118,6 +117,7 @@ Offset::Offset() :
 {
 }
 
+/*
 template <typename Scalar>
 Offset WeakFormAgros<Scalar>::offsetInfo(const Marker *sourceMarker, const Marker *targetMarker) const
 {
@@ -184,3 +184,4 @@ void WeakFormAgros<Scalar>::outputPositionInfos()
 }
 
 template class AGROS_LIBRARY_API WeakFormAgros<double>;
+*/

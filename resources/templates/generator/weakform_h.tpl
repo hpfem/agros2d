@@ -38,7 +38,7 @@ public:
     virtual void assembleDirichlet();
 };
 
-
+/*
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
@@ -119,5 +119,5 @@ private:
     const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_VECTOR_SOURCE}}
-
+*/
 #endif // {{CLASS}}_INTERFACE_H

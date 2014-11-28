@@ -82,7 +82,7 @@ public:
     inline ProblemConfig *config() const { return m_config; }
     inline ProblemSetting *setting() const { return m_setting; }
 
-    void createStructure();
+    // void createStructure();
 
     // mesh
     void mesh();
@@ -117,8 +117,6 @@ public:
     inline bool hasField(const QString &fieldId) { return m_fieldInfos.contains(fieldId); }
     void addField(FieldInfo *field);
     void removeField(FieldInfo *field);
-
-    Block* blockOfField(const FieldInfo* fieldInfo) const;
 
     void synchronizeCouplings();
     inline QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > couplingInfos() const { return m_couplingInfos; }
@@ -166,7 +164,6 @@ private:
     ProblemConfig *m_config;
     ProblemSetting *m_setting;
 
-    QList<Block *> m_blocks;
     ProblemSolverDeal *m_solverDeal;
 
     QMap<QString, FieldInfo *> m_fieldInfos;
@@ -196,7 +193,7 @@ private:
 
     QList<QPair<double, bool> > m_timeHistory;
 
-    bool skipThisTimeStep(Block* block);
+    bool skipThisTimeStep(); // Block* block
 
     bool mesh(bool emitMeshed);
     bool meshAction(bool emitMeshed);
@@ -204,7 +201,7 @@ private:
     void solve(bool commandLine);
     void solveAction(); // called by solve, can throw SolverException
 
-    void stepMessage(Block* block);    
+    void stepMessage(); // Block* block)
 
     friend class CalculationThread;
     friend class PyProblem;

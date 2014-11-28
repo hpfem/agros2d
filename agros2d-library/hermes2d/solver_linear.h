@@ -24,7 +24,6 @@
 #include "solutiontypes.h"
 #include "solver.h"
 
-class Block;
 class FieldInfo;
 
 template <typename Scalar>
@@ -36,7 +35,7 @@ template <typename Scalar>
 class LinearSolverAgros : public SolverAgros, public Hermes::Hermes2D::LinearSolver<Scalar>
 {
 public:
-    LinearSolverAgros(Block *block);
+    LinearSolverAgros();
 
 protected:
     virtual void setError() {}
@@ -46,7 +45,7 @@ template <typename Scalar>
 class LinearSolverContainer : public HermesSolverContainer<Scalar>
 {
 public:
-    LinearSolverContainer(Block* block);
+    LinearSolverContainer();
     ~LinearSolverContainer();
 
     void solve(Scalar* previousSolutionVector);
