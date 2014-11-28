@@ -816,7 +816,7 @@ void Problem::solveAction()
     do
     {
         // dealii
-        m_solverDeal->solveSimple(actualTimeStep(), 0);
+        m_solverDeal->solve(actualTimeStep());
 
         // hermes
         /*

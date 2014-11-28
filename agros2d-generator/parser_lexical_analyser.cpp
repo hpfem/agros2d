@@ -38,7 +38,7 @@ void ParserInstance::addBasicWeakformTokens()
 
     // constants
     m_dict["PI"] = "M_PI";
-    m_dict["f"] = "this->m_markerTarget->fieldInfo()->frequency()";
+    m_dict["f"] = "m_fieldInfo->frequency()";
 
     // area of a label
     // assumes, that this->getAreas has allways only one component (it is true at the moment, since in Agros we create one form for each label)
@@ -201,7 +201,7 @@ void ParserInstance::addVolumeVariablesErrorCalculation()
                 {
                     // spacedep boundary condition
                     // ERROR: Python expression evaluation doesn't work from weakform - ERROR
-                    m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(x, y))").
+                    m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(p[0], p[1]))").
                             arg(QString::fromStdString(quantity.shortname().get()));
                 }
                 else if (dep == "time-space")
@@ -292,7 +292,7 @@ void ParserInstance::addSurfaceVariables()
             else if (dep == "space")
             {
                 // spacedep boundary condition
-                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(x, y))").
+                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(p[0], p[1]))").
                         arg(QString::fromStdString(quantity.shortname().get()));
             }
             else if (dep == "time-space")

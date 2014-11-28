@@ -277,6 +277,8 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, FieldBlock *field, QString area, FormInfo form, Marker* marker)
 {
+    return;
+    /*
     ProblemID problemId;
 
     problemId.targetFieldId = field->fieldInfo()->fieldId();
@@ -298,12 +300,15 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, FieldBlock *field, Q
 
     addForm(type, custom_form);
     m_numberOfForms++;
+    */
 }
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
+    return;
+    /*
     ProblemID problemId;
 
     problemId.sourceFieldId = materialSource->fieldInfo()->fieldId();
@@ -332,6 +337,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     addForm(type, custom_form);
     m_numberOfForms++;
+    */
 }
 
 

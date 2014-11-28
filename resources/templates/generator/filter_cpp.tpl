@@ -64,9 +64,9 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
                                                                    const std::vector<dealii::Point<2> > &evaluation_points,
                                                                    std::vector<dealii::Vector<double> > &computed_quantities) const
 {
-    // qDebug() << "compute_derived_quantities_scalar " << computed_quantities.size();
-    // qDebug() << "uh.size() " << uh.size();
-    // qDebug() << "duh.size() " << duh.size();
+    qDebug() << "compute_derived_quantities_scalar " << computed_quantities.size();
+    qDebug() << "uh.size() " << uh.size();
+    qDebug() << "duh.size() " << duh.size();
 
     dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
             (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
@@ -80,8 +80,8 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
     SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
     SceneMaterial *material = label->marker(m_fieldInfo);
 
-    const Value *material_electrostatic_permittivity = material->valueNakedPtr(QLatin1String("electrostatic_permittivity"));
-    const Value *material_electrostatic_charge_density = material->valueNakedPtr(QLatin1String("electrostatic_charge_density"));
+    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+    {{/VARIABLE_MATERIAL}}
 
     int i = 0;
 
@@ -92,6 +92,7 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
     {
         solution_values[i][0] = uh[k];
         solution_grads[i][0] = duh[k];
+        dealii::Point<2> p = evaluation_points[k];
 
         {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
         {{/VARIABLE_MATERIAL}}
@@ -103,6 +104,18 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
             computed_quantities[k](0) = {{EXPRESSION}};
         {{/VARIABLE_SOURCE}}
     }
+}
+void {{CLASS}}ViewScalarFilter::compute_derived_quantities_vector (const std::vector<dealii::Vector<double> > &uh,
+                                                                   const std::vector<std::vector<dealii::Tensor<1,2> > > &duh,
+                                                                   const std::vector<std::vector<dealii::Tensor<2,2> > > &dduh,
+                                                                   const std::vector<dealii::Point<2> > &normals,
+                                                                   const std::vector<dealii::Point<2> > &evaluation_points,
+                                                                   std::vector<dealii::Vector<double> > &computed_quantities) const
+{
+    qDebug() << "compute_derived_quantities_vector " << computed_quantities.size();
+    qDebug() << "uh.size() " << uh.size();
+    qDebug() << "duh.size() " << duh.size();
+    assert(0);
 }
 
 /*

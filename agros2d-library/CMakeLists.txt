@@ -23,6 +23,7 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/build/include)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/deal.II/include)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/deal.II/bundled/boost-1.49.0/include)
+INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/dealii/deal.II/bundled/tbb41_20130401oss/include)
 # paralution
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 # gmsh
@@ -77,7 +78,7 @@ IF(WIN32)
     OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ELSE()
   ADD_CUSTOM_COMMAND(
-    COMMAND cython ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+    COMMAND cython3 ARGS -3 --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
     DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
     OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ENDIF()

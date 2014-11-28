@@ -79,8 +79,12 @@ virtual void value_list (const std::vector<dealii::Point<dim> > &points,
                          std::vector<double> &values,
                          const unsigned int component = 0) const
 {
-    double result = {{EXPRESSION}};
-    std::fill(values.begin(), values.end(), result);
+    for (unsigned int i=0; i<points.size(); ++i)
+    {
+        dealii::Point<2> p = points[i];
+        double result = {{EXPRESSION}};
+        values[i] = result;
+    }
 }
 
 virtual void vector_value_list (const std::vector<dealii::Point<dim> > &points,
@@ -88,6 +92,7 @@ virtual void vector_value_list (const std::vector<dealii::Point<dim> > &points,
 {
     for (unsigned int i=0; i<points.size(); ++i)
     {
+        dealii::Point<2> p = points[i];
         double result = {{EXPRESSION}};
         std::fill(values[i].begin(), values[i].end(), result);
     }
@@ -146,23 +151,32 @@ void SolverDeal{{CLASS}}::assembleSystem()
                 {{#VOLUME_MATRIX_SOURCE}}
                 if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
-                    foreach (FormInfo expression, Module::wfMatrixVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
+                    {{#VARIABLE_SOURCE}}
+                    const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+
+                    foreach (FormInfo form, Module::wfMatrixVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
                     {
                         if (cell->material_id() == labelNum + 1)
                         {
-                            {{#VARIABLE_SOURCE}}
-                            const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-
                             // matrix
                             for (unsigned int i = 0; i < dofs_per_cell; ++i)
                             {
-                                for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                                {
-                                    for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
-                                    {
-                                        const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+                                const unsigned int component_i = m_fe->system_to_component_index(i).first;
 
-                                        cell_matrix(i,j) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                                if ((form.i - 1) == component_i)
+                                {
+                                    for (unsigned int j = 0; j < dofs_per_cell; ++j)
+                                    {
+                                        const unsigned int component_j = m_fe->system_to_component_index(j).first;
+
+                                        if ((form.j - 1) == component_j)
+                                        {
+                                            for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+                                            {
+                                                const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+                                                cell_matrix(i,j) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -174,21 +188,25 @@ void SolverDeal{{CLASS}}::assembleSystem()
                 {{#VOLUME_VECTOR_SOURCE}}
                 if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
-                    foreach (FormInfo expression, Module::wfVectorVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
+                    {{#VARIABLE_SOURCE}}
+                    const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+
+                    foreach (FormInfo form, Module::wfVectorVolumeSeparated(m_fieldInfo->plugin()->module(), m_fieldInfo->analysisType(), m_fieldInfo->linearityType()))
                     {
                         if (cell->material_id() == labelNum + 1)
                         {
-                            {{#VARIABLE_SOURCE}}
-                            const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-
                             // rhs
                             for (unsigned int i = 0; i < dofs_per_cell; ++i)
                             {
-                                for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
-                                {
-                                    const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+                                const unsigned int component_i = m_fe->system_to_component_index(i).first;
 
-                                    cell_rhs(i) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                                if ((form.i - 1) == component_i)
+                                {
+                                    for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+                                    {
+                                        const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+                                        cell_rhs(i) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                                    }
                                 }
                             }
                         }
@@ -244,50 +262,60 @@ void SolverDeal{{CLASS}}::assembleSystem()
             SceneBoundary *boundary = Agros2D::scene()->edges->at(edgeNum)->marker(m_fieldInfo);
             assert(boundary);
 
+
             if (boundary != Agros2D::scene()->boundaries->getNone(m_fieldInfo))
             {
-                {{#SURFACE_VECTOR_SOURCE}}
-                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
+                Module::BoundaryType boundaryType = m_fieldInfo->boundaryType(boundary->type());
+                foreach (FormInfo form, boundaryType.wfMatrixSurface())
                 {
-                    for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                    {{#SURFACE_VECTOR_SOURCE}}
+                    if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                     {
-                        // boundary (Neumann)
-                        if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
-                        {
-                            {{#VARIABLE_SOURCE}}
-                            const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+                        {{#VARIABLE_SOURCE}}
+                        const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 
-                            fe_face_values.reinit (cell, face);
-                            for (unsigned int q_point=0; q_point < n_face_q_points; ++q_point)
+                        for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                        {
+                            // boundary (Neumann)
+                            if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
                             {
+                                fe_face_values.reinit (cell, face);
                                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                                 {
-                                    const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+                                    const unsigned int component_i = m_fe->system_to_component_index(i).first;
 
-                                    cell_rhs(i) += fe_face_values.JxW(q_point) *({{EXPRESSION}});
+                                    if ((form.i - 1) == component_i)
+                                    {
+                                        for (unsigned int q_point=0; q_point < n_face_q_points; ++q_point)
+                                        {
+                                            const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+                                            cell_rhs(i) += fe_face_values.JxW(q_point) *({{EXPRESSION}});
+                                        }
+                                    }
                                 }
                             }
                         }
-                        /*
-                        ROBIN - CHECK!!!
-                        if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 1))
-                        {
-                            fe_face_values.reinit(cell, face);
-
-                            for (unsigned int i = 0; i < dofs_per_cell; ++i)
-                                for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                                        cell_matrix(i, j) += 1 / R_SI_1* fe_face_values.shape_value(i, q_point) * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-                            for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                                for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                                    cell_rhs(j) += 1/ R_SI_1 * THETA_1 * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-                        }
-                        */
                     }
+                    {{/SURFACE_VECTOR_SOURCE}}
+
+                    /*
+                    ROBIN - CHECK!!!
+                    if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 1))
+                    {
+                        fe_face_values.reinit(cell, face);
+
+                        for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                            for (unsigned int j = 0; j < dofs_per_cell; ++j)
+                                for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                                    cell_matrix(i, j) += 1 / R_SI_1* fe_face_values.shape_value(i, q_point) * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
+
+                        for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                            for (unsigned int j = 0; j < dofs_per_cell; ++j)
+                                cell_rhs(j) += 1/ R_SI_1 * THETA_1 * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
+
+                    }
+                    */
                 }
-                {{/SURFACE_VECTOR_SOURCE}}
             }
         }
 
@@ -299,17 +327,21 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                                             local_dof_indices,
                                                             system_matrix,
                                                             system_rhs);
+
         /*
-        // system matrix
         for (unsigned int i=0; i<dofs_per_cell; ++i)
+        {
             for (unsigned int j=0; j<dofs_per_cell; ++j)
+            {
+                // system matrix
                 system_matrix.add (local_dof_indices[i],
                                    local_dof_indices[j],
                                    cell_matrix(i,j));
+            }
 
-        // system rhs
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
+            // system rhs
             system_rhs(local_dof_indices[i]) += cell_rhs(i);
+        }
         */
     }
 }
@@ -336,16 +368,15 @@ void SolverDeal{{CLASS}}::assembleDirichlet()
 
                 // Hermes::Hermes2D::EssentialBoundaryCondition<double> *custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
-                // this->bcs().at(form.i - 1 + this->offset(field))->add_boundary_condition(custom_form);
+                // this->bcs().at((form.i - 1) - 1 + this->offset(field))->add_boundary_condition(custom_form);
                 //  cout << "adding BC i: " << form->i - 1 + this->offset(field) << " ( form i " << form->i << ", " << this->offset(field) << "), expression: " << form->expression << endl;
 
                 {{#EXACT_SOURCE}}
                 if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
                 {
                     std::map<dealii::types::global_dof_index,double> boundary_values;
-                    dealii::VectorTools::interpolate_boundary_values (*m_doFHandler, i+1, Deal_{{FUNCTION_NAME}}<2>(boundary), hanging_node_constraints);
-                    // dealii::VectorTools::interpolate_boundary_values (*m_doFHandler, i+1, Deal_{{FUNCTION_NAME}}<2>(boundary), boundary_values);
-                    // dealii::MatrixTools::apply_boundary_values (boundary_values, system_matrix, *m_solution, system_rhs);
+                    dealii::VectorTools::interpolate_boundary_values (*m_doFHandler, i+1, Deal_{{FUNCTION_NAME}}<2>(boundary, m_fieldInfo->numberOfSolutions()), boundary_values);
+                    dealii::MatrixTools::apply_boundary_values (boundary_values, system_matrix, *m_solution, system_rhs);
                 }
                 {{/EXACT_SOURCE}}
             }
@@ -556,38 +587,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(const Marker *marker)
 
 // ***********************************************************************************************************************************
 
-{{#EXACT_SOURCE}}
-template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::MeshSharedPtr mesh)
-: ExactSolutionScalarAgros<Scalar>(mesh)
-{
-}
-
-template <typename Scalar>
-Scalar {{FUNCTION_NAME}}<Scalar>::value(double x, double y) const
-{
-    Scalar result = {{EXPRESSION}};
-    return result;
-}
-
-template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy) const
-{
-
-}
-
-template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(const Marker *marker)
-{
-    FormAgrosInterface<Scalar>::setMarkerTarget(marker);
-
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerTarget->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-}
-{{/EXACT_SOURCE}}
-
-
-// ***********************************************************************************************************************************
-
+/*
 {{#SOURCE}}template class {{FUNCTION_NAME}}<double>;
 {{/SOURCE}}
+*/

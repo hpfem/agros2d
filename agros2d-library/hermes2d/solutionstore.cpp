@@ -678,7 +678,7 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     dealii::DoFHandler<2> *doFHandler = new dealii::DoFHandler<2>(*triangulation);
 
     // fe system
-    dealii::FESystem<2> *fe = new dealii::FESystem<2>(dealii::FE_Q<2>(solutionID.group->value(FieldInfo::SpacePolynomialOrder).toInt()), 1);
+    dealii::FESystem<2> *fe = new dealii::FESystem<2>(dealii::FE_Q<2>(solutionID.group->value(FieldInfo::SpacePolynomialOrder).toInt()), solutionID.group->numberOfSolutions());
     doFHandler->distribute_dofs(*fe);
     boost::archive::binary_iarchive sbiDoF(fsDoF);
     doFHandler->load(sbiDoF, 0);

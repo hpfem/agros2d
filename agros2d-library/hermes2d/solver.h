@@ -216,7 +216,9 @@ public:
 
     void init();
 
-    void solveSimple(int timeStep, int adaptivityStep);
+    void solve(int timeStep);
+    void solveSimple(FieldInfo *fieldInfo, int timeStep);
+    void solveAdaptive(FieldInfo *fieldInfo, int timeStep);
 
 private:
     SolverDeal *m_solverDeal;

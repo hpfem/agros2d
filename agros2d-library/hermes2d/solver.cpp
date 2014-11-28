@@ -91,7 +91,9 @@ SolverDeal::SolverDeal(const FieldInfo *fieldInfo, int initialOrder)
     : m_fieldInfo(fieldInfo)
 {    
     // fe
-    m_fe = new dealii::FESystem<2>(dealii::FE_Q<2>(initialOrder), 1);
+    qDebug() << "SolverDeal::SolverDeal: numberOfSolutions" << fieldInfo->numberOfSolutions();
+    // m_fe = new dealii::FESystem<2>(dealii::FE_Q<2>(initialOrder), 1);
+    m_fe = new dealii::FESystem<2>(dealii::FE_Q<2>(initialOrder), fieldInfo->numberOfSolutions());
 
     // copy initial mesh
     m_triangulation = new dealii::Triangulation<2>();
@@ -115,6 +117,48 @@ SolverDeal::~SolverDeal()
     // delete m_triangulation;
     // delete m_fe;
 }
+/*
+void SolverDeal::setup()
+{
+    QTime time;
+    time.start();
+
+    m_doFHandler->distribute_dofs(*m_fe);
+
+    // reinit sln and rhs
+    system_rhs.reinit(m_doFHandler->n_dofs());
+    m_solution->reinit(m_doFHandler->n_dofs());
+
+    std::cout << "Number of degrees of freedom: " << m_doFHandler->n_dofs() << std::endl;
+
+    hanging_node_constraints.clear ();
+    dealii::DoFTools::make_hanging_node_constraints(*m_doFHandler,
+                                                    hanging_node_constraints);
+    hanging_node_constraints.close();
+
+    // assemble Dirichlet
+    assembleDirichlet();
+
+
+
+    dealii::CompressedSparsityPattern c_sparsity(m_doFHandler->n_dofs());
+
+    // sparsity_pattern.reinit(m_doFHandler->n_dofs(),
+    //                         m_doFHandler->n_dofs(),
+    //                         m_doFHandler->max_couplings_between_dofs());
+
+    dealii::DoFTools::make_sparsity_pattern(*m_doFHandler,
+                                            c_sparsity,
+                                            hanging_node_constraints,
+                                            false);
+
+    sparsity_pattern.copy_from(c_sparsity);
+    // sparsity_pattern.compress();
+    system_matrix.reinit(sparsity_pattern);
+
+    qDebug() << "setup (" << time.elapsed() << "ms )";
+}
+*/
 
 void SolverDeal::setup()
 {
@@ -127,29 +171,26 @@ void SolverDeal::setup()
     system_rhs.reinit(m_doFHandler->n_dofs());
     m_solution->reinit(m_doFHandler->n_dofs());
 
-    // std::cout << "Number of degrees of freedom: " << m_doFHandler->n_dofs() << std::endl;
+    std::cout << "Number of degrees of freedom: " << m_doFHandler->n_dofs() << std::endl;
 
     hanging_node_constraints.clear ();
     dealii::DoFTools::make_hanging_node_constraints(*m_doFHandler,
                                                     hanging_node_constraints);
-
-    // assemble Dirichlet
-    assembleDirichlet();
-
     hanging_node_constraints.close();
 
-    dealii::CompressedSparsityPattern c_sparsity(m_doFHandler->n_dofs());
-    /*
+    // dealii::CompressedSparsityPattern c_sparsity(m_doFHandler->n_dofs());
     sparsity_pattern.reinit(m_doFHandler->n_dofs(),
                             m_doFHandler->n_dofs(),
                             m_doFHandler->max_couplings_between_dofs());
-    */
-    dealii::DoFTools::make_sparsity_pattern(*m_doFHandler,
-                                            c_sparsity,
-                                            hanging_node_constraints,
-                                            false);
 
-    sparsity_pattern.copy_from(c_sparsity);
+    dealii::DoFTools::make_sparsity_pattern(*m_doFHandler,
+                                            sparsity_pattern);
+
+    // sparsity_pattern.copy_from(c_sparsity);
+
+    hanging_node_constraints.condense(sparsity_pattern);
+    sparsity_pattern.compress();
+
     // sparsity_pattern.compress();
     system_matrix.reinit(sparsity_pattern);
 
@@ -1203,82 +1244,103 @@ void ProblemSolverDeal::init()
     }
 }
 
-void ProblemSolverDeal::solveSimple(int timeStep, int adaptivityStep)
+void ProblemSolverDeal::solve(int timeStep)
 {
     // TODO: more fields
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         if (fieldInfo->adaptivityType() == AdaptivityMethod_None)
         {
-            qDebug() << "Simple solution";
-
-            m_solverDeal->setup();
-            QTime time;
-            time.start();
-            m_solverDeal->assembleSystem();
-            qDebug() << "assemble (" << time.elapsed() << "ms )";
-            m_solverDeal->solve();
-
-            FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, 0, SolutionMode_Normal);
-            SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), 0.0, 0);
-
-            Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
-
-            std::cout << "Number of active cells: " << m_solverDeal->triangulation()->n_active_cells() << std::endl;
-            std::cout << "Total number of cells: " << m_solverDeal->triangulation()->n_cells() << std::endl;
+            solveSimple(fieldInfo, timeStep);
         }
         else
         {
-            qDebug() << "Adaptive solution";
-
-            for (int i = 0; i < fieldInfo->value(FieldInfo::AdaptivitySteps).toInt(); i++)
-            {
-                double error = 0.0;
-
-                if (i > 0)
-                {
-                    dealii::Vector<float> estimated_error_per_cell(m_solverDeal->triangulation()->n_active_cells());
-                    dealii::KellyErrorEstimator<2>::estimate(*m_solverDeal->doFHandler(),
-                                                             dealii::QGauss<2-1>(2),
-                                                             typename dealii::FunctionMap<2>::type(),
-                                                             *m_solverDeal->solution(),
-                                                             estimated_error_per_cell);
-
-                    dealii::GridRefinement::refine_and_coarsen_fixed_number(*m_solverDeal->triangulation(),
-                                                                            estimated_error_per_cell,
-                                                                            0.3,
-                                                                            0.03);
-
-                    m_solverDeal->triangulation()->execute_coarsening_and_refinement();
-
-                    // print info
-                    // l2_norm = estimated_error_per_cell.l2_norm();
-                    error = std::accumulate(estimated_error_per_cell.begin(), estimated_error_per_cell.end(), 0.0);
-
-                    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Adaptivity step: %1 (error: %2, DOFs: %3)").
-                                                 arg(i).
-                                                 arg(error).
-                                                 arg(m_solverDeal->doFHandler()->n_dofs()));
-
-                    Agros2D::log()->updateAdaptivityChartInfo(fieldInfo, 0, i);
-                }
-
-                m_solverDeal->setup();
-                QTime time;
-                time.start();
-                m_solverDeal->assembleSystem();
-                qDebug() << "assemble (" << time.elapsed() << "ms )";
-                m_solverDeal->solve();
-
-                FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, i, SolutionMode_Normal);
-                SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), error, i);
-
-                Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
-
-                std::cout << "Number of active cells: " << m_solverDeal->triangulation()->n_active_cells() << std::endl;
-                std::cout << "Total number of cells: " << m_solverDeal->triangulation()->n_cells() << std::endl;
-            }
+            solveAdaptive(fieldInfo, timeStep);
         }
+    }
+}
+
+void ProblemSolverDeal::solveSimple(FieldInfo *fieldInfo, int timeStep)
+{
+
+    qDebug() << "Simple solution";
+
+    m_solverDeal->setup();
+    QTime time;
+    time.start();
+    m_solverDeal->assembleDirichlet();
+    m_solverDeal->assembleSystem();
+    qDebug() << "assemble (" << time.elapsed() << "ms )";
+    m_solverDeal->solve();
+
+    FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, 0, SolutionMode_Normal);
+    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), 0.0, 0);
+
+    Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
+
+    std::cout << "Number of active cells: " << m_solverDeal->triangulation()->n_active_cells() << std::endl;
+    std::cout << "Total number of cells: " << m_solverDeal->triangulation()->n_cells() << std::endl;
+}
+
+void ProblemSolverDeal::solveAdaptive(FieldInfo *fieldInfo, int timeStep)
+{
+    qDebug() << "Adaptive solution";
+    for (int i = 0; i < fieldInfo->value(FieldInfo::AdaptivitySteps).toInt(); i++)
+    {
+        double error = 0.0;
+
+        if (i > 0)
+        {
+            dealii::Vector<float> estimated_error_per_cell(m_solverDeal->triangulation()->n_active_cells());
+            dealii::KellyErrorEstimator<2>::estimate(*m_solverDeal->doFHandler(),
+                                                     dealii::QGauss<2-1>(2),
+                                                     typename dealii::FunctionMap<2>::type(),
+                                                     *m_solverDeal->solution(),
+                                                     estimated_error_per_cell);
+
+            dealii::GridRefinement::refine_and_coarsen_fixed_number(*m_solverDeal->triangulation(),
+                                                                    estimated_error_per_cell,
+                                                                    0.3,
+                                                                    0.03);
+
+            m_solverDeal->triangulation()->execute_coarsening_and_refinement();
+
+            // print info
+            /*
+                    // TODO: store previous solution
+                    dealii::Vector<float> difference_per_cell (m_solverDeal->triangulation()->n_active_cells());
+                    dealii::VectorTools::integrate_difference(*m_solverDeal->doFHandler(),
+                                                               *m_solverDeal->solution(),
+                                                               dealii::Solution<2>(),
+                                                               difference_per_cell,
+                                                               dealii::QGauss<dim>(3),
+                                                               dealii::VectorTools::H1_norm);
+                    error = difference_per_cell.l2_norm();
+                    */
+
+            Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Adaptivity step: %1 (error: %2, DOFs: %3)").
+                                         arg(i).
+                                         arg(error).
+                                         arg(m_solverDeal->doFHandler()->n_dofs()));
+
+            Agros2D::log()->updateAdaptivityChartInfo(fieldInfo, 0, i);
+        }
+
+        m_solverDeal->setup();
+        QTime time;
+        time.start();
+        m_solverDeal->assembleDirichlet();
+        m_solverDeal->assembleSystem();
+        qDebug() << "assemble (" << time.elapsed() << "ms )";
+        m_solverDeal->solve();
+
+        FieldSolutionID solutionID(Agros2D::problem()->fieldInfos().first(), timeStep, i, SolutionMode_Normal);
+        SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), error, i);
+
+        Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
+
+        std::cout << "Number of active cells: " << m_solverDeal->triangulation()->n_active_cells() << std::endl;
+        std::cout << "Total number of cells: " << m_solverDeal->triangulation()->n_cells() << std::endl;
     }
 }
 

@@ -120,27 +120,4 @@ private:
 };
 {{/SURFACE_VECTOR_SOURCE}}
 
-{{#EXACT_SOURCE}}
-template<typename Scalar>
-class {{FUNCTION_NAME}} : public ExactSolutionScalarAgros<Scalar>
-{
-public:
-    {{FUNCTION_NAME}}(Hermes::Hermes2D::MeshSharedPtr mesh);
-
-    Scalar value(double x, double y) const;
-    void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
-
-    Hermes::Ord ord (double x, double y) const
-    {
-        return Hermes::Ord(Hermes::Ord::get_max_order());
-    }
-
-    virtual void setMarkerTarget(const Marker *marker);
-
-private:
-    {{#VARIABLE_SOURCE}}
-    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
-};
-{{/EXACT_SOURCE}}
-
 #endif // {{CLASS}}_INTERFACE_H
