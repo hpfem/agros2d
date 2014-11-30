@@ -28,30 +28,29 @@
 #include "hermes2d/solutionstore.h"
 
 #include "hermes2d/plugin_interface.h"
-
+/*
 {{#CALCULATOR_SOURCE}}
 template<typename Scalar>
-class {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}} : public Hermes::Hermes2D::NormFormVol<Scalar>
+class {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}} : public NormFormVol<Scalar>
 {
 public:
     {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE}}_{{ANALYSIS_TYPE}}_{{ID_CALCULATOR}}<Scalar>(const FieldInfo *fieldInfo, int i, int j)
-        : Hermes::Hermes2D::NormFormVol<Scalar>(i, j), m_fieldInfo(fieldInfo) {}
+        : NormFormVol<Scalar>(i, j), m_fieldInfo(fieldInfo) {}
 
-    virtual Scalar value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u, Hermes::Hermes2D::Func<Scalar> *v, Hermes::Hermes2D::GeomVol<double> *e) const
+    virtual Scalar value(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, GeomVol<double> *e) const
     {
-        /*
-        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-        SceneMaterial *material = label->marker(m_fieldInfo);
+        // SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
+        // SceneMaterial *material = label->marker(m_fieldInfo);
 
-        {{#VARIABLE_SOURCE}}
-        const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr(QLatin1String("{{VARIABLE}}"));{{/VARIABLE_SOURCE}}
+        // {{#VARIABLE_SOURCE}}
+        // const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr(QLatin1String("{{VARIABLE}}"));{{/VARIABLE_SOURCE}}
 
-        Scalar result = Scalar(0);
+        // Scalar result = Scalar(0);
         // for (int i = 0; i < n; i++)
         //     result += wt[i] * ({{EXPRESSION}});
-        */
-        Scalar result = Scalar(0);
-        return result;
+
+        // Scalar result = Scalar(0);
+        // return result;
     }
 
     const FieldInfo *m_fieldInfo;
@@ -61,8 +60,8 @@ template class {{CLASS}}ErrorCalculatorNorm_{{COORDINATE_TYPE}}_{{LINEARITY_TYPE
 {{/CALCULATOR_SOURCE}}
 
 template<typename Scalar>
-{{CLASS}}ErrorCalculator<Scalar>::{{CLASS}}ErrorCalculator(const FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
-    : Hermes::Hermes2D::ErrorCalculator<Scalar>(errorType), m_fieldInfo(fieldInfo), m_calculator(calculator)
+{{CLASS}}ErrorCalculator<Scalar>::{{CLASS}}ErrorCalculator(const FieldInfo *fieldInfo, const QString &calculator, CalculatedErrorType errorType)
+    : ErrorCalculator<Scalar>(errorType), m_fieldInfo(fieldInfo), m_calculator(calculator)
 {
     for(int i = 0; i < m_fieldInfo->numberOfSolutions(); i++)
     {
@@ -77,3 +76,4 @@ template<typename Scalar>
 }
 
 template class {{CLASS}}ErrorCalculator<double>;
+*/

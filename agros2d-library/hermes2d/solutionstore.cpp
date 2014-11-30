@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "solutionstore.h"
 
@@ -36,8 +36,6 @@
 #include <boost/archive/binary_oarchive.hpp>
 
 #include "../../resources_source/classes/structure_xml.h"
-
-using namespace Hermes::Hermes2D;
 
 void SolutionStore::printDebugCacheStatus()
 {
@@ -80,115 +78,6 @@ void SolutionStore::clearAll()
     assert(m_multiSolutionDealCache.isEmpty());
 }
 
-/*
-MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
-{
-    if(solutionID.solutionMode == SolutionMode_Finer)
-    {
-        solutionID.solutionMode = SolutionMode_Reference;
-        if(!m_multiSolutions.contains(solutionID))
-            solutionID.solutionMode = SolutionMode_Normal;
-    }
-
-    assert(m_multiSolutions.contains(solutionID));
-
-    if (!m_multiSolutionCache.contains(solutionID))
-    {
-        //qDebug() << "Read from disk: " << solutionID.toString();
-
-        const FieldInfo *fieldInfo = solutionID.group;
-        const Block *block = Agros2D::problem()->blockOfField(fieldInfo);
-
-        MultiArray<double> msa;
-        SolutionRunTimeDetails runTime = m_multiSolutionRunTimeDetails[solutionID];
-
-        for (int fieldCompIdx = 0; fieldCompIdx < solutionID.group->numberOfSolutions(); fieldCompIdx++)
-        {
-            // reuse space and mesh
-            Hermes::Hermes2D::SpaceSharedPtr<double> space;
-            foreach (FieldSolutionID searchSolutionID, m_multiSolutionCacheIDOrder)
-            {
-                SolutionRunTimeDetails searchRunTime = m_multiSolutionRunTimeDetails[searchSolutionID];
-                if ((fieldCompIdx < searchRunTime.fileNames().size()) &&
-                        (runTime.fileNames()[fieldCompIdx].meshFileName() == searchRunTime.fileNames()[fieldCompIdx].meshFileName()) &&
-                        (runTime.fileNames()[fieldCompIdx].spaceFileName() == searchRunTime.fileNames()[fieldCompIdx].spaceFileName()))
-                {
-                    space = m_multiSolutionCache[searchSolutionID].spaces().at(fieldCompIdx);
-                    break;
-                }
-            }
-
-            // read space and mesh from file
-            if (!space.get())
-            {
-                // load the mesh file
-                QString fn = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName());
-                std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
-                if (QFileInfo(fn).suffix() == "msh")
-                    meshes = Module::readMeshFromFileXML(fn);
-                else
-                    meshes = Module::readMeshFromFileBSON(fn);
-
-                Hermes::Hermes2D::MeshSharedPtr mesh;
-                int globalFieldIdx = 0;
-                foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
-                {
-                    if (fieldInfo == solutionID.group)
-                    {
-                        mesh = meshes.at(globalFieldIdx);
-                        break;
-                    }
-                    globalFieldIdx++;
-                }
-                assert(mesh);
-
-                try
-                {
-                    EssentialBCs<double>* essentialBcs = NULL;
-                    if((fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_SPACE) && (fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_MARKERWISE_CONST_SPACE))
-                    {
-                        int bcIndex = fieldCompIdx + block->offset(block->field(fieldInfo));
-                        essentialBcs = block->bcs().at(bcIndex);
-                    }
-                    QString spaceFileName = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].spaceFileName());
-                    // space = Space<double>::load(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, false, essentialBcs);
-                    space = Space<double>::load_bson(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, essentialBcs);
-                }
-                catch (Hermes::Exceptions::Exception &e)
-                {
-                    Agros2D::log()->printError(QObject::tr("Solver"), QString::fromStdString(e.info()));
-                    throw;
-                }
-            }
-
-            // read solution
-            Solution<double> *sln = new Solution<double>();
-            sln->set_validation(false);
-            // QTime time;
-            // time.start();
-            sln->load_bson(QString("%1/%2").
-                            arg(compatibleFilename(cacheProblemDir())).
-                            arg(runTime.fileNames()[fieldCompIdx].solutionFileName()).toStdString().c_str(), space);
-            // sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName())).toLatin1().data(), space);
-            // qDebug() << "LOAD" << time.elapsed();
-
-            msa.append(space, sln);
-        }
-
-        // insert to the cache
-        insertMultiSolutionToCache(solutionID, msa);
-
-        //printDebugCacheStatus();
-
-        return msa;
-    }
-    else
-    {
-        return m_multiSolutionCache[solutionID];
-    }
-}
-*/
-
 MultiArray SolutionStore::multiArray(FieldSolutionID solutionID)
 {
     if(solutionID.solutionMode == SolutionMode_Finer)
@@ -215,7 +104,7 @@ MultiArray SolutionStore::multiArray(FieldSolutionID solutionID)
         for (int fieldCompIdx = 0; fieldCompIdx < solutionID.group->numberOfSolutions(); fieldCompIdx++)
         {
             // reuse space and mesh
-            Hermes::Hermes2D::SpaceSharedPtr<double> space;
+            SpaceSharedPtr<double> space;
             foreach (FieldSolutionID searchSolutionID, m_multiSolutionCacheIDOrder)
             {
                 SolutionRunTimeDetails searchRunTime = m_multiSolutionRunTimeDetails[searchSolutionID];
@@ -233,13 +122,13 @@ MultiArray SolutionStore::multiArray(FieldSolutionID solutionID)
             {
                 // load the mesh file
                 QString fn = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName());
-                std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
+                std::vector<MeshSharedPtr> meshes;
                 if (QFileInfo(fn).suffix() == "msh")
                     meshes = Module::readMeshFromFileXML(fn);
                 else
                     meshes = Module::readMeshFromFileBSON(fn);
 
-                Hermes::Hermes2D::MeshSharedPtr mesh;
+                MeshSharedPtr mesh;
                 int globalFieldIdx = 0;
                 foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
                 {
@@ -264,7 +153,7 @@ MultiArray SolutionStore::multiArray(FieldSolutionID solutionID)
                     // space = Space<double>::load(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, false, essentialBcs);
                     space = Space<double>::load_bson(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, essentialBcs);
                 }
-                catch (Hermes::Exceptions::Exception &e)
+                catch (AgrosException &e)
                 {
                     Agros2D::log()->printError(QObject::tr("Solver"), QString::fromStdString(e.info()));
                     throw;

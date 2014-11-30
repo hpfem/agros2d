@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "module.h"
 #include "weak_form.h"
@@ -36,11 +36,6 @@
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/bdf2.h"
 #include "hermes2d/problem_config.h"
-
-#include "mesh/mesh_reader_h2d.h"
-
-#include "solver/newton_solver.h"
-#include "solver/picard_solver.h"
 
 #include "util/constants.h"
 
@@ -138,7 +133,7 @@ QMap<QString, QString> Module::availableModules()
 /*
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
-    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)
+    WeakForm<Scalar>(block->numSolutions()), m_block(block)
 {
     m_bdf2Table = new BDF2ATable;
 }
@@ -146,7 +141,7 @@ WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
 template <typename Scalar>
 WeakFormAgros<Scalar>::~WeakFormAgros()
 {
-    foreach (Hermes::Hermes2D::Form<Scalar> *form, this->forms)
+    foreach (Form<Scalar> *form, this->forms)
         delete form;
 
     this->delete_all();
@@ -157,7 +152,7 @@ WeakFormAgros<Scalar>::~WeakFormAgros()
 }
 
 template <typename Scalar>
-Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind type, const ProblemID problemId,
+Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind type, const ProblemID problemId,
                                         const QString &area, FormInfo *form, Material* markerSource, Marker *markerTarget)
 {
     assert(problemId.targetFieldId != "");
@@ -182,7 +177,7 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
 
     assert(plugin);
 
-    Hermes::Hermes2D::Form<Scalar> *weakForm = NULL;
+    Form<Scalar> *weakForm = NULL;
 
     if (type == WeakForm_MatVol)
     {
@@ -193,7 +188,7 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
         }
 
         // volume
-        // Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
+        // MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
         // double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         // weakFormAgros->setMarkerVolume(volume);
         weakFormAgros->setMarkerVolume(-1);
@@ -223,7 +218,7 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
         if (!weakFormAgros) return NULL;
 
         // volume
-        // Hermes::Hermes2D::MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
+        // MeshSharedPtr initialMesh = markerTarget->fieldInfo()->initialMesh();
         // double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         // weakFormAgros->setMarkerVolume(volume);
         weakFormAgros->setMarkerVolume(-1);
@@ -256,20 +251,20 @@ Hermes::Hermes2D::Form<Scalar> *WeakFormAgros<Scalar>::factoryForm(WeakFormKind 
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
+void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Form<Scalar> *form)
 {
     //    Agros2D::log()->printDebug(tr("Solver"), QString("Add form: type: %1, area: %2").
     //                            arg(weakFormString(type)).
     //                            arg(QString::fromStdString(form->getAreas().at(0))));
 
     if (type == WeakForm_MatVol)
-        this->add_matrix_form((Hermes::Hermes2D::MatrixFormVol<Scalar>*) form);
+        this->add_matrix_form((MatrixFormVol<Scalar>*) form);
     else if (type == WeakForm_MatSurf)
-        this->add_matrix_form_surf((Hermes::Hermes2D::MatrixFormSurf<Scalar>*) form);
+        this->add_matrix_form_surf((MatrixFormSurf<Scalar>*) form);
     else if (type == WeakForm_VecVol)
-        this->add_vector_form((Hermes::Hermes2D::VectorFormVol<Scalar>*) form);
+        this->add_vector_form((VectorFormVol<Scalar>*) form);
     else if (type == WeakForm_VecSurf)
-        this->add_vector_form_surf((Hermes::Hermes2D::VectorFormSurf<Scalar>*) form);
+        this->add_vector_form_surf((VectorFormSurf<Scalar>*) form);
     else
         assert(0);
 }
@@ -285,7 +280,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, FieldBlock *field, Q
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, NULL, marker);
+    Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, NULL, marker);
 
     // weakform with zero coefficients
     if (!custom_form) return;
@@ -317,7 +312,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // qDebug() << "register form coupling " << materialSource->fieldId() << ", " << materialTarget->fieldId();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, materialSource, materialTarget);
+    Form<Scalar> *custom_form = factoryForm(type, problemId, area, &form, materialSource, materialTarget);
     // weakform with zero coefficients
     if (!custom_form)
     {
@@ -483,9 +478,9 @@ void WeakFormAgros<Scalar>::registerForms()
 }
 
 template <typename Scalar>
-std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const
+std::vector<UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const
 {
-    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > result;
+    std::vector<UExtFunctionSharedPtr<Scalar> > result;
 
     XMLModule::field* module = fieldInfo->plugin()->module();
     ProblemID problemId;
@@ -527,15 +522,15 @@ std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
             }
         }
 
-        Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
+        UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
         {
             bool linearizeThis = quantityIsNonlin[quantityID] && linearize;
-            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, linearizeThis, this));
+            extFunction = UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, linearizeThis, this));
         }
         else
         {
-            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
+            extFunction = UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
         }
 
         result.push_back(extFunction);
@@ -545,12 +540,12 @@ std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
         {
             extFunction = NULL;
             if(containedInAnalysis && !linearize)
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, false, this));
+                extFunction = UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, false, this));
             else
                 // pass an empty functions if the quantity is not contained in the given analysis or should be linearized
                 // the reason is that we can use uniform indexing ext[n] in the weak forms (the same n for all analysis)
                 // as a result we can generate only one variant of each form (although there are more variants of ext functions because of different dependencies of nonlinear and time dependent terms)
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
+                extFunction = UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
             assert(extFunction);
             result.push_back(extFunction);
@@ -574,15 +569,15 @@ std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
                 break;
             }
         }
-        Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
+        UExtFunctionSharedPtr<Scalar> extFunction;
         if(containedInAnalysis)
         {
-            Hermes::Hermes2D::UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, linearize, this);
+            UExtFunction<Scalar> *extFunctionPtr = fieldInfo->plugin()->extFunction(problemId, functionID, false, linearize, this);
             assert(extFunctionPtr);
-            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
+            extFunction = UExtFunctionSharedPtr<Scalar>(extFunctionPtr);
         }
         else
-            extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
+            extFunction = UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
         result.push_back(extFunction);
     }
@@ -591,9 +586,9 @@ std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
 }
 
 template <typename Scalar>
-std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const
+std::vector<MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const
 {
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
+    std::vector<MeshFunctionSharedPtr<Scalar> > result;
 
     assert(m_bdf2Table);
 
@@ -618,9 +613,9 @@ std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scal
 }
 
 template <typename Scalar>
-std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
+std::vector<MeshFunctionSharedPtr<Scalar> > WeakFormAgros<Scalar>::sourceCouplingSolutions(const FieldInfo* fieldInfo) const
 {
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > result;
+    std::vector<MeshFunctionSharedPtr<Scalar> > result;
 
     FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Finer);
 
@@ -638,8 +633,8 @@ void WeakFormAgros<Scalar>::updateExtField()
         m_positionInfos[i] = PositionInfo();
 
     // register two types of external functions. Quantities and special functions of all fields go to externalUSlns
-    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
-    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > fieldUExt;
+    std::vector<UExtFunctionSharedPtr<Scalar> > externalUSlns;
+    std::vector<UExtFunctionSharedPtr<Scalar> > fieldUExt;
 
     // first push external functions related to source fields (source fields weakly coupled to some of the field in the block)
     foreach(FieldInfo* fieldInfo, m_block->sourceFieldInfosCoupling())
@@ -674,8 +669,8 @@ void WeakFormAgros<Scalar>::updateExtField()
     // register second type of external functions. Weak coupling sources and previous time solutions go to externalSlns
     // the numbering, however, have to be done together, since in ext field in forms, no difference is made
     // by Hermes convention, USlns go first, than go Slns
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > fieldExt;
+    std::vector<MeshFunctionSharedPtr<Scalar> > externalSlns;
+    std::vector<MeshFunctionSharedPtr<Scalar> > fieldExt;
 
     // push external solutions for previous time levels
     // for each field, we add all field components of previous time level, than all components of time level -2, than all
@@ -724,20 +719,20 @@ QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section)
     {
         XMLModule::matrix_form form = section->matrix_form().at(i);
         assert(form.i().present() && form.j().present() && form.planar().present() && form.axi().present());
-        Hermes::Hermes2D::SymFlag symPlanar = Hermes::Hermes2D::HERMES_NONSYM;
-        Hermes::Hermes2D::SymFlag symAxi = Hermes::Hermes2D::HERMES_NONSYM;
+        SymFlag symPlanar = HERMES_NONSYM;
+        SymFlag symAxi = HERMES_NONSYM;
         if(form.symmetric().present())
         {
-            symPlanar = (Hermes::Hermes2D::SymFlag)form.symmetric().get();
-            symAxi = (Hermes::Hermes2D::SymFlag)form.symmetric().get();
+            symPlanar = (SymFlag)form.symmetric().get();
+            symAxi = (SymFlag)form.symmetric().get();
         }
         if(form.symmetric_planar().present())
         {
-            symPlanar = (Hermes::Hermes2D::SymFlag)form.symmetric_planar().get();
+            symPlanar = (SymFlag)form.symmetric_planar().get();
         }
         if(form.symmetric_axi().present())
         {
-            symAxi = (Hermes::Hermes2D::SymFlag)form.symmetric_axi().get();
+            symAxi = (SymFlag)form.symmetric_axi().get();
         }
         FormInfo formInfo(QString::fromStdString(form.id()),
                           form.i().get(),
@@ -1122,92 +1117,6 @@ AGROS_LIBRARY_API void Module::updateTimeFunctions(double time)
                 foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
                     if (variable.isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient)
                         boundary->evaluate(variable.id(), time);
-}
-
-std::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
-{
-    // save locale
-    // char *plocale = setlocale (LC_NUMERIC, "");
-    // setlocale (LC_NUMERIC, "C");
-
-    std::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
-    int numMeshes = Agros2D::problem()->fieldInfos().count();
-    for(int i = 0; i < numMeshes; i++)
-    {
-        Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
-        meshes.push_back(mesh);
-    }
-
-    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.set_validation(false);
-    try
-    {
-        meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
-    }
-    catch (Hermes::Exceptions::MeshLoadFailureException& e)
-    {
-        qDebug() << e.what();
-        throw;
-    }
-
-    // set system locale
-    // setlocale(LC_NUMERIC, plocale);
-
-    return meshes;
-}
-
-std::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileName)
-{
-    std::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
-    int numMeshes = Agros2D::problem()->fieldInfos().count();
-    for(int i = 0; i < numMeshes; i++)
-    {
-        Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
-        meshes.push_back(mesh);
-    }
-
-    Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
-    try
-    {
-        Hermes::HermesCommonApi.set_integral_param_value(Hermes::checkMeshesOnLoad, false);
-
-        // QTime time;
-        // time.start();
-        meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
-        // qDebug() << "bson mesh load" << time.elapsed();
-    }
-    catch (Hermes::Exceptions::MeshLoadFailureException& e)
-    {
-        qDebug() << e.info().c_str();
-        throw;
-    }
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        qDebug() << e.info().c_str();
-        throw;
-    }
-
-    return meshes;
-}
-
-void Module::writeMeshToFileXML(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
-{
-    // save locale
-    // char *plocale = setlocale (LC_NUMERIC, "");
-    // setlocale (LC_NUMERIC, "C");
-
-    Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.set_validation(false);
-    meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
-
-    // set system locale
-    // setlocale(LC_NUMERIC, plocale);
-}
-
-void Module::writeMeshToFileBSON(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
-{
-    Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
-    meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 }
 
 void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::field *module, AnalysisType analysisType, LinearityType linearityType)

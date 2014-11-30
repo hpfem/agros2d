@@ -24,17 +24,18 @@
 
 #include "util.h"
 #include "hermes2d/field.h"
-#include "hermes2d.h"
 
+/*
 template<typename Scalar>
-class {{CLASS}}ErrorCalculator : public Hermes::Hermes2D::ErrorCalculator<Scalar>
+class {{CLASS}}ErrorCalculator : public ErrorCalculator<Scalar>
 {
 public:
-    {{CLASS}}ErrorCalculator(const FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
+    {{CLASS}}ErrorCalculator(const FieldInfo *fieldInfo, const QString &calculator, CalculatedErrorType errorType);
 
 protected:
     QString m_calculator;
     const FieldInfo *m_fieldInfo;
 };
+*/
 
 #endif // {{ID}}_ERROR_CALCULATOR_H

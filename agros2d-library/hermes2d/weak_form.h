@@ -87,9 +87,10 @@ QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> temp
 
 template <typename SectionWithTemplates>
 QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section);
+
 /*
 template <typename Scalar>
-class AGROS_LIBRARY_API WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
+class AGROS_LIBRARY_API WeakFormAgros : public WeakForm<Scalar>
 {
 public:
     WeakFormAgros(Block* block);
@@ -104,15 +105,15 @@ public:
     {
         const PositionInfo* positionInfo = &m_positionInfos[index];
         if (positionInfo->formsOffset == INVALID_POSITION_INFO_VALUE)
-            throw Hermes::Exceptions::Exception("Unset form offset in positionInfo #%i.", index);
+            throw AgrosException("Unset form offset in positionInfo #%i.", index);
         if (positionInfo->quantAndSpecOffset == INVALID_POSITION_INFO_VALUE)
-            throw Hermes::Exceptions::Exception("Unset quantAndSpec offset in positionInfo #%i.", index);
+            throw AgrosException("Unset quantAndSpec offset in positionInfo #%i.", index);
     }
     inline const PositionInfo* positionInfoSourceFieldInfoCheck(int index) const
     {
         const PositionInfo* positionInfo = &m_positionInfos[index];
         if (positionInfo->previousSolutionsOffset == INVALID_POSITION_INFO_VALUE)
-            throw Hermes::Exceptions::Exception("Unset previous solutions offset in positionInfo #%i.", index);
+            throw AgrosException("Unset previous solutions offset in positionInfo #%i.", index);
     }
 
     void outputPositionInfos();
@@ -121,7 +122,7 @@ public:
     Offset offsetInfo(const Marker *sourceMarker, const Marker *targetMarker) const;
 
 private:
-    Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
+    Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                                 const QString &area, FormInfo *form,
                                                 Material *markerSource, Marker *markerTarget);
 
@@ -131,9 +132,9 @@ private:
     // offsetCouplingExt defines position in Ext field where coupling solutions start
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
-    void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
+    void addForm(WeakFormKind type, Form<Scalar>* form);
 
-    virtual Hermes::Hermes2D::WeakForm<Scalar>* clone() const { return new WeakFormAgros<Scalar>(m_block); }
+    virtual WeakForm<Scalar>* clone() const { return new WeakFormAgros<Scalar>(m_block); }
 
     Block* m_block;
 
@@ -143,9 +144,9 @@ private:
 
     int m_numberOfForms;
 
-    std::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const;
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const;
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > sourceCouplingSolutions(const FieldInfo* fieldInfo) const;
+    std::vector<UExtFunctionSharedPtr<Scalar> > quantitiesAndSpecialFunctions(const FieldInfo* fieldInfo, bool linearize) const;
+    std::vector<MeshFunctionSharedPtr<Scalar> > previousTimeLevelsSolutions(const FieldInfo* fieldInfo) const;
+    std::vector<MeshFunctionSharedPtr<Scalar> > sourceCouplingSolutions(const FieldInfo* fieldInfo) const;
 };
 */
 #endif // WEAK_FORM_H

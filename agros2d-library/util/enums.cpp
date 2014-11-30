@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "enums.h"
 
@@ -33,7 +33,7 @@ static QMap<WeakFormKind, QString> weakFormList;
 static QMap<WeakFormVariant, QString> weakFormVariantList;
 static QMap<AdaptivityMethod, QString> adaptivityTypeList;
 static QMap<AdaptivityStoppingCriterionType, QString> adaptivityStoppingCriterionTypeList;
-static QMap<Hermes::Hermes2D::NormType, QString> adaptivityNormTypeList;
+static QMap<NormType, QString> adaptivityNormTypeList;
 static QMap<TimeStepMethod, QString> timeStepMethodList;
 static QMap<SolutionMode, QString> solutionTypeList;
 static QMap<AnalysisType, QString> analysisTypeList;
@@ -41,18 +41,17 @@ static QMap<CouplingType, QString> couplingTypeList;
 static QMap<LinearityType, QString> linearityTypeList;
 static QMap<DampingType, QString> dampingTypeList;
 static QMap<MeshType, QString> meshTypeList;
-static QMap<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
-static QMap<Hermes::Algebra::MatrixExportFormat, QString> dumpFormatList;
-static QMap<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
+static QMap<MatrixSolverType, QString> matrixSolverTypeList;
+static QMap<MatrixExportFormat, QString> dumpFormatList;
 static QMap<PaletteType, QString> paletteTypeList;
 static QMap<PaletteOrderType, QString> paletteOrderTypeList;
 static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
 static QMap<SpecialFunctionType, QString> specialFunctionTypeList;
-static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
-static QMap<Hermes::Solvers::IterSolverType, QString> iterLinearSolverMethodList;
-static QMap<Hermes::Solvers::PreconditionerType, QString> iterLinearSolverPreconditionerTypeList;
+static QMap<ButcherTableType, QString> butcherTableTypeList;
+static QMap<IterSolverType, QString> iterLinearSolverMethodList;
+static QMap<PreconditionerType, QString> iterLinearSolverPreconditionerTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -91,8 +90,8 @@ QString adaptivityStoppingCriterionTypeToStringKey(AdaptivityStoppingCriterionTy
 AdaptivityStoppingCriterionType adaptivityStoppingCriterionFromStringKey(const QString &adaptivityStoppingCriterionType) { return adaptivityStoppingCriterionTypeList.key(adaptivityStoppingCriterionType); }
 
 QStringList adaptivityNormTypeStringKeys() { return adaptivityNormTypeList.values(); }
-QString adaptivityNormTypeToStringKey(Hermes::Hermes2D::NormType adaptivityNormType) { return adaptivityNormTypeList[adaptivityNormType]; }
-Hermes::Hermes2D::NormType adaptivityNormTypeFromStringKey(const QString &adaptivityNormType) { return adaptivityNormTypeList.key(adaptivityNormType); }
+QString adaptivityNormTypeToStringKey(NormType adaptivityNormType) { return adaptivityNormTypeList[adaptivityNormType]; }
+NormType adaptivityNormTypeFromStringKey(const QString &adaptivityNormType) { return adaptivityNormTypeList.key(adaptivityNormType); }
 
 QStringList timeStepMethodStringKeys() { return timeStepMethodList.values(); }
 QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod) { return timeStepMethodList[timeStepMethod]; }
@@ -111,16 +110,12 @@ QString dampingTypeToStringKey(DampingType dampingType) { return dampingTypeList
 DampingType dampingTypeFromStringKey(const QString &dampingType) { return dampingTypeList.key(dampingType); }
 
 QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values(); }
-QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
-Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
+QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
+MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
 QStringList dumpFormatStringKeys() { return dumpFormatList.values(); }
-QString dumpFormatToStringKey(Hermes::Algebra::MatrixExportFormat format) { return dumpFormatList[format]; }
-Hermes::Algebra::MatrixExportFormat dumpFormatFromStringKey(const QString &format) { return dumpFormatList.key(format); }
-
-QStringList spaceTypeStringKeys() { return spaceTypeList.values(); }
-QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType) { return spaceTypeList[spaceType]; }
-Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType) { return spaceTypeList.key(spaceType); }
+QString dumpFormatToStringKey(MatrixExportFormat format) { return dumpFormatList[format]; }
+MatrixExportFormat dumpFormatFromStringKey(const QString &format) { return dumpFormatList.key(format); }
 
 QStringList sceneViewPost3DModeStringKeys() { return sceneViewPost3DModeList.values(); }
 QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode) { return sceneViewPost3DModeList[sceneViewPost3DMode]; }
@@ -151,16 +146,16 @@ QString specialFunctionTypeToStringKey(SpecialFunctionType specialFunctionType) 
 SpecialFunctionType specialFunctionTypeFromStringKey(const QString &specialFunctionType) { return specialFunctionTypeList.key(specialFunctionType); }
 
 QStringList butcherTableTypeStringKeys() { return butcherTableTypeList.values(); }
-QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType) { return butcherTableTypeList[tableType]; }
-Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType) { return butcherTableTypeList.key(tableType); }
+QString butcherTableTypeToStringKey(ButcherTableType tableType) { return butcherTableTypeList[tableType]; }
+ButcherTableType butcherTableTypeFromStringKey(const QString &tableType) { return butcherTableTypeList.key(tableType); }
 
 QStringList iterLinearSolverMethodStringKeys() { return iterLinearSolverMethodList.values(); }
-QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterSolverType type) { return iterLinearSolverMethodList[type]; }
-Hermes::Solvers::IterSolverType iterLinearSolverMethodFromStringKey(const QString &type) { return iterLinearSolverMethodList.key(type); }
+QString iterLinearSolverMethodToStringKey(IterSolverType type) { return iterLinearSolverMethodList[type]; }
+IterSolverType iterLinearSolverMethodFromStringKey(const QString &type) { return iterLinearSolverMethodList.key(type); }
 
 QStringList iterLinearSolverPreconditionerTypeStringKeys() { return iterLinearSolverPreconditionerTypeList.values(); }
-QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::PreconditionerType type) { return iterLinearSolverPreconditionerTypeList[type]; }
-Hermes::Solvers::PreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type) { return iterLinearSolverPreconditionerTypeList.key(type); }
+QString iterLinearSolverPreconditionerTypeToStringKey(PreconditionerType type) { return iterLinearSolverPreconditionerTypeList[type]; }
+PreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type) { return iterLinearSolverPreconditionerTypeList.key(type); }
 
 void initLists()
 {
@@ -232,9 +227,9 @@ void initLists()
     adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Levels, "levels");
 
     // ADAPTIVITYNORMTYPE
-    adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_H1_NORM, "h1_norm");
-    adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_L2_NORM, "l2_norm");
-    adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_H1_SEMINORM, "h1_seminorm");
+    adaptivityNormTypeList.insert(NormType_H1_NORM, "h1_norm");
+    adaptivityNormTypeList.insert(NormType_L2_NORM, "l2_norm");
+    adaptivityNormTypeList.insert(NormType_H1_SEMINORM, "h1_seminorm");
 
     // SolutionType
     solutionTypeList.insert(SolutionMode_Normal, "normal");
@@ -242,38 +237,31 @@ void initLists()
     //solutionTypeList.insert(SolutionMode_Finer, "finer");
 
     // MatrixSolverType
-    matrixSolverTypeList.insert(Hermes::SOLVER_EMPTY, "empty");
-    matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");
-    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION_ITERATIVE, "paralution_iterative");
-    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION_AMG, "paralution_amg");
+    matrixSolverTypeList.insert(SOLVER_EMPTY, "empty");
+    matrixSolverTypeList.insert(SOLVER_UMFPACK, "umfpack");
+    matrixSolverTypeList.insert(SOLVER_PARALUTION_ITERATIVE, "paralution_iterative");
+    matrixSolverTypeList.insert(SOLVER_PARALUTION_AMG, "paralution_amg");
 #ifdef WITH_MUMPS
-    matrixSolverTypeList.insert(Hermes::SOLVER_MUMPS, "mumps");
+    matrixSolverTypeList.insert(SOLVER_MUMPS, "mumps");
 #endif
 #ifdef WITH_SUPERLU
-    matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
+    matrixSolverTypeList.insert(SOLVER_SUPERLU, "superlu");
 #endif
 #ifdef WITH_PETSC
-    matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
+    matrixSolverTypeList.insert(SOLVER_PETSC, "petsc");
 #endif
 #ifdef HAVE_AMESOS
-    matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
+    matrixSolverTypeList.insert(SOLVER_AMESOS, "trilinos_amesos");
 #endif
 #ifdef HAVE_AZTECOO
-    matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
+    matrixSolverTypeList.insert(SOLVER_AZTECOO, "trilinos_aztecoo");
 #endif
-    matrixSolverTypeList.insert(Hermes::SOLVER_EXTERNAL, "external");
+    matrixSolverTypeList.insert(SOLVER_EXTERNAL, "external");
 
     // dump format
-    dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII, "plain_ascii");
-    dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_MATLAB_MATIO, "matlab_mat");
-    dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_MATRIX_MARKET, "matrix_market");
-
-    // space
-    spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
-    spaceTypeList.insert(Hermes::Hermes2D::HERMES_HCURL_SPACE, "hcurl");
-    spaceTypeList.insert(Hermes::Hermes2D::HERMES_HDIV_SPACE, "hdiv");
-    spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_SPACE, "l2");
-    spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_MARKERWISE_CONST_SPACE, "const");
+    dumpFormatList.insert(EXPORT_FORMAT_PLAIN_ASCII, "plain_ascii");
+    dumpFormatList.insert(EXPORT_FORMAT_MATLAB_MATIO, "matlab_mat");
+    dumpFormatList.insert(EXPORT_FORMAT_MATRIX_MARKET, "matrix_market");
 
     // LinearityType
     linearityTypeList.insert(LinearityType_Linear, "linear");
@@ -334,44 +322,44 @@ void initLists()
     specialFunctionTypeList.insert(SpecialFunctionType_Function1D, "function_1d");
 
     // ButcherTableType
-    butcherTableTypeList.insert(Hermes::Explicit_HEUN_EULER_2_12_embedded, "heun-euler");
-    butcherTableTypeList.insert(Hermes::Explicit_BOGACKI_SHAMPINE_4_23_embedded, "bogacki-shampine");
-    butcherTableTypeList.insert(Hermes::Explicit_FEHLBERG_6_45_embedded, "fehlberg");
-    butcherTableTypeList.insert(Hermes::Explicit_CASH_KARP_6_45_embedded, "cash-karp");
-    butcherTableTypeList.insert(Hermes::Explicit_DORMAND_PRINCE_7_45_embedded, "dormand-prince");
+    butcherTableTypeList.insert(Explicit_HEUN_EULER_2_12_embedded, "heun-euler");
+    butcherTableTypeList.insert(Explicit_BOGACKI_SHAMPINE_4_23_embedded, "bogacki-shampine");
+    butcherTableTypeList.insert(Explicit_FEHLBERG_6_45_embedded, "fehlberg");
+    butcherTableTypeList.insert(Explicit_CASH_KARP_6_45_embedded, "cash-karp");
+    butcherTableTypeList.insert(Explicit_DORMAND_PRINCE_7_45_embedded, "dormand-prince");
 
     // Iterative solver
-    iterLinearSolverMethodList.insert(Hermes::Solvers::CG, "cg");
-    iterLinearSolverMethodList.insert(Hermes::Solvers::GMRES, "gmres");
-    iterLinearSolverMethodList.insert(Hermes::Solvers::BiCGStab, "bicgstab");
-    iterLinearSolverMethodList.insert(Hermes::Solvers::CR, "cr");
-    // iterLinearSolverMethodList.insert(Hermes::Solvers::IDR, "idr");
+    iterLinearSolverMethodList.insert(IterSolverType_CG, "cg");
+    iterLinearSolverMethodList.insert(IterSolverType_GMRES, "gmres");
+    iterLinearSolverMethodList.insert(IterSolverType_BiCGStab, "bicgstab");
+    iterLinearSolverMethodList.insert(IterSolverType_CR, "cr");
+    // iterLinearSolverMethodList.insert(IDR, "idr");
 
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::Jacobi, "jacobi");
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ILU, "ilu");
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::MultiColoredSGS, "multicoloredsgs");
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::MultiColoredILU, "multicoloredilu");
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::SaddlePoint, "saddlepoint");
-    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::AIChebyshev, "aichebyshev");
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::IC, "ic");
-    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::MultiElimination, "multielimination");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_Jacobi, "jacobi");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_ILU, "ilu");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_MultiColoredSGS, "multicoloredsgs");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_MultiColoredILU, "multicoloredilu");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_SaddlePoint, "saddlepoint");
+    // iterLinearSolverPreconditionerTypeList.insert(AIChebyshev, "aichebyshev");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_IC, "ic");
+    iterLinearSolverPreconditionerTypeList.insert(PreconditionerType_MultiElimination, "multielimination");
 }
 
-QString errorNormString(Hermes::Hermes2D::NormType projNormType)
+QString errorNormString(NormType projNormType)
 {
     switch (projNormType)
     {
-    case Hermes::Hermes2D::HERMES_H1_NORM:
+    case NormType_H1_NORM:
         return QObject::tr("H1 norm");
-    case Hermes::Hermes2D::HERMES_L2_NORM:
+    case NormType_L2_NORM:
         return QObject::tr("L2 norm");
-    case Hermes::Hermes2D::HERMES_H1_SEMINORM:
+    case NormType_H1_SEMINORM:
         return QObject::tr("H1 seminorm");
-    case Hermes::Hermes2D::HERMES_HDIV_NORM:
+    case NormType_HDIV_NORM:
         return QObject::tr("Hdiv norm");
-    case Hermes::Hermes2D::HERMES_HCURL_NORM:
+    case NormType_HCURL_NORM:
         return QObject::tr("Hcurl norm");
-    case Hermes::Hermes2D::HERMES_UNSET_NORM:
+    case NormType_UNSET_NORM:
         return QObject::tr("Custom norm");
     default:
         std::cerr << "Norm '" + QString::number(projNormType).toStdString() + "' is not implemented. QString errorNormString(ProjNormType projNormType)" << endl;
@@ -629,29 +617,29 @@ QString vectorCenterString(VectorCenter vectorCenter)
     }
 }
 
-QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
+QString matrixSolverTypeString(MatrixSolverType matrixSolverType)
 {
     switch (matrixSolverType)
     {
-    case Hermes::SOLVER_EMPTY:
+    case SOLVER_EMPTY:
         return QObject::tr("EMPTY");
-    case Hermes::SOLVER_UMFPACK:
+    case SOLVER_UMFPACK:
         return QObject::tr("UMFPACK");
-    case Hermes::SOLVER_PETSC:
+    case SOLVER_PETSC:
         return QObject::tr("PETSc");
-    case Hermes::SOLVER_MUMPS:
+    case SOLVER_MUMPS:
         return QObject::tr("MUMPS");
-    case Hermes::SOLVER_SUPERLU:
+    case SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
-    case Hermes::SOLVER_PARALUTION_ITERATIVE:
+    case SOLVER_PARALUTION_ITERATIVE:
         return QObject::tr("PARALUTION iter. (exp.)");
-    case Hermes::SOLVER_PARALUTION_AMG:
+    case SOLVER_PARALUTION_AMG:
         return QObject::tr("PARALUTION AMG (exp.)");
-    case Hermes::SOLVER_AMESOS:
+    case SOLVER_AMESOS:
         return QObject::tr("Trilinos/Amesos");
-    case Hermes::SOLVER_AZTECOO:
+    case SOLVER_AZTECOO:
         return QObject::tr("Trilinos/AztecOO");
-    case Hermes::SOLVER_EXTERNAL:
+    case SOLVER_EXTERNAL:
         return QObject::tr("MUMPS (out of core)");
     default:
         std::cerr << "Matrix solver type '" + QString::number(matrixSolverType).toStdString() + "' is not implemented. matrixSolverTypeString(MatrixSolverType matrixSolverType)" << endl;
@@ -659,25 +647,25 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     }
 }
 
-QString dumpFormatString(Hermes::Algebra::MatrixExportFormat format)
+QString dumpFormatString(MatrixExportFormat format)
 {
     switch (format)
     {
-    case Hermes::Algebra::EXPORT_FORMAT_MATLAB_MATIO:
+    case EXPORT_FORMAT_MATLAB_MATIO:
         return QObject::tr("MATLAB MAT");
-    case Hermes::Algebra::EXPORT_FORMAT_MATRIX_MARKET:
+    case EXPORT_FORMAT_MATRIX_MARKET:
         return QObject::tr("Matrix Market");
-    case Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII:
+    case EXPORT_FORMAT_PLAIN_ASCII:
         return QObject::tr("Plain ASCII");
     default:
-        std::cerr << "Matrix dump format '" + QString::number(format).toStdString() + "' is not implemented. dumpFormatString(Hermes::Algebra::MatrixExportFormat format)" << endl;
+        std::cerr << "Matrix dump format '" + QString::number(format).toStdString() + "' is not implemented. dumpFormatString(MatrixExportFormat format)" << endl;
         throw;
     }
 }
 
-bool isMatrixSolverIterative(Hermes::MatrixSolverType type)
+bool isMatrixSolverIterative(MatrixSolverType type)
 {
-    return ((type == Hermes::SOLVER_PARALUTION_ITERATIVE) || (type == Hermes::SOLVER_PARALUTION_AMG));
+    return ((type == SOLVER_PARALUTION_ITERATIVE) || (type == SOLVER_PARALUTION_AMG));
 }
 
 QString linearityTypeString(LinearityType linearityType)
@@ -742,42 +730,42 @@ QString specialFunctionTypeString(SpecialFunctionType specialFunctionType)
     }
 }
 
-QString butcherTableTypeString(Hermes::ButcherTableType tableType)
+QString butcherTableTypeString(ButcherTableType tableType)
 {
     switch (tableType)
     {
-    case Hermes::Explicit_HEUN_EULER_2_12_embedded:
+    case Explicit_HEUN_EULER_2_12_embedded:
         return QObject::tr("Heun-Euler (2,1)");
-    case Hermes::Explicit_BOGACKI_SHAMPINE_4_23_embedded:
+    case Explicit_BOGACKI_SHAMPINE_4_23_embedded:
         return QObject::tr("Bogacki-Shampine (2,3)");
-    case Hermes::Explicit_FEHLBERG_6_45_embedded:
+    case Explicit_FEHLBERG_6_45_embedded:
         return QObject::tr("Fehlberg (4,5)");
-    case Hermes::Explicit_CASH_KARP_6_45_embedded:
+    case Explicit_CASH_KARP_6_45_embedded:
         return QObject::tr("Cash-Karp (4,5)");
-    case Hermes::Explicit_DORMAND_PRINCE_7_45_embedded:
+    case Explicit_DORMAND_PRINCE_7_45_embedded:
         return QObject::tr("Dormand-Prince (4,5)");
     default:
-        std::cerr << "Butcher table type'" + QString::number(tableType).toStdString() + "' is not implemented. butcherTableTypeString(Hermes::ButcherTableType tableType)" << endl;
+        std::cerr << "Butcher table type'" + QString::number(tableType).toStdString() + "' is not implemented. butcherTableTypeString(ButcherTableType tableType)" << endl;
         throw;
     }
 }
 
-QString iterLinearSolverMethodString(Hermes::Solvers::IterSolverType type)
+QString iterLinearSolverMethodString(IterSolverType type)
 {
     switch (type)
     {
-    case Hermes::Solvers::CG:
+    case IterSolverType_CG:
         return QObject::tr("CG");
-    case Hermes::Solvers::GMRES:
+    case IterSolverType_GMRES:
         return QObject::tr("GMRES");
-    case Hermes::Solvers::BiCGStab:
+    case IterSolverType_BiCGStab:
         return QObject::tr("BiCGStab");
-    case Hermes::Solvers::IDR:
+    case IterSolverType_IDR:
         return QObject::tr("IDR");
-    case Hermes::Solvers::CR:
+    case IterSolverType_CR:
         return QObject::tr("CR");
     default:
-        std::cerr << "Iterative solver method '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverTypeString(Hermes::Solvers::ParalutionSolverType type)" << endl;
+        std::cerr << "Iterative solver method '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverTypeString(ParalutionSolverType type)" << endl;
         throw;
     }
 }
@@ -786,24 +774,24 @@ QString iterLinearSolverPreconditionerTypeString(PreconditionerType type)
 {
     switch (type)
     {
-    case Hermes::Solvers::Jacobi:
+    case PreconditionerType_Jacobi:
         return QObject::tr("Jacobi");
-    case Hermes::Solvers::ILU:
+    case PreconditionerType_ILU:
         return QObject::tr("ILU");
-    case Hermes::Solvers::MultiColoredSGS:
+    case PreconditionerType_MultiColoredSGS:
         return QObject::tr("MultiColoredSGS");
-    case Hermes::Solvers::MultiColoredILU:
+    case PreconditionerType_MultiColoredILU:
         return QObject::tr("MultiColoredILU");
-    case Hermes::Solvers::IC:
+    case PreconditionerType_IC:
         return QObject::tr("IC");
-    case Hermes::Solvers::AIChebyshev:
+    case PreconditionerType_AIChebyshev:
         return QObject::tr("AIChebyshev");
-    case Hermes::Solvers::MultiElimination:
+    case PreconditionerType_MultiElimination:
         return QObject::tr("MultiElimination");
-    case Hermes::Solvers::SaddlePoint:
+    case PreconditionerType_SaddlePoint:
         return QObject::tr("SaddlePoint");
     default:
-        std::cerr << "Iterative solver preconditioner '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverPreconditionerTypeString(Hermes::Solvers::PreconditionerType type)" << endl;
+        std::cerr << "Iterative solver preconditioner '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverPreconditionerTypeString(PreconditionerType type)" << endl;
         throw;
     }
 }

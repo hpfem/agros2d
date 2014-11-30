@@ -134,8 +134,8 @@ AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, Q
 }
 {{/EXT_FUNCTIONS_PART}}
 
-Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(const FieldInfo *fieldInfo,
-                                                                               const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
+ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(const FieldInfo *fieldInfo,
+                                                                               const QString &calculator, CalculatedErrorType errorType)
 {
     return new {{CLASS}}ErrorCalculator<double>(fieldInfo, calculator, errorType);
 }
@@ -165,10 +165,9 @@ IntegralValue *{{CLASS}}Interface::volumeIntegral(const FieldInfo *fieldInfo, in
 }
 
 Point3 {{CLASS}}Interface::force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                 Hermes::Hermes2D::Element *element, SceneMaterial *material,
-                                 const Point3 &point, const Point3 &velocity)
+                                 SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
-    return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, element, material, point, velocity);
+    return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, material, point, velocity);
 }
 
 bool {{CLASS}}Interface::hasForce(const FieldInfo *fieldInfo)

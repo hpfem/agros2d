@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "particle_tracing.h"
 
@@ -94,7 +94,7 @@ Point3 ParticleTracing::force(int particleIndex,
         Point3 fieldForce;
         /*
         bool elementIsValid = false;
-        Hermes::Hermes2D::Element *activeElement = NULL;
+        Element *activeElement = NULL;
 
         // active element for current field
         if (m_activeElement.contains(fieldInfo))
@@ -104,13 +104,13 @@ Point3 ParticleTracing::force(int particleIndex,
         {
             double x_reference;
             double y_reference;
-            elementIsValid = Hermes::Hermes2D::RefMap::is_element_on_physical_coordinates(activeElement,
+            elementIsValid = RefMap::is_element_on_physical_coordinates(activeElement,
                                                                                           position.x, position.y, &x_reference, &y_reference);
         }
 
         if (!elementIsValid)
         {
-            m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(true, m_meshes[fieldInfo],
+            m_activeElement[fieldInfo] = RefMap::element_on_physical_coordinates(true, m_meshes[fieldInfo],
                                                                                                    position.x, position.y);
         }
 
@@ -149,7 +149,7 @@ Point3 ParticleTracing::force(int particleIndex,
         try
         {
             fieldForce = fieldInfo->plugin()->force(fieldInfo, m_solutionIDs[fieldInfo].timeStep, m_solutionIDs[fieldInfo].adaptivityStep, m_solutionIDs[fieldInfo].solutionMode,
-                                                    NULL, material, position, velocity)
+                                                    material, position, velocity)
                     * m_particleChargesList[particleIndex];
         }
         catch (AgrosException e)
@@ -324,7 +324,7 @@ void ParticleTracing::computeTrajectoryParticles(const QList<Point3> initialPosi
     m_particleChargesList = particleCharges;
     m_particleMassesList = particleMasses;
 
-    Hermes::ButcherTable butcher((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt());
+    ButcherTable butcher((ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt());
 
     clear();
 

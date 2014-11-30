@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "datatable.h"
 
@@ -43,7 +43,7 @@ DataTable &DataTable::operator =(const DataTable &origin)
     m_splineFirstDerivatives = origin.m_splineFirstDerivatives;
     m_extrapolateConstant = origin.m_extrapolateConstant;
 
-    m_spline = QSharedPointer<Hermes::Hermes2D::CubicSpline>();
+    m_spline = QSharedPointer<CubicSpline>();
     m_linear = QSharedPointer<PiecewiseLinear>();
     m_constant = QSharedPointer<ConstantTable>();
 
@@ -226,19 +226,19 @@ void DataTable::validate()
         // this is strange, though, since no other thread should be able to access thanks to mutex check
         try
         {
-            QSharedPointer<Hermes::Hermes2D::CubicSpline> spline
-                    = QSharedPointer<Hermes::Hermes2D::CubicSpline>(new Hermes::Hermes2D::CubicSpline(m_points,
-                                                                                                      m_values,
-                                                                                                      0.0, 0.0,
-                                                                                                      m_splineFirstDerivatives, m_splineFirstDerivatives,
-                                                                                                      !m_extrapolateConstant, !m_extrapolateConstant));
+            QSharedPointer<CubicSpline> spline
+                    = QSharedPointer<CubicSpline>(new CubicSpline(m_points,
+                                                                  m_values,
+                                                                  0.0, 0.0,
+                                                                  m_splineFirstDerivatives, m_splineFirstDerivatives,
+                                                                  !m_extrapolateConstant, !m_extrapolateConstant));
             spline.data()->calculate_coeffs();
             m_spline = spline;
         }
-        catch (Hermes::Exceptions::Exception e)
+        catch (AgrosException e)
         {
             m_valid = false;
-            qDebug() << "Exception thrown from Hermes::Hermes2D::CubicSpline has been ignored. DataTable not validated!";
+            qDebug() << "Exception thrown from CubicSpline has been ignored. DataTable not validated!";
             return;
         }
 

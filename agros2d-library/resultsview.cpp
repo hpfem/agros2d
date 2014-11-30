@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "resultsview.h"
 
@@ -26,7 +26,6 @@
 #include "gui/valuelineedit.h"
 
 #include "scene.h"
-#include "hermes2d.h"
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
 #include "hermes2d/field.h"
@@ -36,34 +35,6 @@
 #include "sceneview_post.h"
 
 #include <ctemplate/template.h>
-
-class CustomVolumetricIntegralCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
-{
-public:
-    CustomVolumetricIntegralCalculator(Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals)
-    {
-    }
-
-    CustomVolumetricIntegralCalculator(std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals)
-    {
-    }
-
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomVol<double> *e, double* result)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            result[0] += wt[i]; // * fns[0]->val[i];
-            result[1] += wt[i] * 2 * M_PI * e->x[i];
-        }
-    }
-
-    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result) {
-        result[0] = Hermes::Ord(21);
-    }
-};
-
 
 ResultsView::ResultsView(PostDeal *postDeal, QWidget *parent)
     : QDockWidget(tr("Results view"), parent), m_postDeal(postDeal)
@@ -222,9 +193,6 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        // TODO: dummy calc - remove
-        CustomVolumetricIntegralCalculator calc(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(), 0);
-
         IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo,
                                                                       m_postDeal->activeTimeStep(),
                                                                       m_postDeal->activeAdaptivityStep(),

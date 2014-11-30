@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "sceneview_vtk2d.h"
 
@@ -974,31 +974,6 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::meshActor()
         ++ti;
     }
 
-    /*
-    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
-         it = m_postHermes->linScalarView()->vertices_begin(); !it.end; ++it)
-    {
-        Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
-
-        points->InsertNextPoint(vertex[0], vertex[1], 0.0);
-        weights->InsertNextValue(vertex[2]);
-    }
-
-    vtkSmartPointer<vtkCellArray> triangles = vtkSmartPointer<vtkCellArray>::New();
-    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::triangle_indices_t>
-         it = m_postHermes->linScalarView()->triangle_indices_begin(); !it.end; ++it)
-    {
-        Hermes::Hermes2D::Views::triangle_indices_t& triangle_indices = it.get();
-
-        vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-        triangle->GetPointIds()->SetId(0, triangle_indices[0]);
-        triangle->GetPointIds()->SetId(1, triangle_indices[1]);
-        triangle->GetPointIds()->SetId(2, triangle_indices[2]);
-
-        triangles->InsertNextCell(triangle);
-    }
-    */
-
     // create a polydata object
     vtkSmartPointer<vtkPolyData> quadPolyData = vtkSmartPointer<vtkPolyData>::New();
 
@@ -1072,11 +1047,11 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::vectorActor()
     double gs = (rect.width() + rect.height()) / Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt();
 
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-
-    for (Hermes::Hermes2D::Views::Vectorizer::Iterator<Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
+    /*
+    for (Views::Vectorizer::Iterator<Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t>
          it = m_postHermes->vecVectorView()->triangles_begin(); !it.end; ++it)
     {
-        Hermes::Hermes2D::Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
+        Views::VectorLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::triangle_t& triangle = it.get();
 
         Point a(triangle[0][0], triangle[0][1]);
         Point b(triangle[1][0], triangle[1][1]);
@@ -1153,7 +1128,7 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::vectorActor()
             }
         }
     }
-
+    */
     // create a polydata object
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
 
@@ -1190,20 +1165,20 @@ vtkSmartPointer<vtkActor> SceneViewVTK2D::contourActor()
     weights->SetName("contour");
 
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
+    for (Views::Linearizer::Iterator<Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t>
          it = m_postHermes->linContourView()->vertices_begin(); !it.end; ++it)
     {
-        Hermes::Hermes2D::Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
+        Views::ScalarLinearizerDataDimensions<LINEARIZER_DATA_TYPE>::vertex_t& vertex = it.get();
 
         points->InsertNextPoint(vertex[0], vertex[1], 0.0);
         weights->InsertNextValue(vertex[2]);
     }
 
     vtkSmartPointer<vtkCellArray> triangles = vtkSmartPointer<vtkCellArray>::New();
-    for (Hermes::Hermes2D::Views::Linearizer::Iterator<Hermes::Hermes2D::Views::triangle_indices_t>
+    for (Views::Linearizer::Iterator<Views::triangle_indices_t>
          it = m_postHermes->linContourView()->triangle_indices_begin(); !it.end; ++it)
     {
-        Hermes::Hermes2D::Views::triangle_indices_t& triangle_indices = it.get();
+        Views::triangle_indices_t& triangle_indices = it.get();
 
         vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
         triangle->GetPointIds()->SetId(0, triangle_indices[0]);

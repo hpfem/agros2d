@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #ifdef WIN32
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -67,6 +67,8 @@ void PostDataOut::compute_nodes(QList<PostTriangle> &values, bool deform)
     // min and max value
     m_min =  numeric_limits<double>::max();
     m_max = -numeric_limits<double>::max();
+    double minDeform =  numeric_limits<double>::max();
+    double maxDeform = -numeric_limits<double>::max();
 
     for (typename std::vector<dealii::DataOutBase::Patch<2> >::const_iterator patch = patches.begin(); patch != patches.end(); ++patch)
     {
@@ -76,6 +78,14 @@ void PostDataOut::compute_nodes(QList<PostTriangle> &values, bool deform)
 
             m_min = std::min(m_min, value);
             m_max = std::max(m_max, value);
+
+            if (deform)
+            {
+                double value = sqrt(patch->data(1, i)*patch->data(1, i) + patch->data(2, i)*patch->data(2, i));
+
+                minDeform = std::min(m_min, value);
+                maxDeform = std::max(m_max, value);
+            }
         }
     }
 
@@ -83,7 +93,8 @@ void PostDataOut::compute_nodes(QList<PostTriangle> &values, bool deform)
     if (deform)
     {
         RectPoint rect = Agros2D::scene()->boundingBox();
-        dmult = qMax(rect.width(), rect.height()) / m_max / 15.0;
+        dmult = qMax(rect.width(), rect.height()) / maxDeform / 15.0;
+        qDebug() << dmult;
     }
 
     // compute values in patches
@@ -428,14 +439,18 @@ PostDataOut *PostDeal::viewScalarFilter(Module::LocalVariable physicFieldVariabl
                                                                                    physicFieldVariable.id(),
                                                                                    physicFieldVariableComp);
 
+
     PostDataOut *data_out = new PostDataOut();
     data_out->attach_dof_handler(*ma.doFHandler());
     data_out->add_data_vector(*ma.solution(), *post);
     // deform shape
-    if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
+    if (m_activeViewField->hasDeformableShape())
     {
-        data_out->add_data_vector(*ma.solution(), "x");
-        data_out->add_data_vector(*ma.solution(), "y");
+        std::vector<std::string> solution_names;
+        solution_names.push_back ("x_displacement");
+        solution_names.push_back ("y_displacement");
+
+        data_out->add_data_vector(*ma.solution(), solution_names);
     }
     data_out->build_patches(2);
 

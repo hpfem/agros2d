@@ -3,12 +3,11 @@
 
 #include "util.h"
 #include "util/enums.h"
-#include "hermes2d.h"
 
 struct AGROS_LIBRARY_API FormInfo
 {
-    FormInfo() : id(""), i(0), j(0), sym_planar(Hermes::Hermes2D::HERMES_NONSYM), sym_axi(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
-    FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym_planar = Hermes::Hermes2D::HERMES_NONSYM, Hermes::Hermes2D::SymFlag sym_axi = Hermes::Hermes2D::HERMES_NONSYM)
+    FormInfo() : id(""), i(0), j(0), sym_planar(HERMES_NONSYM), sym_axi(HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
+    FormInfo(const QString &id, int i = 0, int j = 0, SymFlag sym_planar = HERMES_NONSYM, SymFlag sym_axi = HERMES_NONSYM)
         : id(id), i(i), j(j), sym_planar(sym_planar), sym_axi(sym_axi), variant(WeakFormVariant_Normal), coefficient(1), condition("") {}
 
     QString id;
@@ -18,8 +17,8 @@ struct AGROS_LIBRARY_API FormInfo
     int j;
 
     // symmetric flag
-    Hermes::Hermes2D::SymFlag sym_planar;
-    Hermes::Hermes2D::SymFlag sym_axi;
+    SymFlag sym_planar;
+    SymFlag sym_axi;
 
     QString expr_planar;
     QString expr_axi;
@@ -27,7 +26,7 @@ struct AGROS_LIBRARY_API FormInfo
     double coefficient;
     QString condition;
 
-    Hermes::Hermes2D::SymFlag sym(CoordinateType coordinateType) { return (coordinateType == CoordinateType_Axisymmetric) ? sym_axi : sym_planar; }
+    SymFlag sym(CoordinateType coordinateType) { return (coordinateType == CoordinateType_Axisymmetric) ? sym_axi : sym_planar; }
 };
 
 #endif // FORM_INFO_H

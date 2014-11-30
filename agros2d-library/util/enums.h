@@ -1,30 +1,29 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #ifndef UTIL_ENUMS_H
 #define UTIL_ENUMS_H
 
 #include "QtCore"
 
-#include "hermes_common.h"
-#include "hermes2d.h"
 #include "util.h"
+#include "util/table.h"
 
 enum CoordinateType
 {
@@ -247,11 +246,81 @@ enum SpecialFunctionType
     SpecialFunctionType_Function1D = 1
 };
 
+enum MatrixSolverType
+{
+    SOLVER_UMFPACK = 0,
+    SOLVER_PARALUTION_ITERATIVE = 1,
+    SOLVER_PARALUTION_AMG = 2,
+    SOLVER_PETSC = 3,
+    SOLVER_MUMPS = 4,
+    SOLVER_SUPERLU = 5,
+    SOLVER_AMESOS = 6,
+    SOLVER_AZTECOO = 7,
+    SOLVER_EXTERNAL = 8,
+    SOLVER_EMPTY = 100
+};
+
+enum DirectMatrixSolverType
+{
+    DIRECT_SOLVER_UMFPACK = 0,
+    DIRECT_SOLVER_MUMPS = 4,
+    DIRECT_SOLVER_SUPERLU = 5,
+    DIRECT_SOLVER_AMESOS = 6,
+    // Solver external is here, because direct solvers are used in projections.
+    DIRECT_SOLVER_EXTERNAL = 8
+};
+
+enum MatrixExportFormat
+{
+    /// \brief Plain ascii file
+    /// lines contains row column and value
+    EXPORT_FORMAT_PLAIN_ASCII = 1,
+    /// Binary MATio format
+    EXPORT_FORMAT_MATLAB_MATIO = 4,
+    /// \brief Matrix Market which can be read by pysparse library
+    EXPORT_FORMAT_MATRIX_MARKET = 3
+};
+
+enum NormType
+{
+    NormType_L2_NORM,
+    NormType_H1_NORM,
+    NormType_H1_SEMINORM,
+    NormType_HCURL_NORM,
+    NormType_HDIV_NORM,
+    NormType_UNSET_NORM
+};
+
+enum SymFlag
+{
+    HERMES_ANTISYM = -1,
+    HERMES_NONSYM = 0,
+    HERMES_SYM = 1
+};
+
+enum IterSolverType
+{
+    IterSolverType_CG = 0,
+    IterSolverType_GMRES = 1,
+    IterSolverType_BiCGStab = 2,
+    IterSolverType_CR = 3,
+    IterSolverType_IDR = 4
+};
+
+enum PreconditionerType
+{
+    PreconditionerType_Jacobi = 0,
+    PreconditionerType_MultiColoredSGS = 1,
+    PreconditionerType_ILU = 2,
+    PreconditionerType_MultiColoredILU = 3,
+    PreconditionerType_IC = 4,
+    PreconditionerType_AIChebyshev = 5,
+    PreconditionerType_MultiElimination = 6,
+    PreconditionerType_SaddlePoint = 7
+};
+
 // keys
 AGROS_LIBRARY_API void initLists();
-
-// error norm
-AGROS_LIBRARY_API QString errorNormString(Hermes::Hermes2D::NormType projNormType);
 
 // coordinate type
 AGROS_LIBRARY_API QString coordinateTypeString(CoordinateType coordinateType);
@@ -308,10 +377,10 @@ AGROS_LIBRARY_API QString adaptivityStoppingCriterionTypeToStringKey(AdaptivityS
 AGROS_LIBRARY_API AdaptivityStoppingCriterionType adaptivityStoppingCriterionFromStringKey(const QString &adaptivityStoppingCriterionType);
 
 // adaptivity norm type
-AGROS_LIBRARY_API QString errorNormString(Hermes::Hermes2D::NormType projNormType);
+AGROS_LIBRARY_API QString errorNormString(NormType projNormType);
 AGROS_LIBRARY_API QStringList adaptivityNormTypeStringKeys();
-AGROS_LIBRARY_API QString adaptivityNormTypeToStringKey(Hermes::Hermes2D::NormType adaptivityNormType);
-AGROS_LIBRARY_API Hermes::Hermes2D::NormType adaptivityNormTypeFromStringKey(const QString &adaptivityNormType);
+AGROS_LIBRARY_API QString adaptivityNormTypeToStringKey(NormType adaptivityNormType);
+AGROS_LIBRARY_API NormType adaptivityNormTypeFromStringKey(const QString &adaptivityNormType);
 
 // time step method
 AGROS_LIBRARY_API QString timeStepMethodString(TimeStepMethod timeStepMethod);
@@ -326,22 +395,17 @@ AGROS_LIBRARY_API QString solutionTypeToStringKey(SolutionMode solutionType);
 AGROS_LIBRARY_API SolutionMode solutionTypeFromStringKey(const QString &solutionType);
 
 // matrix solver type
-AGROS_LIBRARY_API bool isMatrixSolverIterative(Hermes::MatrixSolverType type);
-AGROS_LIBRARY_API QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
+AGROS_LIBRARY_API bool isMatrixSolverIterative(MatrixSolverType type);
+AGROS_LIBRARY_API QString matrixSolverTypeString(MatrixSolverType matrixSolverType);
 AGROS_LIBRARY_API QStringList matrixSolverTypeStringKeys();
-AGROS_LIBRARY_API QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
-AGROS_LIBRARY_API Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
+AGROS_LIBRARY_API QString matrixSolverTypeToStringKey(MatrixSolverType matrixSolverType);
+AGROS_LIBRARY_API MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
 // matrix dump format
-AGROS_LIBRARY_API QString dumpFormatString(Hermes::Algebra::MatrixExportFormat format);
+AGROS_LIBRARY_API QString dumpFormatString(MatrixExportFormat format);
 AGROS_LIBRARY_API QStringList dumpFormatStringKeys();
-AGROS_LIBRARY_API QString dumpFormatToStringKey(Hermes::Algebra::MatrixExportFormat format);
-AGROS_LIBRARY_API Hermes::Algebra::MatrixExportFormat dumpFormatFromStringKey(const QString &format);
-
-// space type
-AGROS_LIBRARY_API QStringList spaceTypeStringKeys();
-AGROS_LIBRARY_API QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType);
-AGROS_LIBRARY_API Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType);
+AGROS_LIBRARY_API QString dumpFormatToStringKey(MatrixExportFormat format);
+AGROS_LIBRARY_API MatrixExportFormat dumpFormatFromStringKey(const QString &format);
 
 // linearity type
 AGROS_LIBRARY_API QString linearityTypeString(LinearityType linearityType);
@@ -396,21 +460,21 @@ AGROS_LIBRARY_API QString specialFunctionTypeToStringKey(SpecialFunctionType spe
 AGROS_LIBRARY_API SpecialFunctionType specialFunctionTypeFromStringKey(const QString &specialFunctionType);
 
 // butcher table type
-AGROS_LIBRARY_API QString butcherTableTypeString(Hermes::ButcherTableType tableType);
+AGROS_LIBRARY_API QString butcherTableTypeString(ButcherTableType tableType);
 AGROS_LIBRARY_API QStringList butcherTableTypeStringKeys();
-AGROS_LIBRARY_API QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType);
-AGROS_LIBRARY_API Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType);
+AGROS_LIBRARY_API QString butcherTableTypeToStringKey(ButcherTableType tableType);
+AGROS_LIBRARY_API ButcherTableType butcherTableTypeFromStringKey(const QString &tableType);
 
 // iterative solver - method
-AGROS_LIBRARY_API QString iterLinearSolverMethodString(Hermes::Solvers::IterSolverType type);
+AGROS_LIBRARY_API QString iterLinearSolverMethodString(IterSolverType type);
 AGROS_LIBRARY_API QStringList iterLinearSolverMethodStringKeys();
-AGROS_LIBRARY_API QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterSolverType type);
-AGROS_LIBRARY_API Hermes::Solvers::IterSolverType iterLinearSolverMethodFromStringKey(const QString &type);
+AGROS_LIBRARY_API QString iterLinearSolverMethodToStringKey(IterSolverType type);
+AGROS_LIBRARY_API IterSolverType iterLinearSolverMethodFromStringKey(const QString &type);
 
 // iterative solver - preconditioner
-AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeString(Hermes::Solvers::PreconditionerType type);
+AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeString(PreconditionerType type);
 AGROS_LIBRARY_API QStringList iterLinearSolverPreconditionerTypeStringKeys();
-AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::PreconditionerType type);
-AGROS_LIBRARY_API Hermes::Solvers::PreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type);
+AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeToStringKey(PreconditionerType type);
+AGROS_LIBRARY_API PreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type);
 
 #endif // UTIL_ENUMS_H

@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #ifndef SOLVER_H
 #define SOLVER_H
@@ -119,7 +119,8 @@ protected:
     int m_jacobianCalculations;
 };
 
-class AgrosExternalSolverExternal : public QObject, public ExternalSolver<double>
+/*
+class AgrosExternalSolverExternal : public QObject
 {
     Q_OBJECT
 
@@ -164,45 +165,13 @@ public:
     virtual void setSolverCommand();
     virtual void free();
 };
+*/
 
 struct TimeStepInfo
 {
     TimeStepInfo(double len, bool ref = false) : length(len), refuse(ref) {}
     double length;
     bool refuse;
-};
-
-template <typename Scalar>
-class HermesSolverContainer
-{
-public:
-    HermesSolverContainer() : m_slnVector(NULL), m_constJacobianPossible(false) {}
-    virtual ~HermesSolverContainer() {}
-
-    void projectPreviousSolution(Scalar* solutionVector,
-                                 std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
-                                 std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
-
-    virtual void solve(Scalar* previousSolutionVector) = 0;
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() = 0;
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakFormSharedPtr<Scalar> wf) = 0;
-
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
-    void setMatrixRhsOutputGen(Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
-
-    virtual void matrixUnchangedDueToBDF(bool unchanged) {}
-    virtual Hermes::Algebra::LinearMatrixSolver<Scalar> *linearSolver() = 0;
-
-    inline Scalar *slnVector() { return m_slnVector; }
-    virtual SolverAgros *solver() const = 0;
-
-    // solver factory
-    static QSharedPointer<HermesSolverContainer<Scalar> > factory();
-
-protected:    
-    Scalar *m_slnVector;
-
-    bool m_constJacobianPossible;
 };
 
 // solve
@@ -226,7 +195,7 @@ template <typename Scalar>
 class ProblemSolver
 {
 public:
-    ProblemSolver() : m_hermesSolverContainer(NULL) {}
+    ProblemSolver() {}
     ~ProblemSolver();
 
     // void init(Block* block);
@@ -244,10 +213,8 @@ public:
     // to be used in solveAdaptivityStep
     void resumeAdaptivityProcess(int adaptivityStep);
 
-private:
-    QSharedPointer<HermesSolverContainer<Scalar> > m_hermesSolverContainer;
-
-    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_actualSpaces;
+private:   
+    // std::vector<SpaceSharedPtr<Scalar> > m_actualSpaces;
 
     QString m_solverID;
     QString m_solverName;
@@ -259,14 +226,10 @@ private:
     // to be used in advanced time step adaptivity
     double m_averageErrorToLenghtRatio;
 
-    void initSelectors(std::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
+    // Scalar *solveOneProblem(std::vector<SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, std::vector<MeshFunctionSharedPtr<Scalar> > previousSolution = std::vector<MeshFunctionSharedPtr<Scalar> >());
 
-    Scalar *solveOneProblem(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution = std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
-
-    void clearActualSpaces();
-    void setActualSpaces(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces);
-    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
-    std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, bool createReference);
+    // std::vector<SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
+    // std::vector<SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(std::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference);
 };
 
 #endif // SOLVER_H

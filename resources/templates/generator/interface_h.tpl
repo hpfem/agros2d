@@ -54,8 +54,8 @@ virtual dealii::DataPostprocessorScalar<2> *filter(const FieldInfo *fieldInfo, i
                                                    PhysicFieldVariableComp physicFieldVariableComp);
 
 // error calculators
-// virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
-//                                                                   const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
+// virtual ErrorCalculator<double> *errorCalculator(const FieldInfo *fieldInfo,
+//                                                                   const QString &calculator, CalculatedErrorType errorType);
 
 // local values
 virtual LocalValue *localValue(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
@@ -66,8 +66,7 @@ virtual IntegralValue *volumeIntegral(const FieldInfo *fieldInfo, int timeStep, 
 
 // force calculation
 virtual Point3 force(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                     Hermes::Hermes2D::Element *element, SceneMaterial *material,
-                     const Point3 &point, const Point3 &velocity);
+                     SceneMaterial *material, const Point3 &point, const Point3 &velocity);
 virtual bool hasForce(const FieldInfo *fieldInfo);
 
 

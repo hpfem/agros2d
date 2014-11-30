@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "generator.h"
 #include "generator_coupling.h"
@@ -82,7 +82,7 @@ void Agros2DGeneratorCoupling::generatePluginProjectFile()
 {
     QString id = (QString::fromStdString(m_coupling->general_coupling().id().c_str()));
 
-    Hermes::Mixins::Loggable::Static::info(QString("generating project file").toLatin1());
+    qDebug() << (QString("generating project file").toLatin1());
 
     ctemplate::TemplateDictionary output("output");
     output.SetValue("ID", id.toStdString());
@@ -104,7 +104,7 @@ void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
 {
     QString id = QString::fromStdString(m_coupling->general_coupling().id());
 
-    Hermes::Mixins::Loggable::Static::info(QString("generating interface file").toLatin1());
+    qDebug() << (QString("generating interface file").toLatin1());
 
     std::string text;
 
@@ -135,7 +135,7 @@ void Agros2DGeneratorCoupling::generatePluginInterfaceFiles()
 
 void Agros2DGeneratorCoupling::generatePluginWeakFormFiles()
 {
-    Hermes::Mixins::Loggable::Static::warn(QString("Coupling: %1.").arg(QString::fromStdString(m_coupling->general_coupling().id())).toLatin1());
+    qDebug() << (QString("Coupling: %1.").arg(QString::fromStdString(m_coupling->general_coupling().id())).toLatin1());
 
     generatePluginWeakFormSourceFiles();
     generatePluginWeakFormHeaderFiles();
@@ -145,7 +145,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 {
     QString id = QString::fromStdString(m_coupling->general_coupling().id());
 
-    Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
+    qDebug() << (QString("generating weakform header file").toLatin1());
 
     // header - expand template
     std::string text;
@@ -173,7 +173,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
     QString id = QString::fromStdString(m_coupling->general_coupling().id());
     QStringList modules = QString::fromStdString(m_coupling->general_coupling().id()).split("-");
 
-    Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
+    qDebug() << (QString("generating weakform source file").toLatin1());
 
     std::string text;
     ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
@@ -279,7 +279,7 @@ void Agros2DGeneratorCoupling::generateWeakForms(ctemplate::TemplateDictionary &
 
 void Agros2DGeneratorCoupling::prepareWeakFormsOutput()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("parsing weak forms").toLatin1());
+    qDebug() << (QString("parsing weak forms").toLatin1());
     assert(! m_output);
     m_output = new ctemplate::TemplateDictionary("output");
 

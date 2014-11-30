@@ -47,24 +47,24 @@
 #include <deal.II/numerics/vector_tools.h>
 
 /*
-class {{CLASS}}VolumetricIntegralEggShellCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
+class {{CLASS}}VolumetricIntegralEggShellCalculator : public PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
+    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
         {{#SPECIAL_FUNCTION_SOURCE}}
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
+    {{CLASS}}VolumetricIntegralEggShellCalculator(const FieldInfo *fieldInfo, std::vector<MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
         {{#SPECIAL_FUNCTION_SOURCE}}
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomVol<double> *e, double* result)
+    virtual void integral(int n, double* wt, Func<double> **fns, GeomVol<double> *e, double* result)
     {
         SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
         SceneMaterial *material = label->marker(m_fieldInfo);
@@ -105,14 +105,6 @@ public:
         delete [] dudy;
     }
 
-    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
-    {
-        {{#VARIABLE_SOURCE_EGGSHELL}}
-        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            result[{{POSITION}}] = Hermes::Ord(20);
-        {{/VARIABLE_SOURCE_EGGSHELL}}
-    }
-
 private:
     // field info
     const FieldInfo *m_fieldInfo;
@@ -121,24 +113,24 @@ private:
     QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}
 };
 
-class {{CLASS}}VolumetricIntegralCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
+class {{CLASS}}VolumetricIntegralCalculator : public PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
+    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
         {{#SPECIAL_FUNCTION_SOURCE}}
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
+    {{CLASS}}VolumetricIntegralCalculator(const FieldInfo *fieldInfo, std::vector<MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
         {{#SPECIAL_FUNCTION_SOURCE}}
         {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));{{/SPECIAL_FUNCTION_SOURCE}}
     }
 
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomVol<double> *e, double* result)
+    virtual void integral(int n, double* wt, Func<double> **fns, GeomVol<double> *e, double* result)
     {
         SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
         SceneMaterial *material = label->marker(m_fieldInfo);
@@ -178,14 +170,6 @@ public:
         delete [] value;
         delete [] dudx;
         delete [] dudy;
-    }
-
-    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
-    {
-        {{#VARIABLE_SOURCE}}
-        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            result[{{POSITION}}] = Hermes::Ord(20);
-        {{/VARIABLE_SOURCE}}
     }
 
 private:
@@ -281,12 +265,12 @@ void {{CLASS}}VolumeIntegral::calculate()
 
             if (markers.size() > 0 && markersInverted.size() > 0)
             {
-                Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 3);
+                MeshSharedPtr eggShellMesh = EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 3);
                 if(eggShellMesh->get_num_active_elements() == 0)
                   return;
-                Hermes::Hermes2D::MeshFunctionSharedPtr<double> eggShell(new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
+                MeshFunctionSharedPtr<double> eggShell(new ExactSolutionEggShell(eggShellMesh, 3));
 
-                std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
+                std::vector<MeshFunctionSharedPtr<double> > slns;
                 for (int i = 0; i < ma.solutions().size(); i++)
                     slns.push_back(ma.solutions().at(i));
                 slns.push_back(eggShell);

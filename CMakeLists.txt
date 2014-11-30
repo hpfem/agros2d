@@ -80,7 +80,6 @@ SET(AGROS_BINARY agros2d_binary)
 SET(AGROS_REMOTE agros2d_remote)
 SET(OPTILAB_BINARY optilab_binary)
 SET(PARALUTION_LIBRARY agros2d_3dparty_paralution)
-SET(BSON_LIBRARY agros2d_3dparty_bson)
 SET(CTEMPLATE_LIBRARY agros2d_3dparty_ctemplate)
 SET(DXFLIB_LIBRARY agros2d_3dparty_dxflib)
 SET(POLY2TRI_LIBRARY agros2d_3dparty_poly2tri)
@@ -90,10 +89,11 @@ SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
 SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 SET(MATIO_LIBRARY agros2d_3dparty_matio)
 SET(TRIANGLE_LIBRARY agros2d_3dparty_triangle)
+
 # SET(GMSH_LIBRARY agros2d_3dparty_gmsh)
 # SET(NETGEN_LIBRARY agros2d_3dparty_netgen)
 
-SET(AGROS_SOLVER_EXTERNAL solver_external)
+# SET(AGROS_SOLVER_EXTERNAL solver_external)
 
 
 # deal.ii
@@ -101,25 +101,6 @@ FIND_PACKAGE(deal.II 8.1 REQUIRED
   HINTS 3rdparty/dealii/build
 )
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
-
-# Hermes and Hermes common
-IF(MSVC)
-  IF(WIN64)
-    SET(HERMES_COMMON_LIBRARY hermes_common_64)
-    SET(HERMES_LIBRARY hermes2d_64)
-  ELSE(WIN64)
-    SET(HERMES_COMMON_LIBRARY hermes_common)
-    SET(HERMES_LIBRARY hermes2d)
-  ENDIF(WIN64)
-ELSE(MSVC)
-  IF(AGROS_DEBUG)
-    SET(HERMES_COMMON_LIBRARY hermes_common-debug)
-    SET(HERMES_LIBRARY hermes2d-debug)
-  ElSE(AGROS_DEBUG)
-    SET(HERMES_COMMON_LIBRARY hermes_common)
-    SET(HERMES_LIBRARY hermes2d)
-  ENDIF(AGROS_DEBUG)
-ENDIF()
 
 # Output paths.
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_AGROS_DIRECTORY})
@@ -155,8 +136,6 @@ IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
 ENDIF()
 
 IF(MSVC)
-  INCLUDE_DIRECTORIES(c:/hpfem/hermes/dependencies/include)
-  INCLUDE_DIRECTORIES(d:/hpfem/hermes/dependencies/include)
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt")
 ENDIF(MSVC)
 
@@ -224,7 +203,7 @@ INCLUDE(IncludeSubdirs.cmake)
 # Subdirectories.
 ADD_SUBDIRECTORY(3rdparty)
 # Also looks for Xerces, UMFPACK, etc.
-ADD_SUBDIRECTORY(hermes)
+
 # Include external directories.
 INCLUDE_DIRECTORIES(${UMFPACK_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${AMESOS_INCLUDE_PATH})
@@ -306,7 +285,7 @@ ENDMACRO()
 set(info #resources/modules/acoustic.xml
          #resources/modules/current.xml
          #resources/modules/elasticity.xml
-         resources/modules/electrostatic.xml
+         #resources/modules/electrostatic.xml
          #resources/modules/flow.xml
          #resources/modules/heat.xml
          #resources/modules/magnetic.xml

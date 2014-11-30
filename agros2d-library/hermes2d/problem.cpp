@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include <boost/config.hpp>
 #include <boost/archive/tmpdir.hpp>
@@ -346,7 +346,7 @@ void Problem::createStructure()
     foreach (Block* block, m_blocks)
     {
         // todo: is released?
-        block->setWeakForm(Hermes::Hermes2D::WeakFormSharedPtr<double>(new WeakFormAgros<double>(block)));
+        block->setWeakForm(WeakFormSharedPtr<double>(new WeakFormAgros<double>(block)));
         block->weakFormInternal()->registerForms();
     }
 }
@@ -384,12 +384,12 @@ bool Problem::mesh(bool emitMeshed)
         Agros2D::log()->printError(tr("Mesh"), QString("%1").arg(e.what()));
         return false;
     }
-    catch (Hermes::Exceptions::Exception& e)
+    catch (AgrosException& e)
     {
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
         m_isMeshing = false;
-        Agros2D::log()->printWarning(tr("Mesh"), e.info().c_str());
+        Agros2D::log()->printWarning(tr("Mesh"), e.what());
         return false;
     }
     catch (...)
@@ -459,10 +459,6 @@ bool Problem::meshAction(bool emitMeshed)
         catch (AgrosException& e)
         {
             throw AgrosMeshException(e.what());
-        }
-        catch (Hermes::Exceptions::Exception& e)
-        {
-            throw AgrosMeshException(e.info().c_str());
         }
     }
 
@@ -698,32 +694,33 @@ void Problem::solve(bool commandLine)
             Indicator::closeProgress();
         }
     }
-    catch (Hermes::Exceptions::NonlinearException &e)
+    /*
+    catch (Exceptions::NonlinearException &e)
     {
-        Hermes::Solvers::NonlinearConvergenceState convergenceState = e.get_exception_state();
+        Solvers::NonlinearConvergenceState convergenceState = e.get_exception_state();
         switch(convergenceState)
         {
-        case Hermes::Solvers::NotConverged:
+        case Solvers::NotConverged:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Newton solver did not converge."));
             break;
         }
-        case Hermes::Solvers::BelowMinDampingCoeff:
+        case Solvers::BelowMinDampingCoeff:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Damping coefficient below minimum."));
             break;
         }
-        case Hermes::Solvers::AboveMaxAllowedResidualNorm:
+        case Solvers::AboveMaxAllowedResidualNorm:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Residual norm exceeded limit."));
             break;
         }
-        case Hermes::Solvers::AboveMaxIterations:
+        case Solvers::AboveMaxIterations:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Number of iterations exceeded limit."));
             break;
         }
-        case Hermes::Solvers::Error:
+        case Solvers::Error:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("An error occurred in Newton solver."));
             break;
@@ -735,12 +732,7 @@ void Problem::solve(bool commandLine)
         m_isSolving = false;
         return;
     }
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.info().c_str()));
-        m_isSolving = false;
-        return;
-    }
+    */
     catch (AgrosGeometryException& e)
     {
         Agros2D::log()->printError(QObject::tr("Geometry"), e.what());

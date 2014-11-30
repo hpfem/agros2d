@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "field.h"
 #include "util/global.h"
@@ -127,7 +127,7 @@ void FieldInfo::createValuePointerTable()
         if(!Agros2D::scene()->labels->at(labelIndex)->marker(this)->isNone())
         {
             /*
-            Hermes::Hermes2D::Mesh::MarkersConversion::IntValid intValid = initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
+            Mesh::MarkersConversion::IntValid intValid = initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelIndex).toStdString());
             assert(intValid.valid);
             assert(intValid.marker <= num);
             assert(m_hermesMarkerToAgrosLabelConversion[intValid.marker] == LABEL_OUTSIDE_FIELD);
@@ -315,35 +315,8 @@ void FieldInfo::clear()
     m_analysisType = AnalysisType_Undefined;
     m_linearityType = LinearityType_Linear;
     m_adaptivityType = AdaptivityMethod_None;
-    // m_matrixSolver = Hermes::SOLVER_UMFPACK;
-    m_matrixSolver = Hermes::SOLVER_MUMPS;
-}
-
-void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
-{
-    // refine mesh - boundary
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-    {
-        if (edgeRefinement(edge) > 0)
-        {
-            mesh->refine_towards_boundary(QString::number(Agros2D::scene()->edges->items().indexOf(edge)).toStdString(),
-                                          edgeRefinement(edge));
-        }
-    }
-
-    // refine mesh - elements
-    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
-    {
-        if (!label->marker(this)->isNone())
-        {
-            if (labelRefinement(label) > 0)
-                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
-                                     labelRefinement(label));
-            else if (value(FieldInfo::SpaceNumberOfRefinements).toInt() > 0)
-                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
-                                     value(FieldInfo::SpaceNumberOfRefinements).toInt());
-        }
-    }
+    // m_matrixSolver = SOLVER_UMFPACK;
+    m_matrixSolver = SOLVER_MUMPS;
 }
 
 void FieldInfo::refineMesh(dealii::Triangulation<2> *mesh)
@@ -447,21 +420,6 @@ QMap<AnalysisType, QString> FieldInfo::analyses() const
     }
 
     return analyses;
-}
-
-// spaces
-QMap<int, Module::Space> FieldInfo::spaces() const
-{
-    // spaces
-    QMap<int, Module::Space> spaces;
-
-    foreach (XMLModule::space spc, m_plugin->module()->spaces().space())
-        if (spc.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
-            foreach (XMLModule::space_config config, spc.space_config())
-                spaces[config.i()] = Module::Space(config.i(),
-                                                   spaceTypeFromStringKey(QString::fromStdString(config.type())),
-                                                   config.orderadjust());
-    return spaces;
 }
 
 QList<QString> FieldInfo::allMaterialQuantities() const
@@ -1014,8 +972,8 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[AdaptivitySpaceRefinement] = true;
     m_settingDefault[TransientTimeSkip] = 0.0;
     m_settingDefault[TransientInitialCondition] = 0.0;
-    m_settingDefault[LinearSolverIterMethod] = Hermes::Solvers::BiCGStab;
-    m_settingDefault[LinearSolverIterPreconditioner] = Hermes::Solvers::ILU;
+    m_settingDefault[LinearSolverIterMethod] = IterSolverType_BiCGStab;
+    m_settingDefault[LinearSolverIterPreconditioner] = PreconditionerType_ILU;
     m_settingDefault[LinearSolverIterToleranceAbsolute] = 1e-16;
     m_settingDefault[LinearSolverIterIters] = 1000;
     m_settingDefault[TimeUnit] = "s";

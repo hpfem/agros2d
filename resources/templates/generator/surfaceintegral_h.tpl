@@ -23,7 +23,6 @@
 #include <QObject>
 
 #include "util.h"
-#include "hermes2d.h"
 
 #include "hermes2d/plugin_interface.h"
 

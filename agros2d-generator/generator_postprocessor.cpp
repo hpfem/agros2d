@@ -19,7 +19,7 @@ void Agros2DGeneratorModule::generateSpecialFunctionsPostprocessor(ctemplate::Te
 
 void Agros2DGeneratorModule::generatePluginFilterFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating filter file").toLatin1());
+    qDebug() << (QString("generating filter file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 
@@ -140,7 +140,7 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
 
 void Agros2DGeneratorModule::generatePluginForceFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating force file").toLatin1());
+    qDebug() << (QString("generating force file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 
@@ -221,7 +221,7 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
 
 void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating local point file").toLatin1());
+    qDebug() << (QString("generating local point file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 
@@ -299,7 +299,7 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 
 void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating surface integral file").toLatin1());
+    qDebug() << (QString("generating surface integral file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 
@@ -380,7 +380,7 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
 
 void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating volume integral file").toLatin1());
+    qDebug() << (QString("generating volume integral file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 

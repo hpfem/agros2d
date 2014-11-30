@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "infowidget.h"
 
@@ -43,8 +43,6 @@
 #include "hermes2d/solutionstore.h"
 
 #include "ctemplate/template.h"
-
-#include "hermes2d.h"
 
 InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent)
     : QWidget(parent), m_recentProblemFiles(NULL), m_recentScriptFiles(NULL), m_recentOptilabFiles(NULL)
@@ -341,14 +339,14 @@ void InfoWidget::showInfo()
             }
 
             QString matrixSolver = matrixSolverTypeString(fieldInfo->matrixSolver());
-            if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE))
+            if ((fieldInfo->matrixSolver() == SOLVER_PARALUTION_ITERATIVE))
                 matrixSolver += tr(" (%1, %2) - iterative").
-                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
-                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
-            else if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_AMG))
+                        arg(iterLinearSolverMethodString((IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverPreconditionerTypeString((PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+            else if ((fieldInfo->matrixSolver() == SOLVER_PARALUTION_AMG))
                 matrixSolver += tr(" (%1, %2) - AMG").
-                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
-                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+                        arg(iterLinearSolverMethodString((IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverPreconditionerTypeString((PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             else
                 matrixSolver += tr(" - direct");
 

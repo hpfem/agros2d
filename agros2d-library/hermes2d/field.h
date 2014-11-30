@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #ifndef FIELD_H
 #define FIELD_H
@@ -118,8 +118,8 @@ public:
     void setAdaptivityType(const AdaptivityMethod at) { m_adaptivityType = at; emit changed(); }
 
     // matrix
-    inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
-    void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
+    inline MatrixSolverType matrixSolver() const { return m_matrixSolver; }
+    void setMatrixSolver(const MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
 
     // number of solutions
     inline int numberOfSolutions() const { return m_numberOfSolutions; }
@@ -157,7 +157,6 @@ public:
     inline QVariant defaultValue(Type type) {  return m_settingDefault[type]; }
 
     // refine mesh
-    void refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh);
     void refineMesh(dealii::Triangulation<2> *mesh);
 
     // name
@@ -179,9 +178,6 @@ public:
     QMap<QString, QString> macros() const;
 
     QMap<AnalysisType, QString> analyses() const;
-
-    // spaces
-    QMap<int, Module::Space> spaces() const;
 
     // material type
     QList<Module::MaterialTypeVariable> materialTypeVariables() const;
@@ -274,7 +270,7 @@ private:
     AdaptivityMethod m_adaptivityType;
 
     // matrix solver
-    Hermes::MatrixSolverType m_matrixSolver;
+    MatrixSolverType m_matrixSolver;
 
     // TODO: (Franta) gmsh
     QMap<SceneEdge *, int> m_edgesRefinement;
@@ -313,9 +309,6 @@ public:
 
     void addCouplingInfo(CouplingInfo *couplingInfo) { m_couplingInfos.append(couplingInfo); }
     QList<CouplingInfo* > couplingInfos() { return m_couplingInfos; }
-
-    // mesh
-    void setMeshInitial(Hermes::Hermes2D::MeshSharedPtr meshInitial);
 
 private:
     QList<CouplingInfo* > m_couplingInfos;

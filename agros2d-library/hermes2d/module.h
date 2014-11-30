@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #ifndef HERMES_FIELD_H
 #define HERMES_FIELD_H
@@ -27,30 +27,6 @@ class BDF2Table;
 inline double tern(bool condition, double a, double b)
 {
     return (condition ? a : b);
-}
-
-inline Hermes::Ord tern(bool condition, Hermes::Ord a, Hermes::Ord b)
-{
-    if (condition)
-        return a;
-    else
-        return b;
-}
-
-inline Hermes::Ord tern(bool condition, Hermes::Ord a, double b)
-{
-    if (condition)
-        return a;
-    else
-        return Hermes::Ord::get_max_order();
-}
-
-inline Hermes::Ord tern(bool condition, double a, Hermes::Ord b)
-{
-    if (condition)
-        return Hermes::Ord::get_max_order();
-    else
-        return b;
 }
 
 // to be thrown when string refering to module entity (boundary condition type, etc.) not found
@@ -173,24 +149,6 @@ private:
     // expressions
     Expression m_expression;
 };
-
-struct Space
-{
-    Space(int i = 1, Hermes::Hermes2D::SpaceType type = Hermes::Hermes2D::HERMES_INVALID_SPACE, int orderAdjust = 0)
-        : m_i(i), m_type(type), m_orderAdjust(orderAdjust) {}
-
-    // expressions
-    inline int i() const { return m_i; }
-    inline Hermes::Hermes2D::SpaceType type() const { return m_type; }
-    inline int orderAdjust() const { return m_orderAdjust; }
-
-private:
-    // expressions
-    int m_i;
-    Hermes::Hermes2D::SpaceType m_type;
-    int m_orderAdjust;
-};
-
 
 // force
 struct Force
@@ -482,10 +440,6 @@ AGROS_LIBRARY_API QMap<QString, QString> availableModules();
 
 // index of quantity in the list of quantities at the begining of the volume section of the XML (NOT the reduced list in individual analysis)
 void AGROS_LIBRARY_API volumeQuantityProperties(XMLModule::field *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder);
-std::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileBSON(const QString &fileName);
-std::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileXML(const QString &fileName);
-void writeMeshToFileXML(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes);
-void writeMeshToFileBSON(const QString &fileName, std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes);
 
 QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);
 QList<FormInfo> wfVectorVolumeSeparated(XMLModule::field* module, AnalysisType analysisType, LinearityType linearityType);

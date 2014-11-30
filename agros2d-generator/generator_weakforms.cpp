@@ -14,7 +14,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormFiles()
 
 void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating weakform source file").toLatin1());
+    qDebug() << (QString("generating weakform source file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
     std::string textWeakform;
@@ -44,7 +44,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 
 void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating weakform header file").toLatin1());
+    qDebug() << (QString("generating weakform header file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
     std::string textWeakform;

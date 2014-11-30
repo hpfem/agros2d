@@ -23,7 +23,6 @@
 #include "util/global.h"
 
 #include "scene.h"
-#include "hermes2d.h"
 #include "hermes2d/module.h"
 
 #include "hermes2d/field.h"
@@ -41,7 +40,7 @@
     {{QUANTITY_SHORTNAME}} = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
 }
 
-void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
+void {{EXT_FUNCTION_NAME}}::value (int n, Func<double>** ext, Func<double>** u_ext, Func<double>* result, Geom<double>* e) const
 {
     int labelIndex = m_fieldInfo->hermesMarkerToAgrosLabel(e->elem_marker);
     if(labelIndex == LABEL_OUTSIDE_FIELD)
@@ -91,7 +90,7 @@ double {{VALUE_FUNCTION_FULL_NAME}}::getValue(int hermesMarker, double h) const
     return {{EXPR}};
 }
 
-void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
+void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Func<double>** ext, Func<double>** u_ext, Func<double>* result, Geom<double>* e) const
 {
     const int fieldID = this->m_fieldInfo->numberId();
     Offset offset = this->m_wfAgros->offsetInfo(nullptr, this->m_fieldInfo);
@@ -167,7 +166,7 @@ double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, doub
     assert(0);
 }
 
-    void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
+    void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value (int n, Func<double>** ext, Func<double>** u_ext, Func<double>* result, Geom<double>* e) const
 {
     const int fieldID = this->m_fieldInfo->numberId();
     Offset offset = this->m_wfAgros->offsetInfo(nullptr, this->m_fieldInfo);

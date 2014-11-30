@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "remotecontrol.h"
 
@@ -27,7 +27,7 @@ ScriptEngineRemote::ScriptEngineRemote() : m_tcpSocket(NULL)
 {  
     if (!listen())
     {
-        Hermes::Mixins::Loggable::Static::error(tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString()).toLatin1());
+        qWarning() << (tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString()).toLatin1());
         return;
     }
 
@@ -44,7 +44,7 @@ ScriptEngineRemote::ScriptEngineRemote() : m_tcpSocket(NULL)
     // if we did not find one, use IPv4 localhost
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    Hermes::Mixins::Loggable::Static::warn(tr("The server '%1' is running on IP: %2, port: %3").arg(serverName()).arg(ipAddress).arg(serverPort()).toLatin1());
+    qDebug() << (tr("The server '%1' is running on IP: %2, port: %3").arg(serverName()).arg(ipAddress).arg(serverPort()).toLatin1());
 
     connect(this, SIGNAL(newConnection()), this, SLOT(connected()));
 }
@@ -57,7 +57,7 @@ void ScriptEngineRemote::connected()
 {
     if (m_tcpSocket)
     {
-        Hermes::Mixins::Loggable::Static::error(tr("Server is busy.").toLatin1());
+        qWarning() << (tr("Server is busy.").toLatin1());
         return;
     }
 
@@ -76,7 +76,7 @@ void ScriptEngineRemote::readCommand()
     if (m_tcpSocket->bytesAvailable() > 0)
     {
         m_command = QString(m_tcpSocket->readAll());
-        Hermes::Mixins::Loggable::Static::info(tr("Command: %1").arg(m_command).toLatin1());
+        qDebug() << (tr("Command: %1").arg(m_command).toLatin1());
 
         bool successful = currentPythonEngineAgros()->runScript(m_command);
 
@@ -84,7 +84,7 @@ void ScriptEngineRemote::readCommand()
         {
             if (!m_stdout.trimmed().isEmpty())
             {
-                Hermes::Mixins::Loggable::Static::warn(tr("Stdout: %1").arg(m_stdout.trimmed()).toLatin1());
+                qDebug() << (tr("Stdout: %1").arg(m_stdout.trimmed()).toLatin1());
                 m_tcpSocket->write((m_stdout.trimmed() + OK_STRING).toLatin1());
             }
             else
@@ -95,7 +95,7 @@ void ScriptEngineRemote::readCommand()
         else
         {
             ErrorResult result = currentPythonEngineAgros()->parseError();
-            Hermes::Mixins::Loggable::Static::error(tr("Error: %1").arg(result.error().trimmed()).toLatin1());
+            qWarning() << (tr("Error: %1").arg(result.error().trimmed()).toLatin1());
             m_tcpSocket->write((result.error().trimmed() + OK_STRING).toLatin1());
         }
     }
@@ -121,13 +121,13 @@ void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
-        Hermes::Mixins::Loggable::Static::error(tr("Server error: The host was not found.").toLatin1());
+        qWarning() << (tr("Server error: The host was not found.").toLatin1());
         break;
     case QLocalSocket::ConnectionRefusedError:
-        Hermes::Mixins::Loggable::Static::error(tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toLatin1());
+        qWarning() << (tr("Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.").toLatin1());
         break;
     default:
-        Hermes::Mixins::Loggable::Static::error(tr("Server error: The following error occurred: %1.").arg(m_tcpSocket->errorString()).toLatin1());
+        qWarning() << (tr("Server error: The following error occurred: %1.").arg(m_tcpSocket->errorString()).toLatin1());
     }
 }
 

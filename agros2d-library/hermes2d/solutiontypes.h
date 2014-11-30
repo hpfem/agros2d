@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #ifndef SOLUTIONTYPES_H
 #define SOLUTIONTYPES_H
@@ -28,44 +28,10 @@
 #include "util.h"
 #include "util/enums.h"
 
-#include "hermes2d.h"
-
 /// this header file should be kept small, since it is included in other header files
 
 class FieldInfo;
 class FieldSolutionID;
-
-//template <typename Scalar>
-//std::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > castConst(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > space)
-//{
-//    std::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > out;
-//    for (int i = 0; i < space.size(); i++)
-//        out.push_back(const_cast<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> >(space.at(i)));
-
-//    return out;
-//}
-
-template <typename Scalar>
-std::vector<Hermes::Hermes2D::MeshSharedPtr> spacesMeshes(std::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
-{
-    std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
-    foreach (Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, spaces)
-        meshes.push_back(space->get_mesh());
-
-    return meshes;
-}
-
-template <typename Scalar>
-std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(std::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
-{
-    std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > slns;
-    foreach (Hermes::Hermes2D::MeshSharedPtr mesh, meshes)
-    {
-        slns.push_back(Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar>(new Hermes::Hermes2D::Solution<double>(mesh)));
-    }
-
-    return slns;
-}
 
 class AGROS_LIBRARY_API MultiArray
 {

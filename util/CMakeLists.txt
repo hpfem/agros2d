@@ -17,6 +17,8 @@ SET(SOURCES util.cpp
     util/checkversion.cpp 
     util/point.cpp 
     util/system_utils.cpp 
+    util/spline.cpp
+    util/table.cpp
     gui/about.cpp 
     gui/filebrowser.cpp 
     gui/lineeditdouble.cpp 
@@ -29,6 +31,8 @@ SET(HEADERS util.h
     util/checkversion.h 
     util/point.h 
     util/system_utils.h 
+    util/spline.h
+    util/table.cpp
     gui/about.h 
     gui/filebrowser.h 
     gui/lineeditdouble.h 

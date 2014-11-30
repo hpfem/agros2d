@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "generator.h"
 #include "generator_module.h"
@@ -70,7 +70,7 @@ Agros2DGeneratorModule::~Agros2DGeneratorModule()
 
 void Agros2DGeneratorModule::generatePluginProjectFile()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating project file").toLatin1());
+    qDebug() << (QString("generating project file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 
@@ -92,7 +92,7 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
 
 void Agros2DGeneratorModule::prepareWeakFormsOutput()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("parsing weak forms").toLatin1());
+    qDebug() << (QString("parsing weak forms").toLatin1());
     assert(! m_output);
     m_output = new ctemplate::TemplateDictionary("output");
 
@@ -150,7 +150,7 @@ void Agros2DGeneratorModule::deleteWeakFormOutput()
 
 void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating interface file").toLatin1());
+    qDebug() << (QString("generating interface file").toLatin1());
     QString id = QString::fromStdString(m_module->general_field().id());
 
     std::string text;
@@ -184,7 +184,7 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 
 void Agros2DGeneratorModule::generatePluginEquations()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating equations").toLatin1());
+    qDebug() << (QString("generating equations").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
     QString outputDir = QDir().absoluteFilePath(QString("%1/%2").arg(QApplication::applicationDirPath()).arg("resources/images/equations/"));
@@ -234,7 +234,7 @@ void Agros2DGeneratorModule::generatePluginEquations()
 
 void Agros2DGeneratorModule::generatePluginErrorCalculator()
 {
-    Hermes::Mixins::Loggable::Static::info(QString("generating error calculator file").toLatin1());
+    qDebug() << (QString("generating error calculator file").toLatin1());
 
     QString id = QString::fromStdString(m_module->general_field().id());
 

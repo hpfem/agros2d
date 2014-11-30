@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include <Python.h>
 
@@ -296,14 +296,14 @@ QString createPythonFromModel()
                 arg(fieldInfo->fieldId()).
                 arg(matrixSolverTypeToStringKey(fieldInfo->matrixSolver()));
 
-        if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE) || (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_AMG))
+        if ((fieldInfo->matrixSolver() == SOLVER_PARALUTION_ITERATIVE) || (fieldInfo->matrixSolver() == SOLVER_PARALUTION_AMG))
         {
             str += QString("%1.matrix_iterative_solver_method = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+                    arg(iterLinearSolverMethodToStringKey((IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
             str += QString("%1.matrix_iterative_solver_preconditioner = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+                    arg(iterLinearSolverPreconditionerTypeToStringKey((PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             str += QString("%1.matrix_iterative_solver_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
@@ -770,7 +770,7 @@ void PyOptions::setCacheSize(int size)
 void PyOptions::setDumpFormat(std::string format)
 {
     if (dumpFormatStringKeys().contains(QString::fromStdString(format)))
-        Agros2D::configComputer()->setValue(Config::Config_LinearSystemFormat, (Hermes::Algebra::MatrixExportFormat) dumpFormatFromStringKey(QString::fromStdString(format)));
+        Agros2D::configComputer()->setValue(Config::Config_LinearSystemFormat, (MatrixExportFormat) dumpFormatFromStringKey(QString::fromStdString(format)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dumpFormatStringKeys())).toStdString());
 }

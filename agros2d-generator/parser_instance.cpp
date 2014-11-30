@@ -28,7 +28,7 @@ QString ParserInstance::parse(QString expr)
     }
     catch (ParserException e)
     {
-        Hermes::Mixins::Loggable::Static::error(QString("%1 in module %2").arg(e.toString()).arg(m_parserModuleInfo.id).toLatin1());
+        qWarning() << (QString("%1 in module %2").arg(e.toString()).arg(m_parserModuleInfo.id).toLatin1());
 
         return "";
     }

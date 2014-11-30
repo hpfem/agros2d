@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "problemdialog.h"
 
@@ -511,25 +511,25 @@ void FieldWidget::fillComboBox()
         cmbAnalysisType->addItem(it.value(), it.key());
     }
 
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_UMFPACK), SOLVER_UMFPACK);
 #ifdef WITH_MUMPS
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_MUMPS), Hermes::SOLVER_MUMPS);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_MUMPS), SOLVER_MUMPS);
 #endif
 #ifdef WITH_SUPERLU
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_SUPERLU), SOLVER_SUPERLU);
 #endif
 #ifdef WITH_PETSC
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_PETSC), SOLVER_PETSC);
 #endif
 #ifdef HAVE_AMESOS
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_AMESOS), Hermes::SOLVER_AMESOS);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_AMESOS), SOLVER_AMESOS);
 #endif
 #ifdef HAVE_AZTECOO
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_AZTECOO), Hermes::SOLVER_AZTECOO);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_AZTECOO), SOLVER_AZTECOO);
 #endif
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_ITERATIVE), Hermes::SOLVER_PARALUTION_ITERATIVE);
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_AMG), Hermes::SOLVER_PARALUTION_AMG);
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_EXTERNAL), Hermes::SOLVER_EXTERNAL);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_PARALUTION_ITERATIVE), SOLVER_PARALUTION_ITERATIVE);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_PARALUTION_AMG), SOLVER_PARALUTION_AMG);
+    cmbLinearSolver->addItem(matrixSolverTypeString(SOLVER_EXTERNAL), SOLVER_EXTERNAL);
 
     foreach(Module::ErrorCalculator calc, m_fieldInfo->errorCalculators())
         cmbAdaptivityErrorCalculator->addItem(calc.name(), calc.id());
@@ -588,8 +588,8 @@ void FieldWidget::load()
     txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
     txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
     // linear solver
-    cmbIterLinearSolverMethod->setCurrentIndex((Hermes::Solvers::IterSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
-    cmbIterLinearSolverPreconditioner->setCurrentIndex((Hermes::Solvers::PreconditionerType) cmbIterLinearSolverPreconditioner->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+    cmbIterLinearSolverMethod->setCurrentIndex((IterSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+    cmbIterLinearSolverPreconditioner->setCurrentIndex((PreconditionerType) cmbIterLinearSolverPreconditioner->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
     txtIterLinearSolverToleranceAbsolute->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
     txtIterLinearSolverIters->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt());
 
@@ -614,7 +614,7 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, txtAdaptivityBackSteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, txtAdaptivityRedoneEach->value());
     // matrix solver
-    m_fieldInfo->setMatrixSolver((Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt());
+    m_fieldInfo->setMatrixSolver((MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt());
     //mesh
     m_fieldInfo->setValue(FieldInfo::SpaceNumberOfRefinements, txtNumberOfRefinements->value());
     m_fieldInfo->setValue(FieldInfo::SpacePolynomialOrder, txtPolynomialOrder->value());
@@ -737,8 +737,8 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doLinearSolverChanged(int index)
 {
-    Hermes::MatrixSolverType solverType = (Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt();
-    bool isIterative = ((solverType == Hermes::SOLVER_PARALUTION_ITERATIVE) || (solverType == Hermes::SOLVER_PARALUTION_AMG));
+    MatrixSolverType solverType = (MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt();
+    bool isIterative = ((solverType == SOLVER_PARALUTION_ITERATIVE) || (solverType == SOLVER_PARALUTION_AMG));
 
     cmbIterLinearSolverMethod->setEnabled(isIterative);
     cmbIterLinearSolverPreconditioner->setEnabled(isIterative);

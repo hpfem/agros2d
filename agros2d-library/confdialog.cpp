@@ -1,21 +1,21 @@
-// This file is part of Agros2D.
+// This file is part of Agros.
 //
-// Agros2D is free software: you can redistribute it and/or modify
+// Agros is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Agros2D is distributed in the hope that it will be useful,
+// Agros is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+// along with Agros.  If not, see <http://www.gnu.org/licenses/>.
 //
-// hp-FEM group (http://hpfem.org/)
-// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
-// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+//
+// University of West Bohemia, Pilsen, Czech Republic
+// Email: info@agros2d.org, home page: http://agros2d.org/
 
 #include "confdialog.h"
 
@@ -63,7 +63,7 @@ void ConfigComputerDialog::load()
 
     // development
     chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->value(Config::Config_LinearSystemSave).toBool());
-    cmbDumpFormat->setCurrentIndex(cmbDumpFormat->findData((Hermes::Algebra::MatrixExportFormat) Agros2D::configComputer()->value(Config::Config_LinearSystemFormat).toInt(), Qt::UserRole));
+    cmbDumpFormat->setCurrentIndex(cmbDumpFormat->findData((MatrixExportFormat) Agros2D::configComputer()->value(Config::Config_LinearSystemFormat).toInt(), Qt::UserRole));
 
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->value(Config::Config_NumberOfThreads).toInt());
@@ -103,7 +103,7 @@ void ConfigComputerDialog::save()
 
     // development
     Agros2D::configComputer()->setValue(Config::Config_LinearSystemSave, chkDiscreteSaveMatrixRHS->isChecked());
-    Agros2D::configComputer()->setValue(Config::Config_LinearSystemFormat, (Hermes::Algebra::MatrixExportFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt());
+    Agros2D::configComputer()->setValue(Config::Config_LinearSystemFormat, (MatrixExportFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt());
 
     // number of threads
     Agros2D::configComputer()->setValue(Config::Config_NumberOfThreads, txtNumOfThreads->value());
@@ -273,7 +273,7 @@ QWidget *ConfigComputerDialog::createSolverWidget()
 
     txtNumOfThreads = new QSpinBox(this);
     txtNumOfThreads->setMinimum(1);
-    txtNumOfThreads->setMaximum(omp_get_max_threads());
+    txtNumOfThreads->setMaximum(-1); // TODO: omp -> tbb
 
     QGridLayout *layoutSolver = new QGridLayout();
     layoutSolver->addWidget(new QLabel(tr("Number of threads:")), 0, 0);

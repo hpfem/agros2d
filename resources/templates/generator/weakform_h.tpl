@@ -21,7 +21,6 @@
 #define {{CLASS}}_WEAKFORM_H
 
 #include "util.h"
-#include <weakform/weakform.h>
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"

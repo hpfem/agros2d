@@ -24,12 +24,11 @@
 
 #include "util.h"
 #include "hermes2d/field.h"
-#include "hermes2d.h"
 
 bool hasForce{{CLASS}}(const FieldInfo *fieldInfo);
 
 Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                      Hermes::Hermes2D::Element *element, SceneMaterial *material, const Point3 &point, const Point3 &velocity = Point3());
+                      SceneMaterial *material, const Point3 &point, const Point3 &velocity = Point3());
 
 
 #endif // {{ID}}_FORCE_H

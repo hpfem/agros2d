@@ -49,20 +49,20 @@
 /*
 const double internal_coeff = 0.5;
 
-class {{CLASS}}SurfaceIntegralCalculator : public Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>
+class {{CLASS}}SurfaceIntegralCalculator : public PostProcessing::SurfaceIntegralCalculator<double>
 {
 public:
-    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
+    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : PostProcessing::SurfaceIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }
 
-    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, std::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-        : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
+    {{CLASS}}SurfaceIntegralCalculator(const FieldInfo *fieldInfo, std::vector<MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : PostProcessing::SurfaceIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }
 
-    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::GeomSurf<double> *e, double* result)
+    virtual void integral(int n, double* wt, Func<double> **fns, GeomSurf<double> *e, double* result)
     {
         int labelIdx = atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str());
         int edgeIdx = atoi(m_fieldInfo->initialMesh()->get_boundary_markers_conversion().get_user_marker(e->edge_marker).marker.c_str());
@@ -121,14 +121,6 @@ public:
         delete [] value;
         delete [] dudx;
         delete [] dudy;
-    }
-
-    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
-    {
-        {{#VARIABLE_SOURCE}}
-        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            result[{{POSITION}}] = Hermes::Ord(20);
-        {{/VARIABLE_SOURCE}}
     }
 
 private:

@@ -34,9 +34,9 @@
 class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
 public:
-    virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+    virtual void value(int n, Func<double>** ext, Func<double> **u_ext, Func<double> *result, Geom<double> *geometry) const;
     {{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
-    Hermes::Hermes2D::Function<double>* clone() const
+    Function<double>* clone() const
     {
         return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo, this->m_wfAgros);
     }
@@ -55,8 +55,8 @@ class {{VALUE_FUNCTION_FULL_NAME}} : public AgrosExtFunction
 public:
     {{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
     virtual double getValue(int hermesMarker, double h) const;
-    virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
-    Hermes::Hermes2D::Function<double>* clone() const
+    virtual void value(int n, Func<double>** ext, Func<double> **u_ext, Func<double> *result, Geom<double> *geometry) const;
+    Function<double>* clone() const
     {
         return new {{VALUE_FUNCTION_FULL_NAME}}(this->m_fieldInfo, this->m_wfAgros);
     }
@@ -78,7 +78,7 @@ public:
     {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros);
     ~{{SPECIAL_EXT_FUNCTION_FULL_NAME}}();
     virtual double calculateValue(int hermesMarker, double h) const;
-    virtual void value(int n, Hermes::Hermes2D::Func<double>** ext, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+    virtual void value(int n, Func<double>** ext, Func<double> **u_ext, Func<double> *result, Geom<double> *geometry) const;
     private:
 {{#PARAMETERS}}    QList<QWeakPointer<Value> > {{PARAMETER_NAME}}_pointers;
 {{/PARAMETERS}}
