@@ -46,8 +46,8 @@ void ParserInstance::addBasicWeakformTokens()
 
     // functions
     // scalar field
-    m_dict["uval"] = "fe_values.shape_value(j, q_point)"; // "u->val[i]";
-    m_dict["vval"] = "fe_values.shape_value(i, q_point)"; // "v->val[i]";
+    m_dict["uval"] = "shape_value[j][q_point]"; // "u->val[i]";
+    m_dict["vval"] = "shape_value[i][q_point]"; // "v->val[i]";
     m_dict["upval"] = "0"; // "u_ext[this->j]->val[i]";
     m_dict["uptval"] = "ext[*this->m_offsetPreviousTimeExt + this->j - this->m_offsetJ]->val[i]";
     m_dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
@@ -67,20 +67,20 @@ void ParserInstance::addBasicWeakformTokens()
     if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
     {
         // scalar field
-        m_dict["udx"] = "fe_values.shape_grad(j, q_point)[0]"; // u->dx[i]";
-        m_dict["vdx"] = "fe_values.shape_grad(i, q_point)[0]"; // "v->dx[i]";
-        m_dict["udy"] = "fe_values.shape_grad(j, q_point)[1]"; // "u->dy[i]";
-        m_dict["vdy"] = "fe_values.shape_grad(i, q_point)[1]"; // "v->dy[i]";
+        m_dict["udx"] = "shape_grad[j][q_point][0]"; // u->dx[i]";
+        m_dict["vdx"] = "shape_grad[i][q_point][0]"; // "v->dx[i]";
+        m_dict["udy"] = "shape_grad[j][q_point][1]"; // "u->dy[i]";
+        m_dict["vdy"] = "shape_grad[i][q_point][1]"; // "v->dy[i]";
         m_dict["updx"] = "0"; // "u_ext[this->j]->dx[i]";
         m_dict["updy"] = "0"; // "u_ext[this->j]->dy[i]";
     }
     else
     {
         // scalar field
-        m_dict["udr"] = "fe_values.shape_grad(j, q_point)[0]"; // u->dx[i]";
-        m_dict["vdr"] = "fe_values.shape_grad(i, q_point)[0]"; // "v->dx[i]";
-        m_dict["udz"] = "fe_values.shape_grad(j, q_point)[1]"; // "u->dy[i]";
-        m_dict["vdz"] = "fe_values.shape_grad(i, q_point)[1]"; // "v->dy[i]";
+        m_dict["udr"] = "shape_grad[j][q_point][0]"; // u->dx[i]";
+        m_dict["vdr"] = "shape_grad[i][q_point][0]"; // "v->dx[i]";
+        m_dict["udz"] = "shape_grad[j][q_point][1]"; // "u->dy[i]";
+        m_dict["vdz"] = "shape_grad[i][q_point][1]"; // "v->dy[i]";
         m_dict["updr"] = "0"; // "u_ext[this->j]->dx[i]";
         m_dict["updz"] = "0"; // "u_ext[this->j]->dy[i]";
     }

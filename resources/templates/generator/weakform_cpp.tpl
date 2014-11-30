@@ -143,6 +143,40 @@ void SolverDeal{{CLASS}}::assembleSystem()
     {
         fe_values.reinit (cell);
 
+        // value and grad cache
+        std::vector<dealii::Vector<double> > shape_value(dofs_per_cell, dealii::Vector<double>(n_q_points));
+        std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad(dofs_per_cell, std::vector<dealii::Tensor<1,2> >(n_q_points));
+        std::vector<dealii::Vector<double> > shape_face_value(dofs_per_cell, dealii::Vector<double>(n_face_q_points));
+        // std::vector<std::vector<dealii::Tensor<1,2> > > shape_face_grad(dofs_per_cell, std::vector<dealii::Tensor<1,2> >(n_face_q_points));
+
+        // cache volume
+        for (unsigned int i = 0; i < dofs_per_cell; ++i)
+        {
+            for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+            {
+                shape_value[i][q_point] = fe_values.shape_value(i, q_point);
+                shape_grad[i][q_point] = fe_values.shape_grad(i, q_point);
+            }
+        }
+
+        // cache surface
+        for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
+        {
+            if (cell->face(face)->at_boundary())
+            {
+                fe_face_values.reinit(cell, face);
+
+                for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                {
+                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                    {
+                        shape_face_value[i][q_point] = fe_face_values.shape_value(i, q_point);
+                        // shape_face_grad[i][q_point] = fe_face_values.shape_grad(i, q_point);
+                    }
+                }
+            }
+        }
+
         // local matrix
         cell_matrix = 0;
         cell_rhs = 0;
@@ -235,10 +269,14 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
                     for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
                     {
-                        // boundary (Neumann)
-                        if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
+                        if (cell->face(face)->at_boundary())
                         {
                             fe_face_values.reinit (cell, face);
+
+                            // value and grad cache
+                            std::vector<dealii::Vector<double> > shape_value = shape_face_value;
+                            // std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad = shape_face_grad;
+
                             for (unsigned int i = 0; i < dofs_per_cell; ++i)
                             {
                                 const unsigned int component_i = m_fe->system_to_component_index(i).first;
@@ -250,10 +288,10 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                     // {{EXPRESSION_ID}}
                                     if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}}) // TODO: speed up
                                     {
-                                        for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+                                        for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
                                         {
-                                            const dealii::Point<2> p = fe_values.quadrature_point(q_point);
-                                            cell_matrix(i,j) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                                            const dealii::Point<2> p = fe_face_values.quadrature_point(q_point);
+                                            cell_matrix(i,j) += fe_face_values.JxW(q_point) *({{EXPRESSION}});
                                         }
                                     }{{/FORM_EXPRESSION}}
                                 }
@@ -273,10 +311,14 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
                     for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
                     {
-                        // boundary (Neumann)
-                        if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 2))
+                        if (cell->face(face)->at_boundary())
                         {
                             fe_face_values.reinit(cell, face);
+
+                            // value and grad cache
+                            std::vector<dealii::Vector<double> > shape_value = shape_face_value;
+                            // std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad = shape_face_grad;
+
                             for (unsigned int i = 0; i < dofs_per_cell; ++i)
                             {
                                 const unsigned int component_i = m_fe->system_to_component_index(i).first;
@@ -284,10 +326,10 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                 // {{EXPRESSION_ID}}
                                 if (component_i == {{ROW_INDEX}}) // TODO: speed up
                                 {
-                                    for (unsigned int q_point=0; q_point < n_face_q_points; ++q_point)
+                                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
                                     {
-                                        const dealii::Point<2> p = fe_values.quadrature_point(q_point);
-                                        cell_rhs(i) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                                        const dealii::Point<2> p = fe_face_values.quadrature_point(q_point);
+                                        cell_rhs(i) += fe_face_values.JxW(q_point) *({{EXPRESSION}});
                                     }
                                 }{{/FORM_EXPRESSION}}
                             }
@@ -295,24 +337,6 @@ void SolverDeal{{CLASS}}::assembleSystem()
                     }
                 }
                 {{/SURFACE_VECTOR_SOURCE}}
-
-                /*
-                ROBIN - CHECK!!!
-                if (cell->face(face)->at_boundary() && (cell->face(face)->boundary_indicator() == 1))
-                {
-                    fe_face_values.reinit(cell, face);
-
-                    for (unsigned int i = 0; i < dofs_per_cell; ++i)
-                        for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                            for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                                cell_matrix(i, j) += 1 / R_SI_1* fe_face_values.shape_value(i, q_point) * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                        for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                            cell_rhs(j) += 1/ R_SI_1 * THETA_1 * fe_face_values.shape_value(j, q_point) * fe_face_values.JxW(q_point);
-
-                }
-                */
             }
         }
 
