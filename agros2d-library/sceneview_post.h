@@ -59,7 +59,7 @@ class PostDataOut : public dealii::DataOut<2>
 public:
     PostDataOut();
 
-    void compute_nodes(QList<PostTriangle> &values);
+    void compute_nodes(QList<PostTriangle> &values, bool deform = false);
 
     virtual typename dealii::DataOut<2>::cell_iterator first_cell();
     virtual typename dealii::DataOut<2>::cell_iterator next_cell(const typename dealii::DataOut<2>::cell_iterator &old_cell);

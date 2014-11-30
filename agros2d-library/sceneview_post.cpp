@@ -60,13 +60,33 @@ PostDataOut::PostDataOut() : dealii::DataOut<2>()
 {
 }
 
-void PostDataOut::compute_nodes(QList<PostTriangle> &values)
+void PostDataOut::compute_nodes(QList<PostTriangle> &values, bool deform)
 {
     values.clear();
 
+    // min and max value
     m_min =  numeric_limits<double>::max();
     m_max = -numeric_limits<double>::max();
 
+    for (typename std::vector<dealii::DataOutBase::Patch<2> >::const_iterator patch = patches.begin(); patch != patches.end(); ++patch)
+    {
+        for (unsigned int i = 0; i < (patch->n_subdivisions + 1) * (patch->n_subdivisions + 1); i++)
+        {
+            double value = patch->data(0, i);
+
+            m_min = std::min(m_min, value);
+            m_max = std::max(m_max, value);
+        }
+    }
+
+    double dmult = 0.0;
+    if (deform)
+    {
+        RectPoint rect = Agros2D::scene()->boundingBox();
+        dmult = qMax(rect.width(), rect.height()) / m_max / 15.0;
+    }
+
+    // compute values in patches
     dealii::Point<2> node0, node1, node2, node3;
 
     // loop over all patches
@@ -87,14 +107,24 @@ void PostDataOut::compute_nodes(QList<PostTriangle> &values)
                 compute_node(node2, &*patch, i1+1, i2, 0, n_subdivisions);
                 compute_node(node3, &*patch, i1+1, i2+1, 0, n_subdivisions);
 
+                // compute values
                 double value0 = patch->data(0, i1*d1 + i2*d2);
                 double value1 = patch->data(0, i1*d1 + (i2+1)*d2);
                 double value2 = patch->data(0, (i1+1)*d1 + i2*d2);
                 double value3 = patch->data(0, (i1+1)*d1 + (i2+1)*d2);
 
-                m_min = std::min(std::min(std::min(std::min(m_min, value0), value1), value2), value3);
-                m_max = std::max(std::max(std::max(std::max(m_max, value0), value1), value2), value3);
+                if (deform)
+                {
+                    // node(0) ... value
+                    // node(1) ... disp x
+                    // node(2) ... disp y
+                    node0 += dmult * dealii::Point<2>(patch->data(1, i1*d1 + i2*d2), patch->data(2, i1*d1 + i2*d2));
+                    node1 += dmult * dealii::Point<2>(patch->data(1, i1*d1 + (i2+1)*d2), patch->data(2, i1*d1 + (i2+1)*d2));
+                    node2 += dmult * dealii::Point<2>(patch->data(1, (i1+1)*d1 + i2*d2), patch->data(2, (i1+1)*d1 + i2*d2));
+                    node3 += dmult * dealii::Point<2>(patch->data(1, (i1+1)*d1 + (i2+1)*d2), patch->data(2, (i1+1)*d1 + (i2+1)*d2));
+                }
 
+                // create triangles
                 values.append(PostTriangle(node0, node1, node2, value0, value1, value2));
                 values.append(PostTriangle(node1, node3, node2, value1, value3, value2));
             }
@@ -108,12 +138,10 @@ void PostDataOut::compute_node(dealii::Point<2> &node, const dealii::DataOutBase
 {
     if (patch->points_are_available)
     {
-        unsigned int point_no=0;
-        // note: switch without break !
-        Assert (ystep<n_subdivisions+1, ExcIndexRange(ystep,0,n_subdivisions+1));
-        point_no+=(n_subdivisions+1)*ystep;
+        unsigned int point_no = 0;
+        point_no += (n_subdivisions+1)*ystep;
         for (unsigned int d=0; d<2; ++d)
-            node[d]=patch->data(patch->data.size(0)-2+d,point_no);
+            node[d]=patch->data(patch->data.size(0)-2+d, point_no);
     }
     else
     {
@@ -122,6 +150,7 @@ void PostDataOut::compute_node(dealii::Point<2> &node, const dealii::DataOutBase
 
         node = (patch->vertices[1] * xfrac) + (patch->vertices[0] * (1-xfrac));
         const double yfrac=ystep*stepsize;
+
         node*= 1-yfrac;
         node += ((patch->vertices[3] * xfrac) + (patch->vertices[2] * (1-xfrac))) * yfrac;
     }
@@ -211,31 +240,7 @@ void PostDeal::processRangeContour()
             data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
                                         PhysicFieldVariableComp_Magnitude);
 
-        data_out->compute_nodes(m_contourValues);
-
-        // deformed shape
-        /*
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
-        {
-            Hermes::Hermes2D::MagFilter<double> *filter
-                    = new Hermes::Hermes2D::MagFilter<double>({activeMultiSolutionArray().solutions().at(0), activeMultiSolutionArray().solutions().at(1)});
-
-            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
-            {
-                RectPoint rect = Agros2D::scene()->boundingBox();
-                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
-
-                m_linContourView->set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                   activeMultiSolutionArray().solutions().at(1),
-                                                   dmult);
-            }
-            delete filter;
-        }
-        else
-        {
-            m_linContourView->set_displacement(NULL, NULL);
-        }
-        */
+        data_out->compute_nodes(m_contourValues, (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool()));
 
         delete data_out;
     }
@@ -261,31 +266,8 @@ void PostDeal::processRangeScalar()
 
         PostDataOut *data_out = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
                                                  (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
-        data_out->compute_nodes(m_scalarValues);
+        data_out->compute_nodes(m_scalarValues, (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool()));
 
-        /*
-        // deformed shape
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())
-        {
-            Hermes::Hermes2D::MagFilter<double> *filter
-                    = new Hermes::Hermes2D::MagFilter<double>({activeMultiSolutionArray().solutions().at(0), activeMultiSolutionArray().solutions().at(1)});
-
-            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
-            {
-                RectPoint rect = Agros2D::scene()->boundingBox();
-                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
-
-                m_linScalarView->set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                  activeMultiSolutionArray().solutions().at(1),
-                                                  dmult);
-            }
-            delete filter;
-        }
-        else
-        {
-            m_linScalarView->set_displacement(NULL, NULL);
-        }
-        */
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, data_out->min());
@@ -320,29 +302,6 @@ void PostDeal::processRangeVector()
 
         data_outX->compute_nodes(m_vectorXValues);
         data_outY->compute_nodes(m_vectorYValues);
-
-        /*
-        // deformed shape
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
-        {
-            Hermes::Hermes2D::MagFilter<double> *filter
-                    = new Hermes::Hermes2D::MagFilter<double>({ activeMultiSolutionArray().solutions().at(0), activeMultiSolutionArray().solutions().at(1)});
-            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
-            {
-                RectPoint rect = Agros2D::scene()->boundingBox();
-                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
-
-                m_vecVectorView->set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                  activeMultiSolutionArray().solutions().at(1),
-                                                  dmult);
-            }
-            delete filter;
-        }
-        else
-        {
-            m_vecVectorView->set_displacement(NULL, NULL);
-        }
-        */
 
         delete data_outX;
         delete data_outY;
@@ -462,17 +421,22 @@ PostDataOut *PostDeal::viewScalarFilter(Module::LocalVariable physicFieldVariabl
     // qDebug() << "solution->size()" << ma.solution()->size() << "doFHandler->size()" << ma.doFHandler()->n_dofs();
 
     dealii::DataPostprocessorScalar<2> *post = activeViewField()->plugin()->filter(activeViewField(),
-                                                                                  activeTimeStep(),
-                                                                                  activeAdaptivityStep(),
-                                                                                  activeAdaptivitySolutionType(),
-                                                                                  &ma,
-                                                                                  physicFieldVariable.id(),
-                                                                                  physicFieldVariableComp);
+                                                                                   activeTimeStep(),
+                                                                                   activeAdaptivityStep(),
+                                                                                   activeAdaptivitySolutionType(),
+                                                                                   &ma,
+                                                                                   physicFieldVariable.id(),
+                                                                                   physicFieldVariableComp);
 
     PostDataOut *data_out = new PostDataOut();
     data_out->attach_dof_handler(*ma.doFHandler());
     data_out->add_data_vector(*ma.solution(), *post);
-    // data_out->add_data_vector(*ma.solution(), "x");
+    // deform shape
+    if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
+    {
+        data_out->add_data_vector(*ma.solution(), "x");
+        data_out->add_data_vector(*ma.solution(), "y");
+    }
     data_out->build_patches(2);
 
     qDebug() << "process - build patches (" << time.elapsed() << "ms )";
