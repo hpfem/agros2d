@@ -192,7 +192,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                 {{/VARIABLE_MATERIAL}}
 
                 // surface integration
-                for (unsigned int face=0; face<dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
                 {
                     if (cell_int->face(face)->at_boundary() && cell_int->face(face)->boundary_indicator() - 1 == iFace)
                     {
@@ -203,12 +203,12 @@ void {{CLASS}}SurfaceIntegral::calculate()
                         {{#VARIABLE_SOURCE}}
                         if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                         {
-                            for (unsigned int i = 0; i < n_face_q_points; ++i)
+                            for (unsigned int k = 0; k < n_face_q_points; ++k)
                             {
-                                const dealii::Point<2> p = fe_values.quadrature_point(i);
-                                const dealii::Point<2> normal = fe_values.normal_vector(i);
+                                const dealii::Point<2> p = fe_values.quadrature_point(k);
+                                const dealii::Point<2> normal = fe_values.normal_vector(k);
 
-                                m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(i) * ({{EXPRESSION}});
+                                m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(k) * ({{EXPRESSION}});
                             }
                         }
                         {{/VARIABLE_SOURCE}}

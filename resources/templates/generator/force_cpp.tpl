@@ -74,10 +74,11 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
         double x = point.x;
         double y = point.y;
 
-        double *solution_values = new double[numberOfSolutions];
-        dealii::Tensor<1, 2> *solution_grads = new dealii::Tensor<1, 2>[numberOfSolutions];
+        int k = 0; // only one point
+        std::vector<dealii::Vector<double> > solution_values(1, dealii::Vector<double>(fieldInfo->numberOfSolutions()));
+        std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(1, std::vector<dealii::Tensor<1,2> >(fieldInfo->numberOfSolutions()));
 
-        for (int k = 0; k < numberOfSolutions; k++)
+        for (int i = 0; i < numberOfSolutions; i++)
         {
             // point values
             try
@@ -85,9 +86,9 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
                 if ((fieldInfo->analysisType() == AnalysisType_Transient) && timeStep == 0)
                 {
                     // set variables
-                    solution_values[k] = fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
-                    solution_grads[k][0] = 0;
-                    solution_grads[k][1] = 0;
+                    solution_values[k][i] = fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
+                    solution_grads[k][i][0] = 0;
+                    solution_grads[k][i][1] = 0;
                 }
                 else
                 {
@@ -96,16 +97,13 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
                     dealii::Point<2> p(point.x, point.y);
 
                     // set variables
-                    solution_values[k] = localvalues.value(p);
-                    solution_grads[k] = localvalues.gradient(p);
+                    solution_values[k][i] = localvalues.value(p, i);
+                    solution_grads[k][i] = localvalues.gradient(p, i);
                 }
             }
             catch (const typename dealii::GridTools::ExcPointNotFound<2> &e)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
-
-                delete [] solution_values;
-                delete [] solution_grads;
 
                 return res;
             }
@@ -120,9 +118,6 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
             res.z = {{EXPRESSION_Z}};
         }
         {{/VARIABLE_SOURCE}}
-
-        delete [] solution_values;
-        delete [] solution_grads;
     }
 
     return res;

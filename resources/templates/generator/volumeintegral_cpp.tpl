@@ -205,8 +205,6 @@ private:
 
 void {{CLASS}}VolumeIntegral::calculate()
 {
-    int numberOfSolutions = m_fieldInfo->numberOfSolutions();
-
     m_values.clear();
 
     if (Agros2D::problem()->isSolved())
@@ -229,8 +227,8 @@ void {{CLASS}}VolumeIntegral::calculate()
 
         dealii::FEValues<2> fe_values(ma.doFHandler()->get_fe(), quadrature_formula_int, dealii::update_values | dealii::update_gradients | dealii::update_quadrature_points  | dealii::update_JxW_values);
 
-        std::vector<dealii::Vector<double> > solution_values(n_q_points, dealii::Vector<double>(1));
-        std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(n_q_points, std::vector<dealii::Tensor<1,2> > (1));
+        std::vector<dealii::Vector<double> > solution_values(n_q_points, dealii::Vector<double>(m_fieldInfo->numberOfSolutions()));
+        std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(n_q_points, std::vector<dealii::Tensor<1,2> >(m_fieldInfo->numberOfSolutions()));
 
         for (int iLabel = 0; iLabel < Agros2D::scene()->labels->count(); iLabel++)
         {
@@ -258,11 +256,11 @@ void {{CLASS}}VolumeIntegral::calculate()
                     {{#VARIABLE_SOURCE}}
                     if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                     {
-                        for (unsigned int i = 0; i < n_q_points; ++i)
+                        for (unsigned int k = 0; k < n_q_points; ++k)
                         {
-                            const dealii::Point<2> p = fe_values.quadrature_point(i);
+                            const dealii::Point<2> p = fe_values.quadrature_point(k);
 
-                            m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(i) * ({{EXPRESSION}});
+                            m_values[QLatin1String("{{VARIABLE}}")] += fe_values.JxW(k) * ({{EXPRESSION}});
                         }
                     }
                     {{/VARIABLE_SOURCE}}

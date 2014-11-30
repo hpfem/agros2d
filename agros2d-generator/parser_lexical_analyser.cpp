@@ -48,7 +48,7 @@ void ParserInstance::addBasicWeakformTokens()
     // scalar field
     m_dict["uval"] = "fe_values.shape_value(j, q_point)"; // "u->val[i]";
     m_dict["vval"] = "fe_values.shape_value(i, q_point)"; // "v->val[i]";
-    m_dict["upval"] = "u_ext[this->j]->val[i]";
+    m_dict["upval"] = "0"; // "u_ext[this->j]->val[i]";
     m_dict["uptval"] = "ext[*this->m_offsetPreviousTimeExt + this->j - this->m_offsetJ]->val[i]";
     m_dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
 
@@ -59,7 +59,7 @@ void ParserInstance::addBasicWeakformTokens()
     m_dict["vval0"] = "v->val0[i]";
     m_dict["vval1"] = "v->val1[i]";
     m_dict["vcurl"] = "v->curl[i]";
-    m_dict["upcurl"] = "u_ext[this->j]->curl[i]";
+    m_dict["upcurl"] = "0"; // "u_ext[this->j]->curl[i]";
 
     m_dict["timedermat"] = "(*this->m_table)->matrixFormCoefficient()";
     m_dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerTarget->fieldInfo()->numberOfSolutions(), offset.prevSol, i)";
@@ -71,8 +71,8 @@ void ParserInstance::addBasicWeakformTokens()
         m_dict["vdx"] = "fe_values.shape_grad(i, q_point)[0]"; // "v->dx[i]";
         m_dict["udy"] = "fe_values.shape_grad(j, q_point)[1]"; // "u->dy[i]";
         m_dict["vdy"] = "fe_values.shape_grad(i, q_point)[1]"; // "v->dy[i]";
-        m_dict["updx"] = "u_ext[this->j]->dx[i]";
-        m_dict["updy"] = "u_ext[this->j]->dy[i]";
+        m_dict["updx"] = "0"; // "u_ext[this->j]->dx[i]";
+        m_dict["updy"] = "0"; // "u_ext[this->j]->dy[i]";
     }
     else
     {
@@ -81,8 +81,8 @@ void ParserInstance::addBasicWeakformTokens()
         m_dict["vdr"] = "fe_values.shape_grad(i, q_point)[0]"; // "v->dx[i]";
         m_dict["udz"] = "fe_values.shape_grad(j, q_point)[1]"; // "u->dy[i]";
         m_dict["vdz"] = "fe_values.shape_grad(i, q_point)[1]"; // "v->dy[i]";
-        m_dict["updr"] = "u_ext[this->j]->dx[i]";
-        m_dict["updz"] = "u_ext[this->j]->dy[i]";
+        m_dict["updr"] = "0"; // "u_ext[this->j]->dx[i]";
+        m_dict["updz"] = "0"; // "u_ext[this->j]->dy[i]";
     }
 }
 
@@ -394,16 +394,16 @@ void ParserInstance::addPostprocessorBasic()
     // functions
     for (int i = 1; i < m_parserModuleInfo.numSolutions + 1; i++)
     {
-        m_dict[QString("value%1").arg(i)] = QString("solution_values[i][%1]").arg(i-1); // QString("value[%1][i]").arg(i-1);
+        m_dict[QString("value%1").arg(i)] = QString("solution_values[k][%1]").arg(i-1); // QString("value[%1][i]").arg(i-1);
         if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
-            m_dict[QString("dx%1").arg(i)] = QString("solution_grads[i][%1][0]").arg(i-1); // QString("dudx[%1][i]").arg(i-1);
-            m_dict[QString("dy%1").arg(i)] = QString("solution_grads[i][%1][1]").arg(i-1); // QString("dudy[%1][i]").arg(i-1);
+            m_dict[QString("dx%1").arg(i)] = QString("solution_grads[k][%1][0]").arg(i-1); // QString("dudx[%1][i]").arg(i-1);
+            m_dict[QString("dy%1").arg(i)] = QString("solution_grads[k][%1][1]").arg(i-1); // QString("dudy[%1][i]").arg(i-1);
         }
         else
         {
-            m_dict[QString("dr%1").arg(i)] = QString("solution_grads[i][%1][0]").arg(i-1); // QString("dudx[%1][i]").arg(i-1);
-            m_dict[QString("dz%1").arg(i)] = QString("solution_grads[i][%1][1]").arg(i-1); // QString("dudy[%1][i]").arg(i-1);
+            m_dict[QString("dr%1").arg(i)] = QString("solution_grads[k][%1][0]").arg(i-1); // QString("dudx[%1][i]").arg(i-1);
+            m_dict[QString("dz%1").arg(i)] = QString("solution_grads[k][%1][1]").arg(i-1); // QString("dudy[%1][i]").arg(i-1);
         }
     }
     // eggshell

@@ -78,17 +78,18 @@ void {{CLASS}}LocalValue::calculate()
             {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
             {{/VARIABLE_MATERIAL}}
 
-            double *solution_values = new double[numberOfSolutions];
-            dealii::Tensor<1, 2> *solution_grads = new dealii::Tensor<1, 2>[numberOfSolutions];
+            int k = 0; // only one point
+            std::vector<dealii::Vector<double> > solution_values(1, dealii::Vector<double>(m_fieldInfo->numberOfSolutions()));
+            std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(1, std::vector<dealii::Tensor<1,2> >(m_fieldInfo->numberOfSolutions()));
 
-            for (int k = 0; k < numberOfSolutions; k++)
+            for (int i = 0; i < numberOfSolutions; i++)
             {
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)
                 {
                     // set variables
-                    solution_values[k] = m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
-                    solution_grads[k][0] = 0;
-                    solution_grads[k][1] = 0;
+                    solution_values[k][i] = m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
+                    solution_grads[k][i][0] = 0;
+                    solution_grads[k][i][1] = 0;
                 }
                 else
                 {
@@ -96,8 +97,8 @@ void {{CLASS}}LocalValue::calculate()
                     dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandler(), *ma.solution());
 
                     // set variables
-                    solution_values[k] = localvalues.value(p);
-                    solution_grads[k] = localvalues.gradient(p);
+                    solution_values[k][i] = localvalues.value(p, i);
+                    solution_grads[k][i] = localvalues.gradient(p, i);
                 }
             }
 
@@ -107,9 +108,6 @@ void {{CLASS}}LocalValue::calculate()
                     && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                 m_values[QLatin1String("{{VARIABLE}}")] = LocalPointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
             {{/VARIABLE_SOURCE}}
-
-            delete [] solution_values;
-            delete [] solution_grads;
         }
         catch (const typename dealii::GridTools::ExcPointNotFound<2> &e)
         {

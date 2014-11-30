@@ -1279,8 +1279,8 @@ void ProblemSolverDeal::solveSimple(FieldInfo *fieldInfo, int timeStep)
     m_solverDeal->setup();
     QTime time;
     time.start();
-    m_solverDeal->assembleDirichlet();
     m_solverDeal->assembleSystem();
+    m_solverDeal->assembleDirichlet();
     qDebug() << "assemble (" << time.elapsed() << "ms )";
     m_solverDeal->solve();
 

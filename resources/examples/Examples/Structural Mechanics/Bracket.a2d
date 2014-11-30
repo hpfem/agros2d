@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
-
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-dealii/resources/xsd/problem_a2d_31_xml.xsd">
   <geometry>
     <nodes>
-      <node id="0" x="0" y="0"/>
-      <node id="1" x="0.3" y="0"/>
-      <node id="2" x="0.27" y="-0.03"/>
-      <node id="3" x="0.03" y="-0.03"/>
-      <node id="4" x="0" y="-0.3"/>
-      <node id="5" x="0.03" y="-0.27"/>
-      <node id="6" x="0.03" y="-0.15"/>
-      <node id="7" x="0.15" y="-0.03"/>
-      <node id="8" x="0.031" y="-0.15"/>
-      <node id="9" x="0.030625" y="-0.150375"/>
-      <node id="10" x="0.150375" y="-0.030625"/>
-      <node id="11" x="0.15" y="-0.031"/>
+      <node id="0" valuex="0" valuey="0" x="0" y="0"/>
+      <node id="1" valuex="0.3" valuey="0" x="0.3" y="0"/>
+      <node id="2" valuex="0.27" valuey="-0.03" x="0.27" y="-0.03"/>
+      <node id="3" valuex="0.03" valuey="-0.03" x="0.03" y="-0.03"/>
+      <node id="4" valuex="0" valuey="-0.3" x="0" y="-0.3"/>
+      <node id="5" valuex="0.03" valuey="-0.27" x="0.03" y="-0.27"/>
+      <node id="6" valuex="0.03" valuey="-0.15" x="0.03" y="-0.15"/>
+      <node id="7" valuex="0.15" valuey="-0.03" x="0.15" y="-0.03"/>
+      <node id="8" valuex="0.031" valuey="-0.15" x="0.031" y="-0.15"/>
+      <node id="9" valuex="0.030625" valuey="-0.150375" x="0.030625" y="-0.150375"/>
+      <node id="10" valuex="0.150375" valuey="-0.030625" x="0.150375" y="-0.030625"/>
+      <node id="11" valuex="0.15" valuey="-0.031" x="0.15" y="-0.031"/>
     </nodes>
     <edges>
-      <edge angle="0" end="0" id="0" is_curvilinear="1" segments="3" start="1"/>
-      <edge angle="0" end="4" id="1" is_curvilinear="1" segments="3" start="0"/>
-      <edge angle="90" end="5" id="2" is_curvilinear="1" segments="3" start="4"/>
-      <edge angle="90" end="1" id="3" is_curvilinear="1" segments="3" start="2"/>
-      <edge angle="0" end="6" id="4" is_curvilinear="1" segments="3" start="3"/>
-      <edge angle="0" end="7" id="5" is_curvilinear="1" segments="3" start="3"/>
-      <edge angle="90" end="5" id="6" is_curvilinear="1" segments="3" start="2"/>
-      <edge angle="90" end="9" id="7" is_curvilinear="1" segments="3" start="6"/>
-      <edge angle="30" end="8" id="8" is_curvilinear="1" segments="3" start="9"/>
-      <edge angle="90" end="7" id="9" is_curvilinear="1" segments="3" start="10"/>
-      <edge angle="30" end="10" id="10" is_curvilinear="1" segments="3" start="11"/>
-      <edge angle="45" end="8" id="11" is_curvilinear="1" segments="3" start="11"/>
+      <edge angle="0" end="0" id="0" is_curvilinear="1" segments="3" start="1" valueangle="0"/>
+      <edge angle="0" end="4" id="1" is_curvilinear="1" segments="3" start="0" valueangle="0"/>
+      <edge angle="90" end="5" id="2" is_curvilinear="1" segments="3" start="4" valueangle="90"/>
+      <edge angle="90" end="1" id="3" is_curvilinear="1" segments="3" start="2" valueangle="90"/>
+      <edge angle="0" end="6" id="4" is_curvilinear="1" segments="3" start="3" valueangle="0"/>
+      <edge angle="0" end="7" id="5" is_curvilinear="1" segments="3" start="3" valueangle="0"/>
+      <edge angle="90" end="5" id="6" is_curvilinear="1" segments="3" start="2" valueangle="90"/>
+      <edge angle="90" end="9" id="7" is_curvilinear="1" segments="3" start="6" valueangle="90"/>
+      <edge angle="30" end="8" id="8" is_curvilinear="1" segments="3" start="9" valueangle="30"/>
+      <edge angle="90" end="7" id="9" is_curvilinear="1" segments="3" start="10" valueangle="90"/>
+      <edge angle="30" end="10" id="10" is_curvilinear="1" segments="3" start="11" valueangle="30"/>
+      <edge angle="45" end="8" id="11" is_curvilinear="1" segments="3" start="11" valueangle="45"/>
     </edges>
     <labels>
-      <label area="0" id="0" x="0.19805" y="-0.0157016"/>
-      <label area="0" id="1" x="0.0484721" y="-0.0490752"/>
+      <label area="0" id="0" valuex="0.19805" valuey="-0.0157016" x="0.19805" y="-0.0157016"/>
+      <label area="0" id="1" valuex="0.0484721" valuey="-0.0490752" x="0.0484721" y="-0.0490752"/>
     </labels>
   </geometry>
-
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
       <field adaptivity_type="disabled" analysis_type="steadystate" field_id="elasticity" linearity_type="linear" matrix_solver="mumps">
@@ -92,13 +90,13 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="elasticity_alpha" value="0"/>
+              <material_type key="elasticity_young_modulus" value="2e11"/>
               <material_type key="elasticity_poisson_ratio" value="0.33"/>
               <material_type key="elasticity_temperature_difference" value="0"/>
-              <material_type key="elasticity_temperature_reference" value="0"/>
+              <material_type key="elasticity_alpha" value="0"/>
               <material_type key="elasticity_volume_force_x" value="0"/>
               <material_type key="elasticity_volume_force_y" value="-9.81*7800"/>
-              <material_type key="elasticity_young_modulus" value="2e11"/>
+              <material_type key="elasticity_temperature_reference" value="0"/>
             </material_types>
           </material>
         </materials>
@@ -115,7 +113,7 @@
           <field_item field_key="PicardAndersonAcceleration" field_value="0"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="8"/>
           <field_item field_key="AdaptivityTolerance" field_value="0"/>
@@ -149,22 +147,10 @@
       <problem_item problem_key="TimeTotal" problem_value="10"/>
     </problem_config>
   </problem>
-
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="View_RulersFontFamily" value="Droid"/>
-    <item key="View_RulersFontPointSize" value="12"/>
-    <item key="View_PostFontFamily" value="Droid"/>
-    <item key="View_PostFontPointSize" value="16"/>
-    <item key="View_ZoomToMouse" value="1"/>
-    <item key="View_NodeSize" value="6"/>
-    <item key="View_EdgeWidth" value="2"/>
-    <item key="View_LabelSize" value="6"/>
-    <item key="View_ShowGrid" value="1"/>
     <item key="View_GridStep" value="0.000125"/>
-    <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
-    <item key="View_ShowAxes" value="1"/>
     <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
@@ -175,45 +161,6 @@
     <item key="View_DeformScalar" value="1"/>
     <item key="View_DeformContour" value="1"/>
     <item key="View_DeformVector" value="1"/>
-    <item key="View_ColorBackgroundRed" value="255"/>
-    <item key="View_ColorBackgroundGreen" value="255"/>
-    <item key="View_ColorBackgroundBlue" value="255"/>
-    <item key="View_ColorGridRed" value="200"/>
-    <item key="View_ColorGridGreen" value="200"/>
-    <item key="View_ColorGridBlue" value="200"/>
-    <item key="View_ColorCrossRed" value="150"/>
-    <item key="View_ColorCrossGreen" value="150"/>
-    <item key="View_ColorCrossBlue" value="150"/>
-    <item key="View_ColorNodesRed" value="150"/>
-    <item key="View_ColorNodesGreen" value="0"/>
-    <item key="View_ColorNodesBlue" value="0"/>
-    <item key="View_ColorEdgesRed" value="0"/>
-    <item key="View_ColorEdgesGreen" value="0"/>
-    <item key="View_ColorEdgesBlue" value="150"/>
-    <item key="View_ColorLabelsRed" value="0"/>
-    <item key="View_ColorLabelsGreen" value="150"/>
-    <item key="View_ColorLabelsBlue" value="0"/>
-    <item key="View_ColorContoursRed" value="0"/>
-    <item key="View_ColorContoursGreen" value="0"/>
-    <item key="View_ColorContoursBlue" value="0"/>
-    <item key="View_ColorVectorsRed" value="0"/>
-    <item key="View_ColorVectorsGreen" value="0"/>
-    <item key="View_ColorVectorsBlue" value="0"/>
-    <item key="View_ColorInitialMeshRed" value="250"/>
-    <item key="View_ColorInitialMeshGreen" value="202"/>
-    <item key="View_ColorInitialMeshBlue" value="119"/>
-    <item key="View_ColorSolutionMeshRed" value="150"/>
-    <item key="View_ColorSolutionMeshGreen" value="70"/>
-    <item key="View_ColorSolutionMeshBlue" value="0"/>
-    <item key="View_ColorSelectedRed" value="150"/>
-    <item key="View_ColorSelectedGreen" value="0"/>
-    <item key="View_ColorSelectedBlue" value="0"/>
-    <item key="View_ColorHighlightedRed" value="250"/>
-    <item key="View_ColorHighlightedGreen" value="150"/>
-    <item key="View_ColorHighlightedBlue" value="0"/>
-    <item key="View_ColorCrossedRed" value="255"/>
-    <item key="View_ColorCrossedGreen" value="0"/>
-    <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="1"/>
     <item key="View_ContourVariable" value="elasticity_displacement"/>
@@ -232,7 +179,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="2.64462112076273e-07"/>
+    <item key="View_ScalarRangeMax" value="1.89063143807289e-07"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="elasticity_displacement"/>
     <item key="View_VectorProportional" value="1"/>
@@ -272,6 +219,8 @@
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ParticleP2PElectricForce" value="0"/>
+    <item key="View_ParticleP2PMagneticForce" value="0"/>
     <item key="View_ChartStartX" value="0"/>
     <item key="View_ChartStartY" value="0"/>
     <item key="View_ChartEndX" value="0"/>
@@ -281,8 +230,6 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
   </config>
-
 </problem:document>

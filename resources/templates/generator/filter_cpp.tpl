@@ -57,6 +57,7 @@
 {
 }
 
+// only one component
 void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::vector<double> &uh,
                                                                    const std::vector<dealii::Tensor<1,2> > &duh,
                                                                    const std::vector<dealii::Tensor<2,2> > &dduh,
@@ -64,9 +65,11 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
                                                                    const std::vector<dealii::Point<2> > &evaluation_points,
                                                                    std::vector<dealii::Vector<double> > &computed_quantities) const
 {
-    qDebug() << "compute_derived_quantities_scalar " << computed_quantities.size();
-    qDebug() << "uh.size() " << uh.size();
-    qDebug() << "duh.size() " << duh.size();
+    // qDebug() << "compute_derived_quantities_scalar " << computed_quantities.size();
+    // qDebug() << "uh.size() " << uh.size();
+    // qDebug() << "duh.size() " << duh.size();
+
+    int numberOfSolutions = m_fieldInfo->numberOfSolutions();
 
     dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
             (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
@@ -83,16 +86,15 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
 
-    int i = 0;
-
-    double solution_values[1][1];
-    dealii::Tensor<1, 2> solution_grads[1][1];
+    std::vector<dealii::Vector<double> > solution_values(computed_quantities.size(), dealii::Vector<double>(numberOfSolutions));
+    std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(computed_quantities.size(), std::vector<dealii::Tensor<1,2> >(numberOfSolutions));
 
     for (unsigned int k = 0; k < computed_quantities.size(); k++)
     {
-        solution_values[i][0] = uh[k];
-        solution_grads[i][0] = duh[k];
         dealii::Point<2> p = evaluation_points[k];
+
+        solution_values[k][0] = uh[k];
+        solution_grads[k][0] = duh[k];
 
         {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
         {{/VARIABLE_MATERIAL}}
@@ -105,6 +107,8 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
         {{/VARIABLE_SOURCE}}
     }
 }
+
+// multiple components
 void {{CLASS}}ViewScalarFilter::compute_derived_quantities_vector (const std::vector<dealii::Vector<double> > &uh,
                                                                    const std::vector<std::vector<dealii::Tensor<1,2> > > &duh,
                                                                    const std::vector<std::vector<dealii::Tensor<2,2> > > &dduh,
@@ -112,10 +116,50 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_vector (const std::ve
                                                                    const std::vector<dealii::Point<2> > &evaluation_points,
                                                                    std::vector<dealii::Vector<double> > &computed_quantities) const
 {
-    qDebug() << "compute_derived_quantities_vector " << computed_quantities.size();
-    qDebug() << "uh.size() " << uh.size();
-    qDebug() << "duh.size() " << duh.size();
-    assert(0);
+    // qDebug() << "compute_derived_quantities_vector " << computed_quantities.size();
+    // qDebug() << "uh.size() " << uh.size();
+    // qDebug() << "duh.size() " << duh.size();
+
+    int numberOfSolutions = m_fieldInfo->numberOfSolutions();
+
+    dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
+            (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
+
+    // qDebug() << evaluation_points.size() << "center" << center[0] << center[1];
+
+    std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+            dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), center);
+
+    // find marker
+    SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
+    SceneMaterial *material = label->marker(m_fieldInfo);
+
+    {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+    {{/VARIABLE_MATERIAL}}
+
+    std::vector<dealii::Vector<double> > solution_values(computed_quantities.size(), dealii::Vector<double>(numberOfSolutions));
+    std::vector<std::vector<dealii::Tensor<1,2> > >  solution_grads(computed_quantities.size(), std::vector<dealii::Tensor<1,2> >(numberOfSolutions));
+
+    for (unsigned int k = 0; k < computed_quantities.size(); k++)
+    {
+        dealii::Point<2> p = evaluation_points[k];
+
+        for (int i = 0; i < numberOfSolutions; i++)
+        {
+            solution_values[k][i] = uh[k][i];
+            solution_grads[k][i] = duh[k][i];
+        }
+
+        {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{/VARIABLE_MATERIAL}}
+        {{#VARIABLE_SOURCE}}
+        if ((m_variableHash == {{VARIABLE_HASH}})
+                && (m_coordinateType == {{COORDINATE_TYPE}})
+                && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}}))
+            computed_quantities[k](0) = {{EXPRESSION}};
+        {{/VARIABLE_SOURCE}}
+    }
 }
 
 /*
