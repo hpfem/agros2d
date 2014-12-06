@@ -63,6 +63,7 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
                                                                    const std::vector<dealii::Tensor<2,2> > &dduh,
                                                                    const std::vector<dealii::Point<2> > &normals,
                                                                    const std::vector<dealii::Point<2> > &evaluation_points,
+                                                                   const dealii::types::material_id mat_id,
                                                                    std::vector<dealii::Vector<double> > &computed_quantities) const
 {
     // qDebug() << "compute_derived_quantities_scalar " << computed_quantities.size();
@@ -71,16 +72,16 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_scalar (const std::ve
 
     int numberOfSolutions = m_fieldInfo->numberOfSolutions();
 
-    dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
-            (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
+    // dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
+    //        (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
 
-    // qDebug() << evaluation_points.size() << "center" << center[0] << center[1];
-
-    std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-            dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), center);
+    // terrible slow -> improve!!!!
+    // std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+    //         dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), center);
 
     // find marker
-    SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
+    // SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
+    SceneLabel *label = m_labels->at(mat_id - 1);
     SceneMaterial *material = label->marker(m_fieldInfo);
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));
@@ -114,6 +115,7 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_vector (const std::ve
                                                                    const std::vector<std::vector<dealii::Tensor<2,2> > > &dduh,
                                                                    const std::vector<dealii::Point<2> > &normals,
                                                                    const std::vector<dealii::Point<2> > &evaluation_points,
+                                                                   const dealii::types::material_id mat_id,
                                                                    std::vector<dealii::Vector<double> > &computed_quantities) const
 {
     // qDebug() << "compute_derived_quantities_vector " << computed_quantities.size();
@@ -122,16 +124,15 @@ void {{CLASS}}ViewScalarFilter::compute_derived_quantities_vector (const std::ve
 
     int numberOfSolutions = m_fieldInfo->numberOfSolutions();
 
-    dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
-            (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
+    // dealii::Point<2> center((evaluation_points.front()[0] + evaluation_points.back()[0]) / 2.0,
+    //         (evaluation_points.front()[1] + evaluation_points.back()[1]) / 2.0);
 
-    // qDebug() << evaluation_points.size() << "center" << center[0] << center[1];
-
-    std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
-            dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), center);
+    // std::pair<typename dealii::Triangulation<2>::active_cell_iterator, dealii::Point<2> > current_cell =
+    //        dealii::GridTools::find_active_cell_around_point(dealii::MappingQ1<2>(), *m_fieldInfo->initialMesh(), center);
 
     // find marker
-    SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
+    // SceneLabel *label = m_labels->at(current_cell.first->material_id() - 1);
+    SceneLabel *label = m_labels->at(mat_id - 1);
     SceneMaterial *material = label->marker(m_fieldInfo);
 
     {{#VARIABLE_MATERIAL}}const Value *material_{{MATERIAL_VARIABLE}} = material->valueNakedPtr(QLatin1String("{{MATERIAL_VARIABLE}}"));

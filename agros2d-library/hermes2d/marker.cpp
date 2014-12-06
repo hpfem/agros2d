@@ -47,11 +47,11 @@ const QSharedPointer<Value> Marker::value(const QString &id) const
 }
 
 const Value* Marker::valueNakedPtr(const QString &id) const
-{
+{    
     return value(id).data();
 }
 
-const QHash<QString, QSharedPointer<Value> > Marker::values() const
+const QMap<QString, QSharedPointer<Value> > Marker::values() const
 {
     return m_values;
 }

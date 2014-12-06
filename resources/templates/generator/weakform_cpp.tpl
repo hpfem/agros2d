@@ -120,6 +120,35 @@ void SolverDeal{{CLASS}}::setup()
 }
 */
 
+/*
+struct MassCache
+{
+    MassCache() {}
+    MassCache(dealii::FullMatrix<double> &matrix, dealii::Vector<double> &rhs)
+        : matrix(matrix), rhs(rhs) {}
+
+    dealii::FullMatrix<double> matrix;
+    dealii::Vector<double> rhs;
+};
+
+QMap<typename dealii::Triangulation<2>::cell_iterator, MassCache> cache;
+
+if (!cache.keys().contains(cell)) // TODO: only linear case
+{
+    //
+
+    cache[cell] = MassCache(cell_matrix, cell_rhs);
+}
+else
+{
+    //
+    MassCache mass = cache[cell];
+
+    cell_matrix = mass.matrix;
+    cell_rhs = mass.rhs;
+}
+*/
+
 void SolverDeal{{CLASS}}::assembleSystem()
 {
     // assemble
@@ -264,14 +293,14 @@ void SolverDeal{{CLASS}}::assembleSystem()
                 if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}})
                         && boundary->type() == "{{BOUNDARY_ID}}")
                 {
-                    {{#VARIABLE_SOURCE}}
-                    const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-
                     for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
                     {
                         if (cell->face(face)->at_boundary() && cell->face(face)->boundary_indicator() == edgeNum + 1)
                         {
-                            fe_face_values.reinit (cell, face);
+                            {{#VARIABLE_SOURCE}}
+                            const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+
+                            fe_face_values.reinit(cell, face);
 
                             // value and grad cache
                             std::vector<dealii::Vector<double> > shape_value = shape_face_value;
@@ -306,13 +335,13 @@ void SolverDeal{{CLASS}}::assembleSystem()
                 if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}})
                         && boundary->type() == "{{BOUNDARY_ID}}")
                 {
-                    {{#VARIABLE_SOURCE}}
-                    const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-
                     for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
                     {
                         if (cell->face(face)->at_boundary() && cell->face(face)->boundary_indicator() == edgeNum + 1)
                         {
+                            {{#VARIABLE_SOURCE}}
+                            const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+
                             fe_face_values.reinit(cell, face);
 
                             // value and grad cache

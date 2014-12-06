@@ -11,7 +11,7 @@
         <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
       </module:field_config>
       </module:analysis>
-      <module:analysis id="transient" name="Transient" solutions="1" type="transient" />
+      <!-- <module:analysis id="transient" name="Transient" solutions="1" type="transient" /> -->
     </module:analyses>
     </module:general_field>
 
@@ -24,9 +24,11 @@
     <module:space analysistype="steadystate">
       <module:space_config i="1" orderadjust="0" type="h1"/>
     </module:space>
+    <!-- 
     <module:space analysistype="transient">
       <module:space_config i="1" orderadjust="0" type="h1"/>
     </module:space>
+    -->
   </module:spaces>
 
   <module:volume>
@@ -78,6 +80,7 @@
         </module:linearity_option>
 
       </module:weakform_volume>
+<!-- 
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
         <module:quantity id="heat_velocity_x"/>
         <module:quantity id="heat_velocity_y"/>
@@ -116,6 +119,7 @@
         </module:linearity_option>
 
       </module:weakform_volume>
+-->
     </module:weakforms_volume>
   </module:volume>
 
@@ -177,7 +181,7 @@
           </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
-
+      <!-- 
       <module:weakform_surface analysistype="transient" default="heat_temperature">
         <module:boundary equation="T = T_0" id="heat_temperature" name="Temperature">
           <module:quantity dependence="time" id="heat_temperature"/>
@@ -221,6 +225,7 @@
           </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+      -->
     </module:weakforms_surface>
   </module:surface>
 
@@ -228,14 +233,18 @@
         <module:calculator id="l2" name="L2 norm">
             <module:expression analysistype="steadystate" axi="(uval * vval)"
                                                           planar="(uval * vval)"/>
+            <!--
             <module:expression analysistype="transient" axi="(uval * vval)"
                                                           planar="(uval * vval)"/>
+            -->
         </module:calculator>
         <module:calculator id="h1" name="H1 norm">
             <module:expression analysistype="steadystate" axi="(uval * vval + udr * vdr + udz * vdz)"
                                                           planar="(uval * vval + udx * vdx + udy * vdy)"/>
+            <!--
             <module:expression analysistype="transient" axi="(uval * vval + udr * vdr + udz * vdz)"
                                                         planar="(uval * vval + udx * vdx + udy * vdy)"/>
+            -->
         </module:calculator>
   </module:error_calculator>
 
@@ -269,83 +278,85 @@
     <module:localvariables>
       <module:localvariable id="heat_temperature" name="Temperature" shortname="T" shortname_html="&lt;i>T&lt;/i>" shortname_latex="T" type="scalar" unit="K" unit_html="K" unit_latex="K">
         <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
-        <module:expression analysistype="transient" axi="value1" planar="value1"/>
+        <!-- <module:expression analysistype="transient" axi="value1" planar="value1"/> -->
       </module:localvariable>
      <module:localvariable id="heat_temperature_degrees" name="Temperature (deg.)" shortname="Td" shortname_html="&lt;i>T&lt;/i>" shortname_latex="Td" type="scalar" unit="°C" unit_html="°C" unit_latex="°C">
         <module:expression analysistype="steadystate" axi="value1-273.15" planar="value1-273.15"/>
-        <module:expression analysistype="transient" axi="value1-273.15" planar="value1-273.15"/>
+        <!-- <module:expression analysistype="transient" axi="value1-273.15" planar="value1-273.15"/> -->
       </module:localvariable>
       <module:localvariable format="%5.3e" id="heat_heat_flux" name="Heat flux" shortname="F" shortname_html="&lt;i>F&lt;/i>" shortname_latex="F" type="vector" unit="W/m2" unit_html="W.m&lt;sup>-2&lt;/sup>" unit_latex="W \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi_r="- he_lambda * dr1" axi_z="- he_lambda * dz1" planar_x="- he_lambda * dx1" planar_y="- he_lambda * dy1"/>
-        <module:expression analysistype="transient" axi_r="- he_lambda * dr1" axi_z="- he_lambda * dz1" planar_x="- he_lambda * dx1" planar_y="- he_lambda * dy1"/>
+        <!-- <module:expression analysistype="transient" axi_r="- he_lambda * dr1" axi_z="- he_lambda * dz1" planar_x="- he_lambda * dx1" planar_y="- he_lambda * dy1"/> -->
       </module:localvariable>
       <module:localvariable id="heat_temperature_gradient" name="Temperature gradient" shortname="G" shortname_html="&lt;i>G&lt;/i>" shortname_latex="G" type="vector" unit="K/m" unit_html="K.m&lt;sup>-1&lt;/sup>" unit_latex="K \cdot m^{-1}">
         <module:expression analysistype="steadystate" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/>
-        <module:expression analysistype="transient" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/>
+        <!-- <module:expression analysistype="transient" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/> -->
       </module:localvariable>
       <module:localvariable id="heat_conductivity" name="Thermal conductivity" shortname="lambda" shortname_html="&lt;i>&amp;lambda;&lt;/i>" shortname_latex="\lambda" type="scalar" unit="W/m.K" unit_html="W.m&lt;sup>-1&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="W \cdot m^{-1} \cdot K^{-1}">
         <module:expression analysistype="steadystate" axi="he_lambda" planar="he_lambda"/>
-        <module:expression analysistype="transient" axi="he_lambda" planar="he_lambda"/>
+        <!-- <module:expression analysistype="transient" axi="he_lambda" planar="he_lambda"/> -->
       </module:localvariable>
       <module:localvariable id="heat_volume_heat" name="Volume heat" shortname="p" shortname_html="&lt;i>p&lt;/i>" shortname_latex="p" type="scalar" unit="W/m3" unit_html="W.m&lt;sup>-3&lt;/sup>" unit_latex="W \cdot m^{-3}">
         <module:expression analysistype="steadystate" axi="he_p" planar="he_p"/>
-        <module:expression analysistype="transient" axi="he_p" planar="he_p"/>
+        <!-- <module:expression analysistype="transient" axi="he_p" planar="he_p"/> -->
       </module:localvariable>
+      <!-- 
       <module:localvariable id="heat_density" name="Density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" type="scalar" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}">
-        <module:expression analysistype="transient" axi="he_rho" planar="he_rho"/>
+        <module:expression analysistype="transient" axi="he_rho" planar="he_rho"/> 
       </module:localvariable>
       <module:localvariable id="heat_specific_heat" name="Specific heat" shortname="cp" shortname_html="&lt;i>c&lt;/i>&lt;sub>P&lt;/sub>" shortname_latex="c_\mathrm{P}" type="scalar" unit="J/kg.K" unit_html="J.kg&lt;sup>-1&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="J \cdot kg^{-1} \cdot K^{-1}">
-        <module:expression analysistype="transient" axi="he_cp" planar="he_cp"/>
+        <module:expression analysistype="transient" axi="he_cp" planar="he_cp"/> 
       </module:localvariable>
       <module:localvariable id="heat_velocity" name="Velocity" shortname="v" type="vector" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}">
         <module:expression analysistype="steadystate" axi_r="0" axi_z="he_vy" planar_x="he_vx - he_va * y" planar_y="he_vy + he_va * x"/>
-        <module:expression analysistype="transient" axi_r="0" axi_z="he_vy" planar_x="he_vx - he_va * y" planar_y="he_vy + he_va * x"/>
+        <module:expression analysistype="transient" axi_r="0" axi_z="he_vy" planar_x="he_vx - he_va * y" planar_y="he_vy + he_va * x"/> 
       </module:localvariable>
+      -->
     </module:localvariables>
     <module:view>
       <module:scalar_view>
         <module:default analysistype="steadystate" id="heat_temperature"/>
-        <module:default analysistype="transient" id="heat_temperature"/>
+        <!-- <module:default analysistype="transient" id="heat_temperature"/> -->
       </module:scalar_view>
       <module:vector_view>
         <module:default analysistype="steadystate" id="heat_heat_flux"/>
-        <module:default analysistype="transient" id="heat_heat_flux"/>
+        <!-- <module:default analysistype="transient" id="heat_heat_flux"/> -->
       </module:vector_view>
     </module:view>
     <module:volumeintegrals>
       <module:volumeintegral id="heat_volume" name="Volume" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
-        <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
+        <!-- <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/> -->
       </module:volumeintegral>
       <module:volumeintegral id="heat_cross_section" name="Cross section" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
         <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
-        <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
+        <!-- <module:expression analysistype="transient" axi="1.0" planar="1.0"/> -->
       </module:volumeintegral>
       <module:volumeintegral id="heat_temperature" name="Temperature" shortname="T" shortname_html="&lt;i>T&lt;/i>" shortname_latex="T" unit="K.m3" unit_html=" K.m&lt;sup>3&lt;/sup>" unit_latex="K \cdot m^{3}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * value1" planar="value1"/>
-        <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/>
+        <!-- <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/> -->
       </module:volumeintegral>
       <module:volumeintegral id="heat_temperature_degrees" name="Temperature (deg.)" shortname="Td" shortname_html="&lt;i>T&lt;/i>" shortname_latex="Td" unit="°C.m3" unit_html=" °C.m&lt;sup>3&lt;/sup>" unit_latex="°C \cdot m^{3}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * (value1-273.15)" planar="value1-273.15"/>
-        <module:expression analysistype="transient" axi="2.0 * PI * r * (value1-273.15)" planar="value1-273.15"/>
+        <!-- <module:expression analysistype="transient" axi="2.0 * PI * r * (value1-273.15)" planar="value1-273.15"/> -->
       </module:volumeintegral>
     </module:volumeintegrals>
     <module:surfaceintegrals>
       <module:surfaceintegral id="heat_length" name="Length" shortname="l" shortname_html="&lt;i>l&lt;/i>" shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
         <module:expression analysistype="steadystate" axi="1.0" planar="1.0"/>
-        <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
+        <!-- <module:expression analysistype="transient" axi="1.0" planar="1.0"/> -->
       </module:surfaceintegral>
       <module:surfaceintegral id="heat_surface" name="Surface" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r" planar="1.0"/>
-        <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
+        <!-- <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/> -->
       </module:surfaceintegral>
       <module:surfaceintegral id="heat_temperature" name="Temperature" shortname="T" shortname_html="&lt;i>T&lt;/i>" shortname_latex="T" unit="K.m2" unit_html="K.m&lt;sup>2&lt;/sup>" unit_latex="K \cdot m^{2}">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * value1" planar="value1"/>
-        <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/>
+        <!-- <module:expression analysistype="transient" axi="2.0 * PI * r * value1" planar="value1"/> -->
       </module:surfaceintegral>
       <module:surfaceintegral id="heat_heat_flux" name="Heat flux" shortname="f" shortname_html="&lt;i>f&lt;/i>" shortname_latex="f" unit="W" unit_html="W" unit_latex="W">
         <module:expression analysistype="steadystate" axi="- 2.0 * PI * r * he_lambda * (tanz * dr1 - tanr * dz1)" planar="- he_lambda * (tany * dx1 - tanx * dy1)"/>
-        <module:expression analysistype="transient" axi="- 2.0 * PI * r * he_lambda * (tanz * dr1 - tanr * dz1)" planar="- he_lambda * (tany * dx1 - tanx * dy1)"/>
+        <!-- <module:expression analysistype="transient" axi="- 2.0 * PI * r * he_lambda * (tanz * dr1 - tanr * dz1)" planar="- he_lambda * (tany * dx1 - tanx * dy1)"/> -->
       </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force/>

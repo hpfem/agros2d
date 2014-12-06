@@ -398,12 +398,16 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateVolumeVariables(L
     field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
     field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype()))).toStdString());
 
+    int index = 0;
     foreach(XMLModule::quantity quantity, weakform.quantity())
     {
         ctemplate::TemplateDictionary *subField = 0;
         subField = field->AddSectionDictionary("VARIABLE_SOURCE");
         subField->SetValue("VARIABLE", quantity.id().c_str());
         subField->SetValue("VARIABLE_SHORT", m_volumeVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+        subField->SetValue("INDEX", QString::number(index).toStdString());
+
+        index++;
     }
 
     return field;

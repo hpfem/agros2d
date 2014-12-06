@@ -46,7 +46,7 @@
   </geometry>
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear" matrix_solver="mumps">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear" matrix_solver="umfpack">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -94,8 +94,8 @@
               <material_label id="3"/>
             </material_labels>
             <material_types>
-              <material_type key="electrostatic_permittivity" value="1"/>
               <material_type key="electrostatic_charge_density" value="0"/>
+              <material_type key="electrostatic_permittivity" value="1"/>
             </material_types>
           </material>
           <material id="2" name="Screen">
@@ -103,8 +103,8 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="electrostatic_permittivity" value="2"/>
               <material_type key="electrostatic_charge_density" value="0"/>
+              <material_type key="electrostatic_permittivity" value="2"/>
             </material_types>
           </material>
         </materials>
@@ -186,9 +186,9 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-2.27373675443232e-13"/>
+    <item key="View_ScalarRangeMin" value="0"/>
     <item key="View_ScalarRangeMax" value="10000"/>
-    <item key="View_ShowVectorView" value="1"/>
+    <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="electrostatic_electric_field"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>

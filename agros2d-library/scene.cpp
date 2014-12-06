@@ -2342,8 +2342,8 @@ void Scene::writeToFile31(const QString &fileName)
                         boundary_edges.boundary_edge().push_back(XMLProblem::boundary_edge(edges->items().indexOf(edge)));
 
                 XMLProblem::boundary_types boundary_types;
-                const QHash<QString, QSharedPointer<Value> > values = bound->values();
-                for (QHash<QString, QSharedPointer<Value> >::const_iterator it = values.begin(); it != values.end(); ++it)
+                const QMap<QString, QSharedPointer<Value> > values = bound->values();
+                for (QMap<QString, QSharedPointer<Value> >::const_iterator it = values.begin(); it != values.end(); ++it)
                     boundary_types.boundary_type().push_back(XMLProblem::boundary_type(it.key().toStdString(), it.value()->toString().toStdString()));
 
                 XMLProblem::boundary boundary(boundary_edges,
@@ -2370,8 +2370,8 @@ void Scene::writeToFile31(const QString &fileName)
                         material_labels.material_label().push_back(XMLProblem::material_label(labels->items().indexOf(label)));
 
                 XMLProblem::material_types material_types;
-                const QHash<QString, QSharedPointer<Value> > values = mat->values();
-                for (QHash<QString, QSharedPointer<Value> >::const_iterator it = values.begin(); it != values.end(); ++it)
+                const QMap<QString, QSharedPointer<Value> > values = mat->values();
+                for (QMap<QString, QSharedPointer<Value> >::const_iterator it = values.begin(); it != values.end(); ++it)
                     material_types.material_type().push_back(XMLProblem::material_type(it.key().toStdString(), it.value()->toString().toStdString()));
 
                 XMLProblem::material material(material_labels,

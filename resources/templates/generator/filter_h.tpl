@@ -44,6 +44,7 @@ public:
                                                     const std::vector<dealii::Tensor<2,2> > &dduh,
                                                     const std::vector<dealii::Point<2> > &normals,
                                                     const std::vector<dealii::Point<2> > &evaluation_points,
+                                                    const dealii::types::material_id mat_id,
                                                     std::vector<dealii::Vector<double> > &computed_quantities) const;
 
     virtual void compute_derived_quantities_vector (const std::vector<dealii::Vector<double> > &uh,
@@ -51,6 +52,7 @@ public:
                                                     const std::vector<std::vector<dealii::Tensor<2,2> > > &dduh,
                                                     const std::vector<dealii::Point<2> > &normals,
                                                     const std::vector<dealii::Point<2> > &evaluation_points,
+                                                    const dealii::types::material_id mat_id,
                                                     std::vector<dealii::Vector<double> > &computed_quantities) const;
 protected:
 

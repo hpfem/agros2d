@@ -464,7 +464,7 @@ QString createPythonFromModel()
         str += "\n# boundaries\n";
         foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(fieldInfo).items())
         {
-            const QHash<QString, QSharedPointer<Value> > values = boundary->values();
+            const QMap<QString, QSharedPointer<Value> > values = boundary->values();
 
             QString variables = "{";
 
@@ -500,7 +500,7 @@ QString createPythonFromModel()
         str += "\n# materials\n";
         foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(fieldInfo).items())
         {
-            const QHash<QString, QSharedPointer<Value> > values = material->values();
+            const QMap<QString, QSharedPointer<Value> > values = material->values();
 
             QString variables = "{";
             foreach (Module::MaterialTypeVariable variable, material->fieldInfo()->materialTypeVariables())
