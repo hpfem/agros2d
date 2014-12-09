@@ -1,60 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
-
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-dealii/resources/xsd/problem_a2d_31_xml.xsd">
   <geometry>
     <nodes>
-      <node id="0" x="0" y="-0"/>
-      <node id="1" x="0.01" y="-0"/>
-      <node id="2" x="0.01" y="0.01"/>
-      <node id="3" x="0" y="0.01"/>
-      <node id="4" x="0.02" y="-0"/>
-      <node id="5" x="0.02" y="0.01"/>
-      <node id="6" x="0.03" y="0.01"/>
-      <node id="7" x="0.03" y="0"/>
-      <node id="8" x="0.04" y="0.01"/>
-      <node id="9" x="0.04" y="0"/>
-      <node id="10" x="0.05" y="0"/>
-      <node id="11" x="0.05" y="0.01"/>
-      <node id="12" x="-0.03" y="-0.03"/>
-      <node id="13" x="0.08" y="-0.03"/>
-      <node id="14" x="0.08" y="0.04"/>
-      <node id="15" x="-0.03" y="0.04"/>
+      <node id="0" valuex="0" valuey="0" x="0" y="0"/>
+      <node id="1" valuex="0.01" valuey="0" x="0.01" y="0"/>
+      <node id="2" valuex="0.01" valuey="0.01" x="0.01" y="0.01"/>
+      <node id="3" valuex="0" valuey="0.01" x="0" y="0.01"/>
+      <node id="4" valuex="0.02" valuey="0" x="0.02" y="0"/>
+      <node id="5" valuex="0.02" valuey="0.01" x="0.02" y="0.01"/>
+      <node id="6" valuex="0.03" valuey="0.01" x="0.03" y="0.01"/>
+      <node id="7" valuex="0.03" valuey="0" x="0.03" y="0"/>
+      <node id="8" valuex="0.04" valuey="0.01" x="0.04" y="0.01"/>
+      <node id="9" valuex="0.04" valuey="0" x="0.04" y="0"/>
+      <node id="10" valuex="0.05" valuey="0" x="0.05" y="0"/>
+      <node id="11" valuex="0.05" valuey="0.01" x="0.05" y="0.01"/>
+      <node id="12" valuex="-0.03" valuey="-0.03" x="-0.03" y="-0.03"/>
+      <node id="13" valuex="0.08" valuey="-0.03" x="0.08" y="-0.03"/>
+      <node id="14" valuex="0.08" valuey="0.04" x="0.08" y="0.04"/>
+      <node id="15" valuex="-0.03" valuey="0.04" x="-0.03" y="0.04"/>
     </nodes>
     <edges>
-      <edge angle="0" end="2" id="0" start="3"/>
-      <edge angle="0" end="5" id="1" start="2"/>
-      <edge angle="0" end="6" id="2" start="5"/>
-      <edge angle="0" end="8" id="3" start="6"/>
-      <edge angle="0" end="8" id="4" start="11"/>
-      <edge angle="0" end="10" id="5" start="11"/>
-      <edge angle="0" end="9" id="6" start="10"/>
-      <edge angle="0" end="7" id="7" start="9"/>
-      <edge angle="0" end="4" id="8" start="7"/>
-      <edge angle="0" end="1" id="9" start="4"/>
-      <edge angle="0" end="0" id="10" start="1"/>
-      <edge angle="0" end="3" id="11" start="0"/>
-      <edge angle="0" end="1" id="12" start="2"/>
-      <edge angle="0" end="5" id="13" start="4"/>
-      <edge angle="0" end="7" id="14" start="6"/>
-      <edge angle="0" end="8" id="15" start="9"/>
-      <edge angle="0" end="13" id="16" start="12"/>
-      <edge angle="0" end="14" id="17" start="13"/>
-      <edge angle="0" end="15" id="18" start="14"/>
-      <edge angle="0" end="12" id="19" start="15"/>
+      <edge angle="0" end="2" id="0" is_curvilinear="1" segments="3" start="3" valueangle="0"/>
+      <edge angle="0" end="5" id="1" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
+      <edge angle="0" end="6" id="2" is_curvilinear="1" segments="3" start="5" valueangle="0"/>
+      <edge angle="0" end="8" id="3" is_curvilinear="1" segments="3" start="6" valueangle="0"/>
+      <edge angle="0" end="8" id="4" is_curvilinear="1" segments="3" start="11" valueangle="0"/>
+      <edge angle="0" end="10" id="5" is_curvilinear="1" segments="3" start="11" valueangle="0"/>
+      <edge angle="0" end="9" id="6" is_curvilinear="1" segments="3" start="10" valueangle="0"/>
+      <edge angle="0" end="7" id="7" is_curvilinear="1" segments="3" start="9" valueangle="0"/>
+      <edge angle="0" end="4" id="8" is_curvilinear="1" segments="3" start="7" valueangle="0"/>
+      <edge angle="0" end="1" id="9" is_curvilinear="1" segments="3" start="4" valueangle="0"/>
+      <edge angle="0" end="0" id="10" is_curvilinear="1" segments="3" start="1" valueangle="0"/>
+      <edge angle="0" end="3" id="11" is_curvilinear="1" segments="3" start="0" valueangle="0"/>
+      <edge angle="0" end="1" id="12" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
+      <edge angle="0" end="5" id="13" is_curvilinear="1" segments="3" start="4" valueangle="0"/>
+      <edge angle="0" end="7" id="14" is_curvilinear="1" segments="3" start="6" valueangle="0"/>
+      <edge angle="0" end="8" id="15" is_curvilinear="1" segments="3" start="9" valueangle="0"/>
+      <edge angle="0" end="13" id="16" is_curvilinear="1" segments="3" start="12" valueangle="0"/>
+      <edge angle="0" end="14" id="17" is_curvilinear="1" segments="3" start="13" valueangle="0"/>
+      <edge angle="0" end="15" id="18" is_curvilinear="1" segments="3" start="14" valueangle="0"/>
+      <edge angle="0" end="12" id="19" is_curvilinear="1" segments="3" start="15" valueangle="0"/>
     </edges>
     <labels>
-      <label area="0" id="0" x="0.005" y="0.005"/>
-      <label area="0" id="1" x="0.015" y="0.005"/>
-      <label area="0" id="2" x="0.025" y="0.005"/>
-      <label area="0" id="3" x="0.035" y="0.005"/>
-      <label area="0" id="4" x="0.045" y="0.005"/>
-      <label area="0" id="5" x="0.025" y="0.025"/>
+      <label area="0" id="0" valuex="0.005" valuey="0.005" x="0.005" y="0.005"/>
+      <label area="0" id="1" valuex="0.015" valuey="0.005" x="0.015" y="0.005"/>
+      <label area="0" id="2" valuex="0.025" valuey="0.005" x="0.025" y="0.005"/>
+      <label area="0" id="3" valuex="0.035" valuey="0.005" x="0.035" y="0.005"/>
+      <label area="0" id="4" valuex="0.045" valuey="0.005" x="0.045" y="0.005"/>
+      <label area="0" id="5" valuex="0.025" valuey="0.025" x="0.025" y="0.025"/>
     </labels>
   </geometry>
-
-  <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="linear" matrix_solver="umfpack">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -68,6 +66,7 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_real" value="0"/>
+              <boundary_type key="magnetic_surface_current_real" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -77,12 +76,16 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_remanence" value="1.15"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir1"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -92,12 +95,16 @@
               <material_label id="1"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_remanence" value="1.15"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir2"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -107,12 +114,16 @@
               <material_label id="2"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_remanence" value="1.15"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir3"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -122,12 +133,16 @@
               <material_label id="3"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_remanence" value="1.15"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir4"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -137,12 +152,16 @@
               <material_label id="4"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1.05"/>
               <material_type key="magnetic_remanence" value="1.15"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir5"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -152,38 +171,54 @@
               <material_label id="5"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="10"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NonlinearResidualNorm" field_value="0"/>
+          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0.1"/>
+          <field_item field_key="NonlinearDampingType" field_value="0"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonJacobianReuseRatio" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingFactorDecreaseRatio" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NonlinearStepsToIncreaseDampingFactor" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="3"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="2"/>
           <field_item field_key="SpacePolynomialOrder" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -192,28 +227,16 @@
       <problem_item problem_key="Frequency" problem_value="0"/>
       <problem_item problem_key="TimeMethod" problem_value="0"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="1"/>
       <problem_item problem_key="TimeSteps" problem_value="2"/>
       <problem_item problem_key="TimeTotal" problem_value="1"/>
     </problem_config>
   </problem>
-
   <config>
     <item key="Problem_StartupScript" value="Br_dir1 = 180&#xA;Br_dir2 = 90&#xA;Br_dir3 = 0&#xA;Br_dir4 = -90&#xA;Br_dir5 = 180"/>
-    <item key="Problem_Description" value=""/>
-    <item key="View_RulersFontFamily" value="Droid"/>
-    <item key="View_RulersFontPointSize" value="12"/>
-    <item key="View_PostFontFamily" value="Droid"/>
-    <item key="View_PostFontPointSize" value="16"/>
-    <item key="View_ZoomToMouse" value="1"/>
-    <item key="View_NodeSize" value="6"/>
-    <item key="View_EdgeWidth" value="2"/>
-    <item key="View_LabelSize" value="6"/>
-    <item key="View_ShowGrid" value="1"/>
     <item key="View_GridStep" value="0.05"/>
-    <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
-    <item key="View_ShowAxes" value="1"/>
     <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
@@ -224,45 +247,6 @@
     <item key="View_DeformScalar" value="1"/>
     <item key="View_DeformContour" value="1"/>
     <item key="View_DeformVector" value="1"/>
-    <item key="View_ColorBackgroundRed" value="255"/>
-    <item key="View_ColorBackgroundGreen" value="255"/>
-    <item key="View_ColorBackgroundBlue" value="255"/>
-    <item key="View_ColorGridRed" value="200"/>
-    <item key="View_ColorGridGreen" value="200"/>
-    <item key="View_ColorGridBlue" value="200"/>
-    <item key="View_ColorCrossRed" value="150"/>
-    <item key="View_ColorCrossGreen" value="150"/>
-    <item key="View_ColorCrossBlue" value="150"/>
-    <item key="View_ColorNodesRed" value="150"/>
-    <item key="View_ColorNodesGreen" value="0"/>
-    <item key="View_ColorNodesBlue" value="0"/>
-    <item key="View_ColorEdgesRed" value="0"/>
-    <item key="View_ColorEdgesGreen" value="0"/>
-    <item key="View_ColorEdgesBlue" value="150"/>
-    <item key="View_ColorLabelsRed" value="0"/>
-    <item key="View_ColorLabelsGreen" value="150"/>
-    <item key="View_ColorLabelsBlue" value="0"/>
-    <item key="View_ColorContoursRed" value="0"/>
-    <item key="View_ColorContoursGreen" value="0"/>
-    <item key="View_ColorContoursBlue" value="0"/>
-    <item key="View_ColorVectorsRed" value="0"/>
-    <item key="View_ColorVectorsGreen" value="0"/>
-    <item key="View_ColorVectorsBlue" value="0"/>
-    <item key="View_ColorInitialMeshRed" value="250"/>
-    <item key="View_ColorInitialMeshGreen" value="202"/>
-    <item key="View_ColorInitialMeshBlue" value="119"/>
-    <item key="View_ColorSolutionMeshRed" value="150"/>
-    <item key="View_ColorSolutionMeshGreen" value="70"/>
-    <item key="View_ColorSolutionMeshBlue" value="0"/>
-    <item key="View_ColorSelectedRed" value="150"/>
-    <item key="View_ColorSelectedGreen" value="0"/>
-    <item key="View_ColorSelectedBlue" value="0"/>
-    <item key="View_ColorHighlightedRed" value="250"/>
-    <item key="View_ColorHighlightedGreen" value="150"/>
-    <item key="View_ColorHighlightedBlue" value="0"/>
-    <item key="View_ColorCrossedRed" value="255"/>
-    <item key="View_ColorCrossedGreen" value="0"/>
-    <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
     <item key="View_ContourVariable" value="magnetic_potential_real"/>
@@ -290,6 +274,7 @@
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -320,6 +305,8 @@
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ParticleP2PElectricForce" value="0"/>
+    <item key="View_ParticleP2PMagneticForce" value="0"/>
     <item key="View_ChartStartX" value="0"/>
     <item key="View_ChartStartY" value="0"/>
     <item key="View_ChartEndX" value="0"/>
@@ -329,21 +316,6 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_MeshAngleSegmentsCount" value="3"/>
-    <item key="View_MeshCurvilinearElements" value="1"/>
-    <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
-
 </problem:document>

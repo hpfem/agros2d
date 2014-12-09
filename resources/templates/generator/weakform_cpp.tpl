@@ -118,7 +118,9 @@ virtual void vector_value_list (const std::vector<dealii::Point<dim> > &points,
 
 private:
 {{#VARIABLE_SOURCE_LINEAR}}
-const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE_LINEAR}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE_LINEAR}}
+{{#VARIABLE_SOURCE_NONLINEAR}}
+    const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE_NONLINEAR}}
 };
 {{/EXACT_SOURCE}}
 
@@ -268,7 +270,7 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
                             {{#FORM_EXPRESSION}}
                             // {{EXPRESSION_ID}}
-                            if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}}) // TODO: speed up
+                            if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}})
                             {
                                 cell_matrix(i,j) += fe_values.JxW(q_point) *({{EXPRESSION}});
                             }{{/FORM_EXPRESSION}}
@@ -300,7 +302,7 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
                         {{#FORM_EXPRESSION}}
                         // {{EXPRESSION_ID}}
-                        if (component_i == {{ROW_INDEX}}) // TODO: speed up
+                        if (component_i == {{ROW_INDEX}})
                         {
                             cell_rhs(i) += fe_values.JxW(q_point) *({{EXPRESSION}});
                         }{{/FORM_EXPRESSION}}
@@ -351,7 +353,7 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
                                     {{#FORM_EXPRESSION}}
                                     // {{EXPRESSION_ID}}
-                                    if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}}) // TODO: speed up
+                                    if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}})
                                     {
                                         cell_matrix(i,j) += shape_face_JxW[q_point] *({{EXPRESSION}});
                                     }{{/FORM_EXPRESSION}}
@@ -386,7 +388,7 @@ void SolverDeal{{CLASS}}::assembleSystem()
 
                                 {{#FORM_EXPRESSION}}
                                 // {{EXPRESSION_ID}}
-                                if (component_i == {{ROW_INDEX}}) // TODO: speed up
+                                if (component_i == {{ROW_INDEX}})
                                 {
                                     cell_rhs(i) += shape_face_JxW[q_point] *({{EXPRESSION}});
                                 }{{/FORM_EXPRESSION}}

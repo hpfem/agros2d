@@ -293,9 +293,6 @@ bool MeshGeneratorTriangleExternal::writeToTriangle()
     file.waitForBytesWritten(0);
     file.close();
 
-    // set system locale
-    // setlocale(LC_NUMERIC, plocale);
-
     return true;
 }
 

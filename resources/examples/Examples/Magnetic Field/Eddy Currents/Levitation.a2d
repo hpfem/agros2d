@@ -1,177 +1,175 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
-
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-dealii/resources/xsd/problem_a2d_31_xml.xsd">
   <geometry>
     <nodes>
-      <node id="0" x="0.015" y="-0.005"/>
-      <node id="1" x="0.0125" y="-0.0025"/>
-      <node id="2" x="0.01" y="-0.005"/>
-      <node id="3" x="0.0125" y="-0.0075"/>
-      <node id="4" x="0.0175" y="-0.005"/>
-      <node id="5" x="0.0125" y="0"/>
-      <node id="6" x="0.0075" y="-0.005"/>
-      <node id="7" x="0.0125" y="-0.01"/>
-      <node id="8" x="0.025" y="0.0025"/>
-      <node id="9" x="0.0225" y="0.005"/>
-      <node id="10" x="0.02" y="0.0025"/>
-      <node id="11" x="0.0225" y="0"/>
-      <node id="12" x="0.0275" y="0.0025"/>
-      <node id="13" x="0.0225" y="0.0075"/>
-      <node id="14" x="0.0175" y="0.0025"/>
-      <node id="15" x="0.0225" y="-0.0025"/>
-      <node id="16" x="0.0325" y="0.0125"/>
-      <node id="17" x="0.03" y="0.015"/>
-      <node id="18" x="0.0275" y="0.0125"/>
-      <node id="19" x="0.03" y="0.01"/>
-      <node id="20" x="0.035" y="0.0125"/>
-      <node id="21" x="0.03" y="0.0175"/>
-      <node id="22" x="0.025" y="0.0125"/>
-      <node id="23" x="0.03" y="0.0075"/>
-      <node id="24" x="0.035" y="0.025"/>
-      <node id="25" x="0.0325" y="0.0275"/>
-      <node id="26" x="0.03" y="0.025"/>
-      <node id="27" x="0.0325" y="0.0225"/>
-      <node id="28" x="0.0375" y="0.025"/>
-      <node id="29" x="0.0325" y="0.03"/>
-      <node id="30" x="0.0275" y="0.025"/>
-      <node id="31" x="0.0325" y="0.02"/>
-      <node id="32" x="0.035" y="0.0375"/>
-      <node id="33" x="0.0325" y="0.04"/>
-      <node id="34" x="0.03" y="0.0375"/>
-      <node id="35" x="0.0325" y="0.035"/>
-      <node id="36" x="0.0375" y="0.0375"/>
-      <node id="37" x="0.0325" y="0.0425"/>
-      <node id="38" x="0.0275" y="0.0375"/>
-      <node id="39" x="0.0325" y="0.0325"/>
-      <node id="40" x="0.035" y="0.05"/>
-      <node id="41" x="0.0325" y="0.0525"/>
-      <node id="42" x="0.03" y="0.05"/>
-      <node id="43" x="0.0325" y="0.0475"/>
-      <node id="44" x="0.0375" y="0.05"/>
-      <node id="45" x="0.0325" y="0.055"/>
-      <node id="46" x="0.0275" y="0.05"/>
-      <node id="47" x="0.0325" y="0.045"/>
-      <node id="48" x="0.035" y="0.0625"/>
-      <node id="49" x="0.0325" y="0.065"/>
-      <node id="50" x="0.03" y="0.0625"/>
-      <node id="51" x="0.0325" y="0.06"/>
-      <node id="52" x="0.0375" y="0.0625"/>
-      <node id="53" x="0.0325" y="0.0675"/>
-      <node id="54" x="0.0275" y="0.0625"/>
-      <node id="55" x="0.0325" y="0.0575"/>
-      <node id="56" x="0.0275" y="0.0825"/>
-      <node id="57" x="0.025" y="0.085"/>
-      <node id="58" x="0.0225" y="0.0825"/>
-      <node id="59" x="0.025" y="0.08"/>
-      <node id="60" x="0.03" y="0.0825"/>
-      <node id="61" x="0.025" y="0.0875"/>
-      <node id="62" x="0.02" y="0.0825"/>
-      <node id="63" x="0.025" y="0.0775"/>
-      <node id="64" x="0" y="0.049"/>
-      <node id="65" x="0.011" y="0.06"/>
-      <node id="66" x="0" y="0.071"/>
-      <node id="67" x="0" y="-0.1"/>
-      <node id="68" x="0.145" y="0.05"/>
-      <node id="69" x="0" y="0.2"/>
+      <node id="0" valuex="0.015" valuey="-0.005" x="0.015" y="-0.005"/>
+      <node id="1" valuex="0.0125" valuey="-0.0025" x="0.0125" y="-0.0025"/>
+      <node id="2" valuex="0.01" valuey="-0.005" x="0.01" y="-0.005"/>
+      <node id="3" valuex="0.0125" valuey="-0.0075" x="0.0125" y="-0.0075"/>
+      <node id="4" valuex="0.0175" valuey="-0.005" x="0.0175" y="-0.005"/>
+      <node id="5" valuex="0.0125" valuey="0" x="0.0125" y="0"/>
+      <node id="6" valuex="0.0075" valuey="-0.005" x="0.0075" y="-0.005"/>
+      <node id="7" valuex="0.0125" valuey="-0.01" x="0.0125" y="-0.01"/>
+      <node id="8" valuex="0.025" valuey="0.0025" x="0.025" y="0.0025"/>
+      <node id="9" valuex="0.0225" valuey="0.005" x="0.0225" y="0.005"/>
+      <node id="10" valuex="0.02" valuey="0.0025" x="0.02" y="0.0025"/>
+      <node id="11" valuex="0.0225" valuey="0" x="0.0225" y="0"/>
+      <node id="12" valuex="0.0275" valuey="0.0025" x="0.0275" y="0.0025"/>
+      <node id="13" valuex="0.0225" valuey="0.0075" x="0.0225" y="0.0075"/>
+      <node id="14" valuex="0.0175" valuey="0.0025" x="0.0175" y="0.0025"/>
+      <node id="15" valuex="0.0225" valuey="-0.0025" x="0.0225" y="-0.0025"/>
+      <node id="16" valuex="0.0325" valuey="0.0125" x="0.0325" y="0.0125"/>
+      <node id="17" valuex="0.03" valuey="0.015" x="0.03" y="0.015"/>
+      <node id="18" valuex="0.0275" valuey="0.0125" x="0.0275" y="0.0125"/>
+      <node id="19" valuex="0.03" valuey="0.01" x="0.03" y="0.01"/>
+      <node id="20" valuex="0.035" valuey="0.0125" x="0.035" y="0.0125"/>
+      <node id="21" valuex="0.03" valuey="0.0175" x="0.03" y="0.0175"/>
+      <node id="22" valuex="0.025" valuey="0.0125" x="0.025" y="0.0125"/>
+      <node id="23" valuex="0.03" valuey="0.0075" x="0.03" y="0.0075"/>
+      <node id="24" valuex="0.035" valuey="0.025" x="0.035" y="0.025"/>
+      <node id="25" valuex="0.0325" valuey="0.0275" x="0.0325" y="0.0275"/>
+      <node id="26" valuex="0.03" valuey="0.025" x="0.03" y="0.025"/>
+      <node id="27" valuex="0.0325" valuey="0.0225" x="0.0325" y="0.0225"/>
+      <node id="28" valuex="0.0375" valuey="0.025" x="0.0375" y="0.025"/>
+      <node id="29" valuex="0.0325" valuey="0.03" x="0.0325" y="0.03"/>
+      <node id="30" valuex="0.0275" valuey="0.025" x="0.0275" y="0.025"/>
+      <node id="31" valuex="0.0325" valuey="0.02" x="0.0325" y="0.02"/>
+      <node id="32" valuex="0.035" valuey="0.0375" x="0.035" y="0.0375"/>
+      <node id="33" valuex="0.0325" valuey="0.04" x="0.0325" y="0.04"/>
+      <node id="34" valuex="0.03" valuey="0.0375" x="0.03" y="0.0375"/>
+      <node id="35" valuex="0.0325" valuey="0.035" x="0.0325" y="0.035"/>
+      <node id="36" valuex="0.0375" valuey="0.0375" x="0.0375" y="0.0375"/>
+      <node id="37" valuex="0.0325" valuey="0.0425" x="0.0325" y="0.0425"/>
+      <node id="38" valuex="0.0275" valuey="0.0375" x="0.0275" y="0.0375"/>
+      <node id="39" valuex="0.0325" valuey="0.0325" x="0.0325" y="0.0325"/>
+      <node id="40" valuex="0.035" valuey="0.05" x="0.035" y="0.05"/>
+      <node id="41" valuex="0.0325" valuey="0.0525" x="0.0325" y="0.0525"/>
+      <node id="42" valuex="0.03" valuey="0.05" x="0.03" y="0.05"/>
+      <node id="43" valuex="0.0325" valuey="0.0475" x="0.0325" y="0.0475"/>
+      <node id="44" valuex="0.0375" valuey="0.05" x="0.0375" y="0.05"/>
+      <node id="45" valuex="0.0325" valuey="0.055" x="0.0325" y="0.055"/>
+      <node id="46" valuex="0.0275" valuey="0.05" x="0.0275" y="0.05"/>
+      <node id="47" valuex="0.0325" valuey="0.045" x="0.0325" y="0.045"/>
+      <node id="48" valuex="0.035" valuey="0.0625" x="0.035" y="0.0625"/>
+      <node id="49" valuex="0.0325" valuey="0.065" x="0.0325" y="0.065"/>
+      <node id="50" valuex="0.03" valuey="0.0625" x="0.03" y="0.0625"/>
+      <node id="51" valuex="0.0325" valuey="0.06" x="0.0325" y="0.06"/>
+      <node id="52" valuex="0.0375" valuey="0.0625" x="0.0375" y="0.0625"/>
+      <node id="53" valuex="0.0325" valuey="0.0675" x="0.0325" y="0.0675"/>
+      <node id="54" valuex="0.0275" valuey="0.0625" x="0.0275" y="0.0625"/>
+      <node id="55" valuex="0.0325" valuey="0.0575" x="0.0325" y="0.0575"/>
+      <node id="56" valuex="0.0275" valuey="0.0825" x="0.0275" y="0.0825"/>
+      <node id="57" valuex="0.025" valuey="0.085" x="0.025" y="0.085"/>
+      <node id="58" valuex="0.0225" valuey="0.0825" x="0.0225" y="0.0825"/>
+      <node id="59" valuex="0.025" valuey="0.08" x="0.025" y="0.08"/>
+      <node id="60" valuex="0.03" valuey="0.0825" x="0.03" y="0.0825"/>
+      <node id="61" valuex="0.025" valuey="0.0875" x="0.025" y="0.0875"/>
+      <node id="62" valuex="0.02" valuey="0.0825" x="0.02" y="0.0825"/>
+      <node id="63" valuex="0.025" valuey="0.0775" x="0.025" y="0.0775"/>
+      <node id="64" valuex="0" valuey="0.049" x="0" y="0.049"/>
+      <node id="65" valuex="0.011" valuey="0.06" x="0.011" y="0.06"/>
+      <node id="66" valuex="0" valuey="0.071" x="0" y="0.071"/>
+      <node id="67" valuex="0" valuey="-0.1" x="0" y="-0.1"/>
+      <node id="68" valuex="0.145" valuey="0.05" x="0.145" y="0.05"/>
+      <node id="69" valuex="0" valuey="0.2" x="0" y="0.2"/>
     </nodes>
     <edges>
-      <edge angle="90" end="1" id="0" start="0"/>
-      <edge angle="90" end="2" id="1" start="1"/>
-      <edge angle="90" end="3" id="2" start="2"/>
-      <edge angle="90" end="0" id="3" start="3"/>
-      <edge angle="90" end="5" id="4" start="4"/>
-      <edge angle="90" end="6" id="5" start="5"/>
-      <edge angle="90" end="7" id="6" start="6"/>
-      <edge angle="90" end="4" id="7" start="7"/>
-      <edge angle="90" end="9" id="8" start="8"/>
-      <edge angle="90" end="10" id="9" start="9"/>
-      <edge angle="90" end="11" id="10" start="10"/>
-      <edge angle="90" end="8" id="11" start="11"/>
-      <edge angle="90" end="13" id="12" start="12"/>
-      <edge angle="90" end="14" id="13" start="13"/>
-      <edge angle="90" end="15" id="14" start="14"/>
-      <edge angle="90" end="12" id="15" start="15"/>
-      <edge angle="90" end="17" id="16" start="16"/>
-      <edge angle="90" end="18" id="17" start="17"/>
-      <edge angle="90" end="19" id="18" start="18"/>
-      <edge angle="90" end="16" id="19" start="19"/>
-      <edge angle="90" end="21" id="20" start="20"/>
-      <edge angle="90" end="22" id="21" start="21"/>
-      <edge angle="90" end="23" id="22" start="22"/>
-      <edge angle="90" end="20" id="23" start="23"/>
-      <edge angle="90" end="25" id="24" start="24"/>
-      <edge angle="90" end="26" id="25" start="25"/>
-      <edge angle="90" end="27" id="26" start="26"/>
-      <edge angle="90" end="24" id="27" start="27"/>
-      <edge angle="90" end="29" id="28" start="28"/>
-      <edge angle="90" end="30" id="29" start="29"/>
-      <edge angle="90" end="31" id="30" start="30"/>
-      <edge angle="90" end="28" id="31" start="31"/>
-      <edge angle="90" end="33" id="32" start="32"/>
-      <edge angle="90" end="34" id="33" start="33"/>
-      <edge angle="90" end="35" id="34" start="34"/>
-      <edge angle="90" end="32" id="35" start="35"/>
-      <edge angle="90" end="37" id="36" start="36"/>
-      <edge angle="90" end="38" id="37" start="37"/>
-      <edge angle="90" end="39" id="38" start="38"/>
-      <edge angle="90" end="36" id="39" start="39"/>
-      <edge angle="90" end="41" id="40" start="40"/>
-      <edge angle="90" end="42" id="41" start="41"/>
-      <edge angle="90" end="43" id="42" start="42"/>
-      <edge angle="90" end="40" id="43" start="43"/>
-      <edge angle="90" end="45" id="44" start="44"/>
-      <edge angle="90" end="46" id="45" start="45"/>
-      <edge angle="90" end="47" id="46" start="46"/>
-      <edge angle="90" end="44" id="47" start="47"/>
-      <edge angle="90" end="49" id="48" start="48"/>
-      <edge angle="90" end="50" id="49" start="49"/>
-      <edge angle="90" end="51" id="50" start="50"/>
-      <edge angle="90" end="48" id="51" start="51"/>
-      <edge angle="90" end="53" id="52" start="52"/>
-      <edge angle="90" end="54" id="53" start="53"/>
-      <edge angle="90" end="55" id="54" start="54"/>
-      <edge angle="90" end="52" id="55" start="55"/>
-      <edge angle="90" end="57" id="56" start="56"/>
-      <edge angle="90" end="58" id="57" start="57"/>
-      <edge angle="90" end="59" id="58" start="58"/>
-      <edge angle="90" end="56" id="59" start="59"/>
-      <edge angle="90" end="61" id="60" start="60"/>
-      <edge angle="90" end="62" id="61" start="61"/>
-      <edge angle="90" end="63" id="62" start="62"/>
-      <edge angle="90" end="60" id="63" start="63"/>
-      <edge angle="90" end="65" id="64" start="64"/>
-      <edge angle="90" end="66" id="65" start="65"/>
-      <edge angle="0" end="66" id="66" start="64"/>
-      <edge angle="0" end="67" id="67" start="64"/>
-      <edge angle="90" end="68" id="68" start="67"/>
-      <edge angle="90" end="69" id="69" start="68"/>
-      <edge angle="0" end="66" id="70" start="69"/>
+      <edge angle="90" end="1" id="0" is_curvilinear="1" segments="3" start="0" valueangle="90"/>
+      <edge angle="90" end="2" id="1" is_curvilinear="1" segments="3" start="1" valueangle="90"/>
+      <edge angle="90" end="3" id="2" is_curvilinear="1" segments="3" start="2" valueangle="90"/>
+      <edge angle="90" end="0" id="3" is_curvilinear="1" segments="3" start="3" valueangle="90"/>
+      <edge angle="90" end="5" id="4" is_curvilinear="1" segments="3" start="4" valueangle="90"/>
+      <edge angle="90" end="6" id="5" is_curvilinear="1" segments="3" start="5" valueangle="90"/>
+      <edge angle="90" end="7" id="6" is_curvilinear="1" segments="3" start="6" valueangle="90"/>
+      <edge angle="90" end="4" id="7" is_curvilinear="1" segments="3" start="7" valueangle="90"/>
+      <edge angle="90" end="9" id="8" is_curvilinear="1" segments="3" start="8" valueangle="90"/>
+      <edge angle="90" end="10" id="9" is_curvilinear="1" segments="3" start="9" valueangle="90"/>
+      <edge angle="90" end="11" id="10" is_curvilinear="1" segments="3" start="10" valueangle="90"/>
+      <edge angle="90" end="8" id="11" is_curvilinear="1" segments="3" start="11" valueangle="90"/>
+      <edge angle="90" end="13" id="12" is_curvilinear="1" segments="3" start="12" valueangle="90"/>
+      <edge angle="90" end="14" id="13" is_curvilinear="1" segments="3" start="13" valueangle="90"/>
+      <edge angle="90" end="15" id="14" is_curvilinear="1" segments="3" start="14" valueangle="90"/>
+      <edge angle="90" end="12" id="15" is_curvilinear="1" segments="3" start="15" valueangle="90"/>
+      <edge angle="90" end="17" id="16" is_curvilinear="1" segments="3" start="16" valueangle="90"/>
+      <edge angle="90" end="18" id="17" is_curvilinear="1" segments="3" start="17" valueangle="90"/>
+      <edge angle="90" end="19" id="18" is_curvilinear="1" segments="3" start="18" valueangle="90"/>
+      <edge angle="90" end="16" id="19" is_curvilinear="1" segments="3" start="19" valueangle="90"/>
+      <edge angle="90" end="21" id="20" is_curvilinear="1" segments="3" start="20" valueangle="90"/>
+      <edge angle="90" end="22" id="21" is_curvilinear="1" segments="3" start="21" valueangle="90"/>
+      <edge angle="90" end="23" id="22" is_curvilinear="1" segments="3" start="22" valueangle="90"/>
+      <edge angle="90" end="20" id="23" is_curvilinear="1" segments="3" start="23" valueangle="90"/>
+      <edge angle="90" end="25" id="24" is_curvilinear="1" segments="3" start="24" valueangle="90"/>
+      <edge angle="90" end="26" id="25" is_curvilinear="1" segments="3" start="25" valueangle="90"/>
+      <edge angle="90" end="27" id="26" is_curvilinear="1" segments="3" start="26" valueangle="90"/>
+      <edge angle="90" end="24" id="27" is_curvilinear="1" segments="3" start="27" valueangle="90"/>
+      <edge angle="90" end="29" id="28" is_curvilinear="1" segments="3" start="28" valueangle="90"/>
+      <edge angle="90" end="30" id="29" is_curvilinear="1" segments="3" start="29" valueangle="90"/>
+      <edge angle="90" end="31" id="30" is_curvilinear="1" segments="3" start="30" valueangle="90"/>
+      <edge angle="90" end="28" id="31" is_curvilinear="1" segments="3" start="31" valueangle="90"/>
+      <edge angle="90" end="33" id="32" is_curvilinear="1" segments="3" start="32" valueangle="90"/>
+      <edge angle="90" end="34" id="33" is_curvilinear="1" segments="3" start="33" valueangle="90"/>
+      <edge angle="90" end="35" id="34" is_curvilinear="1" segments="3" start="34" valueangle="90"/>
+      <edge angle="90" end="32" id="35" is_curvilinear="1" segments="3" start="35" valueangle="90"/>
+      <edge angle="90" end="37" id="36" is_curvilinear="1" segments="3" start="36" valueangle="90"/>
+      <edge angle="90" end="38" id="37" is_curvilinear="1" segments="3" start="37" valueangle="90"/>
+      <edge angle="90" end="39" id="38" is_curvilinear="1" segments="3" start="38" valueangle="90"/>
+      <edge angle="90" end="36" id="39" is_curvilinear="1" segments="3" start="39" valueangle="90"/>
+      <edge angle="90" end="41" id="40" is_curvilinear="1" segments="3" start="40" valueangle="90"/>
+      <edge angle="90" end="42" id="41" is_curvilinear="1" segments="3" start="41" valueangle="90"/>
+      <edge angle="90" end="43" id="42" is_curvilinear="1" segments="3" start="42" valueangle="90"/>
+      <edge angle="90" end="40" id="43" is_curvilinear="1" segments="3" start="43" valueangle="90"/>
+      <edge angle="90" end="45" id="44" is_curvilinear="1" segments="3" start="44" valueangle="90"/>
+      <edge angle="90" end="46" id="45" is_curvilinear="1" segments="3" start="45" valueangle="90"/>
+      <edge angle="90" end="47" id="46" is_curvilinear="1" segments="3" start="46" valueangle="90"/>
+      <edge angle="90" end="44" id="47" is_curvilinear="1" segments="3" start="47" valueangle="90"/>
+      <edge angle="90" end="49" id="48" is_curvilinear="1" segments="3" start="48" valueangle="90"/>
+      <edge angle="90" end="50" id="49" is_curvilinear="1" segments="3" start="49" valueangle="90"/>
+      <edge angle="90" end="51" id="50" is_curvilinear="1" segments="3" start="50" valueangle="90"/>
+      <edge angle="90" end="48" id="51" is_curvilinear="1" segments="3" start="51" valueangle="90"/>
+      <edge angle="90" end="53" id="52" is_curvilinear="1" segments="3" start="52" valueangle="90"/>
+      <edge angle="90" end="54" id="53" is_curvilinear="1" segments="3" start="53" valueangle="90"/>
+      <edge angle="90" end="55" id="54" is_curvilinear="1" segments="3" start="54" valueangle="90"/>
+      <edge angle="90" end="52" id="55" is_curvilinear="1" segments="3" start="55" valueangle="90"/>
+      <edge angle="90" end="57" id="56" is_curvilinear="1" segments="3" start="56" valueangle="90"/>
+      <edge angle="90" end="58" id="57" is_curvilinear="1" segments="3" start="57" valueangle="90"/>
+      <edge angle="90" end="59" id="58" is_curvilinear="1" segments="3" start="58" valueangle="90"/>
+      <edge angle="90" end="56" id="59" is_curvilinear="1" segments="3" start="59" valueangle="90"/>
+      <edge angle="90" end="61" id="60" is_curvilinear="1" segments="3" start="60" valueangle="90"/>
+      <edge angle="90" end="62" id="61" is_curvilinear="1" segments="3" start="61" valueangle="90"/>
+      <edge angle="90" end="63" id="62" is_curvilinear="1" segments="3" start="62" valueangle="90"/>
+      <edge angle="90" end="60" id="63" is_curvilinear="1" segments="3" start="63" valueangle="90"/>
+      <edge angle="90" end="65" id="64" is_curvilinear="1" segments="3" start="64" valueangle="90"/>
+      <edge angle="90" end="66" id="65" is_curvilinear="1" segments="3" start="65" valueangle="90"/>
+      <edge angle="0" end="66" id="66" is_curvilinear="1" segments="3" start="64" valueangle="0"/>
+      <edge angle="0" end="67" id="67" is_curvilinear="1" segments="3" start="64" valueangle="0"/>
+      <edge angle="90" end="68" id="68" is_curvilinear="1" segments="5" start="67" valueangle="90"/>
+      <edge angle="90" end="69" id="69" is_curvilinear="1" segments="5" start="68" valueangle="90"/>
+      <edge angle="0" end="66" id="70" is_curvilinear="1" segments="3" start="69" valueangle="0"/>
     </edges>
     <labels>
-      <label area="0" id="0" x="0.0125" y="-0.005"/>
-      <label area="0" id="1" x="0.01625" y="-0.005"/>
-      <label area="0" id="2" x="0.0225" y="0.0025"/>
-      <label area="0" id="3" x="0.02625" y="0.0025"/>
-      <label area="0" id="4" x="0.03" y="0.0125"/>
-      <label area="0" id="5" x="0.03375" y="0.0125"/>
-      <label area="0" id="6" x="0.0325" y="0.025"/>
-      <label area="0" id="7" x="0.03625" y="0.025"/>
-      <label area="0" id="8" x="0.0325" y="0.0375"/>
-      <label area="0" id="9" x="0.03625" y="0.0375"/>
-      <label area="0" id="10" x="0.0325" y="0.05"/>
-      <label area="0" id="11" x="0.03625" y="0.05"/>
-      <label area="0" id="12" x="0.0325" y="0.0625"/>
-      <label area="0" id="13" x="0.03625" y="0.0625"/>
-      <label area="0" id="14" x="0.025" y="0.0825"/>
-      <label area="0" id="15" x="0.02875" y="0.0825"/>
-      <label area="1e-06" id="16" x="0.0055" y="0.06"/>
-      <label area="0" id="17" x="0.1" y="0.05"/>
+      <label area="0" id="0" valuex="0.0125" valuey="-0.005" x="0.0125" y="-0.005"/>
+      <label area="0" id="1" valuex="0.01625" valuey="-0.005" x="0.01625" y="-0.005"/>
+      <label area="0" id="2" valuex="0.0225" valuey="0.0025" x="0.0225" y="0.0025"/>
+      <label area="0" id="3" valuex="0.02625" valuey="0.0025" x="0.02625" y="0.0025"/>
+      <label area="0" id="4" valuex="0.03" valuey="0.0125" x="0.03" y="0.0125"/>
+      <label area="0" id="5" valuex="0.03375" valuey="0.0125" x="0.03375" y="0.0125"/>
+      <label area="0" id="6" valuex="0.0325" valuey="0.025" x="0.0325" y="0.025"/>
+      <label area="0" id="7" valuex="0.03625" valuey="0.025" x="0.03625" y="0.025"/>
+      <label area="0" id="8" valuex="0.0325" valuey="0.0375" x="0.0325" y="0.0375"/>
+      <label area="0" id="9" valuex="0.03625" valuey="0.0375" x="0.03625" y="0.0375"/>
+      <label area="0" id="10" valuex="0.0325" valuey="0.05" x="0.0325" y="0.05"/>
+      <label area="0" id="11" valuex="0.03625" valuey="0.05" x="0.03625" y="0.05"/>
+      <label area="0" id="12" valuex="0.0325" valuey="0.0625" x="0.0325" y="0.0625"/>
+      <label area="0" id="13" valuex="0.03625" valuey="0.0625" x="0.03625" y="0.0625"/>
+      <label area="0" id="14" valuex="0.025" valuey="0.0825" x="0.025" y="0.0825"/>
+      <label area="0" id="15" valuex="0.02875" valuey="0.0825" x="0.02875" y="0.0825"/>
+      <label area="1e-06" id="16" valuex="0.0055" valuey="0.06" x="0.0055" y="0.06"/>
+      <label area="0" id="17" valuex="0.1" valuey="0.05" x="0.1" y="0.05"/>
     </labels>
   </geometry>
-
-  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="axisymmetric" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="magnetic" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="magnetic" linearity_type="linear" matrix_solver="umfpack">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -187,6 +185,8 @@
             <boundary_types>
               <boundary_type key="magnetic_potential_imag" value="0"/>
               <boundary_type key="magnetic_potential_real" value="0"/>
+              <boundary_type key="magnetic_surface_current_imag" value="0"/>
+              <boundary_type key="magnetic_surface_current_real" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -204,13 +204,16 @@
               <material_label id="17"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -220,13 +223,16 @@
               <material_label id="16"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="33000000"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -242,13 +248,16 @@
               <material_label id="13"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="10000000"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="10000000"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -258,39 +267,54 @@
               <material_label id="15"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="-10000000"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="-10000000"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="10"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NonlinearResidualNorm" field_value="0"/>
+          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0.1"/>
+          <field_item field_key="NonlinearDampingType" field_value="0"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonJacobianReuseRatio" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingFactorDecreaseRatio" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NonlinearStepsToIncreaseDampingFactor" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -299,28 +323,16 @@
       <problem_item problem_key="Frequency" problem_value="1000"/>
       <problem_item problem_key="TimeMethod" problem_value="0"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="1"/>
       <problem_item problem_key="TimeSteps" problem_value="2"/>
       <problem_item problem_key="TimeTotal" problem_value="0"/>
     </problem_config>
   </problem>
-
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
-    <item key="View_RulersFontFamily" value="Droid"/>
-    <item key="View_RulersFontPointSize" value="12"/>
-    <item key="View_PostFontFamily" value="Droid"/>
-    <item key="View_PostFontPointSize" value="16"/>
-    <item key="View_ZoomToMouse" value="1"/>
-    <item key="View_NodeSize" value="6"/>
-    <item key="View_EdgeWidth" value="2"/>
-    <item key="View_LabelSize" value="6"/>
-    <item key="View_ShowGrid" value="1"/>
     <item key="View_GridStep" value="0.05"/>
-    <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
-    <item key="View_ShowAxes" value="1"/>
     <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="0"/>
     <item key="View_ScalarView3DAngle" value="240"/>
@@ -331,45 +343,6 @@
     <item key="View_DeformScalar" value="1"/>
     <item key="View_DeformContour" value="1"/>
     <item key="View_DeformVector" value="1"/>
-    <item key="View_ColorBackgroundRed" value="255"/>
-    <item key="View_ColorBackgroundGreen" value="255"/>
-    <item key="View_ColorBackgroundBlue" value="255"/>
-    <item key="View_ColorGridRed" value="200"/>
-    <item key="View_ColorGridGreen" value="200"/>
-    <item key="View_ColorGridBlue" value="200"/>
-    <item key="View_ColorCrossRed" value="150"/>
-    <item key="View_ColorCrossGreen" value="150"/>
-    <item key="View_ColorCrossBlue" value="150"/>
-    <item key="View_ColorNodesRed" value="150"/>
-    <item key="View_ColorNodesGreen" value="0"/>
-    <item key="View_ColorNodesBlue" value="0"/>
-    <item key="View_ColorEdgesRed" value="0"/>
-    <item key="View_ColorEdgesGreen" value="0"/>
-    <item key="View_ColorEdgesBlue" value="150"/>
-    <item key="View_ColorLabelsRed" value="0"/>
-    <item key="View_ColorLabelsGreen" value="150"/>
-    <item key="View_ColorLabelsBlue" value="0"/>
-    <item key="View_ColorContoursRed" value="0"/>
-    <item key="View_ColorContoursGreen" value="0"/>
-    <item key="View_ColorContoursBlue" value="0"/>
-    <item key="View_ColorVectorsRed" value="0"/>
-    <item key="View_ColorVectorsGreen" value="0"/>
-    <item key="View_ColorVectorsBlue" value="0"/>
-    <item key="View_ColorInitialMeshRed" value="250"/>
-    <item key="View_ColorInitialMeshGreen" value="202"/>
-    <item key="View_ColorInitialMeshBlue" value="119"/>
-    <item key="View_ColorSolutionMeshRed" value="150"/>
-    <item key="View_ColorSolutionMeshGreen" value="70"/>
-    <item key="View_ColorSolutionMeshBlue" value="0"/>
-    <item key="View_ColorSelectedRed" value="150"/>
-    <item key="View_ColorSelectedGreen" value="0"/>
-    <item key="View_ColorSelectedBlue" value="0"/>
-    <item key="View_ColorHighlightedRed" value="250"/>
-    <item key="View_ColorHighlightedGreen" value="150"/>
-    <item key="View_ColorHighlightedBlue" value="0"/>
-    <item key="View_ColorCrossedRed" value="255"/>
-    <item key="View_ColorCrossedGreen" value="0"/>
-    <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
     <item key="View_ContourVariable" value="magnetic_potential"/>
@@ -388,7 +361,7 @@
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="0.0708929082711929"/>
+    <item key="View_ScalarRangeMax" value="0.0682594627141953"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
     <item key="View_VectorProportional" value="1"/>
@@ -397,6 +370,7 @@
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -427,6 +401,8 @@
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ParticleP2PElectricForce" value="0"/>
+    <item key="View_ParticleP2PMagneticForce" value="0"/>
     <item key="View_ChartStartX" value="0"/>
     <item key="View_ChartStartY" value="0"/>
     <item key="View_ChartEndX" value="0"/>
@@ -436,21 +412,6 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_MeshAngleSegmentsCount" value="3"/>
-    <item key="View_MeshCurvilinearElements" value="1"/>
-    <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
-
 </problem:document>

@@ -465,7 +465,7 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateSurfaceVariables(
 
             subFieldLinear->SetValue("VARIABLE_VALUE", QString("number()").toStdString());
         }
-        if (dep == "time")
+        else if (dep == "time")
         {
             // linear only value
             ctemplate::TemplateDictionary *subFieldLinear = field->AddSectionDictionary("VARIABLE_SOURCE_LINEAR");
@@ -473,8 +473,7 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateSurfaceVariables(
             subFieldLinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
 
             // linear boundary condition
-            subFieldLinear->SetValue("VARIABLE_VALUE", QString("%1->numberAtTime(Agros2D::problem()->actualTime())").
-                                     arg(QString::fromStdString(quantity.shortname().get())).toStdString());
+            subFieldLinear->SetValue("VARIABLE_VALUE", QString("numberAtTime(Agros2D::problem()->actualTime())").toStdString());
         }
         else if (dep == "space")
         {
@@ -484,8 +483,7 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateSurfaceVariables(
             subFieldNonlinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
 
             // spacedep boundary condition
-            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("%1->numberAtPoint(Point(p[0], p[1]))").
-                                        arg(QString::fromStdString(quantity.shortname().get())).toStdString());
+            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("numberAtPoint(Point(p[0], p[1]))").toStdString());
         }
         else if (dep == "time-space")
         {
@@ -495,8 +493,7 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateSurfaceVariables(
             subFieldNonlinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
 
             // spacedep boundary condition
-            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(p[0], p[1]))").
-                                        arg(QString::fromStdString(quantity.shortname().get())).toStdString());
+            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(p[0], p[1]))").toStdString());
         }
     }
 

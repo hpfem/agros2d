@@ -70,8 +70,10 @@ private:
     PhysicFieldVariableComp m_physicFieldVariableComp;
     CoordinateType m_coordinateType;
 
+    /*
     {{#SPECIAL_FUNCTION_SOURCE}}
     QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}> {{SPECIAL_FUNCTION_NAME}};{{/SPECIAL_FUNCTION_SOURCE}}   
+    */
 };
 
 #endif // {{ID}}_FILTER_H

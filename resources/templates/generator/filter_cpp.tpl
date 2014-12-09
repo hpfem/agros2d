@@ -43,12 +43,12 @@
       ma(ma), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
     m_variableHash = qHash(m_variable);
-
+    /*
     {{#SPECIAL_FUNCTION_SOURCE}}
     if(m_fieldInfo->functionUsedInAnalysis("{{SPECIAL_FUNCTION_ID}}"))
     {{SPECIAL_FUNCTION_NAME}} = QSharedPointer<{{SPECIAL_EXT_FUNCTION_FULL_NAME}}>(new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(m_fieldInfo, 0));
     {{/SPECIAL_FUNCTION_SOURCE}}
-
+    */
     m_coordinateType = Agros2D::problem()->config()->coordinateType();
     m_labels = Agros2D::scene()->labels;
 }

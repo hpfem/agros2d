@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
-
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-dealii/resources/xsd/problem_a2d_31_xml.xsd">
   <geometry>
     <nodes>
       <node id="0" valuex="RR" valuey="-Mh/2+Rd" x="0.03" y="0.015"/>
@@ -52,8 +51,8 @@
       <edge angle="0" end="14" id="17" is_curvilinear="1" segments="3" start="4" valueangle="0"/>
       <edge angle="0" end="15" id="18" is_curvilinear="1" segments="3" start="5" valueangle="0"/>
       <edge angle="0" end="15" id="19" is_curvilinear="1" segments="3" start="14" valueangle="0"/>
-      <edge angle="90" end="18" id="20" is_curvilinear="1" segments="3" start="17" valueangle="90"/>
-      <edge angle="90" end="17" id="21" is_curvilinear="1" segments="3" start="16" valueangle="90"/>
+      <edge angle="90" end="18" id="20" is_curvilinear="1" segments="5" start="17" valueangle="90"/>
+      <edge angle="90" end="17" id="21" is_curvilinear="1" segments="5" start="16" valueangle="90"/>
       <edge angle="0" end="20" id="22" is_curvilinear="1" segments="3" start="21" valueangle="0"/>
       <edge angle="0" end="8" id="23" is_curvilinear="1" segments="3" start="20" valueangle="0"/>
       <edge angle="0" end="19" id="24" is_curvilinear="1" segments="3" start="12" valueangle="0"/>
@@ -79,10 +78,9 @@
       <label area="0" id="8" valuex="RS+Mw+WS/2" valuey="0" x="0.065" y="0"/>
     </labels>
   </geometry>
-
   <problem coordinate_type="axisymmetric" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="newton" matrix_solver="mumps">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="picard" matrix_solver="umfpack">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -233,7 +231,7 @@
           <field_item field_key="PicardAndersonAcceleration" field_value="0"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="2"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
           <field_item field_key="SpacePolynomialOrder" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="10"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
@@ -267,22 +265,10 @@
       <problem_item problem_key="TimeTotal" problem_value="10"/>
     </problem_config>
   </problem>
-
   <config>
     <item key="Problem_StartupScript" value="Rd = 0.02  # z-displacement&#xA;&#xA;RR = 0.03  # inner rotor radius&#xA;LR = 0.1   # length of the rotor&#xA;RS = 0.045 # inner stator radius&#xA;LS = 0.06  # length of the stator&#xA;WS = 0.02  # thickness of the stator&#xA;&#xA;Mw = 0.01  # width of the magnet&#xA;Mh = 0.01  # height of the magnet&#xA;Mmur = 1.1 # relative permeability&#xA;MBr = 0.9  # remanent flux density&#xA;&#xA;RB = 0.2   # artificial boundary"/>
-    <item key="View_RulersFontFamily" value="Droid"/>
-    <item key="View_RulersFontPointSize" value="12"/>
-    <item key="View_PostFontFamily" value="Droid"/>
-    <item key="View_PostFontPointSize" value="16"/>
-    <item key="View_ZoomToMouse" value="1"/>
-    <item key="View_NodeSize" value="6"/>
-    <item key="View_EdgeWidth" value="2"/>
-    <item key="View_LabelSize" value="6"/>
-    <item key="View_ShowGrid" value="1"/>
     <item key="View_GridStep" value="0.005"/>
-    <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
-    <item key="View_ShowAxes" value="1"/>
     <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
@@ -293,45 +279,6 @@
     <item key="View_DeformScalar" value="1"/>
     <item key="View_DeformContour" value="1"/>
     <item key="View_DeformVector" value="1"/>
-    <item key="View_ColorBackgroundRed" value="255"/>
-    <item key="View_ColorBackgroundGreen" value="255"/>
-    <item key="View_ColorBackgroundBlue" value="255"/>
-    <item key="View_ColorGridRed" value="200"/>
-    <item key="View_ColorGridGreen" value="200"/>
-    <item key="View_ColorGridBlue" value="200"/>
-    <item key="View_ColorCrossRed" value="150"/>
-    <item key="View_ColorCrossGreen" value="150"/>
-    <item key="View_ColorCrossBlue" value="150"/>
-    <item key="View_ColorNodesRed" value="150"/>
-    <item key="View_ColorNodesGreen" value="0"/>
-    <item key="View_ColorNodesBlue" value="0"/>
-    <item key="View_ColorEdgesRed" value="0"/>
-    <item key="View_ColorEdgesGreen" value="0"/>
-    <item key="View_ColorEdgesBlue" value="150"/>
-    <item key="View_ColorLabelsRed" value="0"/>
-    <item key="View_ColorLabelsGreen" value="150"/>
-    <item key="View_ColorLabelsBlue" value="0"/>
-    <item key="View_ColorContoursRed" value="0"/>
-    <item key="View_ColorContoursGreen" value="0"/>
-    <item key="View_ColorContoursBlue" value="0"/>
-    <item key="View_ColorVectorsRed" value="0"/>
-    <item key="View_ColorVectorsGreen" value="0"/>
-    <item key="View_ColorVectorsBlue" value="0"/>
-    <item key="View_ColorInitialMeshRed" value="250"/>
-    <item key="View_ColorInitialMeshGreen" value="202"/>
-    <item key="View_ColorInitialMeshBlue" value="119"/>
-    <item key="View_ColorSolutionMeshRed" value="150"/>
-    <item key="View_ColorSolutionMeshGreen" value="70"/>
-    <item key="View_ColorSolutionMeshBlue" value="0"/>
-    <item key="View_ColorSelectedRed" value="150"/>
-    <item key="View_ColorSelectedGreen" value="0"/>
-    <item key="View_ColorSelectedBlue" value="0"/>
-    <item key="View_ColorHighlightedRed" value="250"/>
-    <item key="View_ColorHighlightedGreen" value="150"/>
-    <item key="View_ColorHighlightedBlue" value="0"/>
-    <item key="View_ColorCrossedRed" value="255"/>
-    <item key="View_ColorCrossedGreen" value="0"/>
-    <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
     <item key="View_ContourVariable" value="magnetic_potential_lines_real"/>
@@ -349,8 +296,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="1.32211557787121e-21"/>
-    <item key="View_ScalarRangeMax" value="1.71856850853908"/>
+    <item key="View_ScalarRangeMin" value="7.32566363126352e-08"/>
+    <item key="View_ScalarRangeMax" value="1.68760228157043"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="magnetic_remanence"/>
     <item key="View_VectorProportional" value="1"/>
@@ -390,6 +337,8 @@
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ParticleP2PElectricForce" value="0"/>
+    <item key="View_ParticleP2PMagneticForce" value="0"/>
     <item key="View_ChartStartX" value="0"/>
     <item key="View_ChartStartY" value="0"/>
     <item key="View_ChartEndX" value="0"/>
@@ -401,5 +350,4 @@
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_SolidViewHide" value=""/>
   </config>
-
 </problem:document>

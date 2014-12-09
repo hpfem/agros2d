@@ -73,6 +73,7 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
         // set variables
         double x = point.x;
         double y = point.y;
+        dealii::Point<2> p(point.x, point.y);
 
         int k = 0; // only one point
         std::vector<dealii::Vector<double> > solution_values(1, dealii::Vector<double>(fieldInfo->numberOfSolutions()));
@@ -94,7 +95,6 @@ Point3 force{{CLASS}}(const FieldInfo *fieldInfo, int timeStep, int adaptivitySt
                 {
                     // point values
                     dealii::Functions::FEFieldFunction<2> localvalues(*ma.doFHandler(), *ma.solution());
-                    dealii::Point<2> p(point.x, point.y);
 
                     // set variables
                     solution_values[k][i] = localvalues.value(p, i);

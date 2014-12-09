@@ -188,8 +188,8 @@ void SceneEdge::setSegments(int segments)
     m_segments = segments;
 
     // minimum and maximum segments
-    if (m_segments < 3)
-        m_segments = 3;
+    if (m_segments < 4)
+        m_segments = 4;
     if (m_segments > 20)
         m_segments = 20;
 }
