@@ -30,10 +30,43 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/bdf2.h"
 
+/*
 {{#EXT_FUNCTIONS_PART}}
+{{#EXT_FUNCTION}}
+{{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo) : m_fieldInfo(fieldInfo)
+{
+    {{QUANTITY_SHORTNAME}} = m_fieldInfo->valuePointerTable("{{QUANTITY_ID}}");
+}
+
+std::vector<double> {{EXT_FUNCTION_NAME}}::value(dealii::FEValues<2> &fe_values, int n_q_points, SceneLabel *label) const
+{
+    std::vector<double> result(n_q_points)
+    if (!label)
+    {
+        for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+        {
+            result[q_point] = 0.0;
+        }
+        return result;
+    }
+
+    assert((labelIndex >= 0) && (labelIndex < {{QUANTITY_SHORTNAME}}.size()));
+    const Value* value = {{QUANTITY_SHORTNAME}}[labelIndex].data();
+
+    for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+    {
+        const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+        result[q_point] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
+    }
+
+    return result;
+}
+{{/EXT_FUNCTION}}
+{{/EXT_FUNCTIONS_PART}}
+*/
 // PART OF EXT FUNCTIONS (with the same analysis, linearity and coordinate type
 // **** {{PART_NAME}} *****
-
+/*
 {{#EXT_FUNCTION}}
 {{EXT_FUNCTION_NAME}}::{{EXT_FUNCTION_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
 {
@@ -55,15 +88,16 @@ void {{EXT_FUNCTION_NAME}}::value (int n, Func<double>** ext, Func<double>** u_e
     const Value* value = {{QUANTITY_SHORTNAME}}[labelIndex].data();
     Offset offset = this->m_wfAgros->offsetInfo(nullptr, this->m_fieldInfo);
 
-    for(int i = 0; i < n; i++)
+    for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
     {
-        result->val[i] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
+        const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+        result->val[q_point] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
     }
 }
 {{/EXT_FUNCTION}}
-
+*/
 // ***********************************************************************************************************************************
-
+/*
 {{#VALUE_FUNCTION_SOURCE}}
 {{VALUE_FUNCTION_FULL_NAME}}::{{VALUE_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosExtFunction(fieldInfo, wfAgros)
 {
@@ -124,10 +158,10 @@ void {{VALUE_FUNCTION_FULL_NAME}}::value (int n, Func<double>** ext, Func<double
     }
 }
 {{/VALUE_FUNCTION_SOURCE}}
-
+*/
 // ***********************************************************************************************************************************
 
-
+/*
 {{#SPECIAL_FUNCTION_SOURCE}}
 {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(const FieldInfo* fieldInfo, const WeakFormAgros<double>* wfAgros) : AgrosSpecialExtFunction(fieldInfo, wfAgros, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
 {
@@ -178,4 +212,4 @@ double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, doub
 }
 
 {{/SPECIAL_FUNCTION_SOURCE}}
-{{/EXT_FUNCTIONS_PART}}
+*/

@@ -579,6 +579,9 @@ void Problem::solveInit(bool reCreateStructure)
     Agros2D::scene()->checkGeometryResult();
     Agros2D::scene()->checkGeometryAssignement();
 
+    // nonlinearity
+    m_isNonlinear = determineIsNonlinear();
+
     // save problem
     try
     {

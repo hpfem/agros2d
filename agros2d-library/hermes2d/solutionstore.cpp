@@ -486,9 +486,10 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     doFHandler->load(sbiDoF, 0);
 
     // solution vector
-    dealii::Vector<double> *solution = new dealii::Vector<double>();
-    boost::archive::binary_iarchive sbiSol(fsSol);
-    solution->load(sbiSol, 0);
+    dealii::Vector<double> *solution = new dealii::Vector<double>(*multiSolution.solution());
+    //dealii::Vector<double> *solution = new dealii::Vector<double>();
+    //boost::archive::binary_iarchive sbiSol(fsSol);
+    //solution->load(sbiSol, 0);
 
     // new multisolution
     MultiArray multiSolutionCopy(doFHandler, solution);

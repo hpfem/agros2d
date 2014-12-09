@@ -196,7 +196,7 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
 
                     QList<FormInfo> vectorForms = Module::wfVectorSurface(&m_module->surface(), &boundary, analysisType, linearityType);
                     if (!vectorForms.isEmpty())
-                    {                        
+                    {
                         ctemplate::TemplateDictionary *fieldVector = generateSurfaceVariables(linearityType, coordinateType, output, weakform, "SURFACE_VECTOR", &boundary);
                         foreach(FormInfo formInfo, vectorForms)
                         {
@@ -268,17 +268,18 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
     field = output.AddSectionDictionary("EXT_FUNCTION");
     field->SetValue("EXT_FUNCTION_NAME", functionName.toStdString());
     QString dependence("0");
-    if(linearityType != LinearityType_Linear)
+
+    if (linearityType != LinearityType_Linear)
     {
-        if((coordinateType == CoordinateType_Planar) && (quantity.nonlinearity_planar().present()))
+        if ((coordinateType == CoordinateType_Planar) && (quantity.nonlinearity_planar().present()))
             dependence = QString::fromStdString(quantity.nonlinearity_planar().get());
-        if((coordinateType == CoordinateType_Axisymmetric) && (quantity.nonlinearity_axi().present()))
+        if ((coordinateType == CoordinateType_Axisymmetric) && (quantity.nonlinearity_axi().present()))
             dependence = QString::fromStdString(quantity.nonlinearity_axi().get());
 
         ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
 
         // if linearized, we use dependence on allready calculated values form previous time level or weakly coupled source field
-        if(linearize)
+        if (linearize)
             dependence = Parser::parseLinearizeDependence(pmi, dependence);
         else
             dependence = Parser::parseWeakFormExpression(pmi, dependence);
@@ -325,11 +326,12 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
     field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
     field->SetValue("QUANTITY_ID", quantity.id());
     field->SetValue("QUANTITY_SHORTNAME", shortname.toStdString());
-    if(derivative)
+
+    if (derivative)
         field->SetValue("IS_DERIVATIVE", "true");
     else
         field->SetValue("IS_DERIVATIVE", "false");
-    if(linearize)
+    if (linearize)
         field->SetValue("IS_LINEARIZED", "true");
     else
         field->SetValue("IS_LINEARIZED", "false");
@@ -363,7 +365,7 @@ void Agros2DGeneratorModule::generateFormExpression(FormInfo formInfo,
         {
             foreach(XMLModule::function functionDefinition, m_module->volume().function())
             {
-                if(functionUse.id() == functionDefinition.id())
+                if (functionUse.id() == functionDefinition.id())
                 {
                     generateSpecialFunction(functionDefinition, analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), linearityType, coordinateType, *expr);
                 }
@@ -398,16 +400,34 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateVolumeVariables(L
     field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
     field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype()))).toStdString());
 
-    int index = 0;
+    ParserModuleInfo pmi(*m_module, analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, linearityType);
+
     foreach(XMLModule::quantity quantity, weakform.quantity())
     {
-        ctemplate::TemplateDictionary *subField = 0;
-        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-        subField->SetValue("VARIABLE", quantity.id().c_str());
-        subField->SetValue("VARIABLE_SHORT", m_volumeVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
-        subField->SetValue("INDEX", QString::number(index).toStdString());
+        QString nonlinearExpr = pmi.nonlinearExpressionVolume(QString::fromStdString(quantity.id()));
 
-        index++;
+        if (linearityType != LinearityType_Linear && quantityIsNonlinear[QString::fromStdString(quantity.id())])
+        {
+            ctemplate::TemplateDictionary *subFieldNonlinear = field->AddSectionDictionary("VARIABLE_SOURCE_NONLINEAR");
+            subFieldNonlinear->SetValue("VARIABLE", quantity.id().c_str());
+            subFieldNonlinear->SetValue("VARIABLE_SHORT", m_volumeVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+
+            // nonlinear value and derivative
+            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("numberFromTable(%1)").
+                                        arg(Parser::parseErrorExpression(pmi, nonlinearExpr)).toStdString());
+            subFieldNonlinear->SetValue("VARIABLE_DERIVATIVE", QString("derivativeFromTable(%1)").
+                                        arg(Parser::parseErrorExpression(pmi, nonlinearExpr)).toStdString());
+        }
+        else
+        {
+            // linear only value
+
+            ctemplate::TemplateDictionary *subFieldLinear = field->AddSectionDictionary("VARIABLE_SOURCE_LINEAR");
+            subFieldLinear->SetValue("VARIABLE", quantity.id().c_str());
+            subFieldLinear->SetValue("VARIABLE_SHORT", m_volumeVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+
+            subFieldLinear->SetValue("VARIABLE_VALUE", QString("number()").toStdString());
+        }
     }
 
     return field;
@@ -429,12 +449,55 @@ ctemplate::TemplateDictionary *Agros2DGeneratorModule::generateSurfaceVariables(
 
     field->SetValue("BOUNDARY_ID", boundary->id().c_str());
 
+    ParserModuleInfo pmi(*m_module, analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), coordinateType, linearityType);
+
     foreach(XMLModule::quantity quantity, boundary->quantity())
     {
-        ctemplate::TemplateDictionary *subField = 0;
-        subField = field->AddSectionDictionary("VARIABLE_SOURCE");
-        subField->SetValue("VARIABLE", quantity.id().c_str());
-        subField->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+        QString dep = pmi.dependenceSurface(QString::fromStdString(quantity.id()));
+
+        // value
+        if (dep.isEmpty())
+        {
+            // linear only value
+            ctemplate::TemplateDictionary *subFieldLinear = field->AddSectionDictionary("VARIABLE_SOURCE_LINEAR");
+            subFieldLinear->SetValue("VARIABLE", quantity.id().c_str());
+            subFieldLinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+
+            subFieldLinear->SetValue("VARIABLE_VALUE", QString("number()").toStdString());
+        }
+        if (dep == "time")
+        {
+            // linear only value
+            ctemplate::TemplateDictionary *subFieldLinear = field->AddSectionDictionary("VARIABLE_SOURCE_LINEAR");
+            subFieldLinear->SetValue("VARIABLE", quantity.id().c_str());
+            subFieldLinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+
+            // linear boundary condition
+            subFieldLinear->SetValue("VARIABLE_VALUE", QString("%1->numberAtTime(Agros2D::problem()->actualTime())").
+                                     arg(QString::fromStdString(quantity.shortname().get())).toStdString());
+        }
+        else if (dep == "space")
+        {
+            // nonlinear case
+            ctemplate::TemplateDictionary *subFieldNonlinear = field->AddSectionDictionary("VARIABLE_SOURCE_NONLINEAR");
+            subFieldNonlinear->SetValue("VARIABLE", quantity.id().c_str());
+            subFieldNonlinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+
+            // spacedep boundary condition
+            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("%1->numberAtPoint(Point(p[0], p[1]))").
+                                        arg(QString::fromStdString(quantity.shortname().get())).toStdString());
+        }
+        else if (dep == "time-space")
+        {
+            // nonlinear case
+            ctemplate::TemplateDictionary *subFieldNonlinear = field->AddSectionDictionary("VARIABLE_SOURCE_NONLINEAR");
+            subFieldNonlinear->SetValue("VARIABLE", quantity.id().c_str());
+            subFieldNonlinear->SetValue("VARIABLE_SHORT", m_surfaceVariables.value(QString::fromStdString(quantity.id().c_str())).toStdString());
+
+            // spacedep boundary condition
+            subFieldNonlinear->SetValue("VARIABLE_VALUE", QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(p[0], p[1]))").
+                                        arg(QString::fromStdString(quantity.shortname().get())).toStdString());
+        }
     }
 
     return field;
@@ -468,7 +531,7 @@ void Agros2DGeneratorModule::generateValueExtFunction(XMLModule::function functi
 
     ParserModuleInfo pmi(*m_module, analysisType, coordinateType, linearityType);
     QString dependence("0");
-    if(linearityType != LinearityType_Linear)
+    if (linearityType != LinearityType_Linear)
         dependence = pmi.specialFunctionNonlinearExpression(QString::fromStdString(function.id()));
 
     // if linearized, we use dependence on allready calculated values form previous time level or weakly coupled source field

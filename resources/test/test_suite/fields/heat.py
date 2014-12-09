@@ -148,7 +148,7 @@ class TestHeatNonlinPlanar(Agros2DTestCase):
         self.heat.number_of_refinements = 2
         self.heat.polynomial_order = 2
 
-        self.heat.solver = "newton"
+        self.heat.solver = "picard"
         self.heat.solver_parameters['residual'] = 0.0001
         self.heat.solver_parameters['damping'] = 'automatic'
         self.heat.solver_parameters['damping_factor'] = 0.8

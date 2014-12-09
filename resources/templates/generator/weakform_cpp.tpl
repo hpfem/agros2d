@@ -53,8 +53,10 @@ public:
     Essential_{{COORDINATE_TYPE}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}_{{BOUNDARY_ID}}(SceneBoundary *boundary)
     : dealii::Function<dim>({{NUM_SOLUTIONS}})
     {
-        {{#VARIABLE_SOURCE}}
-        {{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+        {{#VARIABLE_SOURCE_LINEAR}}
+        {{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE_LINEAR}}
+        {{#VARIABLE_SOURCE_NONLINEAR}}
+        {{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE_NONLINEAR}}
     }
 
     virtual ~Essential_{{COORDINATE_TYPE}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}_{{BOUNDARY_ID}}() {}
@@ -62,18 +64,24 @@ public:
 virtual double value (const dealii::Point<dim> &p,
                       const unsigned int component) const
 {
-    // qDebug() << "Essential_{{COORDINATE_TYPE}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}_{{BOUNDARY_ID}} - value";
+    {{#VARIABLE_SOURCE_LINEAR}}
+    const double {{VARIABLE_SHORT}}_val = {{VARIABLE_SHORT}}->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+    {{#VARIABLE_SOURCE_NONLINEAR}}
+    const double {{VARIABLE_SHORT}}_val = {{VARIABLE_SHORT}}->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
 
     {{#FORM_EXPRESSION}}
     // {{EXPRESSION_ID}}
     if (component == {{ROW_INDEX}})
-        return {{EXPRESSION}};{{/FORM_EXPRESSION}}
+        return {{EXPRESSION}}; {{/FORM_EXPRESSION}}
 }
 
 virtual void vector_value (const dealii::Point<dim> &p,
                            dealii::Vector<double> &values) const
-{
-    // qDebug() << "Essential_{{COORDINATE_TYPE}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}_{{BOUNDARY_ID}} - vector_value";
+{    
+    {{#VARIABLE_SOURCE_LINEAR}}
+    const double {{VARIABLE_SHORT}}_val = {{VARIABLE_SHORT}}->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+    {{#VARIABLE_SOURCE_NONLINEAR}}
+    const double {{VARIABLE_SHORT}}_val = {{VARIABLE_SHORT}}->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
 
     {{#FORM_EXPRESSION}}
     // {{EXPRESSION_ID}}
@@ -84,30 +92,33 @@ virtual void value_list (const std::vector<dealii::Point<dim> > &points,
                          std::vector<double> &values,
                          const unsigned int component = 0) const
 {
-    // qDebug() << "Essential_{{COORDINATE_TYPE}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}_{{BOUNDARY_ID}} - value_list";
-
     for (unsigned int i = 0; i < points.size(); ++i)
     {
         dealii::Point<2> p = points[i];
+
+        {{#VARIABLE_SOURCE_LINEAR}}
+        const double {{VARIABLE_SHORT}}_val = {{VARIABLE_SHORT}}->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+        {{#VARIABLE_SOURCE_NONLINEAR}}
+        const double {{VARIABLE_SHORT}}_val = {{VARIABLE_SHORT}}->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
+
         {{#FORM_EXPRESSION}}
         // {{EXPRESSION_ID}}
         if (component == {{ROW_INDEX}})
-            values[i] = {{EXPRESSION}};{{/FORM_EXPRESSION}}
+            values[i] = {{EXPRESSION}};
+        {{/FORM_EXPRESSION}}
     }
 }
 
 virtual void vector_value_list (const std::vector<dealii::Point<dim> > &points,
                                 std::vector<dealii::Vector<double> > &values) const
 {
-    // qDebug() << "Essential_{{COORDINATE_TYPE}}_{{ANALYSIS_TYPE}}_{{LINEARITY_TYPE}}_{{BOUNDARY_ID}} - vector_value_list";
-
     for (unsigned int i = 0; i < points.size(); ++i)
         vector_value(points[i], values[i]);
 }
 
 private:
-{{#VARIABLE_SOURCE}}
-const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+{{#VARIABLE_SOURCE_LINEAR}}
+const Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE_LINEAR}}
 };
 {{/EXACT_SOURCE}}
 
@@ -170,15 +181,27 @@ void SolverDeal{{CLASS}}::assembleSystem()
     dealii::DoFHandler<2>::active_cell_iterator cell = m_doFHandler->begin_active(), endc = m_doFHandler->end();
     for (; cell != endc; ++cell)
     {
-        fe_values.reinit (cell);
+        fe_values.reinit(cell);
 
         // value and grad cache
+        std::vector<dealii::Point<2> > shape_face_point(n_face_q_points);
+        std::vector<double> shape_face_JxW(n_face_q_points);
         std::vector<dealii::Vector<double> > shape_value(dofs_per_cell, dealii::Vector<double>(n_q_points));
         std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad(dofs_per_cell, std::vector<dealii::Tensor<1,2> >(n_q_points));
         std::vector<dealii::Vector<double> > shape_face_value(dofs_per_cell, dealii::Vector<double>(n_face_q_points));
         // std::vector<std::vector<dealii::Tensor<1,2> > > shape_face_grad(dofs_per_cell, std::vector<dealii::Tensor<1,2> >(n_face_q_points));
 
+        // previous values and grads
+        std::vector<dealii::Vector<double> > solution_value_previous(n_q_points, dealii::Vector<double>(m_fieldInfo->numberOfSolutions()));
+        std::vector<std::vector<dealii::Tensor<1,2> > > solution_grad_previous(n_q_points, std::vector<dealii::Tensor<1,2> >(m_fieldInfo->numberOfSolutions()));
+
         // cache volume
+        if (m_solution_previous)
+        {
+            fe_values.get_function_values(*m_solution_previous, solution_value_previous);
+            fe_values.get_function_gradients(*m_solution_previous, solution_grad_previous);
+        }
+
         for (unsigned int i = 0; i < dofs_per_cell; ++i)
         {
             for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
@@ -195,9 +218,12 @@ void SolverDeal{{CLASS}}::assembleSystem()
             {
                 fe_face_values.reinit(cell, face);
 
-                for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
                 {
-                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                    shape_face_point[q_point] = fe_face_values.quadrature_point(q_point);
+                    shape_face_JxW[q_point] = fe_face_values.JxW(q_point);
+
+                    for (unsigned int i = 0; i < dofs_per_cell; ++i)
                     {
                         shape_face_value[i][q_point] = fe_face_values.shape_value(i, q_point);
                         // shape_face_grad[i][q_point] = fe_face_values.shape_grad(i, q_point);
@@ -211,100 +237,109 @@ void SolverDeal{{CLASS}}::assembleSystem()
         cell_rhs = 0;
 
         // materials
-        for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
+        SceneMaterial *material = Agros2D::scene()->labels->at(cell->material_id() - 1)->marker(m_fieldInfo);
+        const QMap<QString, QSharedPointer<Value> > materialValues = material->values();
+
+        if (material != Agros2D::scene()->materials->getNone(m_fieldInfo))
         {
-            SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
-
-            if (material != Agros2D::scene()->materials->getNone(m_fieldInfo))
+            // MATRIX VOLUME
+            {{#VOLUME_MATRIX_SOURCE}}
+            if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
             {
-                // MATRIX VOLUME
-                {{#VOLUME_MATRIX_SOURCE}}
-                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
+                // matrix
+                {{#VARIABLE_SOURCE_LINEAR}}
+                const double {{VARIABLE_SHORT}}_val = materialValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+
+                for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
                 {
-                    if (cell->material_id() == labelNum + 1)
+                    const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+
+                    {{#VARIABLE_SOURCE_NONLINEAR}}
+                    const double {{VARIABLE_SHORT}}_val = materialValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}};
+                    const double {{VARIABLE_SHORT}}_der = materialValues["{{VARIABLE}}"]->{{VARIABLE_DERIVATIVE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
+
+                    for (unsigned int i = 0; i < dofs_per_cell; ++i)
                     {
-                        {{#VARIABLE_SOURCE}}
-                        const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+                        const unsigned int component_i = m_fe->system_to_component_index(i).first;
 
-                        // matrix
-                        for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                        for (unsigned int j = 0; j < dofs_per_cell; ++j)
                         {
-                            const unsigned int component_i = m_fe->system_to_component_index(i).first;
+                            const unsigned int component_j = m_fe->system_to_component_index(j).first;
 
-                            for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                            {
-                                const unsigned int component_j = m_fe->system_to_component_index(j).first;
-                                {{#FORM_EXPRESSION}}
-                                // {{EXPRESSION_ID}}
-                                if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}}) // TODO: speed up
-                                {
-                                    for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
-                                    {
-                                        const dealii::Point<2> p = fe_values.quadrature_point(q_point);
-                                        cell_matrix(i,j) += fe_values.JxW(q_point) *({{EXPRESSION}});
-                                    }
-                                }{{/FORM_EXPRESSION}}
-                            }
-                        }
-                    }
-                }
-                {{/VOLUME_MATRIX_SOURCE}}
-
-                // VECTOR VOLUME
-                {{#VOLUME_VECTOR_SOURCE}}
-                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
-                {
-                    if (cell->material_id() == labelNum + 1)
-                    {
-                        {{#VARIABLE_SOURCE}}
-                        const Value *{{VARIABLE_SHORT}} = material->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-
-                        // rhs
-                        for (unsigned int i = 0; i < dofs_per_cell; ++i)
-                        {
-                            const unsigned int component_i = m_fe->system_to_component_index(i).first;
                             {{#FORM_EXPRESSION}}
                             // {{EXPRESSION_ID}}
-                            if (component_i == {{ROW_INDEX}}) // TODO: speed up
+                            if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}}) // TODO: speed up
                             {
-                                for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
-                                {
-                                    const dealii::Point<2> p = fe_values.quadrature_point(q_point);
-                                    cell_rhs(i) += fe_values.JxW(q_point) *({{EXPRESSION}});
-                                }
+                                cell_matrix(i,j) += fe_values.JxW(q_point) *({{EXPRESSION}});
                             }{{/FORM_EXPRESSION}}
                         }
                     }
                 }
-                {{/VOLUME_VECTOR_SOURCE}}                
             }
+            {{/VOLUME_MATRIX_SOURCE}}
+
+            // VECTOR VOLUME
+            {{#VOLUME_VECTOR_SOURCE}}
+            if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}}))
+            {
+                // rhs
+                {{#VARIABLE_SOURCE_LINEAR}}
+                const double {{VARIABLE_SHORT}}_val = materialValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+
+                for (unsigned int q_point = 0; q_point < n_q_points; ++q_point)
+                {
+                    const dealii::Point<2> p = fe_values.quadrature_point(q_point);
+
+                    {{#VARIABLE_SOURCE_NONLINEAR}}
+                    const double {{VARIABLE_SHORT}}_val = materialValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}};
+                    const double {{VARIABLE_SHORT}}_der = materialValues["{{VARIABLE}}"]->{{VARIABLE_DERIVATIVE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
+
+                    for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                    {
+                        const unsigned int component_i = m_fe->system_to_component_index(i).first;
+
+                        {{#FORM_EXPRESSION}}
+                        // {{EXPRESSION_ID}}
+                        if (component_i == {{ROW_INDEX}}) // TODO: speed up
+                        {
+                            cell_rhs(i) += fe_values.JxW(q_point) *({{EXPRESSION}});
+                        }{{/FORM_EXPRESSION}}
+                    }
+                }
+            }
+            {{/VOLUME_VECTOR_SOURCE}}
         }
 
+
         // boundaries
-        for (int edgeNum = 0; edgeNum < Agros2D::scene()->edges->count(); edgeNum++)
+        for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
         {
-            SceneBoundary *boundary = Agros2D::scene()->edges->at(edgeNum)->marker(m_fieldInfo);
-
-            if (boundary != Agros2D::scene()->boundaries->getNone(m_fieldInfo))
+            if (cell->face(face)->at_boundary())
             {
-                // MATRIX SURFACE
-                {{#SURFACE_MATRIX_SOURCE}}
-                // {{BOUNDARY_ID}}
-                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}})
-                        && boundary->type() == "{{BOUNDARY_ID}}")
+                SceneBoundary *boundary = Agros2D::scene()->edges->at(cell->face(face)->boundary_indicator() - 1)->marker(m_fieldInfo);
+                const QMap<QString, QSharedPointer<Value> > boundaryValues = boundary->values();
+
+                if (boundary != Agros2D::scene()->boundaries->getNone(m_fieldInfo))
                 {
-                    for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                    // MATRIX SURFACE
+                    {{#SURFACE_MATRIX_SOURCE}}
+                    // {{BOUNDARY_ID}}
+                    if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}})
+                            && boundary->type() == "{{BOUNDARY_ID}}")
                     {
-                        if (cell->face(face)->at_boundary() && cell->face(face)->boundary_indicator() == edgeNum + 1)
+                        {{#VARIABLE_SOURCE_LINEAR}}
+                        const double {{VARIABLE_SHORT}}_val = boundaryValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+
+                        // value and grad cache
+                        std::vector<dealii::Vector<double> > shape_value = shape_face_value;
+                        // std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad = shape_face_grad;
+
+                        for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
                         {
-                            {{#VARIABLE_SOURCE}}
-                            const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+                            const dealii::Point<2> p = shape_face_point[q_point];
 
-                            fe_face_values.reinit(cell, face);
-
-                            // value and grad cache
-                            std::vector<dealii::Vector<double> > shape_value = shape_face_value;
-                            // std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad = shape_face_grad;
+                            {{#VARIABLE_SOURCE_NONLINEAR}}
+                            const double {{VARIABLE_SHORT}}_val = boundaryValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
 
                             for (unsigned int i = 0; i < dofs_per_cell; ++i)
                             {
@@ -313,59 +348,53 @@ void SolverDeal{{CLASS}}::assembleSystem()
                                 for (unsigned int j = 0; j < dofs_per_cell; ++j)
                                 {
                                     const unsigned int component_j = m_fe->system_to_component_index(j).first;
+
                                     {{#FORM_EXPRESSION}}
                                     // {{EXPRESSION_ID}}
                                     if (component_i == {{ROW_INDEX}} && component_j == {{COLUMN_INDEX}}) // TODO: speed up
                                     {
-                                        for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                                        {
-                                            const dealii::Point<2> p = fe_face_values.quadrature_point(q_point);
-                                            cell_matrix(i,j) += fe_face_values.JxW(q_point) *({{EXPRESSION}});
-                                        }
+                                        cell_matrix(i,j) += shape_face_JxW[q_point] *({{EXPRESSION}});
                                     }{{/FORM_EXPRESSION}}
                                 }
                             }
                         }
                     }
-                }
-                {{/SURFACE_MATRIX_SOURCE}}
+                    {{/SURFACE_MATRIX_SOURCE}}
 
-                // VECTOR SURFACE
-                {{#SURFACE_VECTOR_SOURCE}}
-                if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}})
-                        && boundary->type() == "{{BOUNDARY_ID}}")
-                {
-                    for (unsigned int face = 0; face < dealii::GeometryInfo<2>::faces_per_cell; ++face)
+                    // VECTOR SURFACE
+                    {{#SURFACE_VECTOR_SOURCE}}
+                    if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}) && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (m_fieldInfo->linearityType() == {{LINEARITY_TYPE}})
+                            && boundary->type() == "{{BOUNDARY_ID}}")
                     {
-                        if (cell->face(face)->at_boundary() && cell->face(face)->boundary_indicator() == edgeNum + 1)
+                        {{#VARIABLE_SOURCE_LINEAR}}
+                        const double {{VARIABLE_SHORT}}_val = boundaryValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_LINEAR}}
+
+                        // value and grad cache
+                        std::vector<dealii::Vector<double> > shape_value = shape_face_value;
+                        // std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad = shape_face_grad;
+
+                        for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
                         {
-                            {{#VARIABLE_SOURCE}}
-                            const Value *{{VARIABLE_SHORT}} = boundary->valueNakedPtr("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+                            const dealii::Point<2> p = shape_face_point[q_point];
 
-                            fe_face_values.reinit(cell, face);
-
-                            // value and grad cache
-                            std::vector<dealii::Vector<double> > shape_value = shape_face_value;
-                            // std::vector<std::vector<dealii::Tensor<1,2> > > shape_grad = shape_face_grad;
+                            {{#VARIABLE_SOURCE_NONLINEAR}}
+                            const double {{VARIABLE_SHORT}}_val = boundaryValues["{{VARIABLE}}"]->{{VARIABLE_VALUE}}; {{/VARIABLE_SOURCE_NONLINEAR}}
 
                             for (unsigned int i = 0; i < dofs_per_cell; ++i)
                             {
                                 const unsigned int component_i = m_fe->system_to_component_index(i).first;
+
                                 {{#FORM_EXPRESSION}}
                                 // {{EXPRESSION_ID}}
                                 if (component_i == {{ROW_INDEX}}) // TODO: speed up
                                 {
-                                    for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                                    {
-                                        const dealii::Point<2> p = fe_face_values.quadrature_point(q_point);
-                                        cell_rhs(i) += fe_face_values.JxW(q_point) *({{EXPRESSION}});
-                                    }
+                                    cell_rhs(i) += shape_face_JxW[q_point] *({{EXPRESSION}});
                                 }{{/FORM_EXPRESSION}}
                             }
                         }
                     }
+                    {{/SURFACE_VECTOR_SOURCE}}
                 }
-                {{/SURFACE_VECTOR_SOURCE}}
             }
         }
 

@@ -19,7 +19,7 @@ protected:
     void addBasicWeakformTokens();
     void addCouplingWeakformTokens(int numSourceSolutions);
     void addPreviousSolWeakform(int numSolutions);
-    void addPreviousSolErroCalculation();
+    void addPreviousSolErrorCalculation();
     void addPreviousSolLinearizeDependence();
     void addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool isSource);
     void addConstants(ParserModuleInfo pmiField);

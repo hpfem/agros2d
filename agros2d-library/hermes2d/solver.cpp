@@ -85,7 +85,7 @@
 #include "pythonlab/pythonengine.h"
 
 SolverDeal::SolverDeal(const FieldInfo *fieldInfo, int initialOrder)
-    : m_fieldInfo(fieldInfo)
+    : m_fieldInfo(fieldInfo), m_solution_previous(NULL)
 {    
     // fe
     qDebug() << "SolverDeal::SolverDeal: numberOfSolutions" << fieldInfo->numberOfSolutions();
@@ -114,48 +114,6 @@ SolverDeal::~SolverDeal()
     // delete m_triangulation;
     // delete m_fe;
 }
-/*
-void SolverDeal::setup()
-{
-    QTime time;
-    time.start();
-
-    m_doFHandler->distribute_dofs(*m_fe);
-
-    // reinit sln and rhs
-    system_rhs.reinit(m_doFHandler->n_dofs());
-    m_solution->reinit(m_doFHandler->n_dofs());
-
-    std::cout << "Number of degrees of freedom: " << m_doFHandler->n_dofs() << std::endl;
-
-    hanging_node_constraints.clear ();
-    dealii::DoFTools::make_hanging_node_constraints(*m_doFHandler,
-                                                    hanging_node_constraints);
-    hanging_node_constraints.close();
-
-    // assemble Dirichlet
-    assembleDirichlet();
-
-
-
-    dealii::CompressedSparsityPattern c_sparsity(m_doFHandler->n_dofs());
-
-    // sparsity_pattern.reinit(m_doFHandler->n_dofs(),
-    //                         m_doFHandler->n_dofs(),
-    //                         m_doFHandler->max_couplings_between_dofs());
-
-    dealii::DoFTools::make_sparsity_pattern(*m_doFHandler,
-                                            c_sparsity,
-                                            hanging_node_constraints,
-                                            false);
-
-    sparsity_pattern.copy_from(c_sparsity);
-    // sparsity_pattern.compress();
-    system_matrix.reinit(sparsity_pattern);
-
-    qDebug() << "setup (" << time.elapsed() << "ms )";
-}
-*/
 
 void SolverDeal::setup()
 {
@@ -206,6 +164,8 @@ void SolverDeal::assembleDirichlet()
 
 void SolverDeal::solve()
 {
+    qDebug() << "residual" << system_rhs.l2_norm();
+
     QTime time;
     time.start();
 
@@ -213,6 +173,10 @@ void SolverDeal::solve()
     // solveCG();
 
     hanging_node_constraints.distribute(*m_solution);
+
+    // copy solution
+    if (Agros2D::problem()->isTransient() || Agros2D::problem()->isNonlinear())
+        m_solution_previous = new dealii::Vector<double>(*m_solution);
 
     qDebug() << "solved (" << time.elapsed() << "ms )";
 }
@@ -1036,7 +1000,10 @@ void ProblemSolverDeal::solve(int timeStep)
     {
         if (fieldInfo->adaptivityType() == AdaptivityMethod_None)
         {
-            solveSimple(fieldInfo, timeStep);
+            if (fieldInfo->linearityType() == LinearityType_Linear)
+                solveLinear(fieldInfo, timeStep);
+            else
+                solveNonlinear(fieldInfo, timeStep);
         }
         else
         {
@@ -1045,11 +1012,8 @@ void ProblemSolverDeal::solve(int timeStep)
     }
 }
 
-void ProblemSolverDeal::solveSimple(FieldInfo *fieldInfo, int timeStep)
+void ProblemSolverDeal::solveLinear(FieldInfo *fieldInfo, int timeStep, int adaptiveStep)
 {
-
-    qDebug() << "Simple solution";
-
     m_solverDeal->setup();
     QTime time;
     time.start();
@@ -1058,18 +1022,52 @@ void ProblemSolverDeal::solveSimple(FieldInfo *fieldInfo, int timeStep)
     qDebug() << "assemble (" << time.elapsed() << "ms )";
     m_solverDeal->solve();
 
-    FieldSolutionID solutionID(fieldInfo, timeStep, 0, SolutionMode_Normal);
+    qDebug() << "solve linear (" << time.elapsed() << "ms )";
+
+    FieldSolutionID solutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), 0.0, 0);
 
     Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
+}
 
-    std::cout << "Number of active cells: " << m_solverDeal->triangulation()->n_active_cells() << std::endl;
-    std::cout << "Total number of cells: " << m_solverDeal->triangulation()->n_cells() << std::endl;
+void ProblemSolverDeal::solveNonlinear(FieldInfo *fieldInfo, int timeStep, int adaptiveStep)
+{
+    QTime time;
+    time.start();
+
+    QVector<double> steps;
+    QVector<double> relativeChangeOfSolutions;
+
+    m_solverDeal->setup();
+    for (int iteration = 0; iteration < 6; iteration++)
+    {
+        qDebug() << "step: " << iteration;
+        m_solverDeal->assembleSystem();
+        m_solverDeal->assembleDirichlet();
+        m_solverDeal->solve();
+
+        // update
+        steps.append(iteration);
+        relativeChangeOfSolutions.append(1.0);
+
+        // , damping: %2
+        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1 (rel. change of sol.: %2 %)")
+                                             .arg(iteration)
+                                             .arg(QString::number(relativeChangeOfSolutions.last(), 'f', 5)));
+
+        Agros2D::log()->updateNonlinearChartInfo(SolverAgros::Phase_Finished, steps, relativeChangeOfSolutions);
+    }
+    qDebug() << "solve nonlinear (" << time.elapsed() << "ms )";
+
+    FieldSolutionID solutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal);
+    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), 0.0, 0);
+
+    Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
 }
 
 void ProblemSolverDeal::solveAdaptive(FieldInfo *fieldInfo, int timeStep)
 {
-    qDebug() << "Adaptive solution";
+    qDebug() << "adaptive solution";
     for (int i = 0; i < fieldInfo->value(FieldInfo::AdaptivitySteps).toInt(); i++)
     {
         double error = 0.0;
@@ -1111,21 +1109,12 @@ void ProblemSolverDeal::solveAdaptive(FieldInfo *fieldInfo, int timeStep)
             Agros2D::log()->updateAdaptivityChartInfo(fieldInfo, 0, i);
         }
 
-        m_solverDeal->setup();
-        QTime time;
-        time.start();
-        m_solverDeal->assembleDirichlet();
-        m_solverDeal->assembleSystem();
-        qDebug() << "assemble (" << time.elapsed() << "ms )";
-        m_solverDeal->solve();
+        // TODO: can be
+        if (Agros2D::problem()->isNonlinear())
+            solveLinear(fieldInfo, timeStep, i);
+        else
+            solveNonlinear(fieldInfo, timeStep, i);
 
-        FieldSolutionID solutionID(fieldInfo, timeStep, i, SolutionMode_Normal);
-        SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(), error, i);
-
-        Agros2D::solutionStore()->addSolution(solutionID, MultiArray(m_solverDeal->doFHandler(), m_solverDeal->solution()), runTime);
-
-        std::cout << "Number of active cells: " << m_solverDeal->triangulation()->n_active_cells() << std::endl;
-        std::cout << "Total number of cells: " << m_solverDeal->triangulation()->n_cells() << std::endl;
     }
 }
 

@@ -52,8 +52,9 @@ ParserInstanceErrorExpression::ParserInstanceErrorExpression(ParserModuleInfo pm
 
     addBasicWeakformTokens();
     addConstants(m_parserModuleInfo);
-    addPreviousSolErroCalculation();
-    if(withVariables)
+    addPreviousSolErrorCalculation();
+
+    if (withVariables)
     {
         addVolumeVariablesErrorCalculation();
         addSurfaceVariables();

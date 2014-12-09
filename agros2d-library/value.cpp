@@ -182,7 +182,7 @@ double Value::numberAtTimeAndPoint(double time, const Point &point) const
 }
 
 double Value::numberFromTable(double key) const
-{
+{    
     if (m_problem->isNonlinear() && hasTable())
         return m_table.value(key);
     else

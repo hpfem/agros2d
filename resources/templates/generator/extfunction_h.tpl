@@ -21,15 +21,29 @@
 #define {{CLASS}}_EXTFUNCTION_H
 
 #include "util.h"
-#include <weakform/weakform.h>
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"
 
+/*
 {{#EXT_FUNCTIONS_PART}}
+{{#EXT_FUNCTION}}
+class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
+{
+public:
+    virtual std::vector<double> value(dealii::FEValues<2> &fe_values, int n_q_points, SceneLabel *label) const;
+
+protected:
+    QList<QWeakPointer<Value> > {{QUANTITY_SHORTNAME}};
+};
+{{/EXT_FUNCTION}}
+{{/EXT_FUNCTIONS_PART}}
+*/
+
+
 // PART OF EXT FUNCTIONS (with the same analysis, linearity and coordinate type
 // **** {{PART_NAME}} *****
-
+/*
 {{#EXT_FUNCTION}}
 class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
@@ -44,11 +58,11 @@ protected:
     QList<QWeakPointer<Value> > {{QUANTITY_SHORTNAME}};
 };
 {{/EXT_FUNCTION}}
-
+*/
 // ***********************************************************************************************************************************
 // ext functions with more quantities and expression (merge with previous!)
 
-
+/*
 {{#VALUE_FUNCTION_SOURCE}}
 class {{VALUE_FUNCTION_FULL_NAME}} : public AgrosExtFunction
 {
@@ -67,10 +81,10 @@ private:
 {{/PARAMETERS_NONLINEAR}}
 };
 {{/VALUE_FUNCTION_SOURCE}}
-
+*/
 // ***********************************************************************************************************************************
 // Special functions
-
+/*
 {{#SPECIAL_FUNCTION_SOURCE}}
 class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
 {
@@ -84,7 +98,6 @@ public:
 {{/PARAMETERS}}
 };
 {{/SPECIAL_FUNCTION_SOURCE}}
-{{/EXT_FUNCTIONS_PART}}
-
+*/
 
 #endif // {{CLASS}}_EXTFUNCTION_H

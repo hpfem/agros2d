@@ -97,6 +97,12 @@ static XMLModule::module *module_module = NULL;
 {{CLASS}}Interface::~{{CLASS}}Interface()
 {
 }
+
+SolverDeal *{{CLASS}}Interface::solverDeal(const FieldInfo *fieldInfo, int initialOrder)
+{
+    return new SolverDeal{{CLASS}}(fieldInfo, initialOrder);
+}
+
 /*
 AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {
@@ -109,14 +115,9 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
 }
 */
 
-SolverDeal *{{CLASS}}Interface::solverDeal(const FieldInfo *fieldInfo, int initialOrder)
-{
-    return new SolverDeal{{CLASS}}(fieldInfo, initialOrder);
-}
-
 /*
 {{#EXT_FUNCTIONS_PART}}
-AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
+AgrosExtFunction *{{PART_NAME}}(const ProblemID problemId, QString id, bool derivative, bool linearized, const WeakFormAgros<double>* wfAgros)
 {
     {{#EXT_FUNCTION}}
     if((id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}) && (linearized == {{IS_LINEARIZED}}))
@@ -133,7 +134,8 @@ AgrosExtFunction *{{CLASS}}Interface::{{PART_NAME}}(const ProblemID problemId, Q
     return NULL;
 }
 {{/EXT_FUNCTIONS_PART}}
-
+*/
+/*
 ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(const FieldInfo *fieldInfo,
                                                                                const QString &calculator, CalculatedErrorType errorType)
 {

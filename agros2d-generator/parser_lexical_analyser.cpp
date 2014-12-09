@@ -48,7 +48,7 @@ void ParserInstance::addBasicWeakformTokens()
     // scalar field
     m_dict["uval"] = "shape_value[j][q_point]"; // "u->val[i]";
     m_dict["vval"] = "shape_value[i][q_point]"; // "v->val[i]";
-    m_dict["upval"] = "0"; // "u_ext[this->j]->val[i]";
+    m_dict["upval"] = "solution_value_previous[q_point][component_i]"; // "u_ext[this->j]->val[i]";
     m_dict["uptval"] = "ext[*this->m_offsetPreviousTimeExt + this->j - this->m_offsetJ]->val[i]";
     m_dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
 
@@ -71,8 +71,8 @@ void ParserInstance::addBasicWeakformTokens()
         m_dict["vdx"] = "shape_grad[i][q_point][0]"; // "v->dx[i]";
         m_dict["udy"] = "shape_grad[j][q_point][1]"; // "u->dy[i]";
         m_dict["vdy"] = "shape_grad[i][q_point][1]"; // "v->dy[i]";
-        m_dict["updx"] = "0"; // "u_ext[this->j]->dx[i]";
-        m_dict["updy"] = "0"; // "u_ext[this->j]->dy[i]";
+        m_dict["updx"] = "solution_grad_previous[q_point][component_i][0]"; // "u_ext[this->j]->dx[i]";
+        m_dict["updy"] = "solution_grad_previous[q_point][component_i][1]"; // "u_ext[this->j]->dy[i]";
     }
     else
     {
@@ -81,8 +81,8 @@ void ParserInstance::addBasicWeakformTokens()
         m_dict["vdr"] = "shape_grad[i][q_point][0]"; // "v->dx[i]";
         m_dict["udz"] = "shape_grad[j][q_point][1]"; // "u->dy[i]";
         m_dict["vdz"] = "shape_grad[i][q_point][1]"; // "v->dy[i]";
-        m_dict["updr"] = "0"; // "u_ext[this->j]->dx[i]";
-        m_dict["updz"] = "0"; // "u_ext[this->j]->dy[i]";
+        m_dict["updr"] = "solution_grad_previous[q_point][component_i][0]"; // "u_ext[this->j]->dx[i]";
+        m_dict["updz"] = "solution_grad_previous[q_point][component_i][1]"; // "u_ext[this->j]->dy[i]";
     }
 }
 
@@ -133,21 +133,21 @@ void ParserInstance::addPreviousSolWeakform(int numSolutions)
     }
 }
 
-void ParserInstance::addPreviousSolErroCalculation()
+void ParserInstance::addPreviousSolErrorCalculation()
 {
     for (int i = 1; i < m_parserModuleInfo.numSolutions + 1; i++)
     {
-        m_dict[QString("value%1").arg(i)] = QString("u->val[i]");
+        m_dict[QString("value%1").arg(i)] = QString("solution_value_previous[q_point][%1]").arg(i-1); // u->val[i]
 
         if (m_parserModuleInfo.coordinateType == CoordinateType_Planar)
         {
-            m_dict[QString("dx%1").arg(i)] = QString("u->dx[i]");
-            m_dict[QString("dy%1").arg(i)] = QString("u->dy[i]");
+            m_dict[QString("dx%1").arg(i)] = QString("solution_grad_previous[q_point][%1][0]").arg(i-1); // u->dx[i]
+            m_dict[QString("dy%1").arg(i)] = QString("solution_grad_previous[q_point][%1][1]").arg(i-1); // u->dy[i]
         }
         else
         {
-            m_dict[QString("dr%1").arg(i)] = QString("u->dx[i]");
-            m_dict[QString("dz%1").arg(i)] = QString("u->dy[i]");
+            m_dict[QString("dr%1").arg(i)] = QString("solution_grad_previous[q_point][%1][0]").arg(i-1); // u->dx[i]
+            m_dict[QString("dz%1").arg(i)] = QString("solution_grad_previous[q_point][%1][1]").arg(i-1); // u->dy[i]
         }
     }
 }
@@ -232,33 +232,25 @@ void ParserInstance::addVolumeVariablesErrorCalculation()
 
 void ParserInstance::addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool isSource)
 {
+    /*
     QString offsetQuant("offset.quant");
     if(isSource)
         offsetQuant = "offset.sourceQuant";
+    */
 
     foreach (XMLModule::quantity quantity, pmiField.volume.quantity())
     {
         if (quantity.shortname().present())
         {
-            // in weak forms, values replaced by ext functions
-            /*
-            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + %2]->val[i]").
-                    arg(pmiField.quantityOrdering[QString::fromStdString(quantity.id())]).
-                    arg(offsetQuant);
-            */
-            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
+            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1_val").
                     arg(QString::fromStdString(quantity.shortname().get()));
 
-            if(pmiField.quantityIsNonlinear[QString::fromStdString(quantity.id())])
-            {
-                m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1 + %2]->val[i]").
-                        arg(pmiField.quantityOrdering[QString::fromStdString(quantity.id())] + 1).
-                        arg(offsetQuant);
-
-            }
+            m_dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1_der").
+                    arg(QString::fromStdString(quantity.shortname().get()));
         }
     }
 
+    /*
     foreach (XMLModule::function function, pmiField.volume.function())
     {
         // in weak forms, functions replaced by ext functions
@@ -266,6 +258,7 @@ void ParserInstance::addVolumeVariablesWeakform(ParserModuleInfo pmiField, bool 
                 arg(pmiField.functionOrdering[QString::fromStdString(function.id())]).
                 arg(offsetQuant);
     }
+    */
 }
 
 void ParserInstance::addSurfaceVariables()
@@ -275,32 +268,8 @@ void ParserInstance::addSurfaceVariables()
     {
         if (quantity.shortname().present())
         {
-            QString dep = m_parserModuleInfo.dependenceSurface(QString::fromStdString(quantity.id()));
-
-            if (dep.isEmpty())
-            {
-                // linear boundary condition
-                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
-                        arg(QString::fromStdString(quantity.shortname().get()));
-            }
-            else if (dep == "time")
-            {
-                // linear boundary condition
-                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
-                        arg(QString::fromStdString(quantity.shortname().get()));
-            }
-            else if (dep == "space")
-            {
-                // spacedep boundary condition
-                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(p[0], p[1]))").
-                        arg(QString::fromStdString(quantity.shortname().get()));
-            }
-            else if (dep == "time-space")
-            {
-                // spacedep boundary condition
-                m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(x, y))").
-                        arg(QString::fromStdString(quantity.shortname().get()));
-            }
+            m_dict[QString::fromStdString(quantity.shortname().get())] = QString("%1_val").
+                    arg(QString::fromStdString(quantity.shortname().get()));
         }
     }
 }

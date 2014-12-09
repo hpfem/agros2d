@@ -65,11 +65,17 @@ protected:
     dealii::Triangulation<2> *m_triangulation;
     dealii::DoFHandler<2> *m_doFHandler;
     dealii::FESystem<2> *m_fe;
-    dealii::Vector<double> *m_solution;
 
+    // current solution
+    dealii::Vector<double> *m_solution;
+    // previous solution
+    dealii::Vector<double> *m_solution_previous;
+
+    // hanging nodes and sparsity pattern
     dealii::ConstraintMatrix hanging_node_constraints;
     dealii::SparsityPattern sparsity_pattern;
 
+    // matrix and rhs
     dealii::SparseMatrix<double> system_matrix;
     dealii::Vector<double> system_rhs;
 
@@ -183,8 +189,9 @@ public:
     void init();
 
     void solve(int timeStep);
-    void solveSimple(FieldInfo *fieldInfo, int timeStep);
-    void solveAdaptive(FieldInfo *fieldInfo, int timeStep);
+    void solveAdaptive(FieldInfo *fieldInfo, int timeStep = 0);
+    void solveLinear(FieldInfo *fieldInfo, int timeStep = 0, int adaptiveStep = 0);
+    void solveNonlinear(FieldInfo *fieldInfo, int timeStep = 0, int adaptiveStep = 0);
 
 private:
     SolverDeal *m_solverDeal;
