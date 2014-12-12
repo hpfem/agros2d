@@ -30,7 +30,7 @@
 #include "particle/particle_tracing.h"
 
 #include "scene.h"
-#include "hermes2d/problem.h"
+#include "solver/problem.h"
 #include "logview.h"
 
 #include "pythonlab/pythonengine_agros.h"
@@ -41,10 +41,10 @@
 #include "scenelabel.h"
 #include "scenemarker.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem_config.h"
 
 #include "sceneview_data.h"
 

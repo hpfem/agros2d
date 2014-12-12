@@ -47,13 +47,13 @@
 #include "problemdialog.h"
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
-#include "hermes2d/module.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/module.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 #include "scenetransformdialog.h"
 #include "chartdialog.h"
 #include "examplesdialog.h"
-#include "hermes2d/solver.h"
+#include "solver/solver.h"
 #include "optilab/optilab.h"
 
 #include "util/form_script.h"
@@ -131,7 +131,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) : QMainWindow(pa
     connect(currentPythonEngineAgros(), SIGNAL(startedScript()), this, SLOT(doStartedScript()));
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
 
-    // post hermes
+    // post
     connect(problemWidget, SIGNAL(changed()), postDeal, SLOT(refresh()));
     connect(postprocessorWidget, SIGNAL(apply()), postDeal, SLOT(refresh()));
     currentPythonEngineAgros()->setpostDeal(postDeal);

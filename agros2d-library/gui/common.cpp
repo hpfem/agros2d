@@ -22,12 +22,12 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/solver.h"
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/solver.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/solutionstore.h"
 
 #include <QNetworkAccessManager>
 

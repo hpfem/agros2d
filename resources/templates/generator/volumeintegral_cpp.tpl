@@ -24,12 +24,12 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/field.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/field.h"
+#include "solver/solutionstore.h"
 
-#include "hermes2d/plugin_interface.h"
+#include "solver/plugin_interface.h"
 
 #include <deal.II/grid/tria.h>
 #include <deal.II/dofs/dof_handler.h>

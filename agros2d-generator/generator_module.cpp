@@ -20,7 +20,7 @@
 #include "generator.h"
 #include "generator_module.h"
 #include "parser.h"
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
 
 #include "util/constants.h"

@@ -24,7 +24,6 @@ endif()
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 SET(CMAKE_AGROS_DIRECTORY "${CMAKE_HOME_DIRECTORY}/")
-set(WITH_OPENMP YES)
 
 # Allow to override the default values in CMake.vars:
 INCLUDE(CMake.vars OPTIONAL)
@@ -95,6 +94,9 @@ SET(TRIANGLE_LIBRARY agros2d_3dparty_triangle)
 
 # SET(AGROS_SOLVER_EXTERNAL solver_external)
 
+# xerces
+find_package(XSD REQUIRED)
+find_package(XERCES REQUIRED)
 
 # deal.ii
 FIND_PACKAGE(deal.II 8.1 REQUIRED
@@ -120,16 +122,6 @@ IF(WIN32)
 ENDIF(WIN32)
 
 # Set global compiler parameters.
-IF (WITH_OPENMP)
-  IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -Wunsupported-friend")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -Wunsupported-friend")
-  ELSE()
-    find_package(OpenMP REQUIRED)
-  ENDIF()
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-ENDIF()
 IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
   INCLUDE_DIRECTORIES(/usr/include/google)  

@@ -29,9 +29,9 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/field.h"
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, const Value &angle, int segments, bool isCurvilinear)
     : MarkedSceneBasic<SceneBoundary>(),

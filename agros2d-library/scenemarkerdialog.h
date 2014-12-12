@@ -21,7 +21,7 @@
 #define SCENEMARKERDIALOG_H
 
 #include "util.h"
-#include "hermes2d/marker.h"
+#include "solver/marker.h"
 
 class LineEditDouble;
 class ValueLineEdit;

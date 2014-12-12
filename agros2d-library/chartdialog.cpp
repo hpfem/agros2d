@@ -26,12 +26,12 @@
 #include "sceneedge.h"
 #include "sceneview_geometry_chart.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/solutionstore.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/solutionstore.h"
+#include "solver/problem_config.h"
 #include "pythonlab/pythonengine_agros.h"
 
 #include "gui/common.h"
@@ -335,8 +335,8 @@ void ChartWidget::createControls()
     controlsLayout->setContentsMargins(0, 0, 0, 0);
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
-    controlsLayout->addWidget(tbxAnalysisType, 0.5);
-    controlsLayout->addWidget(grpChart, 0.5);
+    controlsLayout->addWidget(tbxAnalysisType, 1);
+    controlsLayout->addWidget(grpChart, 1);
     // controlsLayout->addStretch(1);
 
     QWidget *widget = new QWidget(this);

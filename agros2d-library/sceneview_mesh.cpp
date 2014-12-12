@@ -24,7 +24,7 @@
 #include "util/constants.h"
 
 #include "scene.h"
-#include "hermes2d/field.h"
+#include "solver/field.h"
 #include "logview.h"
 
 #include "scenebasic.h"
@@ -32,9 +32,9 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/module.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/module.h"
 
 // deal.ii
 #include <deal.II/grid/tria.h>

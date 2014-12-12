@@ -21,7 +21,7 @@
 #define MESHGENERATOR_H
 
 #include "util.h"
-#include "hermes2d/field.h"
+#include "solver/field.h"
 #include "util/loops.h"
 #ifdef Q_WS_X11
 #include <tr1/memory>

@@ -101,17 +101,17 @@ SET(SOURCES value.cpp
     gui/valuetimedialog.cpp
     gui/valuedatatabledialog.cpp
     gui/valuelineedit.cpp
-    hermes2d/marker.cpp
-    hermes2d/weak_form.cpp
-    hermes2d/module.cpp
-    hermes2d/solver.cpp
-    #hermes2d/solver_linear.cpp
-    #hermes2d/solver_newton.cpp
-    #hermes2d/solver_picard.cpp
-    hermes2d/field.cpp
-    hermes2d/problem.cpp
-    hermes2d/problem_config.cpp
-    hermes2d/plugin_interface.cpp
+    solver/marker.cpp
+    solver/weak_form.cpp
+    solver/module.cpp
+    solver/solver.cpp
+    #solver/solver_linear.cpp
+    #solver/solver_newton.cpp
+    #solver/solver_picard.cpp
+    solver/field.cpp
+    solver/problem.cpp
+    solver/problem_config.cpp
+    solver/plugin_interface.cpp
     mainwindow.cpp
     scenemarker.cpp
     scenemarkerdialog.cpp
@@ -146,14 +146,14 @@ SET(SOURCES value.cpp
     sceneedge.cpp
     scenelabel.cpp
     scenenode.cpp
-    hermes2d/coupling.cpp
-    hermes2d/solutiontypes.cpp
+    solver/coupling.cpp
+    solver/solutiontypes.cpp
     preprocessorview.cpp
     infowidget.cpp
-    hermes2d/solutionstore.cpp
+    solver/solutionstore.cpp
     #moduledialog.cpp
     parser/lex.cpp
-    hermes2d/bdf2.cpp
+    solver/bdf2.cpp
     pythonlab/pythonengine_agros.cpp
     pythonlab/pyproblem.cpp
     pythonlab/pyfield.cpp
@@ -175,8 +175,6 @@ SET(SOURCES value.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/problem_a2d_31_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/form_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/test_xml.cpp
-    # ../hermes/hermes2d/src/mesh/subdomains_h2d_xml.cpp
-    # ../hermes/hermes2d/src/mesh/mesh_h2d_xml.cpp
   )
   
   SET(HEADERS value.h
@@ -197,11 +195,11 @@ SET(SOURCES value.cpp
     gui/valuetimedialog.h
     gui/valuedatatabledialog.h
     gui/valuelineedit.h
-    hermes2d/marker.h
-    hermes2d/module.h
-    hermes2d/problem.h
-    hermes2d/problem_config.h
-    hermes2d/weak_form.h
+    solver/marker.h
+    solver/module.h
+    solver/problem.h
+    solver/problem_config.h
+    solver/weak_form.h
     mainwindow.h
     scenebasic.h
     scenemarker.h
@@ -236,23 +234,23 @@ SET(SOURCES value.cpp
     datatable.h
     materialbrowserdialog.h
     confdialog.h
-    hermes2d/solver.h
-    #hermes2d/solver_linear.h
-    #hermes2d/solver_newton.h
-    #hermes2d/solver_picard.h
+    solver/solver.h
+    #solver/solver_linear.h
+    #solver/solver_newton.h
+    #solver/solver_picard.h
     sceneedge.h
     scenelabel.h
     scenenode.h
-    hermes2d/coupling.h
-    hermes2d/solutiontypes.h
+    solver/coupling.h
+    solver/solutiontypes.h
     preprocessorview.h
     infowidget.h
-    hermes2d/field.h
-    hermes2d/solutionstore.h
+    solver/field.h
+    solver/solutionstore.h
     #moduledialog.h
     parser/lex.h
-    hermes2d/bdf2.h
-    hermes2d/plugin_interface.h
+    solver/bdf2.h
+    solver/plugin_interface.h
     util/form_interface.h
     util/form_script.h
     gui/groupbox.h
@@ -296,6 +294,6 @@ IF(WITH_QT5)
 ENDIF(WITH_QT5)
 
 # ${GMSH_LIBRARY} ${NETGEN_LIBRARY} ${VTK_LIBRARIES}
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${DEAL_II_LIBRARIES} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${TRIANGLE_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES} ${ZLIB_LIBRARY} ${XSD_LIBRARY} ${XERCES_LIBRARY})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${DEAL_II_LIBRARIES} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${TRIANGLE_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES} ${ZLIB_LIBRARY} ${XSD_LIBRARY} ${XERCES_LIBRARY})
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

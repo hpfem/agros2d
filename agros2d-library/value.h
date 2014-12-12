@@ -22,7 +22,7 @@
 
 #include "util.h"
 #include "util/point.h"
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
 #include "datatable.h"
 

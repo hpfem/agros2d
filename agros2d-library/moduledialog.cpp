@@ -24,7 +24,7 @@
 #include "sceneview_common.h"
 #include "pythonlab/pythonengine_agros.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
 #include "util/constants.h"
 #include "gui/common.h"

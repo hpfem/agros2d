@@ -25,9 +25,9 @@
 #include "gui/valuelineedit.h"
 
 #include "scenemarker.h"
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
+#include "solver/field.h"
 #include "datatable.h"
 #include "scene.h"
 #include "scenebasic.h"
@@ -49,6 +49,8 @@ int SceneBoundary::showDialog(QWidget *parent)
         return dialog->exec();
     else
         QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Boundary dialog doesn't exists."));
+
+    return -1;
 }
 
 QVariant SceneBoundary::variant()
@@ -79,6 +81,7 @@ int SceneMaterial::showDialog(QWidget *parent)
     else
         QMessageBox::information(QApplication::activeWindow(), QObject::tr(""), QObject::tr("Material dialog doesn't exists."));
 
+    return -1;
 }
 
 QVariant SceneMaterial::variant()

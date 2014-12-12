@@ -24,7 +24,7 @@
 
 #include "util.h"
 #include "util/enums.h"
-#include "hermes2d/field.h"
+#include "solver/field.h"
 
 #include "{{ID}}_interface.h"
 

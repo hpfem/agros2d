@@ -24,8 +24,8 @@
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
 
-#include "hermes2d/module.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/module.h"
+#include "solver/solutionstore.h"
 
 #include "util/constants.h"
 #include "util/global.h"

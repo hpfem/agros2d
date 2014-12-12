@@ -24,7 +24,7 @@
 #include "util/loops.h"
 
 #include "scene.h"
-#include "hermes2d/problem.h"
+#include "solver/problem.h"
 #include "logview.h"
 
 #include "util/constants.h"
@@ -37,13 +37,13 @@
 #include "scenemarkerselectdialog.h"
 #include "resultsview.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/plugin_interface.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/plugin_interface.h"
+#include "solver/solutionstore.h"
 
 #include "pythonlab/pythonengine_agros.h"
 

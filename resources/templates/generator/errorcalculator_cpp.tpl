@@ -23,11 +23,11 @@
 #include "util/global.h"
 
 
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/solutionstore.h"
 
-#include "hermes2d/plugin_interface.h"
+#include "solver/plugin_interface.h"
 /*
 {{#CALCULATOR_SOURCE}}
 template<typename Scalar>

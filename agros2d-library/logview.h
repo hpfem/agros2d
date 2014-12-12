@@ -21,7 +21,7 @@
 #define TOOLTIPVIEW_H
 
 #include "util.h"
-#include "hermes2d/solver.h"
+#include "solver/solver.h"
 
 class QCustomPlot;
 class QCPGraph;

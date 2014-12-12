@@ -172,7 +172,7 @@ enum PaletteType
 
 enum PaletteOrderType
 {
-    PaletteOrder_Hermes = 0,
+    PaletteOrder_Agros = 0,
     PaletteOrder_Jet = 1,
     PaletteOrder_Copper = 2,
     PaletteOrder_Hot = 3,
@@ -293,9 +293,9 @@ enum NormType
 
 enum SymFlag
 {
-    HERMES_ANTISYM = -1,
-    HERMES_NONSYM = 0,
-    HERMES_SYM = 1
+    SymFlag_ANTISYM = -1,
+    SymFlag_NONSYM = 0,
+    SymFlag_SYM = 1
 };
 
 enum IterSolverType

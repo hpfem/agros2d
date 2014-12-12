@@ -20,7 +20,7 @@
 #include "config.h"
 #include "scene.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 #include "util/constants.h"
 #include "util/global.h"
 

@@ -29,12 +29,12 @@
 #include "pythonlab/pythonengine_agros.h"
 #include "pythonlab/remotecontrol.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/coupling.h"
-#include "hermes2d/solutionstore.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/problem.h"
+#include "solver/coupling.h"
+#include "solver/solutionstore.h"
+#include "solver/plugin_interface.h"
 
 #include "util/system_utils.h"
 
@@ -83,17 +83,12 @@ bool AgrosApplication::notify(QObject *receiver, QEvent *event)
 
         return QApplication::notify(receiver, event);
     }
-    catch (AgrosException& e)
-    {
-        qCritical() << "Hermes exception thrown: " << e.what();
-        throw;
-    }
-    catch (std::exception& e)
+    catch (std::exception &e)
     {
         qCritical() << "Exception thrown: " << e.what();
         throw;
     }
-    catch (AgrosException e)
+    catch (AgrosException &e)
     {
         qCritical() << "Exception thrown: " << e.what();
         throw;

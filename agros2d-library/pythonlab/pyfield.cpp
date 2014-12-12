@@ -19,9 +19,9 @@
 
 #include "pyfield.h"
 #include "pythonengine_agros.h"
-#include "hermes2d/plugin_interface.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/plugin_interface.h"
+#include "solver/problem_config.h"
+#include "solver/solutionstore.h"
 #include "sceneview_post2d.h"
 
 PyField::PyField(std::string fieldId)

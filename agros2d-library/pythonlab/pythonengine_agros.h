@@ -27,8 +27,8 @@
 #include "util.h"
 #include "util/global.h"
 #include "scene.h"
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
+#include "solver/field.h"
+#include "solver/problem.h"
 #include "sceneview_particle.h"
 
 class Solution;

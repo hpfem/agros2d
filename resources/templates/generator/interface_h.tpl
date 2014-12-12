@@ -24,7 +24,7 @@
 #include <QString>
 
 #include "util.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/plugin_interface.h"
 
 class FieldInfo;
 class Boundary;

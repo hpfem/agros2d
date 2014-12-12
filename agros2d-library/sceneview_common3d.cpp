@@ -34,10 +34,10 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 SceneViewCommon3D::SceneViewCommon3D(PostDeal *postDeal, QWidget *parent)
     : SceneViewPostInterface(postDeal, parent)

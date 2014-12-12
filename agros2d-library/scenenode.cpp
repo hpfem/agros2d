@@ -27,8 +27,8 @@
 #include "sceneedge.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 SceneNode::SceneNode(const Point &point) : SceneBasic(), m_point(point.x, point.y)
 {

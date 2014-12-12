@@ -23,10 +23,10 @@
 
 #include "scene.h"
 #include "sceneview_post2d.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutionstore.h"
-#include "hermes2d/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/solutionstore.h"
+#include "solver/field.h"
 
 #include "gui/lineeditdouble.h"
 

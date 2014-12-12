@@ -24,9 +24,9 @@
 #include <QDir>
 
 #include "util/constants.h"
-#include "hermes2d/weak_form.h"
-#include "hermes2d/module.h"
-#include "hermes2d/coupling.h"
+#include "solver/weak_form.h"
+#include "solver/module.h"
+#include "solver/coupling.h"
 
 #include "parser/lex.h"
 

@@ -35,12 +35,12 @@
 #include "scenemarkerdialog.h"
 #include "examplesdialog.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "hermes2d/module.h"
-#include "hermes2d/coupling.h"
+#include "solver/module.h"
+#include "solver/coupling.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/solutionstore.h"
 
 #include "ctemplate/template.h"
 

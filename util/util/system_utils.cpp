@@ -28,14 +28,6 @@
 #include "cpuid.h"
 #endif
 
-#ifdef WITH_OPENMP
-#include <omp.h>
-#else
-inline int omp_get_num_threads() { return 1; }
-inline int omp_get_thread_num() { return 0; }
-inline int omp_get_max_threads() { return -1; }
-#endif
-
 #include <QSysInfo>
 
 CleanExit::CleanExit()
@@ -219,7 +211,7 @@ QString SystemUtils::cpuType()
 
 int SystemUtils::numberOfThreads()
 {
-    return omp_get_max_threads();
+    return 1;
 }
 
 size_t SystemUtils::totalMemorySize()

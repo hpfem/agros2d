@@ -31,9 +31,9 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/problem.h"
+#include "solver/problem.h"
 
 SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)
 {
@@ -72,9 +72,9 @@ void SceneViewWidget::createControls(QWidget *widget)
     QHBoxLayout *sceneViewLabelLayout = new QHBoxLayout();
     sceneViewLabelLayout->addWidget(sceneViewLabelPixmap);
     sceneViewLabelLayout->addWidget(sceneViewLabelLeft);
-    sceneViewLabelLayout->addStretch(0.5);
+    sceneViewLabelLayout->addStretch(1);
     sceneViewLabelLayout->addWidget(sceneViewLabelCenter);
-    sceneViewLabelLayout->addStretch(0.5);
+    sceneViewLabelLayout->addStretch(1);
     sceneViewLabelLayout->addWidget(sceneViewLabelRight);
 
     // view

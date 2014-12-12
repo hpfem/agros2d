@@ -25,9 +25,9 @@
 #include "gui/valuedatatabledialog.h"
 #include "materialbrowserdialog.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 #include "pythonlab/pythonengine.h"
 #include "pythonlab/pythonengine_agros.h"

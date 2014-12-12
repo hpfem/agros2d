@@ -21,8 +21,8 @@
 #define PYTHONLABPARTICLETRACING_H
 
 #include "util/global.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 class PyParticleTracing
 {

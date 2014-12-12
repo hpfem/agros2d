@@ -23,8 +23,8 @@
 #include "gui/valuelineedit.h"
 
 #include "scene.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 SceneTransformDialog::SceneTransformDialog(SceneViewPreprocessor *sceneViewPreprocessor, QWidget *parent)
     : QDialog(parent), m_sceneViewPreprocessor(sceneViewPreprocessor)

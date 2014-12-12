@@ -19,7 +19,7 @@
 
 #include "pygeometry.h"
 #include "pythonengine_agros.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem_config.h"
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
 

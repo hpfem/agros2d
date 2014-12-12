@@ -30,8 +30,8 @@
 #include "pythonlab/pythonengine_agros.h"
 // #include "moduledialog.h"
 
-#include "hermes2d/module.h"
-#include "hermes2d/coupling.h"
+#include "solver/module.h"
+#include "solver/coupling.h"
 
 
 ConfigComputerDialog::ConfigComputerDialog(QWidget *parent) : QDialog(parent)

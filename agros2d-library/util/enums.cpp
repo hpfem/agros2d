@@ -22,8 +22,8 @@
 #include "util.h"
 #include "util/global.h"
 #include "scene.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 // QMap lookup is faster than in a QMap for less than about 10 elements
 static QMap<CoordinateType, QString> coordinateTypeList;
@@ -289,7 +289,7 @@ void initLists()
     paletteTypeList.insert(Palette_BWDesc, "bw_descending");
 
     // PaletteOrderType
-    paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
+    paletteOrderTypeList.insert(PaletteOrder_Agros, "agros");
     paletteOrderTypeList.insert(PaletteOrder_Jet, "jet");
     paletteOrderTypeList.insert(PaletteOrder_Copper, "copper");
     paletteOrderTypeList.insert(PaletteOrder_Hot, "hot");

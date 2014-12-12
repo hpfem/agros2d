@@ -24,8 +24,8 @@
 #include "pythonengine_agros.h"
 
 #include "logview.h"
-#include "hermes2d/plugin_interface.h"
-#include "hermes2d/module.h"
+#include "solver/plugin_interface.h"
+#include "solver/module.h"
 #include "util/memory_monitor.h"
 
 // current python engine agros
@@ -753,8 +753,8 @@ void memoryUsage(std::vector<int> &time, std::vector<int> &usage)
 
 void PyOptions::setNumberOfThreads(int threads)
 {
-    if (threads < 1 || threads > omp_get_max_threads())
-        throw out_of_range(QObject::tr("Number of threads is out of range (1 - %1).").arg(omp_get_max_threads()).toStdString());
+    // if (threads < 1 || threads > omp_get_max_threads())
+    //     throw out_of_range(QObject::tr("Number of threads is out of range (1 - %1).").arg(omp_get_max_threads()).toStdString());
 
     Agros2D::configComputer()->setValue(Config::Config_NumberOfThreads, threads);
 }

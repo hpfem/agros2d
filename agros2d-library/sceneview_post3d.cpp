@@ -24,7 +24,7 @@
 #include "util/constants.h"
 
 #include "scene.h"
-#include "hermes2d/problem.h"
+#include "solver/problem.h"
 #include "logview.h"
 
 #include "scenebasic.h"
@@ -33,10 +33,10 @@
 #include "scenelabel.h"
 #include "scenemarker.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem_config.h"
 
 static void computeNormal(double p0x, double p0y, double p0z,
                           double p1x, double p1y, double p1z,

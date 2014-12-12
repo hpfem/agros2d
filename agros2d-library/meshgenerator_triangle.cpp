@@ -33,11 +33,11 @@
 #include "scenemarkerdialog.h"
 #include "logview.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 #include "util/loops.h"
 
 #include <QThread>

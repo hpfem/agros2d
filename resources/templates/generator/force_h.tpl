@@ -23,7 +23,7 @@
 #include <QObject>
 
 #include "util.h"
-#include "hermes2d/field.h"
+#include "solver/field.h"
 
 bool hasForce{{CLASS}}(const FieldInfo *fieldInfo);
 

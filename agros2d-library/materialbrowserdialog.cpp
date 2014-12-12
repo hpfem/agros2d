@@ -33,7 +33,7 @@
 #include "gui/lineeditdouble.h"
 #include "gui/common.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
 #include "ctemplate/template.h"
 #include "qcustomplot/qcustomplot.h"

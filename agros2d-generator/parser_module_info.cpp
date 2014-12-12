@@ -1,7 +1,7 @@
 #include "util/constants.h"
-#include "hermes2d/weak_form.h"
-#include "hermes2d/module.h"
-#include "hermes2d/coupling.h"
+#include "solver/weak_form.h"
+#include "solver/module.h"
+#include "solver/coupling.h"
 #include "generator.h"
 #include "parser_module_info.h"
 

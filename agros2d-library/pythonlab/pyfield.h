@@ -21,7 +21,7 @@
 #define PYTHONLABFIELD_H
 
 #include "util/global.h"
-#include "hermes2d/field.h"
+#include "solver/field.h"
 
 class PyField
 {

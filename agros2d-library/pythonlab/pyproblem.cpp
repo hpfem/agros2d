@@ -21,7 +21,7 @@
 #include "pythonengine_agros.h"
 #include "sceneview_geometry.h"
 #include "sceneview_post2d.h"
-#include "hermes2d/coupling.h"
+#include "solver/coupling.h"
 
 PyProblem::PyProblem(bool clearProblem)
 {

@@ -22,7 +22,7 @@
 #include "util/global.h"
 #include "logview.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem_config.h"
 #include "parser/lex.h"
 
 Value::Value(double value)

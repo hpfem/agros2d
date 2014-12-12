@@ -21,8 +21,8 @@
 #define {{CLASS}}_WEAKFORM_H
 
 #include "util.h"
-#include "hermes2d/plugin_interface.h"
-#include "hermes2d/marker.h"
+#include "solver/plugin_interface.h"
+#include "solver/marker.h"
 #include "{{ID}}_interface.h"
 
 class SolverDeal{{CLASS}} : public SolverDeal

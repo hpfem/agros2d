@@ -34,12 +34,12 @@
 #include "sceneview_post3d.h"
 #include "pythonlab/pythonengine_agros.h"
 
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/solutionstore.h"
 
 #include "util/constants.h"
 
@@ -330,7 +330,7 @@ QWidget *PostprocessorWidget::meshOrderWidget()
 {
     // layout order
     cmbOrderPaletteOrder = new QComboBox();
-    cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
+    cmbOrderPaletteOrder->addItem(tr("Agros"), PaletteOrder_Agros);
     cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
     cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
     cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);

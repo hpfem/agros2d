@@ -46,13 +46,13 @@
 
 #include "logview.h"
 
-#include "hermes2d/plugin_interface.h"
-#include "hermes2d/module.h"
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutiontypes.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/plugin_interface.h"
+#include "solver/module.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/solutiontypes.h"
+#include "solver/solutionstore.h"
 
 #include "pythonlab/pythonengine.h"
 
@@ -559,7 +559,7 @@ const double* SceneViewPostInterface::paletteColor(double x) const
         else if (x > 1.0) x = 1.0;
         x *= PALETTEENTRIES;
         int n = (int) x;
-        return paletteDataAgros2D[n];
+        return paletteDataAgros[n];
     }
         break;
     case Palette_Jet:
@@ -685,8 +685,8 @@ const double* SceneViewPostInterface::paletteColorOrder(int n) const
 {
     switch ((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt())
     {
-    case PaletteOrder_Hermes:
-        return paletteOrderHermes[n];
+    case PaletteOrder_Agros:
+        return paletteOrderAgros[n];
     case PaletteOrder_Jet:
         return paletteOrderJet[n];
     case PaletteOrder_Copper:

@@ -34,8 +34,8 @@
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
 #include "scenemarker.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/problem.h"
+#include "solver/plugin_interface.h"
 
 #include "problemdialog.h"
 #include "scenetransformdialog.h"
@@ -45,12 +45,12 @@
 
 #include "pythonlab/pythonengine_agros.h"
 
-#include "hermes2d/module.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/coupling.h"
-#include "hermes2d/solutionstore.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/module.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
+#include "solver/coupling.h"
+#include "solver/solutionstore.h"
+#include "solver/plugin_interface.h"
 
 #include "../resources_source/classes/problem_a2d_31_xml.h"
 
@@ -2515,11 +2515,6 @@ void Scene::readSolutionFromFile(const QString &fileName)
             try
             {
                 Agros2D::problem()->readInitialMeshesFromFile(true);
-            }
-            catch (AgrosException& e)
-            {
-                Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh"), tr("Initial mesh is corrupted (%1)").arg(e.what()));
             }
             catch (AgrosException& e)
             {

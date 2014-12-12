@@ -23,8 +23,8 @@
 #include "generator_coupling.h"
 
 #include "util/constants.h"
-#include "hermes2d/module.h"
-#include "hermes2d/coupling.h"
+#include "solver/module.h"
+#include "solver/coupling.h"
 
 #include "parser/lex.h"
 

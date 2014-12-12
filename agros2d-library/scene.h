@@ -24,10 +24,7 @@
 #include "util/enums.h"
 #include "util/conf.h"
 
-#include "hermes2d/solutiontypes.h"
-
-struct HermesElectrostatic;
-struct HermesField;
+#include "solver/solutiontypes.h"
 
 class Scene;
 class SceneNode;

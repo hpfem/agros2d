@@ -31,9 +31,9 @@
 #include "meshgenerator.h"
 
 
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/problem_config.h"
 
 SceneLabel::SceneLabel(const Point &point, double area)
     : MarkedSceneBasic<SceneMaterial>(), m_point(point.x, point.y), m_area(area)

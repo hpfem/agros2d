@@ -30,7 +30,7 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-#include "hermes2d/problem.h"
+#include "solver/problem.h"
 
 SceneBasic::SceneBasic()
 {

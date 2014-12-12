@@ -21,7 +21,7 @@
 #define CHARTDIALOG_H
 
 #include "util.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/plugin_interface.h"
 
 #include <QSvgWidget>
 #include <QSvgRenderer>
@@ -43,7 +43,7 @@ struct ChartLine
     int numberOfPoints;
     bool reverse;
 
-    ChartLine() : start(Point()), end(end), numberOfPoints(0), reverse(false) {}
+    ChartLine() : start(Point()), end(Point()), numberOfPoints(0), reverse(false) {}
 
     ChartLine(Point start, Point end, int numberOfPoints = 200, bool reverse = false)
     {

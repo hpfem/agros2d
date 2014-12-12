@@ -19,6 +19,7 @@
 /*! \file tables.h
 \brief Butcher tables. Including the class Table and enum ButcherTableType.
 */
+
 #ifndef TABLES_H_
 #define TABLES_H_
 

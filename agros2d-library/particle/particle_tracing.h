@@ -26,7 +26,7 @@
 #include "util/global.h"
 #include "util/conf.h"
 
-#include "hermes2d/solutiontypes.h"
+#include "solver/solutiontypes.h"
 
 class FieldInfo;
 class SceneMaterial;

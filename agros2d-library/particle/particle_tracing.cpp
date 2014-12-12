@@ -23,8 +23,8 @@
 #include "util/xml.h"
 #include "util/constants.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/problem.h"
+#include "solver/plugin_interface.h"
 
 #include "util.h"
 #include "value.h"
@@ -36,9 +36,9 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "hermes2d/field.h"
-#include "hermes2d/solutionstore.h"
-#include "hermes2d/problem_config.h"
+#include "solver/field.h"
+#include "solver/solutionstore.h"
+#include "solver/problem_config.h"
 
 #include <deal.II/grid/grid_tools.h>
 

@@ -21,12 +21,12 @@
 
 #include "util/global.h"
 
-#include "hermes2d/marker.h"
+#include "solver/marker.h"
 
 #include "scene.h"
 #include "scenemarkerdialog.h"
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
+#include "solver/field.h"
+#include "solver/problem.h"
 
 template <typename MarkerType>
 MarkerContainer<MarkerType>::~MarkerContainer()

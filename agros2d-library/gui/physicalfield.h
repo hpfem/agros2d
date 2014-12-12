@@ -21,7 +21,7 @@
 #define GUI_PHYSICALFIELD_H
 
 #include "util.h"
-#include "hermes2d/plugin_interface.h"
+#include "solver/plugin_interface.h"
 
 class PhysicalFieldWidget : public QWidget
 {

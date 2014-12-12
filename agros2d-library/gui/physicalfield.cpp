@@ -22,9 +22,9 @@
 #include "util/global.h"
 #include "gui/common.h"
 
-#include "hermes2d/problem.h"
-#include "hermes2d/solutionstore.h"
-#include "hermes2d/field.h"
+#include "solver/problem.h"
+#include "solver/solutionstore.h"
+#include "solver/field.h"
 
 PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
 {

@@ -21,7 +21,7 @@
 
 #include "util/constants.h"
 #include "util/global.h"
-#include "hermes2d/problem_config.h"
+#include "solver/problem_config.h"
 
 #include "scene.h"
 #include "logview.h"
@@ -34,9 +34,9 @@
 #include "scenemarkerdialog.h"
 #include "problemdialog.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "hermes2d/module.h"
+#include "solver/module.h"
 
-#include "hermes2d/problem.h"
+#include "solver/problem.h"
 #include "ctemplate/template.h"
 
 PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)

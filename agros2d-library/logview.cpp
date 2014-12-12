@@ -25,11 +25,11 @@
 #include "gui/common.h"
 
 #include "scene.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/field.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/solver.h"
-#include "hermes2d/solutionstore.h"
+#include "solver/problem_config.h"
+#include "solver/field.h"
+#include "solver/problem.h"
+#include "solver/solver.h"
+#include "solver/solutionstore.h"
 
 #include "qcustomplot/qcustomplot.h"
 
