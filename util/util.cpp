@@ -328,7 +328,7 @@ QString cacheProblemDir()
     QString cch = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     QDir dirc(cch);
     if (!dirc.exists())
-        cch = "/tmp";
+        cch = tempProblemDir();
 
     static QString str = QString("%1/cache/%2").
             arg(cch).
@@ -343,7 +343,7 @@ QString cacheProblemDir()
     QString cch = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
     QDir dirc(cch);
     if (!dirc.exists())
-        cch = "/tmp";
+        cch = tempProblemDir();
 
     static QString str = QString("%1/cache/%2").
             arg(cch).
