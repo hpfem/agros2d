@@ -194,10 +194,6 @@ void initLists()
     meshTypeList.insert(MeshType_Triangle_QuadFineDivision, "triangle_quad_fine_division");
     meshTypeList.insert(MeshType_Triangle_QuadRoughDivision, "triangle_quad_rough_division");
     meshTypeList.insert(MeshType_Triangle_QuadJoin, "triangle_quad_join");
-    // meshTypeList.insert(MeshType_TriangleExternal, "triangle_external");
-    // meshTypeList.insert(MeshType_TriangleExternal_QuadFineDivision, "triangle_external_quad_fine_division");
-    // meshTypeList.insert(MeshType_TriangleExternal_QuadRoughDivision, "triangle_external_quad_rough_division");
-    // meshTypeList.insert(MeshType_TriangleExternal_QuadJoin, "triangle_external_quad_join");
     meshTypeList.insert(MeshType_GMSH_Triangle, "gmsh_triangle");
     meshTypeList.insert(MeshType_GMSH_Quad, "gmsh_quad");
     meshTypeList.insert(MeshType_GMSH_QuadDelaunay_Experimental, "gmsh_quad_delaunay");
@@ -547,14 +543,6 @@ QString meshTypeString(MeshType meshType)
         return QObject::tr("Triangle - quad rough div.");
     case MeshType_Triangle_QuadJoin:
         return QObject::tr("Triangle - quad join");
-    case MeshType_TriangleExternal:
-        return QObject::tr("Triangle ext. - triangle");
-    case MeshType_TriangleExternal_QuadFineDivision:
-        return QObject::tr("Triangle ext. - quad fine div.");
-    case MeshType_TriangleExternal_QuadRoughDivision:
-        return QObject::tr("Triangle ext. - quad rough div.");
-    case MeshType_TriangleExternal_QuadJoin:
-        return QObject::tr("Triangle ext. - quad join");
     case MeshType_GMSH_Triangle:
         return QObject::tr("GMSH (exp.) - triangle");
     case MeshType_GMSH_Quad:

@@ -76,8 +76,13 @@ class TestFlowPlanar(Agros2DTestCase):
         # testPj = agros2d.test("Losses", volume["Pj"], 10070.23937)
         
         # surface integral
-        # surface = flow.surface_integrals([0])
-        # testI = agros2d.test("Current", surface["Ir"], 3629.425713)
+        surface = self.flow.surface_integrals([8, 9])
+        self.value_test("Pressure force x", surface["Fpx"], -0.040703 + 0.009752)
+        self.value_test("Pressure force y", surface["Fpy"], 0.00461 - 0.004474, 7)
+        self.value_test("Viscous force x", surface["Fvx"], -0.009752)
+        self.value_test("Viscous force y", surface["Fvy"], 0.004474)
+        self.value_test("Total force x", surface["Fx"], -0.040703)
+        self.value_test("Total force y", surface["Fy"], 0.00461)
 
 class TestFlowAxisymmetric(Agros2DTestCase):
     def setUp(self):  
@@ -148,8 +153,13 @@ class TestFlowAxisymmetric(Agros2DTestCase):
         # testPj = agros2d.test("Losses", volume["Pj"], 10070.23937)
         
         # surface integral
-        # surface = self.flow.surface_integrals([0])
-        # testI = agros2d.test("Current", surface["Ir"], 3629.425713)
+        surface = self.flow.surface_integrals([6])
+        self.value_test("Pressure force r", surface["Fpx"], 0.282427 + 0.006718)
+        self.value_test("Pressure force z", surface["Fpy"], 0.224571 - 0.016407)
+        self.value_test("Viscous force r", surface["Fvx"], -0.006718)
+        self.value_test("Viscous force z", surface["Fvy"], 0.016407)
+        self.value_test("Total force r", surface["Fx"], 0.282427)
+        self.value_test("Total force z", surface["Fy"], 0.224571)
 
 if __name__ == '__main__':        
     import unittest as ut

@@ -397,14 +397,14 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
         int nodeNB = parsedLine.at(5).toInt();
         int nodeNC = parsedLine.at(6).toInt();
 
-        if (Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal ||
-                Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal_QuadJoin ||
-                Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal_QuadRoughDivision)
+        if (Agros2D::problem()->config()->meshType() == MeshType_Triangle ||
+                Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadJoin ||
+                Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
         {
             elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
-        if (Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal_QuadFineDivision)
+        if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
         {
             // add additional node
             nodeList.append(Point((nodeList[nodeA].x + nodeList[nodeB].x + nodeList[nodeC].x) / 3.0,
@@ -438,7 +438,7 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
 
     // heterogeneous mesh
     // element division
-    if (Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal_QuadFineDivision)
+    if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
     {
         for (int i = 0; i < edgeCountLinear; i++)
         {
@@ -459,7 +459,7 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
         }
     }
 
-    if (Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal_QuadRoughDivision)
+    if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
     {
         for (int i = 0; i < elementCountLinear; i++)
         {
@@ -501,7 +501,7 @@ bool MeshGeneratorTriangleExternal::readTriangleMeshFormat()
         }
     }
 
-    if (Agros2D::problem()->config()->meshType() == MeshType_TriangleExternal_QuadJoin)
+    if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadJoin)
     {
         for (int i = 0; i < elementCountLinear; i++)
         {
