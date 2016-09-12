@@ -1,4 +1,10 @@
-agros2d (3.2-ubuntu242) trusty; urgency=low
+agros2d (3.2-ubuntu249-xenial) xenial; urgency=low
+
+  * ubuntu 15.10 wily and 16.04 xenial release
+  
+ -- Pavel Karban <pkarban@gmail.com>  Sat, 8 Sep 2016 12:00:00 +0200
+
+agros2d (3.2-ubuntu245) trusty; urgency=low
 
   * speed improvement
   * bugfixes

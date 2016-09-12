@@ -2,13 +2,13 @@ Source: agros2d
 Section: science
 Priority: extra
 Maintainer: Pavel Karban <pkarban@gmail.com>
-Build-Depends: debhelper (>= 7), qt4-dev-tools (>= 4.7.0), libqt4-dev (>= 4.7.0), libqt4-opengl-dev (>= 4.7.0), libqtwebkit-dev (>= 2.1), libsuitesparse-metis-dev (>= 3.1.0), libmumps-seq-dev (>= 4.10.0), python-dev (>= 2.7.0), python (>= 2.7.0), libssl-dev (>= 0.9.8), xsdcxx (>= 3.3.0), libxerces-c-dev (>= 3.1.0), cython (>= 0.17.0), cmake (>= 2.8.10), gfortran (>= 4.7.0), python-sphinx (>= 1.2.0), binutils-dev (>= 2.20.0),
+Build-Depends: debhelper (>= 7), qt5-default (>= 5.4.0), qmlscene (>= 5.4.0), libqt5opengl5-dev (>= 5.4.0), qttools5-dev-tools (>= 5.4.0), qt5-qmake (>= 5.4.0), libqt5webkit5-dev (>= 5.4.0), qtxmlpatterns5-dev-tools (>= 5.4.0), libqt5svg5-dev (>= 5.4.0), qtlocation5-dev (>= 5.4.0), qtsensors5-dev (>= 5.4.0), qttools5-dev (>= 5.4.0), qtquick1-5-dev (>= 5.4.0), libqt5xmlpatterns5-dev (>= 5.4.0), qtdeclarative5-dev libqtwebkit-dev (>= 2.1), libsuitesparse-dev (>= 3.1.0), libmumps-seq-dev (>= 4.10.0), python-dev (>= 2.7.0), python (>= 2.7.0), libssl-dev (>= 0.9.8), xsdcxx (>= 3.3.0), libxerces-c-dev (>= 3.1.0), cython (>= 0.17.0), cmake (>= 2.8.10), gfortran (>= 4.7.0), python-sphinx (>= 1.2.0),
 Standards-Version: 3.8.0
 Homepage: http://agros2d.org
 
 Package: agros2d
 Architecture: any
-Depends: ${shlibs:Depends}, gmsh (>= 2.5.0), libamd2.2.0 (>= 3.4.0), libsuitesparse-metis-3.1.0 (>= 3.1.0), libmumps-seq-4.10.0 (>= 4.10.0), libblas3 (>= 1.2), libqt4-sql (>= 4.7.0), libqt4-sql-sqlite (>= 4.7.0), libqt4-network (>= 4.7.0), libqtwebkit4 (>= 2.1), libxerces-c3.1 (>= 3.1.0)
+Depends: ${shlibs:Depends}, gmsh (>= 2.5.0), libmumps-seq-4.10.0 (>= 4.10.0), libblas3 (>= 1.2), libqt5opengl5 (>= 5.4.0), 	libqt5xmlpatterns5 (>= 5.4.0), libqt5opengl5 (>= 5.4.0), 	libqt5printsupport5 (>= 5.4.0),	libqt5webkit5 (>= 5.4.0), libqt5gui5 (>= 5.4.0), libxerces-c3.1 (>= 3.1.0)
 Description: hp-FEM multiphysics application based on Hermes2D library
  Agros2D is a multiplatform C++ application for the solution of two-dimensional 
  problems described by partial differential equations (PDE), based on the Hermes2D library. 

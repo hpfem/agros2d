@@ -47,8 +47,6 @@
 
 #include "qtlockedfile.h"
 
-using namespace QtLP_Private;
-
 class QtLocalPeer : public QObject
 {
     Q_OBJECT
