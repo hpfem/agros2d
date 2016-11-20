@@ -323,24 +323,29 @@ QString tempProblemDir()
 
 QString cacheProblemDir()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    static QString str = QString("%1/cache/%2").
-            arg(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).
-            arg(QString::number(QCoreApplication::applicationPid()));
-#else
-#ifdef Q_WS_WIN
-    static QString str = QString("%1/agros2d/cache/%2").
-            arg(QDir::temp().absolutePath()).
-            arg(QString::number(QCoreApplication::applicationPid()));
-#else
-    static QString str = QString("%1/cache/%2").
-            arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
+#ifdef Q_WS_X11
+    // fast fix for ht condor
+    static QString cch = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    QDir dirc(cch);
+    if (!dirc.exists() && !cch.isEmpty())
+        dirc.mkpath(cch);
+
+    // ro system
+    if (!dirc.exists())
+        cch = tempProblemDir();
+
+    static QString str = QString("%1/%2").
+            arg(cch).
             arg(QString::number(QCoreApplication::applicationPid()));
 #endif
+#ifdef Q_WS_WIN
+    static QString str = QString("%1/agros2d/%2").
+            arg(QDir::temp().absolutePath()).
+            arg(QString::number(QCoreApplication::applicationPid()));
 #endif
 
     QDir dir(str);
-    if (!dir.exists())
+    if (!dir.exists() && !str.isEmpty())
         dir.mkpath(str);
 
     return str;
