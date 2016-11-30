@@ -1,3 +1,15 @@
+agros2d (3.2-ubuntu261-yakkety) yakkety; urgency=low
+
+  * backported palette, yakkety
+  
+ -- Pavel Karban <pkarban@gmail.com>  Wed, 30 Nov 2016 12:00:00 +0200
+
+agros2d (3.2-ubuntu260-xenial) xenial; urgency=low
+
+  * backported palette
+  
+ -- Pavel Karban <pkarban@gmail.com>  Tue, 29 Nov 2016 12:00:00 +0200
+
 agros2d (3.2-ubuntu251-xenial) xenial; urgency=low
 
   * ubuntu 15.10 wily and 16.04 xenial release

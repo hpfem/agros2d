@@ -153,18 +153,11 @@ enum SceneModePostprocessor
 
 enum PaletteType
 {
-    Palette_Agros2D = 0,
-    Palette_Jet = 1,
-    Palette_Copper = 2,
-    Palette_Hot = 3,
-    Palette_Cool = 4,
-    Palette_Bone = 5,
-    Palette_Pink = 6,
-    Palette_Spring = 7,
-    Palette_Summer = 8,
-    Palette_Autumn = 9,
-    Palette_Winter = 10,
-    Palette_HSV = 11,
+    Palette_Paruly = 0,
+    Palette_Viridis = 1,
+    Palette_Inferno = 2,
+    Palette_Jet = 3,
+    Palette_Agros = 4,
     Palette_BWAsc = 12,
     Palette_BWDesc = 13
 };
@@ -173,16 +166,8 @@ enum PaletteOrderType
 {
     PaletteOrder_Hermes = 0,
     PaletteOrder_Jet = 1,
-    PaletteOrder_Copper = 2,
-    PaletteOrder_Hot = 3,
-    PaletteOrder_Cool = 4,
-    PaletteOrder_Bone = 5,
-    PaletteOrder_Pink = 6,
-    PaletteOrder_Spring = 7,
-    PaletteOrder_Summer = 8,
-    PaletteOrder_Autumn = 9,
-    PaletteOrder_Winter = 10,
-    PaletteOrder_HSV = 11,
+    PaletteOrder_Paruly = 2,
+    PaletteOrder_Viridis = 3,
     PaletteOrder_BWAsc = 12,
     PaletteOrder_BWDesc = 13
 };

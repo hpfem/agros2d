@@ -284,32 +284,19 @@ void initLists()
     dampingTypeList.insert(DampingType_Fixed, "fixed");
 
     // PaletteType
-    paletteTypeList.insert(Palette_Agros2D, "agros2d");
+    paletteTypeList.insert(Palette_Paruly, "paruly");
+    paletteTypeList.insert(Palette_Viridis, "viridis");
+    paletteTypeList.insert(Palette_Inferno, "inferno");
     paletteTypeList.insert(Palette_Jet, "jet");
-    paletteTypeList.insert(Palette_Copper, "copper");
-    paletteTypeList.insert(Palette_Hot, "hot");
-    paletteTypeList.insert(Palette_Bone, "bone");
-    paletteTypeList.insert(Palette_Pink, "pink");
-    paletteTypeList.insert(Palette_Spring, "spring");
-    paletteTypeList.insert(Palette_Summer, "summer");
-    paletteTypeList.insert(Palette_Autumn, "autumn");
-    paletteTypeList.insert(Palette_Winter, "winter");
-    paletteTypeList.insert(Palette_HSV, "hsv");
+    paletteTypeList.insert(Palette_Agros, "agros");
     paletteTypeList.insert(Palette_BWAsc, "bw_ascending");
     paletteTypeList.insert(Palette_BWDesc, "bw_descending");
 
     // PaletteOrderType
     paletteOrderTypeList.insert(PaletteOrder_Hermes, "hermes");
     paletteOrderTypeList.insert(PaletteOrder_Jet, "jet");
-    paletteOrderTypeList.insert(PaletteOrder_Copper, "copper");
-    paletteOrderTypeList.insert(PaletteOrder_Hot, "hot");
-    paletteOrderTypeList.insert(PaletteOrder_Bone, "bone");
-    paletteOrderTypeList.insert(PaletteOrder_Pink, "pink");
-    paletteOrderTypeList.insert(PaletteOrder_Spring, "spring");
-    paletteOrderTypeList.insert(PaletteOrder_Summer, "summer");
-    paletteOrderTypeList.insert(PaletteOrder_Autumn, "autumn");
-    paletteOrderTypeList.insert(PaletteOrder_Winter, "winter");
-    paletteOrderTypeList.insert(PaletteOrder_HSV, "hsv");
+    paletteOrderTypeList.insert(PaletteOrder_Paruly, "paruly");
+    paletteOrderTypeList.insert(PaletteOrder_Viridis, "viridis");
     paletteOrderTypeList.insert(PaletteOrder_BWAsc, "bw_ascending");
     paletteOrderTypeList.insert(PaletteOrder_BWDesc, "bw_descending");
 
@@ -559,37 +546,22 @@ QString paletteTypeString(PaletteType paletteType)
 {
     switch (paletteType)
     {
-    case Palette_Agros2D:
-        return QObject::tr("Agros2D");
+    case Palette_Agros:
+        return QObject::tr("Agros");
     case Palette_Jet:
         return QObject::tr("Jet");
-    case Palette_Copper:
-        return QObject::tr("Copper");
-    case Palette_Hot:
-        return QObject::tr("Hot");
-    case Palette_Cool:
-        return QObject::tr("Cool");
-    case Palette_Bone:
-        return QObject::tr("Bone");
-    case Palette_Pink:
-        return QObject::tr("Pink");
-    case Palette_Spring:
-        return QObject::tr("Spring");
-    case Palette_Summer:
-        return QObject::tr("Summer");
-    case Palette_Autumn:
-        return QObject::tr("Autumn");
-    case Palette_Winter:
-        return QObject::tr("Winter");
-    case Palette_HSV:
-        return QObject::tr("HSV");
+    case Palette_Paruly:
+        return QObject::tr("Paruly");
+    case Palette_Viridis:
+        return QObject::tr("Viridis");
     case Palette_BWAsc:
         return QObject::tr("B/W ascending");
     case Palette_BWDesc:
         return QObject::tr("B/W descending");
     default:
-        std::cerr << "Palette type '" + QString::number(paletteType).toStdString() + "' is not implemented. paletteTypeString(PaletteType paletteType)" << endl;
-        throw;
+        return QObject::tr("Paruly");
+        // std::cerr << "Palette type '" + QString::number(paletteType).toStdString() + "' is not implemented. paletteTypeString(PaletteType paletteType)" << endl;
+        // throw;
     }
 }
 

@@ -298,7 +298,7 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[View_ShowScalarColorBar] = true;
     m_settingDefault[View_ScalarVariable] = QString();
     m_settingDefault[View_ScalarVariableComp] = PhysicFieldVariableComp_Undefined;
-    m_settingDefault[View_PaletteType] = Palette_Agros2D;
+    m_settingDefault[View_PaletteType] = Palette_Paruly;
     m_settingDefault[View_PaletteFilter] = false;
     m_settingDefault[View_PaletteSteps] = 30;
     m_settingDefault[View_ScalarRangeLog] = false;

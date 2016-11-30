@@ -332,16 +332,8 @@ QWidget *PostprocessorWidget::meshOrderWidget()
     cmbOrderPaletteOrder = new QComboBox();
     cmbOrderPaletteOrder->addItem(tr("Hermes"), PaletteOrder_Hermes);
     cmbOrderPaletteOrder->addItem(tr("Jet"), PaletteOrder_Jet);
-    cmbOrderPaletteOrder->addItem(tr("Copper"), PaletteOrder_Copper);
-    cmbOrderPaletteOrder->addItem(tr("Hot"), PaletteOrder_Hot);
-    cmbOrderPaletteOrder->addItem(tr("Cool"), PaletteOrder_Cool);
-    cmbOrderPaletteOrder->addItem(tr("Bone"), PaletteOrder_Bone);
-    cmbOrderPaletteOrder->addItem(tr("Pink"), PaletteOrder_Pink);
-    cmbOrderPaletteOrder->addItem(tr("Spring"), PaletteOrder_Spring);
-    cmbOrderPaletteOrder->addItem(tr("Summer"), PaletteOrder_Summer);
-    cmbOrderPaletteOrder->addItem(tr("Autumn"), PaletteOrder_Autumn);
-    cmbOrderPaletteOrder->addItem(tr("Winter"), PaletteOrder_Winter);
-    cmbOrderPaletteOrder->addItem(tr("HSV"), PaletteOrder_HSV);
+    cmbOrderPaletteOrder->addItem(tr("Paruly"), PaletteOrder_Paruly);
+    cmbOrderPaletteOrder->addItem(tr("Viridis"), PaletteOrder_Viridis);
     cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
     cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
