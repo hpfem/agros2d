@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012   Christopher C. Hulbert
+ * Copyright (C) 2012-2017   Christopher C. Hulbert
  *
  * All rights reserved.
  *
@@ -25,6 +25,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include <stdlib.h>
 #include <string.h>
 #include "matio_private.h"
@@ -37,9 +38,7 @@
  * @param dims array of dimensions of the variable of size rank
  * @param fields Array of @c nfields fieldnames
  * @param nfields Number of fields in the structure
- * @param matvar Pointer to store the new structure MATLAB variable
- * @return @c MATIO_SUCCESS if successful, or an error value (See
- *          @ref enum matio_error_t).
+ * @return Pointer to the new structure MATLAB variable on success, NULL on error
  */
 matvar_t *
 Mat_VarCreateStruct(const char *name,int rank,size_t *dims,const char **fields,
@@ -59,7 +58,7 @@ Mat_VarCreateStruct(const char *name,int rank,size_t *dims,const char **fields,
     if ( NULL != name )
         matvar->name = strdup(name);
     matvar->rank = rank;
-    matvar->dims = malloc(matvar->rank*sizeof(*matvar->dims));
+    matvar->dims = (size_t*)malloc(matvar->rank*sizeof(*matvar->dims));
     for ( i = 0; i < matvar->rank; i++ ) {
         matvar->dims[i] = dims[i];
         nmemb *= dims[i];
@@ -72,7 +71,7 @@ Mat_VarCreateStruct(const char *name,int rank,size_t *dims,const char **fields,
     if ( nfields ) {
         matvar->internal->num_fields = nfields;
         matvar->internal->fieldnames =
-            malloc(nfields*sizeof(*matvar->internal->fieldnames));
+            (char**)malloc(nfields*sizeof(*matvar->internal->fieldnames));
         if ( NULL == matvar->internal->fieldnames ) {
             Mat_VarFree(matvar);
             matvar = NULL;
@@ -107,7 +106,7 @@ Mat_VarCreateStruct(const char *name,int rank,size_t *dims,const char **fields,
  * element).
  * @ingroup MAT
  * @param matvar Pointer to the Structure MAT variable
- * @param fields Array of fields to be added
+ * @param fieldname Name of field to be added
  * @retval 0 on success
  */
 int
@@ -125,15 +124,15 @@ Mat_VarAddStructField(matvar_t *matvar,const char *fieldname)
     nfields = matvar->internal->num_fields+1;
     matvar->internal->num_fields = nfields;
     matvar->internal->fieldnames =
-    realloc(matvar->internal->fieldnames,
+    (char**)realloc(matvar->internal->fieldnames,
             nfields*sizeof(*matvar->internal->fieldnames));
     matvar->internal->fieldnames[nfields-1] = strdup(fieldname);
 
-    new_data = malloc(nfields*nmemb*sizeof(*new_data));
+    new_data = (matvar_t**)malloc(nfields*nmemb*sizeof(*new_data));
     if ( new_data == NULL )
         return -1;
 
-    old_data = matvar->data;
+    old_data = (matvar_t**)matvar->data;
     for ( i = 0; i < nmemb; i++ ) {
         for ( f = 0; f < nfields-1; f++ )
             new_data[cnt++] = old_data[i*(nfields-1)+f];
@@ -230,7 +229,7 @@ Mat_VarGetStructFieldByIndex(matvar_t *matvar,size_t field_index,size_t index)
  * Returns a pointer to the structure field at the given 0-relative index.
  * @ingroup MAT
  * @param matvar Pointer to the Structure MAT variable
- * @param name Name of the structure field
+ * @param field_name Name of the structure field
  * @param index linear index of the structure array
  * @return Pointer to the structure field on success, NULL on error
  */
@@ -303,7 +302,7 @@ Mat_VarGetStructField(matvar_t *matvar,void *name_or_index,int opt,int index)
         if ( field_index > 0 )
             field = Mat_VarGetStructFieldByIndex(matvar,field_index-1,index);
     } else if ( !err && (opt == MAT_BY_NAME) ) {
-        field = Mat_VarGetStructFieldByName(matvar,name_or_index,index);
+        field = Mat_VarGetStructFieldByName(matvar,(const char*)name_or_index,index);
     }
 
     return field;
@@ -324,10 +323,10 @@ Mat_VarGetStructField(matvar_t *matvar,void *name_or_index,int opt,int index)
  * @ingroup MAT
  * @param matvar Structure matlab variable
  * @param start vector of length rank with 0-relative starting coordinates for
- *              each diemnsion.
- * @param stride vector of length rank with strides for each diemnsion.
+ *              each dimension.
+ * @param stride vector of length rank with strides for each dimension.
  * @param edge vector of length rank with the number of elements to read in
- *              each diemnsion.
+ *              each dimension.
  * @param copy_fields 1 to copy the fields, 0 to just set pointers to them.
  * @returns A new structure array with fields indexed from @c matvar.
  */
@@ -372,7 +371,7 @@ Mat_VarGetStructs(matvar_t *matvar,int *start,int *stride,int *edge,
         Mat_VarFree(struct_slab);
         return NULL;
     }
-    fields = struct_slab->data;
+    fields = (matvar_t**)struct_slab->data;
     for ( i = 0; i < N; i+=edge[0] ) {
         for ( j = 0; j < edge[0]; j++ ) {
             for ( field = 0; field < nfields; field++ ) {
@@ -444,7 +443,7 @@ Mat_VarGetStructsLinear(matvar_t *matvar,int start,int stride,int edge,
         struct_slab->data = malloc(struct_slab->nbytes);
         struct_slab->dims[0] = edge;
         struct_slab->dims[1] = 1;
-        fields = struct_slab->data;
+        fields = (matvar_t**)struct_slab->data;
         I = start*nfields;
         for ( i = 0; i < edge; i++ ) {
             if ( copy_fields ) {
@@ -496,7 +495,7 @@ Mat_VarSetStructFieldByIndex(matvar_t *matvar,size_t field_index,size_t index,
     nfields = matvar->internal->num_fields;
 
     if ( index < nmemb && field_index < nfields ) {
-        matvar_t **fields = matvar->data;
+        matvar_t **fields = (matvar_t**)matvar->data;
         old_field = fields[index*nfields+field_index];
         fields[index*nfields+field_index] = field;
         if ( NULL != field->name ) {
@@ -545,7 +544,7 @@ Mat_VarSetStructFieldByName(matvar_t *matvar,const char *field_name,
     }
 
     if ( index < nmemb && field_index >= 0 ) {
-        matvar_t **fields = matvar->data;
+        matvar_t **fields = (matvar_t**)matvar->data;
         old_field = fields[index*nfields+field_index];
         fields[index*nfields+field_index] = field;
         if ( NULL != field->name ) {

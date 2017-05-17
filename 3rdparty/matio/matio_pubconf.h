@@ -1,6 +1,6 @@
 /* src/matio_pubconf.h.  Generated from matio_pubconf.h.in by configure.  */
 /*
- * Copyright (C) 2010-2012   Christopher C. Hulbert
+ * Copyright (C) 2010-2017   Christopher C. Hulbert
  *
  * All rights reserved.
  *
@@ -36,10 +36,13 @@
 #define MATIO_MINOR_VERSION 5
 
 /* Matio release level number */
-#define MATIO_RELEASE_LEVEL 1
+#define MATIO_RELEASE_LEVEL 10
 
 /* Matio version number */
-#define MATIO_VERSION 151
+#define MATIO_VERSION 1510
+
+/* Matio version string */
+#define MATIO_VERSION_STR "1.5.10"
 
 /* Default file format */
 #define MAT_FT_DEFAULT MAT_FT_MAT5
@@ -62,16 +65,16 @@
 /* int8 type */
 #define _mat_int8_t int8_t
 
-/* int16 type */
+/* uint16 type */
 #define _mat_uint16_t uint16_t
 
-/* int32 type */
+/* uint32 type */
 #define _mat_uint32_t uint32_t
 
-/* int64 type */
+/* uint64 type */
 #define _mat_uint64_t uint64_t
 
-/* int8 type */
+/* uint8 type */
 #define _mat_uint8_t uint8_t
 
 #if MATIO_HAVE_INTTYPES_H
@@ -105,6 +108,52 @@
 #endif
 #ifdef _mat_uint8_t
     typedef _mat_uint8_t mat_uint8_t;
+#endif
+
+/* 
+  The following macros handle noreturn attributes according to the latest
+  C11/C++11 standard with fallback to GNU, Clang or MSVC extensions if using
+  an older compiler.
+*/
+#if __STDC_VERSION__ >= 201112L
+#define MATIO_NORETURN _Noreturn
+#define MATIO_NORETURNATTR
+#elif __cplusplus >= 201103L
+#if (defined(__GNUC__) && __GNUC__ >= 5) || \
+    (defined(__GNUC__) && defined(__GNUC_MINOR__) && __GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+#define MATIO_NORETURN [[noreturn]]
+#define MATIO_NORETURNATTR
+#elif (defined(__GNUC__) && __GNUC__ >= 3) || \
+      (defined(__GNUC__) && defined(__GNUC_MINOR__) && __GNUC__ == 2 && __GNUC_MINOR__ >= 8)
+#define MATIO_NORETURN
+#define MATIO_NORETURNATTR __attribute__((noreturn))
+#elif defined(__GNUC__)
+#define MATIO_NORETURN
+#define MATIO_NORETURNATTR
+#else
+#define MATIO_NORETURN [[noreturn]]
+#define MATIO_NORETURNATTR
+#endif
+#elif defined(__clang__)
+#if __has_attribute(noreturn)
+#define MATIO_NORETURN
+#define MATIO_NORETURNATTR __attribute__((noreturn))
+#else
+#define MATIO_NORETURN
+#define MATIO_NORETURNATTR
+#endif
+#elif (defined(__GNUC__) && __GNUC__ >= 3) || \
+      (defined(__GNUC__) && defined(__GNUC_MINOR__) && __GNUC__ == 2 && __GNUC_MINOR__ >= 8) || \
+      (defined(__SUNPRO_C) && __SUNPRO_C >= 0x5110)
+#define MATIO_NORETURN
+#define MATIO_NORETURNATTR __attribute__((noreturn))
+#elif (defined(_MSC_VER) && _MSC_VER >= 1200) || \
+       defined(__BORLANDC__)
+#define MATIO_NORETURN __declspec(noreturn)
+#define MATIO_NORETURNATTR
+#else
+#define MATIO_NORETURN
+#define MATIO_NORETURNATTR
 #endif
 
 #endif /* MATIO_PUBCONF_H */

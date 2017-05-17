@@ -1,6 +1,6 @@
 /* src/matioConfig.h.  Generated from matioConfig.h.in by configure.  */
 /*
- * Copyright (C) 2012   Christopher C. Hulbert
+ * Copyright (C) 2012-2017   Christopher C. Hulbert
  *
  * All rights reserved.
  *
@@ -47,8 +47,8 @@
 /* As FC_FUNC, but for C identifiers containing underscores. */
 /* #undef FC_FUNC_ */
 
-/* Have asprintf */
-#define HAVE_ASPRINTF /**/
+/* Define to 1 if you have the `asprintf' function. */
+#define HAVE_ASPRINTF 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
@@ -56,8 +56,26 @@
 /* Have HDF5 */
 /* #undef HAVE_HDF5 */
 
+/* Define to 1 if the system has the type `intmax_t'. */
+#define HAVE_INTMAX_T 1
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#define HAVE_INTTYPES_H 1
+
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
+
+/* Define to 1 if you have the `localeconv' function. */
+#define HAVE_LOCALECONV 1
+
+/* Define to 1 if you have the <locale.h> header file. */
+#define HAVE_LOCALE_H 1
+
+/* Define to 1 if the system has the type `long double'. */
+#define HAVE_LONG_DOUBLE 1
+
+/* Define to 1 if the system has the type `long long int'. */
+#define HAVE_LONG_LONG_INT 1
 
 /* Have MAT int16 */
 #define HAVE_MAT_INT16_T /**/
@@ -71,23 +89,35 @@
 /* Have MAT int8 */
 #define HAVE_MAT_INT8_T /**/
 
-/* Have MAT int16 */
+/* Have MAT uint16 */
 #define HAVE_MAT_UINT16_T /**/
 
-/* Have MAT int32 */
+/* Have MAT uint32 */
 #define HAVE_MAT_UINT32_T /**/
 
-/* Have MAT int64 */
+/* Have MAT uint64 */
 #define HAVE_MAT_UINT64_T /**/
 
-/* Have MAT int8 */
+/* Have MAT uint8 */
 #define HAVE_MAT_UINT8_T /**/
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
-/* Have snprintf */
-#define HAVE_SNPRINTF /**/
+/* Define to 1 if the system has the type `ptrdiff_t'. */
+#define HAVE_PTRDIFF_T 1
+
+/* Define to 1 if you have a C99 compliant `snprintf' function. */
+#define HAVE_SNPRINTF 1
+
+/* Define to 1 if you have the <stdarg.h> header file. */
+#define HAVE_STDARG_H 1
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#define HAVE_STDDEF_H 1
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#define HAVE_STDINT_H 1
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
@@ -98,28 +128,46 @@
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
+/* Define to 1 if `decimal_point' is member of `struct lconv'. */
+#define HAVE_STRUCT_LCONV_DECIMAL_POINT 1
+
+/* Define to 1 if `thousands_sep' is member of `struct lconv'. */
+#define HAVE_STRUCT_LCONV_THOUSANDS_SEP 1
+
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
+/* Define to 1 if the system has the type `uintmax_t'. */
+#define HAVE_UINTMAX_T 1
+
+/* Define to 1 if the system has the type `uintptr_t'. */
+#define HAVE_UINTPTR_T 1
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
-/* Have vasprintf */
-#define HAVE_VASPRINTF /**/
+/* Define to 1 if the system has the type `unsigned long long int'. */
+#define HAVE_UNSIGNED_LONG_LONG_INT 1
 
-/* Have va_copy */
-#define HAVE_VA_COPY /**/
+/* Define to 1 if you have the <varargs.h> header file. */
+/* #undef HAVE_VARARGS_H */
 
-/* Have vsnprintf */
-#define HAVE_VSNPRINTF /**/
+/* Define to 1 if you have the `vasprintf' function. */
+#define HAVE_VASPRINTF 1
+
+/* Define to 1 if you have the `va_copy' function or macro. */
+#define HAVE_VA_COPY 1
+
+/* Define to 1 if you have a C99 compliant `vsnprintf' function. */
+#define HAVE_VSNPRINTF 1
 
 /* Have zlib */
 #define HAVE_ZLIB 1
 
-/* Have va_copy */
+/* Define to 1 if you have the `__va_copy' function or macro. */
 /* #undef HAVE___VA_COPY */
 
 /* OS is Linux */
@@ -148,7 +196,7 @@
 #define PACKAGE_NAME "MATIO"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "MATIO 1.5.2"
+#define PACKAGE_STRING "MATIO 1.5.10"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "matio"
@@ -157,7 +205,7 @@
 #define PACKAGE_URL "http://sourceforge.net/projects/matio"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.5.2"
+#define PACKAGE_VERSION "1.5.10"
 
 /* The size of `char', as computed by sizeof. */
 #define SIZEOF_CHAR 1
@@ -193,7 +241,7 @@
 /* #undef SUN */
 
 /* Version number of package */
-#define VERSION "1.5.2"
+#define VERSION "1.5.10"
 
 /* OS is CygWin */
 /* #undef WINNT */

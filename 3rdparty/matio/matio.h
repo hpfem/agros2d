@@ -3,7 +3,7 @@
  * @ingroup MAT
  */
 /*
- * Copyright (C) 2005-2011   Christopher C. Hulbert
+ * Copyright (C) 2005-2017   Christopher C. Hulbert
  *
  * All rights reserved.
  *
@@ -46,7 +46,7 @@
 #endif
 
 /** @defgroup MAT Matlab MAT File I/O Library */
-/** @defgroup mat_util MAT File I/O Utitlity Functions */
+/** @defgroup mat_util MAT File I/O Utility Functions */
 /** @if mat_devman @defgroup mat_internal Internal Functions @endif */
 
 /** @brief MAT file access types
@@ -66,10 +66,10 @@ enum mat_acc {
  */
 enum mat_ft {
     MAT_FT_MAT73  = 0x0200,   /**< @brief Matlab version 7.3 file             */
-    MAT_FT_MAT5   = 0x0100,   /**< @brief Matlab level-5 file                 */
-    MAT_FT_MAT4   = 0x0010    /**< @brief Version 4 file                      */
+    MAT_FT_MAT5   = 0x0100,   /**< @brief Matlab version 5 file               */
+    MAT_FT_MAT4   = 0x0010,   /**< @brief Matlab version 4 file               */
+    MAT_FT_UNDEFINED =   0    /**< @brief Undefined version                   */
 };
-
 
 /** @brief Matlab data types
  *
@@ -77,7 +77,7 @@ enum mat_ft {
  * Matlab data types
  */
 enum matio_types {
-    MAT_T_UNKNOWN    =  0,    /**< @brief UNKOWN data type                    */
+    MAT_T_UNKNOWN    =  0,    /**< @brief UNKNOWN data type                   */
     MAT_T_INT8       =  1,    /**< @brief 8-bit signed integer data type      */
     MAT_T_UINT8      =  2,    /**< @brief 8-bit unsigned integer data type    */
     MAT_T_INT16      =  3,    /**< @brief 16-bit signed integer data type     */
@@ -90,9 +90,9 @@ enum matio_types {
     MAT_T_UINT64     = 13,    /**< @brief 64-bit unsigned integer data type   */
     MAT_T_MATRIX     = 14,    /**< @brief matrix data type                    */
     MAT_T_COMPRESSED = 15,    /**< @brief compressed data type                */
-    MAT_T_UTF8       = 16,    /**< @brief 8-bit unicode text data type        */
-    MAT_T_UTF16      = 17,    /**< @brief 16-bit unicode text data type       */
-    MAT_T_UTF32      = 18,    /**< @brief 32-bit unicode text data type       */
+    MAT_T_UTF8       = 16,    /**< @brief 8-bit Unicode text data type        */
+    MAT_T_UTF16      = 17,    /**< @brief 16-bit Unicode text data type       */
+    MAT_T_UTF32      = 18,    /**< @brief 32-bit Unicode text data type       */
 
     MAT_T_STRING     = 20,    /**< @brief String data type                    */
     MAT_T_CELL       = 21,    /**< @brief Cell array data type                */
@@ -121,9 +121,10 @@ enum matio_classes {
     MAT_C_UINT16   = 11, /**< @brief Matlab unsigned 16-bit integer class  */
     MAT_C_INT32    = 12, /**< @brief Matlab signed 32-bit integer class    */
     MAT_C_UINT32   = 13, /**< @brief Matlab unsigned 32-bit integer class  */
-    MAT_C_INT64    = 14, /**< @brief Matlab unsigned 32-bit integer class  */
-    MAT_C_UINT64   = 15, /**< @brief Matlab unsigned 32-bit integer class  */
-    MAT_C_FUNCTION = 16 /**< @brief Matlab unsigned 32-bit integer class  */
+    MAT_C_INT64    = 14, /**< @brief Matlab signed 64-bit integer class    */
+    MAT_C_UINT64   = 15, /**< @brief Matlab unsigned 64-bit integer class  */
+    MAT_C_FUNCTION = 16, /**< @brief Matlab function class                 */
+    MAT_C_OPAQUE   = 17  /**< @brief Matlab opaque class                   */
 };
 
 /** @brief Matlab array flags
@@ -184,15 +185,15 @@ struct matvar_internal;
  * @ingroup MAT
  */
 typedef struct matvar_t {
-    size_t nbytes;                     /**< Number of bytes for the MAT variable */
-    int    rank;                       /**< Rank (Number of dimensions) of the data */
-    enum matio_types   data_type;     /**< Data type(MAT_T_*) */
+    size_t nbytes;                    /**< Number of bytes for the MAT variable */
+    int    rank;                      /**< Rank (Number of dimensions) of the data */
+    enum matio_types   data_type;     /**< Data type (MAT_T_*) */
     int   data_size;                  /**< Bytes / element for the data */
-    enum matio_classes class_type;    /**< Class type in Matlab(MAT_C_DOUBLE, etc) */
+    enum matio_classes class_type;    /**< Class type in Matlab (MAT_C_DOUBLE, etc) */
     int   isComplex;                  /**< non-zero if the data is complex, 0 if real */
     int   isGlobal;                   /**< non-zero if the variable is global */
     int   isLogical;                  /**< non-zero if the variable is logical */
-    size_t *dims;                    /**< Array of lengths for each dimension */
+    size_t *dims;                     /**< Array of lengths for each dimension */
     char *name;                       /**< Name of the variable */
     void *data;                       /**< Pointer to the data */
     int   mem_conserve;               /**< 1 if Memory was conserved with data */
@@ -211,7 +212,7 @@ typedef struct mat_sparse_t {
                                *  data[k].  0 <= k <= nzmax
                                */
     int nir;                 /**< number of elements in ir */
-    int *jc;                 /**< Array size N+1 (N is number of columsn) with
+    int *jc;                 /**< Array size N+1 (N is number of columns) with
                                *  jc[k] being the index into ir/data of the
                                *  first non-zero element for row k.
                                */
@@ -220,21 +221,29 @@ typedef struct mat_sparse_t {
     void *data;              /**< Array of data elements */
 } mat_sparse_t;
 
+/** @cond 0 */
+#define MATIO_LOG_LEVEL_ERROR    1
+#define MATIO_LOG_LEVEL_CRITICAL 1 << 1
+#define MATIO_LOG_LEVEL_WARNING  1 << 2
+#define MATIO_LOG_LEVEL_MESSAGE  1 << 3
+#define MATIO_LOG_LEVEL_DEBUG    1 << 4
+/** @endcond */
+
 /* Library function */
 EXTERN void Mat_GetLibraryVersion(int *major,int *minor,int *release);
 
-/*     io.c         */
+/* io.c */
 EXTERN char  *strdup_vprintf(const char *format, va_list ap);
 EXTERN char  *strdup_printf(const char *format, ...);
 EXTERN int    Mat_SetVerbose( int verb, int s );
 EXTERN int    Mat_SetDebug( int d );
 EXTERN void   Mat_Critical( const char *format, ... );
-EXTERN void   Mat_Error( const char *format, ... );
+EXTERN MATIO_NORETURN void Mat_Error( const char *format, ... ) MATIO_NORETURNATTR;
 EXTERN void   Mat_Help( const char *helpstr[] );
 EXTERN int    Mat_LogInit( const char *progname );
 EXTERN int    Mat_LogClose(void);
 EXTERN int    Mat_LogInitFunc(const char *prog_name,
-                    void (*log_func)(int log_level, char *message) );
+                  void (*log_func)(int log_level, char *message) );
 EXTERN int    Mat_Message( const char *format, ... );
 EXTERN int    Mat_DebugMessage( int level, const char *format, ... );
 EXTERN int    Mat_VerbMessage( int level, const char *format, ... );
@@ -242,14 +251,16 @@ EXTERN void   Mat_Warning( const char *format, ... );
 EXTERN size_t Mat_SizeOf(enum matio_types data_type);
 EXTERN size_t Mat_SizeOfClass(int class_type);
 
-/*   MAT File functions   */
+/* MAT File functions */
+/** Create new Matlab MAT file */
 #define            Mat_Create(a,b) Mat_CreateVer(a,b,MAT_FT_DEFAULT)
 EXTERN mat_t      *Mat_CreateVer(const char *matname,const char *hdr_str,
                        enum mat_ft mat_file_ver);
 EXTERN int         Mat_Close(mat_t *mat);
 EXTERN mat_t      *Mat_Open(const char *matname,int mode);
-EXTERN const char *Mat_GetFilename(mat_t *matfp);
-EXTERN enum mat_ft Mat_GetVersion(mat_t *matfp);
+EXTERN const char *Mat_GetFilename(mat_t *mat);
+EXTERN enum mat_ft Mat_GetVersion(mat_t *mat);
+EXTERN char      **Mat_GetDir(mat_t *mat, size_t *n);
 EXTERN int         Mat_Rewind(mat_t *mat);
 
 /* MAT variable functions */
@@ -303,7 +314,9 @@ EXTERN int        Mat_VarWriteData(mat_t *mat,matvar_t *matvar,void *data,
                       int *start,int *stride,int *edge);
 
 /* Other functions */
-EXTERN int       Mat_CalcSingleSubscript(int rank,int *dims,int *subs);
-EXTERN int      *Mat_CalcSubscripts(int rank,int *dims,int index);
+EXTERN int     Mat_CalcSingleSubscript(int rank,int *dims,int *subs);
+EXTERN int     Mat_CalcSingleSubscript2(int rank,size_t *dims,size_t *subs,size_t *index);
+EXTERN int    *Mat_CalcSubscripts(int rank,int *dims,int index);
+EXTERN size_t *Mat_CalcSubscripts2(int rank,size_t *dims,size_t index);
 
 #endif

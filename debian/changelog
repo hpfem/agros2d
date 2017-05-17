@@ -1,3 +1,9 @@
+agros2d (3.2-ubuntu263-zesty) zesty; urgency=low
+
+  * backport
+  
+ -- Pavel Karban <pkarban@gmail.com>  Wed, 16 May 2017 12:00:00 +0200
+
 agros2d (3.2-ubuntu261-yakkety) yakkety; urgency=low
 
   * backported palette, yakkety

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012   Christopher C. Hulbert
+ * Copyright (C) 2012-2017   Christopher C. Hulbert
  *
  * All rights reserved.
  *
@@ -25,6 +25,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include <stdlib.h>
 #include <string.h>
 #include "matio_private.h"
@@ -69,10 +70,10 @@ Mat_VarGetCell(matvar_t *matvar,int index)
  * @ingroup MAT
  * @param matvar Cell Array matlab variable
  * @param start vector of length rank with 0-relative starting coordinates for
- *              each diemnsion.
- * @param stride vector of length rank with strides for each diemnsion.
+ *              each dimension.
+ * @param stride vector of length rank with strides for each dimension.
  * @param edge vector of length rank with the number of elements to read in
- *              each diemnsion.
+ *              each dimension.
  * @returns an array of pointers to the cells
  */
 matvar_t **
@@ -99,7 +100,7 @@ Mat_VarGetCells(matvar_t *matvar,int *start,int *stride,int *edge)
         N *= edge[i];
         I += start[i]*dimp[i-1];
     }
-    cells = malloc(N*sizeof(matvar_t *));
+    cells = (matvar_t**)malloc(N*sizeof(matvar_t *));
     for ( i = 0; i < N; i+=edge[0] ) {
         for ( j = 0; j < edge[0]; j++ ) {
             cells[i+j] = *((matvar_t **)matvar->data + I);
@@ -143,7 +144,7 @@ Mat_VarGetCellsLinear(matvar_t *matvar,int start,int stride,int edge)
     matvar_t **cells = NULL;
 
     if ( matvar != NULL ) {
-        cells = malloc(edge*sizeof(matvar_t *));
+        cells = (matvar_t**)malloc(edge*sizeof(matvar_t *));
         I = start;
         for ( i = 0; i < edge; i++ ) {
             cells[i] = *((matvar_t **)matvar->data + I);
@@ -159,6 +160,7 @@ Mat_VarGetCellsLinear(matvar_t *matvar,int start,int stride,int edge)
  * @ingroup MAT
  * @param matvar Pointer to the cell array variable
  * @param index 0-relative linear index of the cell to set
+ * @param cell Pointer to the cell to set
  * @return Pointer to the previous cell element, or NULL if there was no
 *          previous cell element or error.
  */
@@ -174,7 +176,7 @@ Mat_VarSetCell(matvar_t *matvar,int index,matvar_t *cell)
     for ( i = 0; i < matvar->rank; i++ )
         nmemb *= matvar->dims[i];
 
-    cells = matvar->data;
+    cells = (matvar_t**)matvar->data;
     if ( index < nmemb ) {
         old_cell = cells[index];
         cells[index] = cell;

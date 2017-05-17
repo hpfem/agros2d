@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011   Christopher C. Hulbert
+ * Copyright (C) 2008-2017   Christopher C. Hulbert
  *
  * All rights reserved.
  *
@@ -60,17 +60,18 @@
  * @endif
  */
 struct _mat_t {
-    void *fp;               /**< File pointer for the MAT file */
-    char *header;           /**< MAT File header string */
-    char *subsys_offset;    /**< offset */
-    char *filename;         /**< Filename of the MAT file */
-    int   version;          /**< MAT File version */
-    int   byteswap;         /**< 1 if byte swapping is required, 0 otherwise */
-    int   mode;             /**< Access mode */
-    long  bof;              /**< Beginning of file not including any header */
-    long  next_index;       /**< Index/File position of next variable to read */
-    long  num_datasets;     /**< Number of datasets in the file */
-    hid_t refs_id;          /**< Id of the /#refs# group in HDF5 */
+    void  *fp;              /**< File pointer for the MAT file */
+    char  *header;          /**< MAT File header string */
+    char  *subsys_offset;   /**< Offset */
+    char  *filename;        /**< Filename of the MAT file */
+    int    version;         /**< MAT File version */
+    int    byteswap;        /**< 1 if byte swapping is required, 0 otherwise */
+    int    mode;            /**< Access mode */
+    long   bof;             /**< Beginning of file not including any header */
+    size_t next_index;      /**< Index/File position of next variable to read */
+    size_t num_datasets;    /**< Number of datasets in the file */
+    hid_t  refs_id;         /**< Id of the /#refs# group in HDF5 */
+    char **dir;             /**< Names of the datasets in the file */
 };
 
 /** @if mat_devman
@@ -79,26 +80,47 @@ struct _mat_t {
  * @endif
  */
 struct matvar_internal {
-    char *hdf5_name;
-    hobj_ref_t hdf5_ref;
-    hid_t      id;
-    long  fpos;         /**< Offset from the beginning of the MAT file to the variable */
-    long  datapos;      /**< Offset from the beginning of the MAT file to the data */
-     mat_t    *fp;      /**< Pointer to the MAT file structure (mat_t) */
-    unsigned num_fields;
-    char **fieldnames;
+    char *hdf5_name;        /**< Name */
+    hobj_ref_t hdf5_ref;    /**< Reference */
+    hid_t      id;          /**< Id */
+    long       fpos;        /**< Offset from the beginning of the MAT file to the variable */
+    long       datapos;     /**< Offset from the beginning of the MAT file to the data */
+    mat_t     *fp;          /**< Pointer to the MAT file structure (mat_t) */
+    unsigned   num_fields;  /**< Number of fields */
+    char     **fieldnames;  /**< Pointer to fieldnames */
 #if defined(HAVE_ZLIB)
-    z_stream *z;        /**< zlib compression state */
+    z_streamp  z;           /**< zlib compression state */
+    void      *data;        /**< Inflated data array */
 #endif
 };
 
-/*    snprintf.c    */
-EXTERN int mat_snprintf(char *str,size_t count,const char *fmt,...);
-EXTERN int mat_asprintf(char **ptr,const char *format, ...);
-EXTERN int mat_vsnprintf(char *str,size_t count,const char *fmt,va_list args);
-EXTERN int mat_vasprintf(char **ptr,const char *format,va_list ap);
+/* snprintf.c */
+#if !HAVE_VSNPRINTF
+int rpl_vsnprintf(char *, size_t, const char *, va_list);
+#define mat_vsnprintf rpl_vsnprintf
+#else
+#define mat_vsnprintf vsnprintf
+#endif /* !HAVE_VSNPRINTF */
+#if !HAVE_SNPRINTF
+int rpl_snprintf(char *, size_t, const char *, ...);
+#define mat_snprintf rpl_snprintf
+#else
+#define mat_snprintf snprintf
+#endif /* !HAVE_SNPRINTF */
+#if !HAVE_VASPRINTF
+int rpl_vasprintf(char **, const char *, va_list);
+#define mat_vasprintf rpl_vasprintf
+#else
+#define mat_vasprintf vasprintf
+#endif /* !HAVE_VASPRINTF */
+#if !HAVE_ASPRINTF
+int rpl_asprintf(char **, const char *, ...);
+#define mat_asprintf rpl_asprintf
+#else
+#define mat_asprintf asprintf
+#endif /* !HAVE_ASPRINTF */
 
-/*   endian.c     */
+/* endian.c */
 EXTERN double        Mat_doubleSwap(double  *a);
 EXTERN float         Mat_floatSwap(float   *a);
 #ifdef HAVE_MAT_INT64_T
@@ -148,58 +170,61 @@ EXTERN int ReadDataSlabN(mat_t *mat,void *data,enum matio_classes class_type,
                enum matio_types data_type,int rank,size_t *dims,int *start,
                int *stride,int *edge);
 #if defined(HAVE_ZLIB)
-EXTERN int ReadCompressedDoubleData(mat_t *mat,z_stream *z,double  *data,
+EXTERN int ReadCompressedDoubleData(mat_t *mat,z_streamp z,double  *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedSingleData(mat_t *mat,z_stream *z,float   *data,
+EXTERN int ReadCompressedSingleData(mat_t *mat,z_streamp z,float   *data,
                enum matio_types data_type,int len);
 #ifdef HAVE_MAT_INT64_T
-EXTERN int ReadCompressedInt64Data(mat_t *mat,z_stream *z,mat_int64_t *data,
+EXTERN int ReadCompressedInt64Data(mat_t *mat,z_streamp z,mat_int64_t *data,
                enum matio_types data_type,int len);
 #endif /* HAVE_MAT_INT64_T */
 #ifdef HAVE_MAT_UINT64_T
-EXTERN int ReadCompressedUInt64Data(mat_t *mat,z_stream *z,mat_uint64_t *data,
+EXTERN int ReadCompressedUInt64Data(mat_t *mat,z_streamp z,mat_uint64_t *data,
                enum matio_types data_type,int len);
 #endif /* HAVE_MAT_UINT64_T */
-EXTERN int ReadCompressedInt32Data(mat_t *mat,z_stream *z,mat_int32_t *data,
+EXTERN int ReadCompressedInt32Data(mat_t *mat,z_streamp z,mat_int32_t *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedUInt32Data(mat_t *mat,z_stream *z,mat_uint32_t *data,
+EXTERN int ReadCompressedUInt32Data(mat_t *mat,z_streamp z,mat_uint32_t *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedInt16Data(mat_t *mat,z_stream *z,mat_int16_t *data,
+EXTERN int ReadCompressedInt16Data(mat_t *mat,z_streamp z,mat_int16_t *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedUInt16Data(mat_t *mat,z_stream *z,mat_uint16_t *data,
+EXTERN int ReadCompressedUInt16Data(mat_t *mat,z_streamp z,mat_uint16_t *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedInt8Data(mat_t *mat,z_stream *z,mat_int8_t  *data,
+EXTERN int ReadCompressedInt8Data(mat_t *mat,z_streamp z,mat_int8_t  *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedUInt8Data(mat_t *mat,z_stream *z,mat_uint8_t  *data,
+EXTERN int ReadCompressedUInt8Data(mat_t *mat,z_streamp z,mat_uint8_t  *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedCharData(mat_t *mat,z_stream *z,char *data,
+EXTERN int ReadCompressedCharData(mat_t *mat,z_streamp z,char *data,
                enum matio_types data_type,int len);
-EXTERN int ReadCompressedDataSlab1(mat_t *mat,z_stream *z,void *data,
+EXTERN int ReadCompressedDataSlab1(mat_t *mat,z_streamp z,void *data,
                enum matio_classes class_type,enum matio_types data_type,
                int start,int stride,int edge);
-EXTERN int ReadCompressedDataSlab2(mat_t *mat,z_stream *z,void *data,
+EXTERN int ReadCompressedDataSlab2(mat_t *mat,z_streamp z,void *data,
                enum matio_classes class_type,enum matio_types data_type,
                size_t *dims,int *start,int *stride,int *edge);
-EXTERN int ReadCompressedDataSlabN(mat_t *mat,z_stream *z,void *data,
+EXTERN int ReadCompressedDataSlabN(mat_t *mat,z_streamp z,void *data,
                enum matio_classes class_type,enum matio_types data_type,
                int rank,size_t *dims,int *start,int *stride,int *edge);
 
-/*   inflate.c    */
-EXTERN int InflateSkip(mat_t *mat, z_stream *z, int nbytes);
-EXTERN int InflateSkip2(mat_t *mat, matvar_t *matvar, int nbytes);
-EXTERN int InflateSkipData(mat_t *mat,z_stream *z,enum matio_types data_type,int len);
-EXTERN int InflateVarTag(mat_t *mat, matvar_t *matvar, void *buf);
-EXTERN int InflateArrayFlags(mat_t *mat, matvar_t *matvar, void *buf);
-EXTERN int InflateDimensions(mat_t *mat, matvar_t *matvar, void *buf);
-EXTERN int InflateVarNameTag(mat_t *mat, matvar_t *matvar, void *buf);
-EXTERN int InflateVarName(mat_t *mat,matvar_t *matvar,void *buf,int N);
-EXTERN int InflateDataTag(mat_t *mat, matvar_t *matvar, void *buf);
-EXTERN int InflateDataType(mat_t *mat, z_stream *matvar, void *buf);
-EXTERN int InflateData(mat_t *mat, z_stream *z, void *buf, int nBytes);
-EXTERN int InflateFieldNameLength(mat_t *mat,matvar_t *matvar,void *buf);
-EXTERN int InflateFieldNamesTag(mat_t *mat,matvar_t *matvar,void *buf);
-EXTERN int InflateFieldNames(mat_t *mat,matvar_t *matvar,void *buf,int nfields,
+/* inflate.c */
+EXTERN size_t InflateSkip(mat_t *mat, z_streamp z, int nbytes);
+EXTERN size_t InflateSkip2(mat_t *mat, matvar_t *matvar, int nbytes);
+EXTERN size_t InflateSkipData(mat_t *mat,z_streamp z,enum matio_types data_type,int len);
+EXTERN size_t InflateVarTag(mat_t *mat, matvar_t *matvar, void *buf);
+EXTERN size_t InflateArrayFlags(mat_t *mat, matvar_t *matvar, void *buf);
+EXTERN size_t InflateDimensions(mat_t *mat, matvar_t *matvar, void *buf);
+EXTERN size_t InflateVarNameTag(mat_t *mat, matvar_t *matvar, void *buf);
+EXTERN size_t InflateVarName(mat_t *mat,matvar_t *matvar,void *buf,int N);
+EXTERN size_t InflateDataTag(mat_t *mat, matvar_t *matvar, void *buf);
+EXTERN size_t InflateDataType(mat_t *mat, z_stream *matvar, void *buf);
+EXTERN size_t InflateData(mat_t *mat, z_streamp z, void *buf, int nBytes);
+EXTERN size_t InflateFieldNameLength(mat_t *mat,matvar_t *matvar,void *buf);
+EXTERN size_t InflateFieldNamesTag(mat_t *mat,matvar_t *matvar,void *buf);
+EXTERN size_t InflateFieldNames(mat_t *mat,matvar_t *matvar,void *buf,int nfields,
                int fieldname_length,int padding);
 #endif
+
+/* mat.c */
+EXTERN mat_complex_split_t *ComplexMalloc(size_t nbytes);
 
 #endif

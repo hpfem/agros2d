@@ -20,6 +20,11 @@ if(POLICY CMP0020)
   cmake_policy(SET CMP0020 OLD)
 endif()
 
+if (POLICY CMP0043)
+    cmake_policy(PUSH)
+    cmake_policy(SET CMP0043 OLD)
+endif (POLICY CMP0043)
+
 # Debug yes / no.
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 YES)
@@ -350,3 +355,7 @@ add_custom_target(other SOURCES ${info})
 if(POLICY CMP0020)
   cmake_policy(POP)
 endif()
+
+if (POLICY CMP0043)
+    cmake_policy(POP)
+endif (POLICY CMP0043)

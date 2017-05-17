@@ -2,7 +2,7 @@ Source: agros2d
 Section: science
 Priority: extra
 Maintainer: Pavel Karban <pkarban@gmail.com>
-Build-Depends: debhelper (>= 7), qt5-default (>= 5.4.0), qmlscene (>= 5.4.0), libqt5opengl5-dev (>= 5.4.0), qttools5-dev-tools (>= 5.4.0), qt5-qmake (>= 5.4.0), libqt5webkit5-dev (>= 5.4.0), qtxmlpatterns5-dev-tools (>= 5.4.0), libqt5svg5-dev (>= 5.4.0), qtlocation5-dev (>= 5.4.0), qttools5-dev (>= 5.4.0), qtquick1-5-dev (>= 5.4.0), libqt5xmlpatterns5-dev (>= 5.4.0), qtdeclarative5-dev (>= 5.4.0), libsuitesparse-dev (>= 3.1.0), libmumps-seq-dev (>= 4.10.0), python-dev (>= 2.7.0), python (>= 2.7.0), libssl-dev (>= 0.9.8), xsdcxx (>= 3.3.0), libxerces-c-dev (>= 3.1.0), cython (>= 0.17.0), cmake (>= 2.8.10), gfortran (>= 4.7.0), python-sphinx (>= 1.2.0),
+Build-Depends: debhelper (>= 7), qt5-default (>= 5.4.0), qmlscene (>= 5.4.0), libqt5opengl5-dev (>= 5.4.0), qttools5-dev-tools (>= 5.4.0), qt5-qmake (>= 5.4.0), libqt5webkit5-dev (>= 5.4.0), qtxmlpatterns5-dev-tools (>= 5.4.0), libqt5svg5-dev (>= 5.4.0), qtlocation5-dev (>= 5.4.0), qttools5-dev (>= 5.4.0), libqt5xmlpatterns5-dev (>= 5.4.0), qtdeclarative5-dev (>= 5.4.0), libsuitesparse-dev (>= 3.1.0), libmumps-seq-dev (>= 4.10.0), python-dev (>= 2.7.0), python (>= 2.7.0), libssl-dev (>= 0.9.8), xsdcxx (>= 3.3.0), libxerces-c-dev (>= 3.1.0), cython (>= 0.17.0), cmake (>= 2.8.10), gfortran (>= 4.7.0), python-sphinx (>= 1.2.0),
 Standards-Version: 3.8.0
 Homepage: http://agros2d.org
 
