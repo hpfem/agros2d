@@ -1158,9 +1158,6 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
                 Point dvector = edge->vector();
                 Point normalVector;
 
-                cout << dvector.x << endl;
-                cout << dvector.y << endl;
-
                 double angle;
 
                 normalVector.x = dvector.y / edge->length();
@@ -1174,22 +1171,23 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
                 glPointSize(5);
 
                 glBegin(GL_POLYGON);
-                glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+                // glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
                 foreach (EnvelopePoint point, points) {
-                    p.x = center.x - point.position * dvector.x;
-                    p.y = center.y - point.position * dvector.y;
-                    p.x = p.x + point.distance *  normalVector.x * edge->length();                     ;
-                    p.y = p.y + point.distance *  normalVector.y * edge->length();
-                    glVertex2d(p.x, p.y);
-                }
-                foreach (EnvelopePoint point, points) {
-                    p.x = center.x + point.position * dvector.x;
-                    p.y = center.y + point.position * dvector.y;
-                    p.x = p.x + point.distance *  normalVector.x * edge->length();                     ;
-                    p.y = p.y + point.distance *  normalVector.y * edge->length();
-                    glVertex2d(p.x, p.y);
-                }
 
+                    p.x = center.x - point.position * dvector.x / edge->length();
+                    p.y = center.y - point.position * dvector.y / edge->length();
+                    p.x = p.x + point.distance *  normalVector.x;                     ;
+                    p.y = p.y + point.distance *  normalVector.y;
+                    glVertex2d(p.x, p.y);
+                }
+                foreach (EnvelopePoint point, points) {
+                    p.x = center.x + point.position * dvector.x / edge->length();
+                    p.y = center.y + point.position * dvector.y / edge->length();
+                    p.x = p.x + point.distance *  normalVector.x;                     ;
+                    p.y = p.y + point.distance *  normalVector.y;
+                    glVertex2d(p.x, p.y);
+                }
+                // glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
                 glEnd();
                 glPointSize(0);
                 glDisable(GL_PROGRAM_POINT_SIZE);

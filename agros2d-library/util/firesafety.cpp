@@ -9,13 +9,6 @@ const double FireSafety::I0_LIMIT = 18500;
 const double FireSafety::SIGMA = 5.67e-8;
 
 
-FireSafety::FireSafety()
-{
-    m_width = 9;
-    m_height = 3;
-    m_pv = 90;
-}
-
 FireSafety::FireSafety(double width, double height, double pv)
 {
     m_width = width;
@@ -32,12 +25,10 @@ double FireSafety::fireCurve(double pv)
 
 double FireSafety::critical_intensity(double position, double d)
 {
-    double pv = 90.0; // pozarni zatizeni
-    // krivka pozaru
+   // krivka pozaru
     double epsilon = 1; // emisivita
-    double sigma  = 5.67e-8;  // Stefan-Boltzmanova konstanta
     double T = fireCurve(m_pv); // Teplota dle krivky pozaru
-    double I = epsilon * sigma * pow(T, 4); // Salava slozka
+    double I = epsilon * SIGMA * pow(T, 4); // Salava slozka
 
     double l = m_width / 2   +  position;    // pozice horizontalni
     double h = m_height / 2;     // pozice vertikalni ve 2D vzdy polovina vysky
@@ -111,7 +102,7 @@ QList<EnvelopePoint> FireSafety::calculateArea()
 {
     int N = 100;
     double position = 0;
-    double position_increment = m_width / N;
+    double position_increment = m_width / N ;
 
     EnvelopePoint point;
     point.position = m_width / 2;

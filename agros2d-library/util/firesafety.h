@@ -11,8 +11,7 @@ struct EnvelopePoint
 class FireSafety
 {
 
-public:
-    FireSafety();
+public:    
     FireSafety(double width, double height, double pv);
     double critical_intensity(double position, double d);
     double newton(double position);

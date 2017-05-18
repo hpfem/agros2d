@@ -149,6 +149,7 @@ SET(SOURCES value.cpp
     particle/particle_tracing.cpp
     util/form_interface.cpp
     util/form_script.cpp
+    util/firesafety.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/structure_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/material_xml.cpp
@@ -161,6 +162,7 @@ SET(SOURCES value.cpp
   
   SET(HEADERS value.h
     scene.h
+    util/firesafety.h
     util/global.h
     util/memory_monitor.h
     util/constants.h
