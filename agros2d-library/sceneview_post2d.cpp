@@ -22,6 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 #include "util/loops.h"
+#include "util/firesafety.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
@@ -1149,6 +1150,50 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
         {
             if (edge->isStraight())
             {
+                FireSafety fs(edge->length(), edge->length()/2, 90);
+                QList<EnvelopePoint> points = fs.calculateArea();
+
+                double d1 = edge->length() / 2;
+
+                Point dvector = edge->vector();
+                Point normalVector;
+
+                cout << dvector.x << endl;
+                cout << dvector.y << endl;
+
+                double angle;
+
+                normalVector.x = dvector.y / edge->length();
+                normalVector.y = - dvector.x / edge->length();
+                Point p;
+                Point center;
+                center.x = (edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2;
+                center.y = (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2;
+
+                glEnable(GL_PROGRAM_POINT_SIZE);
+                glPointSize(5);
+
+                glBegin(GL_POLYGON);
+                glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+                foreach (EnvelopePoint point, points) {
+                    p.x = center.x - point.position * dvector.x;
+                    p.y = center.y - point.position * dvector.y;
+                    p.x = p.x + point.distance *  normalVector.x * edge->length();                     ;
+                    p.y = p.y + point.distance *  normalVector.y * edge->length();
+                    glVertex2d(p.x, p.y);
+                }
+                foreach (EnvelopePoint point, points) {
+                    p.x = center.x + point.position * dvector.x;
+                    p.y = center.y + point.position * dvector.y;
+                    p.x = p.x + point.distance *  normalVector.x * edge->length();                     ;
+                    p.y = p.y + point.distance *  normalVector.y * edge->length();
+                    glVertex2d(p.x, p.y);
+                }
+
+                glEnd();
+                glPointSize(0);
+                glDisable(GL_PROGRAM_POINT_SIZE);
+
                 glBegin(GL_LINES);
                 glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
                 glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
