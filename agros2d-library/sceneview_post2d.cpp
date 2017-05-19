@@ -1166,8 +1166,23 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
                     glEnable(GL_BLEND);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                    glColor4d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2], 0.4);
+                    /*
+                    glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
+                    glPointSize(8.0);
+                    glBegin(GL_POINTS);
+                    for (int i = 0; i < points.count(); i++)
+                    {
+                        EnvelopePoint point = points[i];
 
+                        // left point
+                        Point p(center.x - point.position * dvector.x / edge->length() + point.distance * normalVector.x,
+                                  center.y - point.position * dvector.y / edge->length() + point.distance * normalVector.y);
+                        glVertex2d(p.x, p.y);
+                    }
+                    glEnd();
+                    */
+
+                    glColor4d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2], 0.4);
                     glBegin(GL_TRIANGLES);
                     for (int i = 0; i < points.count() - 1; i++)
                     {

@@ -97,9 +97,20 @@ double FireSafety::newton(double position)
 QList<EnvelopePoint> FireSafety::calculateArea()
 {
     int N = 100;
+    /*
     QList<double> positions;
     for (int i = 0; i < N; i++)
         positions.append(i*m_width / (N-1));
+    */
+    QList<double> positions;
+    for (int i = 0; i < N; i++)
+    {
+        double xl = (double) i / (N-1) * 10.0;
+        double yl = pow(xl, 2) / pow(10, 2);
+        double pos = m_width - m_width * yl;
+        // qInfo() << xl << yl << pos;
+        positions.append(pos);
+    }
 
     EnvelopePoint point;
     point.position = m_width / 2;
