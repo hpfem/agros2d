@@ -1144,63 +1144,61 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
-        glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
-        glLineWidth(3.0);
-
         if (edge->isSelected())
         {
             if (edge->isStraight())
             {
                 if (Agros2D::problem()->hasField("heat"))
                 {
-                    FireSafety fs(edge->length(), edge->length()/2, 90);
+                    FireSafety fs(edge->length(), edge->length() / 2, 90);
                     QList<EnvelopePoint> points = fs.calculateArea();
-
-                    double d1 = edge->length() / 2;
 
                     Point dvector = edge->vector();
                     Point normalVector;
-
-                    double angle;
 
                     normalVector.x = dvector.y / edge->length();
                     normalVector.y = - dvector.x / edge->length();
                     Point center((edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2,
                                  (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2);
 
-                    // glEnable(GL_PROGRAM_POINT_SIZE);
-                    // glPointSize(5);
-
                     // blended rectangle
                     glEnable(GL_BLEND);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                    glColor4d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2], 0.5);
+                    glColor4d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2], 0.4);
 
-                    glBegin(GL_POLYGON);
-                    // glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
-                    foreach (EnvelopePoint point, points)
+                    glBegin(GL_TRIANGLES);
+                    for (int i = 0; i < points.count() - 1; i++)
                     {
-                        Point p(center.x - point.position * dvector.x / edge->length() + point.distance * normalVector.x,
-                                center.y - point.position * dvector.y / edge->length() + point.distance * normalVector.y);
-                        glVertex2d(p.x, p.y);
+                        EnvelopePoint point1 = points[i];
+                        EnvelopePoint point2 = points[i+1];
+
+                        // left point
+                        Point pl1(center.x - point1.position * dvector.x / edge->length() + point1.distance * normalVector.x,
+                                  center.y - point1.position * dvector.y / edge->length() + point1.distance * normalVector.y);
+                        Point pl2(center.x - point2.position * dvector.x / edge->length() + point2.distance * normalVector.x,
+                                  center.y - point2.position * dvector.y / edge->length() + point2.distance * normalVector.y);
+                        glVertex2d(center.x, center.y);
+                        glVertex2d(pl1.x, pl1.y);
+                        glVertex2d(pl2.x, pl2.y);
+
+                        // right point
+                        Point pr1(center.x + point1.position * dvector.x / edge->length() + point1.distance * normalVector.x,
+                                  center.y + point1.position * dvector.y / edge->length() + point1.distance * normalVector.y);
+                        Point pr2(center.x + point2.position * dvector.x / edge->length() + point2.distance * normalVector.x,
+                                  center.y + point2.position * dvector.y / edge->length() + point2.distance * normalVector.y);
+                        glVertex2d(center.x, center.y);
+                        glVertex2d(pr1.x, pr1.y);
+                        glVertex2d(pr2.x, pr2.y);
                     }
-                    foreach (EnvelopePoint point, points)
-                    {
-                        Point p(center.x + point.position * dvector.x / edge->length() + point.distance * normalVector.x,
-                                center.y + point.position * dvector.y / edge->length() + point.distance * normalVector.y);
-                        glVertex2d(p.x, p.y);
-                    }
-                    // glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
                     glEnd();
-                    // glPointSize(0);
-                    // glDisable(GL_PROGRAM_POINT_SIZE);
 
                     glDisable(GL_BLEND);
                 }
 
                 // selected line
                 glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
+                glLineWidth(3.0);
 
                 glBegin(GL_LINES);
                 glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
@@ -1209,6 +1207,9 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
             }
             else
             {
+                glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
+                glLineWidth(3.0);
+
                 Point center = edge->center();
                 double radius = edge->radius();
                 double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180 - 180;

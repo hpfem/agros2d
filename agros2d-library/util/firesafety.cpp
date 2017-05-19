@@ -59,24 +59,18 @@ double FireSafety::newton(double position)
 {
     double x = 1e-6;
     double dx = 1e-4;
-    double I0 = 10;
-    double dI0;
-
-    EnvelopePoint point;
-    point.distance = 0;
-    point.position = 0;
-
+    double distance = x;
 
     for(int i = 0; i < 2; i++)
     {
-        I0 = 10;
+        double I0 = 10;
         int j = 0;
         while ((abs(I0) > 1e-3) && (j < 1000))
         {
             j++;
             I0 = critical_intensity(position, x);
-            dI0 = (critical_intensity(position, x + dx) - I0) / dx;
-            if(((-I0 / dI0) > 0.5) || ((x - I0 / dI0) < 0 ))
+            double dI0 = (critical_intensity(position, x + dx) - I0) / dx;
+            if (((-I0 / dI0) > 0.5) || ((x - I0 / dI0) < 0 ))
                 x = x + 0.1;
             else
                 x = x - I0 / dI0;            
@@ -84,9 +78,10 @@ double FireSafety::newton(double position)
 
         if (j < 1000)
         {            
-
-            if (abs(point.distance - x) > 1e-10)
+            if (abs(distance - x) > 1e-10)
             {
+                EnvelopePoint point;
+
                 point.distance = x;
                 point.position = position;
                 m_envelope.append(point);
@@ -101,21 +96,20 @@ double FireSafety::newton(double position)
 
 QList<EnvelopePoint> FireSafety::calculateArea()
 {
-    int N = 100;
-    double position = 0;
-    double position_increment = m_width / N ;
+    int N = 1000;
+    QList<double> positions;
+    for (int i = 0; i < N; i++)
+        positions.append(i*m_width / (N-1));
 
     EnvelopePoint point;
     point.position = m_width / 2;
     point.distance = 0;
 
+    // append middle point
     m_envelope.append(point);
 
     for(int i = 0; i < N; i++)
-    {        
-        newton(position);
-        position += position_increment;
-    }
+        newton(positions[i]);
 
     sortEnvelope();
     return m_envelope;
