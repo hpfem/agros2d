@@ -106,7 +106,7 @@ QList<EnvelopePoint> FireSafety::calculateArea()
     for (int i = 0; i < N; i++)
     {
         double xl = (double) i / (N-1) * 10.0;
-        double yl = pow(xl, 2) / pow(10, 2);
+        double yl = xl * xl / 10 * 10;
         double pos = m_width - m_width * yl;
         // qInfo() << xl << yl << pos;
         positions.append(pos);
