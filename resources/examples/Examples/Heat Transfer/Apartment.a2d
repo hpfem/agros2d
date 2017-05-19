@@ -1,325 +1,323 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
-
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d-release/resources/xsd/problem_a2d_31_xml.xsd">
   <geometry>
     <nodes>
-      <node id="0" x="0" y="0"/>
-      <node id="1" x="6.6" y="0"/>
-      <node id="2" x="6.6" y="1.3"/>
-      <node id="3" x="8.7" y="1.3"/>
-      <node id="4" x="8.7" y="3.1"/>
-      <node id="5" x="14.1" y="3.1"/>
-      <node id="6" x="0" y="9"/>
-      <node id="7" x="6.6" y="7.5"/>
-      <node id="8" x="6.6" y="9"/>
-      <node id="9" x="14.1" y="7.5"/>
-      <node id="10" x="1.95" y="0.225"/>
-      <node id="11" x="3.63" y="0.225"/>
-      <node id="12" x="7.15" y="1.525"/>
-      <node id="13" x="8.15" y="1.525"/>
-      <node id="14" x="9.95" y="3.325"/>
-      <node id="15" x="12.77" y="3.325"/>
-      <node id="16" x="0.225" y="3.08"/>
-      <node id="17" x="0.225" y="7.6"/>
-      <node id="18" x="6.375" y="8"/>
-      <node id="19" x="6.375" y="8.5"/>
-      <node id="20" x="1.95" y="0.275"/>
-      <node id="21" x="3.63" y="0.275"/>
-      <node id="22" x="7.15" y="1.575"/>
-      <node id="23" x="8.15" y="1.575"/>
-      <node id="24" x="9.95" y="3.375"/>
-      <node id="25" x="12.77" y="3.375"/>
-      <node id="26" x="0.275" y="3"/>
-      <node id="27" x="0.275" y="7.6"/>
-      <node id="28" x="6.325" y="8"/>
-      <node id="29" x="6.325" y="8.5"/>
-      <node id="30" x="0.45" y="0.45"/>
-      <node id="31" x="8.25" y="3.55"/>
-      <node id="32" x="13.65" y="3.55"/>
-      <node id="33" x="6.15" y="8.55"/>
-      <node id="34" x="13.65" y="7.05"/>
-      <node id="35" x="0.45" y="8.55"/>
-      <node id="36" x="0.45" y="3"/>
-      <node id="37" x="0.45" y="7.6"/>
-      <node id="38" x="6.15" y="8"/>
-      <node id="39" x="6.15" y="8.5"/>
-      <node id="40" x="1.95" y="0.45"/>
-      <node id="41" x="3.63" y="0.45"/>
-      <node id="42" x="7.15" y="1.75"/>
-      <node id="43" x="8.15" y="1.75"/>
-      <node id="44" x="9.95" y="3.55"/>
-      <node id="45" x="12.77" y="3.55"/>
-      <node id="46" x="6.15" y="0.45"/>
-      <node id="47" x="8.25" y="1.75"/>
-      <node id="48" x="-0.08" y="9.08"/>
-      <node id="49" x="6.68" y="7.58"/>
-      <node id="50" x="6.68" y="9.08"/>
-      <node id="51" x="-0.08" y="-0.08"/>
-      <node id="52" x="6.68" y="-0.08"/>
-      <node id="53" x="6.68" y="1.22"/>
-      <node id="54" x="8.78" y="1.22"/>
-      <node id="55" x="8.78" y="3.02"/>
-      <node id="56" x="14.18" y="3.02"/>
-      <node id="57" x="2.03" y="-0.08"/>
-      <node id="58" x="3.55" y="-0.08"/>
-      <node id="59" x="7.23" y="1.22"/>
-      <node id="60" x="8.07" y="1.22"/>
-      <node id="61" x="10.03" y="3.02"/>
-      <node id="62" x="12.69" y="3.02"/>
-      <node id="63" x="-0.08" y="3.08"/>
-      <node id="64" x="-0.08" y="7.52"/>
-      <node id="65" x="6.68" y="8.08"/>
-      <node id="66" x="6.68" y="8.42"/>
-      <node id="67" x="14.18" y="7.58"/>
-      <node id="68" x="1.95" y="0"/>
-      <node id="69" x="3.63" y="0"/>
-      <node id="70" x="7.15" y="1.3"/>
-      <node id="71" x="8.15" y="1.3"/>
-      <node id="72" x="9.95" y="3.1"/>
-      <node id="73" x="12.77" y="3.1"/>
-      <node id="74" x="0" y="3"/>
-      <node id="75" x="0" y="7.6"/>
-      <node id="76" x="6.6" y="8.5"/>
-      <node id="77" x="0.225" y="7.52"/>
-      <node id="78" x="0.225" y="3"/>
-      <node id="79" x="6.6" y="8"/>
-      <node id="80" x="2.03" y="0.225"/>
-      <node id="81" x="7.23" y="1.525"/>
-      <node id="82" x="10.03" y="3.325"/>
-      <node id="83" x="3.55" y="0.225"/>
-      <node id="84" x="8.07" y="1.525"/>
-      <node id="85" x="12.69" y="3.325"/>
-      <node id="86" x="6.375" y="8.08"/>
-      <node id="87" x="6.375" y="8.42"/>
-      <node id="88" x="4.1" y="8.55"/>
-      <node id="89" x="4.4" y="8.55"/>
-      <node id="90" x="4.1" y="7.05"/>
-      <node id="91" x="4.4" y="7.35"/>
-      <node id="92" x="5.35" y="7.35"/>
-      <node id="93" x="5.35" y="7.05"/>
-      <node id="94" x="6.15" y="5.1"/>
-      <node id="95" x="8.25" y="3.25"/>
-      <node id="96" x="6.15" y="3.25"/>
-      <node id="97" x="6.45" y="7.05"/>
-      <node id="98" x="6.45" y="5.1"/>
-      <node id="99" x="6.15" y="5.85"/>
-      <node id="100" x="6.45" y="5.85"/>
-      <node id="101" x="10.77" y="3.325"/>
-      <node id="102" x="10.77" y="3.375"/>
-      <node id="103" x="10.77" y="3.55"/>
-      <node id="104" x="10.69" y="3.02"/>
-      <node id="105" x="10.77" y="3.1"/>
-      <node id="106" x="10.69" y="3.325"/>
-      <node id="107" x="11.95" y="3.325"/>
-      <node id="108" x="11.95" y="3.375"/>
-      <node id="109" x="11.95" y="3.55"/>
-      <node id="110" x="12.03" y="3.02"/>
-      <node id="111" x="11.95" y="3.1"/>
-      <node id="112" x="12.03" y="3.325"/>
-      <node id="113" x="11.1" y="3.55"/>
-      <node id="114" x="11.4" y="3.55"/>
-      <node id="115" x="11.1" y="6.55"/>
-      <node id="116" x="11.4" y="6.55"/>
-      <node id="117" x="0.225" y="6.58"/>
-      <node id="118" x="0.275" y="6.5"/>
-      <node id="119" x="0.45" y="6.5"/>
-      <node id="120" x="-0.08" y="6.58"/>
-      <node id="121" x="0" y="6.5"/>
-      <node id="122" x="0.225" y="6.5"/>
-      <node id="123" x="0.225" y="4.1"/>
-      <node id="124" x="0.275" y="4.1"/>
-      <node id="125" x="0.45" y="4.1"/>
-      <node id="126" x="-0.08" y="4.02"/>
-      <node id="127" x="0" y="4.1"/>
-      <node id="128" x="0.225" y="4.02"/>
-      <node id="129" x="6.15" y="2.6"/>
-      <node id="130" x="6.45" y="2.6"/>
-      <node id="131" x="6.45" y="1.75"/>
+      <node id="0" valuex="0" valuey="0" x="0" y="0"/>
+      <node id="1" valuex="6.6" valuey="0" x="6.6" y="0"/>
+      <node id="2" valuex="6.6" valuey="1.3" x="6.6" y="1.3"/>
+      <node id="3" valuex="8.7" valuey="1.3" x="8.7" y="1.3"/>
+      <node id="4" valuex="8.7" valuey="3.1" x="8.7" y="3.1"/>
+      <node id="5" valuex="14.1" valuey="3.1" x="14.1" y="3.1"/>
+      <node id="6" valuex="0" valuey="9" x="0" y="9"/>
+      <node id="7" valuex="6.6" valuey="7.5" x="6.6" y="7.5"/>
+      <node id="8" valuex="6.6" valuey="9" x="6.6" y="9"/>
+      <node id="9" valuex="14.1" valuey="7.5" x="14.1" y="7.5"/>
+      <node id="10" valuex="1.95" valuey="0.225" x="1.95" y="0.225"/>
+      <node id="11" valuex="3.63" valuey="0.225" x="3.63" y="0.225"/>
+      <node id="12" valuex="7.15" valuey="1.525" x="7.15" y="1.525"/>
+      <node id="13" valuex="8.15" valuey="1.525" x="8.15" y="1.525"/>
+      <node id="14" valuex="9.95" valuey="3.325" x="9.95" y="3.325"/>
+      <node id="15" valuex="12.77" valuey="3.325" x="12.77" y="3.325"/>
+      <node id="16" valuex="0.225" valuey="3.08" x="0.225" y="3.08"/>
+      <node id="17" valuex="0.225" valuey="7.6" x="0.225" y="7.6"/>
+      <node id="18" valuex="6.375" valuey="8" x="6.375" y="8"/>
+      <node id="19" valuex="6.375" valuey="8.5" x="6.375" y="8.5"/>
+      <node id="20" valuex="1.95" valuey="0.275" x="1.95" y="0.275"/>
+      <node id="21" valuex="3.63" valuey="0.275" x="3.63" y="0.275"/>
+      <node id="22" valuex="7.15" valuey="1.575" x="7.15" y="1.575"/>
+      <node id="23" valuex="8.15" valuey="1.575" x="8.15" y="1.575"/>
+      <node id="24" valuex="9.95" valuey="3.375" x="9.95" y="3.375"/>
+      <node id="25" valuex="12.77" valuey="3.375" x="12.77" y="3.375"/>
+      <node id="26" valuex="0.275" valuey="3" x="0.275" y="3"/>
+      <node id="27" valuex="0.275" valuey="7.6" x="0.275" y="7.6"/>
+      <node id="28" valuex="6.325" valuey="8" x="6.325" y="8"/>
+      <node id="29" valuex="6.325" valuey="8.5" x="6.325" y="8.5"/>
+      <node id="30" valuex="0.45" valuey="0.45" x="0.45" y="0.45"/>
+      <node id="31" valuex="8.25" valuey="3.55" x="8.25" y="3.55"/>
+      <node id="32" valuex="13.65" valuey="3.55" x="13.65" y="3.55"/>
+      <node id="33" valuex="6.15" valuey="8.55" x="6.15" y="8.55"/>
+      <node id="34" valuex="13.65" valuey="7.05" x="13.65" y="7.05"/>
+      <node id="35" valuex="0.45" valuey="8.55" x="0.45" y="8.55"/>
+      <node id="36" valuex="0.45" valuey="3" x="0.45" y="3"/>
+      <node id="37" valuex="0.45" valuey="7.6" x="0.45" y="7.6"/>
+      <node id="38" valuex="6.15" valuey="8" x="6.15" y="8"/>
+      <node id="39" valuex="6.15" valuey="8.5" x="6.15" y="8.5"/>
+      <node id="40" valuex="1.95" valuey="0.45" x="1.95" y="0.45"/>
+      <node id="41" valuex="3.63" valuey="0.45" x="3.63" y="0.45"/>
+      <node id="42" valuex="7.15" valuey="1.75" x="7.15" y="1.75"/>
+      <node id="43" valuex="8.15" valuey="1.75" x="8.15" y="1.75"/>
+      <node id="44" valuex="9.95" valuey="3.55" x="9.95" y="3.55"/>
+      <node id="45" valuex="12.77" valuey="3.55" x="12.77" y="3.55"/>
+      <node id="46" valuex="6.15" valuey="0.45" x="6.15" y="0.45"/>
+      <node id="47" valuex="8.25" valuey="1.75" x="8.25" y="1.75"/>
+      <node id="48" valuex="-0.08" valuey="9.08" x="-0.08" y="9.08"/>
+      <node id="49" valuex="6.68" valuey="7.58" x="6.68" y="7.58"/>
+      <node id="50" valuex="6.68" valuey="9.08" x="6.68" y="9.08"/>
+      <node id="51" valuex="-0.08" valuey="-0.08" x="-0.08" y="-0.08"/>
+      <node id="52" valuex="6.68" valuey="-0.08" x="6.68" y="-0.08"/>
+      <node id="53" valuex="6.68" valuey="1.22" x="6.68" y="1.22"/>
+      <node id="54" valuex="8.78" valuey="1.22" x="8.78" y="1.22"/>
+      <node id="55" valuex="8.78" valuey="3.02" x="8.78" y="3.02"/>
+      <node id="56" valuex="14.18" valuey="3.02" x="14.18" y="3.02"/>
+      <node id="57" valuex="2.03" valuey="-0.08" x="2.03" y="-0.08"/>
+      <node id="58" valuex="3.55" valuey="-0.08" x="3.55" y="-0.08"/>
+      <node id="59" valuex="7.23" valuey="1.22" x="7.23" y="1.22"/>
+      <node id="60" valuex="8.07" valuey="1.22" x="8.07" y="1.22"/>
+      <node id="61" valuex="10.03" valuey="3.02" x="10.03" y="3.02"/>
+      <node id="62" valuex="12.69" valuey="3.02" x="12.69" y="3.02"/>
+      <node id="63" valuex="-0.08" valuey="3.08" x="-0.08" y="3.08"/>
+      <node id="64" valuex="-0.08" valuey="7.52" x="-0.08" y="7.52"/>
+      <node id="65" valuex="6.68" valuey="8.08" x="6.68" y="8.08"/>
+      <node id="66" valuex="6.68" valuey="8.42" x="6.68" y="8.42"/>
+      <node id="67" valuex="14.18" valuey="7.58" x="14.18" y="7.58"/>
+      <node id="68" valuex="1.95" valuey="0" x="1.95" y="0"/>
+      <node id="69" valuex="3.63" valuey="0" x="3.63" y="0"/>
+      <node id="70" valuex="7.15" valuey="1.3" x="7.15" y="1.3"/>
+      <node id="71" valuex="8.15" valuey="1.3" x="8.15" y="1.3"/>
+      <node id="72" valuex="9.95" valuey="3.1" x="9.95" y="3.1"/>
+      <node id="73" valuex="12.77" valuey="3.1" x="12.77" y="3.1"/>
+      <node id="74" valuex="0" valuey="3" x="0" y="3"/>
+      <node id="75" valuex="0" valuey="7.6" x="0" y="7.6"/>
+      <node id="76" valuex="6.6" valuey="8.5" x="6.6" y="8.5"/>
+      <node id="77" valuex="0.225" valuey="7.52" x="0.225" y="7.52"/>
+      <node id="78" valuex="0.225" valuey="3" x="0.225" y="3"/>
+      <node id="79" valuex="6.6" valuey="8" x="6.6" y="8"/>
+      <node id="80" valuex="2.03" valuey="0.225" x="2.03" y="0.225"/>
+      <node id="81" valuex="7.23" valuey="1.525" x="7.23" y="1.525"/>
+      <node id="82" valuex="10.03" valuey="3.325" x="10.03" y="3.325"/>
+      <node id="83" valuex="3.55" valuey="0.225" x="3.55" y="0.225"/>
+      <node id="84" valuex="8.07" valuey="1.525" x="8.07" y="1.525"/>
+      <node id="85" valuex="12.69" valuey="3.325" x="12.69" y="3.325"/>
+      <node id="86" valuex="6.375" valuey="8.08" x="6.375" y="8.08"/>
+      <node id="87" valuex="6.375" valuey="8.42" x="6.375" y="8.42"/>
+      <node id="88" valuex="4.1" valuey="8.55" x="4.1" y="8.55"/>
+      <node id="89" valuex="4.4" valuey="8.55" x="4.4" y="8.55"/>
+      <node id="90" valuex="4.1" valuey="7.05" x="4.1" y="7.05"/>
+      <node id="91" valuex="4.4" valuey="7.35" x="4.4" y="7.35"/>
+      <node id="92" valuex="5.35" valuey="7.35" x="5.35" y="7.35"/>
+      <node id="93" valuex="5.35" valuey="7.05" x="5.35" y="7.05"/>
+      <node id="94" valuex="6.15" valuey="5.1" x="6.15" y="5.1"/>
+      <node id="95" valuex="8.25" valuey="3.25" x="8.25" y="3.25"/>
+      <node id="96" valuex="6.15" valuey="3.25" x="6.15" y="3.25"/>
+      <node id="97" valuex="6.45" valuey="7.05" x="6.45" y="7.05"/>
+      <node id="98" valuex="6.45" valuey="5.1" x="6.45" y="5.1"/>
+      <node id="99" valuex="6.15" valuey="5.85" x="6.15" y="5.85"/>
+      <node id="100" valuex="6.45" valuey="5.85" x="6.45" y="5.85"/>
+      <node id="101" valuex="10.77" valuey="3.325" x="10.77" y="3.325"/>
+      <node id="102" valuex="10.77" valuey="3.375" x="10.77" y="3.375"/>
+      <node id="103" valuex="10.77" valuey="3.55" x="10.77" y="3.55"/>
+      <node id="104" valuex="10.69" valuey="3.02" x="10.69" y="3.02"/>
+      <node id="105" valuex="10.77" valuey="3.1" x="10.77" y="3.1"/>
+      <node id="106" valuex="10.69" valuey="3.325" x="10.69" y="3.325"/>
+      <node id="107" valuex="11.95" valuey="3.325" x="11.95" y="3.325"/>
+      <node id="108" valuex="11.95" valuey="3.375" x="11.95" y="3.375"/>
+      <node id="109" valuex="11.95" valuey="3.55" x="11.95" y="3.55"/>
+      <node id="110" valuex="12.03" valuey="3.02" x="12.03" y="3.02"/>
+      <node id="111" valuex="11.95" valuey="3.1" x="11.95" y="3.1"/>
+      <node id="112" valuex="12.03" valuey="3.325" x="12.03" y="3.325"/>
+      <node id="113" valuex="11.1" valuey="3.55" x="11.1" y="3.55"/>
+      <node id="114" valuex="11.4" valuey="3.55" x="11.4" y="3.55"/>
+      <node id="115" valuex="11.1" valuey="6.55" x="11.1" y="6.55"/>
+      <node id="116" valuex="11.4" valuey="6.55" x="11.4" y="6.55"/>
+      <node id="117" valuex="0.225" valuey="6.58" x="0.225" y="6.58"/>
+      <node id="118" valuex="0.275" valuey="6.5" x="0.275" y="6.5"/>
+      <node id="119" valuex="0.45" valuey="6.5" x="0.45" y="6.5"/>
+      <node id="120" valuex="-0.08" valuey="6.58" x="-0.08" y="6.58"/>
+      <node id="121" valuex="0" valuey="6.5" x="0" y="6.5"/>
+      <node id="122" valuex="0.225" valuey="6.5" x="0.225" y="6.5"/>
+      <node id="123" valuex="0.225" valuey="4.1" x="0.225" y="4.1"/>
+      <node id="124" valuex="0.275" valuey="4.1" x="0.275" y="4.1"/>
+      <node id="125" valuex="0.45" valuey="4.1" x="0.45" y="4.1"/>
+      <node id="126" valuex="-0.08" valuey="4.02" x="-0.08" y="4.02"/>
+      <node id="127" valuex="0" valuey="4.1" x="0" y="4.1"/>
+      <node id="128" valuex="0.225" valuey="4.02" x="0.225" y="4.02"/>
+      <node id="129" valuex="6.15" valuey="2.6" x="6.15" y="2.6"/>
+      <node id="130" valuex="6.45" valuey="2.6" x="6.45" y="2.6"/>
+      <node id="131" valuex="6.45" valuey="1.75" x="6.45" y="1.75"/>
     </nodes>
     <edges>
-      <edge angle="0" end="2" id="0" start="1"/>
-      <edge angle="0" end="4" id="1" start="3"/>
-      <edge angle="0" end="9" id="2" start="5"/>
-      <edge angle="0" end="7" id="3" start="9"/>
-      <edge angle="0" end="6" id="4" start="8"/>
-      <edge angle="0" end="19" id="5" start="29"/>
-      <edge angle="0" end="18" id="6" start="28"/>
-      <edge angle="0" end="14" id="7" start="24"/>
-      <edge angle="0" end="15" id="8" start="25"/>
-      <edge angle="0" end="13" id="9" start="23"/>
-      <edge angle="0" end="12" id="10" start="22"/>
-      <edge angle="0" end="11" id="11" start="21"/>
-      <edge angle="0" end="10" id="12" start="20"/>
-      <edge angle="0" end="27" id="13" start="17"/>
-      <edge angle="0" end="37" id="14" start="35"/>
-      <edge angle="0" end="27" id="15" start="37"/>
-      <edge angle="0" end="36" id="16" start="26"/>
-      <edge angle="0" end="30" id="17" start="36"/>
-      <edge angle="0" end="40" id="18" start="30"/>
-      <edge angle="0" end="20" id="19" start="40"/>
-      <edge angle="0" end="21" id="20" start="20"/>
-      <edge angle="0" end="41" id="21" start="21"/>
-      <edge angle="0" end="22" id="22" start="42"/>
-      <edge angle="0" end="23" id="23" start="22"/>
-      <edge angle="0" end="43" id="24" start="23"/>
-      <edge angle="0" end="44" id="25" start="31"/>
-      <edge angle="0" end="24" id="26" start="44"/>
-      <edge angle="0" end="45" id="27" start="25"/>
-      <edge angle="0" end="32" id="28" start="45"/>
-      <edge angle="0" end="34" id="29" start="32"/>
-      <edge angle="0" end="28" id="30" start="38"/>
-      <edge angle="0" end="39" id="31" start="29"/>
-      <edge angle="0" end="33" id="32" start="39"/>
-      <edge angle="0" end="28" id="33" start="29"/>
-      <edge angle="0" end="43" id="34" start="47"/>
-      <edge angle="0" end="41" id="35" start="46"/>
-      <edge angle="0" end="62" id="36" start="56"/>
-      <edge angle="0" end="61" id="37" start="55"/>
-      <edge angle="0" end="54" id="38" start="55"/>
-      <edge angle="0" end="60" id="39" start="54"/>
-      <edge angle="0" end="59" id="40" start="53"/>
-      <edge angle="0" end="52" id="41" start="53"/>
-      <edge angle="0" end="58" id="42" start="52"/>
-      <edge angle="0" end="51" id="43" start="57"/>
-      <edge angle="0" end="63" id="44" start="51"/>
-      <edge angle="0" end="48" id="45" start="64"/>
-      <edge angle="0" end="50" id="46" start="48"/>
-      <edge angle="0" end="66" id="47" start="50"/>
-      <edge angle="0" end="49" id="48" start="65"/>
-      <edge angle="0" end="67" id="49" start="49"/>
-      <edge angle="0" end="68" id="50" start="0"/>
-      <edge angle="0" end="69" id="51" start="1"/>
-      <edge angle="0" end="5" id="52" start="73"/>
-      <edge angle="0" end="72" id="53" start="14"/>
-      <edge angle="0" end="4" id="54" start="72"/>
-      <edge angle="0" end="6" id="55" start="75"/>
-      <edge angle="0" end="0" id="56" start="74"/>
-      <edge angle="0" end="70" id="57" start="2"/>
-      <edge angle="0" end="3" id="58" start="71"/>
-      <edge angle="0" end="76" id="59" start="19"/>
-      <edge angle="0" end="76" id="60" start="8"/>
-      <edge angle="0" end="87" id="61" start="66"/>
-      <edge angle="0" end="65" id="62" start="86"/>
-      <edge angle="0" end="18" id="63" start="79"/>
-      <edge angle="0" end="7" id="64" start="79"/>
-      <edge angle="0" end="17" id="65" start="75"/>
-      <edge angle="0" end="77" id="66" start="64"/>
-      <edge angle="0" end="16" id="67" start="63"/>
-      <edge angle="0" end="78" id="68" start="74"/>
-      <edge angle="0" end="26" id="69" start="78"/>
-      <edge angle="0" end="10" id="70" start="68"/>
-      <edge angle="0" end="57" id="71" start="80"/>
-      <edge angle="0" end="58" id="72" start="83"/>
-      <edge angle="0" end="11" id="73" start="69"/>
-      <edge angle="0" end="81" id="74" start="59"/>
-      <edge angle="0" end="60" id="75" start="84"/>
-      <edge angle="0" end="13" id="76" start="71"/>
-      <edge angle="0" end="70" id="77" start="12"/>
-      <edge angle="0" end="62" id="78" start="85"/>
-      <edge angle="0" end="73" id="79" start="15"/>
-      <edge angle="0" end="61" id="80" start="82"/>
-      <edge angle="0" end="56" id="81" start="67"/>
-      <edge angle="0" end="17" id="82" start="77"/>
-      <edge angle="0" end="78" id="83" start="16"/>
-      <edge angle="0" end="80" id="84" start="10"/>
-      <edge angle="0" end="83" id="85" start="80"/>
-      <edge angle="0" end="11" id="86" start="83"/>
-      <edge angle="0" end="81" id="87" start="12"/>
-      <edge angle="0" end="84" id="88" start="81"/>
-      <edge angle="0" end="13" id="89" start="84"/>
-      <edge angle="0" end="82" id="90" start="14"/>
-      <edge angle="0" end="15" id="91" start="85"/>
-      <edge angle="0" end="87" id="92" start="19"/>
-      <edge angle="0" end="86" id="93" start="87"/>
-      <edge angle="0" end="18" id="94" start="86"/>
-      <edge angle="0" end="88" id="95" start="35"/>
-      <edge angle="0" end="90" id="96" start="88"/>
-      <edge angle="0" end="93" id="97" start="90"/>
-      <edge angle="0" end="92" id="98" start="93"/>
-      <edge angle="0" end="91" id="99" start="92"/>
-      <edge angle="0" end="89" id="100" start="91"/>
-      <edge angle="0" end="33" id="101" start="89"/>
-      <edge angle="0" end="95" id="102" start="47"/>
-      <edge angle="0" end="96" id="103" start="95"/>
-      <edge angle="0" end="94" id="104" start="96"/>
-      <edge angle="0" end="100" id="105" start="99"/>
-      <edge angle="0" end="97" id="106" start="100"/>
-      <edge angle="0" end="34" id="107" start="97"/>
-      <edge angle="0" end="94" id="108" start="98"/>
-      <edge angle="0" end="31" id="109" start="98"/>
-      <edge angle="0" end="106" id="110" start="82"/>
-      <edge angle="0" end="102" id="111" start="24"/>
-      <edge angle="0" end="101" id="112" start="102"/>
-      <edge angle="0" end="101" id="113" start="106"/>
-      <edge angle="0" end="104" id="114" start="106"/>
-      <edge angle="0" end="110" id="115" start="104"/>
-      <edge angle="0" end="107" id="116" start="111"/>
-      <edge angle="0" end="105" id="117" start="101"/>
-      <edge angle="0" end="103" id="118" start="102"/>
-      <edge angle="0" end="108" id="119" start="109"/>
-      <edge angle="0" end="107" id="120" start="108"/>
-      <edge angle="0" end="85" id="121" start="112"/>
-      <edge angle="0" end="112" id="122" start="107"/>
-      <edge angle="0" end="25" id="123" start="108"/>
-      <edge angle="0" end="105" id="124" start="111"/>
-      <edge angle="0" end="112" id="125" start="110"/>
-      <edge angle="0" end="113" id="126" start="115"/>
-      <edge angle="0" end="116" id="127" start="114"/>
-      <edge angle="0" end="116" id="128" start="115"/>
-      <edge angle="0" end="113" id="129" start="103"/>
-      <edge angle="0" end="109" id="130" start="114"/>
-      <edge angle="0" end="117" id="131" start="120"/>
-      <edge angle="0" end="126" id="132" start="120"/>
-      <edge angle="0" end="128" id="133" start="126"/>
-      <edge angle="0" end="16" id="134" start="128"/>
-      <edge angle="0" end="128" id="135" start="123"/>
-      <edge angle="0" end="127" id="136" start="123"/>
-      <edge angle="0" end="121" id="137" start="127"/>
-      <edge angle="0" end="122" id="138" start="121"/>
-      <edge angle="0" end="122" id="139" start="118"/>
-      <edge angle="0" end="119" id="140" start="118"/>
-      <edge angle="0" end="125" id="141" start="119"/>
-      <edge angle="0" end="124" id="142" start="125"/>
-      <edge angle="0" end="123" id="143" start="124"/>
-      <edge angle="0" end="26" id="144" start="124"/>
-      <edge angle="0" end="118" id="145" start="27"/>
-      <edge angle="0" end="122" id="146" start="117"/>
-      <edge angle="0" end="77" id="147" start="117"/>
-      <edge angle="0" end="42" id="148" start="131"/>
-      <edge angle="0" end="130" id="149" start="131"/>
-      <edge angle="0" end="129" id="150" start="130"/>
-      <edge angle="0" end="99" id="151" start="38"/>
-      <edge angle="0" end="46" id="152" start="129"/>
+      <edge angle="0" end="2" id="0" is_curvilinear="1" segments="3" start="1" valueangle="0"/>
+      <edge angle="0" end="4" id="1" is_curvilinear="1" segments="3" start="3" valueangle="0"/>
+      <edge angle="0" end="9" id="2" is_curvilinear="1" segments="3" start="5" valueangle="0"/>
+      <edge angle="0" end="7" id="3" is_curvilinear="1" segments="3" start="9" valueangle="0"/>
+      <edge angle="0" end="6" id="4" is_curvilinear="1" segments="3" start="8" valueangle="0"/>
+      <edge angle="0" end="19" id="5" is_curvilinear="1" segments="3" start="29" valueangle="0"/>
+      <edge angle="0" end="18" id="6" is_curvilinear="1" segments="3" start="28" valueangle="0"/>
+      <edge angle="0" end="14" id="7" is_curvilinear="1" segments="3" start="24" valueangle="0"/>
+      <edge angle="0" end="15" id="8" is_curvilinear="1" segments="3" start="25" valueangle="0"/>
+      <edge angle="0" end="13" id="9" is_curvilinear="1" segments="3" start="23" valueangle="0"/>
+      <edge angle="0" end="12" id="10" is_curvilinear="1" segments="3" start="22" valueangle="0"/>
+      <edge angle="0" end="11" id="11" is_curvilinear="1" segments="3" start="21" valueangle="0"/>
+      <edge angle="0" end="10" id="12" is_curvilinear="1" segments="3" start="20" valueangle="0"/>
+      <edge angle="0" end="27" id="13" is_curvilinear="1" segments="3" start="17" valueangle="0"/>
+      <edge angle="0" end="37" id="14" is_curvilinear="1" segments="3" start="35" valueangle="0"/>
+      <edge angle="0" end="27" id="15" is_curvilinear="1" segments="3" start="37" valueangle="0"/>
+      <edge angle="0" end="36" id="16" is_curvilinear="1" segments="3" start="26" valueangle="0"/>
+      <edge angle="0" end="30" id="17" is_curvilinear="1" segments="3" start="36" valueangle="0"/>
+      <edge angle="0" end="40" id="18" is_curvilinear="1" segments="3" start="30" valueangle="0"/>
+      <edge angle="0" end="20" id="19" is_curvilinear="1" segments="3" start="40" valueangle="0"/>
+      <edge angle="0" end="21" id="20" is_curvilinear="1" segments="3" start="20" valueangle="0"/>
+      <edge angle="0" end="41" id="21" is_curvilinear="1" segments="3" start="21" valueangle="0"/>
+      <edge angle="0" end="22" id="22" is_curvilinear="1" segments="3" start="42" valueangle="0"/>
+      <edge angle="0" end="23" id="23" is_curvilinear="1" segments="3" start="22" valueangle="0"/>
+      <edge angle="0" end="43" id="24" is_curvilinear="1" segments="3" start="23" valueangle="0"/>
+      <edge angle="0" end="44" id="25" is_curvilinear="1" segments="3" start="31" valueangle="0"/>
+      <edge angle="0" end="24" id="26" is_curvilinear="1" segments="3" start="44" valueangle="0"/>
+      <edge angle="0" end="45" id="27" is_curvilinear="1" segments="3" start="25" valueangle="0"/>
+      <edge angle="0" end="32" id="28" is_curvilinear="1" segments="3" start="45" valueangle="0"/>
+      <edge angle="0" end="34" id="29" is_curvilinear="1" segments="3" start="32" valueangle="0"/>
+      <edge angle="0" end="28" id="30" is_curvilinear="1" segments="3" start="38" valueangle="0"/>
+      <edge angle="0" end="39" id="31" is_curvilinear="1" segments="3" start="29" valueangle="0"/>
+      <edge angle="0" end="33" id="32" is_curvilinear="1" segments="3" start="39" valueangle="0"/>
+      <edge angle="0" end="28" id="33" is_curvilinear="1" segments="3" start="29" valueangle="0"/>
+      <edge angle="0" end="43" id="34" is_curvilinear="1" segments="3" start="47" valueangle="0"/>
+      <edge angle="0" end="41" id="35" is_curvilinear="1" segments="3" start="46" valueangle="0"/>
+      <edge angle="0" end="62" id="36" is_curvilinear="1" segments="3" start="56" valueangle="0"/>
+      <edge angle="0" end="61" id="37" is_curvilinear="1" segments="3" start="55" valueangle="0"/>
+      <edge angle="0" end="54" id="38" is_curvilinear="1" segments="3" start="55" valueangle="0"/>
+      <edge angle="0" end="60" id="39" is_curvilinear="1" segments="3" start="54" valueangle="0"/>
+      <edge angle="0" end="59" id="40" is_curvilinear="1" segments="3" start="53" valueangle="0"/>
+      <edge angle="0" end="52" id="41" is_curvilinear="1" segments="3" start="53" valueangle="0"/>
+      <edge angle="0" end="58" id="42" is_curvilinear="1" segments="3" start="52" valueangle="0"/>
+      <edge angle="0" end="51" id="43" is_curvilinear="1" segments="3" start="57" valueangle="0"/>
+      <edge angle="0" end="63" id="44" is_curvilinear="1" segments="3" start="51" valueangle="0"/>
+      <edge angle="0" end="48" id="45" is_curvilinear="1" segments="3" start="64" valueangle="0"/>
+      <edge angle="0" end="50" id="46" is_curvilinear="1" segments="3" start="48" valueangle="0"/>
+      <edge angle="0" end="66" id="47" is_curvilinear="1" segments="3" start="50" valueangle="0"/>
+      <edge angle="0" end="49" id="48" is_curvilinear="1" segments="3" start="65" valueangle="0"/>
+      <edge angle="0" end="67" id="49" is_curvilinear="1" segments="3" start="49" valueangle="0"/>
+      <edge angle="0" end="68" id="50" is_curvilinear="1" segments="3" start="0" valueangle="0"/>
+      <edge angle="0" end="69" id="51" is_curvilinear="1" segments="3" start="1" valueangle="0"/>
+      <edge angle="0" end="5" id="52" is_curvilinear="1" segments="3" start="73" valueangle="0"/>
+      <edge angle="0" end="72" id="53" is_curvilinear="1" segments="3" start="14" valueangle="0"/>
+      <edge angle="0" end="4" id="54" is_curvilinear="1" segments="3" start="72" valueangle="0"/>
+      <edge angle="0" end="6" id="55" is_curvilinear="1" segments="3" start="75" valueangle="0"/>
+      <edge angle="0" end="0" id="56" is_curvilinear="1" segments="3" start="74" valueangle="0"/>
+      <edge angle="0" end="70" id="57" is_curvilinear="1" segments="3" start="2" valueangle="0"/>
+      <edge angle="0" end="3" id="58" is_curvilinear="1" segments="3" start="71" valueangle="0"/>
+      <edge angle="0" end="76" id="59" is_curvilinear="1" segments="3" start="19" valueangle="0"/>
+      <edge angle="0" end="76" id="60" is_curvilinear="1" segments="3" start="8" valueangle="0"/>
+      <edge angle="0" end="87" id="61" is_curvilinear="1" segments="3" start="66" valueangle="0"/>
+      <edge angle="0" end="65" id="62" is_curvilinear="1" segments="3" start="86" valueangle="0"/>
+      <edge angle="0" end="18" id="63" is_curvilinear="1" segments="3" start="79" valueangle="0"/>
+      <edge angle="0" end="7" id="64" is_curvilinear="1" segments="3" start="79" valueangle="0"/>
+      <edge angle="0" end="17" id="65" is_curvilinear="1" segments="3" start="75" valueangle="0"/>
+      <edge angle="0" end="77" id="66" is_curvilinear="1" segments="3" start="64" valueangle="0"/>
+      <edge angle="0" end="16" id="67" is_curvilinear="1" segments="3" start="63" valueangle="0"/>
+      <edge angle="0" end="78" id="68" is_curvilinear="1" segments="3" start="74" valueangle="0"/>
+      <edge angle="0" end="26" id="69" is_curvilinear="1" segments="3" start="78" valueangle="0"/>
+      <edge angle="0" end="10" id="70" is_curvilinear="1" segments="3" start="68" valueangle="0"/>
+      <edge angle="0" end="57" id="71" is_curvilinear="1" segments="3" start="80" valueangle="0"/>
+      <edge angle="0" end="58" id="72" is_curvilinear="1" segments="3" start="83" valueangle="0"/>
+      <edge angle="0" end="11" id="73" is_curvilinear="1" segments="3" start="69" valueangle="0"/>
+      <edge angle="0" end="81" id="74" is_curvilinear="1" segments="3" start="59" valueangle="0"/>
+      <edge angle="0" end="60" id="75" is_curvilinear="1" segments="3" start="84" valueangle="0"/>
+      <edge angle="0" end="13" id="76" is_curvilinear="1" segments="3" start="71" valueangle="0"/>
+      <edge angle="0" end="70" id="77" is_curvilinear="1" segments="3" start="12" valueangle="0"/>
+      <edge angle="0" end="62" id="78" is_curvilinear="1" segments="3" start="85" valueangle="0"/>
+      <edge angle="0" end="73" id="79" is_curvilinear="1" segments="3" start="15" valueangle="0"/>
+      <edge angle="0" end="61" id="80" is_curvilinear="1" segments="3" start="82" valueangle="0"/>
+      <edge angle="0" end="56" id="81" is_curvilinear="1" segments="3" start="67" valueangle="0"/>
+      <edge angle="0" end="17" id="82" is_curvilinear="1" segments="3" start="77" valueangle="0"/>
+      <edge angle="0" end="78" id="83" is_curvilinear="1" segments="3" start="16" valueangle="0"/>
+      <edge angle="0" end="80" id="84" is_curvilinear="1" segments="3" start="10" valueangle="0"/>
+      <edge angle="0" end="83" id="85" is_curvilinear="1" segments="3" start="80" valueangle="0"/>
+      <edge angle="0" end="11" id="86" is_curvilinear="1" segments="3" start="83" valueangle="0"/>
+      <edge angle="0" end="81" id="87" is_curvilinear="1" segments="3" start="12" valueangle="0"/>
+      <edge angle="0" end="84" id="88" is_curvilinear="1" segments="3" start="81" valueangle="0"/>
+      <edge angle="0" end="13" id="89" is_curvilinear="1" segments="3" start="84" valueangle="0"/>
+      <edge angle="0" end="82" id="90" is_curvilinear="1" segments="3" start="14" valueangle="0"/>
+      <edge angle="0" end="15" id="91" is_curvilinear="1" segments="3" start="85" valueangle="0"/>
+      <edge angle="0" end="87" id="92" is_curvilinear="1" segments="3" start="19" valueangle="0"/>
+      <edge angle="0" end="18" id="93" is_curvilinear="1" segments="3" start="86" valueangle="0"/>
+      <edge angle="0" end="88" id="94" is_curvilinear="1" segments="3" start="35" valueangle="0"/>
+      <edge angle="0" end="90" id="95" is_curvilinear="1" segments="3" start="88" valueangle="0"/>
+      <edge angle="0" end="93" id="96" is_curvilinear="1" segments="3" start="90" valueangle="0"/>
+      <edge angle="0" end="92" id="97" is_curvilinear="1" segments="3" start="93" valueangle="0"/>
+      <edge angle="0" end="91" id="98" is_curvilinear="1" segments="3" start="92" valueangle="0"/>
+      <edge angle="0" end="89" id="99" is_curvilinear="1" segments="3" start="91" valueangle="0"/>
+      <edge angle="0" end="33" id="100" is_curvilinear="1" segments="3" start="89" valueangle="0"/>
+      <edge angle="0" end="95" id="101" is_curvilinear="1" segments="3" start="47" valueangle="0"/>
+      <edge angle="0" end="96" id="102" is_curvilinear="1" segments="3" start="95" valueangle="0"/>
+      <edge angle="0" end="94" id="103" is_curvilinear="1" segments="3" start="96" valueangle="0"/>
+      <edge angle="0" end="100" id="104" is_curvilinear="1" segments="3" start="99" valueangle="0"/>
+      <edge angle="0" end="97" id="105" is_curvilinear="1" segments="3" start="100" valueangle="0"/>
+      <edge angle="0" end="34" id="106" is_curvilinear="1" segments="3" start="97" valueangle="0"/>
+      <edge angle="0" end="94" id="107" is_curvilinear="1" segments="3" start="98" valueangle="0"/>
+      <edge angle="0" end="31" id="108" is_curvilinear="1" segments="3" start="98" valueangle="0"/>
+      <edge angle="0" end="106" id="109" is_curvilinear="1" segments="3" start="82" valueangle="0"/>
+      <edge angle="0" end="102" id="110" is_curvilinear="1" segments="3" start="24" valueangle="0"/>
+      <edge angle="0" end="101" id="111" is_curvilinear="1" segments="3" start="102" valueangle="0"/>
+      <edge angle="0" end="101" id="112" is_curvilinear="1" segments="3" start="106" valueangle="0"/>
+      <edge angle="0" end="104" id="113" is_curvilinear="1" segments="3" start="106" valueangle="0"/>
+      <edge angle="0" end="110" id="114" is_curvilinear="1" segments="3" start="104" valueangle="0"/>
+      <edge angle="0" end="107" id="115" is_curvilinear="1" segments="3" start="111" valueangle="0"/>
+      <edge angle="0" end="105" id="116" is_curvilinear="1" segments="3" start="101" valueangle="0"/>
+      <edge angle="0" end="103" id="117" is_curvilinear="1" segments="3" start="102" valueangle="0"/>
+      <edge angle="0" end="108" id="118" is_curvilinear="1" segments="3" start="109" valueangle="0"/>
+      <edge angle="0" end="107" id="119" is_curvilinear="1" segments="3" start="108" valueangle="0"/>
+      <edge angle="0" end="85" id="120" is_curvilinear="1" segments="3" start="112" valueangle="0"/>
+      <edge angle="0" end="112" id="121" is_curvilinear="1" segments="3" start="107" valueangle="0"/>
+      <edge angle="0" end="25" id="122" is_curvilinear="1" segments="3" start="108" valueangle="0"/>
+      <edge angle="0" end="105" id="123" is_curvilinear="1" segments="3" start="111" valueangle="0"/>
+      <edge angle="0" end="112" id="124" is_curvilinear="1" segments="3" start="110" valueangle="0"/>
+      <edge angle="0" end="113" id="125" is_curvilinear="1" segments="3" start="115" valueangle="0"/>
+      <edge angle="0" end="116" id="126" is_curvilinear="1" segments="3" start="114" valueangle="0"/>
+      <edge angle="0" end="116" id="127" is_curvilinear="1" segments="3" start="115" valueangle="0"/>
+      <edge angle="0" end="113" id="128" is_curvilinear="1" segments="3" start="103" valueangle="0"/>
+      <edge angle="0" end="109" id="129" is_curvilinear="1" segments="3" start="114" valueangle="0"/>
+      <edge angle="0" end="117" id="130" is_curvilinear="1" segments="3" start="120" valueangle="0"/>
+      <edge angle="0" end="126" id="131" is_curvilinear="1" segments="3" start="120" valueangle="0"/>
+      <edge angle="0" end="128" id="132" is_curvilinear="1" segments="3" start="126" valueangle="0"/>
+      <edge angle="0" end="16" id="133" is_curvilinear="1" segments="3" start="128" valueangle="0"/>
+      <edge angle="0" end="128" id="134" is_curvilinear="1" segments="3" start="123" valueangle="0"/>
+      <edge angle="0" end="127" id="135" is_curvilinear="1" segments="3" start="123" valueangle="0"/>
+      <edge angle="0" end="121" id="136" is_curvilinear="1" segments="3" start="127" valueangle="0"/>
+      <edge angle="0" end="122" id="137" is_curvilinear="1" segments="3" start="121" valueangle="0"/>
+      <edge angle="0" end="122" id="138" is_curvilinear="1" segments="3" start="118" valueangle="0"/>
+      <edge angle="0" end="119" id="139" is_curvilinear="1" segments="3" start="118" valueangle="0"/>
+      <edge angle="0" end="125" id="140" is_curvilinear="1" segments="3" start="119" valueangle="0"/>
+      <edge angle="0" end="124" id="141" is_curvilinear="1" segments="3" start="125" valueangle="0"/>
+      <edge angle="0" end="123" id="142" is_curvilinear="1" segments="3" start="124" valueangle="0"/>
+      <edge angle="0" end="26" id="143" is_curvilinear="1" segments="3" start="124" valueangle="0"/>
+      <edge angle="0" end="118" id="144" is_curvilinear="1" segments="3" start="27" valueangle="0"/>
+      <edge angle="0" end="122" id="145" is_curvilinear="1" segments="3" start="117" valueangle="0"/>
+      <edge angle="0" end="42" id="146" is_curvilinear="1" segments="3" start="131" valueangle="0"/>
+      <edge angle="0" end="130" id="147" is_curvilinear="1" segments="3" start="131" valueangle="0"/>
+      <edge angle="0" end="129" id="148" is_curvilinear="1" segments="3" start="130" valueangle="0"/>
+      <edge angle="0" end="99" id="149" is_curvilinear="1" segments="3" start="38" valueangle="0"/>
+      <edge angle="0" end="46" id="150" is_curvilinear="1" segments="3" start="129" valueangle="0"/>
+      <edge angle="0" end="117" id="151" is_curvilinear="1" segments="3" start="77" valueangle="0"/>
+      <edge angle="0" end="87" id="152" is_curvilinear="1" segments="3" start="86" valueangle="0"/>
     </edges>
     <labels>
-      <label area="0" id="0" x="2.6023" y="8.77214"/>
-      <label area="0" id="1" x="8.3505" y="7.30257"/>
-      <label area="0" id="2" x="8.70163" y="3.36206"/>
-      <label area="0" id="3" x="6.36074" y="0.917128"/>
-      <label area="0" id="4" x="0.482485" y="0.227864"/>
-      <label area="0" id="5" x="6.35024" y="8.40949"/>
-      <label area="0" id="6" x="0.252761" y="6.28254"/>
-      <label area="0" id="7" x="2.61573" y="0.25655"/>
-      <label area="0" id="8" x="7.31501" y="1.53849"/>
-      <label area="0" id="9" x="3.27856" y="7.01646"/>
-      <label area="0" id="10" x="9.8848" y="7.5284"/>
-      <label area="0" id="11" x="5.77058" y="9.03361"/>
-      <label area="0" id="12" x="-0.0525346" y="2.06081"/>
-      <label area="0" id="13" x="3.94957" y="-0.0579506"/>
-      <label area="0" id="14" x="8.39635" y="1.24993"/>
-      <label area="0" id="15" x="0.250676" y="6.91877"/>
-      <label area="0" id="16" x="0.2443" y="3.36089"/>
-      <label area="0" id="17" x="-0.03625" y="5.70092"/>
-      <label area="0" id="18" x="11.2914" y="3.34563"/>
-      <label area="0" id="19" x="11.2601" y="3.04267"/>
-      <label area="0" id="20" x="10.4424" y="3.34795"/>
-      <label area="0" id="21" x="12.3262" y="3.34795"/>
+      <label area="0" id="0" valuex="2.6023" valuey="8.77214" x="2.6023" y="8.77214"/>
+      <label area="0" id="1" valuex="8.3505" valuey="7.30257" x="8.3505" y="7.30257"/>
+      <label area="0" id="2" valuex="8.70163" valuey="3.36206" x="8.70163" y="3.36206"/>
+      <label area="0" id="3" valuex="6.36074" valuey="0.917128" x="6.36074" y="0.917128"/>
+      <label area="0" id="4" valuex="0.482485" valuey="0.227864" x="0.482485" y="0.227864"/>
+      <label area="0" id="5" valuex="6.35024" valuey="8.40949" x="6.35024" y="8.40949"/>
+      <label area="0" id="6" valuex="0.252761" valuey="6.28254" x="0.252761" y="6.28254"/>
+      <label area="0" id="7" valuex="2.61573" valuey="0.25655" x="2.61573" y="0.25655"/>
+      <label area="0" id="8" valuex="7.31501" valuey="1.53849" x="7.31501" y="1.53849"/>
+      <label area="0" id="9" valuex="3.27856" valuey="7.01646" x="3.27856" y="7.01646"/>
+      <label area="0" id="10" valuex="9.8848" valuey="7.5284" x="9.8848" y="7.5284"/>
+      <label area="0" id="11" valuex="5.77058" valuey="9.03361" x="5.77058" y="9.03361"/>
+      <label area="0" id="12" valuex="-0.0525346" valuey="2.06081" x="-0.0525346" y="2.06081"/>
+      <label area="0" id="13" valuex="3.94957" valuey="-0.0579506" x="3.94957" y="-0.0579506"/>
+      <label area="0" id="14" valuex="8.39635" valuey="1.24993" x="8.39635" y="1.24993"/>
+      <label area="0" id="15" valuex="0.250676" valuey="6.91877" x="0.250676" y="6.91877"/>
+      <label area="0" id="16" valuex="0.2443" valuey="3.36089" x="0.2443" y="3.36089"/>
+      <label area="0" id="17" valuex="-0.03625" valuey="5.70092" x="-0.03625" y="5.70092"/>
+      <label area="0" id="18" valuex="11.2914" valuey="3.34563" x="11.2914" y="3.34563"/>
+      <label area="0" id="19" valuex="11.2601" valuey="3.04267" x="11.2601" y="3.04267"/>
+      <label area="0" id="20" valuex="10.4424" valuey="3.34795" x="10.4424" y="3.34795"/>
+      <label area="0" id="21" valuex="12.3262" valuey="3.34795" x="12.3262" y="3.34795"/>
     </labels>
   </geometry>
-
-  <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="heat" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="heat" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -348,6 +346,7 @@
               <boundary_edge id="33"/>
               <boundary_edge id="34"/>
               <boundary_edge id="35"/>
+              <boundary_edge id="94"/>
               <boundary_edge id="95"/>
               <boundary_edge id="96"/>
               <boundary_edge id="97"/>
@@ -362,32 +361,32 @@
               <boundary_edge id="106"/>
               <boundary_edge id="107"/>
               <boundary_edge id="108"/>
-              <boundary_edge id="109"/>
-              <boundary_edge id="111"/>
+              <boundary_edge id="110"/>
+              <boundary_edge id="117"/>
               <boundary_edge id="118"/>
-              <boundary_edge id="119"/>
-              <boundary_edge id="123"/>
+              <boundary_edge id="122"/>
+              <boundary_edge id="125"/>
               <boundary_edge id="126"/>
               <boundary_edge id="127"/>
               <boundary_edge id="128"/>
               <boundary_edge id="129"/>
-              <boundary_edge id="130"/>
+              <boundary_edge id="139"/>
               <boundary_edge id="140"/>
               <boundary_edge id="141"/>
-              <boundary_edge id="142"/>
+              <boundary_edge id="143"/>
               <boundary_edge id="144"/>
-              <boundary_edge id="145"/>
+              <boundary_edge id="146"/>
+              <boundary_edge id="147"/>
               <boundary_edge id="148"/>
               <boundary_edge id="149"/>
               <boundary_edge id="150"/>
-              <boundary_edge id="151"/>
-              <boundary_edge id="152"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="heat_convection_heat_transfer_coefficient" value="4"/>
-              <boundary_type key="heat_convection_external_temperature" value="294"/>
-              <boundary_type key="heat_radiation_emissivity" value="0"/>
               <boundary_type key="heat_heat_flux" value="0"/>
+              <boundary_type key="heat_radiation_emissivity" value="0"/>
+              <boundary_type key="heat_temperature" value="0"/>
+              <boundary_type key="heat_convection_external_temperature" value="294"/>
+              <boundary_type key="heat_convection_heat_transfer_coefficient" value="4"/>
               <boundary_type key="heat_radiation_ambient_temperature" value="0"/>
             </boundary_types>
           </boundary>
@@ -420,23 +419,24 @@
               <boundary_edge id="81"/>
               <boundary_edge id="85"/>
               <boundary_edge id="88"/>
-              <boundary_edge id="93"/>
-              <boundary_edge id="110"/>
+              <boundary_edge id="109"/>
+              <boundary_edge id="113"/>
               <boundary_edge id="114"/>
-              <boundary_edge id="115"/>
-              <boundary_edge id="121"/>
-              <boundary_edge id="125"/>
+              <boundary_edge id="120"/>
+              <boundary_edge id="124"/>
+              <boundary_edge id="130"/>
               <boundary_edge id="131"/>
               <boundary_edge id="132"/>
               <boundary_edge id="133"/>
-              <boundary_edge id="134"/>
-              <boundary_edge id="147"/>
+              <boundary_edge id="151"/>
+              <boundary_edge id="152"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="heat_convection_heat_transfer_coefficient" value="25"/>
-              <boundary_type key="heat_convection_external_temperature" value="258"/>
-              <boundary_type key="heat_radiation_emissivity" value="0"/>
               <boundary_type key="heat_heat_flux" value="0"/>
+              <boundary_type key="heat_radiation_emissivity" value="0"/>
+              <boundary_type key="heat_temperature" value="0"/>
+              <boundary_type key="heat_convection_external_temperature" value="258"/>
+              <boundary_type key="heat_convection_heat_transfer_coefficient" value="25"/>
               <boundary_type key="heat_radiation_ambient_temperature" value="0"/>
             </boundary_types>
           </boundary>
@@ -453,13 +453,13 @@
               <material_label id="18"/>
             </material_labels>
             <material_types>
-              <material_type key="heat_volume_heat" value="0"/>
-              <material_type key="heat_conductivity" value="0.6"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_density" value="0"/>
               <material_type key="heat_velocity_y" value="0"/>
+              <material_type key="heat_conductivity" value="0.6"/>
               <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_angular" value="0"/>
+              <material_type key="heat_density" value="0"/>
             </material_types>
           </material>
           <material id="2" name="Glass">
@@ -473,13 +473,13 @@
               <material_label id="21"/>
             </material_labels>
             <material_types>
-              <material_type key="heat_volume_heat" value="0"/>
-              <material_type key="heat_conductivity" value="0.14"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_density" value="0"/>
               <material_type key="heat_velocity_y" value="0"/>
+              <material_type key="heat_conductivity" value="0.14"/>
               <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_angular" value="0"/>
+              <material_type key="heat_density" value="0"/>
             </material_types>
           </material>
           <material id="3" name="Insulation">
@@ -493,26 +493,26 @@
               <material_label id="19"/>
             </material_labels>
             <material_types>
-              <material_type key="heat_volume_heat" value="0"/>
-              <material_type key="heat_conductivity" value="0.04"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_density" value="0"/>
               <material_type key="heat_velocity_y" value="0"/>
+              <material_type key="heat_conductivity" value="0.04"/>
               <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_angular" value="0"/>
+              <material_type key="heat_density" value="0"/>
             </material_types>
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="10"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NonlinearResidualNorm" field_value="0"/>
+          <field_item field_key="NonlinearRelativeChangeOfSolutions" field_value="0.1"/>
+          <field_item field_key="NonlinearDampingType" field_value="0"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonJacobianReuseRatio" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingFactorDecreaseRatio" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NonlinearStepsToIncreaseDampingFactor" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -522,8 +522,20 @@
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -532,28 +544,16 @@
       <problem_item problem_key="Frequency" problem_value="0"/>
       <problem_item problem_key="TimeMethod" problem_value="0"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeInitialStepSize" problem_value="0"/>
       <problem_item problem_key="TimeOrder" problem_value="1"/>
       <problem_item problem_key="TimeSteps" problem_value="2"/>
       <problem_item problem_key="TimeTotal" problem_value="1"/>
     </problem_config>
   </problem>
-
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
-    <item key="View_RulersFontFamily" value="Droid"/>
-    <item key="View_RulersFontPointSize" value="12"/>
-    <item key="View_PostFontFamily" value="Droid"/>
-    <item key="View_PostFontPointSize" value="16"/>
-    <item key="View_ZoomToMouse" value="1"/>
-    <item key="View_NodeSize" value="6"/>
-    <item key="View_EdgeWidth" value="2"/>
-    <item key="View_LabelSize" value="6"/>
-    <item key="View_ShowGrid" value="1"/>
     <item key="View_GridStep" value="0.05"/>
-    <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
-    <item key="View_ShowAxes" value="1"/>
     <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="0"/>
     <item key="View_ScalarView3DAngle" value="240"/>
@@ -564,55 +564,16 @@
     <item key="View_DeformScalar" value="1"/>
     <item key="View_DeformContour" value="1"/>
     <item key="View_DeformVector" value="1"/>
-    <item key="View_ColorBackgroundRed" value="255"/>
-    <item key="View_ColorBackgroundGreen" value="255"/>
-    <item key="View_ColorBackgroundBlue" value="255"/>
-    <item key="View_ColorGridRed" value="200"/>
-    <item key="View_ColorGridGreen" value="200"/>
-    <item key="View_ColorGridBlue" value="200"/>
-    <item key="View_ColorCrossRed" value="150"/>
-    <item key="View_ColorCrossGreen" value="150"/>
-    <item key="View_ColorCrossBlue" value="150"/>
-    <item key="View_ColorNodesRed" value="150"/>
-    <item key="View_ColorNodesGreen" value="0"/>
-    <item key="View_ColorNodesBlue" value="0"/>
-    <item key="View_ColorEdgesRed" value="0"/>
-    <item key="View_ColorEdgesGreen" value="0"/>
-    <item key="View_ColorEdgesBlue" value="150"/>
-    <item key="View_ColorLabelsRed" value="0"/>
-    <item key="View_ColorLabelsGreen" value="150"/>
-    <item key="View_ColorLabelsBlue" value="0"/>
-    <item key="View_ColorContoursRed" value="0"/>
-    <item key="View_ColorContoursGreen" value="0"/>
-    <item key="View_ColorContoursBlue" value="0"/>
-    <item key="View_ColorVectorsRed" value="0"/>
-    <item key="View_ColorVectorsGreen" value="0"/>
-    <item key="View_ColorVectorsBlue" value="0"/>
-    <item key="View_ColorInitialMeshRed" value="250"/>
-    <item key="View_ColorInitialMeshGreen" value="202"/>
-    <item key="View_ColorInitialMeshBlue" value="119"/>
-    <item key="View_ColorSolutionMeshRed" value="150"/>
-    <item key="View_ColorSolutionMeshGreen" value="70"/>
-    <item key="View_ColorSolutionMeshBlue" value="0"/>
-    <item key="View_ColorSelectedRed" value="150"/>
-    <item key="View_ColorSelectedGreen" value="0"/>
-    <item key="View_ColorSelectedBlue" value="0"/>
-    <item key="View_ColorHighlightedRed" value="250"/>
-    <item key="View_ColorHighlightedGreen" value="150"/>
-    <item key="View_ColorHighlightedBlue" value="0"/>
-    <item key="View_ColorCrossedRed" value="255"/>
-    <item key="View_ColorCrossedGreen" value="0"/>
-    <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value=""/>
+    <item key="View_ContourVariable" value="heat_temperature"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value=""/>
-    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_ScalarVariable" value="heat_temperature"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -620,16 +581,17 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1"/>
+    <item key="View_ScalarRangeMin" value="257.9598278837899"/>
+    <item key="View_ScalarRangeMax" value="293.9999998446866"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorVariable" value="heat_heat_flux"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -656,10 +618,12 @@
     <item key="View_ParticleMinimumStep" value="0"/>
     <item key="View_ParticleDragDensity" value="1.2041"/>
     <item key="View_ParticleDragCoefficient" value="0"/>
-    <item key="View_ParticleDragReferenceArea" value="1e-06"/>
+    <item key="View_ParticleDragReferenceArea" value="1e-6"/>
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ParticleP2PElectricForce" value="0"/>
+    <item key="View_ParticleP2PMagneticForce" value="0"/>
     <item key="View_ChartStartX" value="0"/>
     <item key="View_ChartStartY" value="0"/>
     <item key="View_ChartEndX" value="0"/>
@@ -669,21 +633,6 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_MeshAngleSegmentsCount" value="3"/>
-    <item key="View_MeshCurvilinearElements" value="1"/>
-    <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
-
 </problem:document>

@@ -1142,7 +1142,8 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
     if (!Agros2D::problem()->isSolved()) return;
 
     // edges
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->items()) {
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    {
         glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
         glLineWidth(3.0);
 
@@ -1150,47 +1151,56 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
         {
             if (edge->isStraight())
             {
-                FireSafety fs(edge->length(), edge->length()/2, 90);
-                QList<EnvelopePoint> points = fs.calculateArea();
+                if (Agros2D::problem()->hasField("heat"))
+                {
+                    FireSafety fs(edge->length(), edge->length()/2, 90);
+                    QList<EnvelopePoint> points = fs.calculateArea();
 
-                double d1 = edge->length() / 2;
+                    double d1 = edge->length() / 2;
 
-                Point dvector = edge->vector();
-                Point normalVector;
+                    Point dvector = edge->vector();
+                    Point normalVector;
 
-                double angle;
+                    double angle;
 
-                normalVector.x = dvector.y / edge->length();
-                normalVector.y = - dvector.x / edge->length();
-                Point p;
-                Point center;
-                center.x = (edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2;
-                center.y = (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2;
+                    normalVector.x = dvector.y / edge->length();
+                    normalVector.y = - dvector.x / edge->length();
+                    Point center((edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2,
+                                 (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2);
 
-                glEnable(GL_PROGRAM_POINT_SIZE);
-                glPointSize(5);
+                    // glEnable(GL_PROGRAM_POINT_SIZE);
+                    // glPointSize(5);
 
-                glBegin(GL_POLYGON);
-                // glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
-                foreach (EnvelopePoint point, points) {
+                    // blended rectangle
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                    p.x = center.x - point.position * dvector.x / edge->length();
-                    p.y = center.y - point.position * dvector.y / edge->length();
-                    p.x = p.x + point.distance *  normalVector.x;                     ;
-                    p.y = p.y + point.distance *  normalVector.y;
-                    glVertex2d(p.x, p.y);
+                    glColor4d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2], 0.5);
+
+                    glBegin(GL_POLYGON);
+                    // glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+                    foreach (EnvelopePoint point, points)
+                    {
+                        Point p(center.x - point.position * dvector.x / edge->length() + point.distance * normalVector.x,
+                                center.y - point.position * dvector.y / edge->length() + point.distance * normalVector.y);
+                        glVertex2d(p.x, p.y);
+                    }
+                    foreach (EnvelopePoint point, points)
+                    {
+                        Point p(center.x + point.position * dvector.x / edge->length() + point.distance * normalVector.x,
+                                center.y + point.position * dvector.y / edge->length() + point.distance * normalVector.y);
+                        glVertex2d(p.x, p.y);
+                    }
+                    // glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
+                    glEnd();
+                    // glPointSize(0);
+                    // glDisable(GL_PROGRAM_POINT_SIZE);
+
+                    glDisable(GL_BLEND);
                 }
-                foreach (EnvelopePoint point, points) {
-                    p.x = center.x + point.position * dvector.x / edge->length();
-                    p.y = center.y + point.position * dvector.y / edge->length();
-                    p.x = p.x + point.distance *  normalVector.x;                     ;
-                    p.y = p.y + point.distance *  normalVector.y;
-                    glVertex2d(p.x, p.y);
-                }
-                // glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
-                glEnd();
-                glPointSize(0);
-                glDisable(GL_PROGRAM_POINT_SIZE);
+
+                // selected line
+                glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
 
                 glBegin(GL_LINES);
                 glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
