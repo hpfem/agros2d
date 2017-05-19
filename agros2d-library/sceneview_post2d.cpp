@@ -48,6 +48,7 @@
 
 #include "pythonlab/pythonengine_agros.h"
 
+
 SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),
       m_listContours(-1),
