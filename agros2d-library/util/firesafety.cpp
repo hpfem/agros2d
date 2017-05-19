@@ -100,7 +100,7 @@ double FireSafety::newton(double position)
 
 QList<EnvelopePoint> FireSafety::calculateArea()
 {
-    int N = 100;
+    int N = 1000;
     double position = 0;
     double position_increment = m_width / N ;
 

@@ -48,6 +48,7 @@
 
 #include "pythonlab/pythonengine_agros.h"
 
+
 SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon2D(postHermes, parent),
       m_listContours(-1),
@@ -1150,52 +1151,68 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
         {
             if (edge->isStraight())
             {
-                FireSafety fs(edge->length(), edge->length()/2, 90);
-                QList<EnvelopePoint> points = fs.calculateArea();
+                {
+                    FireSafety fs(edge->length(), edge->length()/2, 90);
+                    QList<EnvelopePoint> points = fs.calculateArea();
 
-                double d1 = edge->length() / 2;
+                    double d1 = edge->length() / 2;
 
-                Point dvector = edge->vector();
-                Point normalVector;
+                    Point dvector = edge->vector();
+                    Point normalVector;
 
-                double angle;
+                    double angle;
 
-                normalVector.x = dvector.y / edge->length();
-                normalVector.y = - dvector.x / edge->length();
-                Point p;
-                Point center;
-                center.x = (edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2;
-                center.y = (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2;
+                    normalVector.x = dvector.y / edge->length();
+                    normalVector.y = - dvector.x / edge->length();
 
-                glEnable(GL_PROGRAM_POINT_SIZE);
-                glPointSize(5);
+                /*    if (((edge->nodeStart()->point().x >=  edge->nodeEnd()->point().x) && (edge->nodeStart()->point().y < edge->nodeEnd()->point().y)))
+                    {
+                         normalVector.x = - normalVector.x;
+                         normalVector.y = - normalVector.y;
+                    } */
 
-                glBegin(GL_POLYGON);
-                // glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
-                foreach (EnvelopePoint point, points) {
+                    Point p;
+                    Point center;
+                    center.x = (edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2;
+                    center.y = (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2;
 
-                    p.x = center.x - point.position * dvector.x / edge->length();
-                    p.y = center.y - point.position * dvector.y / edge->length();
-                    p.x = p.x + point.distance *  normalVector.x;                     ;
-                    p.y = p.y + point.distance *  normalVector.y;
-                    glVertex2d(p.x, p.y);
+                    glEnable(GL_PROGRAM_POINT_SIZE);
+                    glPointSize(5);
+
+                    glBegin(GL_LINE_STRIP);
+                    //glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+                    foreach (EnvelopePoint point, points) {
+
+                        p.x = center.x - point.position * dvector.x / edge->length();
+                        p.y = center.y - point.position * dvector.y / edge->length();
+                        p.x = p.x + point.distance *  normalVector.x;                     ;
+                        p.y = p.y + point.distance *  normalVector.y;
+                        glVertex2d(p.x, p.y);
+                    }
+
+                      for(int i = points.length() - 1; i >= 0 ; i--) {
+                        p.x = center.x + points.at(i).position * dvector.x / edge->length();
+                        p.y = center.y + points.at(i).position * dvector.y / edge->length();
+                        p.x = p.x + points.at(i).distance *  normalVector.x;                     ;
+                        p.y = p.y + points.at(i).distance *  normalVector.y;
+                        glVertex2d(p.x, p.y);
+                    }
+                   // glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
+                    glEnd();
+                    glPointSize(0);
+                    glDisable(GL_PROGRAM_POINT_SIZE);
+
+                    // spline
+
+
+
+                    // spline
+
+//                    glBegin(GL_LINES);
+//                    glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+//                    glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
+//                    glEnd();
                 }
-                foreach (EnvelopePoint point, points) {
-                    p.x = center.x + point.position * dvector.x / edge->length();
-                    p.y = center.y + point.position * dvector.y / edge->length();
-                    p.x = p.x + point.distance *  normalVector.x;                     ;
-                    p.y = p.y + point.distance *  normalVector.y;
-                    glVertex2d(p.x, p.y);
-                }
-                // glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
-                glEnd();
-                glPointSize(0);
-                glDisable(GL_PROGRAM_POINT_SIZE);
-
-                glBegin(GL_LINES);
-                glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
-                glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
-                glEnd();
             }
             else
             {
