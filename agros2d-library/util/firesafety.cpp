@@ -26,7 +26,7 @@ double FireSafety::fireCurve(double pv)
 
 double FireSafety::critical_intensity(double position, double d)
 {
-   // krivka pozaru
+    // krivka pozaru
     double epsilon = 1; // emisivita
     double T = fireCurve(m_pv); // Teplota dle krivky pozaru
     double I = epsilon * SIGMA * pow(T, 4); // Salava slozka
@@ -37,7 +37,7 @@ double FireSafety::critical_intensity(double position, double d)
     double Y = l / d;
 
 
-    if (d == 0) return 0;
+    // if (d == 0) return 0;
     double phi_1 = 1/(2 * M_PI) * (X / sqrt(1 + X * X) * atan( Y / sqrt(1 + X * X)) +
                                    ( Y /  sqrt(1 + Y * Y) * atan( X / sqrt(1 + Y * Y)))) * 2;
 
@@ -55,72 +55,96 @@ double FireSafety::critical_intensity(double position, double d)
 }
 
 
-double FireSafety::newton(double position)
+double FireSafety::newton(double position, double estimate = 10)
 {
     double x = 1e-6;
-    double dx = 1e-4;
-    double distance = x;
+    double dx = 1e-5;
+    double distance = estimate;
+    bool found = false ;
 
-    for(int i = 0; i < 2; i++)
     {
+        double x = estimate;
+        double dx = 1e-5;
+        double distance = estimate;
+
         double I0 = 10;
         int j = 0;
-        while ((abs(I0) > 1e-3) && (j < 1000))
+        while ((abs(I0) > 1e-4) && (j < 1000))
         {
             j++;
             I0 = critical_intensity(position, x);
             double dI0 = (critical_intensity(position, x + dx) - I0) / dx;
-            if (((-I0 / dI0) > 0.5) || ((x - I0 / dI0) < 0 ))
-                x = x + 0.1;
-            else
-                x = x - I0 / dI0;            
+            x = x - I0 / dI0;
+
         }
 
         if (j < 1000)
-        {            
+        {
             if (abs(distance - x) > 1e-10)
             {
-                EnvelopePoint point;
-
-                point.distance = x;
-                point.position = position;
-                m_envelope.append(point);
+                return x;
             }
         }
-
-        x = x + 1;
     }
-
-    return x;
+    return -1;
 }
 
 QList<EnvelopePoint> FireSafety::calculateArea()
 {
-    int N = 100;
-    /*
+    int N = 150;
+
     QList<double> positions;
-    for (int i = 0; i < N; i++)
-        positions.append(i*m_width / (N-1));
-    */
-    QList<double> positions;
-    for (int i = 0; i < N; i++)
-    {
-        double xl = (double) i / (N-1) * 10.0;
-        double yl = xl * xl / 10 * 10;
-        double pos = m_width - m_width * yl;
-        // qInfo() << xl << yl << pos;
-        positions.append(pos);
-    }
+
+
+    //    QList<double> positions;
+    //    for (int i = 0; i < N; i++)
+    //    {
+    //        double xl = (double) i / (N-1) * 10.0;
+    //        double yl = xl * xl / 10 * 10;
+    //        double pos = m_width - m_width * yl;
+    //        // qInfo() << xl << yl << pos;
+    //        positions.append(pos);
+    //    }
 
     EnvelopePoint point;
+
+    double step = m_width / (N-1);
+    point.position = 0;
+
+    double estimate = m_width / 4;
+    for(int i = 0; i < N; i++)
+    {
+        if(m_envelope.length() > 0)
+            estimate = m_envelope.last().distance;
+
+        if (step < 1e-3)
+        {
+            step = - m_width / (N-1);
+            point.position += step;
+            estimate = m_envelope.last().distance / 2;
+        }
+
+
+        point.distance = newton(point.position, estimate);
+
+        if( point.distance != -1)
+        {
+            m_envelope.append(point);
+            point.position += step;
+        }
+        else
+        {
+            point.position -= step;
+            step = step / 2;
+        }
+        qInfo() << step;
+        qInfo() << i;
+    }
+
+    // add end point
     point.position = m_width / 2;
     point.distance = 0;
-
-    // append middle point
     m_envelope.append(point);
-
-    for(int i = 0; i < N; i++)
-        newton(positions[i]);
 
     sortEnvelope();
     return m_envelope;
@@ -128,7 +152,7 @@ QList<EnvelopePoint> FireSafety::calculateArea()
 
 bool FireSafety::compare(const EnvelopePoint &s1, const EnvelopePoint &s2)
 {
-    return s1.distance < s2.distance; // This is just an example
+    return s1.distance < s2.distance;
 }
 
 

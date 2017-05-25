@@ -14,7 +14,7 @@ class FireSafety
 public:    
     FireSafety(double width, double height, double pv);
     double critical_intensity(double position, double d);
-    double newton(double position);
+    double newton(double position, double estimate);
     double fireCurve(double T);
     QList<EnvelopePoint> calculateArea();
     static bool compare(const EnvelopePoint &s1, const EnvelopePoint &s2);
