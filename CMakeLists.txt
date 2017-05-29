@@ -15,13 +15,12 @@ else(${CMAKE_CL_64})
 endif(${CMAKE_CL_64})
 
 # Policy handling
+cmake_policy(PUSH)
 if(POLICY CMP0020)
-  cmake_policy(PUSH)
   cmake_policy(SET CMP0020 OLD)
 endif()
 
 if (POLICY CMP0043)
-    cmake_policy(PUSH)
     cmake_policy(SET CMP0043 OLD)
 endif (POLICY CMP0043)
 
@@ -143,7 +142,7 @@ IF (WITH_OPENMP)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 ENDIF()
 IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated -Wno-dev")
   INCLUDE_DIRECTORIES(/usr/include/google)  
 ENDIF()
 
@@ -240,7 +239,7 @@ ADD_SUBDIRECTORY(agros2d-solver)
 ADD_SUBDIRECTORY(agros2d-generator)
 ADD_SUBDIRECTORY(agros2d-remote)
 ADD_SUBDIRECTORY(solver-external)
-#ADD_SUBDIRECTORY(agros2d-forms)
+ADD_SUBDIRECTORY(agros2d-forms)
 
 message("\nAgros2D Configuration results")
 message("---------------------")
@@ -352,10 +351,4 @@ add_info_files(${info})
 add_custom_target(other SOURCES ${info})
 
 # Policy handling
-if(POLICY CMP0020)
-  cmake_policy(POP)
-endif()
-
-if (POLICY CMP0043)
-    cmake_policy(POP)
-endif (POLICY CMP0043)
+cmake_policy(POP)

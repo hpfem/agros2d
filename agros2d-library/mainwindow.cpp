@@ -514,8 +514,13 @@ void MainWindow::createMenus()
     mnuCustomForms = new QMenu(tr("Custom forms"), this);
     mnuTools->addMenu(mnuCustomForms);
     readCustomScripts(mnuCustomForms, consoleView, this);
-    // mnuCustomForms->addSeparator();
-    // readCustomForms(mnuCustomForms);
+    // read custom tools
+    mnuTools->addSeparator();
+    mnuCustomTools = new QMenu(tr("Custom tools"), this);
+    mnuTools->addMenu(mnuCustomTools);
+    readCustomTools(mnuCustomTools);
+    if (mnuCustomTools->children().count() == 0)
+        mnuCustomTools->setVisible(false);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);

@@ -1,3 +1,22 @@
+// This file is part of Agros2D.
+//
+// Agros2D is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// Agros2D is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+//
+// hp-FEM group (http://hpfem.org/)
+// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
+// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
 #include "util.h"
 #include <cmath>
 #include <iostream>
@@ -91,54 +110,65 @@ double FireSafety::newton(double position, double estimate = 10)
 
 QList<EnvelopePoint> FireSafety::calculateArea()
 {
-    int N = 150;
-
-    QList<double> positions;
-
-
-    //    QList<double> positions;
-    //    for (int i = 0; i < N; i++)
-    //    {
-    //        double xl = (double) i / (N-1) * 10.0;
-    //        double yl = xl * xl / 10 * 10;
-    //        double pos = m_width - m_width * yl;
-    //        // qInfo() << xl << yl << pos;
-    //        positions.append(pos);
-    //    }
-
+    int N = 100;
     EnvelopePoint point;
 
+    double max_step = m_width / (N-1);
+    double min_step = m_width / (N-1) / 1000;
     double step = m_width / (N-1);
-    point.position = 0;
-
     double estimate = m_width / 4;
-    for(int i = 0; i < N; i++)
+    int i = 0;
+    double position = 0;
+
+    while (step > min_step)
     {
-        if(m_envelope.length() > 0)
+        i++;
+        if (m_envelope.length() > 0)
             estimate = m_envelope.last().distance;
 
-        if (step < 1e-3)
+        point.distance = newton(position, estimate);
+
+        if (point.distance != -1)
         {
-            step = - m_width / (N-1);
-            point.position += step;
-            estimate = m_envelope.last().distance / 2;
-        }
-
-
-        point.distance = newton(point.position, estimate);
-
-        if( point.distance != -1)
-        {
+            point.position = position;
             m_envelope.append(point);
-            point.position += step;
+            position += step;
         }
         else
         {
-            point.position -= step;
+            position -= step;
             step = step / 2;
         }
-        qInfo() << step;
-        qInfo() << i;
+    }
+
+
+    step = - step * 2;
+
+    while((position - m_width / 2) > 2 * abs(step))
+    {
+        estimate = m_envelope.last().distance / 2;
+        position += step;
+        point.distance = newton(position, estimate);
+
+        if( point.distance != -1)
+        {
+            point.position = position;
+            m_envelope.append(point);
+            if (abs(step)  <  m_width / (N-1))
+            {
+                step = step * 2;
+            }
+            else
+            {
+                step = - m_width / (N-1);
+            }
+            position += step;
+        }
+        else
+        {
+            position -= step;
+            step = step / 2;
+        }
     }
 
     // add end point

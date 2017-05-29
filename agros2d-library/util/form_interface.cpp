@@ -23,12 +23,12 @@
 #include "util.h"
 
 // read forms
-void readCustomForms(QMenu *menu)
+void readCustomTools(QMenu *menu)
 {
     QDir dir(datadir() + "/libs/");
 
     QStringList filter;
-    filter << "*agros2d_forms_*";
+    filter << "*tool_*";
     QStringList list = dir.entryList(filter);
 
     foreach (QString filename, list)
@@ -52,7 +52,7 @@ void readCustomForms(QMenu *menu)
             }
 
             assert(loader->instance());
-            FormInterface *form = qobject_cast<FormInterface *>(loader->instance());
+            ToolInterface *form = qobject_cast<ToolInterface *>(loader->instance());
             delete loader;
 
             if (form)
