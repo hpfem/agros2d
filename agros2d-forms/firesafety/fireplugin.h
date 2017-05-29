@@ -56,7 +56,7 @@ protected:
 private:
 };
 
-class AGROS_LIBRARY_API ToolFireSafety : public ToolInterface
+class AGROS_UTIL_API ToolFireSafety : public ToolInterface
 {
     Q_OBJECT
     Q_INTERFACES(ToolInterface)

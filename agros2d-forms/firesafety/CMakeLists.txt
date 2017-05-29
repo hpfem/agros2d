@@ -1,4 +1,5 @@
 PROJECT(tool_fire_safety)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAGROS_UTIL_DLL")
 
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/pythonlab-library)
@@ -20,8 +21,6 @@ ADD_DEFINITIONS(-DQT_DLL)
 
 SET(HEADERS fireplugin.cpp firesafety.cpp )
 SET(SOURCES fireplugin.h firesafety.h )
-#SET(HEADERS firesafety.cpp )
-#SET(SOURCES firesafety.h )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES})
 QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets Svg UiTools PrintSupport OpenGL)
