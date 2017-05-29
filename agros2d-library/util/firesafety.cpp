@@ -94,25 +94,16 @@ QList<EnvelopePoint> FireSafety::calculateArea()
     int N = 100;
 
     QList<double> positions;
-
-
-    //    QList<double> positions;
-    //    for (int i = 0; i < N; i++)
-    //    {
-    //        double xl = (double) i / (N-1) * 10.0;
-    //        double yl = xl * xl / 10 * 10;
-    //        double pos = m_width - m_width * yl;
-    //        // qInfo() << xl << yl << pos;
-    //        positions.append(pos);
-    //    }
-
     EnvelopePoint point;
 
+    double max_step = m_width / (N-1);
+    double min_step = m_width / (N-1) / 1000;
     double step = m_width / (N-1);
     double estimate = m_width / 4;
     int i = 0;
     double position = 0;
-    while(step > 1e-3)
+
+    while(step > min_step)
     {
         i++;
         if(m_envelope.length() > 0)
@@ -138,7 +129,7 @@ QList<EnvelopePoint> FireSafety::calculateArea()
 
     while((position - m_width / 2) > 2 * abs(step))
     {
-        estimate = m_envelope.last().distance / 4;
+        estimate = m_envelope.last().distance / 2;
         position += step;
         point.distance = newton(position, estimate);
 
