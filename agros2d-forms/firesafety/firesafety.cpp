@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include "firesafety.h"
+#include "hermes2d.h"
 
 using namespace std;
 
@@ -29,17 +30,17 @@ const double FireSafety::I0_LIMIT = 18500;
 const double FireSafety::SIGMA = 5.67e-8;
 
 
-FireSafety::FireSafety(double width, double height, double pv)
-{
-    m_width = width;
-    m_height = height;
-    m_pv = pv;
+FireSafety::FireSafety(double width, double height, double pv, FireSafety::FireCurve fireCurve, double increase) :
+    m_width(width), m_height(height), m_pv(pv), m_fireCurve(fireCurve), m_increase(increase)
+{    
 }
 
 double FireSafety::fireCurve(double pv)
 {
-    double T = 20 + 345 * log10(8 * m_pv + 1) + 273;
-    return T;
+    if (m_fireCurve == FireCurve_ISO)
+        return (20 + 345 * log10(8 * m_pv + 1) + 273);
+    else
+        assert(0);
 }
 
 

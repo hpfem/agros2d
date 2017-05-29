@@ -129,7 +129,7 @@ void SceneViewFireSafety::paintGeometry()
             if (edge->isSelected())
             {
                 // fire safety
-                FireSafety fs(edge->length(), 3, 90);
+                FireSafety fs(edge->length(), 0.3, 90, FireSafety::FireCurve_ISO, 0.0);
                 QList<EnvelopePoint> points = fs.calculateArea();
 
                 Point dvector = edge->vector();
