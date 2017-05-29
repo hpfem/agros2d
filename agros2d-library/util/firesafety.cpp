@@ -91,7 +91,7 @@ double FireSafety::newton(double position, double estimate = 10)
 
 QList<EnvelopePoint> FireSafety::calculateArea()
 {
-    int N = 150;
+    int N = 100;
 
     QList<double> positions;
 
@@ -109,36 +109,58 @@ QList<EnvelopePoint> FireSafety::calculateArea()
     EnvelopePoint point;
 
     double step = m_width / (N-1);
-    point.position = 0;
-
     double estimate = m_width / 4;
-    for(int i = 0; i < N; i++)
+    int i = 0;
+    double position = 0;
+    while(step > 1e-3)
     {
+        i++;
         if(m_envelope.length() > 0)
             estimate = m_envelope.last().distance;
 
-        if (step < 1e-3)
-        {
-            step = - m_width / (N-1);
-            point.position += step;
-            estimate = m_envelope.last().distance / 2;
-        }
-
-
-        point.distance = newton(point.position, estimate);
+        point.distance = newton(position, estimate);
 
         if( point.distance != -1)
         {
+            point.position = position;
             m_envelope.append(point);
-            point.position += step;
+            position += step;
         }
         else
         {
-            point.position -= step;
+            position -= step;
             step = step / 2;
         }
-        qInfo() << step;
-        qInfo() << i;
+    }
+
+
+    step = - step * 2;
+
+    while((position - m_width / 2) > 2 * abs(step))
+    {
+        estimate = m_envelope.last().distance / 4;
+        position += step;
+        point.distance = newton(position, estimate);
+
+        if( point.distance != -1)
+        {
+            point.position = position;
+            m_envelope.append(point);
+            if (abs(step)  <  m_width / (N-1))
+            {
+                step = step * 2;
+            }
+            else
+            {
+                step = - m_width / (N-1);
+            }
+            position += step;
+        }
+        else
+        {
+            position -= step;
+            step = step / 2;
+        }
     }
 
     // add end point
