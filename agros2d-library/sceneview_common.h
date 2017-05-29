@@ -43,7 +43,7 @@ namespace Module
     class LocalVariable;
 }
 
-class SceneViewCommon : public QGLWidget
+class AGROS_LIBRARY_API SceneViewCommon : public QGLWidget
 {
     Q_OBJECT
 

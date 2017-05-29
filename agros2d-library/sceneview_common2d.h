@@ -24,7 +24,7 @@
 
 #include "sceneview_post.h"
 
-class SceneViewCommon2D : public SceneViewPostInterface
+class AGROS_LIBRARY_API SceneViewCommon2D : public SceneViewPostInterface
 {
     Q_OBJECT
 
