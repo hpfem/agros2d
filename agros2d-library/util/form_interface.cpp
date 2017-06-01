@@ -63,7 +63,12 @@ void QActionTool::openCustomTool()
 // read forms
 void readCustomTools(QMenu *menu)
 {
+#ifdef Q_WS_X11
     QDir dir(datadir() + "/libs/");
+#endif
+#ifdef Q_WS_WIN
+    QDir dir(datadir() + "/");
+#endif
 
     QStringList filter;
     filter << "*tool_*";
