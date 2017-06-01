@@ -19,8 +19,46 @@
 
 #include "util/form_interface.h"
 #include "util/form_script.h"
+#include "mainwindow.h"
 
 #include "util.h"
+
+QActionTool::QActionTool(const QString &text, const QString &fn, QObject *parent) : QAction(text, parent)
+{
+    setData(fn);
+    connect(this, SIGNAL(triggered()), this, SLOT(openCustomTool()));
+}
+
+void QActionTool::openCustomTool()
+{
+    if (QFile::exists(data().toString()))
+    {
+        QPluginLoader *loader = new QPluginLoader(data().toString());
+
+        if (!loader)
+        {
+            throw AgrosException(QObject::tr("Could not find '%1'").arg(data().toString()));
+        }
+
+        if (!loader->load())
+        {
+            qInfo() << loader->errorString();
+            delete loader;
+            throw AgrosException(QObject::tr("Could not load '%1'. %2").arg(data().toString()).arg(loader->errorString()));
+        }
+
+        assert(loader->instance());
+        ToolInterface *form = qobject_cast<ToolInterface *>(loader->instance());
+        delete loader;
+
+        if (form)
+        {
+            // show form
+            form->show();
+            delete form;
+        }
+    }
+}
 
 // read forms
 void readCustomTools(QMenu *menu)
@@ -31,35 +69,35 @@ void readCustomTools(QMenu *menu)
     filter << "*tool_*";
     QStringList list = dir.entryList(filter);
 
+    if (list.isEmpty())
+        menu->setVisible(false);
+
     foreach (QString filename, list)
     {
         QString fn = QString("%1/%2").arg(dir.absolutePath()).arg(filename);
-        if (QFile::exists(fn))
+
+        QPluginLoader *loader = new QPluginLoader(fn);
+
+        if (!loader)
         {
-            QPluginLoader *loader = new QPluginLoader(fn);
+            throw AgrosException(QObject::tr("Could not find '%1'").arg(fn));
+        }
 
-            if (!loader)
-            {
-                throw AgrosException(QObject::tr("Could not find '%1'").arg(fn));
-            }
-
-
-            if (!loader->load())
-            {
-                qDebug() << loader->errorString();
-                delete loader;
-                throw AgrosException(QObject::tr("Could not load '%1'. %2").arg(fn).arg(loader->errorString()));
-            }
-
-            assert(loader->instance());
-            ToolInterface *form = qobject_cast<ToolInterface *>(loader->instance());
+        if (!loader->load())
+        {
+            qInfo() << loader->errorString();
             delete loader;
+            throw AgrosException(QObject::tr("Could not load '%1'. %2").arg(fn).arg(loader->errorString()));
+        }
 
-            if (form)
-            {
-                qDebug() << QString("Form '%1' loaded.").arg(form->formId());
-                menu->addAction(form->action());
-            }
+        assert(loader->instance());
+        ToolInterface *form = qobject_cast<ToolInterface *>(loader->instance());
+        delete loader;
+
+        if (form)
+        {
+            menu->addAction(new QActionTool(form->formName(), fn));
+            delete form;
         }
     }
 }

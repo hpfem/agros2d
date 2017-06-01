@@ -26,16 +26,20 @@
 
 using namespace std;
 
-const double FireSafety::I0_LIMIT = 18500;
 const double FireSafety::SIGMA = 5.67e-8;
 
-
-FireSafety::FireSafety(double width, double height, double pv, FireSafety::FireCurve fireCurve, double increase) :
-    m_width(width), m_height(height), m_pv(pv), m_fireCurve(fireCurve), m_increase(increase)
-{    
+FireProperty::FireProperty(double width, double height, double pv, FireCurve fireCurve, double i0, double eps, double increase) :
+            m_width(width), m_height(height), m_pv(pv), m_fireCurve(fireCurve), m_i0(i0), m_eps(eps), m_increase(increase)
+{
+    m_fs = new FireSafety(this);
 }
 
-double FireSafety::fireCurve(double pv)
+FireProperty::~FireProperty()
+{
+    delete m_fs;
+}
+
+double FireProperty::fireCurveValue()
 {
     if (m_fireCurve == FireCurve_ISO)
         return (20 + 345 * log10(8 * m_pv + 1) + 273);
@@ -44,15 +48,18 @@ double FireSafety::fireCurve(double pv)
 }
 
 
+FireSafety::FireSafety(FireProperty fp) : m_fp(fp)
+{    
+}
+
 double FireSafety::critical_intensity(double position, double d)
 {
     // krivka pozaru
-    double epsilon = 1; // emisivita
-    double T = fireCurve(m_pv); // Teplota dle krivky pozaru
-    double I = epsilon * SIGMA * pow(T, 4); // Salava slozka
+    double T = m_fp.fireCurve(); // Teplota dle krivky pozaru
+    double I = m_fp.emisivity() * SIGMA * pow(T, 4); // Salava slozka
 
-    double l = m_width / 2   +  position;    // pozice horizontalni
-    double h = m_height / 2;     // pozice vertikalni ve 2D vzdy polovina vysky
+    double l = m_fp.width() / 2   +  position;    // pozice horizontalni
+    double h = m_fp.height() / 2;     // pozice vertikalni ve 2D vzdy polovina vysky
     double X = h / d;
     double Y = l / d;
 
@@ -61,7 +68,7 @@ double FireSafety::critical_intensity(double position, double d)
     double phi_1 = 1/(2 * M_PI) * (X / sqrt(1 + X * X) * atan( Y / sqrt(1 + X * X)) +
                                    ( Y /  sqrt(1 + Y * Y) * atan( X / sqrt(1 + Y * Y)))) * 2;
 
-    l =  m_width / 2   -  position;    // pozice horizontalni
+    l =  m_fp.width() / 2 -  position;    // pozice horizontalni
 
     X = h / d;
     Y = l / d;
@@ -71,7 +78,7 @@ double FireSafety::critical_intensity(double position, double d)
                                    ( Y /  sqrt(1 + Y * Y) * atan( X / sqrt(1 + Y * Y)))) * 2;
 
     double I0 = I * (phi_2 + phi_1);
-    return  (I0 - I0_LIMIT);
+    return  (I0 - m_fp.i0());
 }
 
 
@@ -114,10 +121,10 @@ QList<EnvelopePoint> FireSafety::calculateArea()
     int N = 100;
     EnvelopePoint point;
 
-    double max_step = m_width / (N-1);
-    double min_step = m_width / (N-1) / 1000;
-    double step = m_width / (N-1);
-    double estimate = m_width / 4;
+    double max_step = m_fp.width() / (N-1);
+    double min_step = m_fp.width() / (N-1) / 1000;
+    double step = m_fp.width() / (N-1);
+    double estimate = m_fp.width() / 4;
     int i = 0;
     double position = 0;
 
@@ -145,23 +152,23 @@ QList<EnvelopePoint> FireSafety::calculateArea()
 
     step = - step * 2;
 
-    while((position - m_width / 2) > 2 * abs(step))
+    while ((position - m_fp.width() / 2) > 2 * abs(step))
     {
         estimate = m_envelope.last().distance / 2;
         position += step;
         point.distance = newton(position, estimate);
 
-        if( point.distance != -1)
+        if (point.distance != -1)
         {
             point.position = position;
             m_envelope.append(point);
-            if (abs(step)  <  m_width / (N-1))
+            if (abs(step)  <  m_fp.width() / (N-1))
             {
                 step = step * 2;
             }
             else
             {
-                step = - m_width / (N-1);
+                step = - m_fp.width() / (N-1);
             }
             position += step;
         }
@@ -173,7 +180,7 @@ QList<EnvelopePoint> FireSafety::calculateArea()
     }
 
     // add end point
-    point.position = m_width / 2;
+    point.position = m_fp.width() / 2;
     point.distance = 0;
     m_envelope.append(point);
 

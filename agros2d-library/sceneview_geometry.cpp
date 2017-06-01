@@ -44,7 +44,7 @@
 
 SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent)
     : SceneViewCommon2D(NULL, parent),
-      m_sceneMode(SceneGeometryMode_OperateOnNodes), m_snapToGrid(true), m_selectRegion(false), m_selectRegionPos(QPointF())
+      m_sceneMode(SceneGeometryMode_OperateOnNodes), m_snapToGrid(true), m_selectRegion(false), m_selectRegionPos(QPointF()), m_backgroundTexture(-1)
 {
     createActionsGeometry();
     createMenuGeometry();
@@ -198,7 +198,8 @@ void SceneViewPreprocessor::clear()
 
     m_selectRegion = false;
 
-    deleteTexture(m_backgroundTexture);
+    if (m_backgroundTexture != -1)
+        deleteTexture(m_backgroundTexture);
     m_backgroundTexture = -1;
 
     m_sceneMode = SceneGeometryMode_OperateOnNodes;

@@ -21,9 +21,6 @@
 
 #include "scene.h"
 #include "scenenode.h"
-#include "sceneedge.h"
-
-#include "firesafety.h"
 
 #include "util/constants.h"
 #include "util/global.h"
@@ -43,6 +40,8 @@ void SceneViewFireSafety::clear()
 {
     SceneViewCommon2D::clear();
     SceneViewCommon::refresh();
+
+    doZoomBestFit();
 }
 
 void SceneViewFireSafety::refresh()
@@ -57,8 +56,6 @@ void SceneViewFireSafety::paintGL()
 
     glClearColor(COLORBACKGROUND[0], COLORBACKGROUND[1], COLORBACKGROUND[2], 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glDisable(GL_DEPTH_TEST);
 
     // geometry
     paintGeometry();
@@ -126,11 +123,13 @@ void SceneViewFireSafety::paintGeometry()
             glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
             glEnd();
 
-            if (edge->isSelected())
+            foreach (SceneEdge *edge, m_properties.keys())
             {
+                FireProperty prop =  m_properties[edge];
+
                 // fire safety
-                FireSafety fs(edge->length(), 0.3, 90, FireSafety::FireCurve_ISO, 0.0);
-                QList<EnvelopePoint> points = fs.calculateArea();
+                FireSafety fs(prop);
+                // QList<EnvelopePoint> points = fs.calculateArea();
 
                 Point dvector = edge->vector();
                 Point normalVector(dvector.y / edge->length(), - dvector.x / edge->length());
@@ -141,23 +140,6 @@ void SceneViewFireSafety::paintGeometry()
                 // blended rectangle
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-                //                    glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
-                //                    glPointSize(8.0);
-                //                    glBegin(GL_POINTS);
-                //                    for (int i = 0; i < points.count(); i++)
-                //                    {
-                //                        glPointSize(4.0 + i);
-                //                        EnvelopePoint point = points[i];
-
-                //                        // left point
-                //                        Point p(center.x - point.position * dvector.x / edge->length() + point.distance * normalVector.x,
-                //                                  center.y - point.position * dvector.y / edge->length() + point.distance * normalVector.y);
-                //                        glVertex2d(p.x, p.y);
-                //                    }
-                //                    glEnd();
-
 
                 glColor4d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2], 0.4);
                 glBegin(GL_POLYGON);
@@ -204,23 +186,29 @@ ToolFireSafety::ToolFireSafety(QWidget *parent) : ToolInterface(parent)
     setWindowTitle(tr("Fire Safety"));
     setModal(true);
 
-    actShow = new QAction(tr("Fire Safety"), this);
-    connect(actShow, SIGNAL(triggered()), this, SLOT(show()));
-
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     // connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
     sceneViewFireSafety = new SceneViewFireSafety(this);
 
-    QGridLayout *layoutMain = new QGridLayout();
-    layoutMain->addWidget(sceneViewFireSafety, 0, 0);
+    QTreeWidget *treeWindows = new QTreeWidget(this);
+
+    QHBoxLayout *layoutMain = new QHBoxLayout();
+    layoutMain->addWidget(treeWindows);
+    layoutMain->addWidget(sceneViewFireSafety, 1);
 
     QVBoxLayout *layoutAll = new QVBoxLayout();
     layoutAll->addLayout(layoutMain, 1);
     layoutAll->addWidget(buttonBox);
 
     setLayout(layoutAll);
+    setMinimumSize(800, 450);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ToolFireSafety/Geometry", saveGeometry()).toByteArray());
+
+    sceneViewFireSafety->doZoomBestFit();
 }
 
 ToolFireSafety::~ToolFireSafety()
@@ -229,27 +217,24 @@ ToolFireSafety::~ToolFireSafety()
     settings.setValue("ToolFireSafety/Geometry", saveGeometry());
 }
 
-QAction *ToolFireSafety::action()
-{
-    return actShow;
-}
-
-int ToolFireSafety::show()
-{
-    QSettings settings;
-    restoreGeometry(settings.value("ToolFireSafety/Geometry", saveGeometry()).toByteArray());
-
-    sceneViewFireSafety->doZoomBestFit();
-
-    return exec();
-}
-
 void ToolFireSafety::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() != Qt::Key_Escape)
         QDialog::keyPressEvent(event);
 }
 
+
+int ToolFireSafety::show()
+{
+    sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(3),
+                                     FireProperty(Agros2D::scene()->edges->at(3)->length(), 3.0, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
+    sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(4),
+                                     FireProperty(Agros2D::scene()->edges->at(4)->length(), 1.0, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
+    sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(6),
+                                     FireProperty(Agros2D::scene()->edges->at(6)->length(), 0.4, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
+
+    return exec();
+}
 
 #if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(tool_fire_safety, ToolFireSafety)
