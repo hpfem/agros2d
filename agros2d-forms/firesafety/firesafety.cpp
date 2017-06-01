@@ -1,8 +1,28 @@
+// This file is part of Agros2D.
+//
+// Agros2D is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// Agros2D is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+//
+// hp-FEM group (http://hpfem.org/)
+// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
+// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
 #include "util.h"
 #include <cmath>
 #include <iostream>
 
 #include "firesafety.h"
+#include "hermes2d.h"
 
 using namespace std;
 
@@ -10,17 +30,17 @@ const double FireSafety::I0_LIMIT = 18500;
 const double FireSafety::SIGMA = 5.67e-8;
 
 
-FireSafety::FireSafety(double width, double height, double pv)
-{
-    m_width = width;
-    m_height = height;
-    m_pv = pv;
+FireSafety::FireSafety(double width, double height, double pv, FireSafety::FireCurve fireCurve, double increase) :
+    m_width(width), m_height(height), m_pv(pv), m_fireCurve(fireCurve), m_increase(increase)
+{    
 }
 
 double FireSafety::fireCurve(double pv)
 {
-    double T = 20 + 345 * log10(8 * m_pv + 1) + 273;
-    return T;
+    if (m_fireCurve == FireCurve_ISO)
+        return (20 + 345 * log10(8 * m_pv + 1) + 273);
+    else
+        assert(0);
 }
 
 
@@ -103,15 +123,16 @@ QList<EnvelopePoint> FireSafety::calculateArea()
     int i = 0;
     double position = 0;
 
-    while(step > min_step)
+
+    while (step > min_step)
     {
         i++;
-        if(m_envelope.length() > 0)
-            estimate = m_envelope.last().distance;
+        if (m_envelope.length() > 0)
+        estimate = m_envelope.last().distance;
 
         point.distance = newton(position, estimate);
 
-        if( point.distance != -1)
+        if (point.distance != -1)
         {
             point.position = position;
             m_envelope.append(point);
@@ -124,8 +145,8 @@ QList<EnvelopePoint> FireSafety::calculateArea()
         }
     }
 
-
     step = - step * 2;
+
 
     while((position - m_width / 2) > 2 * abs(step))
     {

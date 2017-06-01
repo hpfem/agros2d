@@ -127,6 +127,7 @@ private:
     QMenu *mnuRecentFiles;
     QMenu *mnuProblemAddBoundaryAndMaterial;
     QMenu *mnuCustomForms;
+    QMenu *mnuCustomTools;
 
     QToolBar *tlbFile;
     QToolBar *tlbView;

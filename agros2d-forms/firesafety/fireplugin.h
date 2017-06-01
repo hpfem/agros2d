@@ -21,32 +21,65 @@
 #define FORM_EXAMPLE_H
 
 #include "util/form_interface.h"
+#include "sceneview_common2d.h"
 
 #include "util.h"
 
-class AGROS_API FormExample : public FormInterface
+class SceneViewFireSafety : public SceneViewCommon2D
 {
     Q_OBJECT
-    Q_INTERFACES(FormInterface)
+signals:
+
+public slots:
+    virtual void clear();
+    virtual void refresh();
+    // void doSceneObjectProperties();
+
+public:
+    SceneViewFireSafety(QWidget *parent = 0);
+    ~SceneViewFireSafety();
+
+    virtual QIcon iconView() { return icon("scene-firesafety"); }
+    virtual QString labelView() { return tr("Fire Safety"); }
+
+protected:
+    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    // virtual void mouseReleaseEvent(QMouseEvent *event);
+    // virtual void mouseDoubleClickEvent(QMouseEvent *event);
+
+    virtual void paintGL();
+    virtual void resizeGL(int w, int h);
+
+    void paintGeometry(); // paint nodes, edges and labels
+
+private:
+};
+
+class AGROS_UTIL_API ToolFireSafety : public ToolInterface
+{
+    Q_OBJECT
+    Q_INTERFACES(ToolInterface)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.FormExample" FILE "")
+    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.ToolFireSafety" FILE "")
 #endif
 
 public:
-    FormExample(QWidget *parent = 0);
-    virtual ~FormExample();
+    ToolFireSafety(QWidget *parent = 0);
+    virtual ~ToolFireSafety();
 
-    virtual QString formId() { return "example"; }
+    virtual QString formId() { return "firesafety"; }
     virtual QAction *action();
 
 public slots:
     virtual int show();
-    virtual void acceptForm();
-    virtual void rejectForm();
+    void keyPressEvent(QKeyEvent *event);
 
 protected:
     QAction *actShow;
     QWidget *mainWidget;
+
+    SceneViewFireSafety *sceneViewFireSafety;
 };
 
 #endif // FORM_EXAMPLE_H

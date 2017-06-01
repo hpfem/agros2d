@@ -126,7 +126,7 @@ private slots:
     void problemSolved();
 };
 
-class SceneViewPostInterface : public SceneViewCommon
+class AGROS_LIBRARY_API SceneViewPostInterface : public SceneViewCommon
 {
     Q_OBJECT
 

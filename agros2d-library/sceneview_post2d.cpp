@@ -22,7 +22,6 @@
 #include "util.h"
 #include "util/global.h"
 #include "util/loops.h"
-#include "util/firesafety.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
@@ -1147,87 +1146,25 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
     {
         if (edge->isSelected())
         {
-            if (edge->isStraight())
-            {
-                if (Agros2D::problem()->hasField("heat"))
-                {
-                    FireSafety fs(edge->length(), 3, 90);
-                    QList<EnvelopePoint> points = fs.calculateArea();
-
-                    Point dvector = edge->vector();
-                    Point normalVector;
-
-                    normalVector.x = dvector.y / edge->length();
-                    normalVector.y = - dvector.x / edge->length();
-                    Point center((edge->nodeStart()->point().x + edge->nodeEnd()->point().x) / 2,
-                                 (edge->nodeStart()->point().y + edge->nodeEnd()->point().y) / 2);
-
-                    // blended rectangle
-                    glEnable(GL_BLEND);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-//                    glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
-//                    glPointSize(8.0);
-//                    glBegin(GL_POINTS);
-//                    for (int i = 0; i < points.count(); i++)
-//                    {
-//                        glPointSize(4.0 + i);
-//                        EnvelopePoint point = points[i];
-
-//                        // left point
-//                        Point p(center.x - point.position * dvector.x / edge->length() + point.distance * normalVector.x,
-//                                  center.y - point.position * dvector.y / edge->length() + point.distance * normalVector.y);
-//                        glVertex2d(p.x, p.y);
-//                    }
-//                    glEnd();
-
-
-                    glColor4d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2], 0.4);
-                    glBegin(GL_POLYGON);
-                    for (int i = 0; i < points.count(); i++)
-                    {
-                        EnvelopePoint point1 = points[i];
-
-                        // left point
-                        Point pl1(center.x - point1.position * dvector.x / edge->length() + point1.distance * normalVector.x,
-                                  center.y - point1.position * dvector.y / edge->length() + point1.distance * normalVector.y);
-                        glVertex2d(pl1.x, pl1.y);
-                    }
-
-                    for (int i = points.count() - 1; i >=0; i--)
-                    {
-                        EnvelopePoint point1 = points[i];
-                        // right point
-                        Point pr1(center.x + point1.position * dvector.x / edge->length() + point1.distance * normalVector.x,
-                                  center.y + point1.position * dvector.y / edge->length() + point1.distance * normalVector.y);
-                        glVertex2d(pr1.x, pr1.y);
-                    }
-                }
-                glEnd();
-
-                glDisable(GL_BLEND);
-            }
-
             // selected line
             glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
             glLineWidth(3.0);
 
-            glBegin(GL_LINES);
-            glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
-            glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
-            glEnd();
-        }
-        else
-        {
-            glColor3d(COLORSELECTED[0], COLORSELECTED[1], COLORSELECTED[2]);
-            glLineWidth(3.0);
+            if (edge->isStraight())
+            {
+                glBegin(GL_LINES);
+                glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
+                glVertex2d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y);
+                glEnd();
+            }
+            else
+            {
+                Point center = edge->center();
+                double radius = edge->radius();
+                double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180 - 180;
 
-            Point center = edge->center();
-            double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180 - 180;
-
-            drawArc(center, radius, startAngle, edge->angle());
+                drawArc(center, radius, startAngle, edge->angle());
+            }
         }
     }
     glLineWidth(1.0);

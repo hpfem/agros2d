@@ -38,7 +38,6 @@ public:
     virtual QString formId() = 0;
     virtual QAction *action() = 0;
 
-
 public slots:
     virtual int show() = 0;
     virtual void acceptForm() = 0;
@@ -47,12 +46,30 @@ public slots:
 protected:
 };
 
+// plugin interface
+class AGROS_LIBRARY_API ToolInterface : public QDialog
+{
+Q_OBJECT
+public:
+    ToolInterface(QWidget *parent = 0) : QDialog(parent) {}
+    virtual ~ToolInterface() {}
+
+    virtual QString formId() = 0;
+    virtual QAction *action() = 0;
+
+public slots:
+    virtual int show() = 0;   
+
+protected:
+};
+
 // read forms
-void readCustomForms(QMenu *menu);
+void readCustomTools(QMenu *menu);
 void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView, QWidget *parent);
 
 QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(FormInterface, "agros2d.FormInterface/1.0")
+Q_DECLARE_INTERFACE(ToolInterface, "agros2d.ToolInterface/1.0")
 QT_END_NAMESPACE
 
 #endif // FORM_INTERFACE_H
