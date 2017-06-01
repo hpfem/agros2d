@@ -519,8 +519,6 @@ void MainWindow::createMenus()
     mnuCustomTools = new QMenu(tr("Custom tools"), this);
     mnuTools->addMenu(mnuCustomTools);
     readCustomTools(mnuCustomTools);
-    if (mnuCustomTools->children().count() == 0)
-        mnuCustomTools->setVisible(false);
 #ifdef Q_WS_WIN
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);

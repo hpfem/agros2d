@@ -23,7 +23,24 @@
 #include "util/form_interface.h"
 #include "sceneview_common2d.h"
 
+#include "firesafety.h"
+#include "sceneedge.h"
+
 #include "util.h"
+
+class PropertyDialog : public QDialog
+{
+    Q_OBJECT
+signals:
+
+public slots:
+
+public:
+PropertyDialog();
+private:
+
+
+};
 
 class SceneViewFireSafety : public SceneViewCommon2D
 {
@@ -42,11 +59,17 @@ public:
     virtual QIcon iconView() { return icon("scene-firesafety"); }
     virtual QString labelView() { return tr("Fire Safety"); }
 
+    inline QMap<SceneEdge *, FireProperty> properties() { return m_properties; }
+    inline void setProperty(SceneEdge *edge, FireProperty prop) { m_properties[edge] = prop; }
+    inline void removeProperty(SceneEdge *edge) { assert(m_properties.contains(edge)); m_properties.remove(edge); }
+    inline FireProperty property(SceneEdge *edge) { assert(m_properties.contains(edge)); return m_properties[edge]; }
+    inline bool hasProperty(SceneEdge *edge) { if (m_properties.contains(edge)) return true; else return false; }
+
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     // virtual void mouseReleaseEvent(QMouseEvent *event);
-    // virtual void mouseDoubleClickEvent(QMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
@@ -54,6 +77,9 @@ protected:
     void paintGeometry(); // paint nodes, edges and labels
 
 private:
+    QMap<SceneEdge *, FireProperty> m_properties;
+    QMap<SceneEdge *, QList<EnvelopePoint> > m_points;
+    PropertyDialog *propertyDialog;
 };
 
 class AGROS_UTIL_API ToolFireSafety : public ToolInterface
@@ -69,17 +95,19 @@ public:
     virtual ~ToolFireSafety();
 
     virtual QString formId() { return "firesafety"; }
-    virtual QAction *action();
+    virtual QString formName() { return tr("Fire Safety"); }
+
+    virtual int show();
 
 public slots:
-    virtual int show();
     void keyPressEvent(QKeyEvent *event);
 
 protected:
-    QAction *actShow;
     QWidget *mainWidget;
 
     SceneViewFireSafety *sceneViewFireSafety;
 };
+
+
 
 #endif // FORM_EXAMPLE_H

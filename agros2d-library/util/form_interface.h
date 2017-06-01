@@ -26,11 +26,23 @@
 #include "hermes2d.h"
 
 class PythonScriptingConsoleView;
+class MainWindow;
+
+
+class QActionTool : public QAction
+{
+    Q_OBJECT
+public:
+    QActionTool(const QString &text, const QString &fn, QObject *parent = nullptr);
+
+private slots:
+    void openCustomTool();
+};
 
 // plugin interface
 class AGROS_LIBRARY_API FormInterface : public QDialog
 {   
-Q_OBJECT
+    Q_OBJECT
 public:
     FormInterface(QWidget *parent = 0) : QDialog(parent) {}
     virtual ~FormInterface() {}
@@ -49,16 +61,15 @@ protected:
 // plugin interface
 class AGROS_LIBRARY_API ToolInterface : public QDialog
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     ToolInterface(QWidget *parent = 0) : QDialog(parent) {}
     virtual ~ToolInterface() {}
 
     virtual QString formId() = 0;
-    virtual QAction *action() = 0;
+    virtual QString formName() = 0;
 
-public slots:
-    virtual int show() = 0;   
+    virtual int show() = 0;
 
 protected:
 };
