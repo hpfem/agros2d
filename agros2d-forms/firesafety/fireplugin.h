@@ -36,10 +36,21 @@ signals:
 public slots:
 
 public:
-PropertyDialog();
+    PropertyDialog();
+    void setData(const double & height, const double & fireLoad, const double & penalty, const FireCurve & FireCurve) const;
+    void getData(double & height, double & fireLoad, double & penalty, FireCurve & FireCurve);
+
+protected:
+    void createControls();
+
 private:
-
-
+    QListWidget *lstFireCurve;
+    QLineEdit *txtFireLoad;
+    QLineEdit *txtHeight;
+    QLineEdit *txtPenalty;
+    QLineEdit *txtReferenceIntensity;
+    QLabel *lblPropertyFunction;
+    QDialogButtonBox *buttonBox;
 };
 
 class SceneViewFireSafety : public SceneViewCommon2D
@@ -106,6 +117,7 @@ protected:
     QWidget *mainWidget;
 
     SceneViewFireSafety *sceneViewFireSafety;
+    QTreeWidget * treeWindows;
 };
 
 

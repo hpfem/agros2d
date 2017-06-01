@@ -30,7 +30,66 @@
 PropertyDialog::PropertyDialog()
 {
     setModal(true);
+    setWindowTitle(tr("Set properties"));
+    createControls();
+}
 
+void PropertyDialog::createControls()
+{
+    txtHeight = new QLineEdit();
+    txtFireLoad = new QLineEdit();
+    txtPenalty = new QLineEdit();
+
+    lstFireCurve = new QListWidget(this);
+    lstFireCurve->setMouseTracking(true);
+    lstFireCurve->setMaximumWidth(200);
+    lstFireCurve->setMaximumHeight(50);
+    QListWidgetItem *item = new QListWidgetItem("Fire Curve ISO");
+    lstFireCurve->addItem(item);
+    item = new QListWidgetItem("Fire Curve ISO");
+    lstFireCurve->addItem(item);
+
+    QGridLayout *layoutNameAndDescription = new QGridLayout();
+    layoutNameAndDescription->addWidget(new QLabel(tr("Height:")), 0, 0);
+    layoutNameAndDescription->addWidget(txtHeight, 0, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Fire Load:")), 1, 0);
+    layoutNameAndDescription->addWidget(txtFireLoad, 1, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Penalty:")), 2, 0);
+    layoutNameAndDescription->addWidget(txtPenalty, 2, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Fire Curve:")), 3, 0);
+    layoutNameAndDescription->addWidget(lstFireCurve, 3, 1);
+
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                     | QDialogButtonBox::Cancel);
+
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutNameAndDescription);
+    layout->addWidget(buttonBox);
+    layout->addStretch();
+
+    setLayout(layout);
+}
+
+void PropertyDialog::getData(double & height, double & fireLoad, double & penalty, FireCurve & FireCurve)
+{
+    height = txtHeight->text().toDouble();;
+    fireLoad = txtFireLoad->text().toDouble();
+    penalty = txtPenalty->text().toDouble();
+
+}
+
+void PropertyDialog::setData(const double & height, const double & fireLoad, const double & penalty, const FireCurve & fireCurve) const
+{
+    txtHeight->setText(QString::number(height));
+    txtFireLoad->setText(QString::number(fireLoad));
+    txtPenalty->setText(QString::number(penalty));
+    QListWidgetItem *item = new QListWidgetItem("Fire Curve ISO");
+    if (fireCurve == FireCurve_ISO)
+        lstFireCurve->setCurrentItem(item);
 }
 
 SceneViewFireSafety::SceneViewFireSafety(QWidget *parent) : SceneViewCommon2D(NULL, parent)
@@ -62,6 +121,7 @@ void SceneViewFireSafety::refresh()
 
         m_points[edge] = fs.calculateArea();
     }
+
 
     SceneViewCommon2D::refresh();
 }
@@ -126,10 +186,23 @@ void SceneViewFireSafety::mouseDoubleClickEvent(QMouseEvent *event)
         //  find edge marker
         SceneEdge *edge = SceneEdge::findClosestEdge(p);
 
-        propertyDialog->show();
+        double pv = 90;
+        double height = edge->length() / 2;
+        double penalty = 0;
+        FireCurve fireCurve = FireCurve_ISO;
 
         if(!this->hasProperty(edge))
-            this->setProperty(edge, FireProperty(edge->length(), 3.0, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
+        {
+            propertyDialog->setData(height, pv, penalty, fireCurve);
+            int dialogCode = propertyDialog->exec();
+            if(dialogCode == QDialog::Accepted) {
+
+
+                propertyDialog->getData(height, pv, penalty, fireCurve);
+                this->setProperty(edge, FireProperty(edge->length(), height,
+                                                     pv + penalty, FireCurve_ISO, 18500, 1.0, 0.0));
+            }
+        }
         else
         {
             this->removeProperty(edge);
@@ -233,7 +306,7 @@ ToolFireSafety::ToolFireSafety(QWidget *parent) : ToolInterface(parent)
 
     sceneViewFireSafety = new SceneViewFireSafety(this);
 
-    QTreeWidget *treeWindows = new QTreeWidget(this);
+    treeWindows = new QTreeWidget(this);
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
     layoutMain->addWidget(treeWindows);
