@@ -39,7 +39,7 @@ public:
 
     double fireCurveValue();
 
-    inline FireSafety *fs() { return m_fs; }
+    // inline FireSafety *fs() { return m_fs; }
 
 private:
     double m_width;
@@ -50,7 +50,7 @@ private:
     double m_eps;
     FireCurve m_fireCurve;
 
-    FireSafety *m_fs;
+    // FireSafety *m_fs;
 };
 
 class FireSafety

@@ -63,6 +63,7 @@ protected:
 
 private:
     QMap<SceneEdge *, FireProperty> m_properties;
+    QMap<SceneEdge *, QList<EnvelopePoint> > m_points;
 };
 
 class AGROS_UTIL_API ToolFireSafety : public ToolInterface

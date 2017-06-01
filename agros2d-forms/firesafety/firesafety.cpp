@@ -31,12 +31,12 @@ const double FireSafety::SIGMA = 5.67e-8;
 FireProperty::FireProperty(double width, double height, double pv, FireCurve fireCurve, double i0, double eps, double increase) :
             m_width(width), m_height(height), m_pv(pv), m_fireCurve(fireCurve), m_i0(i0), m_eps(eps), m_increase(increase)
 {
-    m_fs = new FireSafety(this);
+    // m_fs = new FireSafety(this);
 }
 
 FireProperty::~FireProperty()
 {
-    delete m_fs;
+    // delete m_fs;
 }
 
 double FireProperty::fireCurveValue()
@@ -55,7 +55,7 @@ FireSafety::FireSafety(FireProperty fp) : m_fp(fp)
 double FireSafety::critical_intensity(double position, double d)
 {
     // krivka pozaru
-    double T = m_fp.fireCurve(); // Teplota dle krivky pozaru
+    double T = m_fp.fireCurveValue(); // Teplota dle krivky pozaru
     double I = m_fp.emisivity() * SIGMA * pow(T, 4); // Salava slozka
 
     double l = m_fp.width() / 2   +  position;    // pozice horizontalni

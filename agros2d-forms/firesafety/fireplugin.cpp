@@ -41,11 +41,21 @@ void SceneViewFireSafety::clear()
     SceneViewCommon2D::clear();
     SceneViewCommon::refresh();
 
+    m_points.clear();
+
     doZoomBestFit();
 }
 
 void SceneViewFireSafety::refresh()
 {
+    foreach (SceneEdge *edge, m_properties.keys())
+    {
+        FireProperty prop =  m_properties[edge];
+        FireSafety fs(prop);
+
+        m_points[edge] = fs.calculateArea();
+    }
+
     SceneViewCommon2D::refresh();
 }
 
@@ -125,12 +135,7 @@ void SceneViewFireSafety::paintGeometry()
 
             foreach (SceneEdge *edge, m_properties.keys())
             {
-                FireProperty prop =  m_properties[edge];
-
                 // fire safety
-                FireSafety fs(prop);
-                // QList<EnvelopePoint> points = fs.calculateArea();
-
                 Point dvector = edge->vector();
                 Point normalVector(dvector.y / edge->length(), - dvector.x / edge->length());
 
@@ -143,9 +148,9 @@ void SceneViewFireSafety::paintGeometry()
 
                 glColor4d(COLORCROSSED[0], COLORCROSSED[1], COLORCROSSED[2], 0.4);
                 glBegin(GL_POLYGON);
-                for (int i = 0; i < points.count(); i++)
+                for (int i = 0; i < m_points[edge].count(); i++)
                 {
-                    EnvelopePoint point1 = points[i];
+                    EnvelopePoint point1 = m_points[edge][i];
 
                     // left point
                     Point pl1(center.x - point1.position * dvector.x / edge->length() + point1.distance * normalVector.x,
@@ -153,9 +158,10 @@ void SceneViewFireSafety::paintGeometry()
                     glVertex2d(pl1.x, pl1.y);
                 }
 
-                for (int i = points.count() - 1; i >=0; i--)
+                for (int i = m_points[edge].count() - 1; i >=0; i--)
                 {
-                    EnvelopePoint point1 = points[i];
+                    EnvelopePoint point1 = m_points[edge][i];
+
                     // right point
                     Point pr1(center.x + point1.position * dvector.x / edge->length() + point1.distance * normalVector.x,
                               center.y + point1.position * dvector.y / edge->length() + point1.distance * normalVector.y);
@@ -232,6 +238,8 @@ int ToolFireSafety::show()
                                      FireProperty(Agros2D::scene()->edges->at(4)->length(), 1.0, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
     sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(6),
                                      FireProperty(Agros2D::scene()->edges->at(6)->length(), 0.4, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
+
+    sceneViewFireSafety->refresh();
 
     return exec();
 }
