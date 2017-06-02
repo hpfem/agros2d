@@ -162,6 +162,7 @@ void SceneViewFireSafety::refresh()
     edgesNode->setIcon(0, icon("sceneedge"));
     // edgesNode->setForeground(0, QBrush(Qt::darkBlue));
     edgesNode->setFont(0, fnt);
+    edgesNode->setExpanded(true);
 
     QList<QTreeWidgetItem *> listEdges;
     int iedge = 0;
