@@ -63,7 +63,7 @@ void PropertyDialog::createControls()
     layoutNameAndDescription->addWidget(txtPenalty, 2, 1);
     layoutNameAndDescription->addWidget(new QLabel(tr("Emisivity:")), 3, 0);
     layoutNameAndDescription->addWidget(txtEmisivity, 3, 1);
-    layoutNameAndDescription->addWidget(new QLabel(tr("Reference intensity:")), 4, 0);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Critical intensity:")), 4, 0);
     layoutNameAndDescription->addWidget(txtReferenceIntensity, 4, 1);
     layoutNameAndDescription->addWidget(new QLabel(tr("Fire Curve:")), 5, 0);
     layoutNameAndDescription->addWidget(lstFireCurve, 5, 1);
@@ -126,17 +126,20 @@ void SceneViewFireSafety::createControls()
     treeWindow->setColumnWidth(0, 150);
     treeWindow->setIndentation(12);
 
-//    removeDialog = new QDialog();
-//    removeDialog->setModal(true);
-//    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-//                                                       | QDialogButtonBox::Cancel);
+    removeDialog = new QDialog();
+    removeDialog->setModal(true);
+    removeDialog->setWindowTitle(tr("Fire-hazardous area"));
+    QLabel *label= new QLabel("Enable Fire-hazardous area calculation?");
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                                       | QDialogButtonBox::Cancel);
 
-//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
-//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    connect(buttonBox, SIGNAL(accepted()), removeDialog, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), removeDialog, SLOT(close()));
 
-//    QVBoxLayout *layout = new QVBoxLayout();
-//    layout->addWidget(buttonBox);
-//    removeDialog->setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(label);
+    layout->addWidget(buttonBox);
+    removeDialog->setLayout(layout);
 
 }
 
@@ -180,7 +183,7 @@ void SceneViewFireSafety::refresh()
                                  "Fire Load: %4 \n"
                                  "Emisivity: %5 \n"
                                  "Penalty: %6 \n"
-                                 "Reference Intensity I0: %7 \n"
+                                 "Critical Intensity I0: %7 \n"
                                  ).
                       arg(iedge).
                       arg(edge->length()).
@@ -251,10 +254,10 @@ void SceneViewFireSafety::mousePressEvent(QMouseEvent *event)
     if (event->buttons() & Qt::RightButton)
     {
 
-//        int dialogCode = removeDialog->exec();
-//        if(dialogCode == QDialog::Accepted) {
-//        }
+        int dialogCode = removeDialog->exec();
+        if(dialogCode == QDialog::Accepted) {
 
+        }
     }
 }
 
