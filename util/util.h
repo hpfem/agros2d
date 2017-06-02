@@ -83,11 +83,20 @@
 #else
 #define AGROS_UTIL_API __declspec(dllimport)
 #endif
+
+// DLL build
+#ifdef AGROS_FORM_DLL
+#define AGROS_FORM_DLL __declspec(dllexport)
+// DLL usage
+#else
+#define AGROS_FORM_DLL __declspec(dllimport)
+#endif
 #else
 // linux
 #define AGROS_UTIL_API
 #define AGROS_PYTHONLAB_API
 #define AGROS_LIBRARY_API
+#define AGROS_FORM_API
 #endif
 
 #include "util/point.h"

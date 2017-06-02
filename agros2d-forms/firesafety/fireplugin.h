@@ -99,7 +99,7 @@ private:
     void createControls();
 };
 
-class AGROS_UTIL_API ToolFireSafety : public ToolInterface
+class AGROS_FORM_API ToolFireSafety : public ToolInterface
 {
     Q_OBJECT
     Q_INTERFACES(ToolInterface)
