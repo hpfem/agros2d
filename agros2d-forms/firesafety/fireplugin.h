@@ -66,7 +66,7 @@ public slots:
     // void doSceneObjectProperties();
 
 public:
-    SceneViewFireSafety(QWidget *parent = 0);
+    SceneViewFireSafety(QWidget *parent = 0, QTreeWidget * treeWindow = 0);
     ~SceneViewFireSafety();
 
     virtual QIcon iconView() { return icon("scene-firesafety"); }
@@ -92,7 +92,11 @@ protected:
 private:
     QMap<SceneEdge *, FireProperty> m_properties;
     QMap<SceneEdge *, QList<EnvelopePoint> > m_points;
+    QTreeWidget * treeWindow;
     PropertyDialog *propertyDialog;
+    QDialog *removeDialog;
+
+    void createControls();
 };
 
 class AGROS_UTIL_API ToolFireSafety : public ToolInterface

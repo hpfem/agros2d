@@ -105,15 +105,40 @@ void PropertyDialog::setDefault(FireProperty property)
         lstFireCurve->setCurrentText("Fire Curve ISO");
 }
 
-SceneViewFireSafety::SceneViewFireSafety(QWidget *parent) : SceneViewCommon2D(NULL, parent)
+SceneViewFireSafety::SceneViewFireSafety(QWidget *parent, QTreeWidget * treeWindow) : SceneViewCommon2D(NULL, parent)
 {
     this->propertyDialog = new PropertyDialog();
+    this->treeWindow  = treeWindow;
+    createControls();
 }
 
 SceneViewFireSafety::~SceneViewFireSafety()
 {
 }
 
+void SceneViewFireSafety::createControls()
+{
+    treeWindow->setHeaderLabel("Fire-hazardous area");
+    treeWindow->setHeaderHidden(false);
+    treeWindow->setContextMenuPolicy(Qt::CustomContextMenu);
+    treeWindow->setMouseTracking(true);
+    treeWindow->setColumnCount(1);
+    treeWindow->setColumnWidth(0, 150);
+    treeWindow->setIndentation(12);
+
+//    removeDialog = new QDialog();
+//    removeDialog->setModal(true);
+//    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+//                                                       | QDialogButtonBox::Cancel);
+
+//    connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
+//    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+
+//    QVBoxLayout *layout = new QVBoxLayout();
+//    layout->addWidget(buttonBox);
+//    removeDialog->setLayout(layout);
+
+}
 
 void SceneViewFireSafety::clear()
 {
@@ -127,16 +152,53 @@ void SceneViewFireSafety::clear()
 
 void SceneViewFireSafety::refresh()
 {
+    QFont fnt = treeWindow->font();
+    treeWindow->clear();
+    QTreeWidgetItem *edgesNode = new QTreeWidgetItem(treeWindow);
+    edgesNode->setText(0, tr("Edges"));
+    edgesNode->setIcon(0, icon("sceneedge"));
+    // edgesNode->setForeground(0, QBrush(Qt::darkBlue));
+    edgesNode->setFont(0, fnt);
+
+    QList<QTreeWidgetItem *> listEdges;
+    int iedge = 0;
+
+    edgesNode->addChildren(listEdges);
+
     foreach (SceneEdge *edge, m_properties.keys())
     {
+
         FireProperty prop =  m_properties[edge];
         FireSafety fs(prop);
 
         m_points[edge] = fs.calculateArea();
+
+        QTreeWidgetItem *item = new QTreeWidgetItem();
+        item->setText(0, QString("Edge number: %1 \n"
+                                 "Width: %2 m \n"
+                                 "Height: %3 m \n"
+                                 "Fire Load: %4 \n"
+                                 "Emisivity: %5 \n"
+                                 "Penalty: %6 \n"
+                                 "Reference Intensity I0: %7 \n"
+                                 ).
+                      arg(iedge).
+                      arg(edge->length()).
+                      arg(m_properties[edge].height()).
+                      arg(m_properties[edge].pv()).
+                      arg(m_properties[edge].emisivity()).
+                      arg(m_properties[edge].increase()).
+                      arg(m_properties[edge].i0())
+                      );
+        // item->setIcon(0, icon("scene-edge"));
+        item->setData(0, Qt::UserRole, edge->variant());
+        listEdges.append(item);
+
+        iedge++;
+
     }
+    edgesNode->addChildren(listEdges);
 
-
-    SceneViewCommon2D::refresh();
 }
 
 void SceneViewFireSafety::paintGL()
@@ -184,6 +246,15 @@ void SceneViewFireSafety::mousePressEvent(QMouseEvent *event)
         updateGL();
 
         emit mousePressed();
+    }
+
+    if (event->buttons() & Qt::RightButton)
+    {
+
+//        int dialogCode = removeDialog->exec();
+//        if(dialogCode == QDialog::Accepted) {
+//        }
+
     }
 }
 
@@ -312,17 +383,18 @@ ToolFireSafety::ToolFireSafety(QWidget *parent) : ToolInterface(parent)
     // connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
-    sceneViewFireSafety = new SceneViewFireSafety(this);
-
     treeWindows = new QTreeWidget(this);
+    sceneViewFireSafety = new SceneViewFireSafety(this, treeWindows);
+
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
     layoutMain->addWidget(treeWindows);
     layoutMain->addWidget(sceneViewFireSafety, 1);
 
     QVBoxLayout *layoutAll = new QVBoxLayout();
+
     layoutAll->addLayout(layoutMain, 1);
-    layoutAll->addWidget(buttonBox);
+    // layoutAll->addWidget(buttonBox);
 
     setLayout(layoutAll);
     setMinimumSize(800, 450);
