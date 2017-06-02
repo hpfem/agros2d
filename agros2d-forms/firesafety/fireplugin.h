@@ -22,6 +22,7 @@
 
 #include "util/form_interface.h"
 #include "sceneview_common2d.h"
+#include "gui/lineeditdouble.h"
 
 #include "firesafety.h"
 #include "sceneedge.h"
@@ -37,18 +38,19 @@ public slots:
 
 public:
     PropertyDialog();
-    void setData(const double & height, const double & fireLoad, const double & penalty, const FireCurve & FireCurve) const;
-    void getData(double & height, double & fireLoad, double & penalty, FireCurve & FireCurve);
+    void setDefault(const FireProperty property);
+    void getData(FireProperty & property);
 
 protected:
     void createControls();
 
 private:
-    QListWidget *lstFireCurve;
-    QLineEdit *txtFireLoad;
-    QLineEdit *txtHeight;
-    QLineEdit *txtPenalty;
-    QLineEdit *txtReferenceIntensity;
+    QComboBox *lstFireCurve;
+    LineEditDouble *txtFireLoad;
+    LineEditDouble *txtHeight;
+    LineEditDouble *txtPenalty;
+    LineEditDouble *txtReferenceIntensity;
+    LineEditDouble *txtEmisivity;
     QLabel *lblPropertyFunction;
     QDialogButtonBox *buttonBox;
 };

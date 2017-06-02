@@ -27,6 +27,7 @@
 #include "util/conf.h"
 #include "util.h"
 
+
 PropertyDialog::PropertyDialog()
 {
     setModal(true);
@@ -36,18 +37,22 @@ PropertyDialog::PropertyDialog()
 
 void PropertyDialog::createControls()
 {
-    txtHeight = new QLineEdit();
-    txtFireLoad = new QLineEdit();
-    txtPenalty = new QLineEdit();
+    txtHeight = new LineEditDouble();
+    txtHeight->setBottom(0.0);
+    txtFireLoad = new LineEditDouble();
+    txtFireLoad->setBottom(0.0);
+    txtPenalty = new LineEditDouble();
+    txtPenalty->setBottom(0.0);
+    txtReferenceIntensity = new LineEditDouble();
+    txtReferenceIntensity->setBottom(0.0);
+    txtEmisivity = new LineEditDouble();
+    txtEmisivity->setBottom(0.0);
 
-    lstFireCurve = new QListWidget(this);
+    lstFireCurve = new QComboBox(this);
     lstFireCurve->setMouseTracking(true);
     lstFireCurve->setMaximumWidth(200);
     lstFireCurve->setMaximumHeight(50);
-    QListWidgetItem *item = new QListWidgetItem("Fire Curve ISO");
-    lstFireCurve->addItem(item);
-    item = new QListWidgetItem("Fire Curve ISO");
-    lstFireCurve->addItem(item);
+    lstFireCurve->addItem("Fire Curve ISO");
 
     QGridLayout *layoutNameAndDescription = new QGridLayout();
     layoutNameAndDescription->addWidget(new QLabel(tr("Height:")), 0, 0);
@@ -56,8 +61,12 @@ void PropertyDialog::createControls()
     layoutNameAndDescription->addWidget(txtFireLoad, 1, 1);
     layoutNameAndDescription->addWidget(new QLabel(tr("Penalty:")), 2, 0);
     layoutNameAndDescription->addWidget(txtPenalty, 2, 1);
-    layoutNameAndDescription->addWidget(new QLabel(tr("Fire Curve:")), 3, 0);
-    layoutNameAndDescription->addWidget(lstFireCurve, 3, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Emisivity:")), 3, 0);
+    layoutNameAndDescription->addWidget(txtEmisivity, 3, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Reference intensity:")), 4, 0);
+    layoutNameAndDescription->addWidget(txtReferenceIntensity, 4, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Fire Curve:")), 5, 0);
+    layoutNameAndDescription->addWidget(lstFireCurve, 5, 1);
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel);
@@ -74,22 +83,26 @@ void PropertyDialog::createControls()
     setLayout(layout);
 }
 
-void PropertyDialog::getData(double & height, double & fireLoad, double & penalty, FireCurve & FireCurve)
-{
-    height = txtHeight->text().toDouble();;
-    fireLoad = txtFireLoad->text().toDouble();
-    penalty = txtPenalty->text().toDouble();
-
+void PropertyDialog::getData(FireProperty & property)
+{    
+    property.setHeight(txtHeight->value());
+    property.setPv(txtFireLoad->value());
+    property.setIncrease(txtPenalty->value());
+    property.setI0(txtReferenceIntensity->value());
+    property.setEmisivity(txtEmisivity->value());
+    if (lstFireCurve->currentText() == "Fire Curve ISO")
+        property.setFireCurve(FireCurve_ISO);
 }
 
-void PropertyDialog::setData(const double & height, const double & fireLoad, const double & penalty, const FireCurve & fireCurve) const
+void PropertyDialog::setDefault(FireProperty property)
 {
-    txtHeight->setText(QString::number(height));
-    txtFireLoad->setText(QString::number(fireLoad));
-    txtPenalty->setText(QString::number(penalty));
-    QListWidgetItem *item = new QListWidgetItem("Fire Curve ISO");
-    if (fireCurve == FireCurve_ISO)
-        lstFireCurve->setCurrentItem(item);
+    txtHeight->setValue(property.height());
+    txtFireLoad->setValue(property.pv());
+    txtPenalty->setValue(property.increase());
+    txtEmisivity->setValue(property.emisivity());
+    txtReferenceIntensity->setValue(property.i0());
+    if (property.fireCurve() == FireCurve_ISO)
+        lstFireCurve->setCurrentText("Fire Curve ISO");
 }
 
 SceneViewFireSafety::SceneViewFireSafety(QWidget *parent) : SceneViewCommon2D(NULL, parent)
@@ -185,22 +198,17 @@ void SceneViewFireSafety::mouseDoubleClickEvent(QMouseEvent *event)
     {
         //  find edge marker
         SceneEdge *edge = SceneEdge::findClosestEdge(p);
-
-        double pv = 90;
-        double height = edge->length() / 2;
-        double penalty = 0;
+        FireProperty property = FireProperty(edge->length(), edge->length() / 2, 90, FireCurve_ISO, 18500, 1, 0);
         FireCurve fireCurve = FireCurve_ISO;
 
         if(!this->hasProperty(edge))
         {
-            propertyDialog->setData(height, pv, penalty, fireCurve);
+            propertyDialog->setDefault(property);
             int dialogCode = propertyDialog->exec();
             if(dialogCode == QDialog::Accepted) {
 
-
-                propertyDialog->getData(height, pv, penalty, fireCurve);
-                this->setProperty(edge, FireProperty(edge->length(), height,
-                                                     pv + penalty, FireCurve_ISO, 18500, 1.0, 0.0));
+                propertyDialog->getData(property);
+                this->setProperty(edge, property);
             }
         }
         else
