@@ -22,11 +22,38 @@
 
 #include "util/form_interface.h"
 #include "sceneview_common2d.h"
+#include "gui/lineeditdouble.h"
 
 #include "firesafety.h"
 #include "sceneedge.h"
 
 #include "util.h"
+
+class PropertyDialog : public QDialog
+{
+    Q_OBJECT
+signals:
+
+public slots:
+
+public:
+    PropertyDialog();
+    void setDefault(const FireProperty property);
+    void getData(FireProperty & property);
+
+protected:
+    void createControls();
+
+private:
+    QComboBox *lstFireCurve;
+    LineEditDouble *txtFireLoad;
+    LineEditDouble *txtHeight;
+    LineEditDouble *txtPenalty;
+    LineEditDouble *txtReferenceIntensity;
+    LineEditDouble *txtEmisivity;
+    QLabel *lblPropertyFunction;
+    QDialogButtonBox *buttonBox;
+};
 
 class SceneViewFireSafety : public SceneViewCommon2D
 {
@@ -49,12 +76,13 @@ public:
     inline void setProperty(SceneEdge *edge, FireProperty prop) { m_properties[edge] = prop; }
     inline void removeProperty(SceneEdge *edge) { assert(m_properties.contains(edge)); m_properties.remove(edge); }
     inline FireProperty property(SceneEdge *edge) { assert(m_properties.contains(edge)); return m_properties[edge]; }
+    inline bool hasProperty(SceneEdge *edge) { if (m_properties.contains(edge)) return true; else return false; }
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     // virtual void mouseReleaseEvent(QMouseEvent *event);
-    // virtual void mouseDoubleClickEvent(QMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
@@ -64,6 +92,7 @@ protected:
 private:
     QMap<SceneEdge *, FireProperty> m_properties;
     QMap<SceneEdge *, QList<EnvelopePoint> > m_points;
+    PropertyDialog *propertyDialog;
 };
 
 class AGROS_UTIL_API ToolFireSafety : public ToolInterface
@@ -90,6 +119,9 @@ protected:
     QWidget *mainWidget;
 
     SceneViewFireSafety *sceneViewFireSafety;
+    QTreeWidget * treeWindows;
 };
+
+
 
 #endif // FORM_EXAMPLE_H

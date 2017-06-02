@@ -27,8 +27,87 @@
 #include "util/conf.h"
 #include "util.h"
 
+
+PropertyDialog::PropertyDialog()
+{
+    setModal(true);
+    setWindowTitle(tr("Set properties"));
+    createControls();
+}
+
+void PropertyDialog::createControls()
+{
+    txtHeight = new LineEditDouble();
+    txtHeight->setBottom(0.0);
+    txtFireLoad = new LineEditDouble();
+    txtFireLoad->setBottom(0.0);
+    txtPenalty = new LineEditDouble();
+    txtPenalty->setBottom(0.0);
+    txtReferenceIntensity = new LineEditDouble();
+    txtReferenceIntensity->setBottom(0.0);
+    txtEmisivity = new LineEditDouble();
+    txtEmisivity->setBottom(0.0);
+
+    lstFireCurve = new QComboBox(this);
+    lstFireCurve->setMouseTracking(true);
+    lstFireCurve->setMaximumWidth(200);
+    lstFireCurve->setMaximumHeight(50);
+    lstFireCurve->addItem("Fire Curve ISO");
+
+    QGridLayout *layoutNameAndDescription = new QGridLayout();
+    layoutNameAndDescription->addWidget(new QLabel(tr("Height:")), 0, 0);
+    layoutNameAndDescription->addWidget(txtHeight, 0, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Fire Load:")), 1, 0);
+    layoutNameAndDescription->addWidget(txtFireLoad, 1, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Penalty:")), 2, 0);
+    layoutNameAndDescription->addWidget(txtPenalty, 2, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Emisivity:")), 3, 0);
+    layoutNameAndDescription->addWidget(txtEmisivity, 3, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Reference intensity:")), 4, 0);
+    layoutNameAndDescription->addWidget(txtReferenceIntensity, 4, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Fire Curve:")), 5, 0);
+    layoutNameAndDescription->addWidget(lstFireCurve, 5, 1);
+
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                     | QDialogButtonBox::Cancel);
+
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(layoutNameAndDescription);
+    layout->addWidget(buttonBox);
+    layout->addStretch();
+
+    setLayout(layout);
+}
+
+void PropertyDialog::getData(FireProperty & property)
+{    
+    property.setHeight(txtHeight->value());
+    property.setPv(txtFireLoad->value());
+    property.setIncrease(txtPenalty->value());
+    property.setI0(txtReferenceIntensity->value());
+    property.setEmisivity(txtEmisivity->value());
+    if (lstFireCurve->currentText() == "Fire Curve ISO")
+        property.setFireCurve(FireCurve_ISO);
+}
+
+void PropertyDialog::setDefault(FireProperty property)
+{
+    txtHeight->setValue(property.height());
+    txtFireLoad->setValue(property.pv());
+    txtPenalty->setValue(property.increase());
+    txtEmisivity->setValue(property.emisivity());
+    txtReferenceIntensity->setValue(property.i0());
+    if (property.fireCurve() == FireCurve_ISO)
+        lstFireCurve->setCurrentText("Fire Curve ISO");
+}
+
 SceneViewFireSafety::SceneViewFireSafety(QWidget *parent) : SceneViewCommon2D(NULL, parent)
 {
+    this->propertyDialog = new PropertyDialog();
 }
 
 SceneViewFireSafety::~SceneViewFireSafety()
@@ -55,6 +134,7 @@ void SceneViewFireSafety::refresh()
 
         m_points[edge] = fs.calculateArea();
     }
+
 
     SceneViewCommon2D::refresh();
 }
@@ -102,6 +182,42 @@ void SceneViewFireSafety::mousePressEvent(QMouseEvent *event)
 
         edge->setSelected(!edge->isSelected());
         updateGL();
+
+        emit mousePressed();
+    }
+}
+
+void SceneViewFireSafety::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    SceneViewCommon2D::mouseDoubleClickEvent(event);
+
+    m_lastPos = event->pos();
+    Point p = transform(Point(event->pos().x(), event->pos().y()));
+
+    if (event->buttons() & Qt::LeftButton)
+    {
+        //  find edge marker
+        SceneEdge *edge = SceneEdge::findClosestEdge(p);
+        FireProperty property = FireProperty(edge->length(), edge->length() / 2, 90, FireCurve_ISO, 18500, 1, 0);
+        FireCurve fireCurve = FireCurve_ISO;
+
+        if(!this->hasProperty(edge))
+        {
+            propertyDialog->setDefault(property);
+            int dialogCode = propertyDialog->exec();
+            if(dialogCode == QDialog::Accepted) {
+
+                propertyDialog->getData(property);
+                this->setProperty(edge, property);
+            }
+        }
+        else
+        {
+            this->removeProperty(edge);
+        }
+
+        edge->setSelected(!edge->isSelected());
+        refresh();
 
         emit mousePressed();
     }
@@ -198,7 +314,7 @@ ToolFireSafety::ToolFireSafety(QWidget *parent) : ToolInterface(parent)
 
     sceneViewFireSafety = new SceneViewFireSafety(this);
 
-    QTreeWidget *treeWindows = new QTreeWidget(this);
+    treeWindows = new QTreeWidget(this);
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
     layoutMain->addWidget(treeWindows);
@@ -232,15 +348,9 @@ void ToolFireSafety::keyPressEvent(QKeyEvent *event)
 
 int ToolFireSafety::show()
 {
-    sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(3),
-                                     FireProperty(Agros2D::scene()->edges->at(3)->length(), 3.0, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
-    sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(4),
-                                     FireProperty(Agros2D::scene()->edges->at(4)->length(), 1.0, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
-    sceneViewFireSafety->setProperty(Agros2D::scene()->edges->at(6),
-                                     FireProperty(Agros2D::scene()->edges->at(6)->length(), 0.4, 90.0, FireCurve_ISO, 18500, 1.0, 0.0));
-
+    this->showMaximized();
     sceneViewFireSafety->refresh();
-
+    sceneViewFireSafety->showMaximized();
     return exec();
 }
 
