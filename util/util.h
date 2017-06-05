@@ -86,10 +86,10 @@
 
 // DLL build
 #ifdef AGROS_FORM_DLL
-#define AGROS_FORM_DLL __declspec(dllexport)
+#define AGROS_FORM_API __declspec(dllexport)
 // DLL usage
 #else
-#define AGROS_FORM_DLL __declspec(dllimport)
+#define AGROS_FORM_API __declspec(dllimport)
 #endif
 #else
 // linux
