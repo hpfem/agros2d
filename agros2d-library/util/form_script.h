@@ -36,7 +36,7 @@ class AGROS_LIBRARY_API FormScript : public FormInterface
     Q_OBJECT
     Q_INTERFACES(FormInterface)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.FormScript" FILE "")
+    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.FormScript")
 #endif
 
 public:
