@@ -104,7 +104,7 @@ class AGROS_FORM_API ToolFireSafety : public ToolInterface
     Q_OBJECT
     Q_INTERFACES(ToolInterface)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.ToolFireSafety" FILE "")
+    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.ToolFireSafety")
 #endif
 
 public:
