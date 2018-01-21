@@ -33,7 +33,7 @@ class {{CLASS}}Interface : public QObject, public PluginInterface
     Q_OBJECT
     Q_INTERFACES(PluginInterface)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.{{CLASS}}Interface" FILE "")
+    Q_PLUGIN_METADATA(IID "org.hpfem.agros2d.{{CLASS}}Interface")
 #endif
 
 public:
