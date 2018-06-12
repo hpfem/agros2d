@@ -8,7 +8,7 @@ This file is part of QuaZIP.
 
 QuaZIP is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version 2.1 of the License, or
 (at your option) any later version.
 
 QuaZIP is distributed in the hope that it will be useful,
@@ -153,9 +153,9 @@ class QUAZIP_EXPORT QuaZip {
      *
      * If the ZIP file is accessed via explicitly set QIODevice, then
      * this device is opened in the necessary mode. If the device was
-     * already opened by some other means, then the behaviour is defined by
-     * the device implementation, but generally it is not a very good
-     * idea. For example, QFile will at least issue a warning.
+     * already opened by some other means, then QuaZIP checks if the
+     * open mode is compatible to the mode needed for the requested operation.
+     * If necessary, seeking is performed to position the device properly.
      *
      * \return \c true if successful, \c false otherwise.
      *
@@ -181,14 +181,39 @@ class QUAZIP_EXPORT QuaZip {
      * because due to the backwards compatibility issues it can be used to
      * provide a 32-bit API only.
      *
+     * \note If the \ref QuaZip::setAutoClose() "no-auto-close" feature is used,
+     * then the \a ioApi argument \em should be NULL because the old API
+     * doesn't support the 'fake close' operation, causing slight memory leaks
+     * and other possible troubles (like closing the output device in case
+     * when an error occurs during opening).
+     *
      * In short: just forget about the \a ioApi argument and you'll be
      * fine.
      **/
     bool open(Mode mode, zlib_filefunc_def *ioApi =NULL);
     /// Closes ZIP file.
-    /** Call getZipError() to determine if the close was successful. The
-     * underlying QIODevice is also closed, regardless of whether it was
-     * set explicitly or not. */
+    /** Call getZipError() to determine if the close was successful.
+     *
+     * If the file was opened by name, then the underlying QIODevice is closed
+     * and deleted.
+     *
+     * If the underlying QIODevice was set explicitly using setIoDevice() or
+     * the appropriate constructor, then it is closed if the auto-close flag
+     * is set (which it is by default). Call setAutoClose() to clear the
+     * auto-close flag if this behavior is undesirable.
+     *
+     * Since Qt 5.1, the QSaveFile was introduced. It breaks the QIODevice API
+     * by making close() private and crashing the application if it is called
+     * from the base class where it is public. It is an excellent example
+     * of poor design that illustrates why you should never ever break
+     * an is-a relationship between the base class and a subclass. QuaZIP
+     * works around this bug by checking if the QIODevice is an instance
+     * of QSaveFile, using qobject_cast<>, and if it is, calls
+     * QSaveFile::commit() instead of close(). It is a really ugly hack,
+     * but at least it makes your programs work instead of crashing. Note that
+     * if the auto-close flag is cleared, then this is a non-issue, and
+     * commit() isn't called.
+      */
     void close();
     /// Sets the codec used to encode/decode file names inside archive.
     /** This is necessary to access files in the ZIP archive created
@@ -408,10 +433,14 @@ class QUAZIP_EXPORT QuaZip {
 
       The data descriptor writing mode is enabled by default.
 
+      Note that if the ZIP archive is written into a QIODevice for which
+      QIODevice::isSequential() returns \c true, then the data descriptor
+      is mandatory and will be written even if this flag is set to false.
+
       \param enabled If \c true, enable local descriptor writing,
       disable it otherwise.
 
-      \sa QuaZipFile::setDataDescriptorWritingEnabled()
+      \sa QuaZipFile::isDataDescriptorWritingEnabled()
       */
     void setDataDescriptorWritingEnabled(bool enabled);
     /// Returns the data descriptor default writing mode.
@@ -460,6 +489,9 @@ class QUAZIP_EXPORT QuaZip {
      * files larger than 4 GB. By default, the zip64 mode is off due to
      * compatibility reasons.
      *
+     * Note that this does not affect the ability to read zip64 archives in any
+     * way.
+     *
      * \sa isZip64Enabled()
      */
     void setZip64Enabled(bool zip64);
@@ -470,6 +502,33 @@ class QUAZIP_EXPORT QuaZip {
      * \sa setZip64Enabled()
      */
     bool isZip64Enabled() const;
+    /// Returns the auto-close flag.
+    /**
+      @sa setAutoClose()
+      */
+    bool isAutoClose() const;
+    /// Sets or unsets the auto-close flag.
+    /**
+      By default, QuaZIP opens the underlying QIODevice when open() is called,
+      and closes it when close() is called. In some cases, when the device
+      is set explicitly using setIoDevice(), it may be desirable to
+      leave the device open. If the auto-close flag is unset using this method,
+      then the device isn't closed automatically if it was set explicitly.
+
+      If it is needed to clear this flag, it is recommended to do so before
+      opening the archive because otherwise QuaZIP may close the device
+      during the open() call if an error is encountered after the device
+      is opened.
+
+      If the device was not set explicitly, but rather the setZipName() or
+      the appropriate constructor was used to set the ZIP file name instead,
+      then the auto-close flag has no effect, and the internal device
+      is closed nevertheless because there is no other way to close it.
+
+      @sa isAutoClose()
+      @sa setIoDevice()
+      */
+    void setAutoClose(bool autoClose) const;
     /// Sets the default file name codec to use.
     /**
      * The default codec is used by the constructors, so calling this function
